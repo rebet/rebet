@@ -1,0 +1,38 @@
+{
+    "name": "rebet/rebet",
+    "description": "The Rebet PHP framework",
+    "keywords": ["framework", "rebet"],
+    "authors": [
+        {
+            "name": "Junichi Shibata",
+            "email": "rain.noise@gmail.com"
+        }
+    ],
+    "license": "MIT",
+	"type": "project",
+	"support": {
+		"email": "rain.noise@gmail.com",
+		"issues": "https://github.com/rebet/rebet/issues",
+		"source": "https://github.com/rebet/rebet",
+		"docs": "https://github.com/rebet/rebet/blob/master/README.md"
+	},
+	"require": {
+		"php": "^7.1"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^7.3.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Rebet\\": "src/Rebet/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Rebet\\Tests\\": "tests/"
+		}
+	},
+	"config": {
+		"sort-packages": true
+	}
+}
