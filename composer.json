@@ -29,7 +29,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Rebet\\Tests\\": "tests/"
+			"Rebet\\Tests\\": "tests/Rebet/Tests/"
 		}
 	},
 	"config": {
