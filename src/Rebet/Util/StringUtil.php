@@ -10,7 +10,6 @@ namespace Rebet\Util;
  * }
  * 
  * @package   Rebet
- * @version   v0.1.0
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
