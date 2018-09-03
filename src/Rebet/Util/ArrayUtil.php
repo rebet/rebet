@@ -30,12 +30,32 @@ class ArrayUtil {
 	public static function randomSelect(array $list, int $select_count) : array {
 		if(count($list) <= $select_count) { return [$list, []] ;}
 		
-		$selected = [];
-		for ($i=0; $i < $select_count; $i++) {
+		$selected   = [];
+		$max_idx    = count($list) - 1;
+		$i          = 0;
+		$missselect = 0;
+		shuffle($list);
+		while($i < $select_count) {
+			$idx = mt_rand(0, $max_idx);
+			if(isset($selected[$idx])){
+				if($missselect++ < 10) {
+					continue;
+				}
+				break;
+			}
+			$selected[$idx] = $list[$idx];
+			unset($list[$idx]);
+			$i++;
+			$missselect = 0;
+		}
+		$selected = array_merge($selected);
+
+		while($i < $select_count) {
 			shuffle($list);
 			$idx        = mt_rand(0, count($list) - 1);
 			$selected[] = $list[$idx];
 			unset($list[$idx]);
+			$i++;
 		}
 		
 		return [$selected, array_merge($list)];
@@ -64,7 +84,7 @@ class ArrayUtil {
 	 * 多次元配列を一次元配列に変換します。
 	 * 
 	 * ex)
-	 * ArrayUtil::flatten([1, 2, [3]]); //=> [1, 2, 3]
+	 * ArrayUtil::flatten([1, 2, [3]]);         //=> [1, 2, 3]
 	 * ArrayUtil::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
 	 * 
 	 * @param ?array $array
