@@ -6,6 +6,10 @@ namespace Rebet\Util;
  * 各種特化ユーティリティに分類されない簡便なユーティリティメソッドを集めたクラスです。
  * 本クラスに定義されているメソッドは将来的に特化クラスなどへ移設される可能性があります。
  * 
+ * $user_name = Util::get($_REQUEST, 'user.name');
+ * if(Util::isBlank($user_name)) {
+ *     // something to do
+ * }
  * 
  * @package   Rebet
  * @author    github.com/rain-noise
