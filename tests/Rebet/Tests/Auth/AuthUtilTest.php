@@ -22,6 +22,7 @@ class AuthUtilTest extends TestCase {
             // $this->assertContains('HTTP/1.0 401 Unauthorized', $headers_list);
             // $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers_list);
             // $this->assertContains('Content-type: text/html; charset=utf-8', $headers_list);
+            $this->markTestIncomplete('We should test about header() output.');        
         }
     }
 
@@ -56,6 +57,7 @@ class AuthUtilTest extends TestCase {
             // $this->assertContains('HTTP/1.0 401 Unauthorized', $headers_list);
             // $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers_list);
             // $this->assertContains('Content-type: text/html; charset=utf-8', $headers_list);
+            $this->markTestIncomplete('We should test about header() output.');        
         }
     }
 

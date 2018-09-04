@@ -45,4 +45,34 @@ class NetUtilTest extends TestCase {
             $this->assertSame($plain, $decoded);
         }
     }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_redirect() {
+        ob_start();
+        NetUtil::redirect('https://github.com/rebet/rebet');
+        $this->assertTrue(true, 'This is running');
+        ob_end_clean();
+
+        // $headers_list = xdebug_get_headers();
+        // $this->assertContains('HTTP/1.1 302 Found', $headers_list);
+        // $this->assertContains('Location: https://github.com/rebet/rebet', $headers_list);
+        $this->markTestIncomplete('We should test about header() output.');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_redirect_withParam() {
+        ob_start();
+        $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'rebet']);
+        $this->assertTrue(true, 'This is running');
+        ob_end_clean();
+
+        // $headers_list = xdebug_get_headers();
+        // $this->assertContains('HTTP/1.1 302 Found', $headers_list);
+        // $this->assertContains('Location: https://www.google.com/search?q=rebet', $headers_list);
+        $this->markTestIncomplete('We should test about header() output.');
+    }
 }
