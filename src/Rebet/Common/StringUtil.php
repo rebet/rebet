@@ -1,8 +1,9 @@
 <?php
-namespace Rebet\Util;
+namespace Rebet\Common;
 
 /**
- * ■文字列関連 ユーティリティ クラス
+ * 文字列関連 ユーティリティ クラス
+ * 
  * 文字列に関連した簡便なユーティリティメソッドを集めたクラスです。
  * 
  * if(StringUtil::endWith($file, '.pdf')) {

@@ -1,8 +1,9 @@
 <?php
-namespace Rebet\Util;
+namespace Rebet\Common;
 
 /**
- * ■ セキュリティ関連 ユーティリティ クラス
+ * セキュリティ関連 ユーティリティ クラス
+ * 
  * セキュリティ関連の簡便なユーティリティメソッドを集めたクラスです。
  * 
  * @package   Rebet

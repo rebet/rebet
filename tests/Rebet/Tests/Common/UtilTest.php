@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Util;
+namespace Rebet\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
-use Rebet\Util\Util;
+use Rebet\Common\Util;
 
 class UtilTest extends TestCase {
     const TEST_VALUE = "UtilTest::TEST_VALUE";

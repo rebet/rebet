@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Util;
+namespace Rebet\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
-use Rebet\Util\ArrayUtil;
+use Rebet\Common\ArrayUtil;
 
 class ArrayUtilTest extends TestCase {
     public function test_randomSelect() {

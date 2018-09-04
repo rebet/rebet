@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Util;
+namespace Rebet\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
-use Rebet\Util\StringUtil;
+use Rebet\Common\StringUtil;
 
 class StringUtilTest extends TestCase {
     public function test_lbtrim() {

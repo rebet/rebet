@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Util;
+namespace Rebet\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
-use Rebet\Util\SecurityUtil;
+use Rebet\Common\SecurityUtil;
 
 class SecurityUtilTest extends TestCase {
     public function test_randomCode() {

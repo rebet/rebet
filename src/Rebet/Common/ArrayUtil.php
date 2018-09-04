@@ -1,8 +1,9 @@
 <?php
-namespace Rebet\Util;
+namespace Rebet\Common;
 
 /**
- * ■配列関連 ユーティリティ クラス
+ * 配列関連 ユーティリティ クラス
+ * 
  * 配列制御に関連する簡便なユーティリティメソッドを集めたクラスです。
  * 
  * @package   Rebet
