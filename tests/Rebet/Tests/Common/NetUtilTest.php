@@ -75,4 +75,40 @@ class NetUtilTest extends TestCase {
         // $this->assertContains('Location: https://www.google.com/search?q=rebet', $headers_list);
         $this->markTestIncomplete('We should test about header() output.');
     }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_json() {
+        ob_start();
+        NetUtil::json(['name' => 'John', 'hobbies' => ['game', 'outdoor']]);
+        $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_contents());
+        ob_end_clean();
+
+        // $headers_list = xdebug_get_headers();
+        // $this->assertContains('HTTP/1.1 200 OK', $headers_list);
+        // $this->assertContains('Content-Type: application/json; charset=UTF-8', $headers_list);
+        $this->markTestIncomplete('We should test about header() output.');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_jsonp() {
+        ob_start();
+        NetUtil::jsonp(['name' => 'John', 'hobbies' => ['game', 'outdoor']], 'callback');
+        $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_contents());
+        ob_end_clean();
+
+        // $headers_list = xdebug_get_headers();
+        // $this->assertContains('HTTP/1.1 200 OK', $headers_list);
+        // $this->assertContains('Content-Type: application/javascript; charset=UTF-8', $headers_list);
+        $this->markTestIncomplete('We should test about header() output.');
+    }
+
+    public function test_urlGetContents() {
+        $content = NetUtil::urlGetContents('https://raw.githubusercontent.com/rebet/rebet/master/LICENSE');
+        $this->assertRegExp('/^MIT License/', $content);
+        $this->assertRegExp('/github.com\/rebet/', $content);
+    }
 }

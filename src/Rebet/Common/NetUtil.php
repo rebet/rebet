@@ -61,12 +61,13 @@ class NetUtil {
 	 * データを JSON形式 で書き出します。
 	 * ※本メソッドは exit しません。
 	 * 
-	 * @param obj $data オブジェクト
+	 * @param array|object $data オブジェクト
+	 * @param string $charset 文字コード（デフォルト：UTF-8）
 	 */
-	public static function json($data) {
+	public static function json($data, string $charset = 'UTF-8') : void {
 		ob_clean();
 		header("HTTP/1.1 200 OK");
-		header('Content-Type: application/json; charset=UTF-8');
+		header("Content-Type: application/json; charset={$charset}");
 		echo json_encode($data);
 	}
 	
@@ -74,13 +75,14 @@ class NetUtil {
 	 * データを JSONP形式 で書き出します。
 	 * ※本メソッドは exit しません。
 	 * 
-	 * @param obj    $data     オブジェクト
-	 * @param string $callback コールバック関数
+	 * @param array|object $data オブジェクト
+	 * @param string $callback コールバック関数名
+	 * @param string $charset 文字コード（デフォルト：UTF-8）
 	 */
-	public static function jsonp($data, $callback) {
+	public static function jsonp($data, string $callback, string $charset = 'UTF-8') : void {
 		ob_clean();
 		header("HTTP/1.1 200 OK");
-		header('Content-Type: application/javascript; charset=UTF-8');
+		header("Content-Type: application/javascript; charset={$charset}");
 		echo "{$callback}(".json_encode($data).")";
 	}
 
@@ -90,7 +92,7 @@ class NetUtil {
 	 * @param string $url URL
 	 * @return mixed 受信データ
 	 */
-	public static function urlGetContents($url) {
+	public static function urlGetContents(string $url) {
 		return file_get_contents($url, false, stream_context_create([
 			'http' => ['ignore_errors' => true],
 			'ssl'=> [
