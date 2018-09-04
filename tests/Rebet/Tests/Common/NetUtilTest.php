@@ -57,12 +57,10 @@ class NetUtilTest extends TestCase {
      * @expectedException Rebet\Tests\ExitException
      */
     public function test_redirect() {
-        ob_start();
         try {
             NetUtil::redirect('https://github.com/rebet/rebet');
             $this->fail('Never executed.');
         } finally {
-            ob_end_clean();
             $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://github.com/rebet/rebet', $headers);
@@ -73,15 +71,27 @@ class NetUtilTest extends TestCase {
      * @expectedException Rebet\Tests\ExitException
      */
     public function test_redirect_withParam() {
-        ob_start();
         try {
             $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'github rebet']);
             $this->fail('Never executed.');
         } finally {
-            ob_end_clean();
             $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://www.google.com/search?q=github+rebet', $headers);
+        }
+    }
+
+    /**
+     * @expectedException Rebet\Tests\ExitException
+     */
+    public function test_redirect_withParamBoth() {
+        try {
+            $url = NetUtil::redirect('https://www.google.com/search?oe=utf-8', ['q' => 'github rebet']);
+            $this->fail('Never executed.');
+        } finally {
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.1 302 Found', $headers);
+            $this->assertContains('Location: https://www.google.com/search?oe=utf-8&q=github+rebet', $headers);
         }
     }
 

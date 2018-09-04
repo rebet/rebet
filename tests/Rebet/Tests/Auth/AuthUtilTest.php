@@ -17,12 +17,10 @@ class AuthUtilTest extends TestCase {
      * @expectedExceptionMessage Authenticate Failed.
      */
     public function test_basicAuthenticate() {
-        ob_start();
         try {
             AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('Never executed.');
         } finally {
-            ob_end_clean();
             $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
@@ -30,33 +28,24 @@ class AuthUtilTest extends TestCase {
         }
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function test_basicAuthenticate_pass() {
-        ob_start();
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
         $id = AuthUtil::basicAuthenticate(['id' => 'password']);
         $this->assertSame('id', $id);
-        ob_end_clean();
     }
 
     /**
-     * @runInSeparateProcess
      * @expectedException Rebet\Auth\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
-     * @todo header check
      */
     public function test_basicAuthenticate_faled() {
-        ob_start();
         try {
             $_SERVER['PHP_AUTH_USER'] = 'id';
             $_SERVER['PHP_AUTH_PW']   = 'invalid';
             $id = AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('No Exception');
         } finally {
-            ob_end_clean();
             $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
@@ -64,11 +53,7 @@ class AuthUtilTest extends TestCase {
         }
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function test_basicAuthenticate_hash() {
-        ob_start();
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
         $id = AuthUtil::basicAuthenticate(
@@ -76,6 +61,5 @@ class AuthUtilTest extends TestCase {
             function($password) { return sha1($password); }
         );
         $this->assertSame('id', $id);
-        ob_end_clean();
     }
 }

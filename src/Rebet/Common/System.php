@@ -7,9 +7,8 @@ namespace Rebet\Common;
  * exit / die などの言語構造や、header などの SAPI でのみ動作する機能群などについて、
  * ユニットテスト時にフック出来るようにすることを目的としたクラスです。
  * 
- * 本クラスはユニットテストの際にモック化されます。
- * 
- * @see tests/bootstrap.php
+ * 本クラスはユニットテストの際にモッククラスに置換えられます。
+ * @see tests/mocks.php
  * 
  * @package   Rebet
  * @author    github.com/rain-noise
