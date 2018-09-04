@@ -4,25 +4,29 @@ namespace Rebet\Tests\Auth;
 use PHPUnit\Framework\TestCase;
 use Rebet\Auth\AuthUtil;
 
+use Rebet\Common\System;
+use Rebet\Common\ArrayUtil;
+
 class AuthUtilTest extends TestCase {
+    public function setUp() {
+        System::mock_init();
+    }
+
     /**
-     * @runInSeparateProcess
      * @expectedException Rebet\Auth\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
-     * @todo header check
      */
     public function test_basicAuthenticate() {
         ob_start();
         try {
             AuthUtil::basicAuthenticate(['id' => 'password']);
-            $this->fail('No Exception');
+            $this->fail('Never executed.');
         } finally {
             ob_end_clean();
-            // $headers_list = xdebug_get_headers();
-            // $this->assertContains('HTTP/1.0 401 Unauthorized', $headers_list);
-            // $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers_list);
-            // $this->assertContains('Content-type: text/html; charset=utf-8', $headers_list);
-            $this->markTestIncomplete('We should test about header() output.');        
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
+            $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
+            $this->assertContains('Content-type: text/html; charset=utf-8', $headers);
         }
     }
 
@@ -53,11 +57,10 @@ class AuthUtilTest extends TestCase {
             $this->fail('No Exception');
         } finally {
             ob_end_clean();
-            // $headers_list = xdebug_get_headers();
-            // $this->assertContains('HTTP/1.0 401 Unauthorized', $headers_list);
-            // $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers_list);
-            // $this->assertContains('Content-type: text/html; charset=utf-8', $headers_list);
-            $this->markTestIncomplete('We should test about header() output.');        
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
+            $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
+            $this->assertContains('Content-type: text/html; charset=utf-8', $headers);
         }
     }
 

@@ -2,10 +2,17 @@
 namespace Rebet\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
-use Rebet\Common\SecurityUtil;
 use Rebet\Common\NetUtil;
 
+use Rebet\Common\System;
+use Rebet\Common\SecurityUtil;
+use Rebet\Common\ArrayUtil;
+
 class NetUtilTest extends TestCase {
+    public function setUp() {
+        System::mock_init();
+    }
+
     public function test_encodeBase64Url() {
         foreach ([
             // inclued '='
@@ -47,63 +54,71 @@ class NetUtilTest extends TestCase {
     }
 
     /**
-     * @runInSeparateProcess
+     * @expectedException Rebet\Tests\ExitException
      */
     public function test_redirect() {
         ob_start();
-        NetUtil::redirect('https://github.com/rebet/rebet');
-        $this->assertTrue(true, 'This is running');
-        ob_end_clean();
-
-        // $headers_list = xdebug_get_headers();
-        // $this->assertContains('HTTP/1.1 302 Found', $headers_list);
-        // $this->assertContains('Location: https://github.com/rebet/rebet', $headers_list);
-        $this->markTestIncomplete('We should test about header() output.');
+        try {
+            NetUtil::redirect('https://github.com/rebet/rebet');
+            $this->fail('Never executed.');
+        } finally {
+            ob_end_clean();
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.1 302 Found', $headers);
+            $this->assertContains('Location: https://github.com/rebet/rebet', $headers);
+        }
     }
 
     /**
-     * @runInSeparateProcess
+     * @expectedException Rebet\Tests\ExitException
      */
     public function test_redirect_withParam() {
         ob_start();
-        $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'rebet']);
-        $this->assertTrue(true, 'This is running');
-        ob_end_clean();
-
-        // $headers_list = xdebug_get_headers();
-        // $this->assertContains('HTTP/1.1 302 Found', $headers_list);
-        // $this->assertContains('Location: https://www.google.com/search?q=rebet', $headers_list);
-        $this->markTestIncomplete('We should test about header() output.');
+        try {
+            $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'github rebet']);
+            $this->fail('Never executed.');
+        } finally {
+            ob_end_clean();
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.1 302 Found', $headers);
+            $this->assertContains('Location: https://www.google.com/search?q=github+rebet', $headers);
+        }
     }
 
     /**
-     * @runInSeparateProcess
+     * @expectedException Rebet\Tests\ExitException
      */
     public function test_json() {
         ob_start();
-        NetUtil::json(['name' => 'John', 'hobbies' => ['game', 'outdoor']]);
-        $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_contents());
-        ob_end_clean();
-
-        // $headers_list = xdebug_get_headers();
-        // $this->assertContains('HTTP/1.1 200 OK', $headers_list);
-        // $this->assertContains('Content-Type: application/json; charset=UTF-8', $headers_list);
-        $this->markTestIncomplete('We should test about header() output.');
+        try {
+            NetUtil::json(['name' => 'John', 'hobbies' => ['game', 'outdoor']]);
+            $this->fail('Never executed.');
+        } finally {
+            $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_contents());
+            ob_end_clean();
+        
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.1 200 OK', $headers);
+            $this->assertContains('Content-Type: application/json; charset=UTF-8', $headers);
+        }
     }
 
     /**
-     * @runInSeparateProcess
+     * @expectedException Rebet\Tests\ExitException
      */
     public function test_jsonp() {
         ob_start();
-        NetUtil::jsonp(['name' => 'John', 'hobbies' => ['game', 'outdoor']], 'callback');
-        $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_contents());
-        ob_end_clean();
-
-        // $headers_list = xdebug_get_headers();
-        // $this->assertContains('HTTP/1.1 200 OK', $headers_list);
-        // $this->assertContains('Content-Type: application/javascript; charset=UTF-8', $headers_list);
-        $this->markTestIncomplete('We should test about header() output.');
+        try {
+            NetUtil::jsonp(['name' => 'John', 'hobbies' => ['game', 'outdoor']], 'callback');
+            $this->fail('Never executed.');
+        } finally {
+            $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_contents());
+            ob_end_clean();
+            
+            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $this->assertContains('HTTP/1.1 200 OK', $headers);
+            $this->assertContains('Content-Type: application/javascript; charset=UTF-8', $headers);
+        }
     }
 
     public function test_urlGetContents() {

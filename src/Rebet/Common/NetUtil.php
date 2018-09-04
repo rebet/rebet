@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\System;
+
 /**
  * ネット関連 ユーティリティ クラス
  * 
@@ -13,6 +15,8 @@ namespace Rebet\Common;
  */
 class NetUtil {
 	
+	private static $_HEADER = [];
+
 	/**
 	 * インスタンス化禁止
 	 */
@@ -53,8 +57,9 @@ class NetUtil {
 			$url = $url.(strpos($url,'?') !== false ? '&' : '?').http_build_query($query);
 		}
 		ob_clean();
-		header("HTTP/1.1 302 Found");
-		header("Location: {$url}");
+		System::header("HTTP/1.1 302 Found");
+		System::header("Location: {$url}");
+		System::exit();
 	}
 	
 	/**
@@ -66,9 +71,10 @@ class NetUtil {
 	 */
 	public static function json($data, string $charset = 'UTF-8') : void {
 		ob_clean();
-		header("HTTP/1.1 200 OK");
-		header("Content-Type: application/json; charset={$charset}");
+		System::header("HTTP/1.1 200 OK");
+		System::header("Content-Type: application/json; charset={$charset}");
 		echo json_encode($data);
+		System::exit();
 	}
 	
 	/**
@@ -81,9 +87,10 @@ class NetUtil {
 	 */
 	public static function jsonp($data, string $callback, string $charset = 'UTF-8') : void {
 		ob_clean();
-		header("HTTP/1.1 200 OK");
-		header("Content-Type: application/javascript; charset={$charset}");
+		System::header("HTTP/1.1 200 OK");
+		System::header("Content-Type: application/javascript; charset={$charset}");
 		echo "{$callback}(".json_encode($data).")";
+		System::exit();
 	}
 
 	/**

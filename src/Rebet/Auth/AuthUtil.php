@@ -2,6 +2,7 @@
 namespace Rebet\Auth;
 
 use Rebet\Common\Util;
+use Rebet\Common\System;
 
 /**
  * 認証関連 ユーティリティ クラス
@@ -40,9 +41,9 @@ class AuthUtil {
 		$auth_pass = Util::get($auth_list, $user);
 		if(!empty($user) && !empty($pass) && $auth_pass === $pass){ return $user; }
 
-		header('HTTP/1.0 401 Unauthorized');
-		header('WWW-Authenticate: Basic realm="'.$realm.'"');
-		header('Content-type: text/html; charset='.$charset);
+		System::header('HTTP/1.0 401 Unauthorized');
+		System::header('WWW-Authenticate: Basic realm="'.$realm.'"');
+		System::header('Content-type: text/html; charset='.$charset);
 
 		throw new AuthenticateException($failed_text, 403);
 	}
