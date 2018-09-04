@@ -15,8 +15,6 @@ use Rebet\Common\System;
  */
 class NetUtil {
 	
-	private static $_HEADER = [];
-
 	/**
 	 * インスタンス化禁止
 	 */
