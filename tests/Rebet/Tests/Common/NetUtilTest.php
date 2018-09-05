@@ -1,14 +1,12 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use PHPUnit\Framework\TestCase;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Common\NetUtil;
 
 use Rebet\Common\System;
-use Rebet\Common\SecurityUtil;
-use Rebet\Common\ArrayUtil;
 
-class NetUtilTest extends TestCase {
+class NetUtilTest extends RebetTestCase {
     public function setUp() {
         System::mock_init();
     }
@@ -26,7 +24,7 @@ class NetUtilTest extends TestCase {
         }
 
         for ($i=0; $i < 100; $i++) { 
-            $plain   = SecurityUtil::randomCode(mt_rand(12, 32));
+            $plain   = $this->_randomCode(12, 32);
             $encoded = NetUtil::encodeBase64Url($plain);
             $decoded = NetUtil::decodeBase64Url($encoded);
             $this->assertSame($plain, $decoded);
@@ -46,7 +44,7 @@ class NetUtilTest extends TestCase {
         }
 
         for ($i=0; $i < 100; $i++) { 
-            $plain   = SecurityUtil::randomCode(mt_rand(12, 32));
+            $plain   = $this->_randomCode(12, 32);
             $encoded = NetUtil::encodeBase64Url($plain);
             $decoded = NetUtil::decodeBase64Url($encoded);
             $this->assertSame($plain, $decoded);
@@ -61,7 +59,7 @@ class NetUtilTest extends TestCase {
             NetUtil::redirect('https://github.com/rebet/rebet');
             $this->fail('Never executed.');
         } finally {
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://github.com/rebet/rebet', $headers);
         }
@@ -75,7 +73,7 @@ class NetUtilTest extends TestCase {
             $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'github rebet']);
             $this->fail('Never executed.');
         } finally {
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://www.google.com/search?q=github+rebet', $headers);
         }
@@ -89,7 +87,7 @@ class NetUtilTest extends TestCase {
             $url = NetUtil::redirect('https://www.google.com/search?oe=utf-8', ['q' => 'github rebet']);
             $this->fail('Never executed.');
         } finally {
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://www.google.com/search?oe=utf-8&q=github+rebet', $headers);
         }
@@ -107,7 +105,7 @@ class NetUtilTest extends TestCase {
             $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_contents());
             ob_end_clean();
         
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 200 OK', $headers);
             $this->assertContains('Content-Type: application/json; charset=UTF-8', $headers);
         }
@@ -125,7 +123,7 @@ class NetUtilTest extends TestCase {
             $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_contents());
             ob_end_clean();
             
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.1 200 OK', $headers);
             $this->assertContains('Content-Type: application/javascript; charset=UTF-8', $headers);
         }

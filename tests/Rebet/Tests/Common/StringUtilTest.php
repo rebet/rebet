@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use PHPUnit\Framework\TestCase;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Common\StringUtil;
 
-class StringUtilTest extends TestCase {
+class StringUtilTest extends RebetTestCase {
     public function test_lbtrim() {
         $this->assertNull(StringUtil::lbtrim(null, '.'));
         $this->assertSame('', StringUtil::lbtrim('', '.'));

@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use PHPUnit\Framework\TestCase;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Common\ArrayUtil;
 
-class ArrayUtilTest extends TestCase {
+class ArrayUtilTest extends RebetTestCase {
     public function test_randomSelect() {
         $list = ['a','b','c','d','e','f'];
         sort($list);

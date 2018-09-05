@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use PHPUnit\Framework\TestCase;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Common\SecurityUtil;
 
-class SecurityUtilTest extends TestCase {
+class SecurityUtilTest extends RebetTestCase {
     public function test_randomCode() {
         $this->assertSame(8, mb_strlen(SecurityUtil::randomCode(8)));
         $this->assertSame('aaa', SecurityUtil::randomCode(3,'a'));

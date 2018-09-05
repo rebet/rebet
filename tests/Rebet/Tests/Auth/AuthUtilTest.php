@@ -1,13 +1,12 @@
 <?php
 namespace Rebet\Tests\Auth;
 
-use PHPUnit\Framework\TestCase;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Auth\AuthUtil;
 
 use Rebet\Common\System;
-use Rebet\Common\ArrayUtil;
 
-class AuthUtilTest extends TestCase {
+class AuthUtilTest extends RebetTestCase {
     public function setUp() {
         System::mock_init();
     }
@@ -21,7 +20,7 @@ class AuthUtilTest extends TestCase {
             AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('Never executed.');
         } finally {
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
             $this->assertContains('Content-type: text/html; charset=utf-8', $headers);
@@ -46,7 +45,7 @@ class AuthUtilTest extends TestCase {
             $id = AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('No Exception');
         } finally {
-            $headers = ArrayUtil::remap(System::$HEADER, null, 'header');
+            $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
             $this->assertContains('Content-type: text/html; charset=utf-8', $headers);

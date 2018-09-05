@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use PHPUnit\Framework\TestCase;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Util;
 
-class UtilTest extends TestCase {
+class UtilTest extends RebetTestCase {
     const TEST_VALUE = "UtilTest::TEST_VALUE";
 
     public function test_when() {
