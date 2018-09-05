@@ -1,5 +1,7 @@
 <?php
-namespace Rebet\Common;
+namespace Rebet\IO;
+
+use Rebet\IO\ZipArchiveException;
 
 /**
  * ファイル関連 ユーティリティ クラス
@@ -47,30 +49,70 @@ class FileUtil {
 	 * @param  string $zipPath ZIPファイルパス
 	 * @param  string $destDir 展開先ディレクトリパス
 	 * @return void
+	 * @throws Rebet\IO\ZipArchiveException
 	 */
-	public static function unzip($zipPath, $destDir) {
-		$zip = new ZipArchive();
-		$res = $zip->open($zipPath);
-		if ($res === true) {
-			$zip->extractTo($destDir);
-		    $zip->close();
-		}
+	public static function unzip(string $zipPath, string $destDir) : void {
+		$zip = new \ZipArchive();
+		self::zipErrorCheck($zip->open($zipPath), "Open {$zipPath} failed.");
+		$zip->extractTo($destDir);
+		$zip->close();
 	}
 	
+	/**
+	 * ZipArchive の エラーコード を Exception に変換します。
+	 * 
+	 * @param int|bool $code 成否及びエラーコード
+	 * @param ?string $messsage エラー発生時のメッセージ（デフォルト： 'ZipArchive error.'）
+	 * @throws Rebet\IO\ZipArchiveException
+	 */
+	private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void {
+		if($code === true) { return; }
+		if($code === false) { throw new ZipArchiveException($message); }
+		switch($code) {
+			case \ZipArchive::ER_OK:          return;
+			case \ZipArchive::ER_MULTIDISK:   $message = "{$message} (Multi-disk zip archives not supported)"; break;
+			case \ZipArchive::ER_RENAME:      $message = "{$message} (Renaming temporary file failed)"; break;
+			case \ZipArchive::ER_CLOSE:       $message = "{$message} (Closing zip archive failed)"; break;
+			case \ZipArchive::ER_SEEK:        $message = "{$message} (Seek error)"; break;
+			case \ZipArchive::ER_READ:        $message = "{$message} (Read error)"; break;
+			case \ZipArchive::ER_WRITE:       $message = "{$message} (Write error)"; break;
+			case \ZipArchive::ER_CRC:         $message = "{$message} (CRC error)"; break;
+			case \ZipArchive::ER_ZIPCLOSED:   $message = "{$message} (Containing zip archive was closed)"; break;
+			case \ZipArchive::ER_NOENT:       $message = "{$message} (No such file)"; break;
+			case \ZipArchive::ER_EXISTS:      $message = "{$message} (File already exists)"; break;
+			case \ZipArchive::ER_OPEN:        $message = "{$message} (Can't open file)"; break;
+			case \ZipArchive::ER_TMPOPEN:     $message = "{$message} (Failure to create temporary file)"; break;
+			case \ZipArchive::ER_ZLIB:        $message = "{$message} (Zlib error)"; break;
+			case \ZipArchive::ER_MEMORY:      $message = "{$message} (Malloc failure)"; break;
+			case \ZipArchive::ER_CHANGED:     $message = "{$message} (Entry has been changed)"; break;
+			case \ZipArchive::ER_COMPNOTSUPP: $message = "{$message} (Compression method not supported)"; break;
+			case \ZipArchive::ER_EOF:         $message = "{$message} (Premature EOF)"; break;
+			case \ZipArchive::ER_INVAL:       $message = "{$message} (Invalid argument)"; break;
+			case \ZipArchive::ER_NOZIP:       $message = "{$message} (Not a zip archive)"; break;
+			case \ZipArchive::ER_INTERNAL:    $message = "{$message} (Internal error)"; break;
+			case \ZipArchive::ER_INCONS:      $message = "{$message} (Zip archive inconsistent)"; break;
+			case \ZipArchive::ER_REMOVE:      $message = "{$message} (Can't remove file)"; break;
+			case \ZipArchive::ER_DELETED:     $message = "{$message} (Entry has been delete)"; break;
+			default: $message = "{$message} (Unknown reason)"; break;
+		}
+
+		throw new ZipArchiveException($message, $code);
+	}
+
 	/**
 	 * 対象のパスを ZIP 圧縮します。
 	 * 
 	 * @param  string   $sourcePath       圧縮対象ファイル or ディレクトリ
 	 * @param  string   $outZipPath       圧縮後のZIPファイルパス
 	 * @param  boolean  $includeTargetDir 指定ディレクトリをZIPアーカイブに含めるか否か（デフォルト：true[=含める]）
-	 * @param  function $filter           格納データ取捨選択用フィルタ
+	 * @param  collable $filter           格納データ取捨選択用フィルタ
 	 *                                    ⇒ $path を引数に取り、 true を返すとそのパスを含み, false を返すとそのパスを除外する。
 	 *                                    　 （デフォルト：null = function($path) { return true; }; = 全データ格納）
 	 * @param  number   $outDirPermission ZIP格納ディレクトリ自動生成時のパーミッション（デフォルト：0775）
 	 * @return void
+	 * @throws Rebet\IO\ZipArchiveException
 	 */
-	public static function zip($sourcePath, $outZipPath, $includeTargetDir=true, $filter=null, $outDirPermission=0775)
-	{
+	public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?collable $filter = null, int $outDirPermission = 0775) : void {
 		if(empty($filter)) {
 			$filter = function($path) { return true; };
 		}
@@ -84,8 +126,8 @@ class FileUtil {
 			mkdir($destDir, $outDirPermission, true);
 		}
 		
-		$z = new ZipArchive();
-		$z->open($outZipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+		$z = new \ZipArchive();
+		self::zipErrorCheck($z->open($outZipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE), "Open {$outZipPath} failed.");
 		if($includeTargetDir) {
 			$z->addEmptyDir($dirName);
 		}
@@ -96,13 +138,13 @@ class FileUtil {
 	/**
 	 * ディレクトリを再帰的にZIP圧縮します。
 	 * 
-	 * @param  string   $folder
-	 * @param  string   $zipFile
-	 * @param  int      $exclusiveLength
-	 * @param  function $filter
+	 * @param  string $folder
+	 * @param  \ZipArchive $zipFile
+	 * @param  int $exclusiveLength
+	 * @param  collable $filter
 	 * @return void
 	 */
-	private static function folderToZip($folder, &$zipFile, $exclusiveLength, $filter) {
+	private static function folderToZip(string $folder, \ZipArchive &$zipFile, int $exclusiveLength, collable $filter) {
 		$handle = opendir($folder);
 		while (false !== $f = readdir($handle)) {
 			if ($f != '.' && $f != '..') {
