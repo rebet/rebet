@@ -55,7 +55,7 @@ class FileUtil {
 		$zip = new \ZipArchive();
 		self::zipErrorCheck($zip->open($zipPath), "Open {$zipPath} failed.");
 		$zip->extractTo($destDir);
-		$zip->close();
+		self::zipErrorCheck($zip->close(), "Close {$zipPath} failed.");
 	}
 	
 	/**
@@ -132,7 +132,7 @@ class FileUtil {
 			$z->addEmptyDir($dirName);
 		}
 		self::folderToZip($sourcePath, $z, strlen($includeTargetDir ? "$parentPath/" : "$parentPath/$dirName/"), $filter);
-		$z->close();
+		self::zipErrorCheck($z->close(), "Close {$outZipPath} failed.");
 	}
 	
 	/**

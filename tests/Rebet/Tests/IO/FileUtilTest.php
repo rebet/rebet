@@ -68,13 +68,8 @@ class FileUtilTest extends RebetTestCase {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
             }
         } else {
-            $this->expect(function(){
-                FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
-                $this->faile("vfsStream support ZipArchive::close(), so please update test code.");
-            })
-            ->triggers()
-            ->withMessage('ZipArchive::close(): Failure to create temporary file: No such file or directory')
-            ;
+            FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
+            $this->faile("vfsStream support ZipArchive::close(), so please update test code.");
         }
     }
 
