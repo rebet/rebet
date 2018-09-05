@@ -68,7 +68,9 @@ class FileUtilTest extends RebetTestCase {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
             }
         } else {
-            $this->markTestIncomplete();
+            $this->assertFileNotExists('vfs://root/var/public.zip');
+            FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
+            $this->assertFileExists('vfs://root/var/public.zip');
         }
     }
 
