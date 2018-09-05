@@ -68,18 +68,27 @@ class FileUtilTest extends RebetTestCase {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
             }
         } else {
-            $this->assertFileNotExists('vfs://root/var/public.zip');
-            FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
-            $this->assertFileExists('vfs://root/var/public.zip');
+            $this->expect(function(){
+                FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
+                $this->faile("vfsStream support ZipArchive::close(), so please update test code.");
+            })
+            ->triggers()
+            ->withMessage('ZipArchive::close(): Failure to create temporary file: No such file or directory')
+            ;
         }
     }
 
     public function test_unzip() {
         if (DIRECTORY_SEPARATOR == '\\') {
             // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
-            $this->markTestSkipped("vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'");
+            try {
+                FileUtil::unzip('vfs://root/var/public.zip','vfs://root/public');
+                $this->faile("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
+            } catch (ZipArchiveException $e) {
+                $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
+            }
         } else {
-            $this->markTestIncomplete();
+            $this->markTestSkipped("vfsStream not support ZipArchive, yet.");
         }
     }
 }
