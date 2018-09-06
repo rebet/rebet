@@ -7,6 +7,34 @@ use Rebet\Common\Util;
 class UtilTest extends RebetTestCase {
     const TEST_VALUE = "UtilTest::TEST_VALUE";
 
+    private $array  = null;
+    private $map    = null;
+    private $object = null;
+
+    public function setUp() {
+        $this->array  = ['a','b','c', null];
+        $this->map    = [
+            'name' => 'John Smith', 
+            'gender' => 'male', 
+            'hobbies' => ['game', 'outdoor'], 
+            'partner' => [
+                'name' => 'Jane Smith', 
+                'gender' => 'female'
+            ],
+            'children' => null
+        ];
+        $this->object = (object) [
+            'name' => 'John Smith', 
+            'gender' => 'male', 
+            'hobbies' => ['game', 'outdoor'], 
+            'partner' => (object)[
+                'name' => 'Jane Smith', 
+                'gender' => 'female'
+            ],
+            'children' => null
+        ];
+    }
+
     public function test_when() {
         $this->assertSame(Util::when(null, 'yes', 'no'), 'no');
         $this->assertSame(Util::when(0, 'yes', 'no'), 'no');
@@ -21,55 +49,74 @@ class UtilTest extends RebetTestCase {
     }
 
     public function test_get() {
-        $array  = ['a','b','c'];
-        $map    = [
-            'name' => 'John Smith', 
-            'gender' => 'male', 
-            'hobbies' => ['game', 'outdoor'], 
-            'partner' => [
-                'name' => 'Jane Smith', 
-                'gender' => 'female'
-            ]
-        ];
-        $object = (object) [
-            'name' => 'John Smith', 
-            'gender' => 'male', 
-            'hobbies' => ['game', 'outdoor'], 
-            'partner' => (object)[
-                'name' => 'Jane Smith', 
-                'gender' => 'female'
-            ]
-        ];
-
         $this->assertNull(Util::get(null, 'invalid_key'));
         $this->assertNull(Util::get('string', 'invalid_key'));
 
-        $this->assertNull(Util::get($array, 'invalid_key'));
-        $this->assertSame(Util::get($array, 'invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($array, 0, 'default'), 'a');
-        $this->assertSame(Util::get($array, 3, 'default'), 'default');
+        $this->assertNull(Util::get($this->array, 'invalid_key'));
+        $this->assertSame(Util::get($this->array, 'invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->array, 0, 'default'), 'a');
+        $this->assertSame(Util::get($this->array, 3, 'default'), 'default');
+        $this->assertSame(Util::get($this->array, 4, 'default'), 'default');
 
-        $this->assertSame(Util::get($map, 'invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($map, 'name', 'default'), 'John Smith');
-        $this->assertSame(Util::get($map, 'hobbies', []), ['game', 'outdoor']);
-        $this->assertSame(Util::get($map, 'hobbies.0', 'default'), 'game');
-        $this->assertSame(Util::get($map, 'hobbies.3', 'default'), 'default');
-        $this->assertSame(Util::get($map, 'hobbies.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($map, 'partner.name', 'default'), 'Jane Smith');
-        $this->assertSame(Util::get($map, 'partner.gender', 'default'), 'female');
-        $this->assertSame(Util::get($map, 'partner.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($map, 'partner.gender.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->map, 'invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->map, 'name', 'default'), 'John Smith');
+        $this->assertSame(Util::get($this->map, 'hobbies', []), ['game', 'outdoor']);
+        $this->assertSame(Util::get($this->map, 'hobbies.0', 'default'), 'game');
+        $this->assertSame(Util::get($this->map, 'hobbies.3', 'default'), 'default');
+        $this->assertSame(Util::get($this->map, 'hobbies.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->map, 'partner.name', 'default'), 'Jane Smith');
+        $this->assertSame(Util::get($this->map, 'partner.gender', 'default'), 'female');
+        $this->assertSame(Util::get($this->map, 'partner.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->map, 'partner.gender.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->map, 'children', []), []);
 
-        $this->assertSame(Util::get($object, 'invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($object, 'name', 'default'), 'John Smith');
-        $this->assertSame(Util::get($object, 'hobbies', []), ['game', 'outdoor']);
-        $this->assertSame(Util::get($object, 'hobbies.0', 'default'), 'game');
-        $this->assertSame(Util::get($object, 'hobbies.3', 'default'), 'default');
-        $this->assertSame(Util::get($object, 'hobbies.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($object, 'partner.name', 'default'), 'Jane Smith');
-        $this->assertSame(Util::get($object, 'partner.gender', 'default'), 'female');
-        $this->assertSame(Util::get($object, 'partner.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($object, 'partner.gender.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->object, 'invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->object, 'name', 'default'), 'John Smith');
+        $this->assertSame(Util::get($this->object, 'hobbies', []), ['game', 'outdoor']);
+        $this->assertSame(Util::get($this->object, 'hobbies.0', 'default'), 'game');
+        $this->assertSame(Util::get($this->object, 'hobbies.3', 'default'), 'default');
+        $this->assertSame(Util::get($this->object, 'hobbies.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->object, 'partner.name', 'default'), 'Jane Smith');
+        $this->assertSame(Util::get($this->object, 'partner.gender', 'default'), 'female');
+        $this->assertSame(Util::get($this->object, 'partner.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->object, 'partner.gender.invalid_key', 'default'), 'default');
+        $this->assertSame(Util::get($this->object, 'children', []), []);
+    }
+
+    public function test_has() {
+        $this->assertFalse(Util::has(null, 'invalid_key'));
+        $this->assertFalse(Util::has('string', 'invalid_key'));
+
+        $this->assertFalse(Util::has($this->array, 'invalid_key'));
+        $this->assertTrue(Util::has($this->array, 0));
+        $this->assertTrue(Util::has($this->array, 3));
+        $this->assertFalse(Util::has($this->array, 4));
+
+        $this->assertFalse(Util::has($this->map, 'invalid_key'));
+        $this->assertTrue(Util::has($this->map, 'name'));
+        $this->assertTrue(Util::has($this->map, 'hobbies'));
+        $this->assertTrue(Util::has($this->map, 'hobbies.0'));
+        $this->assertFalse(Util::has($this->map, 'hobbies.3'));
+        $this->assertFalse(Util::has($this->map, 'hobbies.invalid_key'));
+        $this->assertTrue(Util::has($this->map, 'partner.name'));
+        $this->assertTrue(Util::has($this->map, 'partner.gender'));
+        $this->assertFalse(Util::has($this->map, 'partner.invalid_key'));
+        $this->assertFalse(Util::has($this->map, 'partner.gender.invalid_key'));
+        $this->assertTrue(Util::has($this->map, 'children'));
+        $this->assertFalse(Util::has($this->map, 'children.0'));
+
+        $this->assertFalse(Util::has($this->object, 'invalid_key'));
+        $this->assertTrue(Util::has($this->object, 'name'));
+        $this->assertTrue(Util::has($this->object, 'hobbies'));
+        $this->assertTrue(Util::has($this->object, 'hobbies.0'));
+        $this->assertFalse(Util::has($this->object, 'hobbies.3'));
+        $this->assertFalse(Util::has($this->object, 'hobbies.invalid_key'));
+        $this->assertTrue(Util::has($this->object, 'partner.name'));
+        $this->assertTrue(Util::has($this->object, 'partner.gender'));
+        $this->assertFalse(Util::has($this->object, 'partner.invalid_key'));
+        $this->assertFalse(Util::has($this->object, 'partner.gender.invalid_key'));
+        $this->assertTrue(Util::has($this->object, 'children'));
+        $this->assertFalse(Util::has($this->object, 'children.0'));
     }
 
     public function test_isNull() {

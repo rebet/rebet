@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\StringUtil;
+
 /**
  * 汎用 ユーティリティ クラス
  * 
@@ -72,23 +74,51 @@ class Util {
 	public static function get($obj, $key, $default = null) {
 		if($obj === null) { return $default; }
 		
-		$nests = explode('.', $key);
-		if(count($nests) > 1) {
-			$current = array_shift($nests);
-			$target  = self::get($obj, $current);
+		$current = StringUtil::latrim($key, '.');
+		if($current != $key) {
+			$target = self::get($obj, $current);
 			if($target === null) { return $default; }
-			return self::get($target, join('.', $nests), $default);
-		}
-		
-		if(is_array($obj)) {
-			if(!isset($obj[$key])) { return $default; }
-			return self::nvl($obj[$key], $default);
+			return self::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default);
 		}
 
-		if(!property_exists($obj, $key)) { return $default; }
-		return self::nvl($obj->$key, $default);
+		if(is_array($obj)) {
+			if(!isset($obj[$current])) { return $default; }
+			return self::nvl($obj[$current], $default);
+		}
+
+		if(!property_exists($obj, $current)) { return $default; }
+		return self::nvl($obj->$current, $default);
 	}
 	
+	/**
+	 * 配列又はオブジェクトが指定プロパティを持つかチェックします。
+	 * 
+	 * ex)
+	 * Util::has($user, 'name');
+	 * Util::has($user, 'bank.name');
+	 * Util::has($user, 'shipping_address.0');
+	 * Util::has($_REQUEST, 'opt_in');
+	 * 
+	 * @param  array|obj $obj 配列 or オブジェクト
+	 * @param  int|sting $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
+	 * @return true: 存在する, false: 存在しない
+	 */
+	public static function has($obj, $key) {
+		if($obj === null) { return false; }
+		
+		$current  = StringUtil::latrim($key, '.');
+		$nest_obj = null;
+		if(is_array($obj)){
+			if(!array_key_exists($current, $obj)) { return false; }
+			$nest_obj = $obj[$current];
+		} else {
+			if(!property_exists($obj, $current)) { return false; }
+			$nest_obj = $obj->{$current};
+		}
+
+		return $current == $key ? true : self::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1));
+	}
+
 	/**
 	 * 対象の値が null か判定します。
 	 * 
