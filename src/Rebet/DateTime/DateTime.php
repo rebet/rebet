@@ -69,23 +69,35 @@ class DateTime extends \DateTimeImmutable {
      * @param string|\DateTimeZone $timezone タイムゾーン（デフォオルト：コンフィグ設定依存）
      */
     public function __construct($time = 'now', $timezone = null) {
-        $timezone = Util::nvl($timezone, self::config('default_timezone'));
-        $timezone = $timezone instanceof \DateTimeZone ? $timezone : new DateTimeZone((string)$timezone);
+        $adopt_time     = null;
+        $adopt_timezone = null;
 
-        $test_now = self::getTestNow();
-        if($test_now) {
-            $parsed_test_now = null;
-            foreach (self::config('test_now_format') as $format) {
-                $parsed_test_now = \DateTime::createFromFormat($format, $test_now, $timezone);
-                if($parsed_test_now) { break; }
+        $adopt_timezone = Util::nvl($timezone, self::config('default_timezone'));
+        $adopt_timezone = $adopt_timezone instanceof DateTimeZone ? $adopt_timezone : new DateTimeZone($adopt_timezone);
+
+        if($time instanceof \DateTimeInterface) {
+            if($timezone === null) {
+                $adopt_timezone = new DateTimeZone($time->getTimezone());
+            } else {
+                $time->setTimezone($adopt_timezone);
             }
-            if($parsed_test_now === null) {
-                throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
+            $adopt_time = $time->format('Y-m-d H:i:s.u');
+        } else {
+            $test_now = self::getTestNow();
+            if($test_now) {
+                $parsed_test_now = null;
+                foreach (self::config('test_now_format') as $format) {
+                    $parsed_test_now = \DateTime::createFromFormat($format, $test_now, $adopt_timezone);
+                    if($parsed_test_now) { break; }
+                }
+                if($parsed_test_now === null) {
+                    throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
+                }
+                $adopt_time = $parsed_test_now->modify($time)->format('Y-m-d H:i:s.u');
             }
-            $time = $parsed_test_now->modify($time)->format('Y-m-d H:i:s.u');
         }
 
-        parent::__construct($time, $timezone);
+        parent::__construct($adopt_time, $adopt_timezone);
     }
 
     /**
