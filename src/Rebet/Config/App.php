@@ -22,7 +22,7 @@ class App {
 			'env'             => 'development',
 			'locale'          => 'ja',
 			'fallback_locale' => 'ja',
-			'timezone'        => Util::evl(ini_get('date.timezone'), 'UTC'),
+			'timezone'        => Util::evl(date_default_timezone_get(), 'UTC'),
 		];
 	}
 
