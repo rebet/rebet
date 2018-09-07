@@ -49,9 +49,6 @@ class UtilTest extends RebetTestCase {
     }
 
     public function test_get() {
-        $this->assertNull(Util::get(null, 'invalid_key'));
-        $this->assertNull(Util::get('string', 'invalid_key'));
-
         $this->assertNull(Util::get($this->array, 'invalid_key'));
         $this->assertSame(Util::get($this->array, 'invalid_key', 'default'), 'default');
         $this->assertSame(Util::get($this->array, 0, 'default'), 'a');
@@ -117,6 +114,76 @@ class UtilTest extends RebetTestCase {
         $this->assertFalse(Util::has($this->object, 'partner.gender.invalid_key'));
         $this->assertTrue(Util::has($this->object, 'children'));
         $this->assertFalse(Util::has($this->object, 'children.0'));
+    }
+
+    public function test_set() {
+        Util::set($this->array, 0, 'A');
+        $this->assertSame('A', $this->array[0]);
+
+        Util::set($this->array, '1', 'B');
+        $this->assertSame('B', $this->array[1]);
+
+
+        Util::set($this->map, 'name', 'Charles Babbage');
+        $this->assertSame('Charles Babbage', $this->map['name']);
+
+        Util::set($this->map, 'hobbies.0', 'cycling');
+        $this->assertSame('cycling', $this->map['hobbies'][0]);
+        $this->assertSame(['cycling','outdoor'], $this->map['hobbies']);
+
+        Util::set($this->map, 'hobbies', ['game']);
+        $this->assertSame('game', $this->map['hobbies'][0]);
+        $this->assertSame(['game'], $this->map['hobbies']);
+
+        Util::set($this->map, 'partner.name', 'Georgiana Whitmore');
+        $this->assertSame('Georgiana Whitmore', $this->map['partner']['name']);
+
+
+        Util::set($this->object, 'name', 'Charles Babbage');
+        $this->assertSame('Charles Babbage', $this->object->name);
+
+        Util::set($this->object, 'hobbies.0', 'cycling');
+        $this->assertSame('cycling', $this->object->hobbies[0]);
+        $this->assertSame(['cycling','outdoor'], $this->object->hobbies);
+
+        Util::set($this->object, 'hobbies', ['game']);
+        $this->assertSame('game', $this->object->hobbies[0]);
+        $this->assertSame(['game'], $this->object->hobbies);
+
+        Util::set($this->object, 'partner.name', 'Georgiana Whitmore');
+        $this->assertSame('Georgiana Whitmore', $this->object->partner->name);
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
+     */
+    public function test_set_undefindKeyArray() {
+        Util::set($this->array, 'undefind_key', 'value');
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
+     */
+    public function test_set_nestedUndefindKeyArray() {
+        Util::set($this->map, 'partner.undefind_key', 'value');
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
+     */
+    public function test_set_undefindKeyObject() {
+        Util::set($this->object, 'undefind_key', 'value');
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
+     */
+    public function test_set_nestedUndefindKeyObject() {
+        Util::set($this->object, 'partner.undefind_key', 'value');
     }
 
     public function test_isNull() {

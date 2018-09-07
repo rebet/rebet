@@ -91,6 +91,46 @@ class Util {
 	}
 	
 	/**
+	 * 配列又はオブジェクトに値を設定します。
+	 * 
+	 * ex)
+	 * Util::set($user, 'name', 'new name');
+	 * Util::set($user, 'bank.name', 'new bank');
+	 * Util::set($user, 'shipping_address.0', $user->address);
+	 * Util::set($_REQUEST, 'opt_in', false);
+	 * 
+	 * @param  array|obj $obj 配列 or オブジェクト
+	 * @param  int|sting $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
+	 * @param  mixed $value 設定値
+	 * @return mixed 値
+	 * @throw \OutOfBoundsException
+	 */
+	public static function set(&$obj, $key, $value) : void {
+		$current = StringUtil::latrim($key, '.');
+		if(is_array($obj)) {
+			if(!\array_key_exists($current, $obj)){
+				throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
+			}
+			if($current != $key) {
+				self::set($obj[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
+			} else {
+				$obj[$current] = $value;
+			}
+			return;
+		}
+
+		if(!\property_exists($obj, $current)){
+			throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
+		}
+		if($current != $key) {
+			self::set($obj->$current, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
+		} else {
+			$obj->$current = $value;
+		}
+		return;
+	}
+	
+	/**
 	 * 配列又はオブジェクトが指定プロパティを持つかチェックします。
 	 * 
 	 * ex)
