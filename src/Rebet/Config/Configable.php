@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Config\Config;
-
 /**
  * コンフィグ設定を利用する トレイト
  * 
@@ -58,7 +56,7 @@ trait Configable {
 	 * public static function defaultConfig() {
 	 *     return [
 	 *         'default_format' => 'Y-m-d H:i:s',
-	 *         'timezone' => Util::evl(ini_get('date.timezone'), 'UTC'),
+	 *         'timezone' => Config::refer(App::class, 'timezone', Util::evl(ini_get('date.timezone'), 'UTC')),
 	 *     ];
 	 * }
 	 * 
@@ -84,5 +82,15 @@ trait Configable {
 	 */
 	public static function config($key, bool $required = true, $default = null) {
 		return Config::get(static::class, $key, $required, $default);
+	}
+
+	/**
+	 * 自身のコンフィグ設定を更新します。
+	 * 本メソッドは ランタイムレイヤー のコンフィグ設定を追加します。
+	 * 
+	 * @param array $config コンフィグ設定
+	 */
+	protected static function setConfig(array $config) : void {
+		Config::runtime([static::class => $config]);
 	}
 }

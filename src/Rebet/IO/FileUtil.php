@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\IO;
 
-use Rebet\IO\ZipArchiveException;
-
 /**
  * ファイル関連 ユーティリティ クラス
  * 

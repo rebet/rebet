@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Common;
 
-use Rebet\Common\StringUtil;
-
 /**
  * 汎用 ユーティリティ クラス
  * 

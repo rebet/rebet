@@ -17,6 +17,14 @@ class ConfigTestMock {
         ];
     }
 }
+class ConfigTestMockRefer {
+    use Configable;
+    public static function defaultConfig() {
+        return [
+            'database' => Config::refer(ConfigTestMock::class, 'database', 'refer_database'),
+        ];
+    }
+}
 
 class ConfigTest extends RebetTestCase {
     public function setUp() {
@@ -29,6 +37,7 @@ class ConfigTest extends RebetTestCase {
         $this->assertSame(3306, Config::get(ConfigTestMock::class, 'port'));
         $this->assertNull(Config::get(ConfigTestMock::class, 'database', false));
         $this->assertSame('default_db', Config::get(ConfigTestMock::class, 'database', false, 'default_db'));
+        $this->assertSame('refer_database', Config::get(ConfigTestMockRefer::class, 'database'));
         $this->assertNull(Config::get(ConfigTestMock::class, 'user', false));
         $this->assertSame('default_user', Config::get(ConfigTestMock::class, 'user', false, 'default_user'));
 
@@ -48,6 +57,7 @@ class ConfigTest extends RebetTestCase {
         $this->assertSame(3307, Config::get(ConfigTestMock::class, 'port'));
         $this->assertSame('rebet_db', Config::get(ConfigTestMock::class, 'database'));
         $this->assertSame('rebet_db', Config::get(ConfigTestMock::class, 'database', false, 'default_db'));
+        $this->assertSame('rebet_db', Config::get(ConfigTestMockRefer::class, 'database'));
         $this->assertNull(Config::get(ConfigTestMock::class, 'user', false));
         $this->assertSame('default_user', Config::get(ConfigTestMock::class, 'user', false, 'default_user'));
         $this->assertSame('en_us', Config::get('global', 'lang'));
@@ -68,16 +78,21 @@ class ConfigTest extends RebetTestCase {
         $this->assertSame(3308, Config::get(ConfigTestMock::class, 'port'));
         $this->assertSame('rebet_sample', Config::get(ConfigTestMock::class, 'database'));
         $this->assertSame('rebet_sample', Config::get(ConfigTestMock::class, 'database', false, 'default_db'));
+        $this->assertSame('rebet_sample', Config::get(ConfigTestMockRefer::class, 'database'));
         $this->assertSame('rebet_user', Config::get(ConfigTestMock::class, 'user'));
         $this->assertSame('rebet_user', Config::get(ConfigTestMock::class, 'user', false, 'default_user'));
         $this->assertSame('ja_JP', Config::get('global', 'lang'));
         
         Config::runtime([
+            ConfigTestMock::class => [
+                'database' => null,
+            ],
             'global' => [
                 'lang' => 'en_us'
             ]
         ]);
         $this->assertSame('en_us', Config::get('global', 'lang'));
+        $this->assertSame('refer_database', Config::get(ConfigTestMockRefer::class, 'database'));
     }
 
     /**

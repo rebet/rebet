@@ -27,6 +27,10 @@ class ConfigableTestMock {
     public function configInMember($key) {
         return self::config($key);
     }
+
+    public static function setDriver(string $driver) {
+        static::setConfig(['driver' => $driver]);
+    }
 }
 class ConfigableTestMockChildA extends ConfigableTestMock {
     // No override
@@ -73,6 +77,12 @@ class ConfigableTest extends RebetTestCase {
         $this->assertSame('pgsql', ConfigableTestMock::config('driver'));
         $this->assertSame('pgsql', ConfigableTestMock::configInStatic('driver'));
         $this->assertSame('pgsql', $mock->configInMember('driver'));
+
+        ConfigableTestMock::setDriver('new driver');
+
+        $this->assertSame('new driver', ConfigableTestMock::config('driver'));
+        $this->assertSame('new driver', ConfigableTestMock::configInStatic('driver'));
+        $this->assertSame('new driver', $mock->configInMember('driver'));
     }
 
     /**
