@@ -208,6 +208,15 @@ class DateTime extends \DateTimeImmutable {
     }
 
     /**
+     * タイムゾーンを設定します。
+     * 
+     * @param string|\DateTimeZone|null
+     */
+    public function setTimezone($timezone) {
+        return parent::setTimezone(self::adoptTimezone($timezone));
+    }
+    
+    /**
      * デフォルトフォーマットに従って文字列を返します。
      */
     public function __toString() {

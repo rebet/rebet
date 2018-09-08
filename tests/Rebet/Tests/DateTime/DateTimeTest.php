@@ -268,7 +268,60 @@ class DateTimeTest extends RebetTestCase {
         $new = $date->add(new \DateInterval('P1D'));
         $this->assertInstanceOf(DateTime::class, $new);
     }
-     
+    
+    public function test_modify() {
+        $date = new DateTime();
+        $new = $date->modify('+1 day');
+        $this->assertInstanceOf(DateTime::class, $new);
+    }
+    
+    public function test_setDate() {
+        $date = new DateTime();
+        $new = $date->setDate(2011, 11, 12);
+        $this->assertInstanceOf(DateTime::class, $new);
+    }
+    
+    public function test_setISODate() {
+        $date = new DateTime();
+        $new = $date->setISODate(2010, 1);
+        $this->assertInstanceOf(DateTime::class, $new);
+    }
+    
+    public function test_setTime() {
+        $date = new DateTime();
+        $new = $date->setTime(10, 11);
+        $this->assertInstanceOf(DateTime::class, $new);
+    }
+    
+    public function test_setTimestamp() {
+        $date = new DateTime();
+        $new = $date->setTimestamp(time());
+        $this->assertInstanceOf(DateTime::class, $new);
+    }
+    
+    public function test_setTimezone() {
+        $date = new DateTime();
+        $new = $date->setTimezone('Asia/Tokyo');
+        $this->assertInstanceOf(DateTime::class, $new);
+        $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
+        
+        $date = new DateTime();
+        $new = $date->setTimezone(new DateTimeZone('Asia/Tokyo'));
+        $this->assertInstanceOf(DateTime::class, $new);
+        $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
+        
+        $date = new DateTime();
+        $new = $date->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+        $this->assertInstanceOf(DateTime::class, $new);
+        $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
+    }
+    
+    public function test_sub() {
+        $date = new DateTime();
+        $new = $date->sub(new \DateInterval('P1D'));
+        $this->assertInstanceOf(DateTime::class, $new);
+    }
+    
     public function test_toString() {
         $date = new DateTime();
         $this->assertSame('2010-10-10 00:00:00', "{$date}");
