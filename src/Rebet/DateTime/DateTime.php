@@ -37,6 +37,7 @@ class DateTime extends \DateTimeImmutable {
                 'Ymd',
             ],
             'test_now'                   => null,
+            'test_now_timezone'          => null,
             'test_now_format'            => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
         ];
     }
@@ -44,10 +45,11 @@ class DateTime extends \DateTimeImmutable {
     /**
      * テスト用の現在日時を設定し、本クラスをモック化します。
      * 
-     * @param string $now
+     * @param string $now テスト用の現在時刻
+     * @param string $timezone タイムゾーン（デフォルト：UTC）
      */
-    public static function setTestNow(string $now) : void {
-        self::setConfig(['test_now' => $now]);
+    public static function setTestNow(string $now, string $timezone = 'UTC') : void {
+        self::setConfig(['test_now' => $now, 'test_now_timezone' => $timezone]);
     }
     
     /**
@@ -60,10 +62,19 @@ class DateTime extends \DateTimeImmutable {
     }
     
     /**
+     * 現在のテスト用日時のタイムゾーンを取得します
+     * 。
+     * @return ?string テスト用日時のタイムゾーン
+     */
+    public static function getTestNowTimezone() : ?string {
+        return self::config('test_now_timezone', false);
+    }
+    
+    /**
      * 現在のテスト用日時を削除します。
      */
     public static function removeTestNow() : void {
-        self::setConfig(['test_now' => null]);
+        self::setConfig(['test_now' => null, 'test_now_timezone' => null]);
     }
     	
 	/**
@@ -194,8 +205,11 @@ class DateTime extends \DateTimeImmutable {
             if($test_now) {
                 $parsed_test_now = null;
                 foreach (self::config('test_now_format') as $format) {
-                    $parsed_test_now = \DateTime::createFromFormat("!{$format}", $test_now, $adopt_timezone);
-                    if($parsed_test_now) { break; }
+                    $parsed_test_now = \DateTime::createFromFormat("!{$format}", $test_now, new DateTimeZone(self::config('test_now_timezone')));
+                    if($parsed_test_now) {
+                        $parsed_test_now->setTimezone($adopt_timezone);
+                        break;
+                    }
                 }
                 if($parsed_test_now === null) {
                     throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
@@ -210,7 +224,8 @@ class DateTime extends \DateTimeImmutable {
     /**
      * タイムゾーンを設定します。
      * 
-     * @param string|\DateTimeZone|null
+     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return DateTime
      */
     public function setTimezone($timezone) {
         return parent::setTimezone(self::adoptTimezone($timezone));
@@ -218,8 +233,19 @@ class DateTime extends \DateTimeImmutable {
     
     /**
      * デフォルトフォーマットに従って文字列を返します。
+     * @return string
      */
-    public function __toString() {
+    public function __toString() : string {
         return $this->format(self::config('default_format'));
+    }
+    
+    /**
+     * 現在時刻を取得します
+     * 
+     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return DateTime
+     */
+    public static function now($timezone = null) : DateTime {
+        return new DateTime('now', $timezone);
     }
 }
