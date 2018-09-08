@@ -26,12 +26,12 @@ class AuthUtil {
 	 * 
 	 * @param array $auth_list 認証リスト
 	 * @param ?callable $to_hash 認証リストのパスワードハッシュ化ロジック（デフォルト：null）
-	 * @param string $realm 
-	 * @param string $failed_text
-	 * @param string $charset
-	 * @return type
+	 * @param string $realm 領域テキスト
+	 * @param string $failed_text 認証失敗時メッセージ
+	 * @param string $charset 文字コード（デフォルト：UTF-8）
+	 * @return string
 	 */
-	public static function basicAuthenticate(array $auth_list, ?callable $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'utf-8') {
+	public static function basicAuthenticate(array $auth_list, ?callable $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8') : string {
 		if(empty($to_hash)) {
 			$to_hash = function($password) { return $password; };
 		}

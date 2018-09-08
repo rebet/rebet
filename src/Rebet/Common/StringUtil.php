@@ -29,10 +29,10 @@ class StringUtil {
 	 * StringUtil::lbtrim('1.2.3', '.');        //=> '2.3'
 	 * StringUtil::lbtrim('1.2.3', '.', false); //=> '.2.3'
 	 * 
-	 * @param ?string $str トリム対象
+	 * @param string|null $str トリム対象
 	 * @param string $delimiter 区切り文字
 	 * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-	 * @return ?string トリム文字列
+	 * @return string|null トリム文字列
 	 */
 	public static function lbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string {
 		$start = strpos($str, $delimiter);
@@ -47,10 +47,10 @@ class StringUtil {
 	 * StringUtil::latrim('1.2.3', '.');        //=> '1'
 	 * StringUtil::latrim('1.2.3', '.', false); //=> '1.'
 	 * 
-	 * @param ?string $str トリム対象
+	 * @param string|null $str トリム対象
 	 * @param string $delimiter 区切り文字
 	 * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-	 * @return ?string トリム文字列
+	 * @return string|null トリム文字列
 	 */
 	public static function latrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string {
 		$end = strpos($str, $delimiter);
@@ -65,10 +65,10 @@ class StringUtil {
 	 * StringUtil::rbtrim('1.2.3', '.');        //=> '3'
 	 * StringUtil::rbtrim('1.2.3', '.', false); //=> '.3'
 	 * 
-	 * @param ?string $str トリム対象
+	 * @param string|null $str トリム対象
 	 * @param string $delimiter 区切り文字
 	 * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-	 * @return ?string トリム文字列
+	 * @return string|null トリム文字列
 	 */
 	public static function rbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string {
 		$start = strrpos($str, $delimiter);
@@ -83,10 +83,10 @@ class StringUtil {
 	 * StringUtil::ratrim('1.2.3', '.');        //=> '1.2'
 	 * StringUtil::ratrim('1.2.3', '.', false); //=> '1.2.'
 	 * 
-	 * @param ?string $str トリム対象
+	 * @param string|null $str トリム対象
 	 * @param string $delimiter 区切り文字
 	 * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-	 * @return ?string トリム文字列
+	 * @return string|null トリム文字列
 	 */
 	public static function ratrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string {
 		$end = strrpos($str, $delimiter);
@@ -103,9 +103,9 @@ class StringUtil {
 	 * StringUtil::ltrim('12121abc21212', '12');  //=> '1abc21212'
 	 * StringUtil::ltrim('　　　全角　　　', '　'); //=> '全角　　　'
 	 * 
-	 * @param ?string $str トリム対象
+	 * @param string|null $str トリム対象
 	 * @param string $prefix トリム文字列
-	 * @return ?string トリム文字列
+	 * @return string|null トリム文字列
 	 */
 	public static function ltrim(?string  $str, string $prefix = ' ') : ?string {
 		return $str === null ? null : preg_replace("/^(".preg_quote($prefix).")*/u", '', $str);
@@ -120,9 +120,9 @@ class StringUtil {
 	 * StringUtil::rtrim('12121abc21212', '12');  //=> '12121abc2'
 	 * StringUtil::rtrim('　　　全角　　　', '　'); //=> '　　　全角'
 	 * 
-	 * @param ?string $str トリム対象
+	 * @param string|null $str トリム対象
 	 * @param string $suffix トリム文字列
-	 * @return ?string トリム文字列
+	 * @return string|null トリム文字列
 	 */
 	public static function rtrim(?string $str, string $suffix = ' ') : ?string {
 		return $str === null ? null : preg_replace("/(".preg_quote($suffix).")*$/u", '', $str);
@@ -134,7 +134,7 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::startWith('abc123', 'abc'); //=> true
 	 * 
-	 * @param ?string $haystack 検査対象文字列
+	 * @param string|null $haystack 検査対象文字列
 	 * @param string $needle   被検査文字列
 	 * @return bool true : 始まる／false : 始まらない
 	 */
@@ -148,7 +148,7 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::endWith('abc123', '123'); //=> true
 	 * 
-	 * @param ?string $haystack 検査対象文字列
+	 * @param string|null $haystack 検査対象文字列
 	 * @param string $needle 被検査文字列
 	 * @return bool true : 終わる／false : 終わらない
 	 */
@@ -164,7 +164,7 @@ class StringUtil {
 	 * StringUtil::checkDependenceChar('あ①♬㈱♥', 'iso-2022-jp'); //=> [1 => '①', 2 => '♬', 3 => '㈱', 4 => '♥']
 	 * StringUtil::checkDependenceChar('あ①♬㈱♥', 'UTF-8');       //=> []
 	 * 
-	 * @param ?string $text 検査対象文字列
+	 * @param string|null $text 検査対象文字列
 	 * @param string $encode 機種依存チェックを行う文字コード（デフォルト： sjis-win）
 	 * @return array 機種依存文字の配列
 	 */
@@ -184,7 +184,7 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::toCharArray('abc'); //=> ['a', 'b', 'c']
 	 * 
-	 * @param ?string $string 文字列
+	 * @param string|null $string 文字列
 	 * @return array 文字の配列
 	 */
 	public static function toCharArray (?string $string) : array {
@@ -197,8 +197,8 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::camelize('snake_case'); //=> 'SnakeCase'
 	 * 
-	 * @param ?string $str スネークケース文字列
-	 * @return ?string キャメルケース文字列
+	 * @param string|null $str スネークケース文字列
+	 * @return string|null キャメルケース文字列
 	 */
 	public static function camelize(?string $str) : ?string {
 		return $str === null ? null : str_replace('_', '', ucwords($str, '_'));
@@ -210,8 +210,8 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::camelize('CamelCase'); //=> 'camel_case'
 	 * 
-	 * @param  ?string $str キャメルケース文字列
-	 * @return ?string スネークケース文字列
+	 * @param  string|null $str キャメルケース文字列
+	 * @return string|null スネークケース文字列
 	 */
 	public static function snakize(?string $str) : ?string {
 		return $str === null ? null : strtolower(preg_replace('/[a-z]+(?=[A-Z])|[A-Z]+(?=[A-Z][a-z])/', '\0_', $str));
@@ -223,8 +223,8 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::capitalize('snake_case'); //=> 'Snake_case'
 	 * 
-	 * @param ?string $str 文字列
-	 * @return ?string 文字列
+	 * @param string|null $str 文字列
+	 * @return string|null 文字列
 	 */
 	public static function capitalize(?string $str) : ?string {
 		return $str === null ? null : ucfirst($str);
@@ -236,8 +236,8 @@ class StringUtil {
 	 * ex)
 	 * StringUtil::capitalize('CamelCase'); //=> 'camelCase'
 	 * 
-	 * @param ?string $str 文字列
-	 * @return ?string 文字列
+	 * @param string|null $str 文字列
+	 * @return string|null 文字列
 	 */
 	public static function uncapitalize(?string $str) : ?string {
 		return $str === null ? null : lcfirst($str);

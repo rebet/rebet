@@ -74,7 +74,7 @@ class ArrayUtil {
 	 * ArrayUtil::isSequentialArray([1 => 'c', 2 => 'b']);           //=> false
 	 * ArrayUtil::isSequentialArray(['a' => 'a', 'b' => 'b']);       //=> false
 	 * 
-     * @param  ?array $array 配列
+     * @param  array|null $array 配列
      * @return bool true : 連番配列／false : 連想配列 or 跳び番配列
      */
     public static function isSequentialArray(?array $array) : bool {
@@ -88,7 +88,8 @@ class ArrayUtil {
 	 * ArrayUtil::flatten([1, 2, [3]]);         //=> [1, 2, 3]
 	 * ArrayUtil::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
 	 * 
-	 * @param ?array $array
+	 * @param array|null $array 多次元配列
+	 * @return array|null 一次元配列
 	 */
 	public static function flatten(?array $array) : ?array {
 		return $array === null ? null : iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array)), false);
@@ -104,7 +105,7 @@ class ArrayUtil {
 	 * $user_banks = ArrayUtil::remap($users, 'user_id', 'bank.name'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
 	 * $user_map   = ArrayUtil::remap($users, 'user_id', null);        //=> [21 => <<Row object>>, 35 => <<Row object>>, 43 => <<Row object>>, ...]
 	 * 
-	 * @param ?array $list オブジェクトが格納された配列
+	 * @param array|null $list オブジェクトが格納された配列
 	 * @param int|string|null $key_field 抽出データのキーとなるフィールド名/インデックス（null 指定時は連番配列となる）
 	 * @param int|string|null $value_field 抽出データの値となるフィールド名/インデックス（null 指定時はRow要素自体が対象となる）
 	 * @return array 列データ

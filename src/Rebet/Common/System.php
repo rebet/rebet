@@ -24,6 +24,8 @@ class System {
 
 	/**
 	 * exit() メソッドのラッパーメソッドです。
+	 * 
+	 * @param int|string|null ステータス
 	 */
 	public static function exit($status = null) : void {
 		if($status === null) { exit(); }
@@ -32,6 +34,8 @@ class System {
 
 	/**
 	 * die() メソッドのラッパーメソッドです。
+	 * 
+	 * @param int|string|null ステータス
 	 */
 	public static function die($status = null) : void {
 		if($status === null) { die(); }
@@ -40,6 +44,10 @@ class System {
 
 	/**
 	 * header() メソッドのラッパーメソッドです。
+	 * 
+	 * @param string $header ヘッダ文字列
+	 * @param bool $replace 上書き（デフォルト：true）
+	 * @param int $http_response_code HTTPレスポンスコード（デフォルト：null）
 	 */
 	public static function header(string $header,  bool $replace = true, int $http_response_code = null) : void {
 		\header($header, $replace, $http_response_code);

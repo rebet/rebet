@@ -45,7 +45,7 @@ class NetUtil {
 	 * ※本メソッドは exit しません。
 	 * 
 	 * @param string $url リダイレクトURL
-	 * @param ?array $puery クエリパラメータ
+	 * @param array|null $puery クエリパラメータ
 	 * @return void
 	 */
 	public static function redirect($url, ?array $query = []) : void {

@@ -23,7 +23,7 @@ class AuthUtilTest extends RebetTestCase {
             $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
-            $this->assertContains('Content-type: text/html; charset=utf-8', $headers);
+            $this->assertContains('Content-type: text/html; charset=UTF-8', $headers);
         }
     }
 
@@ -48,7 +48,7 @@ class AuthUtilTest extends RebetTestCase {
             $headers = $this->_remap(System::$HEADER, null, 'header');
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
-            $this->assertContains('Content-type: text/html; charset=utf-8', $headers);
+            $this->assertContains('Content-type: text/html; charset=UTF-8', $headers);
         }
     }
 
