@@ -253,6 +253,16 @@ class DateTimeTest extends RebetTestCase {
         $this->assertSame($input, $date->format($apply_format));
     }
     
+    public function test_createDateTime() {
+        DateTime::setTestNow('2010-10-10 01:02:03.456789');
+        
+        $input = '2010-10-10 12:34:56';
+        $date = DateTime::createDateTime($input);
+        $this->assertInstanceOf(DateTime::class, $date);
+        $this->assertSame('UTC', $date->getTimezone()->getName());
+        $this->assertSame('2010-10-10 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
+    }
+    
     public function test_add() {
         $date = new DateTime();
         $new = $date->add(new \DateInterval('P1D'));
