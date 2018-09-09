@@ -11,38 +11,38 @@ class DateTimeTest extends RebetTestCase {
     public function setUp() {
         Config::clear();
         App::setTimezone('UTC');
-        DateTime::setTestNow('2010-10-10 00:00:00', 'UTC');
+        DateTime::setTestNow('2010-10-20 10:20:30', 'UTC');
     }
 
     public function test_setTestNow() {
-        DateTime::setTestNow('2010-10-10 00:00:00');
-        $this->assertSame('2010-10-10 00:00:00', DateTime::getTestNow());
+        DateTime::setTestNow('2010-10-20 10:20:30');
+        $this->assertSame('2010-10-20 10:20:30', DateTime::getTestNow());
         $this->assertSame('UTC', DateTime::getTestNowTimezone());
 
-        DateTime::setTestNow('2010-10-10 00:00:00.12345', 'Asia/Tokyo');
-        $this->assertSame('2010-10-10 00:00:00.12345', DateTime::getTestNow());
+        DateTime::setTestNow('2010-10-20 10:20:30.12345', 'Asia/Tokyo');
+        $this->assertSame('2010-10-20 10:20:30.12345', DateTime::getTestNow());
         $this->assertSame('Asia/Tokyo', DateTime::getTestNowTimezone());
     }
 
     public function test_getTestNow() {
-        DateTime::setTestNow('2010-10-10 00:00:00');
-        $this->assertSame('2010-10-10 00:00:00', DateTime::getTestNow());
+        DateTime::setTestNow('2010-10-20 10:20:30');
+        $this->assertSame('2010-10-20 10:20:30', DateTime::getTestNow());
 
-        DateTime::setTestNow('2010-10-10 00:00:00.12345');
-        $this->assertSame('2010-10-10 00:00:00.12345', DateTime::getTestNow());
+        DateTime::setTestNow('2010-10-20 10:20:30.12345');
+        $this->assertSame('2010-10-20 10:20:30.12345', DateTime::getTestNow());
     }
 
     public function test_setTestNowTimezone() {
-        DateTime::setTestNow('2010-10-10 00:00:00');
+        DateTime::setTestNow('2010-10-20 10:20:30');
         $this->assertSame('UTC', DateTime::getTestNowTimezone());
 
-        DateTime::setTestNow('2010-10-10 00:00:00.12345', 'Asia/Tokyo');
+        DateTime::setTestNow('2010-10-20 10:20:30.12345', 'Asia/Tokyo');
         $this->assertSame('Asia/Tokyo', DateTime::getTestNowTimezone());
     }
     
     public function test_removeTestNow() {
-        DateTime::setTestNow('2010-10-10 00:00:00');
-        $this->assertSame('2010-10-10 00:00:00', DateTime::getTestNow());
+        DateTime::setTestNow('2010-10-20 10:20:30');
+        $this->assertSame('2010-10-20 10:20:30', DateTime::getTestNow());
         DateTime::removeTestNow();
         $this->assertNull(DateTime::getTestNow());
         $this->assertNull(DateTime::getTestNowTimezone());
@@ -50,71 +50,74 @@ class DateTimeTest extends RebetTestCase {
 
     public function test_construct() {
         $date = new DateTime();
-        $this->assertSame('2010-10-10 00:00:00', $date->format('Y-m-d H:i:s'));
-        $this->assertSame('2010-10-10 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
 
         $date = new DateTime('yesterday');
-        $this->assertSame('2010-10-09 00:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-19 00:00:00', $date->format('Y-m-d H:i:s'));
+
+        $date = new DateTime('today');
+        $this->assertSame('2010-10-20 00:00:00', $date->format('Y-m-d H:i:s'));
 
         $date = new DateTime('noon');
-        $this->assertSame('2010-10-10 12:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 12:00:00', $date->format('Y-m-d H:i:s'));
 
         $date = new DateTime('tomorrow');
-        $this->assertSame('2010-10-11 00:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-21 00:00:00', $date->format('Y-m-d H:i:s'));
 
         $date = new DateTime('tomorrow noon');
-        $this->assertSame('2010-10-11 12:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-21 12:00:00', $date->format('Y-m-d H:i:s'));
 
         $date = new DateTime('+1 day');
-        $this->assertSame('2010-10-11 00:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-21 10:20:30', $date->format('Y-m-d H:i:s'));
 
 
-        DateTime::setTestNow('2010-10-10 00:00:00.123456');
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
 
         $date = new DateTime();
-        $this->assertSame('2010-10-10 00:00:00.123456', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
 
         $date = new DateTime('+1 day +2 hour');
-        $this->assertSame('2010-10-11 02:00:00.123456', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-21 12:20:30.123456', $date->format('Y-m-d H:i:s.u'));
 
 
-        DateTime::setTestNow('2010-10-10 00:00');
-
-        $date = new DateTime();
-        $this->assertSame('2010-10-10 00:00', $date->format('Y-m-d H:i'));
-        $this->assertSame('2010-10-10 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
-
-
-        DateTime::setTestNow('2010-10-10 00:00:00');
+        DateTime::setTestNow('2010-10-20 00:00');
 
         $date = new DateTime();
-        $this->assertSame('2010-10-10 00:00:00', $date->format('Y-m-d H:i:s'));
-        $this->assertSame('2010-10-10 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 00:00', $date->format('Y-m-d H:i'));
+        $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
+
+
+        DateTime::setTestNow('2010-10-20 10:20:30');
+
+        $date = new DateTime();
+        $this->assertSame('2010-10-20 10:20:30', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
 
         $date = new DateTime('now', 'Asia/Tokyo');
-        $this->assertSame('2010-10-10 09:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 19:20:30', $date->format('Y-m-d H:i:s'));
 
         $date = new DateTime('now', new \DateTimeZone('Asia/Tokyo'));
-        $this->assertSame('2010-10-10 09:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 19:20:30', $date->format('Y-m-d H:i:s'));
 
         $date = new DateTime('now', new DateTimeZone('Asia/Tokyo'));
-        $this->assertSame('2010-10-10 09:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 19:20:30', $date->format('Y-m-d H:i:s'));
 
-        $org_date = \DateTime::createFromFormat('Y-m-d H:i:s', '2010-10-10 00:00:00', new \DateTimeZone('Asia/Tokyo'));
+        $org_date = \DateTime::createFromFormat('Y-m-d H:i:s', '2010-10-20 10:20:30', new \DateTimeZone('Asia/Tokyo'));
         $date = new DateTime($org_date);
-        $this->assertSame('2010-10-10 00:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 10:20:30', $date->format('Y-m-d H:i:s'));
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
 
         $date = new DateTime($org_date, 'UTC');
-        $this->assertSame('2010-10-09 15:00:00', $date->format('Y-m-d H:i:s'));
+        $this->assertSame('2010-10-20 01:20:30', $date->format('Y-m-d H:i:s'));
         $this->assertSame('UTC', $date->getTimezone()->getName());
     }
 
     public function test_createFromFormat() {
-        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-10 00:00:00.123456');
+        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-20 10:20:30.123456');
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
-        $this->assertSame('2010-10-10 00:00:00.123456', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
         
         $date = DateTime::createFromFormat('Y-m-d H:i:s.u', null);
         $this->assertFalse($date);
@@ -127,12 +130,12 @@ class DateTimeTest extends RebetTestCase {
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertEquals($input, $date);
         
-        $input = new \DateTime('2010-10-10 00:00:00.123456');
+        $input = new \DateTime('2010-10-20 10:20:30.123456');
         $date  = DateTime::createFromFormat('Y-m-d H:i:s.u', $input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame($input->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
         
-        $input = new \DateTimeImmutable('2010-10-10 00:00:00.123456');
+        $input = new \DateTimeImmutable('2010-10-20 10:20:30.123456');
         $date  = DateTime::createFromFormat('Y-m-d H:i:s.u', $input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame($input->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
@@ -140,47 +143,47 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010/10/10');
         $this->assertFalse($date);
         
-        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-10 00:00:00.123456', 'Asia/Tokyo');
+        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-20 10:20:30.123456', 'Asia/Tokyo');
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
-        $this->assertSame('2010-10-10 00:00:00.123456', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
         
-        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-10 00:00:00.123456', new DateTimeZone('Asia/Tokyo'));
+        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-20 10:20:30.123456', new DateTimeZone('Asia/Tokyo'));
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
-        $this->assertSame('2010-10-10 00:00:00.123456', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
         
-        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-10 00:00:00.123456', new \DateTimeZone('Asia/Tokyo'));
+        $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-20 10:20:30.123456', new \DateTimeZone('Asia/Tokyo'));
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
-        $this->assertSame('2010-10-10 00:00:00.123456', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
     }
 
     public function test_analyzeDateTime() {
-        DateTime::setTestNow('2010-10-10 01:02:03.456789');
+        DateTime::setTestNow('2010-10-20 01:02:03.456789');
         
-        $input = '2010-10-10 12:34:56';
+        $input = '2010-10-20 12:34:56';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
         $this->assertSame('Y-m-d H:i:s', $apply_format);
-        $this->assertSame('2010-10-10 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '2010年10月10日 12:34';
+        $input = '2010年10月20日 12:34';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
         $this->assertSame('Y年m月d日 H:i', $apply_format);
-        $this->assertSame('2010-10-10 12:34:00.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 12:34:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '20101010';
+        $input = '20101020';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
         $this->assertSame('Ymd', $apply_format);
-        $this->assertSame('2010-10-10 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
         [$date, $apply_format] = DateTime::analyzeDateTime(null);
@@ -197,19 +200,19 @@ class DateTimeTest extends RebetTestCase {
         $this->assertEquals($input, $date);
         $this->assertSame(DateTime::config('default_format'), $apply_format);
         
-        $input = new \DateTime('2010-10-10 01:02:03.456789');
+        $input = new \DateTime('2010-10-20 01:02:03.456789');
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame($input->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
         $this->assertSame(DateTime::config('default_format'), $apply_format);
         
-        $input = new \DateTimeImmutable('2010-10-10 01:02:03.456789');
+        $input = new \DateTimeImmutable('2010-10-20 01:02:03.456789');
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame($input->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
         $this->assertSame(DateTime::config('default_format'), $apply_format);
         
-        $input = '2010.10.10';
+        $input = '2010.10.20';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertNull($date);
         $this->assertNull($apply_format);
@@ -218,7 +221,7 @@ class DateTimeTest extends RebetTestCase {
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
         $this->assertSame('Y.m.d', $apply_format);
-        $this->assertSame('2010-10-10 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
         $input = '10/01, 2010';
@@ -233,21 +236,21 @@ class DateTimeTest extends RebetTestCase {
         $this->assertSame('2010-10-01 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '2010-10-10 12:34:56';
+        $input = '2010-10-20 12:34:56';
         [$date, $apply_format] = DateTime::analyzeDateTime($input, [], 'Asia/Tokyo');
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
         $this->assertSame('Y-m-d H:i:s', $apply_format);
-        $this->assertSame('2010-10-10 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
         $input = new DateTime();
         $this->assertSame('UTC', $input->getTimezone()->getName());
-        $this->assertSame('2010-10-10 01:02:03.456789', $input->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 01:02:03.456789', $input->format('Y-m-d H:i:s.u'));
         [$date, $apply_format] = DateTime::analyzeDateTime($input, [], 'Asia/Tokyo');
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
-        $this->assertSame('2010-10-10 10:02:03.456789', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:02:03.456789', $date->format('Y-m-d H:i:s.u'));
         
         Config::runtime([
             DateTime::class => [
@@ -265,13 +268,13 @@ class DateTimeTest extends RebetTestCase {
     }
     
     public function test_createDateTime() {
-        DateTime::setTestNow('2010-10-10 01:02:03.456789');
+        DateTime::setTestNow('2010-10-20 01:02:03.456789');
         
-        $input = '2010-10-10 12:34:56';
+        $input = '2010-10-20 12:34:56';
         $date = DateTime::createDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
-        $this->assertSame('2010-10-10 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
     }
     
     public function test_add() {
@@ -335,18 +338,30 @@ class DateTimeTest extends RebetTestCase {
     
     public function test_toString() {
         $date = new DateTime();
-        $this->assertSame('2010-10-10 00:00:00', "{$date}");
+        $this->assertSame('2010-10-20 10:20:30', "{$date}");
     }
     
     public function test_now() {
         $now = DateTime::now();
         $this->assertInstanceOf(DateTime::class, $now);
         $this->assertSame('UTC', $now->getTimezone()->getName());
-        $this->assertSame('2010-10-10 00:00:00.000000', $now->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:30.000000', $now->format('Y-m-d H:i:s.u'));
         
         $now = DateTime::now('Asia/Tokyo');
         $this->assertInstanceOf(DateTime::class, $now);
         $this->assertSame('Asia/Tokyo', $now->getTimezone()->getName());
-        $this->assertSame('2010-10-10 09:00:00.000000', $now->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 19:20:30.000000', $now->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_today() {
+        $today = DateTime::today();
+        $this->assertInstanceOf(DateTime::class, $today);
+        $this->assertSame('UTC', $today->getTimezone()->getName());
+        $this->assertSame('2010-10-20 00:00:00.000000', $today->format('Y-m-d H:i:s.u'));
+        
+        $today = DateTime::today('Asia/Tokyo');
+        $this->assertInstanceOf(DateTime::class, $today);
+        $this->assertSame('Asia/Tokyo', $today->getTimezone()->getName());
+        $this->assertSame('2010-10-20 00:00:00.000000', $today->format('Y-m-d H:i:s.u'));
     }
 }

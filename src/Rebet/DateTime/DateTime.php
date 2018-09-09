@@ -91,7 +91,7 @@ class DateTime extends \DateTimeImmutable {
 	 * @param string|\DateTimeInterface|null $value 日時文字列
 	 * @param array $main_format 優先解析フォーマット（デフォルト：[]）
 	 * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-	 * @return DateTime|null 解析結果
+	 * @return static|null 解析結果
 	 */
 	public static function createDateTime($value, array $main_format = [], $timezone = null) : ?DateTime {
 		[$date, ] = self::analyzeDateTime($value, $main_format, $timezone);
@@ -140,11 +140,11 @@ class DateTime extends \DateTimeImmutable {
 	 * @param string $value 日時文字列
 	 * @param string $format フォーマット
 	 * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-	 * @return DateTime|null
+	 * @return static|null
 	 */
 	private static function tryToParseDateTime($value, $format, $timezone = null) {
-		$date = DateTime::createFromFormat($format, $value, $timezone);
-		$le   = DateTime::getLastErrors();
+		$date = static::createFromFormat($format, $value, $timezone);
+		$le   = static::getLastErrors();
 		return $date === false || !empty($le['errors']) || !empty($le['warnings']) ? null : $date ;
 	}
     
@@ -225,7 +225,7 @@ class DateTime extends \DateTimeImmutable {
      * タイムゾーンを設定します。
      * 
      * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
-     * @return DateTime
+     * @return static
      */
     public function setTimezone($timezone) {
         return parent::setTimezone(self::adoptTimezone($timezone));
@@ -243,9 +243,19 @@ class DateTime extends \DateTimeImmutable {
      * 現在時刻を取得します
      * 
      * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
-     * @return DateTime
+     * @return static
      */
     public static function now($timezone = null) : DateTime {
-        return new DateTime('now', $timezone);
+        return new static('now', $timezone);
+    }
+    
+    /**
+     * 本日を取得します
+     * 
+     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return static
+     */
+    public static function today($timezone = null) : DateTime {
+        return new static('today', $timezone);
     }
 }
