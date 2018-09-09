@@ -463,4 +463,91 @@ class DateTimeTest extends RebetTestCase {
         $this->assertInternalType(\int::class, $day);
         $this->assertSame(20, $day);
     }
+    
+    public function test_addHour() {
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addHour(1);
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 11:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+        $last = $date->addHour(-1);
+        $this->assertInstanceOf(DateTime::class, $last);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 09:20:30.000000', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_setHour() {
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $new = $date->setHour(11);
+        $this->assertInstanceOf(DateTime::class, $new);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 11:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_getHour() {
+        $date = DateTime::now();
+        $hour = $date->getHour();
+        $this->assertInternalType(\int::class, $hour);
+        $this->assertSame(10, $hour);
+    }
+    
+    public function test_addMinute() {
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMinute(1);
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:21:30.000000', $next->format('Y-m-d H:i:s.u'));
+        $last = $date->addMinute(-1);
+        $this->assertInstanceOf(DateTime::class, $last);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:19:30.000000', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_setMinute() {
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $new = $date->setMinute(21);
+        $this->assertInstanceOf(DateTime::class, $new);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:21:30.000000', $new->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_getMinute() {
+        $date = DateTime::now();
+        $minute = $date->getMinute();
+        $this->assertInternalType(\int::class, $minute);
+        $this->assertSame(20, $minute);
+    }
+    
+    public function test_addSecond() {
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addSecond(1);
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:31.000000', $next->format('Y-m-d H:i:s.u'));
+        $last = $date->addSecond(-1);
+        $this->assertInstanceOf(DateTime::class, $last);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:29.000000', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_setSecond() {
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $new = $date->setSecond(31);
+        $this->assertInstanceOf(DateTime::class, $new);
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-10-20 10:20:31.000000', $new->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_getSecond() {
+        $date = DateTime::now();
+        $second = $date->getSecond();
+        $this->assertInternalType(\int::class, $second);
+        $this->assertSame(30, $second);
+    }
 }

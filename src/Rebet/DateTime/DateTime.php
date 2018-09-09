@@ -346,4 +346,82 @@ class DateTime extends \DateTimeImmutable {
     public function getDay() : int {
         return (int)$this->format('d');
     }
+    
+    /**
+     * 時を加算します
+     * @param int $minute 時
+     * @return static
+     */
+    public function addHour(int $hour) : DateTime {
+        return $this->modify("{$hour} hour");
+    }
+    
+    /**
+     * 時を設定します
+     * @param int $hour 時
+     * @return static
+     */
+    public function setHour(int $hour) : DateTime {
+        return $this->setTime($hour, $this->getMinute(), $this->getSecond());
+    }
+    
+    /**
+     * 時を取得します
+     * @return int 時
+     */
+    public function getHour() : int {
+        return (int)$this->format('H');
+    }
+    
+    /**
+     * 分を加算します
+     * @param int $minute 分
+     * @return static
+     */
+    public function addMinute(int $minute) : DateTime {
+        return $this->modify("{$minute} minute");
+    }
+    
+    /**
+     * 分を設定します
+     * @param int $minute 分
+     * @return static
+     */
+    public function setMinute(int $minute) : DateTime {
+        return $this->setTime($this->getHour(), $minute, $this->getSecond());
+    }
+    
+    /**
+     * 分を取得します
+     * @return int 分
+     */
+    public function getMinute() : int {
+        return (int)$this->format('i');
+    }
+    
+    /**
+     * 秒を加算します
+     * @param int $second 秒
+     * @return static
+     */
+    public function addSecond(int $second) : DateTime {
+        return $this->modify("{$second} second");
+    }
+    
+    /**
+     * 秒を設定します
+     * @param int $second 秒
+     * @return static
+     */
+    public function setSecond(int $second) : DateTime {
+        return $this->setTime($this->getHour(), $this->getMinute(), $second);
+    }
+    
+    /**
+     * 秒を取得します
+     * @return int 秒
+     */
+    public function getSecond() : int {
+        return (int)$this->format('s');
+    }
 }
