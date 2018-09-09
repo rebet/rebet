@@ -258,4 +258,92 @@ class DateTime extends \DateTimeImmutable {
     public static function today($timezone = null) : DateTime {
         return new static('today', $timezone);
     }
+    
+    /**
+     * 昨日を取得します
+     * 
+     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return static
+     */
+    public static function yesterday($timezone = null) : DateTime {
+        return new static('yesterday', $timezone);
+    }
+    
+    /**
+     * 年を加算します
+     * @param int $year 年
+     * @return static
+     */
+    public function addYear(int $year) : DateTime {
+        return $this->modify("{$year} year");
+    }
+    
+    /**
+     * 年を取得します
+     * @return int 年
+     */
+    public function getYear() : int {
+        return (int)$this->format('Y');
+    }
+    
+    /**
+     * 年を設定します
+     * @param int $year 年
+     * @return static
+     */
+    public function setYear(int $year) : DateTime {
+        return $this->setDate($year, $this->getMonth(), $this->getDay());
+    }
+    
+    /**
+     * 月を加算します
+     * @param int $month 月
+     * @return static
+     */
+    public function addMonth(int $month) : DateTime {
+        return $this->modify("{$month} month");
+    }
+    
+    /**
+     * 月を取得します
+     * @return int 月
+     */
+    public function getMonth() : int {
+        return (int)$this->format('m');
+    }
+    
+    /**
+     * 月を設定します
+     * @param int $month 月
+     * @return static
+     */
+    public function setMonth(int $month) : DateTime {
+        return $this->setDate($this->getYear(), $month, $this->getDay());
+    }
+    
+    /**
+     * 日を加算します
+     * @param int $day 日
+     * @return static
+     */
+    public function addday(int $day) : DateTime {
+        return $this->modify("{$day} day");
+    }
+    
+    /**
+     * 日を設定します
+     * @param int $day 日
+     * @return static
+     */
+    public function setDay(int $day) : DateTime {
+        return $this->setDate($this->getYear(), $this->getMonth(), $day);
+    }
+    
+    /**
+     * 日を取得します
+     * @return int 日
+     */
+    public function getDay() : int {
+        return (int)$this->format('d');
+    }
 }
