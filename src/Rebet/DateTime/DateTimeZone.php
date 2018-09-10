@@ -4,7 +4,7 @@ namespace Rebet\DateTime;
 /**
  * タイムゾーン クラス
  * 
- * @todo シングルトン化
+ * @todo シングルトン化 or クラス自体削除するか否かの検討
  * 
  * @package   Rebet
  * @author    github.com/rain-noise

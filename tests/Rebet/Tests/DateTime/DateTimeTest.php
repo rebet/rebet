@@ -381,12 +381,11 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $next = $date->addYear(1);
+        $this->assertSame('2011-10-20 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $next);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2011-10-20 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+
         $last = $date->addYear(-1);
-        $this->assertInstanceOf(DateTime::class, $last);
-        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame('2009-10-20 10:20:30.000000', $last->format('Y-m-d H:i:s.u'));
     }
     
@@ -394,9 +393,9 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $new = $date->setYear(2011);
+        $this->assertSame('2011-10-20 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2011-10-20 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
     }
     
     public function test_getYear() {
@@ -410,22 +409,30 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $next = $date->addMonth(1);
+        $this->assertSame('2010-11-20 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $next);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-11-20 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMonth(3);
+        $this->assertSame('2011-01-20 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+
         $last = $date->addMonth(-1);
-        $this->assertInstanceOf(DateTime::class, $last);
-        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame('2010-09-20 10:20:30.000000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMonth(-10);
+        $this->assertSame('2009-12-20 10:20:30.000000', $last->format('Y-m-d H:i:s.u'));
     }
     
     public function test_setMonth() {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $new = $date->setMonth(11);
+        $this->assertSame('2010-11-20 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-11-20 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+        $new = $date->setMonth(13);
+        $this->assertSame('2011-01-20 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+
+        $new = $date->setMonth(-1);
+        $this->assertSame('2009-11-20 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
     }
     
     public function test_getMonth() {
@@ -439,22 +446,30 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $next = $date->addDay(1);
+        $this->assertSame('2010-10-21 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $next);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-21 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addDay(12);
+        $this->assertSame('2010-11-01 10:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+
         $last = $date->addDay(-1);
-        $this->assertInstanceOf(DateTime::class, $last);
-        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame('2010-10-19 10:20:30.000000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addDay(-20);
+        $this->assertSame('2010-09-30 10:20:30.000000', $last->format('Y-m-d H:i:s.u'));
     }
     
     public function test_setDay() {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $new = $date->setDay(21);
+        $this->assertSame('2010-10-21 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-21 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+        $new = $date->setDay(32);
+        $this->assertSame('2010-11-01 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+
+        $new = $date->setDay(-1);
+        $this->assertSame('2010-09-29 10:20:30.000000', $new->format('Y-m-d H:i:s.u'));
     }
     
     public function test_getDay() {
@@ -468,22 +483,30 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $next = $date->addHour(1);
+        $this->assertSame('2010-10-20 11:20:30.000000', $next->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $next);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-20 11:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addHour(15);
+        $this->assertSame('2010-10-21 01:20:30.000000', $next->format('Y-m-d H:i:s.u'));
+
         $last = $date->addHour(-1);
-        $this->assertInstanceOf(DateTime::class, $last);
-        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame('2010-10-20 09:20:30.000000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addHour(-11);
+        $this->assertSame('2010-10-19 23:20:30.000000', $last->format('Y-m-d H:i:s.u'));
     }
     
     public function test_setHour() {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $new = $date->setHour(11);
+        $this->assertSame('2010-10-20 11:20:30.000000', $new->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-20 11:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+        $new = $date->setHour(25);
+        $this->assertSame('2010-10-21 01:20:30.000000', $new->format('Y-m-d H:i:s.u'));
+
+        $new = $date->setHour(-1);
+        $this->assertSame('2010-10-19 23:20:30.000000', $new->format('Y-m-d H:i:s.u'));
     }
     
     public function test_getHour() {
@@ -497,22 +520,30 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $next = $date->addMinute(1);
+        $this->assertSame('2010-10-20 10:21:30.000000', $next->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $next);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-20 10:21:30.000000', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMinute(41);
+        $this->assertSame('2010-10-20 11:01:30.000000', $next->format('Y-m-d H:i:s.u'));
+
         $last = $date->addMinute(-1);
-        $this->assertInstanceOf(DateTime::class, $last);
-        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame('2010-10-20 10:19:30.000000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMinute(-21);
+        $this->assertSame('2010-10-20 09:59:30.000000', $last->format('Y-m-d H:i:s.u'));
     }
     
     public function test_setMinute() {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $new = $date->setMinute(21);
+        $this->assertSame('2010-10-20 10:21:30.000000', $new->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-20 10:21:30.000000', $new->format('Y-m-d H:i:s.u'));
+        $new = $date->setMinute(61);
+        $this->assertSame('2010-10-20 11:01:30.000000', $new->format('Y-m-d H:i:s.u'));
+
+        $new = $date->setMinute(-1);
+        $this->assertSame('2010-10-20 09:59:30.000000', $new->format('Y-m-d H:i:s.u'));
     }
     
     public function test_getMinute() {
@@ -526,22 +557,30 @@ class DateTimeTest extends RebetTestCase {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $next = $date->addSecond(1);
+        $this->assertSame('2010-10-20 10:20:31.000000', $next->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $next);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-20 10:20:31.000000', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addSecond(31);
+        $this->assertSame('2010-10-20 10:21:01.000000', $next->format('Y-m-d H:i:s.u'));
+
         $last = $date->addSecond(-1);
-        $this->assertInstanceOf(DateTime::class, $last);
-        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame('2010-10-20 10:20:29.000000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addSecond(-31);
+        $this->assertSame('2010-10-20 10:19:59.000000', $last->format('Y-m-d H:i:s.u'));
     }
     
     public function test_setSecond() {
         $date = DateTime::now();
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
         $new = $date->setSecond(31);
+        $this->assertSame('2010-10-20 10:20:31.000000', $new->format('Y-m-d H:i:s.u'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
-        $this->assertSame('2010-10-20 10:20:31.000000', $new->format('Y-m-d H:i:s.u'));
+        $new = $date->setSecond(61);
+        $this->assertSame('2010-10-20 10:21:01.000000', $new->format('Y-m-d H:i:s.u'));
+
+        $new = $date->setSecond(-1);
+        $this->assertSame('2010-10-20 10:19:59.000000', $new->format('Y-m-d H:i:s.u'));
     }
     
     public function test_getSecond() {
@@ -549,5 +588,213 @@ class DateTimeTest extends RebetTestCase {
         $second = $date->getSecond();
         $this->assertInternalType(\int::class, $second);
         $this->assertSame(30, $second);
+    }
+
+    public function test_addMilliMicro() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilliMicro(1);
+        $this->assertSame('2010-10-20 10:20:30.123457', $next->format('Y-m-d H:i:s.u'));
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilliMicro(876543);
+        $this->assertSame('2010-10-20 10:20:30.999999', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilliMicro(876545);
+        $this->assertSame('2010-10-20 10:20:31.000001', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilliMicro(1876545);
+        $this->assertSame('2010-10-20 10:20:32.000001', $next->format('Y-m-d H:i:s.u'));
+
+        $last = $date->addMilliMicro(-1);
+        $this->assertSame('2010-10-20 10:20:30.123455', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMilliMicro(-123456);
+        $this->assertSame('2010-10-20 10:20:30.000000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMilliMicro(-123457);
+        $this->assertSame('2010-10-20 10:20:29.999999', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMilliMicro(-1123458);
+        $this->assertSame('2010-10-20 10:20:28.999998', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_setMilliMicro() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->setMilliMicro(1);
+        $this->assertSame('2010-10-20 10:20:30.000001', $next->format('Y-m-d H:i:s.u'));
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->setMilliMicro(876543);
+        $this->assertSame('2010-10-20 10:20:30.876543', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->setMilliMicro(1876545);
+        $this->assertSame('2010-10-20 10:20:31.876545', $next->format('Y-m-d H:i:s.u'));
+
+        $last = $date->setMilliMicro(-1);
+        $this->assertSame('2010-10-20 10:20:29.999999', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->setMilliMicro(-123456);
+        $this->assertSame('2010-10-20 10:20:29.876544', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->setMilliMicro(-1123458);
+        $this->assertSame('2010-10-20 10:20:28.876542', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_getMilliMicro() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $milli_micro = $date->getMilliMicro();
+        $this->assertInternalType(\int::class, $milli_micro);
+        $this->assertSame(123456, $milli_micro);
+
+
+        DateTime::setTestNow('2010-10-20 10:20:30.123');
+
+        $date = DateTime::now();
+        $milli_micro = $date->getMilliMicro();
+        $this->assertInternalType(\int::class, $milli_micro);
+        $this->assertSame(123000, $milli_micro);
+    }
+
+    public function test_addMilli() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilli(1);
+        $this->assertSame('2010-10-20 10:20:30.124456', $next->format('Y-m-d H:i:s.u'));
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilli(876);
+        $this->assertSame('2010-10-20 10:20:30.999456', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilli(878);
+        $this->assertSame('2010-10-20 10:20:31.001456', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMilli(1878);
+        $this->assertSame('2010-10-20 10:20:32.001456', $next->format('Y-m-d H:i:s.u'));
+
+        $last = $date->addMilli(-1);
+        $this->assertSame('2010-10-20 10:20:30.122456', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMilli(-123);
+        $this->assertSame('2010-10-20 10:20:30.000456', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMilli(-124);
+        $this->assertSame('2010-10-20 10:20:29.999456', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMilli(-1125);
+        $this->assertSame('2010-10-20 10:20:28.998456', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_setMilli() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->setMilli(1);
+        $this->assertSame('2010-10-20 10:20:30.001456', $next->format('Y-m-d H:i:s.u'));
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->setMilli(876);
+        $this->assertSame('2010-10-20 10:20:30.876456', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->setMilli(1876);
+        $this->assertSame('2010-10-20 10:20:31.876456', $next->format('Y-m-d H:i:s.u'));
+
+        $last = $date->setMilli(-1);
+        $this->assertSame('2010-10-20 10:20:29.999456', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->setMilli(-123);
+        $this->assertSame('2010-10-20 10:20:29.877456', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->setMilli(-1123);
+        $this->assertSame('2010-10-20 10:20:28.877456', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_getMilli() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $milli = $date->getMilli();
+        $this->assertInternalType(\int::class, $milli);
+        $this->assertSame(123, $milli);
+
+        
+        DateTime::setTestNow('2010-10-20 10:20:30.1');
+
+        $date = DateTime::now();
+        $milli = $date->getMilli();
+        $this->assertInternalType(\int::class, $milli);
+        $this->assertSame(100, $milli);
+    }    
+
+    public function test_addMicro() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMicro(1);
+        $this->assertSame('2010-10-20 10:20:30.123457', $next->format('Y-m-d H:i:s.u'));
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->addMicro(876543);
+        $this->assertSame('2010-10-20 10:20:30.999999', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMicro(876545);
+        $this->assertSame('2010-10-20 10:20:31.000001', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->addMicro(1876545);
+        $this->assertSame('2010-10-20 10:20:32.000001', $next->format('Y-m-d H:i:s.u'));
+
+        $last = $date->addMicro(-1);
+        $this->assertSame('2010-10-20 10:20:30.123455', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMicro(-456);
+        $this->assertSame('2010-10-20 10:20:30.123000', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMicro(-457);
+        $this->assertSame('2010-10-20 10:20:30.122999', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->addMicro(-1458);
+        $this->assertSame('2010-10-20 10:20:30.121998', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_setMicro() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->setMicro(1);
+        $this->assertSame('2010-10-20 10:20:30.123001', $next->format('Y-m-d H:i:s.u'));
+        $this->assertInstanceOf(DateTime::class, $next);
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+        $next = $date->setMicro(543);
+        $this->assertSame('2010-10-20 10:20:30.123543', $next->format('Y-m-d H:i:s.u'));
+        $next = $date->setMicro(1345);
+        $this->assertSame('2010-10-20 10:20:30.124345', $next->format('Y-m-d H:i:s.u'));
+
+        $last = $date->setMicro(-1);
+        $this->assertSame('2010-10-20 10:20:30.122999', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->setMicro(-456);
+        $this->assertSame('2010-10-20 10:20:30.122544', $last->format('Y-m-d H:i:s.u'));
+        $last = $date->setMicro(-1456);
+        $this->assertSame('2010-10-20 10:20:30.121544', $last->format('Y-m-d H:i:s.u'));
+    }
+    
+    public function test_getMicro() {
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+
+        $date = DateTime::now();
+        $micro = $date->getMicro();
+        $this->assertInternalType(\int::class, $micro);
+        $this->assertSame(456, $micro);
+
+
+        DateTime::setTestNow('2010-10-20 10:20:30.1234');
+        $date = DateTime::now();
+        $micro = $date->getMicro();
+        $this->assertInternalType(\int::class, $micro);
+        $this->assertSame(400, $micro);
+
+
+        DateTime::setTestNow('2010-10-20 10:20:30.123');
+        $date = DateTime::now();
+        $micro = $date->getMicro();
+        $this->assertInternalType(\int::class, $micro);
+        $this->assertSame(0, $micro);
+
+
+        DateTime::setTestNow('2010-10-20 10:20:30.12301');
+        $date = DateTime::now();
+        $micro = $date->getMicro();
+        $this->assertInternalType(\int::class, $micro);
+        $this->assertSame(10, $micro);
     }
 }

@@ -424,4 +424,89 @@ class DateTime extends \DateTimeImmutable {
     public function getSecond() : int {
         return (int)$this->format('s');
     }
+    
+    /**
+     * ミリ秒(3桁)を含むマイクロ精度秒（6桁）を加算します
+     * @param int $milli_micro マイクロ秒精度
+     * @return static
+     */
+    public function addMilliMicro(int $milli_micro) : DateTime {
+        return $this->setMilliMicro($this->getMilliMicro() + $milli_micro);
+    }
+    
+    /**
+     * ミリ秒(3桁)を含むマイクロ精度秒（6桁）を設定します
+     * @param int $milli_micro マイクロ秒精度
+     * @return static
+     */
+    public function setMilliMicro(int $milli_micro) : DateTime {
+        if($milli_micro >= 0) {
+            $milli = floor($milli_micro / 1000000);
+            $u     = str_pad($milli_micro % 1000000, 6, '0', STR_PAD_LEFT);
+        } else {
+            $milli = ceil(abs($milli_micro) / 1000000) * -1;
+            $u     = str_pad(((abs($milli) * 1000000) + $milli_micro) % 1000000, 6, '0', STR_PAD_LEFT);
+        }
+        return $this->modify($this->format("H:i:s.{$u}"))->addSecond($milli);
+    }
+
+    /**
+     * ミリ秒(3桁)を含むマイクロ精度秒（6桁）を取得します
+     * @return int マイクロ精度秒 を取得します。
+     */
+    public function getMilliMicro() : int {
+        return (int)$this->format('u');
+    }
+
+    /**
+     * ミリ秒を加算します
+     * @param int $millis ミリ秒
+     * @return static
+     */
+    public function addMilli(int $milli) : DateTime {
+        return $this->addMilliMicro($milli * 1000);
+    }
+    
+    /**
+     * ミリ秒を設定します
+     * @param int $milli ミリ秒
+     * @return static
+     */
+    public function setMilli(int $milli) : DateTime {
+        return $this->setMilliMicro($milli * 1000 + $this->getMicro());
+    }
+    
+    /**
+     * ミリ秒を取得します
+     * @return int ミリ秒
+     */
+    public function getMilli() : int {
+        return (int)floor($this->getMilliMicro() / 1000);
+    }
+    
+    /**
+     * マイクロ秒を加算します
+     * @param int $millis マイクロ秒
+     * @return static
+     */
+    public function addMicro(int $micro) : DateTime {
+        return $this->addMilliMicro($micro);
+    }
+    
+    /**
+     * マイクロ秒を設定します
+     * @param int $micro マイクロ秒
+     * @return static
+     */
+    public function setMicro(int $micro) : DateTime {
+        return $this->setMilliMicro($this->getMilli() * 1000 + $micro);
+    }
+    
+    /**
+     * マイクロ秒を取得します
+     * @return int マイクロ秒
+     */
+    public function getMicro() : int {
+        return (int)($this->getMilliMicro() % 1000);
+    }
 }
