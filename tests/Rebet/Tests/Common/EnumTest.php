@@ -309,4 +309,79 @@ class EnumTest extends RebetTestCase {
             EnumTest_AcceptStatus::nexts(EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin'])
         );
     }
+
+    public function test_nextOf() {
+        $this->assertSame(
+            ['W', 'A', 'R'],
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['A'],
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['R'],
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::REJECTED(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['W', 'A', 'R'],
+            EnumTest_AcceptStatus::nextOf('value',EnumTest_AcceptStatus::WAITING(), ['role' => 'admin'])
+        );
+
+        $this->assertSame(
+            ['W', 'A', 'R'],
+            EnumTest_AcceptStatus::nextOf('value',EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+        );
+
+        $this->assertSame(
+            ['W', 'A', 'R'],
+            EnumTest_AcceptStatus::nextOf('value',EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin'])
+        );
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Common\EnumTest_Gender->invalid is not exists.
+     */
+    public function test_nextOf_invalid() {
+        $this->assertNull(EnumTest_Gender::listOf('invalid'));
+        $this->fail("Never execute.");
+    }
+    
+    public function test_nextValues() {
+        $this->assertSame(
+            ['W', 'A', 'R'],
+            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['A'],
+            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['W', 'A', 'R'],
+            EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+        );
+    }
+    
+    public function test_nextLabels() {
+        $this->assertSame(
+            ['待機中', '受理', '却下'],
+            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['受理'],
+            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'operator'])
+        );
+
+        $this->assertSame(
+            ['待機中', '受理', '却下'],
+            EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+        );
+    }
 }
