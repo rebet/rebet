@@ -130,4 +130,27 @@ class StringUtilTest extends RebetTestCase {
         $this->assertSame('camelCase', StringUtil::uncapitalize('CamelCase'));
         $this->assertSame('camelCase', StringUtil::uncapitalize('camelCase'));
     }
+
+    public function test_indent() {
+        $this->assertNull(StringUtil::indent(null));
+        $this->assertSame('', StringUtil::indent(''));
+
+        $this->assertSame("\t1st", StringUtil::indent("1st"));
+        $this->assertSame("\t1st\n\t2nd\n\t3rd", StringUtil::indent("1st\n2nd\n3rd"));
+        $this->assertSame("    1st\n    2nd\n    3rd", StringUtil::indent("1st\n2nd\n3rd", 1, '    '));
+        $this->assertSame(">>1st\n>>2nd\n>>3rd", StringUtil::indent("1st\n2nd\n3rd", 1, '>>'));
+        $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd", StringUtil::indent("1st\n2nd\n3rd", 2, '>>'));
+
+        $this->assertSame("\n\t1st", StringUtil::indent("\n1st"));
+        $this->assertSame("\n\t1st\n\t2nd\n\t3rd", StringUtil::indent("\n1st\n2nd\n3rd"));
+        $this->assertSame("\n    1st\n    2nd\n    3rd", StringUtil::indent("\n1st\n2nd\n3rd", 1, '    '));
+        $this->assertSame("\n>>1st\n>>2nd\n>>3rd", StringUtil::indent("\n1st\n2nd\n3rd", 1, '>>'));
+        $this->assertSame("\n>>>>1st\n>>>>2nd\n>>>>3rd", StringUtil::indent("\n1st\n2nd\n3rd", 2, '>>'));
+
+        $this->assertSame("\t1st\n", StringUtil::indent("1st\n"));
+        $this->assertSame("\t1st\n\t2nd\n\t3rd\n", StringUtil::indent("1st\n2nd\n3rd\n"));
+        $this->assertSame("    1st\n    2nd\n    3rd\n", StringUtil::indent("1st\n2nd\n3rd\n", 1, '    '));
+        $this->assertSame(">>1st\n>>2nd\n>>3rd\n", StringUtil::indent("1st\n2nd\n3rd\n", 1, '>>'));
+        $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd\n", StringUtil::indent("1st\n2nd\n3rd\n", 2, '>>'));
+    }
 }

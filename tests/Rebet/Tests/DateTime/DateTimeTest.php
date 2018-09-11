@@ -11,7 +11,7 @@ class DateTimeTest extends RebetTestCase {
     public function setUp() {
         Config::clear();
         App::setTimezone('UTC');
-        DateTime::setTestNow('2010-10-20 10:20:30', 'UTC');
+        DateTime::setTestNow('2010-10-20 10:20:30');
     }
 
     public function test_setTestNow() {

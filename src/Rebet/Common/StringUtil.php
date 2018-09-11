@@ -242,4 +242,19 @@ class StringUtil {
 	public static function uncapitalize(?string $str) : ?string {
 		return $str === null ? null : lcfirst($str);
 	}
+	
+	/**
+	 * 指定の文字列をインデントします。
+	 * ※対象の文字列が空の場合、インデントしません。
+	 * 
+	 * @param string|null $string インデント対象文字列
+	 * @param int $depth インデント文字数（デフォルト：1）
+	 * @param string $char インデント文字（デフォルト：\t）
+	 */
+	public static function indent(?string $string, int $depth = 1, string $char = "\t") : ?string {
+		if(Util::isBlank($string)){ return $string; }
+		$indent = str_repeat($char, $depth);
+		$indened = (self::startWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
+		return self::endWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
+	}
 }
