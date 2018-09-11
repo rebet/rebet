@@ -3,6 +3,7 @@ namespace Rebet\Log\Plugin;
 
 use Rebet\DateTime\DateTime;
 use Rebet\Log\Handler\LogHandler;
+use Rebet\Log\LogLevel;
 
 /**
  * ログプラグイン インターフェース
@@ -24,21 +25,21 @@ interface LogPlugin {
 	 * 
 	 * @param LogHandler $handler ログハンドラ
 	 * @param DateTime $now 現在時刻
-	 * @param int $level ログレベル
+	 * @param LogLevel $level ログレベル
 	 * @param array $extra エキストラ情報
 	 * @return void
 	 */
-	public function prehook(LogHandler $handler, DateTime $now, int $level, array &$extra) : void ;
+	public function prehook(LogHandler $handler, DateTime $now, LogLevel $level, array &$extra) : void ;
 
 	/**
 	 * ログの事後処理をします。
 	 * 
 	 * @param LogHandler $handler ログハンドラ
 	 * @param DateTime $now 現在時刻
-	 * @param int $level ログレベル
-	 * @param string $formatted_log 整形済みログ
+	 * @param LogLevel $level ログレベル
+	 * @param string|array $formatted_log 整形済みログ
 	 */
-	public function posthook(LogHandler $handler, DateTime $now, int $level, string $formatted_log) : void ;
+	public function posthook(LogHandler $handler, DateTime $now, LogLevel $level, $formatted_log) : void ;
 
 	/**
 	 * プラグインのシャットダウン処理を実行します。

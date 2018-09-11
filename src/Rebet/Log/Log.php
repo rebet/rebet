@@ -57,7 +57,7 @@ class Log {
 	 * @return void
 	 */
 	public static function trace($message, array $context = [], $error = null) : void {
-		self::log(self::LEVEL_TRACE, $message, $context, $error);
+		self::log(LogLevel::TRACE(), $message, $context, $error);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class Log {
 	 * @return void
 	 */
 	public static function debug($message, array $context = [], $error = null) : void {
-		self::log(self::LEVEL_DEBUG, $message, $context, $error);
+		self::log(LogLevel::DEBUG(), $message, $context, $error);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ class Log {
 	 * @return void
 	 */
 	public static function info($message, array $context = [], $error = null) : void {
-		self::log(self::LEVEL_INFO, $message, $context, $error);
+		self::log(LogLevel::INFO(), $message, $context, $error);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ class Log {
 	 * @return void
 	 */
 	public static function warn($message, array $context = [], $error = null) : void {
-		self::log(self::LEVEL_WARN, $message, $context, $error);
+		self::log(LogLevel::WARN(), $message, $context, $error);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ class Log {
 	 * @return void
 	 */
 	public static function error($message, array $context = [], $error = null) : void {
-		self::log(self::LEVEL_ERROR, $message, $context, $error);
+		self::log(LogLevel::ERROR(), $message, $context, $error);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ class Log {
 	 * @return void
 	 */
 	public static function fatal($message, array $context = [], $error = null) : void {
-		self::log(self::LEVEL_FATAL, $message, $context, $error);
+		self::log(LogLevel::FATAL(), $message, $context, $error);
 	}
 	
 	/**
@@ -134,7 +134,7 @@ class Log {
 		$peak    = number_format(memory_get_peak_usage() / 1048576, $decimals);
 		$message = empty($message) ? "" : "{$message} : " ;
 		$message = $message."Memory {$current} MB / Peak Memory {$peak} MB";
-		self::log(self::LEVEL_INFO, $message);
+		self::log(LogLevel::INFO(), $message);
 	}
 	
 	/**
@@ -157,13 +157,13 @@ class Log {
 	/**
 	 * ログを出力します。
 	 * 
-	 * @param int $level ログレベル
+	 * @param LogLevel $level ログレベル
 	 * @param mixed $message ログ内容
 	 * @param array $context コンテキスト（デフォルト：[]）
 	 * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
 	 * @return void
 	 */
-	private static function log(int $level, $message, array $context = [], $error = null) : void {
+	private static function log(LogLevel $level, $message, array $context = [], $error = null) : void {
 		$now   = DateTime::now();
 		$extra = [];
 
@@ -187,40 +187,9 @@ class Log {
 	 * @return void
 	 */
 	public static function errorHandle(array $error) : void {
-		self::log(self::errorTypeToLevel($error['type']), "{$error['message']} ({$error['file']}:{$error['line']})", [], $error);
+		self::log(LogLevel::errorTypeOf($error['type']), "{$error['message']} ({$error['file']}:{$error['line']})", [], $error);
 	}
 	
-	/**
-	 * E_* 形式のエラータイプを Log::LEVEL_* 形式のログレベルに変換します。
-	 * 
-	 * @param int エラータイプ
-	 * @return int ログレベル
-	 */
-	public static function errorTypeToLevel(int $type) : int {
-		switch($type) {
-			case E_CORE_ERROR:
-			case E_COMPILE_ERROR:
-			case E_PARSE:
-				return self::LEVEL_FATAL;
-			case E_ERROR:
-			case E_USER_ERROR:
-			case E_RECOVERABLE_ERROR:
-				return self::LEVEL_ERROR;
-			case E_WARNING:
-			case E_USER_WARNING:
-			case E_CORE_WARNING:
-			case E_COMPILE_WARNING:
-				return self::LEVEL_WARN;
-			case E_NOTICE:
-			case E_USER_NOTICE:
-			case E_DEPRECATED:
-			case E_USER_DEPRECATED:
-			case E_STRICT:
-				return self::LEVEL_TRACE;
-		}
-		return self::LEVEL_WARN;
-	}
-
 	/**
 	 * debug_backtrace を文字列形式に変換します。
 	 * 

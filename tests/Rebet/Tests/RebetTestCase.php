@@ -13,6 +13,19 @@ use Rebet\Common\SecurityUtil;
  */
 abstract class RebetTestCase extends TestCase {
 
+    private static $START_AT;
+    
+    public static function setUpBeforeClass() {
+        self::$START_AT = microtime(true);
+    }
+    
+    public static function tearDownAfterClass() {
+        if(in_array('--debug', $_SERVER['argv'], true)) {
+            $spend = (microtime(true) - self::$START_AT);
+            printf(" ... Time: %f [ms]\n", $spend * 1000);
+        }
+    }
+    
     protected function _remap(?array $list, $key_field, $value_field) : array {
         return ArrayUtil::remap($list, $key_field, $value_field);
     }

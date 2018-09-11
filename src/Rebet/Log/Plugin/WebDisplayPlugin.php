@@ -3,6 +3,7 @@ namespace Rebet\Log\Plugin;
 
 use Rebet\DateTime\DateTime;
 use Rebet\Log\Handler\LogHandler;
+use Rebet\Log\LogLevel;
 
 /**
  * 整形済みログをウェブ画面にHTML出力するログプラグイン
@@ -32,11 +33,11 @@ class WebDisplayPlugin implements LogPlugin {
 	 * 
 	 * @param LogHandler $handler ログハンドラ
 	 * @param DateTime $now 現在時刻
-	 * @param int $level ログレベル
+	 * @param LogLevel $level ログレベル
 	 * @param array $extra エキストラ情報
 	 * @return void
 	 */
-	public function prehook(LogHandler $handler, DateTime $now, int $level, array &$extra) : void {
+	public function prehook(LogHandler $handler, DateTime $now, LogLevel $level, array &$extra) : void {
 		// Do nothing.
 	}
 
@@ -45,25 +46,29 @@ class WebDisplayPlugin implements LogPlugin {
 	 * 
 	 * @param LogHandler $handler ログハンドラ
 	 * @param DateTime $now 現在時刻
-	 * @param int $level ログレベル
-	 * @param string $formatted_log 整形済みログ
+	 * @param LogLevel $level ログレベル
+	 * @param string|array $formatted_log 整形済みログ
 	 */
-	public function posthook(LogHandler $handler, DateTime $now, int $level, string $formatted_log) : void {
+	public function posthook(LogHandler $handler, DateTime $now, LogLevel $level, $formatted_log) : void {
+		if(is_array($formatted_log)) {
+			$formatted_log = print_r($formatted_log, true);
+		}
+		
 		switch ($level) {
-			case self::LEVEL_TRACE:
+			case LogLevel::TRACE():
 				$fc = '#666666'; $bc = '#f9f9f9';
 				break;
-			case self::LEVEL_DEBUG:
+			case LogLevel::DEBUG():
 				$fc = '#3333cc'; $bc = '#eeeeff';
 				break;
-			case self::LEVEL_INFO:
+			case LogLevel::INFO():
 				$fc = '#229922'; $bc = '#eeffee';
 				break;
-			case self::LEVEL_WARN:
+			case LogLevel::WARN():
 				$fc = '#ff6e00'; $bc = '#ffffee';
 				break;
-			case self::LEVEL_ERROR:
-			case self::LEVEL_FATAL:
+			case LogLevel::ERROR():
+			case LogLevel::FATAL():
 				$fc = '#ee3333'; $bc = '#ffeeee';
 				break;
 		}

@@ -35,7 +35,6 @@ class FileUtilTest extends RebetTestCase {
             ],
             $this->root
         );
-        
     }
 
     public function test_removeDir() {

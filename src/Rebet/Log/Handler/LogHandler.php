@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Log\Handler;
 
+use Rebet\Log\LogLevel;
 use Rebet\DateTime\DateTime;
 
 /**
@@ -22,14 +23,14 @@ interface LogHandler {
 	 * ログを処理します。
 	 * 
 	 * @param DateTime $now 現在時刻
-	 * @param int $level ログレベル
+	 * @param LogLevel $level ログレベル
 	 * @param mixed $message ログ内容
 	 * @param array $context コンテキスト（デフォルト：[]）
 	 * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
 	 * @param array $extra エキストラ情報（デフォルト：[]）
 	 * @return string|array|null 整形済みログデータ or null（ログ対象外時）
 	 */
-	public function handle(DateTime $now, int $level, $message, array $context = [], $error = null, array $extra = []) ;
+	public function handle(DateTime $now, LogLevel $level, $message, array $context = [], $error = null, array $extra = []) ;
 
 	/**
 	 * ログハンドラをシャットダウンします
