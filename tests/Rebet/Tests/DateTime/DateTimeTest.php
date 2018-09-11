@@ -341,6 +341,11 @@ class DateTimeTest extends RebetTestCase {
         $this->assertSame('2010-10-20 10:20:30', "{$date}");
     }
     
+    public function test_jsonSerialize() {
+        $date = new DateTime();
+        $this->assertSame('2010-10-20 10:20:30', $date->jsonSerialize());
+    }
+
     public function test_now() {
         $now = DateTime::now();
         $this->assertInstanceOf(DateTime::class, $now);

@@ -14,7 +14,7 @@ use Rebet\Config\App;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class DateTime extends \DateTimeImmutable {
+class DateTime extends \DateTimeImmutable implements \JsonSerializable {
     use Configable;
     public static function defaultConfig() {
         return [
@@ -239,6 +239,14 @@ class DateTime extends \DateTimeImmutable {
         return $this->format(self::config('default_format'));
     }
     
+    /**
+     * デフォルトフォーマットに従って文字列を返します。
+     * @return string
+     */
+    public function jsonSerialize() : string {
+        return $this->format(self::config('default_format'));
+    }
+
     /**
      * 現在時刻を取得します
      * 

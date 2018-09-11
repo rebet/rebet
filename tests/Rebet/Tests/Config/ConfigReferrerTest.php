@@ -6,7 +6,7 @@ use Rebet\Config\Config;
 use Rebet\Config\Configable;
 use Rebet\Config\ConfigReferrer;
 
-class ConfigReferrerTestMock {
+class ConfigReferrerTest_Mock {
     use Configable;
     public static function defaultConfig() {
         return [
@@ -14,11 +14,11 @@ class ConfigReferrerTestMock {
             'host' => 'localhost',
             'port' => 3306,
             'database' => null,
-            'user' => Config::refer(ConfigReferrerTestMockNest::class, 'user'),
+            'user' => Config::refer(ConfigReferrerTest_MockOrigin::class, 'user'),
         ];
     }
 }
-class ConfigReferrerTestMockNest {
+class ConfigReferrerTest_MockOrigin {
     use Configable;
     public static function defaultConfig() {
         return [
@@ -35,24 +35,24 @@ class ConfigReferrerTest extends RebetTestCase {
 
     public function setUp() {
         Config::clear();
-        $this->ref_driver   = new ConfigReferrer(ConfigReferrerTestMock::class, 'driver');
-        $this->ref_database = new ConfigReferrer(ConfigReferrerTestMock::class, 'database');
-        $this->ref_user     = new ConfigReferrer(ConfigReferrerTestMock::class, 'user', 'default_user');
+        $this->ref_driver   = new ConfigReferrer(ConfigReferrerTest_Mock::class, 'driver');
+        $this->ref_database = new ConfigReferrer(ConfigReferrerTest_Mock::class, 'database');
+        $this->ref_user     = new ConfigReferrer(ConfigReferrerTest_Mock::class, 'user', 'default_user');
     }
 
     public function test_get() {
         $this->assertSame('mysql', $this->ref_driver->get());
         $this->assertNull($this->ref_database->get());
-        $this->assertNull(ConfigReferrerTestMock::config('user', false));
-        $this->assertSame('default_user', ConfigReferrerTestMock::config('user', false, 'default_user'));
+        $this->assertNull(ConfigReferrerTest_Mock::config('user', false));
+        $this->assertSame('default_user', ConfigReferrerTest_Mock::config('user', false, 'default_user'));
         $this->assertSame('default_user', $this->ref_user->get());
 
         Config::framework([
-            ConfigReferrerTestMock::class => [
+            ConfigReferrerTest_Mock::class => [
                 'driver' => 'sqlite',
                 'database' => 'test_db',
             ],
-            ConfigReferrerTestMockNest::class => [
+            ConfigReferrerTest_MockOrigin::class => [
                 'user' => 'test',
             ]
         ]);
@@ -60,7 +60,7 @@ class ConfigReferrerTest extends RebetTestCase {
         $this->assertSame('sqlite', $this->ref_driver->get());
         $this->assertSame('test_db', $this->ref_database->get());
         $this->assertSame('test', $this->ref_user->get());
-        $this->assertSame('test', ConfigReferrerTestMock::config('user', false));
-        $this->assertSame('test', ConfigReferrerTestMock::config('user', false, 'default_user'));
+        $this->assertSame('test', ConfigReferrerTest_Mock::config('user', false));
+        $this->assertSame('test', ConfigReferrerTest_Mock::config('user', false, 'default_user'));
     }
 }

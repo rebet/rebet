@@ -5,7 +5,7 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configable;
 
-class ConfigTestMock {
+class ConfigTest_Mock {
     use Configable;
     public static function defaultConfig() {
         return [
@@ -17,11 +17,11 @@ class ConfigTestMock {
         ];
     }
 }
-class ConfigTestMockRefer {
+class ConfigTest_MockRefer {
     use Configable;
     public static function defaultConfig() {
         return [
-            'database' => Config::refer(ConfigTestMock::class, 'database', 'refer_database'),
+            'database' => Config::refer(ConfigTest_Mock::class, 'database', 'refer_database'),
         ];
     }
 }
@@ -32,17 +32,17 @@ class ConfigTest extends RebetTestCase {
     }
 
     public function test_get() {
-        $this->assertSame('mysql', Config::get(ConfigTestMock::class, 'driver'));
-        $this->assertSame('localhost', Config::get(ConfigTestMock::class, 'host'));
-        $this->assertSame(3306, Config::get(ConfigTestMock::class, 'port'));
-        $this->assertNull(Config::get(ConfigTestMock::class, 'database', false));
-        $this->assertSame('default_db', Config::get(ConfigTestMock::class, 'database', false, 'default_db'));
-        $this->assertSame('refer_database', Config::get(ConfigTestMockRefer::class, 'database'));
-        $this->assertNull(Config::get(ConfigTestMock::class, 'user', false));
-        $this->assertSame('default_user', Config::get(ConfigTestMock::class, 'user', false, 'default_user'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('localhost', Config::get(ConfigTest_Mock::class, 'host'));
+        $this->assertSame(3306, Config::get(ConfigTest_Mock::class, 'port'));
+        $this->assertNull(Config::get(ConfigTest_Mock::class, 'database', false));
+        $this->assertSame('default_db', Config::get(ConfigTest_Mock::class, 'database', false, 'default_db'));
+        $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
+        $this->assertNull(Config::get(ConfigTest_Mock::class, 'user', false));
+        $this->assertSame('default_user', Config::get(ConfigTest_Mock::class, 'user', false, 'default_user'));
 
         Config::framework([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'host' => '192.168.1.1',
                 'port' => 3307,
                 'database' => 'rebet_db',
@@ -52,18 +52,18 @@ class ConfigTest extends RebetTestCase {
             ]
         ]);
 
-        $this->assertSame('mysql', Config::get(ConfigTestMock::class, 'driver'));
-        $this->assertSame('192.168.1.1', Config::get(ConfigTestMock::class, 'host'));
-        $this->assertSame(3307, Config::get(ConfigTestMock::class, 'port'));
-        $this->assertSame('rebet_db', Config::get(ConfigTestMock::class, 'database'));
-        $this->assertSame('rebet_db', Config::get(ConfigTestMock::class, 'database', false, 'default_db'));
-        $this->assertSame('rebet_db', Config::get(ConfigTestMockRefer::class, 'database'));
-        $this->assertNull(Config::get(ConfigTestMock::class, 'user', false));
-        $this->assertSame('default_user', Config::get(ConfigTestMock::class, 'user', false, 'default_user'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('192.168.1.1', Config::get(ConfigTest_Mock::class, 'host'));
+        $this->assertSame(3307, Config::get(ConfigTest_Mock::class, 'port'));
+        $this->assertSame('rebet_db', Config::get(ConfigTest_Mock::class, 'database'));
+        $this->assertSame('rebet_db', Config::get(ConfigTest_Mock::class, 'database', false, 'default_db'));
+        $this->assertSame('rebet_db', Config::get(ConfigTest_MockRefer::class, 'database'));
+        $this->assertNull(Config::get(ConfigTest_Mock::class, 'user', false));
+        $this->assertSame('default_user', Config::get(ConfigTest_Mock::class, 'user', false, 'default_user'));
         $this->assertSame('en_us', Config::get('global', 'lang'));
 
         Config::application([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'port' => 3308,
                 'database' => 'rebet_sample',
                 'user' => 'rebet_user',
@@ -73,18 +73,18 @@ class ConfigTest extends RebetTestCase {
             ]
         ]);
 
-        $this->assertSame('mysql', Config::get(ConfigTestMock::class, 'driver'));
-        $this->assertSame('192.168.1.1', Config::get(ConfigTestMock::class, 'host'));
-        $this->assertSame(3308, Config::get(ConfigTestMock::class, 'port'));
-        $this->assertSame('rebet_sample', Config::get(ConfigTestMock::class, 'database'));
-        $this->assertSame('rebet_sample', Config::get(ConfigTestMock::class, 'database', false, 'default_db'));
-        $this->assertSame('rebet_sample', Config::get(ConfigTestMockRefer::class, 'database'));
-        $this->assertSame('rebet_user', Config::get(ConfigTestMock::class, 'user'));
-        $this->assertSame('rebet_user', Config::get(ConfigTestMock::class, 'user', false, 'default_user'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('192.168.1.1', Config::get(ConfigTest_Mock::class, 'host'));
+        $this->assertSame(3308, Config::get(ConfigTest_Mock::class, 'port'));
+        $this->assertSame('rebet_sample', Config::get(ConfigTest_Mock::class, 'database'));
+        $this->assertSame('rebet_sample', Config::get(ConfigTest_Mock::class, 'database', false, 'default_db'));
+        $this->assertSame('rebet_sample', Config::get(ConfigTest_MockRefer::class, 'database'));
+        $this->assertSame('rebet_user', Config::get(ConfigTest_Mock::class, 'user'));
+        $this->assertSame('rebet_user', Config::get(ConfigTest_Mock::class, 'user', false, 'default_user'));
         $this->assertSame('ja_JP', Config::get('global', 'lang'));
         
         Config::runtime([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'database' => null,
             ],
             'global' => [
@@ -92,75 +92,75 @@ class ConfigTest extends RebetTestCase {
             ]
         ]);
         $this->assertSame('en_us', Config::get('global', 'lang'));
-        $this->assertSame('refer_database', Config::get(ConfigTestMockRefer::class, 'database'));
+        $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTestMock#database is blank. Please define at application or framework layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#database is blank. Please define at application or framework layer.
      */
     public function test_get_blank() {
-        Config::get(ConfigTestMock::class, 'database');
+        Config::get(ConfigTest_Mock::class, 'database');
         $this->fail("Never execute.");
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTestMock#undfine is not define. Please check config key name.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#undfine is not define. Please check config key name.
      */
     public function test_get_undfine() {
-        Config::get(ConfigTestMock::class, 'undfine');
+        Config::get(ConfigTest_Mock::class, 'undfine');
         $this->fail("Never execute.");
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTestMock#driver is blank. Please define at application layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Please define at application layer.
      */
     public function test_get_frameworkOrverrideBlank() {
-        $this->assertSame('mysql', Config::get(ConfigTestMock::class, 'driver'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::framework([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'driver' => null,
             ]
         ]);
 
-        Config::get(ConfigTestMock::class, 'driver');
+        Config::get(ConfigTest_Mock::class, 'driver');
         $this->fail("Never execute.");
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTestMock#driver is blank. Overwritten with blank at application layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Overwritten with blank at application layer.
      */
     public function test_get_applicationOrverrideBlank() {
-        $this->assertSame('mysql', Config::get(ConfigTestMock::class, 'driver'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::application([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'driver' => null,
             ]
         ]);
 
-        Config::get(ConfigTestMock::class, 'driver');
+        Config::get(ConfigTest_Mock::class, 'driver');
         $this->fail("Never execute.");
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTestMock#driver is blank. Overwritten with blank at runtime layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Overwritten with blank at runtime layer.
      */
     public function test_get_runtimeOrverrideBlank() {
-        $this->assertSame('mysql', Config::get(ConfigTestMock::class, 'driver'));
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::runtime([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'driver' => null,
             ]
         ]);
 
-        Config::get(ConfigTestMock::class, 'driver');
+        Config::get(ConfigTest_Mock::class, 'driver');
         $this->fail("Never execute.");
     }
 
@@ -179,46 +179,46 @@ class ConfigTest extends RebetTestCase {
     }
 
     public function test_has() {
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'driver'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'database'));
-        $this->assertFalse(Config::has(ConfigTestMock::class, 'undefined'));
-        $this->assertFalse(Config::has(ConfigTestMock::class, 'invalid'));
-        $this->assertFalse(Config::has(ConfigTestMock::class, 'nothing'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'undefined'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'invalid'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'nothing'));
 
         Config::framework([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'undefined' => 'defined',
             ]
         ]);
 
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'driver'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'database'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'undefined'));
-        $this->assertFalse(Config::has(ConfigTestMock::class, 'invalid'));
-        $this->assertFalse(Config::has(ConfigTestMock::class, 'nothing'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'undefined'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'invalid'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'nothing'));
 
         Config::application([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'invalid' => 'not invalid',
             ]
         ]);
 
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'driver'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'database'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'undefined'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'invalid'));
-        $this->assertFalse(Config::has(ConfigTestMock::class, 'nothing'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'undefined'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'invalid'));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'nothing'));
         
         Config::runtime([
-            ConfigTestMock::class => [
+            ConfigTest_Mock::class => [
                 'nothing' => 'something',
             ]
         ]);
         
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'driver'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'database'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'undefined'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'invalid'));
-        $this->assertTrue(Config::has(ConfigTestMock::class, 'nothing'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'undefined'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'invalid'));
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'nothing'));
     }
 }

@@ -8,7 +8,7 @@ use Rebet\Config\Configable;
 /*
  * モック定義
  */
-class ConfigableTestMock {
+class ConfigableTest_Mock {
     use Configable;
     public static function defaultConfig() {
         return [
@@ -32,10 +32,10 @@ class ConfigableTestMock {
         static::setConfig(['driver' => $driver]);
     }
 }
-class ConfigableTestMockChildA extends ConfigableTestMock {
+class ConfigableTest_MockChildA extends ConfigableTest_Mock {
     // No override
 }
-class ConfigableTestMockChildB extends ConfigableTestMock {
+class ConfigableTest_MockChildB extends ConfigableTest_Mock {
     public static function defaultConfig() {
         return \array_merge(parent::defaultConfig(),[
             'driver' => 'sqlite',
@@ -43,7 +43,7 @@ class ConfigableTestMockChildB extends ConfigableTestMock {
         ]);
     }
 }
-class ConfigableTestMockChildC extends ConfigableTestMock {
+class ConfigableTest_MockChildC extends ConfigableTest_Mock {
     public static function defaultConfig() {
         return [
             'driver' => 'pgsql',
@@ -60,102 +60,102 @@ class ConfigableTest extends RebetTestCase {
     }
 
     public function test_config() {
-        $this->assertSame('mysql', ConfigableTestMock::config('driver'));
-        $this->assertNull(ConfigableTestMock::config('database', false));
-        $this->assertSame('default_db', ConfigableTestMock::config('database', false, 'default_db'));
-        $this->assertSame('mysql', ConfigableTestMock::configInStatic('driver'));
+        $this->assertSame('mysql', ConfigableTest_Mock::config('driver'));
+        $this->assertNull(ConfigableTest_Mock::config('database', false));
+        $this->assertSame('default_db', ConfigableTest_Mock::config('database', false, 'default_db'));
+        $this->assertSame('mysql', ConfigableTest_Mock::configInStatic('driver'));
 
-        $mock = new ConfigableTestMock();
+        $mock = new ConfigableTest_Mock();
         $this->assertSame('mysql', $mock->configInMember('driver'));
 
         Config::application([
-            ConfigableTestMock::class => [
+            ConfigableTest_Mock::class => [
                 'driver' => 'pgsql'
             ]
         ]);
 
-        $this->assertSame('pgsql', ConfigableTestMock::config('driver'));
-        $this->assertSame('pgsql', ConfigableTestMock::configInStatic('driver'));
+        $this->assertSame('pgsql', ConfigableTest_Mock::config('driver'));
+        $this->assertSame('pgsql', ConfigableTest_Mock::configInStatic('driver'));
         $this->assertSame('pgsql', $mock->configInMember('driver'));
 
-        ConfigableTestMock::setDriver('new driver');
+        ConfigableTest_Mock::setDriver('new driver');
 
-        $this->assertSame('new driver', ConfigableTestMock::config('driver'));
-        $this->assertSame('new driver', ConfigableTestMock::configInStatic('driver'));
+        $this->assertSame('new driver', ConfigableTest_Mock::config('driver'));
+        $this->assertSame('new driver', ConfigableTest_Mock::configInStatic('driver'));
         $this->assertSame('new driver', $mock->configInMember('driver'));
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigableTestMock#database is blank. Please define at application or framework layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigableTest_Mock#database is blank. Please define at application or framework layer.
      */
     public function test_config_blank() {
-        ConfigableTestMock::config('database');
+        ConfigableTest_Mock::config('database');
         $this->fail("Never execute.");
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigableTestMock#database is blank. Please define at application or framework layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigableTest_Mock#database is blank. Please define at application or framework layer.
      */
     public function test_config_blankInStatic() {
-        ConfigableTestMock::configInStatic('database');
+        ConfigableTest_Mock::configInStatic('database');
         $this->fail("Never execute.");
     }
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigableTestMock#database is blank. Please define at application or framework layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigableTest_Mock#database is blank. Please define at application or framework layer.
      */
     public function test_config_blankInMember() {
-        $mock = new ConfigableTestMock();
+        $mock = new ConfigableTest_Mock();
         $mock->configInMember('database');
         $this->fail("Never execute.");
     }
 
     public function test_config_extends() {
-        $mock   = new ConfigableTestMock();
-        $childA = new ConfigableTestMockChildA();
-        $childB = new ConfigableTestMockChildB();
-        $childC = new ConfigableTestMockChildC();
+        $mock   = new ConfigableTest_Mock();
+        $childA = new ConfigableTest_MockChildA();
+        $childB = new ConfigableTest_MockChildB();
+        $childC = new ConfigableTest_MockChildC();
 
-        $this->assertSame('mysql', ConfigableTestMock::config('driver'));
-        $this->assertSame('mysql', ConfigableTestMock::configInStatic('driver'));
+        $this->assertSame('mysql', ConfigableTest_Mock::config('driver'));
+        $this->assertSame('mysql', ConfigableTest_Mock::configInStatic('driver'));
         $this->assertSame('mysql', $mock->configInMember('driver'));
-        $this->assertNull(ConfigableTestMock::config('encode', false));
+        $this->assertNull(ConfigableTest_Mock::config('encode', false));
 
-        $this->assertSame('mysql', ConfigableTestMockChildA::config('driver'));
-        $this->assertSame('mysql', ConfigableTestMockChildA::configInStatic('driver'));
+        $this->assertSame('mysql', ConfigableTest_MockChildA::config('driver'));
+        $this->assertSame('mysql', ConfigableTest_MockChildA::configInStatic('driver'));
         $this->assertSame('mysql', $childA->configInMember('driver'));
-        $this->assertNull(ConfigableTestMockChildA::config('encode', false));
+        $this->assertNull(ConfigableTest_MockChildA::config('encode', false));
 
         Config::application([
-            ConfigableTestMockChildA::class => [
+            ConfigableTest_MockChildA::class => [
                 'driver' => 'oracle',
                 'encode' => 'utf8'
             ]
         ]);
 
-        $this->assertSame('oracle', ConfigableTestMockChildA::config('driver'));
-        $this->assertSame('oracle', ConfigableTestMockChildA::configInStatic('driver'));
+        $this->assertSame('oracle', ConfigableTest_MockChildA::config('driver'));
+        $this->assertSame('oracle', ConfigableTest_MockChildA::configInStatic('driver'));
         $this->assertSame('oracle', $childA->configInMember('driver'));
-        $this->assertSame('utf8', ConfigableTestMockChildA::config('encode'));
+        $this->assertSame('utf8', ConfigableTest_MockChildA::config('encode'));
 
-        $this->assertSame('sqlite', ConfigableTestMockChildB::config('driver'));
-        $this->assertSame('sqlite', ConfigableTestMockChildB::configInStatic('driver'));
+        $this->assertSame('sqlite', ConfigableTest_MockChildB::config('driver'));
+        $this->assertSame('sqlite', ConfigableTest_MockChildB::configInStatic('driver'));
         $this->assertSame('sqlite', $childB->configInMember('driver'));
-        $this->assertSame('utf8mb4', ConfigableTestMockChildB::config('encode'));
-        $this->assertSame('utf8mb4', ConfigableTestMockChildB::configInStatic('encode'));
+        $this->assertSame('utf8mb4', ConfigableTest_MockChildB::config('encode'));
+        $this->assertSame('utf8mb4', ConfigableTest_MockChildB::configInStatic('encode'));
         $this->assertSame('utf8mb4', $childB->configInMember('encode'));
 
-        $this->assertSame('pgsql', ConfigableTestMockChildC::config('driver'));
-        $this->assertSame('pgsql', ConfigableTestMockChildC::configInStatic('driver'));
+        $this->assertSame('pgsql', ConfigableTest_MockChildC::config('driver'));
+        $this->assertSame('pgsql', ConfigableTest_MockChildC::configInStatic('driver'));
         $this->assertSame('pgsql', $childC->configInMember('driver'));
-        $this->assertNull(ConfigableTestMockChildC::config('host', false));
+        $this->assertNull(ConfigableTest_MockChildC::config('host', false));
 
-        $this->assertSame('mysql', ConfigableTestMock::config('driver'));
-        $this->assertSame('mysql', ConfigableTestMock::configInStatic('driver'));
+        $this->assertSame('mysql', ConfigableTest_Mock::config('driver'));
+        $this->assertSame('mysql', ConfigableTest_Mock::configInStatic('driver'));
         $this->assertSame('mysql', $mock->configInMember('driver'));
-        $this->assertNull(ConfigableTestMock::config('encode', false));
+        $this->assertNull(ConfigableTest_Mock::config('encode', false));
     }
 }
