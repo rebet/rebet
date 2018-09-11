@@ -76,80 +76,80 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable {
     public static function removeTestNow() : void {
         self::setConfig(['test_now' => null, 'test_now_timezone' => null]);
     }
-    	
-	/**
-	 * DateTime オブジェクトを解析します。
+        
+    /**
+     * DateTime オブジェクトを解析します。
      * 解析可能な文字列は以下の通りです。
      * 
      * 　1. 引数 $main_format で指定したフォーマット
      * 　2. コンフィグ設定 'acceptable_date_format' に定義されているフォーマット
      * 　3. コンフィグ設定 'default_format' にフォーマットされているフォーマット
      * 
-	 * ※本メソッドは analyzeDateTime() から日付フォーマット情報を除外して日付のみを返す簡易メソッドです。
-	 * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
+     * ※本メソッドは analyzeDateTime() から日付フォーマット情報を除外して日付のみを返す簡易メソッドです。
+     * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
      * 
-	 * @param string|\DateTimeInterface|null $value 日時文字列
-	 * @param array $main_format 優先解析フォーマット（デフォルト：[]）
-	 * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-	 * @return static|null 解析結果
-	 */
-	public static function createDateTime($value, array $main_format = [], $timezone = null) : ?DateTime {
-		[$date, ] = self::analyzeDateTime($value, $main_format, $timezone);
-		return $date;
-	}
-	
-	/**
-	 * DateTime オブジェクトを解析します。
-     * 解析可能な文字列は以下の通りです。
-     * 
-     * 　1. 引数 $main_format で指定したフォーマット
-     * 　2. コンフィグ設定 'acceptable_date_format' に定義されているフォーマット
-     * 　3. コンフィグ設定 'default_format' にフォーマットされているフォーマット
-     * 
-	 * ※本メソッドは解析に成功した日付フォーマットも返します。
-	 * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
-	 * 
-	 * @param string|\DateTimeInterface|null $value 日時文字列
-	 * @param array $main_format 優先解析フォーマット（デフォルト：[]）
-	 * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-	 * @return array [DateTime|null, apply_format|null] or null 解析結果
-	 */
-	public static function analyzeDateTime($value, array $main_format = [], $timezone = null) : array {
-		if($value === null || $value === '') { return [null, null]; }
-		if($value instanceof \DateTimeInterface) { return [new static($value, $timezone), self::config('default_format')]; }
-		
-		$formats   = $main_format + self::config('acceptable_datetime_format');
-        $formats[] = self::config('default_format');
-		
-		$date         = null;
-		$apply_format = null;
-		foreach ($formats AS $format) {
-			$date = self::tryToParseDateTime($value, "!{$format}", $timezone);
-			if(!empty($date)) {
-				$apply_format = $format;
-				break;
-			}
-		}
-		
-		return [$date, $apply_format];
-	}
-	
-	/**
-	 * DateTime オブジェクトを生成を試みます。
-	 * 
-	 * @param string $value 日時文字列
-	 * @param string $format フォーマット
-	 * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-	 * @return static|null
-	 */
-	private static function tryToParseDateTime($value, $format, $timezone = null) {
-		$date = static::createFromFormat($format, $value, $timezone);
-		$le   = static::getLastErrors();
-		return $date === false || !empty($le['errors']) || !empty($le['warnings']) ? null : $date ;
-	}
+     * @param string|\DateTimeInterface|null $value 日時文字列
+     * @param array $main_format 優先解析フォーマット（デフォルト：[]）
+     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return static|null 解析結果
+     */
+    public static function createDateTime($value, array $main_format = [], $timezone = null) : ?DateTime {
+        [$date, ] = self::analyzeDateTime($value, $main_format, $timezone);
+        return $date;
+    }
     
-	/**
-	 * 新しい DateTime オブジェクトを返します。 
+    /**
+     * DateTime オブジェクトを解析します。
+     * 解析可能な文字列は以下の通りです。
+     * 
+     * 　1. 引数 $main_format で指定したフォーマット
+     * 　2. コンフィグ設定 'acceptable_date_format' に定義されているフォーマット
+     * 　3. コンフィグ設定 'default_format' にフォーマットされているフォーマット
+     * 
+     * ※本メソッドは解析に成功した日付フォーマットも返します。
+     * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
+     * 
+     * @param string|\DateTimeInterface|null $value 日時文字列
+     * @param array $main_format 優先解析フォーマット（デフォルト：[]）
+     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return array [DateTime|null, apply_format|null] or null 解析結果
+     */
+    public static function analyzeDateTime($value, array $main_format = [], $timezone = null) : array {
+        if($value === null || $value === '') { return [null, null]; }
+        if($value instanceof \DateTimeInterface) { return [new static($value, $timezone), self::config('default_format')]; }
+        
+        $formats   = $main_format + self::config('acceptable_datetime_format');
+        $formats[] = self::config('default_format');
+        
+        $date         = null;
+        $apply_format = null;
+        foreach ($formats AS $format) {
+            $date = self::tryToParseDateTime($value, "!{$format}", $timezone);
+            if(!empty($date)) {
+                $apply_format = $format;
+                break;
+            }
+        }
+        
+        return [$date, $apply_format];
+    }
+    
+    /**
+     * DateTime オブジェクトを生成を試みます。
+     * 
+     * @param string $value 日時文字列
+     * @param string $format フォーマット
+     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return static|null
+     */
+    private static function tryToParseDateTime($value, $format, $timezone = null) {
+        $date = static::createFromFormat($format, $value, $timezone);
+        $le   = static::getLastErrors();
+        return $date === false || !empty($le['errors']) || !empty($le['warnings']) ? null : $date ;
+    }
+    
+    /**
+     * 新しい DateTime オブジェクトを返します。 
      * このオブジェクトは、time で指定した文字列を format で指定した書式に沿って解釈した時刻を表します。
      * 
      * なお、本メソッドは \DateTime 互換用のメソッドとなります。
@@ -158,16 +158,16 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable {
      *   DateTime::analyzeDateTime()
      *   DateTime::createDateTime()
      *   DateTime::valueOf()
-	 * 
+     * 
      * をご利用下さい。
      * 
-	 * @param string $format フォーマット
-	 * @param string|\DateTimeInterface|null $value 日時文字列
-	 * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-	 * @return DateTime|bool
-	 */
+     * @param string $format フォーマット
+     * @param string|\DateTimeInterface|null $value 日時文字列
+     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @return DateTime|bool
+     */
     public static function createFromFormat($format, $value, $timezone = null) {
-		if($value === null || $value === '') { return false; }
+        if($value === null || $value === '') { return false; }
         if($value instanceof \DateTimeInterface) { return new static($value, $timezone); }
         $value = is_string($value) ? $value : (string)$value ;
         

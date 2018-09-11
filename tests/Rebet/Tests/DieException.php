@@ -10,7 +10,7 @@ namespace Rebet\Tests;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 class DieException extends \Exception {
-	public function __construct ($message, $code = null, $previous = null) {
-		parent::__construct($message, $code, $previous);
-	}
+    public function __construct ($message, $code = null, $previous = null) {
+        parent::__construct($message, $code, $previous);
+    }
 }

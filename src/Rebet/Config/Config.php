@@ -40,217 +40,217 @@ use Rebet\Common\Util;
  */
 final class Config {
 
-	/**
-	 * インスタンス化禁止
-	 */
-	private function __construct() {}
+    /**
+     * インスタンス化禁止
+     */
+    private function __construct() {}
 
-	/**
-	 * コンフィグ設定
-	 * 構造は下記の通り
-	 * 
-	 * CONFIG = [
-	 *    Layer => [
-	 *       Section => [
-	 *           key => value,
-	 *       ],
-	 *    ],
-	 * ]
-	 * 
-	 * @var array
-	 */
-	private static $CONFIG = [
-		Layer::LIBRARY     => [],
-		Layer::FRAMEWORK   => [],
-		Layer::APPLICATION => [],
-		Layer::RUNTIME     => [],
-	];
+    /**
+     * コンフィグ設定
+     * 構造は下記の通り
+     * 
+     * CONFIG = [
+     *    Layer => [
+     *       Section => [
+     *           key => value,
+     *       ],
+     *    ],
+     * ]
+     * 
+     * @var array
+     */
+    private static $CONFIG = [
+        Layer::LIBRARY     => [],
+        Layer::FRAMEWORK   => [],
+        Layer::APPLICATION => [],
+        Layer::RUNTIME     => [],
+    ];
 
-	/**
-	 * コンフィグデータを全てクリアします
-	 */
-	public static function clear() : void {
-		static::$CONFIG = [
-			Layer::LIBRARY     => [],
-			Layer::FRAMEWORK   => [],
-			Layer::APPLICATION => [],
-			Layer::RUNTIME     => [],
-		];
-	}
+    /**
+     * コンフィグデータを全てクリアします
+     */
+    public static function clear() : void {
+        static::$CONFIG = [
+            Layer::LIBRARY     => [],
+            Layer::FRAMEWORK   => [],
+            Layer::APPLICATION => [],
+            Layer::RUNTIME     => [],
+        ];
+    }
 
-	/**
-	 * 対象レイヤーのコンフィグを設定／上書きします。
-	 * 本設定は array_merge による上書き設定となります。
-	 */
-	private static function override(string $layer, array $config) : void {
-		static::$CONFIG[$layer] = \array_merge(static::$CONFIG[$layer], $config);
-	}
-	
-	/**
-	 * フレームワークコンフィグを設定します。
-	 * 本設定は array_merge による上書き設定となります。
-	 * 
-	 * ex)
+    /**
+     * 対象レイヤーのコンフィグを設定／上書きします。
+     * 本設定は array_merge による上書き設定となります。
+     */
+    private static function override(string $layer, array $config) : void {
+        static::$CONFIG[$layer] = \array_merge(static::$CONFIG[$layer], $config);
+    }
+    
+    /**
+     * フレームワークコンフィグを設定します。
+     * 本設定は array_merge による上書き設定となります。
+     * 
+     * ex)
      * Config::framework([
      *     Dao::class => [
      *         'database' => 'rebet',
      *         'user' => 'rebet',
      *         'password' => 'password',
      *     ],
-	 *     DateTime::class => [
-	 *         'default_format' => 'Y/m/d H:i:s',
-	 *     ],
-	 *     'SectionName' => [
-	 *          'key' => 'value',
-	 *     ],
+     *     DateTime::class => [
+     *         'default_format' => 'Y/m/d H:i:s',
+     *     ],
+     *     'SectionName' => [
+     *          'key' => 'value',
+     *     ],
      * ]);
-	 */
-	public static function framework(array $config) : void {
-		self::override(Layer::FRAMEWORK, $config);
-	}
+     */
+    public static function framework(array $config) : void {
+        self::override(Layer::FRAMEWORK, $config);
+    }
 
-	/**
-	 * アプリケーションコンフィグを設定します。
-	 * 本設定は array_merge による上書き設定となります。
-	 * 
-	 * ex)
+    /**
+     * アプリケーションコンフィグを設定します。
+     * 本設定は array_merge による上書き設定となります。
+     * 
+     * ex)
      * Config::application([
      *     Dao::class => [
      *         'database' => 'rebet',
      *         'user' => 'rebet',
      *         'password' => 'password',
      *     ],
-	 *     DateTime::class => [
-	 *         'default_format' => 'Y/m/d H:i:s',
-	 *     ],
-	 *     'SectionName' => [
-	 *          'key' => 'value',
-	 *     ],
+     *     DateTime::class => [
+     *         'default_format' => 'Y/m/d H:i:s',
+     *     ],
+     *     'SectionName' => [
+     *          'key' => 'value',
+     *     ],
      * ]);
-	 */
-	public static function application(array $config) : void {
-		self::override(Layer::APPLICATION, $config);
-	}
+     */
+    public static function application(array $config) : void {
+        self::override(Layer::APPLICATION, $config);
+    }
 
-	/**
-	 * ランタイムコンフィグを設定します。
-	 * 本設定は array_merge による上書き設定となります。
-	 * 
-	 * ex)
+    /**
+     * ランタイムコンフィグを設定します。
+     * 本設定は array_merge による上書き設定となります。
+     * 
+     * ex)
      * Config::runtime([
      *     Dao::class => [
      *         'database' => 'rebet',
      *         'user' => 'rebet',
      *         'password' => 'password',
      *     ],
-	 *     DateTime::class => [
-	 *         'default_format' => 'Y/m/d H:i:s',
-	 *     ],
-	 *     'SectionName' => [
-	 *          'key' => 'value',
-	 *     ],
+     *     DateTime::class => [
+     *         'default_format' => 'Y/m/d H:i:s',
+     *     ],
+     *     'SectionName' => [
+     *          'key' => 'value',
+     *     ],
      * ]);
-	 */
-	public static function runtime(array $config) : void {
-		self::override(Layer::RUNTIME, $config);
-	}
-	
-	/**
-	 * 対象のコンフィグに指定の設定が定義されているかチェックします。
-	 * 
-	 * @param array $config チェック対象のコンフィグ
-	 * @param string $section チェック対象のセクション
-	 * @param int|string $key チェック対象のキー（.区切りで階層指定可）
-	 */
-	private static function isDefine(array $config, string $section, $key) {
-		return isset($config[$section]) && Util::has($config[$section], $key) ;
-	}
+     */
+    public static function runtime(array $config) : void {
+        self::override(Layer::RUNTIME, $config);
+    }
+    
+    /**
+     * 対象のコンフィグに指定の設定が定義されているかチェックします。
+     * 
+     * @param array $config チェック対象のコンフィグ
+     * @param string $section チェック対象のセクション
+     * @param int|string $key チェック対象のキー（.区切りで階層指定可）
+     */
+    private static function isDefine(array $config, string $section, $key) {
+        return isset($config[$section]) && Util::has($config[$section], $key) ;
+    }
 
-	/**
-	 * コンフィグの設定値を取得します。
-	 * 
-	 * @param string $section セクション
-	 * @param int|string $key 設定キー名（.区切りで階層指定可）
-	 * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
-	 * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
-	 * @return ?mixed 設定値
-	 * @throw ConfigNotDefineException
-	 */
-	public static function get(string $section, $key, bool $required = true, $default = null) {
-		foreach ([
-			Layer::RUNTIME     => 'Overwritten with blank at runtime layer.',
-			Layer::APPLICATION => 'Overwritten with blank at application layer.',
-			Layer::FRAMEWORK   => 'Please define at application layer.',
-		] as $layer => $extra_message) {
-			if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
-				$value = Util::get(static::$CONFIG[$layer][$section], $key);
-				if($value instanceof ConfigReferrer) { $value = $value->get(); }
-				$value = Util::bvl($value, $default);
-				if($required && Util::isBlank($value)) {
-					throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. {$extra_message}}");
-				}
-				return $value;
-			}
-		}
+    /**
+     * コンフィグの設定値を取得します。
+     * 
+     * @param string $section セクション
+     * @param int|string $key 設定キー名（.区切りで階層指定可）
+     * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
+     * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
+     * @return ?mixed 設定値
+     * @throw ConfigNotDefineException
+     */
+    public static function get(string $section, $key, bool $required = true, $default = null) {
+        foreach ([
+            Layer::RUNTIME     => 'Overwritten with blank at runtime layer.',
+            Layer::APPLICATION => 'Overwritten with blank at application layer.',
+            Layer::FRAMEWORK   => 'Please define at application layer.',
+        ] as $layer => $extra_message) {
+            if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
+                $value = Util::get(static::$CONFIG[$layer][$section], $key);
+                if($value instanceof ConfigReferrer) { $value = $value->get(); }
+                $value = Util::bvl($value, $default);
+                if($required && Util::isBlank($value)) {
+                    throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. {$extra_message}}");
+                }
+                return $value;
+            }
+        }
 
-		// ライブラリコンフィグ遅延ロード
-		if(!isset(static::$CONFIG[Layer::LIBRARY][$section])) {
-			static::$CONFIG[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
-		}
-		
-		// ライブラリコンフィグ
-		$value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
-		if($value instanceof ConfigReferrer) { $value = $value->get(); }
-		$value = Util::bvl($value, $default);
-		if($required && Util::isBlank($value)) {
-			if(self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {
-				throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. Please define at application or framework layer.");
-			}
-			throw new ConfigNotDefineException("Required config {$section}#{$key} is not define. Please check config key name.");
-		}
-		return $value;
-	}
+        // ライブラリコンフィグ遅延ロード
+        if(!isset(static::$CONFIG[Layer::LIBRARY][$section])) {
+            static::$CONFIG[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
+        }
+        
+        // ライブラリコンフィグ
+        $value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
+        if($value instanceof ConfigReferrer) { $value = $value->get(); }
+        $value = Util::bvl($value, $default);
+        if($required && Util::isBlank($value)) {
+            if(self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {
+                throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. Please define at application or framework layer.");
+            }
+            throw new ConfigNotDefineException("Required config {$section}#{$key} is not define. Please check config key name.");
+        }
+        return $value;
+    }
 
-	/**
-	 * コンフィグの設定が定義されているかチェックします。
-	 * 
-	 * @param string $section セクション
-	 * @param int|string $key 設定キー名（.区切りで階層指定）
-	 * @return bool true: 定義済み, false: 未定義
-	 */
-	public static function has(string $section, $key) : bool {
-		foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {
-			if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
-				return true;
-			}
-		}
+    /**
+     * コンフィグの設定が定義されているかチェックします。
+     * 
+     * @param string $section セクション
+     * @param int|string $key 設定キー名（.区切りで階層指定）
+     * @return bool true: 定義済み, false: 未定義
+     */
+    public static function has(string $section, $key) : bool {
+        foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {
+            if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
+                return true;
+            }
+        }
 
-		// ライブラリコンフィグ遅延ロード
-		if(!isset(static::$CONFIG[Layer::LIBRARY][$section])) {
-			static::$CONFIG[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
-		}
+        // ライブラリコンフィグ遅延ロード
+        if(!isset(static::$CONFIG[Layer::LIBRARY][$section])) {
+            static::$CONFIG[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
+        }
 
-		// ライブラリコンフィグ
-		return self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key);
-	}
+        // ライブラリコンフィグ
+        return self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key);
+    }
 
-	/**
-	 * 他のセクションのコンフィグ設定を共有するリファラを返します。
-	 * 
-	 * ex)
-	 * // 日時に関連したクラスでの定義例
-	 * public static function defaultConfig() {
-	 *     return [
-	 *         'default_format'   => 'Y-m-d H:i:s',
-	 *         'default_timezone' => Config::refer(App::class, 'timezone', Util::evl(date_default_timezone_get(), 'UTC')),
-	 *     ];
-	 * }
-	 * 
-	 * @param string $section 参照先セクション
-	 * @param int|string $key 参照先キー名（.区切りで階層指定）
-	 * @param mixed $default 参照先がブランクの場合のデフォルト値（デフォルト：null）
-	 */
-	public static function refer(string $section, $key, $default = null) {
-		return new ConfigReferrer($section, $key, $default);
-	}
+    /**
+     * 他のセクションのコンフィグ設定を共有するリファラを返します。
+     * 
+     * ex)
+     * // 日時に関連したクラスでの定義例
+     * public static function defaultConfig() {
+     *     return [
+     *         'default_format'   => 'Y-m-d H:i:s',
+     *         'default_timezone' => Config::refer(App::class, 'timezone', Util::evl(date_default_timezone_get(), 'UTC')),
+     *     ];
+     * }
+     * 
+     * @param string $section 参照先セクション
+     * @param int|string $key 参照先キー名（.区切りで階層指定）
+     * @param mixed $default 参照先がブランクの場合のデフォルト値（デフォルト：null）
+     */
+    public static function refer(string $section, $key, $default = null) {
+        return new ConfigReferrer($section, $key, $default);
+    }
 }

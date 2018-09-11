@@ -17,38 +17,38 @@ use Rebet\Common\Util;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 class ConfigReferrer {
-	
-	/**
-	 * 参照先セクション
-	 */
-	private $section = null;
+    
+    /**
+     * 参照先セクション
+     */
+    private $section = null;
 
-	/**
-	 * 参照先キー
-	 */
-	private $key = null;
+    /**
+     * 参照先キー
+     */
+    private $key = null;
 
-	/**
-	 * 参照先がブランクの場合はのデフォルト値
-	 */
-	private $default = null;
+    /**
+     * 参照先がブランクの場合はのデフォルト値
+     */
+    private $default = null;
 
-	/**
-	 * コンフィグ設定参照クラスを構築します。
-	 * @param string $section 参照先セクション
-	 * @param int|string $key 参照先キー
-	 * @param mixed 参照値
-	 */
-	public function __construct(string $section, $key, $default = null) {
-		$this->section = $section;
-		$this->key     = $key;
-		$this->default = $default;
-	}
+    /**
+     * コンフィグ設定参照クラスを構築します。
+     * @param string $section 参照先セクション
+     * @param int|string $key 参照先キー
+     * @param mixed 参照値
+     */
+    public function __construct(string $section, $key, $default = null) {
+        $this->section = $section;
+        $this->key     = $key;
+        $this->default = $default;
+    }
 
-	/**
-	 * 参照先の現在の設定値を取得します。
-	 */
-	public function get() {
-		return Config::get($this->section, $this->key, false, $this->default);
-	}
+    /**
+     * 参照先の現在の設定値を取得します。
+     */
+    public function get() {
+        return Config::get($this->section, $this->key, false, $this->default);
+    }
 }

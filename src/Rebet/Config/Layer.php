@@ -11,32 +11,32 @@ namespace Rebet\Config;
  */
 final class Layer {
 
-	/**
-	 * インスタンス化禁止
-	 */
-	private function __construct() {}
+    /**
+     * インスタンス化禁止
+     */
+    private function __construct() {}
 
-	/**
-	 * ライブラリレイヤー
-	 * @var string 'library'
-	 */
-	public const LIBRARY = 'library';
+    /**
+     * ライブラリレイヤー
+     * @var string 'library'
+     */
+    public const LIBRARY = 'library';
 
-	/**
-	 * フレームワークレイヤー
-	 * @var string 'framework'
-	 */
-	public const FRAMEWORK = 'framework';
+    /**
+     * フレームワークレイヤー
+     * @var string 'framework'
+     */
+    public const FRAMEWORK = 'framework';
 
-	/**
-	 * アプリケーションレイヤー
-	 * @var string 'application'
-	 */
-	public const APPLICATION = 'application';
+    /**
+     * アプリケーションレイヤー
+     * @var string 'application'
+     */
+    public const APPLICATION = 'application';
 
-	/**
-	 * ランタイムレイヤー
-	 * @var string 'runtime'
-	 */
-	public const RUNTIME = 'runtime';
+    /**
+     * ランタイムレイヤー
+     * @var string 'runtime'
+     */
+    public const RUNTIME = 'runtime';
 }
