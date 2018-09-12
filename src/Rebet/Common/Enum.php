@@ -185,15 +185,13 @@ abstract class Enum implements \JsonSerializable {
      * 列挙を JSON Serialize します。
      */
     public function jsonSerialize() {
-        if(\is_scalar($this->value)) { return $this->value; }
-        if($this->value instanceof \JsonSerializable) { return $this->value->jsonSerialize(); }
-        return (string)$this->value ;
+        return $this->value;
     }
 
     /**
      * 列挙型の const 定義から列挙オブジェクトを生成します。
      * 
-     * @param string $name 
+     * @param string $name const 定数名
      */
     private static function constToEnum(\ReflectionClass $rc, $name) : ?Enum {
         $clazz = $rc->getName();

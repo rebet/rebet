@@ -44,8 +44,9 @@ class FileHandler extends FormattableHandler {
         if(\is_array($formatted_log)) {
             $formatted_log = \print_r($formatted_log, true);
         }
-        $log_file = self::config('log_file_path').self::config('log_file_suffix', false, '');
-        error_log($formatted_log."\n", 3, $log_file);
+        $suffix   = self::config('log_file_suffix', false);
+        $log_file = self::config('log_file_path').($suffix ? $now->format($suffix) : '');
+        \error_log($formatted_log."\n", 3, $log_file);
     }
 
     /**

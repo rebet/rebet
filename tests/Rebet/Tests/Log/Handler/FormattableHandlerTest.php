@@ -20,9 +20,6 @@ class FormattableHandlerTest_NullHandler extends FormattableHandler {
             'log_formatter' => \Rebet\Log\Formatter\DefaultFormatter::class,
         ];
     }
-    public static function setLogLevel(LogLevel $lebel) : void {
-        self::setConfig(['log_level' => $lebel]);
-    }
     public static function create() : LogHandler {
         return new static();
     }
