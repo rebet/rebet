@@ -7,7 +7,14 @@ use Rebet\Log\LogLevel;
 use Rebet\Log\Handler\LogHandler;
 
 /**
- * 整形済みログをウェブ画面にHTML出力するログプラグイン
+ * 整形済みログをウェブ画面に追加表示（HTML出力）するプラグイン
+ * 
+ * 本プラグインはレスポンスヘッダに text/html 以外の明示的な Content-Type 指定が
+ * 存在しない応答に対して視覚化」されたログ情報を追加します。
+ * 主にローカル環境での開発においてログ情報を画面から即座に確認できるようにすること
+ * を目的としたプラグインとなります。
+ * なお、本プラグインが出力する HTML 文書は </html> 閉じタグの後ろに追記されるため、
+ * 正しい DOM 構造にならないことに注意してください。
  * 
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -90,12 +97,17 @@ EOS;
      */
     public function shutdown() : void {
         if(!empty($this->buffer)) {
-            foreach (System::headers_list() as $header) {
-                if(preg_match('/content-type: text\/html/', strtolower($header))) {
-                    echo $this->buffer;
-                    return;
-                }
-            } 
+            $headers = http_parse_headers(strtolower(join("\n", System::headers_list())));
+            if(!isset($headers['content-type']) || http_parse_params($headers['content-type'])->params[0] === 'text/html') {
+                echo $this->buffer;
+                return;
+            }
+            // foreach (System::headers_list() as $header) {
+            //     if(preg_match('/content-type: *text\/html/', strtolower($header))) {
+            //         echo $this->buffer;
+            //         return;
+            //     }
+            // } 
         }
     }
 }
