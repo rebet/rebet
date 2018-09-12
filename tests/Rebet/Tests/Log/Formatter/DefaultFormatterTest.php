@@ -106,7 +106,7 @@ EOS
         
         $formatted = $this->formatter->format($this->now, LogLevel::DEBUG(), 'This is test message.', ['test' => 123], new \LogicException("Test"), ['etra' => 'abc']);
         $this->assertStringStartsWith(<<<EOS
-2010-10-20 10:20:30.040050 {$pid} [DEBUG] This is test message.a
+2010-10-20 10:20:30.040050 {$pid} [DEBUG] This is test message.
 EOS
             ,$formatted
         );
