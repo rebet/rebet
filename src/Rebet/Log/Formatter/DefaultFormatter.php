@@ -42,24 +42,25 @@ class DefaultFormatter implements LogFormatter {
     public function format(DateTime $now, LogLevel $level, $message, array $context = [], $error = null, array $extra = []) {
         $body = '';
 
-        if(!is_string($message) && !method_exists($message, '__toString')) { $message = print_r($message, true); }
-        $body = $now->format('Y-m-d H:i:s.u')." ".getmypid()." [{$level}] ".$message;
+        if(!is_string($message) && !method_exists($message, '__toString')) { $message = StringUtil::rtrim(print_r($message, true), "\n"); }
+        $prefix = $now->format('Y-m-d H:i:s.u')." ".getmypid()." [{$level}] ";
+        $body   = StringUtil::indent($message, 1, $prefix);
         
         if($context) {
             $body .= StringUtil::indent(
                 "\n*** CONTEXT ***".
-                "\n".print_r($context, true), 
+                "\n".StringUtil::rtrim(print_r($context, true), "\n"), 
                 1,
-                '>> '
+                "{$prefix}== "
             );
         }
         
         if($extra) {
             $body .= StringUtil::indent(
                 "\n*** EXTRA ***".
-                "\n".print_r($extra, true), 
+                "\n".StringUtil::rtrim(print_r($extra, true), "\n"), 
                 1,
-                '>> '
+                "{$prefix}-- "
             );
         }
         
@@ -68,7 +69,7 @@ class DefaultFormatter implements LogFormatter {
                 "\n*** DEBUG TRACE ***".
                 "\n".Log::traceToString(debug_backtrace(), false),
                 1,
-                '-- '
+                "{$prefix}.. "
             );
         }
         
@@ -78,8 +79,8 @@ class DefaultFormatter implements LogFormatter {
                     "\n*** STACK TRACE ***".
                     "\n{$error}",
                     1,
-                    '** '
-               );
+                    "{$prefix}** "
+                );
             } else {
                 $trace = '';
                 if($level->higherEqual(LogLevel::ERROR())) {
@@ -90,7 +91,7 @@ class DefaultFormatter implements LogFormatter {
                     "\n{$error['message']} <{$error['type']}> ({$error['file']}:{$error['line']})".
                     $trace,
                     1,
-                    '** '
+                    "{$prefix}** "
                );
             }
         }

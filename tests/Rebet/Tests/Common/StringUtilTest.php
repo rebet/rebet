@@ -132,8 +132,8 @@ class StringUtilTest extends RebetTestCase {
     }
 
     public function test_indent() {
-        $this->assertNull(StringUtil::indent(null));
-        $this->assertSame('', StringUtil::indent(''));
+        $this->assertSame("\t", StringUtil::indent(null));
+        $this->assertSame("\t", StringUtil::indent(''));
 
         $this->assertSame("\t1st", StringUtil::indent("1st"));
         $this->assertSame("\t1st\n\t2nd\n\t3rd", StringUtil::indent("1st\n2nd\n3rd"));

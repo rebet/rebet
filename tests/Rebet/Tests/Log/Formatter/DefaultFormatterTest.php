@@ -58,12 +58,11 @@ EOS
         $formatted = $this->formatter->format($this->now, LogLevel::WARN(), [1, 2, 3]);
         $this->assertSame(<<<EOS
 2010-10-20 10:20:30.040050 {$pid} [WARN ] Array
-(
-    [0] => 1
-    [1] => 2
-    [2] => 3
-)
-
+2010-10-20 10:20:30.040050 {$pid} [WARN ] (
+2010-10-20 10:20:30.040050 {$pid} [WARN ]     [0] => 1
+2010-10-20 10:20:30.040050 {$pid} [WARN ]     [1] => 2
+2010-10-20 10:20:30.040050 {$pid} [WARN ]     [2] => 3
+2010-10-20 10:20:30.040050 {$pid} [WARN ] )
 EOS
             ,$formatted
         );
@@ -71,19 +70,18 @@ EOS
         $formatted = $this->formatter->format($this->now, LogLevel::ERROR(), 'This is test message.', ['test' => 123]);
         $this->assertSame(<<<EOS
 2010-10-20 10:20:30.040050 {$pid} [ERROR] This is test message.
->> *** CONTEXT ***
->> Array
->> (
->>     [test] => 123
->> )
-
+2010-10-20 10:20:30.040050 {$pid} [ERROR] == *** CONTEXT ***
+2010-10-20 10:20:30.040050 {$pid} [ERROR] == Array
+2010-10-20 10:20:30.040050 {$pid} [ERROR] == (
+2010-10-20 10:20:30.040050 {$pid} [ERROR] ==     [test] => 123
+2010-10-20 10:20:30.040050 {$pid} [ERROR] == )
 EOS
             ,$formatted
         );
 
-        $formatted = $this->formatter->format($this->now, LogLevel::ERROR(), 'This is test message.', ['test' => 123], new \LogicException("Test"));
+        $formatted = $this->formatter->format($this->now, LogLevel::FATAL(), 'This is test message.', ['test' => 123], new \LogicException("Test"));
         $this->assertStringStartsWith(<<<EOS
-2010-10-20 10:20:30.040050 {$pid} [ERROR] This is test message.
+2010-10-20 10:20:30.040050 {$pid} [FATAL] This is test message.
 EOS
             ,$formatted
         );
@@ -98,14 +96,19 @@ EOS
             ,$formatted
         );
         
-        $formatted = $this->formatter->format($this->now, LogLevel::ERROR(), 'This is test message.', ['test' => 123], new \LogicException("Test"), ['etra' => 'abc']);
+        $formatted = $this->formatter->format($this->now, LogLevel::DEBUG(), 'This is test message.', ['test' => 123], new \LogicException("Test"), ['etra' => 'abc']);
         $this->assertStringStartsWith(<<<EOS
-2010-10-20 10:20:30.040050 {$pid} [ERROR] This is test message.
+2010-10-20 10:20:30.040050 {$pid} [DEBUG] This is test message.
 EOS
             ,$formatted
         );
         $this->assertContains(<<<EOS
 *** CONTEXT ***
+EOS
+            ,$formatted
+        );
+        $this->assertContains(<<<EOS
+*** DEBUG TRACE ***
 EOS
             ,$formatted
         );
