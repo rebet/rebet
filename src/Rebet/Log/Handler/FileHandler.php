@@ -34,14 +34,6 @@ class FileHandler extends FormattableHandler {
     }
 
     /**
-     * ログハンドラを構築します
-     */
-    public function __constract() {
-        $log_formatter = self::config('log_formatter');
-        parent::__constract(new $log_formatter());
-    }
-
-    /**
      * フォーマット済みのログデータを処理します。
      * 
      * @param DateTime $now 現在時刻
@@ -52,7 +44,7 @@ class FileHandler extends FormattableHandler {
         if(\is_array($formatted_log)) {
             $formatted_log = \print_r($formatted_log, true);
         }
-        $log_file = self::confg('log_file_path').self::config('log_file_suffix', false, '');
+        $log_file = self::config('log_file_path').self::config('log_file_suffix', false, '');
         error_log($formatted_log."\n", 3, $log_file);
     }
 

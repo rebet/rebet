@@ -73,9 +73,9 @@ class WebDisplayPlugin implements LogPlugin {
                 break;
         }
         
-        $mark          = substr_count($body,"\n") > 1 ? "☰" : "　" ;
-        $message       = preg_replace('/\n/s', '<br />', str_replace(' ', '&nbsp;', htmlspecialchars($formattedlog)));
-        $this->$buffer = <<<EOS
+        $mark         = substr_count($formatted_log,"\n") > 1 ? "☰" : "　" ;
+        $message      = preg_replace('/\n/s', '<br />', str_replace(' ', '&nbsp;', htmlspecialchars($formatted_log)));
+        $this->buffer = <<<EOS
 <div style="box-sizing: border-box; height:20px; overflow-y:hidden; cursor:pointer; margin:5px; padding:4px 10px 4px 26px; border-left:8px solid {$fc}; color:{$fc}; background-color:{$bc};display: block;font-size:12px; line-height: 1.2em; word-break : break-all;font-family: Consolas, 'Courier New', Courier, Monaco, monospace;text-indent:-19px;text-align: left;"
     ondblclick="javascript: this.style.height=='20px' ? this.style.height='auto' : this.style.height='20px'">
 {$mark} {$message}
@@ -88,10 +88,10 @@ EOS;
      * 本メソッドは shotdown_handler でコールされます。
      */
     public function shutdown() : void {
-        if(!empty($this->$buffer)) {
+        if(!empty($this->buffer)) {
             foreach (headers_list() as $header) {
                 if(preg_match('/content-type: text\/html/', strtolower($header))) {
-                    echo $this->$buffer;
+                    echo $this->buffer;
                     return;
                 }
             } 

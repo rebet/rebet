@@ -172,7 +172,9 @@ class Log {
         foreach (self::$PLUGINS as $plugin) {
             $plugin->prehook(self::$HANDLER, $now, $level, $extra);
         }
+
         $formatted_log = self::$HANDLER->handle($now, $level, $message, $context, $error, $extra);
+        
         if($formatted_log !== null) {
             foreach (self::$PLUGINS as $plugin) {
                 $plugin->posthook(self::$HANDLER, $now, $level, $formatted_log);

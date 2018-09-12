@@ -27,7 +27,7 @@ abstract class FormattableHandler implements LogHandler {
     /**
      * ログハンドラを構築します
      */
-    public function __constract() {
+    public function __construct() {
         $formatter = self::config('log_formatter');
         $this->formatter = $formatter::create();
     }
@@ -45,7 +45,7 @@ abstract class FormattableHandler implements LogHandler {
      */
     public function handle(DateTime $now, LogLevel $level, $message, array $context = [], $error = null, array $extra = []) {
         if($level->lowerThan(self::config('log_level'))) { return null; }
-        $formatted_log = $this->$formatter->format($now, $level, $message, $context, $error, $extra);
+        $formatted_log = $this->formatter->format($now, $level, $message, $context, $error, $extra);
         $this->report($now, $level, $formatted_log);
         return $formatted_log;
     }
