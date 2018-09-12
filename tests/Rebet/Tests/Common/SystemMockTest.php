@@ -7,7 +7,7 @@ use Rebet\Common\System;
 /**
  * 本テストは tests/mocks.php にて定義されている Systemモック クラスのテストとなります。
  */
-class SystemTest extends RebetTestCase {
+class SystemMockTest extends RebetTestCase {
     public function setUp() {
         System::mock_init();
     }
@@ -116,5 +116,14 @@ class SystemTest extends RebetTestCase {
             System::headers_list()
         );
 
+        System::header('Content-Type: application/json; charset=UTF-8');
+        $this->assertSame(
+            [
+                'HTTP/1.1 200 OK',
+                'Date: Thu, 30 Aug 2010 10:20:30 GMT',
+                'Content-Type: application/json; charset=UTF-8',
+            ],
+            System::headers_list()
+        );
     }
 }

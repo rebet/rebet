@@ -20,7 +20,7 @@ class AuthUtilTest extends RebetTestCase {
             AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('Never executed.');
         } finally {
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
             $this->assertContains('Content-type: text/html; charset=UTF-8', $headers);
@@ -45,7 +45,7 @@ class AuthUtilTest extends RebetTestCase {
             $id = AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('No Exception');
         } finally {
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
             $this->assertContains('WWW-Authenticate: Basic realm="Enter your ID and PASSWORD."', $headers);
             $this->assertContains('Content-type: text/html; charset=UTF-8', $headers);

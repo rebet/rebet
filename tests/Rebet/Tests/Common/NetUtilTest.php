@@ -59,7 +59,7 @@ class NetUtilTest extends RebetTestCase {
             NetUtil::redirect('https://github.com/rebet/rebet');
             $this->fail('Never executed.');
         } finally {
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://github.com/rebet/rebet', $headers);
         }
@@ -73,7 +73,7 @@ class NetUtilTest extends RebetTestCase {
             $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'github rebet']);
             $this->fail('Never executed.');
         } finally {
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://www.google.com/search?q=github+rebet', $headers);
         }
@@ -87,7 +87,7 @@ class NetUtilTest extends RebetTestCase {
             $url = NetUtil::redirect('https://www.google.com/search?oe=utf-8', ['q' => 'github rebet']);
             $this->fail('Never executed.');
         } finally {
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 302 Found', $headers);
             $this->assertContains('Location: https://www.google.com/search?oe=utf-8&q=github+rebet', $headers);
         }
@@ -105,7 +105,7 @@ class NetUtilTest extends RebetTestCase {
             $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_contents());
             ob_end_clean();
         
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 200 OK', $headers);
             $this->assertContains('Content-Type: application/json; charset=UTF-8', $headers);
         }
@@ -123,7 +123,7 @@ class NetUtilTest extends RebetTestCase {
             $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_contents());
             ob_end_clean();
             
-            $headers = $this->_remap(System::$HEADER_RAW_ARGES, null, 'header');
+            $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 200 OK', $headers);
             $this->assertContains('Content-Type: application/javascript; charset=UTF-8', $headers);
         }
