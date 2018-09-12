@@ -55,14 +55,22 @@ EOS
             ,$formatted
         );
         
+        $formatted = $this->formatter->format($this->now, LogLevel::INFO(), "1st line.\n2nd line.");
+        $this->assertSame(<<<EOS
+2010-10-20 10:20:30.040050 {$pid} [INFO ] 1st line.
+2nd line.
+EOS
+            ,$formatted
+        );
+        
         $formatted = $this->formatter->format($this->now, LogLevel::WARN(), [1, 2, 3]);
         $this->assertSame(<<<EOS
 2010-10-20 10:20:30.040050 {$pid} [WARN ] Array
-2010-10-20 10:20:30.040050 {$pid} [WARN ] (
-2010-10-20 10:20:30.040050 {$pid} [WARN ]     [0] => 1
-2010-10-20 10:20:30.040050 {$pid} [WARN ]     [1] => 2
-2010-10-20 10:20:30.040050 {$pid} [WARN ]     [2] => 3
-2010-10-20 10:20:30.040050 {$pid} [WARN ] )
+(
+    [0] => 1
+    [1] => 2
+    [2] => 3
+)
 EOS
             ,$formatted
         );
@@ -70,11 +78,11 @@ EOS
         $formatted = $this->formatter->format($this->now, LogLevel::ERROR(), 'This is test message.', ['test' => 123]);
         $this->assertSame(<<<EOS
 2010-10-20 10:20:30.040050 {$pid} [ERROR] This is test message.
-2010-10-20 10:20:30.040050 {$pid} [ERROR] == *** CONTEXT ***
-2010-10-20 10:20:30.040050 {$pid} [ERROR] == Array
-2010-10-20 10:20:30.040050 {$pid} [ERROR] == (
-2010-10-20 10:20:30.040050 {$pid} [ERROR] ==     [test] => 123
-2010-10-20 10:20:30.040050 {$pid} [ERROR] == )
+== *** CONTEXT ***
+== Array
+== (
+==     [test] => 123
+== )
 EOS
             ,$formatted
         );
@@ -98,7 +106,7 @@ EOS
         
         $formatted = $this->formatter->format($this->now, LogLevel::DEBUG(), 'This is test message.', ['test' => 123], new \LogicException("Test"), ['etra' => 'abc']);
         $this->assertStringStartsWith(<<<EOS
-2010-10-20 10:20:30.040050 {$pid} [DEBUG] This is test message.
+2010-10-20 10:20:30.040050 {$pid} [DEBUG] This is test message.a
 EOS
             ,$formatted
         );
