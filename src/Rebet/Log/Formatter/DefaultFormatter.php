@@ -76,8 +76,7 @@ class DefaultFormatter implements LogFormatter {
             if($error instanceof \Throwable) {
                 $body .= StringUtil::indent(
                     "\n*** STACK TRACE ***".
-                    "\n".$error->getMessage(). " (".$error->getFile().":".$error->getLine().")".
-                    "\n".$error->getTraceAsString(),
+                    "\n{$error}",
                     1,
                     '** '
                );
