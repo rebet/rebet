@@ -162,7 +162,7 @@ class Log {
 
         if(self::$PLUGINS === null) {
             self::$PLUGINS = [];
-            foreach (self::config('log_plugins') as $plugin_class) {
+            foreach (self::config('log_plugins', false, []) as $plugin_class) {
                 self::$PLUGINS[] = $plugin_class::create();
             }
         }

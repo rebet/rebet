@@ -2,8 +2,8 @@
 namespace Rebet\Log\Plugin;
 
 use Rebet\DateTime\DateTime;
-use Rebet\Log\Handler\LogHandler;
 use Rebet\Log\LogLevel;
+use Rebet\Log\Handler\LogHandler;
 
 /**
  * ログプラグイン インターフェース

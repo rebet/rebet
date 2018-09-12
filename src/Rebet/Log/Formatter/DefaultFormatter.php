@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Log\Formatter;
 
+use Rebet\Common\StringUtil;
+use Rebet\DateTime\DateTime;
 use Rebet\Log\Log;
 use Rebet\Log\LogLevel;
-use Rebet\DateTime\DateTime;
-use Rebet\Common\StringUtil;
 
 /**
  * デフォルトログフォーマッタ インターフェース

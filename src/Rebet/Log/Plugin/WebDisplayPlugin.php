@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Log\Plugin;
 
+use Rebet\Common\System;
 use Rebet\DateTime\DateTime;
-use Rebet\Log\Handler\LogHandler;
 use Rebet\Log\LogLevel;
+use Rebet\Log\Handler\LogHandler;
 
 /**
  * 整形済みログをウェブ画面にHTML出力するログプラグイン
@@ -89,7 +90,7 @@ EOS;
      */
     public function shutdown() : void {
         if(!empty($this->buffer)) {
-            foreach (headers_list() as $header) {
+            foreach (System::headers_list() as $header) {
                 if(preg_match('/content-type: text\/html/', strtolower($header))) {
                     echo $this->buffer;
                     return;

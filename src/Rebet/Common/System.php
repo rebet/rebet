@@ -23,7 +23,7 @@ class System {
     private function __construct() {}
 
     /**
-     * exit() メソッドのラッパーメソッドです。
+     * exit() のラッパーメソッドです。
      * 
      * @param int|string|null ステータス
      */
@@ -33,7 +33,7 @@ class System {
     }
 
     /**
-     * die() メソッドのラッパーメソッドです。
+     * die() のラッパーメソッドです。
      * 
      * @param int|string|null ステータス
      */
@@ -43,7 +43,7 @@ class System {
     }
 
     /**
-     * header() メソッドのラッパーメソッドです。
+     * header() のラッパーメソッドです。
      * 
      * @param string $header ヘッダ文字列
      * @param bool $replace 上書き（デフォルト：true）
@@ -51,5 +51,12 @@ class System {
      */
     public static function header(string $header,  bool $replace = true, int $http_response_code = null) : void {
         \header($header, $replace, $http_response_code);
+    }
+
+    /**
+     * headers_list() のラッパーメソッドです。
+     */
+    public static function headers_list() : array {
+        return \headers_list();
     }
 }
