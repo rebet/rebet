@@ -7,6 +7,22 @@ use Rebet\DateTime\DateTime;
 /**
  * ロガー クラス
  * 
+ * 任意のハンドラとプラグインを組み合わせてログ出力を行います。
+ * 
+ * パッケージで用意済みのハンドラ＆プラグインには下記のものがあります。
+ * ※これらのハンドラ及びプラグインは順次追加していきます。
+ * 
+ * ハンドラ
+ * --------------------
+ * @see \Rebet\Log\Handler\StderrHandler::class （ライブラリデフォルト）
+ * @see \Rebet\Log\Handler\FileHandler::class
+ * 
+ * プラグイン（ライブラリデフォルト：無指定）
+ * --------------------
+ * @see \Rebet\Log\Plugin\WebDisplayPlugin::class
+ * 
+ * @todo 各種ハンドラ＆プラグイン追加
+ * 
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -16,10 +32,8 @@ class Log {
     use Configable;
     public static function defaultConfig() {
         return [
-            'log_handler' => \Rebet\Log\Handler\FileHandler::class,
-            'log_plugins' => [
-                \Rebet\Log\Plugin\WebDisplayPlugin::class
-            ],
+            'log_handler' => \Rebet\Log\Handler\StderrHandler::class,
+            'log_plugins' => [],
         ];
     }
 
