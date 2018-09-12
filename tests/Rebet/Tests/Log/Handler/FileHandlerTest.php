@@ -20,7 +20,7 @@ class FileHandlerTest extends RebetTestCase {
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 
         Config::application([
-            FileHandler::class => [
+            \Rebet\Log\Handler\FileHandler::class => [
                 'log_level'     => LogLevel::TRACE(),
                 'log_file_path' => 'vfs://root/logs/application.log'
             ]

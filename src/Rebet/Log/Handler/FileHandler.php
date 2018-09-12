@@ -48,8 +48,11 @@ class FileHandler extends FormattableHandler {
         error_log($formatted_log."\n", 3, $log_file);
     }
 
+    /**
+     * シャットダウン処理を行います。
+     */
     public function shutdown() : void {
-        // 特に何もしない
+        // Nothing to do
     }
 }
 
