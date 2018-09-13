@@ -42,11 +42,14 @@ class WebDisplayPlugin implements LogPlugin {
      * @param LogHandler $handler ログハンドラ
      * @param DateTime $now 現在時刻
      * @param LogLevel $level ログレベル
+     * @param mixed $message ログ内容
+     * @param array $context コンテキスト（デフォルト：[]）
+     * @param \Throwable|array $error 例外 or error_get_last 形式配列
      * @param array $extra エキストラ情報
-     * @return void
+     * @return bool true: ログ出力継続, false: ログ出力中断
      */
-    public function prehook(LogHandler $handler, DateTime $now, LogLevel $level, array &$extra) : void {
-        // Do nothing.
+    public function prehook(LogHandler $handler, DateTime $now, LogLevel $level, &$message, array &$context, &$error, array &$extra) : bool {
+        return true;
     }
 
     /**
@@ -56,8 +59,9 @@ class WebDisplayPlugin implements LogPlugin {
      * @param DateTime $now 現在時刻
      * @param LogLevel $level ログレベル
      * @param string|array $formatted_log 整形済みログ
+     * @param array $extra エキストラ情報
      */
-    public function posthook(LogHandler $handler, DateTime $now, LogLevel $level, $formatted_log) : void {
+    public function posthook(LogHandler $handler, DateTime $now, LogLevel $level, $formatted_log, array &$extra) : void {
         if(is_array($formatted_log)) {
             $formatted_log = print_r($formatted_log, true);
         }
@@ -81,9 +85,9 @@ class WebDisplayPlugin implements LogPlugin {
                 break;
         }
         
-        $mark         = substr_count($formatted_log,"\n") > 1 ? "☰" : "　" ;
-        $message      = preg_replace('/\n/s', '<br />', str_replace(' ', '&nbsp;', htmlspecialchars($formatted_log)));
-        $this->buffer = <<<EOS
+        $mark          = substr_count($formatted_log,"\n") > 1 ? "☰" : "　" ;
+        $message       = preg_replace('/\n/s', '<br />', str_replace(' ', '&nbsp;', htmlspecialchars($formatted_log)));
+        $this->buffer .= <<<EOS
 <div style="box-sizing: border-box; height:20px; overflow-y:hidden; cursor:pointer; margin:5px; padding:4px 10px 4px 26px; border-left:8px solid {$fc}; color:{$fc}; background-color:{$bc};display: block;font-size:12px; line-height: 1.2em; word-break : break-all;font-family: Consolas, 'Courier New', Courier, Monaco, monospace;text-indent:-19px;text-align: left;"
     ondblclick="javascript: this.style.height=='20px' ? this.style.height='auto' : this.style.height='20px'">
 {$mark} {$message}
@@ -97,17 +101,18 @@ EOS;
      */
     public function shutdown() : void {
         if(!empty($this->buffer)) {
-            $headers = http_parse_headers(strtolower(join("\n", System::headers_list())));
-            if(!isset($headers['content-type']) || http_parse_params($headers['content-type'])->params[0] === 'text/html') {
-                echo $this->buffer;
-                return;
+            $matches      = [];
+            $content_type = null;
+            foreach (System::headers_list() as $header) {
+                if(preg_match('/content-type *: *(.*?);/', strtolower($header), $matches)) {
+                    $content_type = $matches[1];
+                    break;
+                }
             }
-            // foreach (System::headers_list() as $header) {
-            //     if(preg_match('/content-type: *text\/html/', strtolower($header))) {
-            //         echo $this->buffer;
-            //         return;
-            //     }
-            // } 
+            if($content_type === null || $content_type  === 'text/html') {
+                echo($this->buffer);
+                unset($this->buffer);
+            }
         }
     }
 }

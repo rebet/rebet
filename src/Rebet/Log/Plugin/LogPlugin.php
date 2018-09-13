@@ -26,10 +26,13 @@ interface LogPlugin {
      * @param LogHandler $handler ログハンドラ
      * @param DateTime $now 現在時刻
      * @param LogLevel $level ログレベル
+     * @param mixed $message ログ内容
+     * @param array $context コンテキスト（デフォルト：[]）
+     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
      * @param array $extra エキストラ情報
-     * @return void
+     * @return bool true: ログ出力継続, false: ログ出力中断
      */
-    public function prehook(LogHandler $handler, DateTime $now, LogLevel $level, array &$extra) : void ;
+    public function prehook(LogHandler $handler, DateTime $now, LogLevel $level, &$message, array &$context, &$error, array &$extra) : bool ;
 
     /**
      * ログの事後処理をします。
@@ -38,8 +41,9 @@ interface LogPlugin {
      * @param DateTime $now 現在時刻
      * @param LogLevel $level ログレベル
      * @param string|array $formatted_log 整形済みログ
+     * @param array $extra エキストラ情報
      */
-    public function posthook(LogHandler $handler, DateTime $now, LogLevel $level, $formatted_log) : void ;
+    public function posthook(LogHandler $handler, DateTime $now, LogLevel $level, $formatted_log, array &$extra) : void ;
 
     /**
      * プラグインのシャットダウン処理を実行します。

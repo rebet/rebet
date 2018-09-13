@@ -178,21 +178,20 @@ class Log {
      * @return void
      */
     private static function log(LogLevel $level, $message, array $context = [], $error = null) : void {
+        self::init();
         $now   = DateTime::now();
         $extra = [];
 
-        self::init();
-
         foreach (self::$PLUGINS as $plugin) {
-            $plugin->prehook(self::$HANDLER, $now, $level, $extra);
+            $continue = $plugin->prehook(self::$HANDLER, $now, $level, $message, $context, $error, $extra);
+            if(!$continue) { return; }
         }
 
         $formatted_log = self::$HANDLER->handle($now, $level, $message, $context, $error, $extra);
-        
-        if($formatted_log !== null) {
-            foreach (self::$PLUGINS as $plugin) {
-                $plugin->posthook(self::$HANDLER, $now, $level, $formatted_log);
-            }
+        if($formatted_log === null) { return; }
+
+        foreach (self::$PLUGINS as $plugin) {
+            $plugin->posthook(self::$HANDLER, $now, $level, $formatted_log, $extra);
         }
     }
     
