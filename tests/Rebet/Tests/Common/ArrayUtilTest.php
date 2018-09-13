@@ -19,19 +19,19 @@ class ArrayUtilTest extends RebetTestCase {
         }
     }
 
-    public function test_isSequentialArray() {
-        $this->assertFalse(ArrayUtil::isSequentialArray(null));
+    public function test_isSequential() {
+        $this->assertFalse(ArrayUtil::isSequential(null));
 
-        $this->assertTrue(ArrayUtil::isSequentialArray([]));
-        $this->assertTrue(ArrayUtil::isSequentialArray([1]));
-        $this->assertTrue(ArrayUtil::isSequentialArray([1,2,3]));
-        $this->assertTrue(ArrayUtil::isSequentialArray([0 => 'a', 1 => 'b', 2 => 'c']));
-        $this->assertTrue(ArrayUtil::isSequentialArray([0 => 'a', '1' => 'b']));
+        $this->assertTrue(ArrayUtil::isSequential([]));
+        $this->assertTrue(ArrayUtil::isSequential([1]));
+        $this->assertTrue(ArrayUtil::isSequential([1,2,3]));
+        $this->assertTrue(ArrayUtil::isSequential([0 => 'a', 1 => 'b', 2 => 'c']));
+        $this->assertTrue(ArrayUtil::isSequential([0 => 'a', '1' => 'b']));
 
-        $this->assertFalse(ArrayUtil::isSequentialArray([0 => 'a', 2 => 'c', 1 => 'b']));
-        $this->assertFalse(ArrayUtil::isSequentialArray([1 => 'c', 2 => 'b']));
-        $this->assertFalse(ArrayUtil::isSequentialArray([0 => 'a', 'a' => 'b']));
-        $this->assertFalse(ArrayUtil::isSequentialArray(['a' => 'a', 'b' => 'b']));
+        $this->assertFalse(ArrayUtil::isSequential([0 => 'a', 2 => 'c', 1 => 'b']));
+        $this->assertFalse(ArrayUtil::isSequential([1 => 'c', 2 => 'b']));
+        $this->assertFalse(ArrayUtil::isSequential([0 => 'a', 'a' => 'b']));
+        $this->assertFalse(ArrayUtil::isSequential(['a' => 'a', 'b' => 'b']));
     }
 
     public function test_flatten() {
@@ -61,6 +61,43 @@ class ArrayUtilTest extends RebetTestCase {
                 43 => ['user_id' => 43, 'name' => 'Linda']
             ], 
             ArrayUtil::remap($list, 'user_id', null)
+        );
+    }
+    
+    public function test_override() {
+        $this->assertSame(1, ArrayUtil::override(null, 1));
+        $this->assertNull(ArrayUtil::override(1, null));
+        $this->assertSame([1, 2], ArrayUtil::override(1, [1, 2]));
+        $this->assertSame(1, ArrayUtil::override([1, 2], 1));
+        $this->assertSame([3], ArrayUtil::override([1, 2], [3]));
+        $this->assertSame([3], ArrayUtil::override(['a' => 1, 'b' => 2], [3]));
+        $this->assertSame(
+            ['a' => 3, 'b' => 2],
+            ArrayUtil::override(['a' => 1, 'b' => 2], ['a' => 3])
+        );
+        $this->assertSame(
+            ['a' => 3, 'b' => 2, 'c' => 3],
+            ArrayUtil::override(['a' => 1, 'b' => 2], ['a' => 3, 'c' => 3])
+        );
+        $this->assertSame(
+            ['a' => 3, 'b' => [2], 'c' => 3],
+            ArrayUtil::override(['a' => [1], 'b' => [2]], ['a' => 3, 'c' => 3])
+        );
+        $this->assertSame(
+            ['a' => ['A' => 3, 'B' => 2, 'C' => 3], 'b' => 2, 'c' => 3],
+            ArrayUtil::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => 3, 'C' => 3], 'c' => 3])
+        );
+        $this->assertSame(
+            ['a' => ['A' => ['α' => 1], 'B' => 2, 'C' => 3], 'b' => 2, 'c' => 3],
+            ArrayUtil::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => ['α' => 1], 'C' => 3], 'c' => 3])
+        );
+        $this->assertSame(
+            ['a' => [], 'b' => 2, 'c' => 3],
+            ArrayUtil::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => [], 'c' => 3])
+        );
+        $this->assertSame(
+            ['a' => [['A' => 3]], 'b' => 2, 'c' => 3],
+            ArrayUtil::override(['a' => [['A' => 1], ['B' => 2]], 'b' => 2], ['a' => [['A' => 3]], 'c' => 3])
         );
     }
 }

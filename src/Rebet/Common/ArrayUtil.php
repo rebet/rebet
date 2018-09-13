@@ -67,18 +67,23 @@ class ArrayUtil {
      * ※null 指定時は false を返します
      * 
      * ex)
-     * ArrayUtil::isSequentialArray([]);                             //=> true
-     * ArrayUtil::isSequentialArray([1,2,3]);                        //=> true
-     * ArrayUtil::isSequentialArray([0 => 'a', '1' => 'b']);         //=> true
-     * ArrayUtil::isSequentialArray([0 => 'a', 2 => 'c', 1 => 'b']); //=> false
-     * ArrayUtil::isSequentialArray([1 => 'c', 2 => 'b']);           //=> false
-     * ArrayUtil::isSequentialArray(['a' => 'a', 'b' => 'b']);       //=> false
+     * ArrayUtil::isSequential([]);                             //=> true
+     * ArrayUtil::isSequential([1,2,3]);                        //=> true
+     * ArrayUtil::isSequential([0 => 'a', '1' => 'b']);         //=> true
+     * ArrayUtil::isSequential([0 => 'a', 2 => 'c', 1 => 'b']); //=> false
+     * ArrayUtil::isSequential([1 => 'c', 2 => 'b']);           //=> false
+     * ArrayUtil::isSequential(['a' => 'a', 'b' => 'b']);       //=> false
      * 
      * @param  array|null $array 配列
      * @return bool true : 連番配列／false : 連想配列 or 跳び番配列
      */
-    public static function isSequentialArray(?array $array) : bool {
-        return $array === null ? false : array_values($array) === $array;
+    public static function isSequential(?array $array) : bool {
+        if($array === null) { return false; }
+        $i = 0;
+        foreach ($array as $key => $value) {
+            if($key !== $i++) { return false; }
+        }
+        return true;
     }
     
      /**
@@ -125,17 +130,14 @@ class ArrayUtil {
      * ベースとなる連想配列に対して、差分の連想配列で上書きマージします。
      * 
      * 本メソッドは連想配列の値が連想配列である場合は再帰的に処理をする点で array_merge と異なり、
-     * 連想配列の値がシーケンシャル配列又はオブジェクトの場合に値を上書きする点で array_replace_recursive と異なります。
+     * 連想配列の値がシーケンシャル配列又はオブジェクトの場合に値を上書きする点で array_merge_recursive と異なります。
      * 
      * @param mixed $base ベースデータ
      * @param mixed $diff 差分データ
      * @return マージ済みのデータ
      */
     public static function override($base, $diff) {
-        if(
-            !is_array($base) || !is_array($diff) || 
-            self::isSequentialArray($base) || self::isSequentialArray($diff)
-        ) {
+        if(!is_array($base) || !is_array($diff) || self::isSequential($base) || self::isSequential($diff)) {
             return $diff;
         }
 
