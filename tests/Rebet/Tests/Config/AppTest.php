@@ -10,6 +10,23 @@ class AppTest extends RebetTestCase {
     public function setUp() {
         Config::clear();
     }
+    
+    /**
+     * @runInSeparateProcess
+     * @expectedException \Dotenv\Exception\InvalidPathException
+     * @expectedExceptionMessage Unable to read the environment file at
+     */
+    public function test_loadDotenv_notfound() {
+        $dotenv = App::loadDotenv(__DIR__);
+    }
+    
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_loadDotenv() {
+        $dotenv = App::loadDotenv(__DIR__.'/../../../', '.env.unittest');
+        $this->assertSame('unittest', App::getEnv());
+    }
 
     public function test_getLocale() {
         $this->assertSame('ja', App::getLocale());
