@@ -83,7 +83,6 @@ trait Configable {
         $rc   = new \ReflectionClass(static::class);
         $base = $rc->getParentClass()->getMethod('defaultConfig')->invoke(null);
         return ArrayUtil::override($base, $diff);
-        // return \array_merge($base, $diff);
     }
 
     /**

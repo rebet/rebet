@@ -50,6 +50,14 @@ class ConfigableTest_MockChildC extends ConfigableTest_Mock {
         ];
     }
 }
+class ConfigableTest_MockGrandChildA extends ConfigableTest_MockChildB {
+    public static function defaultConfig() {
+        return self::overrideConfig([
+            'encode' => 'utf8',
+            'new_key' => 'new_value',
+        ]);
+    }
+}
 
 /*
  * テストコード
@@ -118,6 +126,19 @@ class ConfigableTest extends RebetTestCase {
         $childA = new ConfigableTest_MockChildA();
         $childB = new ConfigableTest_MockChildB();
         $childC = new ConfigableTest_MockChildC();
+        
+        $this->assertSame(
+            [
+                'driver' => 'sqlite',
+                'host' => 'localhost',
+                'port' => 3306,
+                'database' => null,
+                'user' => null,
+                'encode' => 'utf8',
+                'new_key' => 'new_value',
+            ],
+            ConfigableTest_MockGrandChildA::defaultConfig()
+        );
 
         $this->assertSame('mysql', ConfigableTest_Mock::config('driver'));
         $this->assertSame('mysql', ConfigableTest_Mock::configInStatic('driver'));
