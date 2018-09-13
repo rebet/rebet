@@ -3,13 +3,15 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Util;
+use Rebet\Common\TransparentlyDotAccessible;
 
 class UtilTest extends RebetTestCase {
     const TEST_VALUE = "UtilTest::TEST_VALUE";
 
-    private $array  = null;
-    private $map    = null;
-    private $object = null;
+    private $array       = null;
+    private $map         = null;
+    private $object      = null;
+    private $transparent = null;
 
     public function setUp() {
         $this->array  = ['a','b','c', null];
@@ -32,6 +34,29 @@ class UtilTest extends RebetTestCase {
                 'gender' => 'female'
             ],
             'children' => null
+        ];
+        $this->transparent = (object) [
+            'a' => new class() implements TransparentlyDotAccessible {
+                public function get() {
+                    return [
+                        'b' => 'ab',
+                        'c' => new class() implements TransparentlyDotAccessible {
+                            public function get() {
+                                return 'ac';
+                            }
+                        },
+                    ];
+                }
+            },
+            'b' => new class() implements TransparentlyDotAccessible {
+                public function get() {
+                    return new class() implements TransparentlyDotAccessible {
+                        public function get() {
+                            return 'b';
+                        }
+                    };
+                }
+            }
         ];
     }
 
@@ -78,6 +103,10 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::get($this->object, 'partner.invalid_key', 'default'), 'default');
         $this->assertSame(Util::get($this->object, 'partner.gender.invalid_key', 'default'), 'default');
         $this->assertSame(Util::get($this->object, 'children', []), []);
+
+        $this->assertSame(Util::get($this->transparent, 'a.b'), 'ab');
+        $this->assertSame(Util::get($this->transparent, 'a.c'), 'ac');
+        $this->assertSame(Util::get($this->transparent, 'b'), 'b');
     }
 
     public function test_has() {
@@ -114,6 +143,14 @@ class UtilTest extends RebetTestCase {
         $this->assertFalse(Util::has($this->object, 'partner.gender.invalid_key'));
         $this->assertTrue(Util::has($this->object, 'children'));
         $this->assertFalse(Util::has($this->object, 'children.0'));
+
+        $this->assertTrue(Util::has($this->transparent, 'a.b'));
+        $this->assertFalse(Util::has($this->transparent, 'a.b.c'));
+        $this->assertTrue(Util::has($this->transparent, 'a.c'));
+        $this->assertFalse(Util::has($this->transparent, 'a.c.d'));
+        $this->assertFalse(Util::has($this->transparent, 'a.d'));
+        $this->assertTrue(Util::has($this->transparent, 'b'));
+        $this->assertFalse(Util::has($this->transparent, 'b.c'));
     }
 
     public function test_set() {
@@ -152,6 +189,15 @@ class UtilTest extends RebetTestCase {
 
         Util::set($this->object, 'partner.name', 'Georgiana Whitmore');
         $this->assertSame('Georgiana Whitmore', $this->object->partner->name);
+
+        Util::set($this->transparent, 'a.b', 'AB');
+        $this->assertSame(Util::get($this->transparent, 'a.b'), 'AB');
+
+        Util::set($this->transparent, 'a.c', 'AC');
+        $this->assertSame(Util::get($this->transparent, 'a.c'), 'AC');
+
+        Util::set($this->transparent, 'b', 'B');
+        $this->assertSame(Util::get($this->transparent, 'b'), 'B');
     }
 
     /**

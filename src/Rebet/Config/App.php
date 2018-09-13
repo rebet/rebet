@@ -17,7 +17,7 @@ class App {
     use Configable;
     public static function defaultConfig(){
         return [
-            'env'             => 'development',
+            'env'             => Config::promise(function(){ return getenv('APP_ENV') ?: 'development' ;}),
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
             'timezone'        => date_default_timezone_get() ?: 'UTC',

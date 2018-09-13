@@ -70,8 +70,9 @@ class Util {
      * @return mixed 値
      */
     public static function get($obj, $key, $default = null) {
+        while($obj instanceof TransparentlyDotAccessible) { $obj = $obj->get(); }
         if($obj === null) { return $default; }
-        
+
         $current = StringUtil::latrim($key, '.');
         if($current != $key) {
             $target = self::get($obj, $current);
@@ -81,15 +82,22 @@ class Util {
 
         if(is_array($obj)) {
             if(!isset($obj[$current])) { return $default; }
-            return $obj[$current] ?? $default ;
+            $value = $obj[$current];
+            while($value instanceof TransparentlyDotAccessible) { $value = $value->get(); }
+            return $value ?? $default ;
         }
 
         if(!property_exists($obj, $current)) { return $default; }
-        return $obj->$current ?? $default ;
+        $value = $obj->{$current};
+        while($value instanceof TransparentlyDotAccessible) { $value = $value->get(); }
+        return $value ?? $default ;
     }
     
     /**
      * 配列又はオブジェクトに値を設定します。
+     * 
+     * なお、本メソッドにて値を設定した場合、対象オブジェクトデータの TransparentlyDotAccessible 構造
+     * が失われますのでご注意ください。
      * 
      * ex)
      * Util::set($user, 'name', 'new name');
@@ -104,6 +112,7 @@ class Util {
      * @throw \OutOfBoundsException
      */
     public static function set(&$obj, $key, $value) : void {
+        while($obj instanceof TransparentlyDotAccessible) { $obj = $obj->get(); }
         $current = StringUtil::latrim($key, '.');
         if(is_array($obj)) {
             if(!\array_key_exists($current, $obj)){
@@ -142,6 +151,7 @@ class Util {
      * @return bool true: 存在する, false: 存在しない
      */
     public static function has($obj, $key) {
+        while($obj instanceof TransparentlyDotAccessible) { $obj = $obj->get(); }
         if($obj === null) { return false; }
         
         $current  = StringUtil::latrim($key, '.');
@@ -153,6 +163,7 @@ class Util {
             if(!property_exists($obj, $current)) { return false; }
             $nest_obj = $obj->{$current};
         }
+        while($nest_obj instanceof TransparentlyDotAccessible) { $nest_obj = $nest_obj->get(); }
 
         return $current == $key ? true : self::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1));
     }
