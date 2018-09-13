@@ -186,32 +186,6 @@ class UtilTest extends RebetTestCase {
         Util::set($this->object, 'partner.undefind_key', 'value');
     }
 
-    public function test_isNull() {
-        $this->assertSame(Util::isNull(null), true);
-        $this->assertSame(Util::isNull(false), false);
-        $this->assertSame(Util::isNull('false'), false);
-        $this->assertSame(Util::isNull(0), false);
-        $this->assertSame(Util::isNull('0'), false);
-        $this->assertSame(Util::isNull(''), false);
-        $this->assertSame(Util::isNull([]), false);
-        $this->assertSame(Util::isNull([null]), false);
-        $this->assertSame(Util::isNull([1]), false);
-        $this->assertSame(Util::isNull('abc'), false);
-    }
-
-    public function test_nvl() {
-        $this->assertSame(Util::nvl(null, 'default'), 'default');
-        $this->assertSame(Util::nvl(false, 'default'), false);
-        $this->assertSame(Util::nvl('false', 'default'), 'false');
-        $this->assertSame(Util::nvl(0, 'default'), 0);
-        $this->assertSame(Util::nvl('0', 'default'), '0');
-        $this->assertSame(Util::nvl('', 'default'), '');
-        $this->assertSame(Util::nvl([], 'default'), []);
-        $this->assertSame(Util::nvl([null], 'default'), [null]);
-        $this->assertSame(Util::nvl([1], 'default'), [1]);
-        $this->assertSame(Util::nvl('abc', 'default'), 'abc');
-    }
-
     public function test_isBlank() {
         $this->assertSame(Util::isBlank(null), true);
         $this->assertSame(Util::isBlank(false), false);

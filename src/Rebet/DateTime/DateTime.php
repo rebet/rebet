@@ -179,7 +179,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable {
      * タイムゾーンを決定します
      */
     private static function adoptTimezone($timezone) : DateTimeZone {
-        $adopt_timezone = Util::nvl($timezone, self::config('default_timezone'));
+        $adopt_timezone = $timezone ?? self::config('default_timezone');
         return $adopt_timezone instanceof DateTimeZone ? $adopt_timezone : new DateTimeZone($adopt_timezone);
     }
     

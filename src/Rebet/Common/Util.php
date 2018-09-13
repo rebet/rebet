@@ -81,11 +81,11 @@ class Util {
 
         if(is_array($obj)) {
             if(!isset($obj[$current])) { return $default; }
-            return self::nvl($obj[$current], $default);
+            return $obj[$current] ?? $default ;
         }
 
         if(!property_exists($obj, $current)) { return $default; }
-        return self::nvl($obj->$current, $default);
+        return $obj->$current ?? $default ;
     }
     
     /**
@@ -157,41 +157,6 @@ class Util {
         return $current == $key ? true : self::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1));
     }
 
-    /**
-     * 対象の値が null か判定します。
-     * ※null とは null です。
-     * 
-     * ex)
-     *  - null    => true
-     *  - false   => false
-     *  - 'false' => false
-     *  - 0       => false
-     *  - '0'     => false
-     *  - ''      => false
-     *  - []      => false
-     *  - [null]  => false
-     *  - [1]     => false
-     *  - 'abc'   => false
-     * 
-     * @param  mixed $value 値
-     * @return bool treu: null, false: null以外
-     */
-    public static function isNull($value) : bool {
-        return $value === null ;
-    }
-
-    /**
-     * 対象の値が null の場合にデフォルト値を返します。
-     * 
-     * @param  mixed $value 値
-     * @param  mixed $default デフォルト値
-     * @return mixed 値
-     * @see self::isNull()
-     */
-    public static function nvl($value, $default) {
-        return self::isNull($value) ? $default : $value ;
-    }
-    
     /**
      * 対象の値が blank か判定します。
      * ※blank とは null / '' / [] のいずれかです。

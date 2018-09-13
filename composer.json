@@ -17,8 +17,9 @@
 		"docs": "https://github.com/rebet/rebet/blob/master/README.md"
 	},
 	"require": {
-		"php": "^7.1"
-	},
+        "php": "^7.1",
+        "vlucas/phpdotenv": "^2.5"
+    },
 	"require-dev": {
         "mikey179/vfsStream": "^1.6",
         "phpunit/phpunit": "^7.3.0"

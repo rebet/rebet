@@ -46,10 +46,10 @@ class App {
     /**
      * 特定のロケールであるか判定します。
      * 
-     * @param ?string $locale ロケール
+     * @param string ...$locale ロケール
      */
-    public static function isLocale(?string $locale) : bool {
-        return self::getLocale() === $locale;
+    public static function locale(string ...$locale) : bool {
+        return \in_array(self::getLocale(), $locale, true);
     }
 
     /**
@@ -72,10 +72,10 @@ class App {
     /**
      * 特定の環境であるか判定します。
      * 
-     * @param ?string $env 環境
+     * @param string ...$env 環境
      */
-    public static function isEnv(?string $env) : bool {
-        return self::getEnv() === $env;
+    public static function env(string ...$env) : bool {
+        return \in_array(self::getEnv(), $env, true);
     }
 
     /**
@@ -93,14 +93,5 @@ class App {
      */
     public static function setTimezone(string $timezone) : void {
         self::setConfig(['timezone' => $timezone]);
-    }
-
-    /**
-     * 特定のタイムゾーンであるか判定します。
-     * 
-     * @param ?string $timezone タイムゾーン
-     */
-    public static function isTimezone(?string $timezone) : bool {
-        return self::getTimezone() === $timezone;
     }
 }

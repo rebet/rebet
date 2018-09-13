@@ -29,9 +29,9 @@ class AppTest extends RebetTestCase {
         $this->assertSame('en', App::getLocale());
     }
 
-    public function test_isLocale() {
-        $this->assertTrue(App::isLocale('ja'));
-        $this->assertFalse(App::isLocale('en'));
+    public function test_locale() {
+        $this->assertTrue(App::locale('ja'));
+        $this->assertFalse(App::locale('en','de'));
     }
 
     public function test_getEnv() {
@@ -52,11 +52,10 @@ class AppTest extends RebetTestCase {
         $this->assertSame('production', App::getEnv());
     }
 
-    public function test_isEnv() {
-        $this->assertTrue(App::isEnv('development'));
-        $this->assertFalse(App::isEnv('production'));
+    public function test_env() {
+        $this->assertTrue(App::env('development', 'local'));
+        $this->assertFalse(App::env('production', 'staging'));
     }
-
 
     public function test_getTimezone() {
         Config::framework([
@@ -79,11 +78,5 @@ class AppTest extends RebetTestCase {
     public function test_setTimezone() {
         App::setTimezone('Asia/Tokyo');
         $this->assertSame('Asia/Tokyo', App::getTimezone());
-    }
-
-    public function test_isTimezone() {
-        App::setTimezone('Asia/Tokyo');
-        $this->assertTrue(App::isTimezone('Asia/Tokyo'));
-        $this->assertFalse(App::isTimezone('UTC'));
     }
 }
