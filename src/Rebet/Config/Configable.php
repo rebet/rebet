@@ -56,7 +56,7 @@ trait Configable {
      * public static function defaultConfig() {
      *     return [
      *         'default_format'   => 'Y-m-d H:i:s',
-     *         'default_timezone' => Config::refer(App::class, 'timezone', Util::evl(date_default_timezone_get(), 'UTC')),
+     *         'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ?: 'UTC'),
      *     ];
      * }
      * 

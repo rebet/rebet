@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Util;
-
 /**
  * アプリケーションコンフィグ クラス
  * 
@@ -22,7 +20,7 @@ class App {
             'env'             => 'development',
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
-            'timezone'        => Util::evl(date_default_timezone_get(), 'UTC'),
+            'timezone'        => date_default_timezone_get() ?: 'UTC',
         ];
     }
 

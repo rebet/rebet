@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\DateTime;
 
-use Rebet\Common\Util;
 use Rebet\Config\Config;
 use Rebet\Config\Configable;
 use Rebet\Config\App;
@@ -19,7 +18,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable {
     public static function defaultConfig() {
         return [
             'default_format'             => 'Y-m-d H:i:s',
-            'default_timezone'           => Config::refer(App::class, 'timezone', Util::evl(date_default_timezone_get(), 'UTC')),
+            'default_timezone'           => Config::refer(App::class, 'timezone', date_default_timezone_get() ?: 'UTC'),
             'acceptable_datetime_format' => [
                 'Y年m月d日 H時i分s秒',
                 'Y年m月d日 H:i:s',
