@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Config;
 
+use Rebet\Common\TransparentlyDotAccessible;
+
 /**
  * コンフィグ参照 クラス
  * 
@@ -17,7 +19,7 @@ namespace Rebet\Config;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ConfigReferrer {
+class ConfigReferrer implements TransparentlyDotAccessible {
     
     /**
      * 参照先セクション

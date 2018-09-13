@@ -184,8 +184,6 @@ final class Config {
         ] as $layer => $extra_message) {
             if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
                 $value = Util::get(static::$CONFIG[$layer][$section], $key);
-                if($value instanceof ConfigReferrer) { $value = $value->get(); }
-                if($value instanceof ConfigPromise) { $value = $value->get(); }
                 $value = Util::bvl($value, $default);
                 if($required && Util::isBlank($value)) {
                     throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. {$extra_message}}");
@@ -201,8 +199,6 @@ final class Config {
         
         // ライブラリコンフィグ
         $value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
-        if($value instanceof ConfigReferrer) { $value = $value->get(); }
-        if($value instanceof ConfigPromise) { $value = $value->get(); }
         $value = Util::bvl($value, $default);
         if($required && Util::isBlank($value)) {
             if(self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {

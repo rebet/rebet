@@ -39,7 +39,8 @@ class ConfigTest_MockPromiseReferrer {
     use Configable;
     public static function defaultConfig() {
         return [
-            'promise_refer' => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
+            'refer_promise_once'  => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
+            'refer_promise_every' => Config::refer(ConfigTest_MockPromise::class, 'promise_every'),
         ];
     }
 }
@@ -195,13 +196,15 @@ class ConfigTest extends RebetTestCase {
         $this->assertSame('default', ConfigTest_MockPromise::config('promise_not', false));
         $this->assertSame('1', ConfigTest_MockPromise::config('promise_once', false));
         $this->assertSame('1', ConfigTest_MockPromise::config('promise_every', false));
-        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('promise_refer', false));
+        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('refer_promise_once', false));
+        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('refer_promise_every', false));
         
         \putenv('PROMISE_TEST=2');
         $this->assertSame('default', ConfigTest_MockPromise::config('promise_not', false));
         $this->assertSame('1', ConfigTest_MockPromise::config('promise_once', false));
         $this->assertSame('2', ConfigTest_MockPromise::config('promise_every', false));
-        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('promise_refer', false));
+        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('refer_promise_once', false));
+        $this->assertSame('2', ConfigTest_MockPromiseReferrer::config('refer_promise_every', false));
     }
    
     public function test_get_anonymousClass() {
