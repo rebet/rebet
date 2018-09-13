@@ -185,6 +185,7 @@ final class Config {
             if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
                 $value = Util::get(static::$CONFIG[$layer][$section], $key);
                 if($value instanceof ConfigReferrer) { $value = $value->get(); }
+                if($value instanceof ConfigPromise) { $value = $value->get(); }
                 $value = Util::bvl($value, $default);
                 if($required && Util::isBlank($value)) {
                     throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. {$extra_message}}");
@@ -201,6 +202,7 @@ final class Config {
         // ライブラリコンフィグ
         $value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
         if($value instanceof ConfigReferrer) { $value = $value->get(); }
+        if($value instanceof ConfigPromise) { $value = $value->get(); }
         $value = Util::bvl($value, $default);
         if($required && Util::isBlank($value)) {
             if(self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {
@@ -249,8 +251,28 @@ final class Config {
      * @param string $section 参照先セクション
      * @param int|string $key 参照先キー名（.区切りで階層指定）
      * @param mixed $default 参照先がブランクの場合のデフォルト値（デフォルト：null）
+     * @return ConfigReferrer
      */
-    public static function refer(string $section, $key, $default = null) {
+    public static function refer(string $section, $key, $default = null) : ConfigReferrer {
         return new ConfigReferrer($section, $key, $default);
+    }
+
+    /**
+     * 設定値の確定をその設定が参照されるまで遅延する遅延評価式を返します。
+     * 
+     * ex)
+     * // getenv を利用しているコンフィグが DotEnv::load() より前にロードされる場合
+     * public static function defaultConfig() {
+     *     return [
+     *         'env' => Config::promise(function(){ return getenv('APP_ENV') ?: 'development' ; }),
+     *     ];
+     * }
+     * 
+     * @param callable $promise 遅延評価式
+     * @param bool $only_once 最初の遅延評価で値を確定するか否か（デフォルト：true）
+     * @return ConfigPromise
+     */
+    public static function promise(callable $promise, bool $only_once = true) : ConfigPromise {
+        return new ConfigPromise($promise, $only_once);
     }
 }

@@ -25,10 +25,34 @@ class ConfigTest_MockRefer {
         ];
     }
 }
+class ConfigTest_MockPromise {
+    use Configable;
+    public static function defaultConfig() {
+        return [
+            'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
+            'promise_once'  => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }),
+            'promise_every' => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }, false),
+        ];
+    }
+}
+class ConfigTest_MockPromiseReferrer {
+    use Configable;
+    public static function defaultConfig() {
+        return [
+            'promise_refer' => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
+        ];
+    }
+}
+
 
 class ConfigTest extends RebetTestCase {
     public function setUp() {
+        \putenv('PROMISE_TEST=');
         Config::clear();
+    }
+
+    public function tearDown() {
+        \putenv('PROMISE_TEST=');
     }
 
     public function test_get() {
@@ -164,6 +188,22 @@ class ConfigTest extends RebetTestCase {
         $this->fail("Never execute.");
     }
 
+    public function test_get_promise() {
+        ConfigTest_MockPromise::config('dummy', false);
+
+        \putenv('PROMISE_TEST=1');
+        $this->assertSame('default', ConfigTest_MockPromise::config('promise_not', false));
+        $this->assertSame('1', ConfigTest_MockPromise::config('promise_once', false));
+        $this->assertSame('1', ConfigTest_MockPromise::config('promise_every', false));
+        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('promise_refer', false));
+        
+        \putenv('PROMISE_TEST=2');
+        $this->assertSame('default', ConfigTest_MockPromise::config('promise_not', false));
+        $this->assertSame('1', ConfigTest_MockPromise::config('promise_once', false));
+        $this->assertSame('2', ConfigTest_MockPromise::config('promise_every', false));
+        $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('promise_refer', false));
+    }
+   
     public function test_get_anonymousClass() {
         $a = new class{
             use Configable;

@@ -1,13 +1,14 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Util;
-
 /**
  * コンフィグ参照 クラス
  * 
  * 他のセクションのコンフィグ設定を共有する場合に利用するクラスとなります。
  * なお、参照は片方向参照となります。
+ * ※本オブジェクトは Config::refer() ファサードを利用して構築できます。
+ * 
+ * @see Rebet\Config\Config::refer()
  * 
  * @todo 循環参照の検知＆例外 throw
  * 
