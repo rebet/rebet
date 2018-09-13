@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Config;
 
+use Rebet\Common\ArrayUtil;
+
 /**
  * コンフィグ設定を利用する トレイト
  * 
@@ -62,7 +64,7 @@ trait Configable {
      * 
      * // Configable を実装したクラスを継承し、サブクラスで新しい設定を導入/上書する定義例
      * public static function defaultConfig() {
-     *     return \array_merge(parent::defaultConfig(), [
+     *     return self::overrideConfig([
      *         'default_format' => 'M d, Y g:i A',
      *         'new_key' => 'new_value',
      *     ];
@@ -70,6 +72,19 @@ trait Configable {
      * 
      */
     abstract public static function defaultConfig() : array ;
+
+    /**
+     * 親クラスのデフォルトコンフィグ設定を差分オーバーライドします。
+     * 
+     * @param array $config 差分コンフィグ設定
+     * @return array オーバーライド後の設定内容
+     */
+    protected static function overrideConfig(array $diff) : array {
+        $rc   = new \ReflectionClass(static::class);
+        $base = $rc->getParentClass()->getMethod('defaultConfig')->invoke(null);
+        return ArrayUtil::override($base, $diff);
+        // return \array_merge($base, $diff);
+    }
 
     /**
      * 自身のコンフィグ設定を取得します。

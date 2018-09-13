@@ -37,7 +37,7 @@ class ConfigableTest_MockChildA extends ConfigableTest_Mock {
 }
 class ConfigableTest_MockChildB extends ConfigableTest_Mock {
     public static function defaultConfig() {
-        return \array_merge(parent::defaultConfig(),[
+        return self::overrideConfig([
             'driver' => 'sqlite',
             'encode' => 'utf8mb4',
         ]);

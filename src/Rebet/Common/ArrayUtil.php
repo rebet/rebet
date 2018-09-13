@@ -120,4 +120,33 @@ class ArrayUtil {
         }
         return $remaps;
     }
+
+    /**
+     * ベースとなる連想配列に対して、差分の連想配列で上書きマージします。
+     * 
+     * 本メソッドは連想配列の値が連想配列である場合は再帰的に処理をする点で array_merge と異なり、
+     * 連想配列の値がシーケンシャル配列又はオブジェクトの場合に値を上書きする点で array_replace_recursive と異なります。
+     * 
+     * @param mixed $base ベースデータ
+     * @param mixed $diff 差分データ
+     * @return マージ済みのデータ
+     */
+    public static function override($base, $diff) {
+        if(
+            !is_array($base) || !is_array($diff) || 
+            self::isSequentialArray($base) || self::isSequentialArray($diff)
+        ) {
+            return $diff;
+        }
+
+        foreach ($diff as $key => $value) {
+            if(isset($base[$key])) {
+                $base[$key] = self::override($base[$key], $value);
+            } else {
+                $base[$key] = $value;
+            }
+        }
+
+        return $base;
+    }
 }
