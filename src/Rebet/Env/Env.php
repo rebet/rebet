@@ -8,6 +8,8 @@ use Dotenv\Dotenv;
  * 
  * Dotenv モジュールを用いて .env ファイルをロードします。
  * 
+ * @todo 本クラスは無くても良いのでは？ 直接 Dotenv を使用すべきか？
+ * 
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
