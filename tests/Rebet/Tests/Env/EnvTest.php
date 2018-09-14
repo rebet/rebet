@@ -30,38 +30,4 @@ class EnvTest extends RebetTestCase {
         $dotenv = Env::load(__DIR__.'/../../../', '.env.unittest');
         $this->assertSame('unittest', \getenv('APP_ENV'));
     }
-
-    /**
-     * @runInSeparateProcess
-     * @expectedException Dotenv\Exception\ValidationException
-     * @expectedExceptionMessage One or more environment variables failed assertions: UNDEFINED is missing.
-     */
-    public function test_loadDotenv_validate_array() {
-        Config::framework([
-            Env::class => [
-                'dotenv_validate' => ['APP_ENV', 'UNDEFINED' ]
-            ]
-        ]);
-
-        $dotenv = Env::load(__DIR__.'/../../../', '.env.unittest');
-        $this->fail("Never execute.");
-    }
-    
-    /**
-     * @runInSeparateProcess
-     * @expectedException Dotenv\Exception\ValidationException
-     * @expectedExceptionMessage One or more environment variables failed assertions: APP_ENV is not an integer.
-     */
-    public function test_loadDotenv_validate_closure() {
-        Config::framework([
-            Env::class => [
-                'dotenv_validate' => function(Dotenv $dotenv) {
-                    $dotenv->required(['APP_ENV'])->isInteger();
-                }
-            ]
-        ]);
-
-        $dotenv = Env::load(__DIR__.'/../../../', '.env.unittest');
-        $this->fail("Never execute.");
-    }
 }
