@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Common;
+namespace Rebet\Tests\IO;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\IO\FileUtil;
