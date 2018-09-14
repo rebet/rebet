@@ -256,4 +256,17 @@ class StringUtil {
         $indened = (self::startWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
         return self::endWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
     }
+
+    /**
+     * 指定の文字列が対象の文字列に含まれるかチェックします。
+     * 
+     * @param string|null $haystack 検索対象文字列
+     * @param string $search 検索文字列
+     * @return bool true: 含まれる, false: 含まれない
+     */
+    public static function contains(?string $haystack, string $search) : bool {
+        if($haystack === null) { return false; }
+        if($search === '') { return true; }
+        return strpos($haystack, $search) !== false;
+    }
 }

@@ -12,6 +12,48 @@ class AppTest extends RebetTestCase {
         Config::clear();
     }
 
+    public function test_getRoot() {
+        App::setRoot('/var/www/app');
+        $this->assertSame('/var/www/app', App::getRoot());
+
+        App::setRoot('c:\\var\\www\\app');
+        $this->assertSame('c:/var/www/app', App::getRoot());
+
+        App::setRoot('vfs://var/www/app');
+        $this->assertSame('vfs://var/www/app', App::getRoot());
+    }
+
+    public function test_setRoot() {
+        App::setRoot('/var/www/app');
+        $this->assertSame('/var/www/app', App::getRoot());
+
+        App::setRoot('/var/www/app2');
+        $this->assertSame('/var/www/app2', App::getRoot());
+
+        App::setRoot('vfs://var/www/app');
+        $this->assertSame('vfs://var/www/app', App::getRoot());
+    }
+
+    public function test_path() {
+        App::setRoot('/var/www/app');
+        $this->assertSame('/var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('/var/www/app/var/logs', App::path('var/logs'));
+        $this->assertSame('/var/www/.env', App::path('/../.env'));
+        $this->assertSame('/var/www/.env', App::path('../.env'));
+
+        App::setRoot('c:\\var\\www\\app\\');
+        $this->assertSame('c:/var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('c:/var/www/.env', App::path('../.env'));
+
+        App::setRoot('file:\\\\var\\www\\app');
+        $this->assertSame('file://var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('file://var/www/.env', App::path('../.env'));
+
+        App::setRoot('file:\\\\c:\\var\\www\\app\\');
+        $this->assertSame('file://c:/var/www/app/var/logs', App::path('/var/logs'));
+        $this->assertSame('file://c:/var/www/.env', App::path('../.env'));
+    }
+
     public function test_getLocale() {
         $this->assertSame('ja', App::getLocale());
 
@@ -30,9 +72,9 @@ class AppTest extends RebetTestCase {
         $this->assertSame('en', App::getLocale());
     }
 
-    public function test_locale() {
-        $this->assertTrue(App::locale('ja'));
-        $this->assertFalse(App::locale('en','de'));
+    public function test_localeIn() {
+        $this->assertTrue(App::localeIn('ja'));
+        $this->assertFalse(App::localeIn('en','de'));
     }
 
     public function test_getEnv() {
@@ -61,9 +103,9 @@ class AppTest extends RebetTestCase {
         $this->assertSame('production', App::getEnv());
     }
 
-    public function test_env() {
-        $this->assertTrue(App::env('development', 'local'));
-        $this->assertFalse(App::env('production', 'staging'));
+    public function test_envIn() {
+        $this->assertTrue(App::envIn('development', 'local'));
+        $this->assertFalse(App::envIn('production', 'staging'));
     }
 
     public function test_getTimezone() {

@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Config;
 
+use Rebet\IO\FileUtil;
+
 /**
  * アプリケーションコンフィグ クラス
  * 
@@ -18,10 +20,38 @@ class App {
     public static function defaultConfig(){
         return [
             'env'             => Config::promise(function(){ return getenv('APP_ENV') ?: 'development' ;}),
+            'root'            => null,
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
         ];
+    }
+
+    /**
+     * アプリケーションルートパスを取得します
+     * ※ App::config('root') のファサードです。
+     */
+    public static function getRoot() : string {
+        return self::config('root');
+    }
+
+    /**
+     * アプリケーションルートパスを設定します
+     * 
+     * @param string $app_root_path アプリケーションルートパス
+     */
+    public static function setRoot(string $app_root_path) : void {
+        self::setConfig(['root' => FileUtil::normalizePath($app_root_path)]);
+    }
+
+    /**
+     * アプリケーションルートからのルート相対パスを絶対パスに変換します。
+     * 
+     * @param $root_relative_path アプリケーションルートからの相対パス
+     * @return string 絶対パス
+     */
+    public static function path(string $root_relative_path) : string {
+        return FileUtil::normalizePath(self::getRoot().'/'.$root_relative_path);
     }
 
     /**
@@ -46,7 +76,7 @@ class App {
      * 
      * @param string ...$locale ロケール
      */
-    public static function locale(string ...$locale) : bool {
+    public static function localeIn(string ...$locale) : bool {
         return \in_array(self::getLocale(), $locale, true);
     }
 
@@ -72,7 +102,7 @@ class App {
      * 
      * @param string ...$env 環境
      */
-    public static function env(string ...$env) : bool {
+    public static function envIn(string ...$env) : bool {
         return \in_array(self::getEnv(), $env, true);
     }
 

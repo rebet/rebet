@@ -37,6 +37,36 @@ class FileUtilTest extends RebetTestCase {
         );
     }
 
+    public function test_normalizePath() {
+        $this->assertSame('var/www/app', FileUtil::normalizePath('var/www/app'));
+        $this->assertSame('/var/www/app', FileUtil::normalizePath('/var/www/app'));
+        $this->assertSame('c:/var/www/app', FileUtil::normalizePath('c:\\var\\www\\app'));
+        $this->assertSame('vfs://var/www/app', FileUtil::normalizePath('vfs://var/www/app'));
+
+        $this->assertSame('var/www/app', FileUtil::normalizePath('./var/www/app'));
+        $this->assertSame('../var/www/app', FileUtil::normalizePath('../var/www/app'));
+        $this->assertSame('../www/app', FileUtil::normalizePath('var/../../www/app'));
+        $this->assertSame('../www/app', FileUtil::normalizePath('/var/../../www/app'));
+        $this->assertSame('../../www/app', FileUtil::normalizePath('var/../..///.//../www/app'));
+        $this->assertSame('app', FileUtil::normalizePath('var/../www/../app'));
+        $this->assertSame('www', FileUtil::normalizePath('var/../www'));
+        $this->assertSame('/www', FileUtil::normalizePath('/var/../www'));
+        $this->assertSame('.', FileUtil::normalizePath('var/..'));
+        $this->assertSame('/', FileUtil::normalizePath('/var/..'));
+        $this->assertSame('c:/', FileUtil::normalizePath('c:/var/..'));
+        $this->assertSame('file://', FileUtil::normalizePath('file://var/..'));
+        $this->assertSame('file://c:/', FileUtil::normalizePath('file://c:/var/..'));
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
+     */
+    public function test_normalizePath_invalid() {
+        $this->assertSame('app', FileUtil::normalizePath('c:/invalid/../../path'));
+        $this->fail("Never execute.");
+    }
+
     public function test_removeDir() {
         $this->assertFileExists('vfs://root/public/css/normalize.css');
         $this->assertFileExists('vfs://root/public/js/underscore/underscore.min.js');

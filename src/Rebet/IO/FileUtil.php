@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\IO;
 
+use Rebet\Common\StringUtil;
+
 /**
  * ファイル関連 ユーティリティ クラス
  * 
@@ -17,6 +19,55 @@ class FileUtil {
      * インスタンス化禁止
      */
     private function __construct() {}
+
+    public static function normalizePath(string $path) {
+        $protocol     = '';
+        $drive        = '';
+        $convert_path = \str_replace('\\', '/', $path);
+        $is_relatable = true;
+        if(StringUtil::contains($convert_path, '://')) {
+            [$protocol, $convert_path] = \explode('://', $convert_path);
+            $protocol     = $protocol.'://';
+            $is_relatable = false;
+        }
+        if(StringUtil::contains($convert_path, ':/')) {
+            [$drive, $convert_path] = \explode(':/', $convert_path);
+            $drive        = $drive.':/';
+            $is_relatable = false;
+        }
+
+        $parts = explode('/', $convert_path);
+        $absolutes = [];
+        foreach ($parts as $part) {
+            if ('.' === $part || '' === $part) { continue; }
+            if ('..' !== $part) {
+                $absolutes[] = $part;
+                continue;
+            }
+            if(empty($absolutes) || end($absolutes) === '..') {
+                if(!$is_relatable) {
+                    throw new \LogicException("Invalid path format: {$path}");
+                }
+                $absolutes[] = '..';
+                continue;
+            }
+            \array_pop($absolutes);
+        }
+        
+        $realpath = \implode('/', $absolutes);
+        if($is_relatable) {
+            if(StringUtil::startWith($convert_path, '/')) {
+                if(!StringUtil::startWith($realpath, '..')) {
+                    $realpath = '/' . $realpath;
+                }
+            } else {
+                if(empty($realpath)) {
+                    $realpath = '.';
+                }
+            }
+        }
+        return $protocol.$drive.$realpath;
+    }
 
     /**
      * 対象のディレクトリを サブディレクトリを含め 削除します。

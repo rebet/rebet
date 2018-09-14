@@ -153,4 +153,14 @@ class StringUtilTest extends RebetTestCase {
         $this->assertSame(">>1st\n>>2nd\n>>3rd\n", StringUtil::indent("1st\n2nd\n3rd\n", 1, '>>'));
         $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd\n", StringUtil::indent("1st\n2nd\n3rd\n", 2, '>>'));
     }
+
+    public function test_contains() {
+        $this->assertFalse(StringUtil::contains(null, ''));
+        $this->assertTrue(StringUtil::contains('', ''));
+        $this->assertFalse(StringUtil::contains('', 'a'));
+        $this->assertTrue(StringUtil::contains('a', ''));
+        $this->assertTrue(StringUtil::contains('fooabcbar', 'abc'));
+        $this->assertTrue(StringUtil::contains('fooabcbar', 'ooabcb'));
+        $this->assertFalse(StringUtil::contains('fooabcbar', 'ABC'));
+    }
 }
