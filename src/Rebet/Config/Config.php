@@ -2,6 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Util;
+use Rebet\Common\ArrayUtil;
 
 /**
  * コンフィグ クラス
@@ -80,10 +81,10 @@ final class Config {
 
     /**
      * 対象レイヤーのコンフィグを設定／上書きします。
-     * 本設定は array_merge による上書き設定となります。
+     * 本設定は ArrayUtil::override() による上書き設定となります。
      */
     private static function override(string $layer, array $config) : void {
-        static::$CONFIG[$layer] = \array_merge(static::$CONFIG[$layer], $config);
+        static::$CONFIG[$layer] = ArrayUtil::override(static::$CONFIG[$layer], $config);
     }
     
     /**

@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Config;
 
-use Dotenv\Dotenv;
-
 /**
  * アプリケーションコンフィグ クラス
  * 
@@ -23,44 +21,9 @@ class App {
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
-            'dotenv_validate' => function(Dotenv $dotenv){
-                $dotenv->required(['APP_ENV'])->notEmpty();
-            },
         ];
     }
 
-    /**
-     * Dotenv モジュールを用いて .env ファイルをロードします。
-     * 本メソッドは composer の ../vendor/autoload.php の直後に呼ばれることが想定されています。
-     * 
-     * なお、必須環境変数などについては App::class セクションの 'dotenv_validate' で
-     * クロージャにて再定義可能です。
-     * 
-     * ex)
-     * Config::framework([
-     *     App::class => [
-     *         'dotenv_validate' => function(Dotenv $dotenv) {
-     *             $parent = Config::parent(Layer::FRAMEWORK, App::class, 'dotenv_validate');
-     *             if(is_callable($parent)) { $parent($dotenv); }
-     *             $dotenv->required(['SEACRET_KEY', 'DB_USER', 'DB_***', ..., 'SMTP_HOST' ... etc])->notEmpty();
-     *         }
-     *     ]
-     * ]);
-     * 
-     * @param string $path .env ファイルパス
-     * @param string $filename .env ファイル名（デフォルト：.env）
-     * @return Dotenv Dotenv オブジェクト
-     */
-    public static function loadDotenv(string $path, string $filename = '.env') : Dotenv {
-        $dotenv = new Dotenv($path, $filename);
-        $dotenv->load();
-        $validator = self::config('dotenv_validate', false);
-        if(is_callable($validator)) {
-            $validator($dotenv);
-        }
-        return $dotenv;
-    }
-    
     /**
      * 現在のロケールを取得します。
      * ※ App::config('locale') のファサードです。

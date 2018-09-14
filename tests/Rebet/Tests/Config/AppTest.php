@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Config;
 
+use Rebet\Env\Env;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\App;
@@ -9,23 +10,6 @@ class AppTest extends RebetTestCase {
 
     public function setUp() {
         Config::clear();
-    }
-    
-    /**
-     * @runInSeparateProcess
-     * @expectedException \Dotenv\Exception\InvalidPathException
-     * @expectedExceptionMessage Unable to read the environment file at
-     */
-    public function test_loadDotenv_notfound() {
-        $dotenv = App::loadDotenv(__DIR__);
-    }
-    
-    /**
-     * @runInSeparateProcess
-     */
-    public function test_loadDotenv() {
-        $dotenv = App::loadDotenv(__DIR__.'/../../../', '.env.unittest');
-        $this->assertSame('unittest', App::getEnv());
     }
 
     public function test_getLocale() {
@@ -61,6 +45,14 @@ class AppTest extends RebetTestCase {
         ]);
 
         $this->assertSame('production', App::getEnv());
+    }
+    
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_getEnv_envLoad() {
+        $dotenv = Env::load(__DIR__.'/../../../', '.env.unittest');
+        $this->assertSame('unittest', App::getEnv());
     }
 
     public function test_setEnv() {
