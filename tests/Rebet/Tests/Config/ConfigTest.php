@@ -189,6 +189,24 @@ class ConfigTest extends RebetTestCase {
         $this->fail("Never execute.");
     }
 
+    public function test_get_overrideSeqArray() {
+        Config::application([
+            ConfigTest_Mock::class => [
+                'array' => [1, 2, 3],
+            ]
+        ]);
+        Config::runtime([
+            ConfigTest_Mock::class => [
+                'array' => [],
+            ]
+        ]);
+        
+        $this->assertTrue(Config::has(ConfigTest_Mock::class, 'array'));
+        $this->assertNull(Config::get(ConfigTest_Mock::class, 'array', false));
+        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'array.1'));
+        $this->assertNull(Config::get(ConfigTest_Mock::class, 'array.1', false));
+    }
+
     public function test_get_promise() {
         ConfigTest_MockPromise::config('dummy', false);
 

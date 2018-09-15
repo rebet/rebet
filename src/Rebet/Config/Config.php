@@ -3,6 +3,7 @@ namespace Rebet\Config;
 
 use Rebet\Common\Util;
 use Rebet\Common\ArrayUtil;
+use Rebet\Common\StringUtil;
 
 /**
  * コンフィグ クラス
@@ -27,10 +28,10 @@ use Rebet\Common\ArrayUtil;
  * 　4. ランタイムコンフィグ
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
  * 
- * @todo 環境切り分けの為の機能
+ * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
- * @todo 現在の設定（全て／セクション単位）を一覧するメソッドなどの実装
- * @todo 現在の設定（ライブラリ／フレームワーク／アプリケーション）を一覧するメソッドなどの実装
+ * @todo 現在の最終設定（全て／セクション単位）を一覧するメソッドなどの実装
+ * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
  * 
  * @see Rebet\Config\Configable
  * 
@@ -156,15 +157,27 @@ final class Config {
         self::override(Layer::RUNTIME, $config);
     }
     
+    private const DEFINED               = 1;
+    private const UNDERLAYER_DELEGATION = 2;
+    private const UNDEFINED             = 3;
+    
     /**
      * 対象のコンフィグに指定の設定が定義されているかチェックします。
+     * なお、キーセレクタの最後の要素が数値の場合、シーケンシャル配列のインデックス指定アクセスとみなし、
+     * 定義チェックはインデックス指定を除外した配列要素を対象に行います。
      * 
      * @param array $config チェック対象のコンフィグ
      * @param string $section チェック対象のセクション
      * @param int|string $key チェック対象のキー（.区切りで階層指定可）
      */
-    private static function isDefine(array $config, string $section, $key) {
-        return isset($config[$section]) && Util::has($config[$section], $key) ;
+    private static function defineStatus(array $config, string $section, $key) {
+        if(!isset($config[$section])) { return self::UNDERLAYER_DELEGATION; }
+        $last_selector = StringUtil::rbtrim($key, '.');
+        if(ctype_digit($last_selector)) {
+            $parent = Util::get($config[$section], StringUtil::ratrim($key, '.'));
+            return isset($parent[$last_selector]) ? self::DEFINED : self::UNDEFINED ;
+        }
+        return Util::has($config[$section], $key) ? self::DEFINED : self::UNDERLAYER_DELEGATION ;
     }
 
     /**
@@ -183,7 +196,7 @@ final class Config {
             Layer::APPLICATION => 'Overwritten with blank at application layer.',
             Layer::FRAMEWORK   => 'Please define at application layer.',
         ] as $layer => $extra_message) {
-            if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
+            if(self::defineStatus(static::$CONFIG[$layer], $section, $key) !== self::UNDERLAYER_DELEGATION) {
                 $value = Util::get(static::$CONFIG[$layer][$section], $key);
                 $value = Util::bvl($value, $default);
                 if($required && Util::isBlank($value)) {
@@ -202,7 +215,7 @@ final class Config {
         $value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
         $value = Util::bvl($value, $default);
         if($required && Util::isBlank($value)) {
-            if(self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {
+            if(self::defineStatus(static::$CONFIG[Layer::LIBRARY], $section, $key) === self::DEFINED) {
                 throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. Please define at application or framework layer.");
             }
             throw new ConfigNotDefineException("Required config {$section}#{$key} is not define. Please check config key name.");
@@ -219,8 +232,11 @@ final class Config {
      */
     public static function has(string $section, $key) : bool {
         foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {
-            if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
-                return true;
+            switch (self::defineStatus(static::$CONFIG[$layer], $section, $key)) {
+                case self::DEFINED:
+                    return true;
+                case self::UNDEFINED:
+                    return false;
             }
         }
 
@@ -230,7 +246,7 @@ final class Config {
         }
 
         // ライブラリコンフィグ
-        return self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key);
+        return self::defineStatus(static::$CONFIG[Layer::LIBRARY], $section, $key) === self::DEFINED;
     }
 
     /**
