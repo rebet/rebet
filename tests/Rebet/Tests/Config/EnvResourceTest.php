@@ -120,7 +120,7 @@ EOS
      * @expectedException \LogicException
      * @expectedExceptionMessage Resource test txt not found in vfs://root/resource.
      */
-    public function test_xxxxx_invalid() {
+    public function test_load_notfound() {
         EnvResource::load('vfs://root/resource', 'test', 'txt');
         $this->fail("Never execute.");
     }
