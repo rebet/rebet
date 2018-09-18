@@ -159,13 +159,13 @@ final class Config {
     
     /**
      * 対象のコンフィグに指定の設定が定義されているかチェックします。
-     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドを例外を throw します。
+     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
      * 
      * @param array $config チェック対象のコンフィグ
      * @param string $section チェック対象のセクション
      * @param string $key チェック対象のキー（.区切りで階層指定可）
      * @return int true: 定義あり, false: 定義なし
-     * @throw LogicException
+     * @throws LogicException
      */
     private static function isDefine(array $config, string $section, string $key) : bool {
         foreach (\explode('.', $key) as $value) {
@@ -179,7 +179,7 @@ final class Config {
     /**
      * コンフィグの設定値を取得します。
      * 
-     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドを例外を throw します。
+     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
      * インデックス指定でのアクセスが必要な場合は対象の配列をデータを取得してから個別にアクセスして下さい。
      * 
      * @param string $section セクション
@@ -187,8 +187,8 @@ final class Config {
      * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
      * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
      * @return ?mixed 設定値
-     * @throw ConfigNotDefineException
-     * @throw LogicException
+     * @throws ConfigNotDefineException
+     * @throws LogicException
      */
     public static function get(string $section, string $key, bool $required = true, $default = null) {
         foreach ([
@@ -226,9 +226,13 @@ final class Config {
     /**
      * コンフィグの設定が定義されているかチェックします。
      * 
+     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
+     * インデックス指定でのアクセスが必要な場合は対象の配列をデータを取得してから個別にアクセスして下さい。
+     * 
      * @param string $section セクション
      * @param string $key 設定キー名（.区切りで階層指定）
      * @return bool true: 定義済み, false: 未定義
+     * @throws LogicException
      */
     public static function has(string $section, string $key) : bool {
         foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {

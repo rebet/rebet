@@ -142,7 +142,7 @@ abstract class Enum implements \JsonSerializable {
      * 
      * @param mixed 値
      * @param string $label ラベル
-     * @throw \LogicException
+     * @throws \LogicException
      */
     protected function __construct($value, string $label) {
         if(!\is_scalar($value)) {
@@ -240,7 +240,7 @@ abstract class Enum implements \JsonSerializable {
      * $enum->$field ⇒ $enum の連想配列を取得します。
      * ※同じ値を持つ列挙が存在する場合、 enum::lists() の順序で後勝ちとなります
      * 
-     * @throw \LogicException
+     * @throws \LogicException
      */
     public static function maps($field = 'value') : array {
         $clazz = get_called_class();

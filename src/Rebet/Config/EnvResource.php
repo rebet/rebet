@@ -32,7 +32,7 @@ class EnvResource {
      * @param string $suffix リソースサフィックス（デフォルト： php）
      * @param array $option ロードオプション（デフォルト： []）
      * @return リソースデータ
-     * @throw \LogicException
+     * @throws \LogicException
      */
     public static function load(string $dir_path, string $base_name, string $suffix = 'php', array $option = []) : array {
         $base_resource_path = "{$dir_path}/{$base_name}.{$suffix}";

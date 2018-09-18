@@ -109,7 +109,7 @@ class Util {
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
      * @param  mixed $value 設定値
      * @return mixed 値
-     * @throw \OutOfBoundsException
+     * @throws \OutOfBoundsException
      */
     public static function set(&$obj, $key, $value) : void {
         while($obj instanceof TransparentlyDotAccessible) { $obj = $obj->get(); }

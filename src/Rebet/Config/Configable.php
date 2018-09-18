@@ -92,7 +92,7 @@ trait Configable {
      * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
      * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
      * @return ?mixed 設定値
-     * @throw ConfigNotDefineException
+     * @throws ConfigNotDefineException
      */
     public static function config(string $key, bool $required = true, $default = null) {
         return Config::get(static::class, $key, $required, $default);

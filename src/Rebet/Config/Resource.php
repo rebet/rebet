@@ -94,7 +94,7 @@ class Resource {
      * @param string $path リソースファイルパス
      * @param array $option ロードオプション（デフォルト： []）
      * @return リソースデータ
-     * @throw \LogicException
+     * @throws \LogicException
      */
     public static function load(string $type, string $path, array $option = []) {
         $loader = self::config("loader.{$type}", false);
