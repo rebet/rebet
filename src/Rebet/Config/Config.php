@@ -27,6 +27,7 @@ use Rebet\Common\StringUtil;
  * 　　　⇒ アプリケーション初期化処理にて Config::application() で設定／上書き
  * 　4. ランタイムコンフィグ
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
+ * 　　　⇒ Configable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
  * 
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
