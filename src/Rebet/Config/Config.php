@@ -157,46 +157,46 @@ final class Config {
         self::override(Layer::RUNTIME, $config);
     }
     
-    private const DEFINED               = 1;
-    private const UNDERLAYER_DELEGATION = 2;
-    private const UNDEFINED             = 3;
-    
     /**
      * 対象のコンフィグに指定の設定が定義されているかチェックします。
-     * なお、キーセレクタの最後の要素が数値の場合、シーケンシャル配列のインデックス指定アクセスとみなし、
-     * 定義チェックはインデックス指定を除外した配列要素を対象に行います。
+     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドを例外を throw します。
      * 
      * @param array $config チェック対象のコンフィグ
      * @param string $section チェック対象のセクション
-     * @param int|string $key チェック対象のキー（.区切りで階層指定可）
+     * @param string $key チェック対象のキー（.区切りで階層指定可）
+     * @return int true: 定義あり, false: 定義なし
+     * @throw LogicException
      */
-    private static function defineStatus(array $config, string $section, $key) {
-        if(!isset($config[$section])) { return self::UNDERLAYER_DELEGATION; }
-        $last_selector = StringUtil::rbtrim($key, '.');
-        if(ctype_digit($last_selector)) {
-            $parent = Util::get($config[$section], StringUtil::ratrim($key, '.'));
-            return isset($parent[$last_selector]) ? self::DEFINED : self::UNDEFINED ;
+    private static function isDefine(array $config, string $section, string $key) : bool {
+        foreach (\explode('.', $key) as $value) {
+            if(\ctype_digit($value)) {
+                throw new \LogicException("Invalid config key access, the key '{$key}' contains digit only part.");
+            }
         }
-        return Util::has($config[$section], $key) ? self::DEFINED : self::UNDERLAYER_DELEGATION ;
+        return isset($config[$section]) && Util::has($config[$section], $key) ;
     }
 
     /**
      * コンフィグの設定値を取得します。
      * 
+     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドを例外を throw します。
+     * インデックス指定でのアクセスが必要な場合は対象の配列をデータを取得してから個別にアクセスして下さい。
+     * 
      * @param string $section セクション
-     * @param int|string $key 設定キー名（.区切りで階層指定可）
+     * @param string $key 設定キー名（.区切りで階層指定可）
      * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
      * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
      * @return ?mixed 設定値
      * @throw ConfigNotDefineException
+     * @throw LogicException
      */
-    public static function get(string $section, $key, bool $required = true, $default = null) {
+    public static function get(string $section, string $key, bool $required = true, $default = null) {
         foreach ([
             Layer::RUNTIME     => 'Overwritten with blank at runtime layer.',
             Layer::APPLICATION => 'Overwritten with blank at application layer.',
             Layer::FRAMEWORK   => 'Please define at application layer.',
         ] as $layer => $extra_message) {
-            if(self::defineStatus(static::$CONFIG[$layer], $section, $key) !== self::UNDERLAYER_DELEGATION) {
+            if(self::isDefine(static::$CONFIG[$layer], $section, $key)) {
                 $value = Util::get(static::$CONFIG[$layer][$section], $key);
                 $value = Util::bvl($value, $default);
                 if($required && Util::isBlank($value)) {
@@ -215,7 +215,7 @@ final class Config {
         $value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
         $value = Util::bvl($value, $default);
         if($required && Util::isBlank($value)) {
-            if(self::defineStatus(static::$CONFIG[Layer::LIBRARY], $section, $key) === self::DEFINED) {
+            if(self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {
                 throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. Please define at application or framework layer.");
             }
             throw new ConfigNotDefineException("Required config {$section}#{$key} is not define. Please check config key name.");
@@ -227,16 +227,13 @@ final class Config {
      * コンフィグの設定が定義されているかチェックします。
      * 
      * @param string $section セクション
-     * @param int|string $key 設定キー名（.区切りで階層指定）
+     * @param string $key 設定キー名（.区切りで階層指定）
      * @return bool true: 定義済み, false: 未定義
      */
-    public static function has(string $section, $key) : bool {
+    public static function has(string $section, string $key) : bool {
         foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {
-            switch (self::defineStatus(static::$CONFIG[$layer], $section, $key)) {
-                case self::DEFINED:
-                    return true;
-                case self::UNDEFINED:
-                    return false;
+            if (self::isDefine(static::$CONFIG[$layer], $section, $key)) {
+                return true;
             }
         }
 
@@ -246,7 +243,7 @@ final class Config {
         }
 
         // ライブラリコンフィグ
-        return self::defineStatus(static::$CONFIG[Layer::LIBRARY], $section, $key) === self::DEFINED;
+        return self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key);
     }
 
     /**
@@ -262,11 +259,11 @@ final class Config {
      * }
      * 
      * @param string $section 参照先セクション
-     * @param int|string $key 参照先キー名（.区切りで階層指定）
+     * @param string $key 参照先キー名（.区切りで階層指定）
      * @param mixed $default 参照先がブランクの場合のデフォルト値（デフォルト：null）
      * @return ConfigReferrer
      */
-    public static function refer(string $section, $key, $default = null) : ConfigReferrer {
+    public static function refer(string $section, string $key, $default = null) : ConfigReferrer {
         return new ConfigReferrer($section, $key, $default);
     }
 

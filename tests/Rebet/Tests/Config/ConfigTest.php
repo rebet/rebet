@@ -189,22 +189,38 @@ class ConfigTest extends RebetTestCase {
         $this->fail("Never execute.");
     }
 
-    public function test_get_overrideSeqArray() {
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
+     */
+    public function test_get_digitKeyAccessLast() {
         Config::application([
             ConfigTest_Mock::class => [
                 'array' => [1, 2, 3],
             ]
         ]);
-        Config::runtime([
-            ConfigTest_Mock::class => [
-                'array' => [],
-            ]
-        ]);
         
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'array'));
-        $this->assertNull(Config::get(ConfigTest_Mock::class, 'array', false));
-        $this->assertFalse(Config::has(ConfigTest_Mock::class, 'array.1'));
-        $this->assertNull(Config::get(ConfigTest_Mock::class, 'array.1', false));
+        Config::has(ConfigTest_Mock::class, 'array.1');
+        $this->fail("Never execute.");
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Invalid config key access, the key '1' contains digit only part.
+     */
+    public function test_get_digitKeyAccessOnly() {
+        Config::has(ConfigTest_Mock::class, '1');
+        $this->fail("Never execute.");
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Invalid config key access, the key 'driver.123.dummy' contains digit only part.
+     */
+    public function test_get_digitKeyAccessMiddle() {
+        Config::has(ConfigTest_Mock::class, 'driver.123.dummy');
+        $this->fail("Never execute.");
     }
 
     public function test_get_promise() {
