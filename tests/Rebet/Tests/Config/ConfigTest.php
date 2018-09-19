@@ -3,10 +3,10 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 
 class ConfigTest_Mock {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'driver' => 'mysql',
@@ -18,7 +18,7 @@ class ConfigTest_Mock {
     }
 }
 class ConfigTest_MockRefer {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'database' => Config::refer(ConfigTest_Mock::class, 'database', 'refer_database'),
@@ -26,7 +26,7 @@ class ConfigTest_MockRefer {
     }
 }
 class ConfigTest_MockPromise {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
@@ -36,7 +36,7 @@ class ConfigTest_MockPromise {
     }
 }
 class ConfigTest_MockPromiseReferrer {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'refer_promise_once'  => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
@@ -243,11 +243,11 @@ class ConfigTest extends RebetTestCase {
    
     public function test_get_anonymousClass() {
         $a = new class{
-            use Configable;
+            use Configurable;
             public static function defaultConfig() { return [ 'key' => 'a' ]; }
         };
         $b = new class{
-            use Configable;
+            use Configurable;
             public static function defaultConfig() { return [ 'key' => 'b' ]; }
         };
 

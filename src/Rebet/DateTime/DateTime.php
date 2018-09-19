@@ -2,7 +2,7 @@
 namespace Rebet\DateTime;
 
 use Rebet\Config\Config;
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 use Rebet\Config\App;
 
 /**
@@ -14,7 +14,7 @@ use Rebet\Config\App;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 class DateTime extends \DateTimeImmutable implements \JsonSerializable {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'default_format'             => 'Y-m-d H:i:s',

@@ -16,7 +16,7 @@ use Rebet\IO\FileUtil;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 class App {
-    use Configable;
+    use Configurable;
     public static function defaultConfig(){
         return [
             'env'             => Config::promise(function(){ return getenv('APP_ENV') ?: 'development' ;}),

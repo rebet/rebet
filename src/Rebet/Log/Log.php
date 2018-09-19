@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Log;
 
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 
 /**
@@ -29,7 +29,7 @@ use Rebet\DateTime\DateTime;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 class Log {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'log_handler' => \Rebet\Log\Handler\StderrHandler::class,

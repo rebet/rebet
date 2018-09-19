@@ -13,16 +13,16 @@ use Rebet\Common\ArrayUtil;
  * 
  * また、外部からは以下のようにコンフィグ設定にアクセスできます。
  * 
- *   ConfigableImplement::config('key');
+ *   ConfigurableImplement::config('key');
  * 
  * なお、上記のアクセスは下記コードと同義です。
  * 
- *   Config::get(ConfigableImplement::class, 'key');
+ *   Config::get(ConfigurableImplement::class, 'key');
  * 
  * そのため、本トレイトにて実装されたデフォルトコンフィグ設定は以下のように上書可能となります。
  * 
  *   Config::application([
- *       ConfigableImplement::class => [
+ *       ConfigurableImplement::class => [
  *           'key' => 'new value'
  *       ]
  *   ]);
@@ -34,7 +34,7 @@ use Rebet\Common\ArrayUtil;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-trait Configable {
+trait Configurable {
     
     /**
      * デフォルトコンフィグ設定。
@@ -62,7 +62,7 @@ trait Configable {
      *     ];
      * }
      * 
-     * // Configable を実装したクラスを継承し、サブクラスで新しい設定を導入/上書する定義例
+     * // Configurable を実装したクラスを継承し、サブクラスで新しい設定を導入/上書する定義例
      * public static function defaultConfig() {
      *     return self::overrideConfig([
      *         'default_format' => 'M d, Y g:i A',

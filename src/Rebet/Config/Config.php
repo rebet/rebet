@@ -20,21 +20,21 @@ use Rebet\Common\StringUtil;
  * なお、各設定は以下のように定義／動作します。
  * 
  * 　1. ライブラリコンフィグ
- * 　　　⇒ 各クラス定義にて Configable trait の実装
+ * 　　　⇒ 各クラス定義にて Configurable trait の実装
  * 　2. フレームワークコンフィグ
  * 　　　⇒ フレームワーク初期化処理にて Config::framework() で設定／上書き
  * 　3. アプリケーションコンフィグ
  * 　　　⇒ アプリケーション初期化処理にて Config::application() で設定／上書き
  * 　4. ランタイムコンフィグ
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
- * 　　　⇒ Configable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
+ * 　　　⇒ Configurable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
  * 
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
  * @todo 現在の最終設定（全て／セクション単位）を一覧するメソッドなどの実装
  * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
  * 
- * @see Rebet\Config\Configable
+ * @see Rebet\Config\Configurable
  * 
  * @package   Rebet
  * @author    github.com/rain-noise

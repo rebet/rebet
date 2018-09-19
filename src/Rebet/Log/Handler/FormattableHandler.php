@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Log\Handler;
 
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Log\Formatter\LogFormatter;
 use Rebet\Log\LogLevel;
@@ -16,7 +16,7 @@ use Rebet\Log\LogLevel;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 abstract class FormattableHandler implements LogHandler {
-    use Configable;
+    use Configurable;
 
     /**
      * ログフォーマッタ

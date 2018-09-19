@@ -3,11 +3,11 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 use Rebet\Config\ConfigReferrer;
 
 class ConfigReferrerTest_Mock {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'driver' => 'mysql',
@@ -19,7 +19,7 @@ class ConfigReferrerTest_Mock {
     }
 }
 class ConfigReferrerTest_MockOrigin {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'user' => null,

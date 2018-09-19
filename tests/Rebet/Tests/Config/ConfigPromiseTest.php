@@ -3,7 +3,7 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 use Rebet\Config\ConfigPromise;
 
 class ConfigPromiseTest extends RebetTestCase {

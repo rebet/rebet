@@ -2,7 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\ArrayUtil;
-use Rebet\Config\Configable;
+use Rebet\Config\Configurable;
 
 /**
  * リソースローダー クラス
@@ -52,7 +52,7 @@ use Rebet\Config\Configable;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 class Resource {
-    use Configable;
+    use Configurable;
     public static function defaultConfig() {
         return [
             'loader' => [
