@@ -9,8 +9,10 @@ namespace Rebet\Pipeline;
  * 
  * Function diffs between Laravel and Rebet are like below;
  *  - remove illuminate modules dependency. (dependency injection container and Responsable)
- *  - unsuported full pipe string to get name and parameters. (unsuported additional handle parameters)
- *  + suport array of pipe class and constract parameters.
+ *  - unsupported: full pipe string to get name and parameters. (additional handle parameters)
+ *  + supported: array of pipe class and constract parameters. (instantiate with parameters)
+ *  + supported: invoke any method of instantiated pipes.
+ *  # changed: then() to be pipeline builder and send() to be pipeline runner.
  * 
  * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Pipeline/Pipeline.php
  * 
@@ -19,15 +21,8 @@ namespace Rebet\Pipeline;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Pipeline {
-
-    /**
-     * The object being passed through the pipeline.
-     *
-     * @var mixed
-     */
-    protected $passable;
-    
+class Pipeline 
+{
     /**
      * The array of class pipes.
      *
@@ -41,6 +36,13 @@ class Pipeline {
      * @var array
      */
     protected $real_pipes = [];
+    
+    /**
+     * The entry point closure of pipeline.
+     * 
+     * @var \Closure
+     */
+    protected $pipeline = null;
 
     /**
      * The method to call on each pipe.
@@ -50,15 +52,15 @@ class Pipeline {
     protected $method = 'handle';
 
     /**
-     * Set the object being sent through the pipeline.
+     * Run the pipeline.
+     *
      *
      * @param  mixed  $passable
-     * @return $this
+     * @return mixed
      */
-    public function send($passable) : self
+    public function send($passable)
     {
-        $this->passable = $passable;
-        return $this;
+        return $this->pipeline($passable);
     }
     
     /**
@@ -86,27 +88,27 @@ class Pipeline {
     }
     
     /**
-     * Run the pipeline with a final destination callback.
+     * Build the pipeline with a final destination callback.
      *
      * @param  \Closure  $destination
-     * @return mixed
+     * @return $this
      */
     public function then(\Closure $destination)
     {
-        $pipeline = array_reduce(
+        $this->pipeline = array_reduce(
             array_reverse($this->pipes), $this->carry(), $this->prepareDestination($destination)
         );
-        return $pipeline($this->passable);
+        return $this;
     }    
     
     /**
-     * Run any method of the instantiated pipes.
+     * Invoke any method of the instantiated pipes.
      *
      * @param  string  $method
      * @param  mixed  $args
      * @return $this
      */
-    public function run(string $method, ...$args) : self
+    public function invoke(string $method, ...$args) : self
     {
         foreach ($this->real_pipes as $pipe) {
             if(method_exists($pipe, $method)) {
