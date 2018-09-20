@@ -4,7 +4,7 @@ namespace Rebet\Pipeline;
 /**
  * Pipeline Class
  * 
- * This class based on Illuminate/Pipeline of laravel/framework 5.7.
+ * This class based on Illuminate/Pipeline of laravel/framework ver 5.7.
  * But this class dose not contain DI Container of laravel.
  * 
  * Function diffs between Laravel and Rebet are like below;
@@ -54,13 +54,16 @@ class Pipeline
     /**
      * Run the pipeline.
      *
-     *
      * @param  mixed  $passable
      * @return mixed
+     * @throws LogicException
      */
     public function send($passable)
     {
-        return $this->pipeline($passable);
+        if($this->pipeline === null) {
+            throw new \LogicException('Pipeline not build yet. You shold buld a pipeline using then() first.');
+        }
+        return ($this->pipeline)($passable);
     }
     
     /**
@@ -139,17 +142,18 @@ class Pipeline
     protected function carry() : \Closure
     {
         return function ($stack, $pipe) {
+            if (is_string($pipe)) {
+                // If the pipe is a string we will just instantiate the class.
+                $pipe = new $pipe();
+            } elseif (is_array($pipe)) {
+                // If the pipe is a array we will instantiate the class with constracter parameters.
+                $pipe_class = array_shift($pipe);
+                $pipe       = new $pipe_class(...$pipe);
+            }
+            
+            $this->real_pipes[] = $pipe;
+            
             return function ($passable) use ($stack, $pipe) {
-                if (is_string($pipe)) {
-                    // If the pipe is a string we will just instantiate the class.
-                    $pipe = new $pipe();
-                } elseif (is_array($pipe)) {
-                    // If the pipe is a array we will instantiate the class with constracter parameters.
-                    $pipe_class = array_shift($pipe);
-                    $pipe       = new $pipe_class(...$pipe);
-                }
-
-                $this->real_pipes[] = $pipe;
                 return method_exists($pipe, $this->method) ? $pipe->{$this->method}($passable, $stack) : $pipe($passable, $stack);
             };
         };
