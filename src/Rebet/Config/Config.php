@@ -283,11 +283,11 @@ final class Config {
      *     ];
      * }
      * 
-     * @param callable $promise 遅延評価式
+     * @param \Closure $promise 遅延評価式
      * @param bool $only_once 最初の遅延評価で値を確定するか否か（デフォルト：true）
      * @return ConfigPromise
      */
-    public static function promise(callable $promise, bool $only_once = true) : ConfigPromise {
+    public static function promise(\Closure $promise, bool $only_once = true) : ConfigPromise {
         return new ConfigPromise($promise, $only_once);
     }
 }

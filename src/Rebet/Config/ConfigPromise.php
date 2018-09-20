@@ -20,7 +20,7 @@ class ConfigPromise implements TransparentlyDotAccessible {
     
     /**
      * 遅延評価式
-     * @var callable
+     * @var \Closure
      */
     private $promise = null;
 
@@ -47,10 +47,10 @@ class ConfigPromise implements TransparentlyDotAccessible {
     /**
      * コンフィグ遅延評価クラスを構築します。
      * 
-     * @param callable $promise 遅延評価式
+     * @param \Closure $promise 遅延評価式
      * @param bool $only_once 最初の遅延評価で値を確定するか否か（デフォルト：true）
      */
-    public function __construct(callable $promise, bool $only_once = true) {
+    public function __construct(\Closure $promise, bool $only_once = true) {
         $this->promise   = $promise;
         $this->only_once = $only_once;
     }

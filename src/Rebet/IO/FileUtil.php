@@ -154,14 +154,14 @@ class FileUtil {
      * @param  string   $sourcePath       圧縮対象ファイル or ディレクトリ
      * @param  string   $outZipPath       圧縮後のZIPファイルパス
      * @param  boolean  $includeTargetDir 指定ディレクトリをZIPアーカイブに含めるか否か（デフォルト：true[=含める]）
-     * @param  callable $filter           格納データ取捨選択用フィルタ
+     * @param  \Closure $filter           格納データ取捨選択用フィルタ
      *                                    ⇒ $path を引数に取り、 true を返すとそのパスを含み, false を返すとそのパスを除外する。
      *                                    　 （デフォルト：null = function($path) { return true; }; = 全データ格納）
      * @param  number   $outDirPermission ZIP格納ディレクトリ自動生成時のパーミッション（デフォルト：0775）
      * @return void
      * @throws Rebet\IO\ZipArchiveException
      */
-    public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?callable $filter = null, int $outDirPermission = 0775) : void {
+    public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?\Closure $filter = null, int $outDirPermission = 0775) : void {
         if(empty($filter)) {
             $filter = function($path) { return true; };
         }
@@ -190,10 +190,10 @@ class FileUtil {
      * @param  string $folder
      * @param  \ZipArchive $zipFile
      * @param  int $exclusiveLength
-     * @param  callable $filter
+     * @param  \Closure $filter
      * @return void
      */
-    private static function folderToZip(string $folder, \ZipArchive &$zipFile, int $exclusiveLength, callable $filter) {
+    private static function folderToZip(string $folder, \ZipArchive &$zipFile, int $exclusiveLength, \Closure $filter) {
         $handle = opendir($folder);
         while (false !== $f = readdir($handle)) {
             if ($f != '.' && $f != '..') {

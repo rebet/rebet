@@ -80,10 +80,10 @@ class Resource {
      * リソースローダーを登録します。
      * 
      * @param string $suffix リソースサフィックス
-     * @param callable ローディングクロージャ
+     * @param \Closure ローディングクロージャ
      * @return mixed
      */
-    public static function setLoader(string $suffix, callable $loader) {
+    public static function setLoader(string $suffix, \Closure $loader) {
         self::setConfig(['loader' => [$suffix => $loader]]);
     }
 

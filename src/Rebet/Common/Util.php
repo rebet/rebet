@@ -248,9 +248,9 @@ class Util {
      *     {$_(CONSTANT)} text
      * EOS;
      * 
-     * @return callable 文字列埋め込み用匿名関数
+     * @return \Closure 文字列埋め込み用匿名関数
      */
-    public static function heredocImplanter() : callable {
+    public static function heredocImplanter() : \Closure {
         return function($s){ return $s; };
     }
 

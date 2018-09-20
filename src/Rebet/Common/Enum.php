@@ -290,7 +290,7 @@ abstract class Enum implements \JsonSerializable {
      * 指定フィールドの一覧を配列で取得します。
      * @param string $name
      */
-    public static function listOf(string $name, callable $matcher = null) : array {
+    public static function listOf(string $name, \Closure $matcher = null) : array {
         $clazz = get_called_class();
         if(!\property_exists($clazz, $name)) {
             throw new \LogicException("Invalid property access. Property {$clazz}->{$name} is not exists.");
@@ -308,14 +308,14 @@ abstract class Enum implements \JsonSerializable {
     /**
      * 値の一覧を配列で取得します。
      */
-    public static function values(callable $matcher = null) : array {
+    public static function values(\Closure $matcher = null) : array {
         return self::listOf('value', $matcher);
     }
     
     /**
      * ラベルの一覧を配列で取得します。
      */
-    public static function labels(callable $matcher = null) : array {
+    public static function labels(\Closure $matcher = null) : array {
         return self::listOf('label', $matcher);
     }
     
