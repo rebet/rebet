@@ -11,7 +11,7 @@ use Rebet\DateTime\DateTIme;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Logvar
+class LogContext
 {
     /**
      * @var DateTime
