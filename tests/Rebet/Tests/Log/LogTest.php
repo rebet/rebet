@@ -53,10 +53,13 @@ class LogTest extends RebetTestCase
         $pid = getmypid();
         
         Log::init();
-        StderrCapture::clearStart();
-        Log::error('Test log');
-        $actual = StderrCapture::stopGetClear();
-        $this->assertSame("2010-10-20 10:20:30.040050 {$pid} [ERROR] Test log\n", $actual);
+        
+        $this->assertSameStderr(
+            "2010-10-20 10:20:30.040050 {$pid} [ERROR] Test log\n",
+            function(){
+                Log::error('Test log');
+            }
+        );
         
         $this->assertContainsOutbuffer(
             [
