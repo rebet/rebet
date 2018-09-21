@@ -31,7 +31,7 @@ class Pipeline
     protected $pipes = [];
 
     /**
-     * The array of instantiated pipes.
+     * The array of latest instantiated pipes.
      *
      * @var array
      */
@@ -98,7 +98,8 @@ class Pipeline
      */
     public function then(\Closure $destination)
     {
-        $this->pipeline = array_reduce(
+        $this->real_pipes = [];
+        $this->pipeline   = array_reduce(
             array_reverse($this->pipes), $this->carry(), $this->prepareDestination($destination)
         );
         return $this;
