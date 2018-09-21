@@ -110,8 +110,7 @@ class NetUtilTest extends RebetTestCase
             NetUtil::json(['name' => 'John', 'hobbies' => ['game', 'outdoor']]);
             $this->fail('Never executed.');
         } finally {
-            $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_contents());
-            ob_end_clean();
+            $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_clean());
         
             $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 200 OK', $headers);
@@ -129,8 +128,7 @@ class NetUtilTest extends RebetTestCase
             NetUtil::jsonp(['name' => 'John', 'hobbies' => ['game', 'outdoor']], 'callback');
             $this->fail('Never executed.');
         } finally {
-            $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_contents());
-            ob_end_clean();
+            $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_clean());
             
             $headers = System::headers_list();
             $this->assertContains('HTTP/1.1 200 OK', $headers);

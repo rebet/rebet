@@ -30,15 +30,72 @@ abstract class RebetTestCase extends TestCase
         }
     }
     
-    protected function assertSameStderr($expect, callable $test)
+    protected function assertSameStderr($expects, callable $test)
     {
-        StderrCapture::clear();
-        StderrCapture::start();
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        StderrCapture::clearStart();
         $test();
-        StderrCapture::end();
-        $this->assertSame($expect, StderrCapture::$STDERR);
+        $actual = StderrCapture::stopGetClear();
+        foreach ($expects as $expect) {
+            $this->assertSame($expect, $actual);
+        }
     }
 
+    protected function assertContainsStderr($expects, callable $test)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        StderrCapture::clearStart();
+        $test();
+        $actual = StderrCapture::stopGetClear();
+        foreach ($expects as $expect) {
+            $this->assertContains($expect, $actual);
+        }
+    }
+    
+    protected function assertRegExpStderr($expects, callable $test)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        StderrCapture::clearStart();
+        $test();
+        $actual = StderrCapture::stopGetClear();
+        foreach ($expects as $expect) {
+            $this->assertRegExp($expect, $actual);
+        }
+    }
+
+    protected function assertSameOutbuffer($expects, callable $test)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        foreach ($expects as $expect) {
+            $this->assertSame($expect, $actual);
+        }
+    }
+
+    protected function assertContainsOutbuffer($expects, callable $test)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        foreach ($expects as $expect) {
+            $this->assertContains($expect, $actual);
+        }
+    }
+    
+    protected function assertRegExpOutbuufer($expects, callable $test)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        foreach ($expects as $expect) {
+            $this->assertRegExp($expect, $actual);
+        }
+    }
+    
     protected function _remap(?array $list, $key_field, $value_field) : array
     {
         return ArrayUtil::remap($list, $key_field, $value_field);

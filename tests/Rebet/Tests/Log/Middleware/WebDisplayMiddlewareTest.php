@@ -41,25 +41,29 @@ class WebDisplayMiddlewareTest extends RebetTestCase
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = 'This is test';
 
-        \ob_start();
-        $this->middleware->handle($this->context, $this->echoback);
-        $this->middleware->shutdown();
-        $html = \ob_get_contents();
-        $this->assertContains('This&nbsp;is&nbsp;test', $html);
-        \ob_end_clean();
+        $this->assertContainsOutbuffer(
+            'This&nbsp;is&nbsp;test',
+            function(){
+                $this->middleware->handle($this->context, $this->echoback);
+                $this->middleware->shutdown();
+            }
+        );
 
-        \ob_start();
-        $this->context->level   = LogLevel::ERROR();
-        $this->context->message = 'This is test 1';
-        $this->middleware->handle($this->context, $this->echoback);
-        $this->context->level   = LogLevel::ERROR();
-        $this->context->message = 'This is test 2';
-        $this->middleware->handle($this->context, $this->echoback);
-        $this->middleware->shutdown();
-        $html = \ob_get_contents();
-        $this->assertContains('This&nbsp;is&nbsp;test&nbsp;1', $html);
-        $this->assertContains('This&nbsp;is&nbsp;test&nbsp;2', $html);
-        \ob_end_clean();
+        $this->assertContainsOutbuffer(
+            [
+                'This&nbsp;is&nbsp;test&nbsp;1',
+                'This&nbsp;is&nbsp;test&nbsp;2',
+            ],
+            function(){
+                $this->context->level   = LogLevel::ERROR();
+                $this->context->message = 'This is test 1';
+                $this->middleware->handle($this->context, $this->echoback);
+                $this->context->level   = LogLevel::ERROR();
+                $this->context->message = 'This is test 2';
+                $this->middleware->handle($this->context, $this->echoback);
+                $this->middleware->shutdown();
+            }
+        );
     }
 
     public function test_shutdown()
@@ -67,29 +71,32 @@ class WebDisplayMiddlewareTest extends RebetTestCase
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = 'This is test';
 
-        \ob_start();
-        $this->middleware->handle($this->context, $this->echoback);
-        $this->middleware->shutdown();
-        $html = \ob_get_contents();
-        $this->assertContains('This&nbsp;is&nbsp;test', $html);
-        \ob_end_clean();
+        $this->assertContainsOutbuffer(
+            'This&nbsp;is&nbsp;test',
+            function(){
+                $this->middleware->handle($this->context, $this->echoback);
+                $this->middleware->shutdown();
+            }
+        );
 
-        \ob_start();
         System::header('Content-Type: text/html; charset=UTF-8');
-        $this->middleware->handle($this->context, $this->echoback);
-        $this->middleware->shutdown();
-        $html = \ob_get_contents();
-        $this->assertContains('This&nbsp;is&nbsp;test', $html);
+        $this->assertContainsOutbuffer(
+            'This&nbsp;is&nbsp;test',
+            function(){
+                $this->middleware->handle($this->context, $this->echoback);
+                $this->middleware->shutdown();
+            }
+        );
         System::mock_init();
-        \ob_end_clean();
-
-        \ob_start();
+        
         System::header('Content-Type: text/json; charset=UTF-8');
-        $this->middleware->handle($this->context, $this->echoback);
-        $this->middleware->shutdown();
-        $html = \ob_get_contents();
-        $this->assertEmpty($html);
+        $this->assertSameOutbuffer(
+            '',
+            function(){
+                $this->middleware->handle($this->context, $this->echoback);
+                $this->middleware->shutdown();
+            }
+        );
         System::mock_init();
-        \ob_end_clean();
     }
 }

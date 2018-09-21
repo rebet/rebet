@@ -54,9 +54,9 @@ class StderrHandlerTest extends RebetTestCase
     {
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = "This is test.";
-        StderrCapture::start();
+        StderrCapture::clearStart();
         $formatted_log = $this->handler->handle($this->context);
-        StderrCapture::end();
-        $this->assertSame($formatted_log."\n", StderrCapture::$STDERR);
+        $actual = StderrCapture::stopGetClear();
+        $this->assertSame($formatted_log."\n", $actual);
     }
 }

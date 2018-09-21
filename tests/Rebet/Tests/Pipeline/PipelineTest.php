@@ -84,10 +84,12 @@ class PipelineTest extends RebetTestCase
             return $input;
         });
         
-        ob_start();
-        $this->pipeline->invoke('shutdown');
-        $actual = ob_get_clean();
-        $this->assertSame('[shutdown](shutdown)', $actual);
+        $this->assertSameOutbuffer(
+            '[shutdown](shutdown)',
+            function(){
+                $this->pipeline->invoke('shutdown');
+            }
+        );
         
         $output = $this->pipeline->send('onion');
         $this->assertSame('([onion!])', $output);

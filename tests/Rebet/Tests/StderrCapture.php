@@ -12,23 +12,55 @@ namespace Rebet\Tests;
 class StderrCapture extends \php_user_filter
 {
     private static $IS_CAPTURE = false;
-    public static $STDERR     = '';
+    private static $STDERR     = '';
 
     public static function start()
     {
         self::$IS_CAPTURE = true;
     }
 
-    public static function end()
+    public static function stop()
     {
         self::$IS_CAPTURE = false;
     }
 
+    public static function get()
+    {
+        return self::$STDERR;
+    }
+    
     public static function clear()
     {
         self::$STDERR = '';
     }
 
+    public static function getClear()
+    {
+        $stderr = self::get();
+        self::clear();
+        return $stderr;
+    }
+    
+    public static function clearStart()
+    {
+        self::clear();
+        self::start();
+    }
+    
+    public static function stopGet()
+    {
+        self::stop();
+        return self::get();
+    }
+    
+    public static function stopGetClear()
+    {
+        self::stop();
+        $stderr = self::get();
+        self::clear();
+        return $stderr;
+    }
+    
     public function filter($in, $out, &$consumed, $closing)
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
