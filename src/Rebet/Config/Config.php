@@ -225,6 +225,23 @@ final class Config {
     }
 
     /**
+     * コンフィグの設定値からインスタンスを生成します。
+     * 
+     * @see Rebet\Common\Util::instantiate()
+     * 
+     * @param string $section セクション
+     * @param string $key 設定キー名（.区切りで階層指定可）
+     * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
+     * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
+     * @return ?mixed インスタンス
+     * @throws ConfigNotDefineException
+     * @throws LogicException
+     */
+    public static function instantiate(string $section, string $key, bool $required = true, $default = null) {
+        return Util::instantiate(self::get($section, $key, $required, $default));
+    }
+
+    /**
      * コンフィグの設定が定義されているかチェックします。
      * 
      * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。

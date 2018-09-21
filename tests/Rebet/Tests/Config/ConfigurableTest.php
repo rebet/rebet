@@ -5,69 +5,21 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 
-/*
- * モック定義
- */
-class ConfigurableTest_Mock {
-    use Configurable;
-    public static function defaultConfig() {
-        return [
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'port' => 3306,
-            'database' => null,
-            'user' => null,
-        ];
-    }
-
-    public static function configInStatic($key) {
-        return self::config($key);
-    }
-
-    public function configInMember($key) {
-        return self::config($key);
-    }
-
-    public static function setDriver(string $driver) {
-        static::setConfig(['driver' => $driver]);
-    }
-}
-class ConfigurableTest_MockChildA extends ConfigurableTest_Mock {
-    // No override
-}
-class ConfigurableTest_MockChildB extends ConfigurableTest_Mock {
-    public static function defaultConfig() {
-        return self::overrideConfig([
-            'driver' => 'sqlite',
-            'encode' => 'utf8mb4',
-        ]);
-    }
-}
-class ConfigurableTest_MockChildC extends ConfigurableTest_Mock {
-    public static function defaultConfig() {
-        return [
-            'driver' => 'pgsql',
-        ];
-    }
-}
-class ConfigurableTest_MockGrandChildA extends ConfigurableTest_MockChildB {
-    public static function defaultConfig() {
-        return self::overrideConfig([
-            'encode' => 'utf8',
-            'new_key' => 'new_value',
-        ]);
-    }
-}
-
-/*
- * テストコード
- */
-class ConfigurableTest extends RebetTestCase {
-    public function setUp() {
+class ConfigurableTest extends RebetTestCase
+{
+    public function setUp()
+    {
         Config::clear();
     }
 
-    public function test_config() {
+    public function test_configInstantiate()
+    {
+        ConfigurableTest_Mock::setDriver(ConfigurableTest_MockChildA::class);
+        $this->assertInstanceOf(ConfigurableTest_MockChildA::class, ConfigurableTest_Mock::instantiate('driver'));
+    }
+
+    public function test_config()
+    {
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
         $this->assertNull(ConfigurableTest_Mock::config('database', false));
         $this->assertSame('default_db', ConfigurableTest_Mock::config('database', false, 'default_db'));
@@ -97,7 +49,8 @@ class ConfigurableTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock#database is blank. Please define at application or framework layer.
      */
-    public function test_config_blank() {
+    public function test_config_blank()
+    {
         ConfigurableTest_Mock::config('database');
         $this->fail("Never execute.");
     }
@@ -106,7 +59,8 @@ class ConfigurableTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock#database is blank. Please define at application or framework layer.
      */
-    public function test_config_blankInStatic() {
+    public function test_config_blankInStatic()
+    {
         ConfigurableTest_Mock::configInStatic('database');
         $this->fail("Never execute.");
     }
@@ -115,13 +69,15 @@ class ConfigurableTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock#database is blank. Please define at application or framework layer.
      */
-    public function test_config_blankInMember() {
+    public function test_config_blankInMember()
+    {
         $mock = new ConfigurableTest_Mock();
         $mock->configInMember('database');
         $this->fail("Never execute.");
     }
 
-    public function test_config_extends() {
+    public function test_config_extends()
+    {
         $mock   = new ConfigurableTest_Mock();
         $childA = new ConfigurableTest_MockChildA();
         $childB = new ConfigurableTest_MockChildB();
@@ -178,5 +134,76 @@ class ConfigurableTest extends RebetTestCase {
         $this->assertSame('mysql', ConfigurableTest_Mock::configInStatic('driver'));
         $this->assertSame('mysql', $mock->configInMember('driver'));
         $this->assertNull(ConfigurableTest_Mock::config('encode', false));
+    }
+}
+
+
+// ========== Mocks ==========
+
+class ConfigurableTest_Mock
+{
+    use Configurable;
+    public static function defaultConfig()
+    {
+        return [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => 3306,
+            'database' => null,
+            'user' => null,
+        ];
+    }
+
+    public static function configInStatic($key)
+    {
+        return self::config($key);
+    }
+
+    public function configInMember($key)
+    {
+        return self::config($key);
+    }
+
+    public static function setDriver(string $driver)
+    {
+        static::setConfig(['driver' => $driver]);
+    }
+
+    public static function instantiate(string $key)
+    {
+        return static::configInstantiate($key);
+    }
+}
+class ConfigurableTest_MockChildA extends ConfigurableTest_Mock
+{
+    // No override
+}
+class ConfigurableTest_MockChildB extends ConfigurableTest_Mock
+{
+    public static function defaultConfig()
+    {
+        return self::overrideConfig([
+            'driver' => 'sqlite',
+            'encode' => 'utf8mb4',
+        ]);
+    }
+}
+class ConfigurableTest_MockChildC extends ConfigurableTest_Mock
+{
+    public static function defaultConfig()
+    {
+        return [
+            'driver' => 'pgsql',
+        ];
+    }
+}
+class ConfigurableTest_MockGrandChildA extends ConfigurableTest_MockChildB
+{
+    public static function defaultConfig()
+    {
+        return self::overrideConfig([
+            'encode' => 'utf8',
+            'new_key' => 'new_value',
+        ]);
     }
 }

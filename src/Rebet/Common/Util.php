@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\StringUtil;
+
 /**
  * 汎用 ユーティリティ クラス
  * 
@@ -55,6 +57,50 @@ class Util {
         return null;
     }
     
+    /**
+     * 定義オブジェクトを元にインスタンス生成を行います。
+     * なお、インスタンス生成が対応可能な定義オブジェクトは下記の通りです。
+     * 
+     *  string : 
+     *     {ClassName}::{factoryMathod}形式
+     *       ⇒ 対象クラスを引数無しのファクトリメソッドでインスタンス化します
+     *     {ClassName}形式
+     *       ⇒ 対象クラスを引数無しのコンストラクタでインスタンス化します
+     *  callable :
+     *       ⇒ callable() でインスタンス化します
+     *  array :
+     *     [{ClassName}::{factoryMathod}, arg1, arg2, ... ]形式
+     *       ⇒ 対象クラスを引数付きのファクトリメソッドでインスタンス化します
+     *     [{ClassName}, arg1, arg2, ... ]形式
+     *       ⇒ 対象クラスを引数付きのコンストラクタでインスタンス化します
+     *     [callable, arg1, arg2, ... ]形式
+     *       ⇒ callable(arg1, arg2, ...) でインスタンス化します
+     *  brank : (= null, '', [])
+     *       ⇒ null を返します
+     *  other : 
+     *       ⇒ そのまま値を返します
+     * 
+     * @param mixed $config
+     * @return mixed 
+     */
+    public static function instantiate($config) {
+        if(self::isBlank($config)) { return null; }
+        if (is_string($config)) {
+            [$class, $method] = array_pad(\explode('::', $config), 2, null);
+            return empty($method) ? new $class() : $class::$method() ;
+        }
+        if (is_callable($config)) {
+            return $config();
+        }
+        if (is_array($config)) {
+            $class_config = array_shift($config);
+            if(\is_callable($class_config)) { return $class_config(...$config); }
+            [$class, $method] = array_pad(\explode('::', $class_config), 2, null);
+            return empty($method) ? new $class(...$config) : $class::$method(...$config) ;
+        }
+        return $config;
+    }
+
     /**
      * 配列又はオブジェクトから値を取得します。
      * 

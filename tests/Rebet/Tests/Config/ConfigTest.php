@@ -5,47 +5,6 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 
-class ConfigTest_Mock {
-    use Configurable;
-    public static function defaultConfig() {
-        return [
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'port' => 3306,
-            'database' => null,
-            'user' => null,
-        ];
-    }
-}
-class ConfigTest_MockRefer {
-    use Configurable;
-    public static function defaultConfig() {
-        return [
-            'database' => Config::refer(ConfigTest_Mock::class, 'database', 'refer_database'),
-        ];
-    }
-}
-class ConfigTest_MockPromise {
-    use Configurable;
-    public static function defaultConfig() {
-        return [
-            'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
-            'promise_once'  => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }),
-            'promise_every' => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }, false),
-        ];
-    }
-}
-class ConfigTest_MockPromiseReferrer {
-    use Configurable;
-    public static function defaultConfig() {
-        return [
-            'refer_promise_once'  => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
-            'refer_promise_every' => Config::refer(ConfigTest_MockPromise::class, 'promise_every'),
-        ];
-    }
-}
-
-
 class ConfigTest extends RebetTestCase {
     public function setUp() {
         \putenv('PROMISE_TEST=');
@@ -54,6 +13,11 @@ class ConfigTest extends RebetTestCase {
 
     public function tearDown() {
         \putenv('PROMISE_TEST=');
+    }
+
+    public function test_instantiate() {
+        $this->assertSame('default', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate')->value);
+        $this->assertSame('arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_arg')->value);
     }
 
     public function test_get() {
@@ -297,5 +261,69 @@ class ConfigTest extends RebetTestCase {
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'undefined'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'invalid'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'nothing'));
+    }
+}
+
+
+// ========== Mocks ==========
+
+class ConfigTest_Mock {
+    use Configurable;
+    public static function defaultConfig() {
+        return [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'port' => 3306,
+            'database' => null,
+            'user' => null,
+        ];
+    }
+}
+class ConfigTest_MockRefer {
+    use Configurable;
+    public static function defaultConfig() {
+        return [
+            'database' => Config::refer(ConfigTest_Mock::class, 'database', 'refer_database'),
+        ];
+    }
+}
+class ConfigTest_MockPromise {
+    use Configurable;
+    public static function defaultConfig() {
+        return [
+            'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
+            'promise_once'  => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }),
+            'promise_every' => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }, false),
+        ];
+    }
+}
+class ConfigTest_MockPromiseReferrer {
+    use Configurable;
+    public static function defaultConfig() {
+        return [
+            'refer_promise_once'  => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
+            'refer_promise_every' => Config::refer(ConfigTest_MockPromise::class, 'promise_every'),
+        ];
+    }
+}
+
+class ConfigTest_MockInstantiate {
+    use Configurable;
+    public static function defaultConfig() {
+        return [
+            'mock_instantiate'     =>  ConfigTest_MockInstantiate::class,
+            'mock_instantiate_arg' => [ConfigTest_MockInstantiate::class, 'arg'],
+        ];
+    }
+
+    public $value = null;
+    public function __construct($value = 'default') {
+        $this->value = $value;
+    }
+    public static function getInstance() {
+        return new static('via getInstance()');
+    }
+    public static function build($value) {
+        return new static($value.' via build()');
     }
 }

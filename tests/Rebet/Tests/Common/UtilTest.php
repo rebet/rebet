@@ -73,6 +73,21 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::coalesce('a', null, [], '', 0, 3), 'a');
     }
 
+    public function test_instantiate() {
+        $this->assertNull(Util::instantiate(null));
+        $this->assertNull(Util::instantiate(''));
+        $this->assertNull(Util::instantiate([]));
+
+        $this->assertSame('default', Util::instantiate(UtilTest_Mock::class)->value);
+        $this->assertSame('via getInstance()', Util::instantiate(UtilTest_Mock::class.'::getInstance')->value);
+        $this->assertSame('callable', Util::instantiate(function(){ return 'callable'; }));
+        $this->assertSame('arg', Util::instantiate([UtilTest_Mock::class, 'arg'])->value);
+        $this->assertSame('arg via build()', Util::instantiate([UtilTest_Mock::class.'::build', 'arg'])->value);
+        $this->assertSame('arg via callable', Util::instantiate([function($v){ return $v.' via callable'; }, 'arg']));
+        $this->assertSame(123, Util::instantiate(123));
+        $this->assertSame('instantiated', Util::instantiate(new UtilTest_Mock('instantiated'))->value);
+    }
+
     public function test_get() {
         $this->assertNull(Util::get($this->array, 'invalid_key'));
         $this->assertSame(Util::get($this->array, 'invalid_key', 'default'), 'default');
@@ -321,5 +336,18 @@ EOS;
         $this->assertSame(123.45, Util::floatval('123.45abc567'));
         $this->assertSame(123.0, Util::floatval(123));
         $this->assertSame(123.0, Util::floatval(123.0));
+    }
+}
+
+class UtilTest_Mock {
+    public $value = null;
+    public function __construct($value = 'default') {
+        $this->value = $value;
+    }
+    public static function getInstance() {
+        return new static('via getInstance()');
+    }
+    public static function build($value) {
+        return new static($value.' via build()');
     }
 }

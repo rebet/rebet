@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Pipeline;
 
+use Rebet\Common\Util;
+
 /**
  * Pipeline Class
  * 
@@ -10,7 +12,7 @@ namespace Rebet\Pipeline;
  * Function diffs between Laravel and Rebet are like below;
  *  - remove illuminate modules dependency. (dependency injection container and Responsable)
  *  - unsupported: full pipe string to get name and parameters. (additional handle parameters)
- *  + supported: array of pipe class and constract parameters. (instantiate with parameters)
+ *  + supported: multi instantiate way based on Rebet\Common\Util::instantiate() like array for constract with parameters. (exclude callable type)
  *  + supported: invoke any method of instantiated pipes.
  *  # changed: then() to be pipeline builder and send() to be pipeline runner.
  * 
@@ -143,15 +145,7 @@ class Pipeline
     protected function carry() : \Closure
     {
         return function ($stack, $pipe) {
-            if (is_string($pipe)) {
-                // If the pipe is a string we will just instantiate the class.
-                $pipe = new $pipe();
-            } elseif (is_array($pipe)) {
-                // If the pipe is a array we will instantiate the class with constracter parameters.
-                $pipe_class = array_shift($pipe);
-                $pipe       = new $pipe_class(...$pipe);
-            }
-            
+            $pipe = \is_callable($pipe) ? $pipe : Util::instantiate($pipe) ;
             $this->real_pipes[] = $pipe;
             
             return function ($passable) use ($stack, $pipe) {
