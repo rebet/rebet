@@ -54,6 +54,13 @@ class Pipeline
     protected $method = 'handle';
 
     /**
+     * The final destination callback.
+     *
+     * @var callable
+     */
+    protected $destination = null;
+
+    /**
      * Run the pipeline.
      *
      * @param  mixed  $passable
@@ -100,8 +107,9 @@ class Pipeline
      */
     public function then(callable $destination)
     {
-        $this->real_pipes = [];
-        $this->pipeline   = array_reduce(
+        $this->destination = $destination;
+        $this->real_pipes  = [];
+        $this->pipeline    = array_reduce(
             array_reverse($this->pipes),
             $this->carry(),
             $this->prepareDestination($destination)
@@ -109,6 +117,16 @@ class Pipeline
         return $this;
     }
     
+    /**
+     * Get final destination callback.
+     *
+     * @return callable|null
+     */
+    public function getDestination() : ?callable
+    {
+        return $this->destination;
+    }
+
     /**
      * Invoke any method of the instantiated pipes.
      *

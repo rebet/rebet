@@ -62,6 +62,16 @@ class PipelineTest extends RebetTestCase
         $this->assertSame('([ONION!])', $output);
     }
     
+    public function test_getDestination()
+    {
+        $this->assertNull($this->pipeline->getDestination());
+        $destination = function ($input) {
+            return $input;
+        };
+        $this->pipeline->then($destination);
+        $this->assertSame($destination, $this->pipeline->getDestination());
+    }
+
     public function test_invoke()
     {
         $this->pipeline->through(
