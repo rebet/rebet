@@ -5,25 +5,25 @@ use Rebet\Common\Util;
 
 /**
  * Pipeline Class
- * 
+ *
  * This class based on Illuminate/Pipeline of laravel/framework ver 5.7.
  * But this class dose not contain DI Container of laravel.
- * 
+ *
  * Function diffs between Laravel and Rebet are like below;
  *  - remove illuminate modules dependency. (dependency injection container and Responsable)
  *  - unsupported: full pipe string to get name and parameters. (additional handle parameters)
  *  + supported: multi instantiate way based on Rebet\Common\Util::instantiate() like array for constract with parameters. (exclude callable type)
  *  + supported: invoke any method of instantiated pipes.
  *  # changed: then() to be pipeline builder and send() to be pipeline runner.
- * 
+ *
  * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Pipeline/Pipeline.php
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Pipeline 
+class Pipeline
 {
     /**
      * The array of class pipes.
@@ -41,7 +41,7 @@ class Pipeline
     
     /**
      * The entry point closure of pipeline.
-     * 
+     *
      * @var \Closure
      */
     protected $pipeline = null;
@@ -62,7 +62,7 @@ class Pipeline
      */
     public function send($passable)
     {
-        if($this->pipeline === null) {
+        if ($this->pipeline === null) {
             throw new \LogicException('Pipeline not build yet. You shold buld a pipeline using then() first.');
         }
         return ($this->pipeline)($passable);
@@ -95,17 +95,19 @@ class Pipeline
     /**
      * Build the pipeline with a final destination callback.
      *
-     * @param  \Closure  $destination
+     * @param  callable $destination
      * @return $this
      */
-    public function then(\Closure $destination)
+    public function then(callable $destination)
     {
         $this->real_pipes = [];
         $this->pipeline   = array_reduce(
-            array_reverse($this->pipes), $this->carry(), $this->prepareDestination($destination)
+            array_reverse($this->pipes),
+            $this->carry(),
+            $this->prepareDestination($destination)
         );
         return $this;
-    }    
+    }
     
     /**
      * Invoke any method of the instantiated pipes.
@@ -117,7 +119,7 @@ class Pipeline
     public function invoke(string $method, ...$args) : self
     {
         foreach ($this->real_pipes as $pipe) {
-            if(method_exists($pipe, $method)) {
+            if (method_exists($pipe, $method)) {
                 $pipe->{$method}(...$args);
             }
         }
@@ -127,10 +129,10 @@ class Pipeline
     /**
      * Get the final piece of the Closure onion.
      *
-     * @param  \Closure  $destination
+     * @param  callable $destination
      * @return \Closure
      */
-    protected function prepareDestination(\Closure $destination) : \Closure
+    protected function prepareDestination(callable $destination) : \Closure
     {
         return function ($passable) use ($destination) {
             return $destination($passable);

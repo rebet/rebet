@@ -3,6 +3,7 @@ namespace Rebet\Log\Middleware;
 
 use Rebet\Common\System;
 use Rebet\Log\LogContext;
+use Rebet\Log\LogLevel;
 
 /**
  * 整形済みログをウェブ画面に追加表示（HTML出力）するミドルウェア

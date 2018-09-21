@@ -2,21 +2,21 @@
 namespace Rebet\Log\Handler;
 
 use Rebet\Config\Configurable;
-use Rebet\DateTime\DateTime;
+use Rebet\Log\LogContext;
 use Rebet\Log\Formatter\LogFormatter;
-use Rebet\Log\LogLevel;
 
 /**
  * フォーマット可能ログハンドラ 基底クラス
  * サブクラスの defaultConfig() で下記のコンフィグ設定を定義する必要があります。
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class FormattableHandler implements LogHandler {
-    use Configurable;
+abstract class FormattableHandler
+{
+    use Configurable, LogHandleable;
 
     /**
      * ログフォーマッタ
@@ -27,35 +27,32 @@ abstract class FormattableHandler implements LogHandler {
     /**
      * ログハンドラを構築します
      */
-    public function __construct() {
-        $formatter = self::config('log_formatter');
-        $this->formatter = $formatter::create();
+    public function __construct(?LogFormatter $formatter = null)
+    {
+        $this->formatter = $formatter ?? self::configInstantiate('log_formatter') ;
     }
 
     /**
      * ログデータを処理します。
-     * 
-     * @param DateTime $now 現在時刻
-     * @param LogLevel $level ログレベル
-     * @param mixed $message ログ内容
-     * @param array $context コンテキスト（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
-     * @param array $extra エキストラ情報（デフォルト：[]）
+     *
+     * @param LogContext $log ログコンテキスト
      * @return string|array|null 整形済みログデータ or null（ログ対象外時）
      */
-    public function handle(DateTime $now, LogLevel $level, $message, array $context = [], $error = null, array $extra = []) {
-        if($level->lowerThan(self::config('log_level'))) { return null; }
-        $formatted_log = $this->formatter->format($now, $level, $message, $context, $error, $extra);
-        $this->report($now, $level, $formatted_log);
+    public function handle(LogContext $log)
+    {
+        if ($log->level->lowerThan(self::config('log_level'))) {
+            return null;
+        }
+        $formatted_log = $this->formatter->format($log);
+        $this->report($log, $formatted_log);
         return $formatted_log;
     }
 
     /**
      * フォーマット済みのログデータを処理します。
-     * 
-     * @param DateTime $now 現在時刻
-     * @param LogLevel $level ログレベル
+     *
+     * @param LogContext $log ログコンテキスト
      * @param string|array $formatted_log 整形済みログ
      */
-    abstract protected function report(DateTime $now, LogLevel $level, $formatted_log) : void ;
+    abstract protected function report(LogContext $log, $formatted_log) : void ;
 }
