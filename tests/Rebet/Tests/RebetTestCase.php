@@ -3,6 +3,8 @@ namespace Rebet\Tests;
 
 use PHPUnit\Framework\TestCase;
 
+use Rebet\Tests\StderrCapture;
+
 use Rebet\Common\ArrayUtil;
 use Rebet\Common\SecurityUtil;
 
@@ -28,6 +30,15 @@ abstract class RebetTestCase extends TestCase
         }
     }
     
+    protected function assertSameStderr($expect, callable $test)
+    {
+        StderrCapture::clear();
+        StderrCapture::start();
+        $test();
+        StderrCapture::end();
+        $this->assertSame($expect, StderrCapture::$STDERR);
+    }
+
     protected function _remap(?array $list, $key_field, $value_field) : array
     {
         return ArrayUtil::remap($list, $key_field, $value_field);

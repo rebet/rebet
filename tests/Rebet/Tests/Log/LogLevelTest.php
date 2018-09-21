@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Common;
+namespace Rebet\Tests\Log;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Log\LogLevel;

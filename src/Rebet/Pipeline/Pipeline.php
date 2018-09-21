@@ -128,7 +128,7 @@ class Pipeline
     }
 
     /**
-     * Invoke any method of the instantiated pipes.
+     * Invoke any method of the instantiated pipes if exsits. (exclude final destination callback)
      *
      * @param  string  $method
      * @param  mixed  $args

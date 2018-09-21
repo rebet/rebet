@@ -3,12 +3,13 @@ namespace Rebet\Tests\Log\Handler;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Log\Handler\FormattableHandler;
-use Rebet\Log\Handler\LogHandler;
+
+use Rebet\Config\App;
+use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
-use Rebet\DateTime\DateTime;
-use Rebet\Config\Config;
-use Rebet\Config\App;
+use Rebet\Log\Handler\LogHandler;
 
 use org\bovigo\vfs\vfsStream;
 

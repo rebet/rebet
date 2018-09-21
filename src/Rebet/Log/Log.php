@@ -48,12 +48,6 @@ class Log
     }
 
     /**
-     * ログハンドラ
-     * @var Rebet\Log\Handler\LogHandler
-     */
-    private static $HANDLER = null;
-
-    /**
      * ログミドルウェアパイプライン
      * @var Revet\Pipeline\Pipeline
      */
@@ -165,8 +159,10 @@ class Log
     public static function init(?callable $handler = null, ?array $middlewares = null)
     {
         self::shutdown();
-        self::$HANDLER  = $handler ?? self::configInstantiate('log_handler');
-        self::$PIPELINE = (new Pipeline())->through($middlewares ?? self::config('log_middlewares', false, []))->then(self::$HANDLER);
+        self::$PIPELINE = (new Pipeline())
+            ->through($middlewares ?? self::config('log_middlewares', false, []))
+            ->then($handler ?? self::configInstantiate('log_handler'))
+            ;
     }
 
     /**
@@ -178,9 +174,7 @@ class Log
     {
         if (self::$PIPELINE !== null) {
             Log::$PIPELINE->invoke('shutdown');
-        }
-        if (self::$HANDLER !== null) {
-            Log::$HANDLER->shutdown();
+            Log::$PIPELINE->getDestination()->shutdown();
         }
     }
 
@@ -198,8 +192,7 @@ class Log
         if (self::$PIPELINE === null) {
             self::init();
         }
-        $context = new LogContext(DateTime::now(), $level, $message, $var, $error);
-        self::$PIPELINE->send($context);
+        self::$PIPELINE->send(new LogContext(DateTime::now(), $level, $message, $var, $error));
     }
     
     /**

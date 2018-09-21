@@ -3,9 +3,11 @@ namespace Rebet\Tests\Log\Handler;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\StderrCapture;
+
+use Rebet\Log\Handler\StderrHandler;
+
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
-use Rebet\Log\Handler\StderrHandler;
 use Rebet\DateTime\DateTime;
 use Rebet\Config\Config;
 use Rebet\Config\App;
