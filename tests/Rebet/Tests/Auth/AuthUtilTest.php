@@ -6,8 +6,10 @@ use Rebet\Auth\AuthUtil;
 
 use Rebet\Common\System;
 
-class AuthUtilTest extends RebetTestCase {
-    public function setUp() {
+class AuthUtilTest extends RebetTestCase
+{
+    public function setUp()
+    {
         System::mock_init();
     }
 
@@ -15,7 +17,8 @@ class AuthUtilTest extends RebetTestCase {
      * @expectedException Rebet\Auth\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
      */
-    public function test_basicAuthenticate() {
+    public function test_basicAuthenticate()
+    {
         try {
             AuthUtil::basicAuthenticate(['id' => 'password']);
             $this->fail('Never executed.');
@@ -27,7 +30,8 @@ class AuthUtilTest extends RebetTestCase {
         }
     }
 
-    public function test_basicAuthenticate_pass() {
+    public function test_basicAuthenticate_pass()
+    {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
         $id = AuthUtil::basicAuthenticate(['id' => 'password']);
@@ -38,7 +42,8 @@ class AuthUtilTest extends RebetTestCase {
      * @expectedException Rebet\Auth\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
      */
-    public function test_basicAuthenticate_faled() {
+    public function test_basicAuthenticate_faled()
+    {
         try {
             $_SERVER['PHP_AUTH_USER'] = 'id';
             $_SERVER['PHP_AUTH_PW']   = 'invalid';
@@ -52,12 +57,15 @@ class AuthUtilTest extends RebetTestCase {
         }
     }
 
-    public function test_basicAuthenticate_hash() {
+    public function test_basicAuthenticate_hash()
+    {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
         $id = AuthUtil::basicAuthenticate(
             ['id' => '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'],
-            function($password) { return sha1($password); }
+            function ($password) {
+                return sha1($password);
+            }
         );
         $this->assertSame('id', $id);
     }

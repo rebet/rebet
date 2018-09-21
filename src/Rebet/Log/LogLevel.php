@@ -5,13 +5,14 @@ use Rebet\Common\Enum;
 
 /**
  * ログレベル
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class LogLevel extends Enum {
+class LogLevel extends Enum
+{
     const FATAL = [0, 'FATAL'];
     const ERROR = [1, 'ERROR'];
     const WARN  = [2, 'WARN '];
@@ -21,12 +22,13 @@ class LogLevel extends Enum {
     
     /**
      * E_* 形式のエラータイプを LogLevel に変換します。
-     * 
+     *
      * @param int エラータイプ
      * @return LogLevel ログレベル
      */
-    public static function errorTypeOf(int $type) : LogLevel {
-        switch($type) {
+    public static function errorTypeOf(int $type) : LogLevel
+    {
+        switch ($type) {
             case E_CORE_ERROR:
             case E_COMPILE_ERROR:
             case E_PARSE:
@@ -52,19 +54,21 @@ class LogLevel extends Enum {
     
     /**
      * 指定のログレベル以上かチェックします。
-     * 
+     *
      * @param LogLevel $level
      */
-    public function higherEqual(LogLevel $level) : bool {
+    public function higherEqual(LogLevel $level) : bool
+    {
         return $this->value <= $level->value;
     }
     
     /**
      * 指定のログレベル未満かチェックします。
-     * 
+     *
      * @param LogLevel $level
      */
-    public function lowerThan(LogLevel $level) : bool {
+    public function lowerThan(LogLevel $level) : bool
+    {
         return $this->value > $level->value;
     }
 }

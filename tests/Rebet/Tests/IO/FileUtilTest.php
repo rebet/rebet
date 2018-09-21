@@ -7,13 +7,15 @@ use Rebet\IO\ZipArchiveException;
 
 use org\bovigo\vfs\vfsStream;
 
-class FileUtilTest extends RebetTestCase {
-
+class FileUtilTest extends RebetTestCase
+{
     private $root;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->root = vfsStream::setup();
-        vfsStream::create([
+        vfsStream::create(
+            [
                 'public' => [
                     'css' => [
                         'normalize.css' => 'This is normalize.css',
@@ -37,7 +39,8 @@ class FileUtilTest extends RebetTestCase {
         );
     }
 
-    public function test_normalizePath() {
+    public function test_normalizePath()
+    {
         $this->assertSame('var/www/app', FileUtil::normalizePath('var/www/app'));
         $this->assertSame('/var/www/app', FileUtil::normalizePath('/var/www/app'));
         $this->assertSame('c:/var/www/app', FileUtil::normalizePath('c:\\var\\www\\app'));
@@ -62,12 +65,14 @@ class FileUtilTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
      */
-    public function test_normalizePath_invalid() {
+    public function test_normalizePath_invalid()
+    {
         $this->assertSame('app', FileUtil::normalizePath('c:/invalid/../../path'));
         $this->fail("Never execute.");
     }
 
-    public function test_removeDir() {
+    public function test_removeDir()
+    {
         $this->assertFileExists('vfs://root/public/css/normalize.css');
         $this->assertFileExists('vfs://root/public/js/underscore/underscore.min.js');
         $this->assertFileExists('vfs://root/public/index.html');
@@ -87,20 +92,21 @@ class FileUtilTest extends RebetTestCase {
         $this->assertFileExists('vfs://root');
     }
 
-    public function test_zip() {
+    public function test_zip()
+    {
         if (DIRECTORY_SEPARATOR == '\\') {
             // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
             try {
-                FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
+                FileUtil::zip('vfs://root/public', 'vfs://root/var/public.zip');
                 $this->fail("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
             } catch (ZipArchiveException $e) {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
             }
         } else {
             try {
-                FileUtil::zip('vfs://root/public','vfs://root/var/public.zip');
+                FileUtil::zip('vfs://root/public', 'vfs://root/var/public.zip');
                 $this->fail("vfsStream support ZipArchive::close(), so please update test code.");
-            } catch(\ErrorException $e) {
+            } catch (\ErrorException $e) {
                 $this->assertSame(
                     'ZipArchive::close(): Failure to create temporary file: No such file or directory',
                     $e->getMessage()
@@ -109,11 +115,12 @@ class FileUtilTest extends RebetTestCase {
         }
     }
 
-    public function test_unzip() {
+    public function test_unzip()
+    {
         if (DIRECTORY_SEPARATOR == '\\') {
             // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
             try {
-                FileUtil::unzip('vfs://root/var/public.zip','vfs://root/public');
+                FileUtil::unzip('vfs://root/var/public.zip', 'vfs://root/public');
                 $this->fail("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
             } catch (ZipArchiveException $e) {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());

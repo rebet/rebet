@@ -5,32 +5,35 @@ use Rebet\Common\StringUtil;
 
 /**
  * ファイル関連 ユーティリティ クラス
- * 
+ *
  * ファイル関連の簡便なユーティリティメソッドを集めたクラスです。
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FileUtil {
-    
+class FileUtil
+{
     /**
      * インスタンス化禁止
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
-    public static function normalizePath(string $path) {
+    public static function normalizePath(string $path)
+    {
         $protocol     = '';
         $drive        = '';
         $convert_path = \str_replace('\\', '/', $path);
         $is_relatable = true;
-        if(StringUtil::contains($convert_path, '://')) {
+        if (StringUtil::contains($convert_path, '://')) {
             [$protocol, $convert_path] = \explode('://', $convert_path);
             $protocol     = $protocol.'://';
             $is_relatable = false;
         }
-        if(StringUtil::contains($convert_path, ':/')) {
+        if (StringUtil::contains($convert_path, ':/')) {
             [$drive, $convert_path] = \explode(':/', $convert_path);
             $drive        = $drive.':/';
             $is_relatable = false;
@@ -39,13 +42,15 @@ class FileUtil {
         $parts = explode('/', $convert_path);
         $absolutes = [];
         foreach ($parts as $part) {
-            if ('.' === $part || '' === $part) { continue; }
+            if ('.' === $part || '' === $part) {
+                continue;
+            }
             if ('..' !== $part) {
                 $absolutes[] = $part;
                 continue;
             }
-            if(empty($absolutes) || end($absolutes) === '..') {
-                if(!$is_relatable) {
+            if (empty($absolutes) || end($absolutes) === '..') {
+                if (!$is_relatable) {
                     throw new \LogicException("Invalid path format: {$path}");
                 }
                 $absolutes[] = '..';
@@ -55,13 +60,13 @@ class FileUtil {
         }
         
         $realpath = \implode('/', $absolutes);
-        if($is_relatable) {
-            if(StringUtil::startWith($convert_path, '/')) {
-                if(!StringUtil::startWith($realpath, '..')) {
+        if ($is_relatable) {
+            if (StringUtil::startWith($convert_path, '/')) {
+                if (!StringUtil::startWith($realpath, '..')) {
                     $realpath = '/' . $realpath;
                 }
             } else {
-                if(empty($realpath)) {
+                if (empty($realpath)) {
                     $realpath = '.';
                 }
             }
@@ -71,12 +76,15 @@ class FileUtil {
 
     /**
      * 対象のディレクトリを サブディレクトリを含め 削除します。
-     * 
+     *
      * @param  string $dir 削除対象ディレクトリパス
      * @return void
      */
-    public static function removeDir(string $dir) : void {
-        if(!file_exists($dir)) { return; }
+    public static function removeDir(string $dir) : void
+    {
+        if (!file_exists($dir)) {
+            return;
+        }
         if ($handle = opendir("$dir")) {
             while (false !== ($item = readdir($handle))) {
                 if ($item != "." && $item != "..") {
@@ -94,13 +102,14 @@ class FileUtil {
 
     /**
      * 対象の ZIP ファイルを展開します。
-     * 
+     *
      * @param  string $zipPath ZIPファイルパス
      * @param  string $destDir 展開先ディレクトリパス
      * @return void
      * @throws Rebet\IO\ZipArchiveException
      */
-    public static function unzip(string $zipPath, string $destDir) : void {
+    public static function unzip(string $zipPath, string $destDir) : void
+    {
         $zip = new \ZipArchive();
         self::zipErrorCheck($zip->open($zipPath), "Open {$zipPath} failed.");
         $zip->extractTo($destDir);
@@ -109,15 +118,20 @@ class FileUtil {
     
     /**
      * ZipArchive の エラーコード を Exception に変換します。
-     * 
+     *
      * @param int|bool $code 成否及びエラーコード
      * @param ?string $messsage エラー発生時のメッセージ（デフォルト： 'ZipArchive error.'）
      * @throws Rebet\IO\ZipArchiveException
      */
-    private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void {
-        if($code === true) { return; }
-        if($code === false) { throw new ZipArchiveException($message); }
-        switch($code) {
+    private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
+    {
+        if ($code === true) {
+            return;
+        }
+        if ($code === false) {
+            throw new ZipArchiveException($message);
+        }
+        switch ($code) {
             case \ZipArchive::ER_OK:          return;
             case \ZipArchive::ER_MULTIDISK:   $message = "{$message} (Multi-disk zip archives not supported)"; break;
             case \ZipArchive::ER_RENAME:      $message = "{$message} (Renaming temporary file failed)"; break;
@@ -150,7 +164,7 @@ class FileUtil {
 
     /**
      * 対象のパスを ZIP 圧縮します。
-     * 
+     *
      * @param  string   $sourcePath       圧縮対象ファイル or ディレクトリ
      * @param  string   $outZipPath       圧縮後のZIPファイルパス
      * @param  boolean  $includeTargetDir 指定ディレクトリをZIPアーカイブに含めるか否か（デフォルト：true[=含める]）
@@ -161,9 +175,12 @@ class FileUtil {
      * @return void
      * @throws Rebet\IO\ZipArchiveException
      */
-    public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?\Closure $filter = null, int $outDirPermission = 0775) : void {
-        if(empty($filter)) {
-            $filter = function($path) { return true; };
+    public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?\Closure $filter = null, int $outDirPermission = 0775) : void
+    {
+        if (empty($filter)) {
+            $filter = function ($path) {
+                return true;
+            };
         }
         
         $pathInfo = pathInfo($sourcePath);
@@ -171,13 +188,13 @@ class FileUtil {
         $dirName = $pathInfo['basename'];
         
         $destDir = dirname($outZipPath);
-        if(!file_exists($destDir)) {
+        if (!file_exists($destDir)) {
             mkdir($destDir, $outDirPermission, true);
         }
         
         $z = new \ZipArchive();
         self::zipErrorCheck($z->open($outZipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE), "Open {$outZipPath} failed.");
-        if($includeTargetDir) {
+        if ($includeTargetDir) {
             $z->addEmptyDir($dirName);
         }
         self::folderToZip($sourcePath, $z, strlen($includeTargetDir ? "$parentPath/" : "$parentPath/$dirName/"), $filter);
@@ -186,19 +203,22 @@ class FileUtil {
     
     /**
      * ディレクトリを再帰的にZIP圧縮します。
-     * 
+     *
      * @param  string $folder
      * @param  \ZipArchive $zipFile
      * @param  int $exclusiveLength
      * @param  \Closure $filter
      * @return void
      */
-    private static function folderToZip(string $folder, \ZipArchive &$zipFile, int $exclusiveLength, \Closure $filter) {
+    private static function folderToZip(string $folder, \ZipArchive &$zipFile, int $exclusiveLength, \Closure $filter)
+    {
         $handle = opendir($folder);
         while (false !== $f = readdir($handle)) {
             if ($f != '.' && $f != '..') {
                 $filePath = "$folder/$f";
-                if(!$filter($filePath)) { continue; }
+                if (!$filter($filePath)) {
+                    continue;
+                }
                 
                 // Remove prefix from file path before add to zip.
                 $localPath = substr($filePath, $exclusiveLength);

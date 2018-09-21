@@ -3,18 +3,21 @@ namespace Rebet\Config;
 
 /**
  * コンフィグ関連クラスのレイヤー名を定義する クラス
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-final class Layer {
+final class Layer
+{
 
     /**
      * インスタンス化禁止
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * ライブラリレイヤー

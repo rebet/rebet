@@ -5,7 +5,8 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Util;
 use Rebet\Common\TransparentlyDotAccessible;
 
-class UtilTest extends RebetTestCase {
+class UtilTest extends RebetTestCase
+{
     const TEST_VALUE = "UtilTest::TEST_VALUE";
 
     private $array       = null;
@@ -13,35 +14,38 @@ class UtilTest extends RebetTestCase {
     private $object      = null;
     private $transparent = null;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->array  = ['a','b','c', null];
         $this->map    = [
-            'name' => 'John Smith', 
-            'gender' => 'male', 
-            'hobbies' => ['game', 'outdoor'], 
+            'name' => 'John Smith',
+            'gender' => 'male',
+            'hobbies' => ['game', 'outdoor'],
             'partner' => [
-                'name' => 'Jane Smith', 
+                'name' => 'Jane Smith',
                 'gender' => 'female'
             ],
             'children' => null
         ];
         $this->object = (object) [
-            'name' => 'John Smith', 
-            'gender' => 'male', 
-            'hobbies' => ['game', 'outdoor'], 
+            'name' => 'John Smith',
+            'gender' => 'male',
+            'hobbies' => ['game', 'outdoor'],
             'partner' => (object)[
-                'name' => 'Jane Smith', 
+                'name' => 'Jane Smith',
                 'gender' => 'female'
             ],
             'children' => null
         ];
         $this->transparent = (object) [
             'a' => new class() implements TransparentlyDotAccessible {
-                public function get() {
+                public function get()
+                {
                     return [
                         'b' => 'ab',
                         'c' => new class() implements TransparentlyDotAccessible {
-                            public function get() {
+                            public function get()
+                            {
                                 return 'ac';
                             }
                         },
@@ -49,9 +53,11 @@ class UtilTest extends RebetTestCase {
                 }
             },
             'b' => new class() implements TransparentlyDotAccessible {
-                public function get() {
+                public function get()
+                {
                     return new class() implements TransparentlyDotAccessible {
-                        public function get() {
+                        public function get()
+                        {
                             return 'b';
                         }
                     };
@@ -60,7 +66,8 @@ class UtilTest extends RebetTestCase {
         ];
     }
 
-    public function test_when() {
+    public function test_when()
+    {
         $this->assertSame(Util::when(null, 'yes', 'no'), 'no');
         $this->assertSame(Util::when(0, 'yes', 'no'), 'no');
         $this->assertSame(Util::when(1, 'yes', 'no'), 'yes');
@@ -68,27 +75,34 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::when(1 === 2, 'yes', 'no'), 'no');
     }
 
-    public function test_coalesce() {
+    public function test_coalesce()
+    {
         $this->assertSame(Util::coalesce(null, [], '', 0, 3, 'a'), 3);
         $this->assertSame(Util::coalesce('a', null, [], '', 0, 3), 'a');
     }
 
-    public function test_instantiate() {
+    public function test_instantiate()
+    {
         $this->assertNull(Util::instantiate(null));
         $this->assertNull(Util::instantiate(''));
         $this->assertNull(Util::instantiate([]));
 
         $this->assertSame('default', Util::instantiate(UtilTest_Mock::class)->value);
         $this->assertSame('via getInstance()', Util::instantiate(UtilTest_Mock::class.'::getInstance')->value);
-        $this->assertSame('callable', Util::instantiate(function(){ return 'callable'; }));
+        $this->assertSame('callable', Util::instantiate(function () {
+            return 'callable';
+        }));
         $this->assertSame('arg', Util::instantiate([UtilTest_Mock::class, 'arg'])->value);
         $this->assertSame('arg via build()', Util::instantiate([UtilTest_Mock::class.'::build', 'arg'])->value);
-        $this->assertSame('arg via callable', Util::instantiate([function($v){ return $v.' via callable'; }, 'arg']));
+        $this->assertSame('arg via callable', Util::instantiate([function ($v) {
+            return $v.' via callable';
+        }, 'arg']));
         $this->assertSame(123, Util::instantiate(123));
         $this->assertSame('instantiated', Util::instantiate(new UtilTest_Mock('instantiated'))->value);
     }
 
-    public function test_get() {
+    public function test_get()
+    {
         $this->assertNull(Util::get($this->array, 'invalid_key'));
         $this->assertSame(Util::get($this->array, 'invalid_key', 'default'), 'default');
         $this->assertSame(Util::get($this->array, 0, 'default'), 'a');
@@ -124,7 +138,8 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::get($this->transparent, 'b'), 'b');
     }
 
-    public function test_has() {
+    public function test_has()
+    {
         $this->assertFalse(Util::has(null, 'invalid_key'));
         $this->assertFalse(Util::has('string', 'invalid_key'));
 
@@ -168,7 +183,8 @@ class UtilTest extends RebetTestCase {
         $this->assertFalse(Util::has($this->transparent, 'b.c'));
     }
 
-    public function test_set() {
+    public function test_set()
+    {
         Util::set($this->array, 0, 'A');
         $this->assertSame('A', $this->array[0]);
 
@@ -219,7 +235,8 @@ class UtilTest extends RebetTestCase {
      * @expectedException OutOfBoundsException
      * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
      */
-    public function test_set_undefindKeyArray() {
+    public function test_set_undefindKeyArray()
+    {
         Util::set($this->array, 'undefind_key', 'value');
     }
 
@@ -227,7 +244,8 @@ class UtilTest extends RebetTestCase {
      * @expectedException OutOfBoundsException
      * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
      */
-    public function test_set_nestedUndefindKeyArray() {
+    public function test_set_nestedUndefindKeyArray()
+    {
         Util::set($this->map, 'partner.undefind_key', 'value');
     }
 
@@ -235,7 +253,8 @@ class UtilTest extends RebetTestCase {
      * @expectedException OutOfBoundsException
      * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
      */
-    public function test_set_undefindKeyObject() {
+    public function test_set_undefindKeyObject()
+    {
         Util::set($this->object, 'undefind_key', 'value');
     }
 
@@ -243,11 +262,13 @@ class UtilTest extends RebetTestCase {
      * @expectedException OutOfBoundsException
      * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
      */
-    public function test_set_nestedUndefindKeyObject() {
+    public function test_set_nestedUndefindKeyObject()
+    {
         Util::set($this->object, 'partner.undefind_key', 'value');
     }
 
-    public function test_isBlank() {
+    public function test_isBlank()
+    {
         $this->assertSame(Util::isBlank(null), true);
         $this->assertSame(Util::isBlank(false), false);
         $this->assertSame(Util::isBlank('false'), false);
@@ -260,7 +281,8 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::isBlank('abc'), false);
     }
 
-    public function test_bvl() {
+    public function test_bvl()
+    {
         $this->assertSame(Util::bvl(null, 'default'), 'default');
         $this->assertSame(Util::bvl(false, 'default'), false);
         $this->assertSame(Util::bvl('false', 'default'), 'false');
@@ -272,7 +294,8 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::bvl('abc', 'default'), 'abc');
     }
 
-    public function test_isEmpty() {
+    public function test_isEmpty()
+    {
         $this->assertSame(Util::isEmpty(null), true);
         $this->assertSame(Util::isEmpty(false), false);
         $this->assertSame(Util::isEmpty('false'), false);
@@ -285,7 +308,8 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::isEmpty('abc'), false);
     }
 
-    public function test_evl() {
+    public function test_evl()
+    {
         $this->assertSame(Util::evl(null, 'default'), 'default');
         $this->assertSame(Util::evl(false, 'default'), false);
         $this->assertSame(Util::evl('false', 'default'), 'false');
@@ -297,7 +321,8 @@ class UtilTest extends RebetTestCase {
         $this->assertSame(Util::evl('abc', 'default'), 'abc');
     }
 
-    public function test_heredocImplanter() {
+    public function test_heredocImplanter()
+    {
         $_ = Util::heredocImplanter();
         $expected = <<<EOS
 START
@@ -313,7 +338,8 @@ EOS;
         $this->assertSame($expected, $actual);
     }
 
-    public function test_intval() {
+    public function test_intval()
+    {
         $this->assertNull(Util::intval(null));
         $this->assertNull(Util::intval(''));
         $this->assertSame(0, Util::intval('abc'));
@@ -326,7 +352,8 @@ EOS;
         $this->assertSame(0xF, Util::intval('F', 16));
     }
 
-    public function test_floatval() {
+    public function test_floatval()
+    {
         $this->assertNull(Util::floatval(null));
         $this->assertNull(Util::floatval(''));
         $this->assertSame(0.0, Util::floatval('abc'));
@@ -339,15 +366,19 @@ EOS;
     }
 }
 
-class UtilTest_Mock {
+class UtilTest_Mock
+{
     public $value = null;
-    public function __construct($value = 'default') {
+    public function __construct($value = 'default')
+    {
         $this->value = $value;
     }
-    public static function getInstance() {
+    public static function getInstance()
+    {
         return new static('via getInstance()');
     }
-    public static function build($value) {
+    public static function build($value)
+    {
         return new static($value.' via build()');
     }
 }

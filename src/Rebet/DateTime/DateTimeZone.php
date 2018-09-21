@@ -3,25 +3,28 @@ namespace Rebet\DateTime;
 
 /**
  * タイムゾーン クラス
- * 
+ *
  * @todo シングルトン化 or クラス自体削除するか否かの検討
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class DateTimeZone extends \DateTimeZone {
+class DateTimeZone extends \DateTimeZone
+{
     
     /**
      * @param string|\DateTimeZone $timezone タイムゾーン
      */
-    public function __construct($timezone) {
+    public function __construct($timezone)
+    {
         $timezone = $timezone instanceof \DateTimeZone ? $timezone->getName() : $timezone ;
         parent::__construct($timezone);
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getName();
     }
 }

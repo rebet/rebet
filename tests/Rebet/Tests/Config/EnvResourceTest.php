@@ -7,14 +7,16 @@ use Rebet\Config\App;
 
 use org\bovigo\vfs\vfsStream;
 
-class EnvResourceTest extends RebetTestCase {
-
+class EnvResourceTest extends RebetTestCase
+{
     private $root;
 
-    public function setUp() {
+    public function setUp()
+    {
         App::setEnv('unittest');
         $this->root = vfsStream::setup();
-        vfsStream::create([
+        vfsStream::create(
+            [
                 'resource' => [
                     'test.php' => <<<EOS
 <?php
@@ -71,7 +73,8 @@ EOS
         );
     }
 
-    public function test_load() {
+    public function test_load()
+    {
         $this->assertSame(
             [
                 'int' => 2,
@@ -120,9 +123,9 @@ EOS
      * @expectedException \LogicException
      * @expectedExceptionMessage Resource test txt not found in vfs://root/resource.
      */
-    public function test_load_notfound() {
+    public function test_load_notfound()
+    {
         EnvResource::load('vfs://root/resource', 'test', 'txt');
         $this->fail("Never execute.");
     }
-
 }

@@ -6,13 +6,15 @@ use Rebet\Config\Resource;
 
 use org\bovigo\vfs\vfsStream;
 
-class ResourceTest extends RebetTestCase {
-
+class ResourceTest extends RebetTestCase
+{
     private $root;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->root = vfsStream::setup();
-        vfsStream::create([
+        vfsStream::create(
+            [
                 'resource' => [
                     'test.php' => <<<EOS
 <?php
@@ -63,7 +65,8 @@ EOS
         );
     }
 
-    public function test_load() {
+    public function test_load()
+    {
         $this->assertSame(
             [
                 'int' => 1,
@@ -130,11 +133,13 @@ EOS
      * @expectedException \LogicException
      * @expectedExceptionMessage Unsupported file type [yaml]. Please set loader to Rebet\Config\Resource class.
      */
-    public function test_load_unsuported() {
+    public function test_load_unsuported()
+    {
         Resource::load('yaml', 'vfs://root/resource/test.yaml');
     }
 
-    public function test_load_notfound() {
+    public function test_load_notfound()
+    {
         $this->assertNull(Resource::load('php', 'vfs://root/resource/notfound.php'));
     }
 }

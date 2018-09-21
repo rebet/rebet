@@ -5,21 +5,22 @@ use Rebet\Common\TransparentlyDotAccessible;
 
 /**
  * コンフィグ参照 クラス
- * 
+ *
  * 他のセクションのコンフィグ設定を共有する場合に利用するクラスとなります。
  * なお、参照は片方向参照となります。
  * ※本オブジェクトは Config::refer() ファサードを利用して構築できます。
- * 
+ *
  * @see Rebet\Config\Config::refer()
- * 
+ *
  * @todo 循環参照の検知＆例外 throw
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ConfigReferrer implements TransparentlyDotAccessible {
+class ConfigReferrer implements TransparentlyDotAccessible
+{
     
     /**
      * 参照先セクション
@@ -42,7 +43,8 @@ class ConfigReferrer implements TransparentlyDotAccessible {
      * @param int|string $key 参照先キー
      * @param mixed 参照値
      */
-    public function __construct(string $section, $key, $default = null) {
+    public function __construct(string $section, $key, $default = null)
+    {
         $this->section = $section;
         $this->key     = $key;
         $this->default = $default;
@@ -51,7 +53,8 @@ class ConfigReferrer implements TransparentlyDotAccessible {
     /**
      * 参照先の現在の設定値を取得します。
      */
-    public function get() {
+    public function get()
+    {
         return Config::get($this->section, $this->key, false, $this->default);
     }
 }

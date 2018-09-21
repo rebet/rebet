@@ -8,7 +8,8 @@ namespace Rebet\Common {
     use Rebet\Tests\ExitException;
     use Rebet\Common\ArrayUtil;
 
-    class System {
+    class System
+    {
         private const HTTP_STATUS = [
             100 => '100 Continue',
             101 => '101 Switching Protocols',
@@ -74,38 +75,44 @@ namespace Rebet\Common {
         public static $HEADER_RAW_ARGES = [];
         private static $EMULATED_HEADER = ['http' => ['HTTP/1.1 200 OK']];
 
-        private function __construct() {}
+        private function __construct()
+        {
+        }
 
-        public static function mock_init() {
+        public static function mock_init()
+        {
             self::$HEADER_RAW_ARGES = [];
             self::$EMULATED_HEADER  = ['http' => ['HTTP/1.1 200 OK']];
         }
 
-        public static function exit($status = null) : void {
+        public static function exit($status = null) : void
+        {
             throw new ExitException($status);
         }
 
-        public static function die($status = null) : void {
+        public static function die($status = null) : void
+        {
             throw new DieException($status);
         }
 
-        public static function header(string $header,  bool $replace = true, int $http_response_code = null) : void {
-            self::$HEADER_RAW_ARGES[] = compact('header','replace','http_response_code');
+        public static function header(string $header, bool $replace = true, int $http_response_code = null) : void
+        {
+            self::$HEADER_RAW_ARGES[] = compact('header', 'replace', 'http_response_code');
 
-            if(\preg_match('/^HTTP\//', $header)) {
+            if (\preg_match('/^HTTP\//', $header)) {
                 self::$EMULATED_HEADER['http'] = [$header];
-            } else if($http_response_code !== null && isset(self::HTTP_STATUS[$http_response_code])) {
+            } elseif ($http_response_code !== null && isset(self::HTTP_STATUS[$http_response_code])) {
                 $parts = \explode(' ', self::$EMULATED_HEADER['http'][0], 2);
                 self::$EMULATED_HEADER['http'] = [$parts[0].' '.self::HTTP_STATUS[$http_response_code]];
             }
             
-            if(\strpos($header, ':') !== false) {
+            if (\strpos($header, ':') !== false) {
                 $parts = \explode(':', $header, 2);
                 $key   = \strtolower($parts[0]);
-                if(!isset(self::$EMULATED_HEADER[$key])) {
+                if (!isset(self::$EMULATED_HEADER[$key])) {
                     self::$EMULATED_HEADER[$key] = [];
                 }
-                if($replace) {
+                if ($replace) {
                     self::$EMULATED_HEADER[$key] = [$header];
                 } else {
                     self::$EMULATED_HEADER[$key][] = $header;
@@ -115,7 +122,8 @@ namespace Rebet\Common {
             }
         }
 
-        public static function headers_list() : array {
+        public static function headers_list() : array
+        {
             return ArrayUtil::flatten(\array_values(self::$EMULATED_HEADER));
         }
     }

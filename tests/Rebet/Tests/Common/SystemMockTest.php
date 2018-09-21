@@ -7,12 +7,15 @@ use Rebet\Common\System;
 /**
  * 本テストは tests/mocks.php にて定義されている Systemモック クラスのテストとなります。
  */
-class SystemMockTest extends RebetTestCase {
-    public function setUp() {
+class SystemMockTest extends RebetTestCase
+{
+    public function setUp()
+    {
         System::mock_init();
     }
 
-    public function test_mock_init() {
+    public function test_mock_init()
+    {
         $this->assertEmpty(System::$HEADER_RAW_ARGES);
         $this->assertSame(['HTTP/1.1 200 OK'], System::headers_list());
         System::header('Content-Type: application/javascript; charset=UTF-8');
@@ -27,7 +30,8 @@ class SystemMockTest extends RebetTestCase {
      * @expectedException Rebet\Tests\ExitException
      * @expectedExceptionMessage Exit message
      */
-    public function test_exit() {
+    public function test_exit()
+    {
         System::exit('Exit message');
         $this->fail('Never execute.');
     }
@@ -36,12 +40,14 @@ class SystemMockTest extends RebetTestCase {
      * @expectedException Rebet\Tests\DieException
      * @expectedExceptionMessage Die message
      */
-    public function test_die() {
+    public function test_die()
+    {
         System::die('Die message');
         $this->fail('Never execute.');
     }
 
-    public function test_header_rawArges() {
+    public function test_header_rawArges()
+    {
         $this->assertEmpty(System::$HEADER_RAW_ARGES);
         System::header('Content-Type: application/javascript; charset=UTF-8');
         $this->assertSame(
@@ -72,7 +78,8 @@ class SystemMockTest extends RebetTestCase {
         );
     }
 
-    public function test_header() {
+    public function test_header()
+    {
         $this->assertSame(
             [
                 'HTTP/1.1 200 OK'

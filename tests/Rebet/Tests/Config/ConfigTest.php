@@ -5,22 +5,27 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 
-class ConfigTest extends RebetTestCase {
-    public function setUp() {
+class ConfigTest extends RebetTestCase
+{
+    public function setUp()
+    {
         \putenv('PROMISE_TEST=');
         Config::clear();
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         \putenv('PROMISE_TEST=');
     }
 
-    public function test_instantiate() {
+    public function test_instantiate()
+    {
         $this->assertSame('default', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate')->value);
         $this->assertSame('arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_arg')->value);
     }
 
-    public function test_get() {
+    public function test_get()
+    {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('localhost', Config::get(ConfigTest_Mock::class, 'host'));
         $this->assertSame(3306, Config::get(ConfigTest_Mock::class, 'port'));
@@ -88,7 +93,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#database is blank. Please define at application or framework layer.
      */
-    public function test_get_blank() {
+    public function test_get_blank()
+    {
         Config::get(ConfigTest_Mock::class, 'database');
         $this->fail("Never execute.");
     }
@@ -97,7 +103,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#undfine is not define. Please check config key name.
      */
-    public function test_get_undfine() {
+    public function test_get_undfine()
+    {
         Config::get(ConfigTest_Mock::class, 'undfine');
         $this->fail("Never execute.");
     }
@@ -106,7 +113,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Please define at application layer.
      */
-    public function test_get_frameworkOrverrideBlank() {
+    public function test_get_frameworkOrverrideBlank()
+    {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::framework([
@@ -123,7 +131,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Overwritten with blank at application layer.
      */
-    public function test_get_applicationOrverrideBlank() {
+    public function test_get_applicationOrverrideBlank()
+    {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::application([
@@ -140,7 +149,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException Rebet\Config\ConfigNotDefineException
      * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Overwritten with blank at runtime layer.
      */
-    public function test_get_runtimeOrverrideBlank() {
+    public function test_get_runtimeOrverrideBlank()
+    {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::runtime([
@@ -157,7 +167,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
      */
-    public function test_get_digitKeyAccessLast() {
+    public function test_get_digitKeyAccessLast()
+    {
         Config::application([
             ConfigTest_Mock::class => [
                 'array' => [1, 2, 3],
@@ -173,7 +184,8 @@ class ConfigTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key '1' contains digit only part.
      */
-    public function test_get_digitKeyAccessOnly() {
+    public function test_get_digitKeyAccessOnly()
+    {
         Config::has(ConfigTest_Mock::class, '1');
         $this->fail("Never execute.");
     }
@@ -182,12 +194,14 @@ class ConfigTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'driver.123.dummy' contains digit only part.
      */
-    public function test_get_digitKeyAccessMiddle() {
+    public function test_get_digitKeyAccessMiddle()
+    {
         Config::has(ConfigTest_Mock::class, 'driver.123.dummy');
         $this->fail("Never execute.");
     }
 
-    public function test_get_promise() {
+    public function test_get_promise()
+    {
         ConfigTest_MockPromise::config('dummy', false);
 
         \putenv('PROMISE_TEST=1');
@@ -205,21 +219,29 @@ class ConfigTest extends RebetTestCase {
         $this->assertSame('2', ConfigTest_MockPromiseReferrer::config('refer_promise_every', false));
     }
    
-    public function test_get_anonymousClass() {
-        $a = new class{
+    public function test_get_anonymousClass()
+    {
+        $a = new class {
             use Configurable;
-            public static function defaultConfig() { return [ 'key' => 'a' ]; }
+            public static function defaultConfig()
+            {
+                return [ 'key' => 'a' ];
+            }
         };
-        $b = new class{
+        $b = new class {
             use Configurable;
-            public static function defaultConfig() { return [ 'key' => 'b' ]; }
+            public static function defaultConfig()
+            {
+                return [ 'key' => 'b' ];
+            }
         };
 
         $this->assertSame('a', Config::get(get_class($a), 'key'));
         $this->assertSame('b', Config::get(get_class($b), 'key'));
     }
 
-    public function test_has() {
+    public function test_has()
+    {
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));
         $this->assertFalse(Config::has(ConfigTest_Mock::class, 'undefined'));
@@ -267,9 +289,11 @@ class ConfigTest extends RebetTestCase {
 
 // ========== Mocks ==========
 
-class ConfigTest_Mock {
+class ConfigTest_Mock
+{
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
             'driver' => 'mysql',
             'host' => 'localhost',
@@ -279,27 +303,37 @@ class ConfigTest_Mock {
         ];
     }
 }
-class ConfigTest_MockRefer {
+class ConfigTest_MockRefer
+{
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
             'database' => Config::refer(ConfigTest_Mock::class, 'database', 'refer_database'),
         ];
     }
 }
-class ConfigTest_MockPromise {
+class ConfigTest_MockPromise
+{
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
             'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
-            'promise_once'  => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }),
-            'promise_every' => Config::promise(function(){ return \getenv('PROMISE_TEST') ?: 'default'; }, false),
+            'promise_once'  => Config::promise(function () {
+                return \getenv('PROMISE_TEST') ?: 'default';
+            }),
+            'promise_every' => Config::promise(function () {
+                return \getenv('PROMISE_TEST') ?: 'default';
+            }, false),
         ];
     }
 }
-class ConfigTest_MockPromiseReferrer {
+class ConfigTest_MockPromiseReferrer
+{
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
             'refer_promise_once'  => Config::refer(ConfigTest_MockPromise::class, 'promise_once'),
             'refer_promise_every' => Config::refer(ConfigTest_MockPromise::class, 'promise_every'),
@@ -307,9 +341,11 @@ class ConfigTest_MockPromiseReferrer {
     }
 }
 
-class ConfigTest_MockInstantiate {
+class ConfigTest_MockInstantiate
+{
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
             'mock_instantiate'     =>  ConfigTest_MockInstantiate::class,
             'mock_instantiate_arg' => [ConfigTest_MockInstantiate::class, 'arg'],
@@ -317,13 +353,16 @@ class ConfigTest_MockInstantiate {
     }
 
     public $value = null;
-    public function __construct($value = 'default') {
+    public function __construct($value = 'default')
+    {
         $this->value = $value;
     }
-    public static function getInstance() {
+    public static function getInstance()
+    {
         return new static('via getInstance()');
     }
-    public static function build($value) {
+    public static function build($value)
+    {
         return new static($value.' via build()');
     }
 }

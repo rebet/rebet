@@ -4,11 +4,13 @@ namespace Rebet\Tests\Common;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Enum;
 
-class EnumTest_Gender extends Enum {
+class EnumTest_Gender extends Enum
+{
     const MALE   = [1, '男性'];
     const FEMALE = [2, '女性'];
 }
-class EnumTest_AcceptStatus extends Enum {
+class EnumTest_AcceptStatus extends Enum
+{
     const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
     const ACCEPTED = ['A', '受理'  , 'green' , 'fas fa-check-circle'];
     const REJECTED = ['R', '却下'  , 'red'   , 'fas fa-times-circle'];
@@ -16,21 +18,24 @@ class EnumTest_AcceptStatus extends Enum {
     public $color;
     public $icon;
 
-    protected function __construct($value, $label, $color, $icon) {
+    protected function __construct($value, $label, $color, $icon)
+    {
         parent::__construct($value, $label);
         $this->color = $color;
         $this->icon  = $icon;
     }
 
-    public static function nexts($current, ?array $context = null) : array {
-        switch($context['role']) {
+    public static function nexts($current, ?array $context = null) : array
+    {
+        switch ($context['role']) {
             case 'operator':
                 $current = self::valueOf($current);
-                if($current === self::WAITING()) {
+                if ($current === self::WAITING()) {
                     return [self::WAITING(), self::ACCEPTED(), self::REJECTED()];
                 } else {
                     return [$current];
                 }
+                // no break
             case 'admin':
                 return self::lists();
         }
@@ -40,17 +45,19 @@ class EnumTest_AcceptStatus extends Enum {
 }
 
 
-class EnumTest extends RebetTestCase {
-
+class EnumTest extends RebetTestCase
+{
     private $male;
     private $female;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->male   = EnumTest_Gender::MALE();
         $this->female = EnumTest_Gender::FEMALE();
     }
 
-    public function test_callStatic() {
+    public function test_callStatic()
+    {
         $this->assertInstanceOf(EnumTest_Gender::class, $this->male);
         $this->assertSame(1, $this->male->value);
         $this->assertSame('男性', $this->male->label);
@@ -69,11 +76,13 @@ class EnumTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid enum const. Rebet\Tests\Common\EnumTest_Gender::INVALID is not defined.
      */
-    public function test_callStatic_undefine() {
+    public function test_callStatic_undefine()
+    {
         $invalid = EnumTest_Gender::INVALID();
     }
     
-    public function test_equals() {
+    public function test_equals()
+    {
         $male2 = EnumTest_Gender::MALE();
 
         $this->assertTrue($this->male->equals(1));
@@ -86,7 +95,8 @@ class EnumTest extends RebetTestCase {
         $this->assertFalse($this->male->equals($this->female));
     }
     
-    public function test_in() {
+    public function test_in()
+    {
         $this->assertTrue($this->male->in(1, 2));
         $this->assertTrue($this->male->in('1', '2'));
         $this->assertTrue($this->male->in(...EnumTest_Gender::lists()));
@@ -95,18 +105,21 @@ class EnumTest extends RebetTestCase {
         $this->assertFalse($this->male->in($this->female));
     }
     
-    public function test_toString() {
+    public function test_toString()
+    {
         $this->assertSame('男性', "{$this->male}");
     }
     
-    public function test_jsonSerialize() {
+    public function test_jsonSerialize()
+    {
         $this->assertSame(1, $this->male->jsonSerialize());
     }
 
-    public function test_lists() {
+    public function test_lists()
+    {
         $this->assertSame(
             [
-                EnumTest_Gender::MALE(), 
+                EnumTest_Gender::MALE(),
                 EnumTest_Gender::FEMALE(),
             ],
             EnumTest_Gender::lists()
@@ -114,7 +127,7 @@ class EnumTest extends RebetTestCase {
 
         $this->assertSame(
             [
-                EnumTest_AcceptStatus::WAITING(), 
+                EnumTest_AcceptStatus::WAITING(),
                 EnumTest_AcceptStatus::ACCEPTED(),
                 EnumTest_AcceptStatus::REJECTED(),
             ],
@@ -122,10 +135,11 @@ class EnumTest extends RebetTestCase {
         );
     }
 
-    public function test_maps() {
+    public function test_maps()
+    {
         $this->assertSame(
             [
-                1 => EnumTest_Gender::MALE(), 
+                1 => EnumTest_Gender::MALE(),
                 2 => EnumTest_Gender::FEMALE(),
             ],
             EnumTest_Gender::maps()
@@ -133,7 +147,7 @@ class EnumTest extends RebetTestCase {
 
         $this->assertSame(
             [
-                '男性' => EnumTest_Gender::MALE(), 
+                '男性' => EnumTest_Gender::MALE(),
                 '女性' => EnumTest_Gender::FEMALE(),
             ],
             EnumTest_Gender::maps('label')
@@ -141,7 +155,7 @@ class EnumTest extends RebetTestCase {
 
         $this->assertSame(
             [
-                'W' => EnumTest_AcceptStatus::WAITING(), 
+                'W' => EnumTest_AcceptStatus::WAITING(),
                 'A' => EnumTest_AcceptStatus::ACCEPTED(),
                 'R' => EnumTest_AcceptStatus::REJECTED(),
             ],
@@ -153,12 +167,14 @@ class EnumTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Common\EnumTest_Gender->invalid is not exists.
      */
-    public function test_maps_invalid() {
+    public function test_maps_invalid()
+    {
         EnumTest_Gender::maps('invalid');
         $this->fail("Never execute.");
     }
 
-    public function test_fieldOf() {
+    public function test_fieldOf()
+    {
         $this->assertSame(EnumTest_Gender::MALE(), EnumTest_Gender::fieldOf('value', 1));
         $this->assertSame(EnumTest_Gender::MALE(), EnumTest_Gender::fieldOf('label', '男性'));
         $this->assertSame(EnumTest_Gender::FEMALE(), EnumTest_Gender::fieldOf('label', '女性'));
@@ -173,30 +189,36 @@ class EnumTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Common\EnumTest_Gender->invalid is not exists.
      */
-    public function test_fieldOf_invalid() {
+    public function test_fieldOf_invalid()
+    {
         $this->assertNull(EnumTest_Gender::fieldOf('invalid', 1));
         $this->fail("Never execute.");
     }
 
-    public function test_valueOf() {
+    public function test_valueOf()
+    {
         $this->assertSame(EnumTest_Gender::MALE(), EnumTest_Gender::valueOf(1));
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::valueOf('R'));
     }
 
-    public function test_labelOf() {
+    public function test_labelOf()
+    {
         $this->assertSame(EnumTest_Gender::MALE(), EnumTest_Gender::labelOf('男性'));
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::labelOf('却下'));
     }
 
-    public function test_listOf() {
+    public function test_listOf()
+    {
         $this->assertSame(
-            [1, 2] ,
+            [1, 2],
             EnumTest_Gender::listOf('value')
         );
 
         $this->assertSame(
             [2],
-            EnumTest_Gender::listOf('value', function($enum){ return $enum->label === '女性'; })
+            EnumTest_Gender::listOf('value', function ($enum) {
+                return $enum->label === '女性';
+            })
         );
 
         $this->assertSame(
@@ -219,12 +241,14 @@ class EnumTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Common\EnumTest_Gender->invalid is not exists.
      */
-    public function test_listOf_invalid() {
+    public function test_listOf_invalid()
+    {
         $this->assertNull(EnumTest_Gender::listOf('invalid'));
         $this->fail("Never execute.");
     }
 
-    public function test_values() {
+    public function test_values()
+    {
         $this->assertSame(
             [1, 2],
             EnumTest_Gender::values()
@@ -232,7 +256,9 @@ class EnumTest extends RebetTestCase {
 
         $this->assertSame(
             [2],
-            EnumTest_Gender::values(function($enum){ return $enum->label === '女性'; })
+            EnumTest_Gender::values(function ($enum) {
+                return $enum->label === '女性';
+            })
         );
 
         $this->assertSame(
@@ -241,7 +267,8 @@ class EnumTest extends RebetTestCase {
         );
     }
 
-    public function test_labels() {
+    public function test_labels()
+    {
         $this->assertSame(
             ['男性', '女性'],
             EnumTest_Gender::labels()
@@ -249,7 +276,9 @@ class EnumTest extends RebetTestCase {
 
         $this->assertSame(
             ['男性'],
-            EnumTest_Gender::labels(function($enum){ return $enum->value === 1; })
+            EnumTest_Gender::labels(function ($enum) {
+                return $enum->value === 1;
+            })
         );
 
         $this->assertSame(
@@ -258,7 +287,8 @@ class EnumTest extends RebetTestCase {
         );
     }
 
-    public function test_nexts() {
+    public function test_nexts()
+    {
         $this->assertSame(
             [
                 EnumTest_AcceptStatus::WAITING(),
@@ -310,7 +340,8 @@ class EnumTest extends RebetTestCase {
         );
     }
 
-    public function test_nextOf() {
+    public function test_nextOf()
+    {
         $this->assertSame(
             ['W', 'A', 'R'],
             EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
@@ -328,17 +359,17 @@ class EnumTest extends RebetTestCase {
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value',EnumTest_AcceptStatus::WAITING(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::WAITING(), ['role' => 'admin'])
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value',EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
         );
 
         $this->assertSame(
             ['W', 'A', 'R'],
-            EnumTest_AcceptStatus::nextOf('value',EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin'])
+            EnumTest_AcceptStatus::nextOf('value', EnumTest_AcceptStatus::REJECTED(), ['role' => 'admin'])
         );
     }
 
@@ -346,12 +377,14 @@ class EnumTest extends RebetTestCase {
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Common\EnumTest_Gender->invalid is not exists.
      */
-    public function test_nextOf_invalid() {
+    public function test_nextOf_invalid()
+    {
         $this->assertNull(EnumTest_Gender::listOf('invalid'));
         $this->fail("Never execute.");
     }
     
-    public function test_nextValues() {
+    public function test_nextValues()
+    {
         $this->assertSame(
             ['W', 'A', 'R'],
             EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])
@@ -368,7 +401,8 @@ class EnumTest extends RebetTestCase {
         );
     }
     
-    public function test_nextLabels() {
+    public function test_nextLabels()
+    {
         $this->assertSame(
             ['待機中', '受理', '却下'],
             EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::WAITING(), ['role' => 'operator'])

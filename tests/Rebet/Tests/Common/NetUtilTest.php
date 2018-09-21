@@ -6,12 +6,15 @@ use Rebet\Common\NetUtil;
 
 use Rebet\Common\System;
 
-class NetUtilTest extends RebetTestCase {
-    public function setUp() {
+class NetUtilTest extends RebetTestCase
+{
+    public function setUp()
+    {
         System::mock_init();
     }
 
-    public function test_encodeBase64Url() {
+    public function test_encodeBase64Url()
+    {
         foreach ([
             // inclued '='
             'Test'
@@ -23,7 +26,7 @@ class NetUtilTest extends RebetTestCase {
             $this->assertSame($encoded, NetUtil::encodeBase64Url($plain));
         }
 
-        for ($i=0; $i < 100; $i++) { 
+        for ($i=0; $i < 100; $i++) {
             $plain   = $this->_randomCode(12, 32);
             $encoded = NetUtil::encodeBase64Url($plain);
             $decoded = NetUtil::decodeBase64Url($encoded);
@@ -31,7 +34,8 @@ class NetUtilTest extends RebetTestCase {
         }
     }
 
-    public function test_decodeBase64Url() {
+    public function test_decodeBase64Url()
+    {
         foreach ([
             // inclued '='
             'Test'
@@ -43,7 +47,7 @@ class NetUtilTest extends RebetTestCase {
             $this->assertSame($plain, NetUtil::decodeBase64Url($encoded));
         }
 
-        for ($i=0; $i < 100; $i++) { 
+        for ($i=0; $i < 100; $i++) {
             $plain   = $this->_randomCode(12, 32);
             $encoded = NetUtil::encodeBase64Url($plain);
             $decoded = NetUtil::decodeBase64Url($encoded);
@@ -54,7 +58,8 @@ class NetUtilTest extends RebetTestCase {
     /**
      * @expectedException Rebet\Tests\ExitException
      */
-    public function test_redirect() {
+    public function test_redirect()
+    {
         try {
             NetUtil::redirect('https://github.com/rebet/rebet');
             $this->fail('Never executed.');
@@ -68,7 +73,8 @@ class NetUtilTest extends RebetTestCase {
     /**
      * @expectedException Rebet\Tests\ExitException
      */
-    public function test_redirect_withParam() {
+    public function test_redirect_withParam()
+    {
         try {
             $url = NetUtil::redirect('https://www.google.com/search', ['q' => 'github rebet']);
             $this->fail('Never executed.');
@@ -82,7 +88,8 @@ class NetUtilTest extends RebetTestCase {
     /**
      * @expectedException Rebet\Tests\ExitException
      */
-    public function test_redirect_withParamBoth() {
+    public function test_redirect_withParamBoth()
+    {
         try {
             $url = NetUtil::redirect('https://www.google.com/search?oe=utf-8', ['q' => 'github rebet']);
             $this->fail('Never executed.');
@@ -96,7 +103,8 @@ class NetUtilTest extends RebetTestCase {
     /**
      * @expectedException Rebet\Tests\ExitException
      */
-    public function test_json() {
+    public function test_json()
+    {
         ob_start();
         try {
             NetUtil::json(['name' => 'John', 'hobbies' => ['game', 'outdoor']]);
@@ -114,7 +122,8 @@ class NetUtilTest extends RebetTestCase {
     /**
      * @expectedException Rebet\Tests\ExitException
      */
-    public function test_jsonp() {
+    public function test_jsonp()
+    {
         ob_start();
         try {
             NetUtil::jsonp(['name' => 'John', 'hobbies' => ['game', 'outdoor']], 'callback');
@@ -129,7 +138,8 @@ class NetUtilTest extends RebetTestCase {
         }
     }
 
-    public function test_urlGetContents() {
+    public function test_urlGetContents()
+    {
         $content = NetUtil::urlGetContents('https://raw.githubusercontent.com/rebet/rebet/master/LICENSE');
         $this->assertRegExp('/^MIT License/', $content);
         $this->assertRegExp('/github.com\/rebet/', $content);
