@@ -8,10 +8,10 @@ use Rebet\Pipeline\Pipeline;
 /**
  * ロガー クラス
  *
- * 任意のハンドラとプラグインを組み合わせてログ出力を行います。
+ * 任意のハンドラとミドルウェアを組み合わせてログ出力を行います。
  *
- * パッケージで用意済みのハンドラ＆プラグインには下記のものがあります。
- * ※これらのハンドラ及びプラグインは順次追加していきます。
+ * パッケージで用意済みのハンドラ＆ミドルウェアには下記のものがあります。
+ * ※これらのハンドラ及びミドルウェアは順次追加していきます。
  *
  * ハンドラ
  * --------------------
@@ -157,12 +157,16 @@ class Log
     
     /**
      * ロガーを初期化します。
+     *
+     * @param callable|null $handler
+     * @param array|null $middlewares
+     * @return void
      */
-    public static function init()
+    public static function init(?callable $handler = null, ?array $middlewares = null)
     {
         self::shutdown();
-        self::$HANDLER  = self::configInstantiate('log_handler');
-        self::$PIPELINE = (new Pipeline())->through(self::config('log_middlewares', false, []))->then(self::$HANDLER);
+        self::$HANDLER  = $handler ?? self::configInstantiate('log_handler');
+        self::$PIPELINE = (new Pipeline())->through($middlewares ?? self::config('log_middlewares', false, []))->then(self::$HANDLER);
     }
 
     /**
