@@ -205,29 +205,6 @@ class Log
     {
         self::log(LogLevel::errorTypeOf($error['type']), "{$error['message']} ({$error['file']}:{$error['line']})", [], $error);
     }
-    
-    /**
-     * debug_backtrace を文字列形式に変換します。
-     *
-     * @param array $trace debug_backtrace
-     * @param boolean true : 引数記載有り／false : 引数記載無し（デフォルト）
-     * @return string デバックバックトレース文字列
-     */
-    public static function traceToString(array $trace, bool $withArgs = false) : string
-    {
-        $trace = array_reverse($trace);
-        array_pop($trace); // Remove self method stack
-        array_walk($trace, function (&$value, $key) use ($withArgs) {
-            $value = "#{$key} ".
-            (empty($value['class']) ? "" : $value['class']."@").
-            $value['function'].
-            (empty($value['file']) ? "" : " (".$value['file'].":".$value['line'].")").
-            ($withArgs && !empty($value['args']) ? "\n-- ARGS --\n".print_r($value['args'], true) : "")
-            ;
-        });
-        
-        return empty($trace) ? "" : join("\n", $trace) ;
-    }
 }
 
 // エラーハンドラ登録

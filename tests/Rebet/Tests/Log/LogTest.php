@@ -106,4 +106,17 @@ class LogTest extends RebetTestCase
             Log::fatal('Test');
         });
     }
+    
+    public function test_memory()
+    {
+        Config::application([
+            \Rebet\Log\Handler\StderrHandler::class => [
+                'log_level' => LogLevel::INFO(),
+            ],
+        ]);
+        
+        $this->assertContainsStderr('Memory', function () {
+            Log::memory();
+        });
+    }
 }

@@ -59,7 +59,7 @@ class DefaultFormatter implements LogFormatter
         if ($log->level->equals(LogLevel::DEBUG())) {
             $body .= StringUtil::indent(
                 "\n*** DEBUG TRACE ***".
-                "\n".Log::traceToString(debug_backtrace(), false),
+                "\n".self::traceToString(debug_backtrace(), false),
                 1,
                 ".. " //"{$prefix}.. "
             );
@@ -76,7 +76,7 @@ class DefaultFormatter implements LogFormatter
             } else {
                 $trace = '';
                 if ($log->level->higherEqual(LogLevel::ERROR())) {
-                    $trace = "\n".Log::traceToString(debug_backtrace(), true);
+                    $trace = "\n".self::traceToString(debug_backtrace(), true);
                 }
                 $body .= StringUtil::indent(
                     "\n*** STACK TRACE ***".
@@ -89,5 +89,28 @@ class DefaultFormatter implements LogFormatter
         }
         
         return $body;
+    }
+    
+    /**
+     * debug_backtrace を文字列形式に変換します。
+     *
+     * @param array $trace debug_backtrace
+     * @param boolean true : 引数記載有り／false : 引数記載無し（デフォルト）
+     * @return string デバックバックトレース文字列
+     */
+    protected static function traceToString(array $trace, bool $withArgs = false) : string
+    {
+        $trace = array_reverse($trace);
+        array_pop($trace); // Remove self method stack
+        array_walk($trace, function (&$value, $key) use ($withArgs) {
+            $value = "#{$key} ".
+            (empty($value['class']) ? "" : $value['class']."@").
+            $value['function'].
+            (empty($value['file']) ? "" : " (".$value['file'].":".$value['line'].")").
+            ($withArgs && !empty($value['args']) ? "\n-- ARGS --\n".print_r($value['args'], true) : "")
+            ;
+        });
+        
+        return empty($trace) ? "" : join("\n", $trace) ;
     }
 }
