@@ -10,7 +10,7 @@ class AuthUtilTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::mock_init();
+        System::initMock();
     }
 
     /**

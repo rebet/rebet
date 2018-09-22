@@ -11,7 +11,7 @@ class SystemMockTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::mock_init();
+        System::initMock();
     }
 
     public function test_mock_init()
@@ -21,7 +21,7 @@ class SystemMockTest extends RebetTestCase
         System::header('Content-Type: application/javascript; charset=UTF-8');
         $this->assertNotEmpty(System::$HEADER_RAW_ARGES);
         $this->assertNotSame(['HTTP/1.1 200 OK'], System::headers_list());
-        System::mock_init();
+        System::initMock();
         $this->assertEmpty(System::$HEADER_RAW_ARGES);
         $this->assertSame(['HTTP/1.1 200 OK'], System::headers_list());
     }

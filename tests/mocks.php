@@ -79,7 +79,7 @@ namespace Rebet\Common {
         {
         }
 
-        public static function mock_init()
+        public static function initMock()
         {
             self::$HEADER_RAW_ARGES = [];
             self::$EMULATED_HEADER  = ['http' => ['HTTP/1.1 200 OK']];

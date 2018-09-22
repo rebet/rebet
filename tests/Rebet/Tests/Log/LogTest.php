@@ -16,10 +16,11 @@ class LogTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::mock_init();
+        System::initMock();
         Config::clear();
         App::setTimezone('UTC');
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
+        Log::init();
     }
     
     public function test_log()
@@ -42,6 +43,13 @@ class LogTest extends RebetTestCase
             }
         );
         
+        $this->assertSameOutbuffer(
+            '',
+            function () {
+                Log::shutdown();
+            }
+        );
+        
         Config::application([
             Log::class => [
                 'log_middlewares' => [
@@ -49,14 +57,12 @@ class LogTest extends RebetTestCase
                 ],
             ],
         ]);
-        
-        $pid = getmypid();
-        
         Log::init();
         
+        $pid = getmypid();
         $this->assertSameStderr(
             "2010-10-20 10:20:30.040050 {$pid} [ERROR] Test log\n",
-            function(){
+            function () {
                 Log::error('Test log');
             }
         );
@@ -67,9 +73,37 @@ class LogTest extends RebetTestCase
                 'ERROR',
                 'Test&nbsp;log',
             ],
-            function(){
+            function () {
                 Log::shutdown();
             }
         );
+    }
+    
+    public function test_log_lebel()
+    {
+        Config::application([
+            \Rebet\Log\Handler\StderrHandler::class => [
+                'log_level' => LogLevel::TRACE(),
+            ],
+        ]);
+        
+        $this->assertContainsStderr('TRACE', function () {
+            Log::trace('Test');
+        });
+        $this->assertContainsStderr('DEBUG', function () {
+            Log::debug('Test');
+        });
+        $this->assertContainsStderr('INFO', function () {
+            Log::info('Test');
+        });
+        $this->assertContainsStderr('WARN', function () {
+            Log::warn('Test');
+        });
+        $this->assertContainsStderr('ERROR', function () {
+            Log::error('Test');
+        });
+        $this->assertContainsStderr('FATAL', function () {
+            Log::fatal('Test');
+        });
     }
 }

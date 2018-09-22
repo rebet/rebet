@@ -19,7 +19,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
 
     public function setUp()
     {
-        System::mock_init();
+        System::initMock();
         Config::clear();
         App::setTimezone('UTC');
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
@@ -87,7 +87,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
                 $this->middleware->shutdown();
             }
         );
-        System::mock_init();
+        System::initMock();
         
         System::header('Content-Type: text/json; charset=UTF-8');
         $this->assertSameOutbuffer(
@@ -97,6 +97,6 @@ class WebDisplayMiddlewareTest extends RebetTestCase
                 $this->middleware->shutdown();
             }
         );
-        System::mock_init();
+        System::initMock();
     }
 }

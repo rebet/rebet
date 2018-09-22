@@ -10,7 +10,7 @@ class NetUtilTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::mock_init();
+        System::initMock();
     }
 
     public function test_encodeBase64Url()
