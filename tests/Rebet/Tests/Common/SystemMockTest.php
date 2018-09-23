@@ -16,13 +16,13 @@ class SystemMockTest extends RebetTestCase
 
     public function test_mock_init()
     {
-        $this->assertEmpty(System::$HEADER_RAW_ARGES);
+        $this->assertEmpty(System::$header_raw_arges);
         $this->assertSame(['HTTP/1.1 200 OK'], System::headers_list());
         System::header('Content-Type: application/javascript; charset=UTF-8');
-        $this->assertNotEmpty(System::$HEADER_RAW_ARGES);
+        $this->assertNotEmpty(System::$header_raw_arges);
         $this->assertNotSame(['HTTP/1.1 200 OK'], System::headers_list());
         System::initMock();
-        $this->assertEmpty(System::$HEADER_RAW_ARGES);
+        $this->assertEmpty(System::$header_raw_arges);
         $this->assertSame(['HTTP/1.1 200 OK'], System::headers_list());
     }
 
@@ -48,7 +48,7 @@ class SystemMockTest extends RebetTestCase
 
     public function test_header_rawArges()
     {
-        $this->assertEmpty(System::$HEADER_RAW_ARGES);
+        $this->assertEmpty(System::$header_raw_arges);
         System::header('Content-Type: application/javascript; charset=UTF-8');
         $this->assertSame(
             [
@@ -58,7 +58,7 @@ class SystemMockTest extends RebetTestCase
                     'http_response_code' => null
                 ],
             ],
-            System::$HEADER_RAW_ARGES
+            System::$header_raw_arges
         );
         System::header('Date: Thu, 30 Aug 2018 06:57:55 GMT', false, 200);
         $this->assertSame(
@@ -74,7 +74,7 @@ class SystemMockTest extends RebetTestCase
                     'http_response_code' => 200
                 ],
             ],
-            System::$HEADER_RAW_ARGES
+            System::$header_raw_arges
         );
     }
 

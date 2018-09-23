@@ -17,7 +17,6 @@ namespace Rebet\Common;
  */
 class StringUtil
 {
-    
     /**
      * インスタンス化禁止
      */

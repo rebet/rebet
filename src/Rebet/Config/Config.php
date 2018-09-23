@@ -65,7 +65,7 @@ final class Config
      *
      * @var array
      */
-    private static $CONFIG = [
+    private static $config = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
@@ -77,7 +77,7 @@ final class Config
      */
     public static function clear() : void
     {
-        static::$CONFIG = [
+        static::$config = [
             Layer::LIBRARY     => [],
             Layer::FRAMEWORK   => [],
             Layer::APPLICATION => [],
@@ -91,7 +91,7 @@ final class Config
      */
     private static function override(string $layer, array $config) : void
     {
-        static::$CONFIG[$layer] = ArrayUtil::override(static::$CONFIG[$layer], $config);
+        static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config);
     }
     
     /**
@@ -207,8 +207,8 @@ final class Config
             Layer::APPLICATION => 'Overwritten with blank at application layer.',
             Layer::FRAMEWORK   => 'Please define at application layer.',
         ] as $layer => $extra_message) {
-            if (self::isDefine(static::$CONFIG[$layer], $section, $key)) {
-                $value = Util::get(static::$CONFIG[$layer][$section], $key);
+            if (self::isDefine(static::$config[$layer], $section, $key)) {
+                $value = Util::get(static::$config[$layer][$section], $key);
                 $value = Util::bvl($value, $default);
                 if ($required && Util::isBlank($value)) {
                     throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. {$extra_message}}");
@@ -218,15 +218,15 @@ final class Config
         }
 
         // ライブラリコンフィグ遅延ロード
-        if (!isset(static::$CONFIG[Layer::LIBRARY][$section])) {
-            static::$CONFIG[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
+        if (!isset(static::$config[Layer::LIBRARY][$section])) {
+            static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
         }
         
         // ライブラリコンフィグ
-        $value = Util::get(static::$CONFIG[Layer::LIBRARY][$section], $key);
+        $value = Util::get(static::$config[Layer::LIBRARY][$section], $key);
         $value = Util::bvl($value, $default);
         if ($required && Util::isBlank($value)) {
-            if (self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key)) {
+            if (self::isDefine(static::$config[Layer::LIBRARY], $section, $key)) {
                 throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. Please define at application or framework layer.");
             }
             throw new ConfigNotDefineException("Required config {$section}#{$key} is not define. Please check config key name.");
@@ -266,18 +266,18 @@ final class Config
     public static function has(string $section, string $key) : bool
     {
         foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {
-            if (self::isDefine(static::$CONFIG[$layer], $section, $key)) {
+            if (self::isDefine(static::$config[$layer], $section, $key)) {
                 return true;
             }
         }
 
         // ライブラリコンフィグ遅延ロード
-        if (!isset(static::$CONFIG[Layer::LIBRARY][$section])) {
-            static::$CONFIG[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
+        if (!isset(static::$config[Layer::LIBRARY][$section])) {
+            static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
         }
 
         // ライブラリコンフィグ
-        return self::isDefine(static::$CONFIG[Layer::LIBRARY], $section, $key);
+        return self::isDefine(static::$config[Layer::LIBRARY], $section, $key);
     }
 
     /**

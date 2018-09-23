@@ -51,7 +51,7 @@ class Log
      * ログミドルウェアパイプライン
      * @var Revet\Pipeline\Pipeline
      */
-    private static $PIPELINE = null;
+    private static $pipeline = null;
 
     /**
      * TRACE レベルログを出力します。
@@ -159,7 +159,7 @@ class Log
     public static function init(?callable $handler = null, ?array $middlewares = null)
     {
         self::shutdown();
-        self::$PIPELINE = (new Pipeline())
+        self::$pipeline = (new Pipeline())
             ->through($middlewares ?? self::config('log_middlewares', false, []))
             ->then($handler ?? self::configInstantiate('log_handler'))
             ;
@@ -172,9 +172,9 @@ class Log
      */
     public static function shutdown()
     {
-        if (self::$PIPELINE !== null) {
-            Log::$PIPELINE->invoke('shutdown');
-            Log::$PIPELINE->getDestination()->shutdown();
+        if (self::$pipeline !== null) {
+            Log::$pipeline->invoke('shutdown');
+            Log::$pipeline->getDestination()->shutdown();
         }
     }
 
@@ -189,10 +189,10 @@ class Log
      */
     private static function log(LogLevel $level, $message, array $var = [], $error = null) : void
     {
-        if (self::$PIPELINE === null) {
+        if (self::$pipeline === null) {
             self::init();
         }
-        self::$PIPELINE->send(new LogContext(DateTime::now(), $level, $message, $var, $error));
+        self::$pipeline->send(new LogContext(DateTime::now(), $level, $message, $var, $error));
     }
     
     /**

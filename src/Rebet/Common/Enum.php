@@ -98,33 +98,33 @@ abstract class Enum implements \JsonSerializable
     /**
      * 列挙データキャッシュ
      *
-     * self::$ENUM_DATA_CACHE = [
+     * self::$enum_data_cache = [
      *     EnumClassName => [
      *         ConstName => EnumObject,
      *     ],
      * ]
      */
-    private static $ENUM_DATA_CACHE = [];
+    private static $enum_data_cache = [];
     
     /**
      * 列挙リストキャッシュ
      *
-     * self::$ENUM_LIST_CACHE = [
+     * self::$enum_list_cache = [
      *     EnumClassName => [EnumObject, ... ],
      * ]
      */
-    private static $ENUM_LIST_CACHE = [];
+    private static $enum_list_cache = [];
     
     /**
      * 列挙マップキャッシュ
      *
-     * self::$ENUM_MAP_CACHE = [
+     * self::$enum_map_cache = [
      *     EnumClassName@FieldName => [
      *         FieldValue => EnumObject,
      *     ],
      * ]
      */
-    private static $ENUM_MAP_CACHE  = [];
+    private static $enum_map_cache  = [];
 
     /**
      * 値
@@ -204,15 +204,15 @@ abstract class Enum implements \JsonSerializable
     private static function constToEnum(\ReflectionClass $rc, $name) : ?Enum
     {
         $clazz = $rc->getName();
-        if (isset(self::$ENUM_DATA_CACHE[$clazz][$name])) {
-            return self::$ENUM_DATA_CACHE[$clazz][$name];
+        if (isset(self::$enum_data_cache[$clazz][$name])) {
+            return self::$enum_data_cache[$clazz][$name];
         }
         if (!defined("static::{$name}")) {
             throw new \LogicException("Invalid enum const. {$clazz}::{$name} is not defined.");
         }
         $args = $rc->getConstant($name);
         $enum = new static(...$args);
-        self::$ENUM_DATA_CACHE[$clazz][$name] = $enum;
+        self::$enum_data_cache[$clazz][$name] = $enum;
         return $enum;
     }
 
@@ -245,11 +245,11 @@ abstract class Enum implements \JsonSerializable
     public static function lists() : array
     {
         $clazz = get_called_class();
-        if (isset(self::$ENUM_LIST_CACHE[$clazz])) {
-            return self::$ENUM_LIST_CACHE[$clazz];
+        if (isset(self::$enum_list_cache[$clazz])) {
+            return self::$enum_list_cache[$clazz];
         }
-        self::$ENUM_LIST_CACHE[$clazz] = static::generate();
-        return self::$ENUM_LIST_CACHE[$clazz];
+        self::$enum_list_cache[$clazz] = static::generate();
+        return self::$enum_list_cache[$clazz];
     }
     
     /**
@@ -266,15 +266,15 @@ abstract class Enum implements \JsonSerializable
         }
 
         $key = "{$clazz}@{$field}";
-        if (isset(self::$ENUM_MAP_CACHE[$key])) {
-            return self::$ENUM_MAP_CACHE[$key];
+        if (isset(self::$enum_map_cache[$key])) {
+            return self::$enum_map_cache[$key];
         }
         
         $maps = [];
         foreach (self::lists() as $enum) {
             $maps[$enum->$field] = $enum;
         }
-        self::$ENUM_MAP_CACHE[$key] = $maps;
+        self::$enum_map_cache[$key] = $maps;
         
         return $maps;
     }

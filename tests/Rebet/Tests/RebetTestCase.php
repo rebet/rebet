@@ -15,17 +15,17 @@ use Rebet\Common\SecurityUtil;
  */
 abstract class RebetTestCase extends TestCase
 {
-    private static $START_AT;
+    private static $start_at;
     
     public static function setUpBeforeClass()
     {
-        self::$START_AT = microtime(true);
+        self::$start_at = microtime(true);
     }
     
     public static function tearDownAfterClass()
     {
         if (in_array('--debug', $_SERVER['argv'], true)) {
-            $spend = (microtime(true) - self::$START_AT);
+            $spend = (microtime(true) - self::$start_at);
             printf(" ... Time: %f [ms]\n", $spend * 1000);
         }
     }

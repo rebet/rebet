@@ -72,8 +72,8 @@ namespace Rebet\Common {
             511 => '511 Network Authentication Required',
         ];
 
-        public static $HEADER_RAW_ARGES = [];
-        private static $EMULATED_HEADER = ['http' => ['HTTP/1.1 200 OK']];
+        public static $header_raw_arges = [];
+        private static $emulated_header = ['http' => ['HTTP/1.1 200 OK']];
 
         private function __construct()
         {
@@ -81,8 +81,8 @@ namespace Rebet\Common {
 
         public static function initMock()
         {
-            self::$HEADER_RAW_ARGES = [];
-            self::$EMULATED_HEADER  = ['http' => ['HTTP/1.1 200 OK']];
+            self::$header_raw_arges = [];
+            self::$emulated_header  = ['http' => ['HTTP/1.1 200 OK']];
         }
 
         public static function exit($status = null) : void
@@ -97,25 +97,25 @@ namespace Rebet\Common {
 
         public static function header(string $header, bool $replace = true, int $http_response_code = null) : void
         {
-            self::$HEADER_RAW_ARGES[] = compact('header', 'replace', 'http_response_code');
+            self::$header_raw_arges[] = compact('header', 'replace', 'http_response_code');
 
             if (\preg_match('/^HTTP\//', $header)) {
-                self::$EMULATED_HEADER['http'] = [$header];
+                self::$emulated_header['http'] = [$header];
             } elseif ($http_response_code !== null && isset(self::HTTP_STATUS[$http_response_code])) {
-                $parts = \explode(' ', self::$EMULATED_HEADER['http'][0], 2);
-                self::$EMULATED_HEADER['http'] = [$parts[0].' '.self::HTTP_STATUS[$http_response_code]];
+                $parts = \explode(' ', self::$emulated_header['http'][0], 2);
+                self::$emulated_header['http'] = [$parts[0].' '.self::HTTP_STATUS[$http_response_code]];
             }
             
             if (\strpos($header, ':') !== false) {
                 $parts = \explode(':', $header, 2);
                 $key   = \strtolower($parts[0]);
-                if (!isset(self::$EMULATED_HEADER[$key])) {
-                    self::$EMULATED_HEADER[$key] = [];
+                if (!isset(self::$emulated_header[$key])) {
+                    self::$emulated_header[$key] = [];
                 }
                 if ($replace) {
-                    self::$EMULATED_HEADER[$key] = [$header];
+                    self::$emulated_header[$key] = [$header];
                 } else {
-                    self::$EMULATED_HEADER[$key][] = $header;
+                    self::$emulated_header[$key][] = $header;
                 }
             } else {
                 // Do nothing.
@@ -124,7 +124,7 @@ namespace Rebet\Common {
 
         public static function headers_list() : array
         {
-            return ArrayUtil::flatten(\array_values(self::$EMULATED_HEADER));
+            return ArrayUtil::flatten(\array_values(self::$emulated_header));
         }
     }
 }
