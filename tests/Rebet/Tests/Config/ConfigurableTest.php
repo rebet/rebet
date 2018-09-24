@@ -20,6 +20,16 @@ class ConfigurableTest extends RebetTestCase
 
     public function test_config()
     {
+        $this->assertSame(
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'port' => 3306,
+                'database' => null,
+                'user' => null,
+            ],
+            ConfigurableTest_Mock::config()
+        );
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
         $this->assertNull(ConfigurableTest_Mock::config('database', false));
         $this->assertSame('default_db', ConfigurableTest_Mock::config('database', false, 'default_db'));
@@ -34,6 +44,16 @@ class ConfigurableTest extends RebetTestCase
             ]
         ]);
 
+        $this->assertSame(
+            [
+                'driver' => 'pgsql',
+                'host' => 'localhost',
+                'port' => 3306,
+                'database' => null,
+                'user' => null,
+            ],
+            ConfigurableTest_Mock::config()
+        );
         $this->assertSame('pgsql', ConfigurableTest_Mock::config('driver'));
         $this->assertSame('pgsql', ConfigurableTest_Mock::configInStatic('driver'));
         $this->assertSame('pgsql', $mock->configInMember('driver'));

@@ -172,12 +172,15 @@ final class Config
      *
      * @param array $config チェック対象のコンフィグ
      * @param string $section チェック対象のセクション
-     * @param string $key チェック対象のキー（.区切りで階層指定可）
+     * @param string $key|null チェック対象のキー（.区切りで階層指定可）
      * @return int true: 定義あり, false: 定義なし
      * @throws LogicException
      */
-    private static function isDefine(array $config, string $section, string $key) : bool
+    private static function isDefine(array $config, string $section, ?string $key) : bool
     {
+        if (Util::isBlank($key)) {
+            return isset($config[$section]);
+        }
         foreach (\explode('.', $key) as $value) {
             if (\ctype_digit($value)) {
                 throw new \LogicException("Invalid config key access, the key '{$key}' contains digit only part.");
@@ -188,32 +191,38 @@ final class Config
 
     /**
      * コンフィグの設定値を取得します。
+     * ※キー名に blank を指定するとすべてのコンフィグ設定を取得します
      *
      * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
      * インデックス指定でのアクセスが必要な場合は対象の配列をデータを取得してから個別にアクセスして下さい。
      *
      * @param string $section セクション
-     * @param string $key 設定キー名（.区切りで階層指定可）
+     * @param string|null $key 設定キー名[.区切りで階層指定可]（デフォルト：null）
      * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
      * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
      * @return ?mixed 設定値
      * @throws ConfigNotDefineException
      * @throws LogicException
      */
-    public static function get(string $section, string $key, bool $required = true, $default = null)
+    public static function get(string $section, ?string $key = null, bool $required = true, $default = null)
     {
+        $diffs = [];
+        
         foreach ([
             Layer::RUNTIME     => 'Overwritten with blank at runtime layer.',
             Layer::APPLICATION => 'Overwritten with blank at application layer.',
             Layer::FRAMEWORK   => 'Please define at application layer.',
         ] as $layer => $extra_message) {
             if (self::isDefine(static::$config[$layer], $section, $key)) {
-                $value = Util::get(static::$config[$layer][$section], $key);
+                $value = Util::isBlank($key) ? static::$config[$layer][$section] : Util::get(static::$config[$layer][$section], $key);
                 $value = Util::bvl($value, $default);
-                if ($required && Util::isBlank($value)) {
-                    throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. {$extra_message}}");
+                if ($required && Util::isBlank($value) && empty($diffs)) {
+                    throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank. {$extra_message}");
                 }
-                return $value;
+                if (empty($diffs) && (!\is_array($value) || ArrayUtil::isSequential($value))) {
+                    return $value;
+                }
+                $diffs[] = $value;
             }
         }
 
@@ -223,13 +232,19 @@ final class Config
         }
         
         // ライブラリコンフィグ
-        $value = Util::get(static::$config[Layer::LIBRARY][$section], $key);
+        $value = Util::isBlank($key) ? static::$config[Layer::LIBRARY][$section] : Util::get(static::$config[Layer::LIBRARY][$section], $key);
         $value = Util::bvl($value, $default);
-        if ($required && Util::isBlank($value)) {
+        if ($required && Util::isBlank($value) && empty($diffs)) {
             if (self::isDefine(static::$config[Layer::LIBRARY], $section, $key)) {
-                throw new ConfigNotDefineException("Required config {$section}#{$key} is blank. Please define at application or framework layer.");
+                throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank. Please define at application or framework layer.");
             }
-            throw new ConfigNotDefineException("Required config {$section}#{$key} is not define. Please check config key name.");
+            throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is not define. Please check config key name.");
+        }
+        if (empty($diffs)) {
+            return $value;
+        }
+        foreach (\array_reverse($diffs) as $diff) {
+            $value = ArrayUtil::override($value, $diff);
         }
         return $value;
     }

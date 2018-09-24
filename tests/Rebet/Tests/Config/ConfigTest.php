@@ -26,6 +26,16 @@ class ConfigTest extends RebetTestCase
 
     public function test_get()
     {
+        $this->assertSame(
+            [
+                'driver' => 'mysql',
+                'host' => 'localhost',
+                'port' => 3306,
+                'database' => null,
+                'user' => null,
+            ],
+            Config::get(ConfigTest_Mock::class)
+        );
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('localhost', Config::get(ConfigTest_Mock::class, 'host'));
         $this->assertSame(3306, Config::get(ConfigTest_Mock::class, 'port'));
@@ -46,6 +56,16 @@ class ConfigTest extends RebetTestCase
             ]
         ]);
 
+        $this->assertSame(
+            [
+                'driver' => 'mysql',
+                'host' => '192.168.1.1',
+                'port' => 3307,
+                'database' => 'rebet_db',
+                'user' => null,
+            ],
+            Config::get(ConfigTest_Mock::class)
+        );
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('192.168.1.1', Config::get(ConfigTest_Mock::class, 'host'));
         $this->assertSame(3307, Config::get(ConfigTest_Mock::class, 'port'));
@@ -67,6 +87,16 @@ class ConfigTest extends RebetTestCase
             ]
         ]);
 
+        $this->assertSame(
+            [
+                'driver' => 'mysql',
+                'host' => '192.168.1.1',
+                'port' => 3308,
+                'database' => 'rebet_sample',
+                'user' => 'rebet_user',
+            ],
+            Config::get(ConfigTest_Mock::class)
+        );
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('192.168.1.1', Config::get(ConfigTest_Mock::class, 'host'));
         $this->assertSame(3308, Config::get(ConfigTest_Mock::class, 'port'));
@@ -85,6 +115,16 @@ class ConfigTest extends RebetTestCase
                 'lang' => 'en_us'
             ]
         ]);
+        $this->assertSame(
+            [
+                'driver' => 'mysql',
+                'host' => '192.168.1.1',
+                'port' => 3308,
+                'database' => null,
+                'user' => 'rebet_user',
+            ],
+            Config::get(ConfigTest_Mock::class)
+        );
         $this->assertSame('en_us', Config::get('global', 'lang'));
         $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
     }
@@ -167,7 +207,7 @@ class ConfigTest extends RebetTestCase
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
      */
-    public function test_get_digitKeyAccessLast()
+    public function test_has_digitKeyAccessLast()
     {
         Config::application([
             ConfigTest_Mock::class => [
@@ -184,7 +224,7 @@ class ConfigTest extends RebetTestCase
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key '1' contains digit only part.
      */
-    public function test_get_digitKeyAccessOnly()
+    public function test_has_digitKeyAccessOnly()
     {
         Config::has(ConfigTest_Mock::class, '1');
         $this->fail("Never execute.");
@@ -194,7 +234,7 @@ class ConfigTest extends RebetTestCase
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'driver.123.dummy' contains digit only part.
      */
-    public function test_get_digitKeyAccessMiddle()
+    public function test_has_digitKeyAccessMiddle()
     {
         Config::has(ConfigTest_Mock::class, 'driver.123.dummy');
         $this->fail("Never execute.");

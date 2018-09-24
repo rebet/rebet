@@ -6,7 +6,7 @@ use Rebet\Common\Util;
 /**
  * Pipeline Class
  *
- * This class based on Illuminate/Pipeline of laravel/framework ver 5.7.
+ * This class based on Illuminate\Pipeline\Pipeline of laravel/framework ver 5.7.
  * But this class dose not contain DI Container of laravel.
  *
  * Function diffs between Laravel and Rebet are like below;
@@ -17,6 +17,7 @@ use Rebet\Common\Util;
  *  # changed: then() to be pipeline builder and send() to be pipeline runner.
  *
  * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Pipeline/Pipeline.php
+ * @see https://github.com/laravel/framework/blob/5.7/LICENSE.md
  *
  * @package   Rebet
  * @author    github.com/rain-noise
