@@ -17,7 +17,7 @@ use Rebet\Common\StringUtil;
  * 　4. ランタイムコンフィグ
  *
  * 【優先度高 4 > 3 > 2 > 1 優先度低】 の優先度に従って設定を上書きすることができます。
- * なお、各設定は以下のように定義／動作します。
+ * また、各設定は以下のように定義／動作します。
  *
  * 　1. ライブラリコンフィグ
  * 　　　⇒ 各クラス定義にて Configurable trait の実装
@@ -29,9 +29,59 @@ use Rebet\Common\StringUtil;
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
  * 　　　⇒ Configurable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
  *
+ * なお、上記レイヤー別の上書きは挙動は Map は差分マージ、Array(連番配列)、その他 は上書きで動作します。
+ * 具体的には、
+ *
+ * Config::framework([
+ *     Sample::class => [
+ *         'map'   => ['a' => 'a', 'b' => 'b'],
+ *         'array' => ['a', 'b'],
+ *         'other' => 'a',
+ *     ],
+ * ]);
+ *
+ * Config::application([
+ *     Sample::class => [
+ *         'map'   => ['a' => 'A', 'c' => 'C'],
+ *         'array' => ['c'],
+ *         'other' => 'b',
+ *     ],
+ * ]);
+ *
+ * とした場合の Config::get(Sample::class) の値は
+ *
+ * [
+ *     'map'   => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+ *     'array' => ['c'],
+ *     'other' => 'b',
+ * ]
+ *
+ * となります。
+ * なお、この Array(連番配列) の上書き挙動はコンフィグ設定のキー名の末尾に '+' を付与することで、
+ * マージ挙動に変更できます。
+ *
+ * Config::framework([
+ *     Sample::class => [
+ *         'array' => ['a', 'b'],
+ *     ],
+ * ]);
+ *
+ * Config::application([
+ *     Sample::class => [
+ *         'array+' => ['c'],
+ *     ],
+ * ]);
+ *
+ * とした場合の Config::get(Sample::class) の値は
+ *
+ * [
+ *     'array' => ['a', 'b', 'c'],
+ * ]
+ *
+ * @todo 「+」ワードによる配列上書き挙動変更機能の実装
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
- * @todo 現在の最終設定（全て／セクション単位）を一覧するメソッドなどの実装
+ * @todo 現在の最終設定（全て）を一覧するメソッドなどの実装
  * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
  *
  * @see Rebet\Config\Configurable
