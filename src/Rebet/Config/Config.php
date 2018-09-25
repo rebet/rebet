@@ -3,6 +3,7 @@ namespace Rebet\Config;
 
 use Rebet\Common\Util;
 use Rebet\Common\ArrayUtil;
+use Rebet\Common\OverrideOption;
 use Rebet\Common\StringUtil;
 
 /**
@@ -29,62 +30,15 @@ use Rebet\Common\StringUtil;
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
  * 　　　⇒ Configurable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
  *
- * なお、上記レイヤー別の上書きは挙動は Map は差分マージ、Array(連番配列)、その他 は上書きで動作します。
- * 具体的には、
+ * なお、上記レイヤー別の上書きは挙動は Rebet\Common\ArrayUtil::override() と同様の動作をします。
  *
- * Config::framework([
- *     Sample::class => [
- *         'map'   => ['a' => 'a', 'b' => 'b'],
- *         'array' => ['a', 'b'],
- *         'other' => 'a',
- *     ],
- * ]);
- *
- * Config::application([
- *     Sample::class => [
- *         'map'   => ['a' => 'A', 'c' => 'C'],
- *         'array' => ['c'],
- *         'other' => 'b',
- *     ],
- * ]);
- *
- * とした場合の Config::get(Sample::class) の値は
- *
- * [
- *     'map'   => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
- *     'array' => ['c'],
- *     'other' => 'b',
- * ]
- *
- * となります。
- * なお、この Array(連番配列) の上書き挙動はコンフィグ設定のキー名の末尾に '+' を付与することで、
- * マージ挙動に変更できます。
- *
- * Config::framework([
- *     Sample::class => [
- *         'array' => ['a', 'b'],
- *     ],
- * ]);
- *
- * Config::application([
- *     Sample::class => [
- *         'array+' => ['c'],
- *     ],
- * ]);
- *
- * とした場合の Config::get(Sample::class) の値は
- *
- * [
- *     'array' => ['a', 'b', 'c'],
- * ]
- *
- * @todo 「+」ワードによる配列上書き挙動変更機能の実装
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
  * @todo 現在の最終設定（全て）を一覧するメソッドなどの実装
  * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
  *
  * @see Rebet\Config\Configurable
+ * @see Rebet\Common\ArrayUtil
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -93,7 +47,6 @@ use Rebet\Common\StringUtil;
  */
 final class Config
 {
-
     /**
      * インスタンス化禁止
      */
@@ -105,10 +58,10 @@ final class Config
      * コンフィグ設定
      * 構造は下記の通り
      *
-     * CONFIG = [
-     *    Layer => [
-     *       Section => [
-     *           key => value,
+     * config = [
+     *    'Layer' => [
+     *       'Section' => [
+     *           'key' => value,
      *       ],
      *    ],
      * ]
@@ -116,6 +69,26 @@ final class Config
      * @var array
      */
     private static $config = [
+        Layer::LIBRARY     => [],
+        Layer::FRAMEWORK   => [],
+        Layer::APPLICATION => [],
+        Layer::RUNTIME     => [],
+    ];
+
+    /**
+     * コンフィグのオプション設定
+     *
+     * option = [
+     *    'Layer' => [
+     *       'Section' => [
+     *           'key' => OverrideOption,
+     *       ],
+     *    ],
+     * ]
+     *
+     * @var array
+     */
+    private static $option = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
@@ -133,6 +106,13 @@ final class Config
             Layer::APPLICATION => [],
             Layer::RUNTIME     => [],
         ];
+
+        static::$option = [
+            Layer::LIBRARY     => [],
+            Layer::FRAMEWORK   => [],
+            Layer::APPLICATION => [],
+            Layer::RUNTIME     => [],
+        ];
     }
 
     /**
@@ -141,9 +121,44 @@ final class Config
      */
     private static function override(string $layer, array $config) : void
     {
+        $config = self::analyzeOption($config, static::$option[$layer]);
         static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config);
     }
     
+    /**
+     * コンフィグ設定
+     *
+     * @param array $config
+     * @param array $option
+     * @return void
+     */
+    private static function analyzeOption(array $config, array &$option)
+    {
+        if (!\is_array($config) || ArrayUtil::isSequential($config)) {
+            return $config;
+        }
+
+        $analyzed = [];
+        foreach ($config as $key => $value) {
+            [$key, $option] = OverrideOption::split($key);
+            if ($option !== null) {
+                $option[$key] = $option;
+            }
+            
+            if (\is_array($value) && !ArrayUtil::isSequential($value)) {
+                $option[$key] = [];
+                $value = static::analyzeOption($value, $option[$key]);
+            }
+
+            if ($option === null && isset($option[$key]) && (!\is_array($option[$key]) || empty($option[$key]))) {
+                unset($option[$key]);
+            }
+
+            $analyzed[$key] = $value;
+        }
+        return $analyzed;
+    }
+
     /**
      * フレームワークコンフィグを設定します。
      * 本設定は array_merge による上書き設定となります。
@@ -277,9 +292,7 @@ final class Config
         }
 
         // ライブラリコンフィグ遅延ロード
-        if (!isset(static::$config[Layer::LIBRARY][$section])) {
-            static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
-        }
+        static::loadLibraryConfig($section);
         
         // ライブラリコンフィグ
         $value = Util::isBlank($key) ? static::$config[Layer::LIBRARY][$section] : Util::get(static::$config[Layer::LIBRARY][$section], $key);
@@ -290,6 +303,18 @@ final class Config
             }
             throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is not define. Please check config key name.");
         }
+        return static::merge($value, $diffs);
+    }
+
+    /**
+     * 差分スタックと値をマージして結果を返します。
+     *
+     * @param mixed $value
+     * @param array $diffs
+     * @return mixed
+     */
+    protected static function merge($value, array $diffs)
+    {
         if (empty($diffs)) {
             return $value;
         }
@@ -297,6 +322,21 @@ final class Config
             $value = ArrayUtil::override($value, $diff);
         }
         return $value;
+    }
+
+    /**
+     * ライブラリコンフィグをロードします。
+     *
+     * @param string $section
+     * @return void
+     */
+    protected static function loadLibraryConfig(string $section) : void
+    {
+        if (isset(static::$config[Layer::LIBRARY][$section])) {
+            return;
+        }
+        static::$option[Layer::LIBRARY][$section] = [];
+        static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? static::analyzeOption($section::defaultConfig(), static::$option[Layer::LIBRARY][$section]) : [] ;
     }
 
     /**
@@ -337,9 +377,7 @@ final class Config
         }
 
         // ライブラリコンフィグ遅延ロード
-        if (!isset(static::$config[Layer::LIBRARY][$section])) {
-            static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
-        }
+        static::loadLibraryConfig($section);
 
         // ライブラリコンフィグ
         return self::isDefine(static::$config[Layer::LIBRARY], $section, $key);

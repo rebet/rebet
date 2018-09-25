@@ -203,6 +203,65 @@ class ConfigTest extends RebetTestCase
         $this->fail("Never execute.");
     }
 
+    public function test_get_option()
+    {
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'a', 'b' => 'b'],
+                'array'  => ['a', 'b'],
+                'parent' => [
+                    'map'   => ['a' => 'a', 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+
+        Config::framework([
+            ConfigTest_MockOption::class => [
+                'map'    => ['a' => 'A', 'c' => 'C'],
+                'array'  => ['c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'c' => 'cc'],
+                    'array'  => ['cc'],
+                ],
+            ]
+        ]);
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+                'array'  => ['c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                    'array'  => ['cc'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+
+        // Config::framework([
+        //     ConfigTest_MockOption::class => [
+        //         'map!'    => ['a' => 'A', 'c' => 'C'],
+        //         'array+'  => ['c'],
+        //         'parent' => [
+        //             'map!'    => ['a' => 'aa', 'c' => 'cc'],
+        //             'array+'  => ['cc'],
+        //         ],
+        //     ]
+        // ]);
+        // $this->assertSame(
+        //     [
+        //         'map'    => ['a' => 'A', 'c' => 'C'],
+        //         'array'  => ['a', 'b', 'c'],
+        //         'parent' => [
+        //             'map'    => ['a' => 'aa', 'c' => 'cc'],
+        //             'array'  => ['a', 'b', 'cc'],
+        //         ],
+        //     ],
+        //     Config::get(ConfigTest_MockOption::class)
+        // );
+    }
+
     /**
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
@@ -340,6 +399,21 @@ class ConfigTest_Mock
             'port' => 3306,
             'database' => null,
             'user' => null,
+        ];
+    }
+}
+class ConfigTest_MockOption
+{
+    use Configurable;
+    public static function defaultConfig()
+    {
+        return [
+            'map'    => ['a' => 'a', 'b' => 'b'],
+            'array'  => ['a', 'b'],
+            'parent' => [
+                'map'    => ['a' => 'a', 'b' => 'b'],
+                'array'  => ['a', 'b'],
+            ],
         ];
     }
 }
