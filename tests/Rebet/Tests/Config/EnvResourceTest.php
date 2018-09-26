@@ -39,7 +39,7 @@ return [
     'array' => [1 ,2 , 3, 4],
     'map' => [
         'string' => 'A',
-        'array' => [],
+        'array' => [4],
         'new' => 'NEW',
     ],
     'new' => 'NEW',
@@ -79,11 +79,11 @@ EOS
             [
                 'int' => 2,
                 'string' => 'a',
-                'array' => [1 ,2 , 3, 4],
+                'array' => [1 ,2 , 3, 1 ,2 , 3, 4],
                 'map' => [
                     'int' => 1,
                     'string' => 'A',
-                    'array' => [],
+                    'array' => [1 ,2 , 3, 4],
                     'new' => 'NEW',
                 ],
                 'new' => 'NEW',

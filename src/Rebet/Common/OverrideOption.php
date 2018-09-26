@@ -4,6 +4,8 @@ namespace Rebet\Common;
 /**
  * オーバライドオプション クラス
  *
+ * @todo Enum にするべきか？
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -12,18 +14,11 @@ namespace Rebet\Common;
 class OverrideOption
 {
     /**
-     * シーケンシャル配列追記オプション
+     * 置換オプション
      *
      * @var string
      */
-    public const ARRAY_APPEND = '+';
-
-    /**
-     * 連想配列上書オプション
-     *
-     * @var string
-     */
-    public const MAP_NO_MERGE = '!';
+    public const REPLACE = '!';
 
     /**
      * インスタンス化禁止
@@ -40,7 +35,7 @@ class OverrideOption
      */
     public static function split(string $key) : array
     {
-        foreach ([self::MAP_NO_MERGE, self::ARRAY_APPEND] as $option) {
+        foreach ([self::REPLACE] as $option) {
             if (StringUtil::endWith($key, $option)) {
                 return [StringUtil::ratrim($key, $option), $option];
             }

@@ -3,6 +3,7 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\ArrayUtil;
+use Rebet\Common\OverrideOption;
 
 class ArrayUtilTest extends RebetTestCase
 {
@@ -76,7 +77,7 @@ class ArrayUtilTest extends RebetTestCase
         $this->assertNull(ArrayUtil::override(1, null));
         $this->assertSame([1, 2], ArrayUtil::override(1, [1, 2]));
         $this->assertSame(1, ArrayUtil::override([1, 2], 1));
-        $this->assertSame([3], ArrayUtil::override([1, 2], [3]));
+        $this->assertSame([1, 2, 3], ArrayUtil::override([1, 2], [3]));
         $this->assertSame([3], ArrayUtil::override(['a' => 1, 'b' => 2], [3]));
         $this->assertSame(
             ['a' => 3, 'b' => 2],
@@ -103,8 +104,69 @@ class ArrayUtilTest extends RebetTestCase
             ArrayUtil::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => [], 'c' => 3])
         );
         $this->assertSame(
-            ['a' => [['A' => 3]], 'b' => 2, 'c' => 3],
+            ['a' => [['A' => 1], ['B' => 2], ['A' => 3]], 'b' => 2, 'c' => 3],
             ArrayUtil::override(['a' => [['A' => 1], ['B' => 2]], 'b' => 2], ['a' => [['A' => 3]], 'c' => 3])
+        );
+
+        $this->assertSame(
+            [
+                'map'   => ['a' => ['A' => 'A', 'B' => 'B'], 'b' => 'b', 'c' => 'C'],
+                'array' => ['a', 'b', 'c'],
+            ],
+            ArrayUtil::override(
+                [
+                    'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'map'   => ['a' => ['B' => 'B'], 'c' => 'C'],
+                    'array' => ['c'],
+                ]
+            )
+        );
+    }
+
+    public function test_override_option()
+    {
+        $this->assertSame(
+            [
+                'map'   => ['a' => ['B' => 'B'], 'b' => 'b', 'c' => 'C'],
+                'array' => ['c'],
+            ],
+            ArrayUtil::override(
+                [
+                    'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'map'   => ['a' => ['B' => 'B'], 'c' => 'C'],
+                    'array' => ['c'],
+                ],
+                [
+                    'map'   => ['a' => OverrideOption::REPLACE],
+                    'array' => OverrideOption::REPLACE,
+                ]
+            )
+        );
+    }
+
+    public function test_override_optionInline()
+    {
+        $this->assertSame(
+            [
+                'map'   => ['a' => ['B' => 'B'], 'b' => 'b', 'c' => 'C'],
+                'array' => ['c'],
+            ],
+            ArrayUtil::override(
+                [
+                    'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'map'   => ['a!' => ['B' => 'B'], 'c' => 'C'],
+                    'array!' => ['c'],
+                ]
+            )
         );
     }
 }

@@ -144,81 +144,109 @@ class ArrayUtil
      * ベースとなる連想配列に対して、差分の連想配列でマージ／上書します。
      *
      * 本メソッドは連想配列の値が連想配列である場合は再帰的にマージ／上書処理をされる点で array_merge と異なり、
-     * 連想配列の値がシーケンシャル配列又はオブジェクトの場合に値を上書きする点で array_merge_recursive と異なります。
+     * 連想配列の値がオブジェクトの場合に値を上書きする点で array_merge_recursive と異なります。
      *
      * 具体的には以下のような挙動をします。
      *
      * ArrayUtil::override(
      *     [
-     *         'map'   => ['a' => 'a', 'b' => 'b'],
-     *         'array' => ['a', 'b'],
-     *         'other' => 'a',
+     *         'map_map'     => ['a' => 'a', 'b' => 'b'],
+     *         'array_array' => ['a', 'b'],
+     *         'map_array'   => ['a' => 'a', 'b' => 'b'],
+     *         'array_map'   => ['c'],
+     *         'other'       => 'a',
+     *         'left'        => 'a',
      *     ],
      *     [
-     *         'map'   => ['a' => 'A', 'c' => 'C'],
-     *         'array' => ['c'],
-     *         'other' => 'A',
-     *         'added' => 'added',
+     *         'map_map'     => ['a' => 'A', 'c' => 'C'],
+     *         'array_array' => ['c'],
+     *         'map_array'   => ['c'],
+     *         'array_map'   => ['a' => 'a', 'b' => 'b'],
+     *         'other'       => 'A',
+     *         'added'       => 'added',
      *     ],
      * );
      * => [
-     *     'map'   => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
-     *     'array' => ['c'],
-     *     'other' => 'A',
-     *     'added' => 'added',
+     *     'map_map'     => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+     *     'array_array' => ['a', 'b', 'c'],
+     *     'map_array'   => ['c'],
+     *     'array_map'   => ['a' => 'a', 'b' => 'b'],
+     *     'other'       => 'A',
+     *     'left'        => 'a',
+     *     'added'       => 'added',
      * ]
      *
-     * なお、この挙動は下記の2種のオプション指定によって変更することができます。
+     * なお、この挙動は下記のオプション指定によって変更することができます。
      *
-     * 　- Map(連想配列)   の マージ挙動 は差分MAPのキー名末尾に '!' を付与することで、上書挙動に変更できます。
-     * 　- Array(連番配列) の 上書き挙動 は差分MAPのキー名末尾に '+' を付与することで、マージ（アペンド）挙動に変更できます。
+     * 　- 配列の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
      *
      * ArrayUtil::override(
      *     [
-     *         'map'    => ['a' => 'a', 'b' => 'b'],
+     *         'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
+     *         'array' => ['a', 'b'],
+     *     ],
+     *     [
+     *         'map'   => ['a' => ['B' => 'B'], 'c' => 'C'],
+     *         'array' => ['c'],
+     *     ],
+     *     [
+     *         'map'   => ['a' => OverrideOption::REPLACE],
+     *         'array' => OverrideOption::REPLACE,
+     *     ]
+     * );
+     * => [
+     *     'map'   => ['a' => ['B' => 'B'], 'b' => 'b', 'c' => 'C'],
+     *     'array' => ['c'],
+     * ]
+     *
+     * なお、上記のコードは下記のように差分MAPのキー名末尾に '!' を付与することでも指定可能です。
+     *
+     * ArrayUtil::override(
+     *     [
+     *         'map'    => ['a' => ['A' => 'A'], 'b' => 'b'],
      *         'array'  => ['a', 'b'],
      *     ],
      *     [
-     *         'map!'   => ['a' => 'A', 'c' => 'C'],
-     *         'array+' => ['c'],
-     *     ],
+     *         'map'    => ['a!' => ['B' => 'B'], 'c' => 'C'],
+     *         'array!' => ['c'],
+     *     ]
      * );
-     * => [
-     *     'map'   => ['a' => 'A', 'c' => 'C'],
-     *     'array' => ['a', 'b', 'c'],
-     * ]
      *
-     * なお、上記のコードは下記のオプション指定と同義です。
-     *
-     * ArrayUtil::override(
-     *     [
-     *         'map'   => ['a' => 'a', 'b' => 'b'],
-     *         'array' => ['a', 'b'],
-     *     ],
-     *     [
-     *         'map'   => ['a' => 'A', 'c' => 'C'],
-     *         'array' => ['c'],
-     *     ],
-     *     [
-     *         'map'   => OverrideOption::MAP_NO_MERGE, //= '!'
-     *         'array' => OverrideOption::ARRAY_APPEND, //= '+'
-     *     ],
-     * );
+     * @see OverrideOption
      *
      * @param mixed $base ベースデータ
      * @param mixed $diff 差分データ
-     * @param array $option オプション
+     * @param array|string $option オプション
      * @return マージ済みのデータ
      */
     public static function override($base, $diff, $option = [])
     {
-        if (!is_array($base) || !is_array($diff) || self::isSequential($base) || self::isSequential($diff)) {
+        if (!\is_array($option)) {
+            switch ($option) {
+                case OverrideOption::REPLACE:
+                    return $diff;
+            }
+        }
+        
+        if (!is_array($base) || !is_array($diff)) {
+            return $diff;
+        }
+
+        $is_base_sequential = self::isSequential($base);
+        $is_diff_sequential = self::isSequential($diff);
+        if ($is_base_sequential && $is_diff_sequential) {
+            return \array_merge($base, $diff);
+        }
+
+        if ($is_base_sequential !== $is_diff_sequential) {
             return $diff;
         }
 
         foreach ($diff as $key => $value) {
+            [$key, $apply_option] = OverrideOption::split($key);
+            $apply_option = $apply_option ?? $option[$key] ?? null ;
             if (isset($base[$key])) {
-                $base[$key] = self::override($base[$key], $value);
+                $base[$key] = self::override($base[$key], $value, $apply_option);
             } else {
                 $base[$key] = $value;
             }

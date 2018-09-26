@@ -230,10 +230,10 @@ class ConfigTest extends RebetTestCase
         $this->assertSame(
             [
                 'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
-                'array'  => ['c'],
+                'array'  => ['a', 'b', 'c'],
                 'parent' => [
                     'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                    'array'  => ['cc'],
+                    'array'  => ['a', 'b', 'cc'],
                 ],
             ],
             Config::get(ConfigTest_MockOption::class)
