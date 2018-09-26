@@ -177,7 +177,8 @@ class ArrayUtil
      *
      * なお、この挙動は下記のオプション指定によって変更することができます。
      *
-     * 　- 配列の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
+     * 　- 配列(Map or Array)の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
+     * 　- 配列(Array)       の マージ挙動 は OverrideOption::PREPEND（='<'） によって前方追加に変更できます。
      *
      * ArrayUtil::override(
      *     [
@@ -190,12 +191,12 @@ class ArrayUtil
      *     ],
      *     [
      *         'map'   => ['a' => OverrideOption::REPLACE],
-     *         'array' => OverrideOption::REPLACE,
+     *         'array' => OverrideOption::PREPEND,
      *     ]
      * );
      * => [
      *     'map'   => ['a' => ['B' => 'B'], 'b' => 'b', 'c' => 'C'],
-     *     'array' => ['c'],
+     *     'array' => ['c', 'a', 'b'],
      * ]
      *
      * なお、上記のコードは下記のように差分MAPのキー名末尾に '!' を付与することでも指定可能です。
@@ -207,7 +208,7 @@ class ArrayUtil
      *     ],
      *     [
      *         'map'    => ['a!' => ['B' => 'B'], 'c' => 'C'],
-     *         'array!' => ['c'],
+     *         'array<' => ['c'],
      *     ]
      * );
      *
@@ -220,21 +221,14 @@ class ArrayUtil
      */
     public static function override($base, $diff, $option = [])
     {
-        if (!\is_array($option)) {
-            switch ($option) {
-                case OverrideOption::REPLACE:
-                    return $diff;
-            }
-        }
-        
-        if (!is_array($base) || !is_array($diff)) {
+        if (!is_array($base) || !is_array($diff) || $option === OverrideOption::REPLACE) {
             return $diff;
         }
 
         $is_base_sequential = self::isSequential($base);
         $is_diff_sequential = self::isSequential($diff);
         if ($is_base_sequential && $is_diff_sequential) {
-            return \array_merge($base, $diff);
+            return $option === OverrideOption::PREPEND ? \array_merge($diff, $base) : \array_merge($base, $diff) ;
         }
 
         if ($is_base_sequential !== $is_diff_sequential) {

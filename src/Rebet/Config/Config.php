@@ -88,12 +88,25 @@ final class Config
      *
      * @var array
      */
-    public static $option = [
+    private static $option = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
         Layer::RUNTIME     => [],
     ];
+
+    /**
+     * コンパイル済みオプション設定
+     *
+     * compiled = [
+     *   'Section' => [
+     *       'key' => value,
+     *   ],
+     * ]
+     *
+     * @var array
+     */
+    private static $compiled = [];
 
     /**
      * コンフィグデータを全てクリアします
@@ -113,6 +126,26 @@ final class Config
             Layer::APPLICATION => [],
             Layer::RUNTIME     => [],
         ];
+
+        static::$compiled = [];
+    }
+
+    /**
+     * 対象セクションのコンフィグ設定をコンパイルします。
+     *
+     * @param string $section
+     * @return void
+     */
+    private static function compile(string $section) : void
+    {
+        $compiled = static::$config[Layer::LIBRARY][$section];
+        foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
+            if (isset(static::$config[$layer][$section])) {
+                $compiled = ArrayUtil::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? []);
+            }
+        }
+
+        static::$compiled[$section] = $compiled;
     }
 
     /**
@@ -121,8 +154,12 @@ final class Config
      */
     private static function put(string $layer, array $config) : void
     {
-        $config = self::analyzeOption($config, static::$option[$layer]);
+        $config = self::analyze($config, static::$option[$layer]);
         static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config, static::$option[$layer]);
+        foreach (\array_keys($config) as $section) {
+            static::loadLibraryConfig($section);
+            static::compile($section);
+        }
     }
     
     /**
@@ -132,7 +169,7 @@ final class Config
      * @param array $option
      * @return void
      */
-    private static function analyzeOption(array $config, array &$option)
+    protected static function analyze(array $config, array &$option)
     {
         if (!\is_array($config) || ArrayUtil::isSequential($config)) {
             return $config;
@@ -147,7 +184,7 @@ final class Config
             
             if (\is_array($value) && !ArrayUtil::isSequential($value)) {
                 $nested_option = [];
-                $value = static::analyzeOption($value, $nested_option);
+                $value = static::analyze($value, $nested_option);
                 if ($apply_option === null && !empty($nested_option)) {
                     $option[$key] = $nested_option ;
                 }
@@ -270,59 +307,16 @@ final class Config
      */
     public static function get(string $section, ?string $key = null, bool $required = true, $default = null)
     {
-        $diffs = [];
-        
-        foreach ([
-            Layer::RUNTIME     => 'Overwritten with blank at runtime layer.',
-            Layer::APPLICATION => 'Overwritten with blank at application layer.',
-            Layer::FRAMEWORK   => 'Please define at application layer.',
-        ] as $layer => $extra_message) {
-            if (self::isDefine(static::$config[$layer], $section, $key)) {
-                $value = Util::isBlank($key) ? static::$config[$layer][$section] : Util::get(static::$config[$layer][$section], $key);
-                $value = Util::bvl($value, $default);
-                if ($required && Util::isBlank($value) && empty($diffs)) {
-                    throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank. {$extra_message}");
-                }
-                if (empty($diffs) && (!\is_array($value) || ArrayUtil::isSequential($value))) {
-                    return $value;
-                }
-                $diffs[$layer] = $value;
-            }
+        if (!isset(static::$config[Layer::LIBRARY][$section])) {
+            static::loadLibraryConfig($section);
+            static::compile($section);
         }
 
-        // ライブラリコンフィグ遅延ロード
-        static::loadLibraryConfig($section);
-        
-        // ライブラリコンフィグ
-        $value = Util::isBlank($key) ? static::$config[Layer::LIBRARY][$section] : Util::get(static::$config[Layer::LIBRARY][$section], $key);
-        $value = Util::bvl($value, $default);
-        if ($required && Util::isBlank($value) && empty($diffs)) {
-            if (self::isDefine(static::$config[Layer::LIBRARY], $section, $key)) {
-                throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank. Please define at application or framework layer.");
-            }
-            throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is not define. Please check config key name.");
+        $value = Util::get(static::$compiled[$section], $key);
+        if ($required && Util::isBlank($value)) {
+            throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
         }
-        return static::override($section, $key, $value, $diffs);
-    }
-
-    /**
-     * 差分スタックと値をマージして結果を返します。
-     *
-     * @param string $section セクション
-     * @param string|null $key 設定キー名[.区切りで階層指定可]（デフォルト：null）
-     * @param mixed $value
-     * @param array $diffs
-     * @return mixed
-     */
-    protected static function override(string $section, ?string $key = null, $value, array $diffs)
-    {
-        if (empty($diffs)) {
-            return $value;
-        }
-        foreach (\array_reverse($diffs) as $layer => $diff) {
-            $value = ArrayUtil::override($value, $diff, Util::get(static::$option[$layer], $key === null ? $section : "{$section}.{$key}", []));
-        }
-        return $value;
+        return $value ?? $default;
     }
 
     /**
@@ -337,7 +331,7 @@ final class Config
             return;
         }
         static::$option[Layer::LIBRARY][$section] = [];
-        static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? static::analyzeOption($section::defaultConfig(), static::$option[Layer::LIBRARY][$section]) : [] ;
+        static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? static::analyze($section::defaultConfig(), static::$option[Layer::LIBRARY][$section]) : [] ;
     }
 
     /**
@@ -371,17 +365,12 @@ final class Config
      */
     public static function has(string $section, string $key) : bool
     {
-        foreach ([Layer::RUNTIME, Layer::APPLICATION, Layer::FRAMEWORK] as $layer) {
-            if (self::isDefine(static::$config[$layer], $section, $key)) {
-                return true;
-            }
+        if (!isset(static::$config[Layer::LIBRARY][$section])) {
+            static::loadLibraryConfig($section);
+            static::compile($section);
         }
 
-        // ライブラリコンフィグ遅延ロード
-        static::loadLibraryConfig($section);
-
-        // ライブラリコンフィグ
-        return self::isDefine(static::$config[Layer::LIBRARY], $section, $key);
+        return static::isDefine(static::$compiled, $section, $key);
     }
 
     /**

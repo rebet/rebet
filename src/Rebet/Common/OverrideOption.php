@@ -21,6 +21,13 @@ class OverrideOption
     public const REPLACE = '!';
 
     /**
+     * 前方追加オプション（連番配列のみ）
+     *
+     * @var string
+     */
+    public const PREPEND = '<';
+
+    /**
      * インスタンス化禁止
      */
     private function __construct()
@@ -35,7 +42,7 @@ class OverrideOption
      */
     public static function split(string $key) : array
     {
-        foreach ([self::REPLACE] as $option) {
+        foreach ([self::REPLACE, self::PREPEND] as $option) {
             if (StringUtil::endWith($key, $option)) {
                 return [StringUtil::ratrim($key, $option), $option];
             }

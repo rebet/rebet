@@ -131,7 +131,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#database is blank. Please define at application or framework layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#database is blank or not define.
      */
     public function test_get_blank()
     {
@@ -141,7 +141,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#undfine is not define. Please check config key name.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#undfine is blank or not define.
      */
     public function test_get_undfine()
     {
@@ -151,7 +151,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Please define at application layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank or not define.
      */
     public function test_get_frameworkOrverrideBlank()
     {
@@ -169,7 +169,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Overwritten with blank at application layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank or not define.
      */
     public function test_get_applicationOrverrideBlank()
     {
@@ -187,7 +187,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank. Overwritten with blank at runtime layer.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank or not define.
      */
     public function test_get_runtimeOrverrideBlank()
     {
@@ -239,6 +239,32 @@ class ConfigTest extends RebetTestCase
             ],
             Config::get(ConfigTest_MockOption::class)
         );
+        $this->assertSame(
+            ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+            Config::get(ConfigTest_MockOption::class, 'map')
+        );
+        $this->assertSame(
+            ['a', 'b', 'c'],
+            Config::get(ConfigTest_MockOption::class, 'array')
+        );
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                'array'  => ['a', 'b', 'cc'],
+            ],
+            Config::get(ConfigTest_MockOption::class, 'parent')
+        );
+        $this->assertSame(
+            ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+            Config::get(ConfigTest_MockOption::class, 'parent.map')
+        );
+        $this->assertSame(
+            ['a', 'b', 'cc'],
+            Config::get(ConfigTest_MockOption::class, 'parent.array')
+        );
+        $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
+        $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'parent.map.b'));
+        $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
 
     public function test_get_optionMapReplace()
@@ -317,7 +343,6 @@ class ConfigTest extends RebetTestCase
         );
     }
 
-
     public function test_get_optionParentReplace()
     {
         $this->assertSame(
@@ -356,6 +381,44 @@ class ConfigTest extends RebetTestCase
         );
     }
     
+    public function test_get_optionArrayPrepend()
+    {
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'a', 'b' => 'b'],
+                'array'  => ['a', 'b'],
+                'parent' => [
+                    'map'   => ['a' => 'a', 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+
+        Config::framework([
+            ConfigTest_MockOption::class => [
+                'map'    => ['a' => 'A', 'c' => 'C'],
+                'array<' => ['c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'c' => 'cc'],
+                    'array<' => ['cc'],
+                ],
+            ]
+        ]);
+
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+                'array'  => ['c', 'a', 'b'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                    'array'  => ['cc', 'a', 'b'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+    }
+
     /**
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
