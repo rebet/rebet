@@ -68,7 +68,7 @@ final class Config
      *
      * @var array
      */
-    private static $config = [
+    protected static $config = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
@@ -88,7 +88,7 @@ final class Config
      *
      * @var array
      */
-    private static $option = [
+    protected static $option = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
@@ -106,7 +106,7 @@ final class Config
      *
      * @var array
      */
-    private static $compiled = [];
+    protected static $compiled = [];
 
     /**
      * コンフィグデータを全てクリアします
@@ -136,7 +136,7 @@ final class Config
      * @param string $section
      * @return void
      */
-    private static function compile(string $section) : void
+    protected static function compile(string $section) : void
     {
         $compiled = static::$config[Layer::LIBRARY][$section];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
@@ -152,7 +152,7 @@ final class Config
      * 対象レイヤーのコンフィグを設定／上書きします。
      * 本設定は ArrayUtil::override() による上書き設定となります。
      */
-    private static function put(string $layer, array $config) : void
+    protected static function put(string $layer, array $config) : void
     {
         $config = self::analyze($config, static::$option[$layer]);
         static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config, static::$option[$layer]);
@@ -197,7 +197,7 @@ final class Config
 
     /**
      * フレームワークコンフィグを設定します。
-     * 本設定は array_merge による上書き設定となります。
+     * 本設定は ArrayUtil::override() による上書き設定となります。
      *
      * ex)
      * Config::framework([
@@ -221,7 +221,7 @@ final class Config
 
     /**
      * アプリケーションコンフィグを設定します。
-     * 本設定は array_merge による上書き設定となります。
+     * 本設定は ArrayUtil::override() による上書き設定となります。
      *
      * ex)
      * Config::application([
@@ -245,7 +245,7 @@ final class Config
 
     /**
      * ランタイムコンフィグを設定します。
-     * 本設定は array_merge による上書き設定となります。
+     * 本設定は ArrayUtil::override() による上書き設定となります。
      *
      * ex)
      * Config::runtime([
@@ -277,17 +277,31 @@ final class Config
      * @return int true: 定義あり, false: 定義なし
      * @throws LogicException
      */
-    private static function isDefine(array $config, string $section, ?string $key) : bool
+    protected static function isDefine(array $config, string $section, ?string $key) : bool
     {
         if (Util::isBlank($key)) {
             return isset($config[$section]);
+        }
+        return isset($config[$section]) && Util::has($config[$section], $key) ;
+    }
+
+    /**
+     * アクセスキーの形式をチェックします。
+     *
+     * @param string|null $key
+     * @return void
+     * @throws \LogicException
+     */
+    protected static function validateKey(?string $key) : void
+    {
+        if (Util::isBlank($key)) {
+            return;
         }
         foreach (\explode('.', $key) as $value) {
             if (\ctype_digit($value)) {
                 throw new \LogicException("Invalid config key access, the key '{$key}' contains digit only part.");
             }
         }
-        return isset($config[$section]) && Util::has($config[$section], $key) ;
     }
 
     /**
@@ -307,11 +321,13 @@ final class Config
      */
     public static function get(string $section, ?string $key = null, bool $required = true, $default = null)
     {
+        static::validateKey($key);
+
         if (!isset(static::$config[Layer::LIBRARY][$section])) {
             static::loadLibraryConfig($section);
             static::compile($section);
         }
-
+        
         $value = Util::get(static::$compiled[$section], $key);
         if ($required && Util::isBlank($value)) {
             throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
@@ -365,6 +381,8 @@ final class Config
      */
     public static function has(string $section, string $key) : bool
     {
+        static::validateKey($key);
+        
         if (!isset(static::$config[Layer::LIBRARY][$section])) {
             static::loadLibraryConfig($section);
             static::compile($section);
@@ -392,6 +410,7 @@ final class Config
      */
     public static function refer(string $section, string $key, $default = null) : ConfigReferrer
     {
+        static::validateKey($key);
         return new ConfigReferrer($section, $key, $default);
     }
 
