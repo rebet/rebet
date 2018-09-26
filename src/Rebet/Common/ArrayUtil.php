@@ -122,8 +122,8 @@ class ArrayUtil
      * $user_map   = ArrayUtil::remap($users, 'user_id', null);        //=> [21 => <<Row object>>, 35 => <<Row object>>, 43 => <<Row object>>, ...]
      *
      * @param array|null $list オブジェクトが格納された配列
-     * @param int|string|null $key_field 抽出データのキーとなるフィールド名/インデックス（null 指定時は連番配列となる）
-     * @param int|string|null $value_field 抽出データの値となるフィールド名/インデックス（null 指定時はRow要素自体が対象となる）
+     * @param int|string|null $key_field 抽出データのキーとなるフィールド名/インデックス（blank 指定時は連番配列となる）
+     * @param int|string|null $value_field 抽出データの値となるフィールド名/インデックス（blank 指定時はRow要素自体が対象となる）
      * @return array 列データ
      * @see Util::get()
      */
@@ -134,8 +134,7 @@ class ArrayUtil
         }
         $remaps = [];
         foreach ($list as $i => $row) {
-            $key = Util::get($row, $key_field);
-            $remaps[$key ? $key : $i] = Util::isBlank($value_field) ? $row : Util::get($row, $value_field);
+            $remaps[Util::isBlank($key_field) ? $i : Util::get($row, $key_field)] = Util::isBlank($value_field) ? $row : Util::get($row, $value_field);
         }
         return $remaps;
     }

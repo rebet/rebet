@@ -119,10 +119,10 @@ final class Config
      * 対象レイヤーのコンフィグを設定／上書きします。
      * 本設定は ArrayUtil::override() による上書き設定となります。
      */
-    private static function override(string $layer, array $config) : void
+    private static function put(string $layer, array $config) : void
     {
         $config = self::analyzeOption($config, static::$option[$layer]);
-        static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config);
+        static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config, static::$option[$layer]);
     }
     
     /**
@@ -180,7 +180,7 @@ final class Config
      */
     public static function framework(array $config) : void
     {
-        self::override(Layer::FRAMEWORK, $config);
+        self::put(Layer::FRAMEWORK, $config);
     }
 
     /**
@@ -204,7 +204,7 @@ final class Config
      */
     public static function application(array $config) : void
     {
-        self::override(Layer::APPLICATION, $config);
+        self::put(Layer::APPLICATION, $config);
     }
 
     /**
@@ -228,7 +228,7 @@ final class Config
      */
     public static function runtime(array $config) : void
     {
-        self::override(Layer::RUNTIME, $config);
+        self::put(Layer::RUNTIME, $config);
     }
     
     /**
@@ -287,7 +287,7 @@ final class Config
                 if (empty($diffs) && (!\is_array($value) || ArrayUtil::isSequential($value))) {
                     return $value;
                 }
-                $diffs[] = $value;
+                $diffs[$layer] = $value;
             }
         }
 
@@ -303,23 +303,25 @@ final class Config
             }
             throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is not define. Please check config key name.");
         }
-        return static::merge($value, $diffs);
+        return static::override($section, $key, $value, $diffs);
     }
 
     /**
      * 差分スタックと値をマージして結果を返します。
      *
+     * @param string $section セクション
+     * @param string|null $key 設定キー名[.区切りで階層指定可]（デフォルト：null）
      * @param mixed $value
      * @param array $diffs
      * @return mixed
      */
-    protected static function merge($value, array $diffs)
+    protected static function override(string $section, ?string $key = null, $value, array $diffs)
     {
         if (empty($diffs)) {
             return $value;
         }
-        foreach (\array_reverse($diffs) as $diff) {
-            $value = ArrayUtil::override($value, $diff);
+        foreach (\array_reverse($diffs) as $layer => $diff) {
+            $value = ArrayUtil::override($value, $diff, Util::get(static::$option[$layer], $key === null ? $section : "{$section}.{$key}", []));
         }
         return $value;
     }

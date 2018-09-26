@@ -135,6 +135,9 @@ class Util
         if ($obj === null) {
             return $default;
         }
+        if (self::isBlank($key)) {
+            return $obj === null ? $default : static::resolveTransparentlyDotAccess($obj) ;
+        }
 
         $current = StringUtil::latrim($key, '.');
         if ($current != $key) {
@@ -150,22 +153,39 @@ class Util
                 return $default;
             }
             $value = $obj[$current];
-            while ($value instanceof TransparentlyDotAccessible) {
-                $value = $value->get();
-            }
-            return $value ?? $default ;
+            return $value === null ? $default : static::resolveTransparentlyDotAccess($value) ;
         }
 
         if (!property_exists($obj, $current)) {
             return $default;
         }
         $value = $obj->{$current};
-        while ($value instanceof TransparentlyDotAccessible) {
-            $value = $value->get();
-        }
-        return $value ?? $default ;
+        return $value === null ? $default : static::resolveTransparentlyDotAccess($value) ;
     }
     
+    /**
+     * TransparentlyDotAccessible を解決します。
+     *
+     * @param mixed $obj
+     * @return mixed
+     */
+    private static function resolveTransparentlyDotAccess($obj)
+    {
+        while ($obj instanceof TransparentlyDotAccessible) {
+            $obj = $obj->get();
+        }
+
+        if ($obj === null || \is_scalar($obj) || \is_resource($obj)) {
+            return $obj;
+        }
+
+        foreach ($obj as $key => $value) {
+            self::set($obj, $key, static::resolveTransparentlyDotAccess($value));
+        }
+
+        return $obj;
+    }
+
     /**
      * 配列又はオブジェクトに値を設定します。
      *

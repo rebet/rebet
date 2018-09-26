@@ -68,17 +68,17 @@ class UtilTest extends RebetTestCase
 
     public function test_when()
     {
-        $this->assertSame(Util::when(null, 'yes', 'no'), 'no');
-        $this->assertSame(Util::when(0, 'yes', 'no'), 'no');
-        $this->assertSame(Util::when(1, 'yes', 'no'), 'yes');
-        $this->assertSame(Util::when(1 === 1, 'yes', 'no'), 'yes');
-        $this->assertSame(Util::when(1 === 2, 'yes', 'no'), 'no');
+        $this->assertSame('no', Util::when(null, 'yes', 'no'));
+        $this->assertSame('no', Util::when(0, 'yes', 'no'));
+        $this->assertSame('yes', Util::when(1, 'yes', 'no'));
+        $this->assertSame('yes', Util::when(1 === 1, 'yes', 'no'));
+        $this->assertSame('no', Util::when(1 === 2, 'yes', 'no'));
     }
 
     public function test_coalesce()
     {
-        $this->assertSame(Util::coalesce(null, [], '', 0, 3, 'a'), 3);
-        $this->assertSame(Util::coalesce('a', null, [], '', 0, 3), 'a');
+        $this->assertSame(3, Util::coalesce(null, [], '', 0, 3, 'a'));
+        $this->assertSame('a', Util::coalesce('a', null, [], '', 0, 3));
     }
 
     public function test_instantiate()
@@ -103,39 +103,54 @@ class UtilTest extends RebetTestCase
 
     public function test_get()
     {
+        $this->assertSame($this->array, Util::get($this->array, null));
+        $this->assertSame($this->array, Util::get($this->array, ''));
         $this->assertNull(Util::get($this->array, 'invalid_key'));
-        $this->assertSame(Util::get($this->array, 'invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->array, 0, 'default'), 'a');
-        $this->assertSame(Util::get($this->array, 3, 'default'), 'default');
-        $this->assertSame(Util::get($this->array, 4, 'default'), 'default');
+        $this->assertSame('default', Util::get($this->array, 'invalid_key', 'default'));
+        $this->assertSame('a', Util::get($this->array, 0, 'default'));
+        $this->assertSame('default', Util::get($this->array, 3, 'default'));
+        $this->assertSame('default', Util::get($this->array, 4, 'default'));
 
-        $this->assertSame(Util::get($this->map, 'invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->map, 'name', 'default'), 'John Smith');
-        $this->assertSame(Util::get($this->map, 'hobbies', []), ['game', 'outdoor']);
-        $this->assertSame(Util::get($this->map, 'hobbies.0', 'default'), 'game');
-        $this->assertSame(Util::get($this->map, 'hobbies.3', 'default'), 'default');
-        $this->assertSame(Util::get($this->map, 'hobbies.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->map, 'partner.name', 'default'), 'Jane Smith');
-        $this->assertSame(Util::get($this->map, 'partner.gender', 'default'), 'female');
-        $this->assertSame(Util::get($this->map, 'partner.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->map, 'partner.gender.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->map, 'children', []), []);
+        $this->assertSame($this->map, Util::get($this->map, null));
+        $this->assertSame($this->map, Util::get($this->map, ''));
+        $this->assertSame('default', Util::get($this->map, 'invalid_key', 'default'));
+        $this->assertSame('John Smith', Util::get($this->map, 'name', 'default'));
+        $this->assertSame(['game', 'outdoor'], Util::get($this->map, 'hobbies', []));
+        $this->assertSame('game', Util::get($this->map, 'hobbies.0', 'default'));
+        $this->assertSame('default', Util::get($this->map, 'hobbies.3', 'default'));
+        $this->assertSame('default', Util::get($this->map, 'hobbies.invalid_key', 'default'));
+        $this->assertSame('Jane Smith', Util::get($this->map, 'partner.name', 'default'));
+        $this->assertSame('female', Util::get($this->map, 'partner.gender', 'default'));
+        $this->assertSame('default', Util::get($this->map, 'partner.invalid_key', 'default'));
+        $this->assertSame('default', Util::get($this->map, 'partner.gender.invalid_key', 'default'));
+        $this->assertSame([], Util::get($this->map, 'children', []));
 
-        $this->assertSame(Util::get($this->object, 'invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->object, 'name', 'default'), 'John Smith');
-        $this->assertSame(Util::get($this->object, 'hobbies', []), ['game', 'outdoor']);
-        $this->assertSame(Util::get($this->object, 'hobbies.0', 'default'), 'game');
-        $this->assertSame(Util::get($this->object, 'hobbies.3', 'default'), 'default');
-        $this->assertSame(Util::get($this->object, 'hobbies.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->object, 'partner.name', 'default'), 'Jane Smith');
-        $this->assertSame(Util::get($this->object, 'partner.gender', 'default'), 'female');
-        $this->assertSame(Util::get($this->object, 'partner.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->object, 'partner.gender.invalid_key', 'default'), 'default');
-        $this->assertSame(Util::get($this->object, 'children', []), []);
+        $this->assertSame($this->object, Util::get($this->object, null));
+        $this->assertSame($this->object, Util::get($this->object, ''));
+        $this->assertSame('default', Util::get($this->object, 'invalid_key', 'default'));
+        $this->assertSame('John Smith', Util::get($this->object, 'name', 'default'));
+        $this->assertSame(['game', 'outdoor'], Util::get($this->object, 'hobbies', []));
+        $this->assertSame('game', Util::get($this->object, 'hobbies.0', 'default'));
+        $this->assertSame('default', Util::get($this->object, 'hobbies.3', 'default'));
+        $this->assertSame('default', Util::get($this->object, 'hobbies.invalid_key', 'default'));
+        $this->assertSame('Jane Smith', Util::get($this->object, 'partner.name', 'default'));
+        $this->assertSame('female', Util::get($this->object, 'partner.gender', 'default'));
+        $this->assertSame('default', Util::get($this->object, 'partner.invalid_key', 'default'));
+        $this->assertSame('default', Util::get($this->object, 'partner.gender.invalid_key', 'default'));
+        $this->assertSame([], Util::get($this->object, 'children', []));
 
-        $this->assertSame(Util::get($this->transparent, 'a.b'), 'ab');
-        $this->assertSame(Util::get($this->transparent, 'a.c'), 'ac');
-        $this->assertSame(Util::get($this->transparent, 'b'), 'b');
+        $this->assertSame(
+            [
+                'b' => 'ab',
+                'c' => 'ac',
+            ],
+            Util::get($this->transparent->a, null)
+        );
+        $this->assertSame('b', Util::get($this->transparent->b, null));
+        $this->assertSame('b', Util::get($this->transparent->b, ''));
+        $this->assertSame('ab', Util::get($this->transparent, 'a.b'));
+        $this->assertSame('ac', Util::get($this->transparent, 'a.c'));
+        $this->assertSame('b', Util::get($this->transparent, 'b'));
     }
 
     public function test_has()
@@ -174,6 +189,7 @@ class UtilTest extends RebetTestCase
         $this->assertTrue(Util::has($this->object, 'children'));
         $this->assertFalse(Util::has($this->object, 'children.0'));
 
+        $this->assertTrue(Util::has($this->transparent, 'a'));
         $this->assertTrue(Util::has($this->transparent, 'a.b'));
         $this->assertFalse(Util::has($this->transparent, 'a.b.c'));
         $this->assertTrue(Util::has($this->transparent, 'a.c'));
@@ -269,56 +285,56 @@ class UtilTest extends RebetTestCase
 
     public function test_isBlank()
     {
-        $this->assertSame(Util::isBlank(null), true);
-        $this->assertSame(Util::isBlank(false), false);
-        $this->assertSame(Util::isBlank('false'), false);
-        $this->assertSame(Util::isBlank(0), false);
-        $this->assertSame(Util::isBlank('0'), false);
-        $this->assertSame(Util::isBlank(''), true);
-        $this->assertSame(Util::isBlank([]), true);
-        $this->assertSame(Util::isBlank([null]), false);
-        $this->assertSame(Util::isBlank([1]), false);
-        $this->assertSame(Util::isBlank('abc'), false);
+        $this->assertTrue(Util::isBlank(null));
+        $this->assertFalse(Util::isBlank(false));
+        $this->assertFalse(Util::isBlank('false'));
+        $this->assertFalse(Util::isBlank(0));
+        $this->assertFalse(Util::isBlank('0'));
+        $this->assertTrue(Util::isBlank(''));
+        $this->assertTrue(Util::isBlank([]));
+        $this->assertFalse(Util::isBlank([null]));
+        $this->assertFalse(Util::isBlank([1]));
+        $this->assertFalse(Util::isBlank('abc'));
     }
 
     public function test_bvl()
     {
-        $this->assertSame(Util::bvl(null, 'default'), 'default');
-        $this->assertSame(Util::bvl(false, 'default'), false);
-        $this->assertSame(Util::bvl('false', 'default'), 'false');
-        $this->assertSame(Util::bvl(0, 'default'), 0);
-        $this->assertSame(Util::bvl('0', 'default'), '0');
-        $this->assertSame(Util::bvl('', 'default'), 'default');
-        $this->assertSame(Util::bvl([], 'default'), 'default');
-        $this->assertSame(Util::bvl([null], 'default'), [null]);
-        $this->assertSame(Util::bvl('abc', 'default'), 'abc');
+        $this->assertSame('default', Util::bvl(null, 'default'));
+        $this->assertSame(false, Util::bvl(false, 'default'));
+        $this->assertSame('false', Util::bvl('false', 'default'));
+        $this->assertSame(0, Util::bvl(0, 'default'));
+        $this->assertSame('0', Util::bvl('0', 'default'));
+        $this->assertSame('default', Util::bvl('', 'default'));
+        $this->assertSame('default', Util::bvl([], 'default'));
+        $this->assertSame([null], Util::bvl([null], 'default'));
+        $this->assertSame('abc', Util::bvl('abc', 'default'));
     }
 
     public function test_isEmpty()
     {
-        $this->assertSame(Util::isEmpty(null), true);
-        $this->assertSame(Util::isEmpty(false), false);
-        $this->assertSame(Util::isEmpty('false'), false);
-        $this->assertSame(Util::isEmpty(0), true);
-        $this->assertSame(Util::isEmpty('0'), false);
-        $this->assertSame(Util::isEmpty(''), true);
-        $this->assertSame(Util::isEmpty([]), true);
-        $this->assertSame(Util::isEmpty([null]), false);
-        $this->assertSame(Util::isEmpty([1]), false);
-        $this->assertSame(Util::isEmpty('abc'), false);
+        $this->assertTrue(Util::isEmpty(null));
+        $this->assertFalse(Util::isEmpty(false));
+        $this->assertFalse(Util::isEmpty('false'));
+        $this->assertTrue(Util::isEmpty(0));
+        $this->assertFalse(Util::isEmpty('0'));
+        $this->assertTrue(Util::isEmpty(''));
+        $this->assertTrue(Util::isEmpty([]));
+        $this->assertFalse(Util::isEmpty([null]));
+        $this->assertFalse(Util::isEmpty([1]));
+        $this->assertFalse(Util::isEmpty('abc'));
     }
 
     public function test_evl()
     {
-        $this->assertSame(Util::evl(null, 'default'), 'default');
-        $this->assertSame(Util::evl(false, 'default'), false);
-        $this->assertSame(Util::evl('false', 'default'), 'false');
-        $this->assertSame(Util::evl(0, 'default'), 'default');
-        $this->assertSame(Util::evl('0', 'default'), '0');
-        $this->assertSame(Util::evl('', 'default'), 'default');
-        $this->assertSame(Util::evl([], 'default'), 'default');
-        $this->assertSame(Util::evl([null], 'default'), [null]);
-        $this->assertSame(Util::evl('abc', 'default'), 'abc');
+        $this->assertSame('default', Util::evl(null, 'default'));
+        $this->assertSame(false, Util::evl(false, 'default'));
+        $this->assertSame('false', Util::evl('false', 'default'));
+        $this->assertSame('default', Util::evl(0, 'default'));
+        $this->assertSame('0', Util::evl('0', 'default'));
+        $this->assertSame('default', Util::evl('', 'default'));
+        $this->assertSame('default', Util::evl([], 'default'));
+        $this->assertSame([null], Util::evl([null], 'default'));
+        $this->assertSame('abc', Util::evl('abc', 'default'));
     }
 
     public function test_heredocImplanter()
