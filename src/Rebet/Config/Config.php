@@ -34,8 +34,8 @@ use Rebet\Common\StringUtil;
  *
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
- * @todo 現在の最終設定（全て）を一覧するメソッドなどの実装
  * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
+ * @todo レイヤー別の設定を配列で取得するメソッドの実装
  *
  * @see Rebet\Config\Configurable
  * @see Rebet\Common\ArrayUtil
@@ -45,7 +45,7 @@ use Rebet\Common\StringUtil;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-final class Config
+class Config
 {
     /**
      * インスタンス化禁止
@@ -128,6 +128,17 @@ final class Config
         ];
 
         static::$compiled = [];
+    }
+
+    /**
+     * 現在の設定内容を全て取得します。
+     * ※まだロードされていない未使用のライブラリコンフィグ設定は含まれません
+     *
+     * @return array
+     */
+    public static function all() : array
+    {
+        return Util::get(static::$compiled, null, []);
     }
 
     /**

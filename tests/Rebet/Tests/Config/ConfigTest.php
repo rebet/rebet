@@ -4,6 +4,7 @@ namespace Rebet\Tests\Config;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\DateTime\DateTime;
 
 class ConfigTest extends RebetTestCase
 {
@@ -611,6 +612,20 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('aa', Config::get(ConfigTest_MockOption::class, 'parent.map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'parent.map.b'));
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
+    }
+
+    public function test_get_all()
+    {
+        $config = Config::all();
+        $this->assertSame([], $config);
+
+        DateTime::setTestNow('2010-01-23');
+        $config = Config::all();
+
+        $this->assertSame(
+            '2010-01-23',
+            $config[DateTime::class]['test_now']
+        );
     }
     
     /**
