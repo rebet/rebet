@@ -88,7 +88,7 @@ final class Config
      *
      * @var array
      */
-    private static $option = [
+    public static $option = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
@@ -140,18 +140,17 @@ final class Config
 
         $analyzed = [];
         foreach ($config as $key => $value) {
-            [$key, $option] = OverrideOption::split($key);
-            if ($option !== null) {
-                $option[$key] = $option;
+            [$key, $apply_option] = OverrideOption::split($key);
+            if ($apply_option !== null) {
+                $option[$key] = $apply_option;
             }
             
             if (\is_array($value) && !ArrayUtil::isSequential($value)) {
-                $option[$key] = [];
-                $value = static::analyzeOption($value, $option[$key]);
-            }
-
-            if ($option === null && isset($option[$key]) && (!\is_array($option[$key]) || empty($option[$key]))) {
-                unset($option[$key]);
+                $nested_option = [];
+                $value = static::analyzeOption($value, $nested_option);
+                if ($apply_option === null && !empty($nested_option)) {
+                    $option[$key] = $nested_option ;
+                }
             }
 
             $analyzed[$key] = $value;

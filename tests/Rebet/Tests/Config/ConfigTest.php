@@ -203,7 +203,7 @@ class ConfigTest extends RebetTestCase
         $this->fail("Never execute.");
     }
 
-    public function test_get_option()
+    public function test_get_optionNothing()
     {
         $this->assertSame(
             [
@@ -227,6 +227,7 @@ class ConfigTest extends RebetTestCase
                 ],
             ]
         ]);
+
         $this->assertSame(
             [
                 'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
@@ -238,30 +239,123 @@ class ConfigTest extends RebetTestCase
             ],
             Config::get(ConfigTest_MockOption::class)
         );
-
-        // Config::framework([
-        //     ConfigTest_MockOption::class => [
-        //         'map!'    => ['a' => 'A', 'c' => 'C'],
-        //         'array+'  => ['c'],
-        //         'parent' => [
-        //             'map!'    => ['a' => 'aa', 'c' => 'cc'],
-        //             'array+'  => ['cc'],
-        //         ],
-        //     ]
-        // ]);
-        // $this->assertSame(
-        //     [
-        //         'map'    => ['a' => 'A', 'c' => 'C'],
-        //         'array'  => ['a', 'b', 'c'],
-        //         'parent' => [
-        //             'map'    => ['a' => 'aa', 'c' => 'cc'],
-        //             'array'  => ['a', 'b', 'cc'],
-        //         ],
-        //     ],
-        //     Config::get(ConfigTest_MockOption::class)
-        // );
     }
 
+    public function test_get_optionMapReplace()
+    {
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'a', 'b' => 'b'],
+                'array'  => ['a', 'b'],
+                'parent' => [
+                    'map'   => ['a' => 'a', 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+
+        Config::framework([
+            ConfigTest_MockOption::class => [
+                'map!'   => ['a' => 'A', 'c' => 'C'],
+                'array'  => ['c'],
+                'parent' => [
+                    'map!'   => ['a' => 'aa', 'c' => 'cc'],
+                    'array'  => ['cc'],
+                ],
+            ]
+        ]);
+
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'A', 'c' => 'C'],
+                'array'  => ['a', 'b', 'c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'c' => 'cc'],
+                    'array'  => ['a', 'b', 'cc'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+    }
+
+    public function test_get_optionArrayReplace()
+    {
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'a', 'b' => 'b'],
+                'array'  => ['a', 'b'],
+                'parent' => [
+                    'map'   => ['a' => 'a', 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+
+        Config::framework([
+            ConfigTest_MockOption::class => [
+                'map'    => ['a' => 'A', 'c' => 'C'],
+                'array!' => ['c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'c' => 'cc'],
+                    'array!' => ['cc'],
+                ],
+            ]
+        ]);
+
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+                'array'  => ['c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                    'array'  => ['cc'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+    }
+
+
+    public function test_get_optionParentReplace()
+    {
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'a', 'b' => 'b'],
+                'array'  => ['a', 'b'],
+                'parent' => [
+                    'map'   => ['a' => 'a', 'b' => 'b'],
+                    'array' => ['a', 'b'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+
+        Config::framework([
+            ConfigTest_MockOption::class => [
+                'map'   => ['a' => 'A', 'c' => 'C'],
+                'array' => ['c'],
+                'parent!' => [
+                    'map'   => ['a' => 'aa', 'c' => 'cc'],
+                    'array' => ['cc'],
+                ],
+            ]
+        ]);
+
+        $this->assertSame(
+            [
+                'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
+                'array'  => ['a', 'b', 'c'],
+                'parent' => [
+                    'map'    => ['a' => 'aa', 'c' => 'cc'],
+                    'array'  => ['cc'],
+                ],
+            ],
+            Config::get(ConfigTest_MockOption::class)
+        );
+    }
+    
     /**
      * @expectedException \LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
