@@ -119,6 +119,77 @@ class AppTest extends RebetTestCase
         $this->assertFalse(App::envIn('production', 'staging'));
     }
 
+    public function test_getSurface()
+    {
+        Config::application([
+            App::class => [
+                'surface' => 'console',
+            ],
+        ]);
+        $this->assertSame('console', App::getSurface());
+    }
+
+    public function test_setSurface()
+    {
+        App::setSurface('console');
+        $this->assertSame('console', App::getSurface());
+    }
+
+    public function test_SurfaceIn()
+    {
+        App::setSurface('console');
+        $this->assertTrue(App::SurfaceIn('console'));
+        $this->assertFalse(App::SurfaceIn('web', 'api'));
+    }
+
+    public function test_getEntryPoint()
+    {
+        Config::application([
+            App::class => [
+                'entry_point' => 'unittest',
+            ],
+        ]);
+        $this->assertSame('unittest', App::getEntryPoint());
+    }
+
+    public function test_setEntryPoint()
+    {
+        App::setEntryPoint('unittest');
+        $this->assertSame('unittest', App::getEntryPoint());
+    }
+
+    public function test_when()
+    {
+        $case = [
+            'console@unittest' => 'console@unittest',
+            'console'          => 'console',
+            'unittest'         => 'unittest',
+            'web@local'        => 'web@local',
+            'api@production'   => 'api@production',
+            'default'          => 'default',
+        ];
+
+        App::setSurface('console');
+        App::setEnv('unittest');
+        $this->assertSame('console@unittest', App::when($case));
+
+        App::setSurface('console');
+        App::setEnv('development');
+        $this->assertSame('console', App::when($case));
+
+        App::setSurface('api');
+        App::setEnv('unittest');
+        $this->assertSame('unittest', App::when($case));
+
+        App::setSurface('web');
+        App::setEnv('local');
+        $this->assertSame('web@local', App::when($case));
+
+        App::setSurface('api');
+        App::setEnv('development');
+        $this->assertSame('default', App::when($case));
+    }
+
     public function test_getTimezone()
     {
         Config::framework([

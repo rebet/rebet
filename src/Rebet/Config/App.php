@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Util;
 use Rebet\IO\FileUtil;
 
 /**
@@ -22,10 +21,10 @@ class App
     public static function defaultConfig()
     {
         return [
+            'surface'         => null,
             'env'             => Config::promise(function () {
                 return getenv('APP_ENV') ?: 'development' ;
             }),
-            'interface'       => null,
             'entry_point'     => null,
             'root'            => null,
             'locale'          => 'ja',
@@ -123,40 +122,40 @@ class App
     }
 
     /**
-     * 現在のインターフェース環境（web|api|console など）を取得します。
-     * ※ App::config('interface') のファサードです。
+     * 現在の流入経路口（web|api|console など）を取得します。
+     * ※ App::config('surface') のファサードです。
      */
-    public static function getInterface() : string
+    public static function getSurface() : string
     {
-        return self::config('interface');
+        return self::config('surface');
     }
 
     /**
-     * 現在のインターフェース環境（web|api|console など）を設定します。
+     * 現在の流入経路口（web|api|console など）を設定します。
      *
-     * @param string $env 環境
+     * @param string $surface 流入経路口
      */
-    public static function setInterface(string $interface) : void
+    public static function setSurface(string $surface) : void
     {
-        self::setConfig(['interface' => $interface]);
+        self::setConfig(['surface' => $surface]);
     }
 
     /**
-     * 特定のインターフェース環境（web|api|console など）であるか判定します。
+     * 特定の流入経路口（web|api|console など）であるか判定します。
      *
-     * @param string ...$interface 環境
+     * @param string ...$surface 流入経路口
      */
-    public static function interfaceIn(string ...$interface) : bool
+    public static function surfaceIn(string ...$surface) : bool
     {
-        return \in_array(self::getInterface(), $interface, true);
+        return \in_array(self::getSurface(), $surface, true);
     }
     
     /**
      * 現在の実行環境を元に環境に則した値を返します。
      * $case のキー名には以下が指定でき、1 => 4 の優先度に従って値が取得されます。
      *
-     *  1. interface@env
-     *  2. interface
+     *  1. surface@env
+     *  2. surface
      *  3. env
      *  4. default
      *
@@ -165,14 +164,14 @@ class App
      */
     public static function when(array $case)
     {
-        $interface = static::getInterface();
-        $env       = static::getEnv();
-        return Util::get($case, "{$interface}@{$env}") ?? Util::get($case, $interface) ?? Util::get($case, $env) ?? Util::get($case, 'default');
+        $surface = static::getSurface();
+        $env     = static::getEnv();
+        return $case["{$surface}@{$env}"] ?? $case[$surface] ?? $case[$env] ?? $case['default'];
     }
 
     /**
      * 現在のエントリポイント名を取得します。
-     * ※ App::config('env') のファサードです。
+     * ※ App::config('entry_point') のファサードです。
      */
     public static function getEntryPoint() : string
     {
