@@ -26,6 +26,7 @@ class App
                 return getenv('APP_ENV') ?: 'development' ;
             }),
             'interface'       => null,
+            'entry_point'     => null,
             'root'            => null,
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
@@ -169,6 +170,25 @@ class App
         return Util::get($case, "{$interface}@{$env}") ?? Util::get($case, $interface) ?? Util::get($case, $env) ?? Util::get($case, 'default');
     }
 
+    /**
+     * 現在のエントリポイント名を取得します。
+     * ※ App::config('env') のファサードです。
+     */
+    public static function getEntryPoint() : string
+    {
+        return self::config('entry_point');
+    }
+
+    /**
+     * 現在のエントリポイント名を設定します。
+     *
+     * @param string $entry_point エントリポイント名
+     */
+    public static function setEntryPoint(string $entry_point) : void
+    {
+        self::setConfig(['entry_point' => $entry_point]);
+    }
+    
     /**
      * 現在のタイムゾーンを取得します。
      * ※ App::config('timezone') のファサードです。
