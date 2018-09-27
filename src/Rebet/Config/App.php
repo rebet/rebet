@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Config;
 
+use Rebet\Common\Util;
 use Rebet\IO\FileUtil;
 
 /**
