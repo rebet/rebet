@@ -3,6 +3,7 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Inflector;
+use Rebet\Config\Config;
 
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
@@ -97,6 +98,7 @@ class InflectorTest extends RebetTestCase
     {
         parent::tearDown();
         Inflector::reset();
+        Config::clear();
     }
 
     /**
@@ -356,10 +358,10 @@ class InflectorTest extends RebetTestCase
         // the words in case the irregular regex won't match, the tests
         // should fail in that case
         Inflector::rules('plural', [
-            'rules' => [],
+            ['rules', []],
         ]);
         Inflector::rules('singular', [
-            'rules' => [],
+            ['rules', []],
         ]);
 
         $this->assertEquals('wisdom tooth', Inflector::singularize('wisdom teeth'));
@@ -502,13 +504,13 @@ class InflectorTest extends RebetTestCase
      */
     public function test_CustomPluralRule()
     {
-        Inflector::rules('plural', ['/^(custom)$/i' => '\1izables']);
+        Inflector::rules('plural<', [['/^(custom)$/i', '\1izables']]);
         Inflector::rules('uninflected', ['uninflectable']);
 
         $this->assertEquals('customizables', Inflector::pluralize('custom'));
         $this->assertEquals('uninflectable', Inflector::pluralize('uninflectable'));
 
-        Inflector::rules('plural', ['/^(alert)$/i' => '\1ables']);
+        Inflector::rules('plural', [['/^(alert)$/i', '\1ables']]);
         Inflector::rules('irregular', ['amaze' => 'amazable', 'phone' => 'phonezes']);
         Inflector::rules('uninflected', ['noflect', 'abtuse']);
         $this->assertEquals('noflect', Inflector::pluralize('noflect'));
@@ -526,12 +528,12 @@ class InflectorTest extends RebetTestCase
     public function test_CustomSingularRule()
     {
         Inflector::rules('uninflected', ['singulars']);
-        Inflector::rules('singular', ['/(eple)r$/i' => '\1', '/(jente)r$/i' => '\1']);
-
+        Inflector::rules('singular', [['/(eple)r$/i', '\1'], ['/(jente)r$/i', '\1']]);
+        
         $this->assertEquals('eple', Inflector::singularize('epler'));
         $this->assertEquals('jente', Inflector::singularize('jenter'));
 
-        Inflector::rules('singular', ['/^(bil)er$/i' => '\1', '/^(inflec|contribu)tors$/i' => '\1ta']);
+        Inflector::rules('singular<', [['/^(bil)er$/i', '\1'], ['/^(inflec|contribu)tors$/i', '\1ta']]);
         Inflector::rules('irregular', ['spinor' => 'spins']);
 
         $this->assertEquals('spinor', Inflector::singularize('spins'));
@@ -551,10 +553,10 @@ class InflectorTest extends RebetTestCase
         $this->assertEquals('bananas', Inflector::tableize('Banana'));
         $this->assertEquals('Bananas', Inflector::pluralize('Banana'));
 
-        Inflector::rules('singular', ['/(.*)nas$/i' => '\1zzz']);
+        Inflector::rules('singular<', [['/(.*)nas$/i', '\1zzz']]);
         $this->assertEquals('Banazzz', Inflector::singularize('Bananas'), 'Was inflected with old rules.');
 
-        Inflector::rules('plural', ['/(.*)na$/i' => '\1zzz']);
+        Inflector::rules('plural<', [['/(.*)na$/i', '\1zzz']]);
         Inflector::rules('irregular', ['corpus' => 'corpora']);
         $this->assertEquals('Banazzz', Inflector::pluralize('Banana'), 'Was inflected with old rules.');
         $this->assertEquals('corpora', Inflector::pluralize('corpus'), 'Was inflected with old irregular form.');
@@ -570,10 +572,10 @@ class InflectorTest extends RebetTestCase
         $uninflected = ['atlas', 'lapis', 'onibus', 'pires', 'virus', '.*x'];
         $pluralIrregular = ['as' => 'ases'];
 
-        Inflector::rules('singular', ['/^(.*)(a|e|o|u)is$/i' => '\1\2l'], true);
-        Inflector::rules('plural', ['/^(.*)(a|e|o|u)l$/i' => '\1\2is'], true);
-        Inflector::rules('uninflected', $uninflected, true);
-        Inflector::rules('irregular', $pluralIrregular, true);
+        Inflector::rules('singular!', [['/^(.*)(a|e|o|u)is$/i', '\1\2l']]);
+        Inflector::rules('plural!', [['/^(.*)(a|e|o|u)l$/i', '\1\2is']]);
+        Inflector::rules('uninflected!', $uninflected);
+        Inflector::rules('irregular!', $pluralIrregular);
 
         $this->assertEquals('Alcoois', Inflector::pluralize('Alcool'));
         $this->assertEquals('Atlas', Inflector::pluralize('Atlas'));

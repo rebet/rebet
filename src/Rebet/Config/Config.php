@@ -88,7 +88,7 @@ class Config
      *
      * @var array
      */
-    protected static $option = [
+    public static $option = [
         Layer::LIBRARY     => [],
         Layer::FRAMEWORK   => [],
         Layer::APPLICATION => [],
@@ -132,7 +132,10 @@ class Config
 
     /**
      * 現在の設定内容を全て取得します。
+     *
      * ※まだロードされていない未使用のライブラリコンフィグ設定は含まれません
+     * ※本メソッドの呼び出しによって ConfigReferrer 経由でロードされたライブラリコンフィグ設定は
+     * 　本メソッドの戻り値に含まれないことがあります
      *
      * @return array
      */
@@ -174,13 +177,38 @@ class Config
     }
     
     /**
-     * コンフィグ設定
+     * コンフィグ設定を解析します。
      *
      * @param array $config
      * @param array $option
      * @return void
      */
     protected static function analyze(array $config, array &$option)
+    {
+        if (!\is_array($config) || ArrayUtil::isSequential($config)) {
+            return $config;
+        }
+        
+        $analyzed = [];
+        foreach ($config as $section => $value) {
+            if (\is_array($value) && !ArrayUtil::isSequential($value)) {
+                $option[$section] = $option[$section] ?? [] ;
+                $value = static::analyzeSection($value, $option[$section]);
+            }
+            
+            $analyzed[$section] = $value;
+        }
+        return $analyzed;
+    }
+    
+    /**
+     * セクション以下のコンフィグ設定を解析します。
+     *
+     * @param array $config
+     * @param array $option
+     * @return void
+     */
+    protected static function analyzeSection(array $config, array &$option)
     {
         if (!\is_array($config) || ArrayUtil::isSequential($config)) {
             return $config;
@@ -195,7 +223,7 @@ class Config
             
             if (\is_array($value) && !ArrayUtil::isSequential($value)) {
                 $nested_option = [];
-                $value = static::analyze($value, $nested_option);
+                $value = static::analyzeSection($value, $nested_option);
                 if ($apply_option === null && !empty($nested_option)) {
                     $option[$key] = $nested_option ;
                 }
