@@ -97,7 +97,6 @@ class InflectorTest extends RebetTestCase
     public function tearDown()
     {
         parent::tearDown();
-        Inflector::reset();
         Config::clear();
     }
 

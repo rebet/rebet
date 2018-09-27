@@ -24,6 +24,7 @@ use Rebet\Config\Configurable;
  *
  * Function diffs between CakePHP and Rebet are like below;
  *  - remove: slug() deprecated function on CakePHP (deprecated CakePHP 3.2.7)
+ *  - remove: reset()
  *  # change: static member name and static method name
  *  # change: support Rebet\Config\Configurable for rules
  *
@@ -171,13 +172,6 @@ class Inflector
     protected static $cache = [];
 
     /**
-     * The initial state of Inflector so reset() works.
-     *
-     * @var array
-     */
-    protected static $initial_state = [];
-
-    /**
      * Cache inflected values, and return if already available
      *
      * @param string $type Inflection type
@@ -199,26 +193,6 @@ class Inflector
         }
 
         return static::$cache[$type][$key];
-    }
-
-    /**
-     * Clears Inflectors inflected value caches. And resets the inflection
-     * rules to the initial values.
-     *
-     * @return void
-     */
-    public static function reset()
-    {
-        if (empty(static::$initial_state)) {
-            static::$initial_state = get_class_vars(__CLASS__);
-
-            return;
-        }
-        foreach (static::$initial_state as $key => $val) {
-            if ($key !== 'initial_state') {
-                static::${$key} = $val;
-            }
-        }
     }
 
     /**
