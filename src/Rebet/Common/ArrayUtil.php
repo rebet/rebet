@@ -217,9 +217,10 @@ class ArrayUtil
      * @param mixed $base ベースデータ
      * @param mixed $diff 差分データ
      * @param array|string $option オプション
+     * @param string $default_array_merge_mode デフォルト配列マージモード（デフォルト：OverrideOption::APEND）
      * @return マージ済みのデータ
      */
-    public static function override($base, $diff, $option = [])
+    public static function override($base, $diff, $option = [], string $default_array_merge_mode = OverrideOption::APEND)
     {
         if (!is_array($base) || !is_array($diff) || $option === OverrideOption::REPLACE) {
             return $diff;
@@ -228,7 +229,7 @@ class ArrayUtil
         $is_base_sequential = self::isSequential($base);
         $is_diff_sequential = self::isSequential($diff);
         if ($is_base_sequential && $is_diff_sequential) {
-            return $option === OverrideOption::PREPEND ? \array_merge($diff, $base) : \array_merge($base, $diff) ;
+            return static::arrayMerge($base, $diff, $option ?: $default_array_merge_mode);
         }
 
         if ($is_base_sequential !== $is_diff_sequential) {
@@ -246,5 +247,27 @@ class ArrayUtil
         }
 
         return $base;
+    }
+    
+    /**
+     * オプションの内容にしたがって連番配列をマージします。
+     *
+     * @param array $base
+     * @param array $diff
+     * @param string $option
+     * @return array
+     */
+    private static function arrayMerge(array $base, array $diff, string $option) : array
+    {
+        switch ($option) {
+            case OverrideOption::PREPEND:
+                return \array_merge($diff, $base);
+            case OverrideOption::APEND:
+                return \array_merge($base, $diff);
+            case OverrideOption::REPLACE:
+                return $diff;
+        }
+
+        throw new \LogicException("Invalid array merge mode '{$option}' given.");
     }
 }
