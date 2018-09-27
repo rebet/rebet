@@ -24,7 +24,8 @@ use Rebet\Config\Configurable;
  *
  * Function diffs between CakePHP and Rebet are like below;
  *  - remove: slug() deprecated function on CakePHP (deprecated CakePHP 3.2.7)
- *  + supported: Rebet\Config\Configurable for rules
+ *  # change: static member name and static method name
+ *  # change: support Rebet\Config\Configurable for rules
  *
  * @see https://github.com/cakephp/cakephp/blob/3.6.11/src/Utility/Inflector.php
  * @see https://github.com/cakephp/cakephp/blob/3.6.11/LICENSE
@@ -37,7 +38,6 @@ use Rebet\Config\Configurable;
 class Inflector
 {
     use Configurable;
-    
     public static function defaultConfig()
     {
         return [
@@ -168,14 +168,14 @@ class Inflector
      *
      * @var array
      */
-    protected static $_cache = [];
+    protected static $cache = [];
 
     /**
      * The initial state of Inflector so reset() works.
      *
      * @var array
      */
-    protected static $_initialState = [];
+    protected static $initial_state = [];
 
     /**
      * Cache inflected values, and return if already available
@@ -185,20 +185,20 @@ class Inflector
      * @param string|bool $value Inflected value
      * @return string|false Inflected value on cache hit or false on cache miss.
      */
-    protected static function _cache($type, $key, $value = false)
+    protected static function cache($type, $key, $value = false)
     {
         $key = '_' . $key;
         $type = '_' . $type;
         if ($value !== false) {
-            static::$_cache[$type][$key] = $value;
+            static::$cache[$type][$key] = $value;
 
             return $value;
         }
-        if (!isset(static::$_cache[$type][$key])) {
+        if (!isset(static::$cache[$type][$key])) {
             return false;
         }
 
-        return static::$_cache[$type][$key];
+        return static::$cache[$type][$key];
     }
 
     /**
@@ -209,13 +209,13 @@ class Inflector
      */
     public static function reset()
     {
-        if (empty(static::$_initialState)) {
-            static::$_initialState = get_class_vars(__CLASS__);
+        if (empty(static::$initial_state)) {
+            static::$initial_state = get_class_vars(__CLASS__);
 
             return;
         }
-        foreach (static::$_initialState as $key => $val) {
-            if ($key !== '_initialState') {
+        foreach (static::$initial_state as $key => $val) {
+            if ($key !== 'initial_state') {
                 static::${$key} = $val;
             }
         }
@@ -240,7 +240,7 @@ class Inflector
     public static function rules($type, $rules)
     {
         static::setConfig([$type => $rules]);
-        static::$_cache = [];
+        static::$cache = [];
     }
 
     /**
@@ -252,36 +252,36 @@ class Inflector
      */
     public static function pluralize($word)
     {
-        if (isset(static::$_cache['pluralize'][$word])) {
-            return static::$_cache['pluralize'][$word];
+        if (isset(static::$cache['pluralize'][$word])) {
+            return static::$cache['pluralize'][$word];
         }
 
-        if (!isset(static::$_cache['irregular']['pluralize'])) {
-            static::$_cache['irregular']['pluralize'] = '(?:' . implode('|', array_keys(static::config('irregular'))) . ')';
+        if (!isset(static::$cache['irregular']['pluralize'])) {
+            static::$cache['irregular']['pluralize'] = '(?:' . implode('|', array_keys(static::config('irregular'))) . ')';
         }
 
-        if (preg_match('/(.*?(?:\\b|_))(' . static::$_cache['irregular']['pluralize'] . ')$/i', $word, $regs)) {
-            static::$_cache['pluralize'][$word] = $regs[1] . substr($regs[2], 0, 1) .
+        if (preg_match('/(.*?(?:\\b|_))(' . static::$cache['irregular']['pluralize'] . ')$/i', $word, $regs)) {
+            static::$cache['pluralize'][$word] = $regs[1] . substr($regs[2], 0, 1) .
                 substr((static::config('irregular'))[strtolower($regs[2])], 1);
 
-            return static::$_cache['pluralize'][$word];
+            return static::$cache['pluralize'][$word];
         }
 
-        if (!isset(static::$_cache['uninflected'])) {
-            static::$_cache['uninflected'] = '(?:' . implode('|', static::config('uninflected')) . ')';
+        if (!isset(static::$cache['uninflected'])) {
+            static::$cache['uninflected'] = '(?:' . implode('|', static::config('uninflected')) . ')';
         }
 
-        if (preg_match('/^(' . static::$_cache['uninflected'] . ')$/i', $word, $regs)) {
-            static::$_cache['pluralize'][$word] = $word;
+        if (preg_match('/^(' . static::$cache['uninflected'] . ')$/i', $word, $regs)) {
+            static::$cache['pluralize'][$word] = $word;
 
             return $word;
         }
 
         foreach (static::config('plural') as [$rule, $replacement]) {
             if (preg_match($rule, $word)) {
-                static::$_cache['pluralize'][$word] = preg_replace($rule, $replacement, $word);
+                static::$cache['pluralize'][$word] = preg_replace($rule, $replacement, $word);
 
-                return static::$_cache['pluralize'][$word];
+                return static::$cache['pluralize'][$word];
             }
         }
     }
@@ -295,39 +295,39 @@ class Inflector
      */
     public static function singularize($word)
     {
-        if (isset(static::$_cache['singularize'][$word])) {
-            return static::$_cache['singularize'][$word];
+        if (isset(static::$cache['singularize'][$word])) {
+            return static::$cache['singularize'][$word];
         }
 
-        if (!isset(static::$_cache['irregular']['singular'])) {
-            static::$_cache['irregular']['singular'] = '(?:' . implode('|', static::config('irregular')) . ')';
+        if (!isset(static::$cache['irregular']['singular'])) {
+            static::$cache['irregular']['singular'] = '(?:' . implode('|', static::config('irregular')) . ')';
         }
 
-        if (preg_match('/(.*?(?:\\b|_))(' . static::$_cache['irregular']['singular'] . ')$/i', $word, $regs)) {
-            static::$_cache['singularize'][$word] = $regs[1] . substr($regs[2], 0, 1) .
+        if (preg_match('/(.*?(?:\\b|_))(' . static::$cache['irregular']['singular'] . ')$/i', $word, $regs)) {
+            static::$cache['singularize'][$word] = $regs[1] . substr($regs[2], 0, 1) .
                 substr(array_search(strtolower($regs[2]), static::config('irregular')), 1);
 
-            return static::$_cache['singularize'][$word];
+            return static::$cache['singularize'][$word];
         }
 
-        if (!isset(static::$_cache['uninflected'])) {
-            static::$_cache['uninflected'] = '(?:' . implode('|', static::config('uninflected')) . ')';
+        if (!isset(static::$cache['uninflected'])) {
+            static::$cache['uninflected'] = '(?:' . implode('|', static::config('uninflected')) . ')';
         }
 
-        if (preg_match('/^(' . static::$_cache['uninflected'] . ')$/i', $word, $regs)) {
-            static::$_cache['pluralize'][$word] = $word;
+        if (preg_match('/^(' . static::$cache['uninflected'] . ')$/i', $word, $regs)) {
+            static::$cache['pluralize'][$word] = $word;
 
             return $word;
         }
 
         foreach (static::config('singular', false, []) as [$rule, $replacement]) {
             if (preg_match($rule, $word)) {
-                static::$_cache['singularize'][$word] = preg_replace($rule, $replacement, $word);
+                static::$cache['singularize'][$word] = preg_replace($rule, $replacement, $word);
 
-                return static::$_cache['singularize'][$word];
+                return static::$cache['singularize'][$word];
             }
         }
-        static::$_cache['singularize'][$word] = $word;
+        static::$cache['singularize'][$word] = $word;
 
         return $word;
     }
@@ -344,11 +344,11 @@ class Inflector
     {
         $cacheKey = __FUNCTION__ . $delimiter;
 
-        $result = static::_cache($cacheKey, $string);
+        $result = static::cache($cacheKey, $string);
 
         if ($result === false) {
             $result = str_replace(' ', '', static::humanize($string, $delimiter));
-            static::_cache($cacheKey, $string, $result);
+            static::cache($cacheKey, $string, $result);
         }
 
         return $result;
@@ -394,7 +394,7 @@ class Inflector
     {
         $cacheKey = __FUNCTION__ . $delimiter;
 
-        $result = static::_cache($cacheKey, $string);
+        $result = static::cache($cacheKey, $string);
 
         if ($result === false) {
             $result = explode(' ', str_replace($delimiter, ' ', $string));
@@ -402,7 +402,7 @@ class Inflector
                 $word = mb_strtoupper(mb_substr($word, 0, 1)) . mb_substr($word, 1);
             }
             $result = implode(' ', $result);
-            static::_cache($cacheKey, $string, $result);
+            static::cache($cacheKey, $string, $result);
         }
 
         return $result;
@@ -419,11 +419,11 @@ class Inflector
     {
         $cacheKey = __FUNCTION__ . $delimiter;
 
-        $result = static::_cache($cacheKey, $string);
+        $result = static::cache($cacheKey, $string);
 
         if ($result === false) {
             $result = mb_strtolower(preg_replace('/(?<=\\w)([A-Z])/', $delimiter . '\\1', $string));
-            static::_cache($cacheKey, $string, $result);
+            static::cache($cacheKey, $string, $result);
         }
 
         return $result;
@@ -438,11 +438,11 @@ class Inflector
      */
     public static function tableize($className)
     {
-        $result = static::_cache(__FUNCTION__, $className);
+        $result = static::cache(__FUNCTION__, $className);
 
         if ($result === false) {
             $result = static::pluralize(static::underscore($className));
-            static::_cache(__FUNCTION__, $className, $result);
+            static::cache(__FUNCTION__, $className, $result);
         }
 
         return $result;
@@ -457,11 +457,11 @@ class Inflector
      */
     public static function classify($tableName)
     {
-        $result = static::_cache(__FUNCTION__, $tableName);
+        $result = static::cache(__FUNCTION__, $tableName);
 
         if ($result === false) {
             $result = static::camelize(static::singularize($tableName));
-            static::_cache(__FUNCTION__, $tableName, $result);
+            static::cache(__FUNCTION__, $tableName, $result);
         }
 
         return $result;
@@ -476,13 +476,13 @@ class Inflector
      */
     public static function variable($string)
     {
-        $result = static::_cache(__FUNCTION__, $string);
+        $result = static::cache(__FUNCTION__, $string);
 
         if ($result === false) {
             $camelized = static::camelize(static::underscore($string));
             $replace = strtolower(substr($camelized, 0, 1));
             $result = $replace . substr($camelized, 1);
-            static::_cache(__FUNCTION__, $string, $result);
+            static::cache(__FUNCTION__, $string, $result);
         }
 
         return $result;
