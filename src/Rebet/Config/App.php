@@ -24,6 +24,7 @@ class App
             'env'             => Config::promise(function () {
                 return getenv('APP_ENV') ?: 'development' ;
             }),
+            'interface'       => null,
             'root'            => null,
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
@@ -65,7 +66,7 @@ class App
      * 現在のロケールを取得します。
      * ※ App::config('locale') のファサードです。
      */
-    public static function getLocale()
+    public static function getLocale() : string
     {
         return self::config('locale');
     }
@@ -94,7 +95,7 @@ class App
      * 現在の環境を取得します。
      * ※ App::config('env') のファサードです。
      */
-    public static function getEnv()
+    public static function getEnv() : string
     {
         return self::config('env');
     }
@@ -117,6 +118,54 @@ class App
     public static function envIn(string ...$env) : bool
     {
         return \in_array(self::getEnv(), $env, true);
+    }
+
+    /**
+     * 現在のインターフェース環境（web|api|console など）を取得します。
+     * ※ App::config('interface') のファサードです。
+     */
+    public static function getInterface() : string
+    {
+        return self::config('interface');
+    }
+
+    /**
+     * 現在のインターフェース環境（web|api|console など）を設定します。
+     *
+     * @param string $env 環境
+     */
+    public static function setInterface(string $interface) : void
+    {
+        self::setConfig(['interface' => $interface]);
+    }
+
+    /**
+     * 特定のインターフェース環境（web|api|console など）であるか判定します。
+     *
+     * @param string ...$interface 環境
+     */
+    public static function interfaceIn(string ...$interface) : bool
+    {
+        return \in_array(self::getInterface(), $interface, true);
+    }
+    
+    /**
+     * 現在の実行環境を元に環境に則した値を返します。
+     * $case のキー名には以下が指定でき、1 => 4 の優先度に従って値が取得されます。
+     *
+     *  1. interface@env
+     *  2. interface
+     *  3. env
+     *  4. default
+     *
+     * @param array $case
+     * @return mixed
+     */
+    public static function when(array $case)
+    {
+        $interface = static::getInterface();
+        $env       = static::getEnv();
+        return Util::get($case, "{$interface}@{$env}") ?? Util::get($case, $interface) ?? Util::get($case, $env) ?? Util::get($case, 'default');
     }
 
     /**
