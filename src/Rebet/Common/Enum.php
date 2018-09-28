@@ -28,8 +28,8 @@ namespace Rebet\Common;
  *     const MALE   = [1, '男性'];
  *     const FEMALE = [2, '女性'];
  *
- *     public function isMale()  { return $this->value === 1; }
- *     public function isFeale() { return $this->value === 2; }
+ *     public function isMale()   { return $this->value === 1; }
+ *     public function isFemale() { return $this->value === 2; }
  * }
  *
  * // フィールド拡張系
@@ -50,6 +50,8 @@ namespace Rebet\Common;
  *
  * // 匿名クラス拡張系
  * abstract class JobOfferCsvFormat extends Enum {
+ *     public abstract function convert(array $row) : UserForm ;
+ * 
  *     protected static function generate() {
  *         return [
  *              new class(1, '求人サイトA') extends JobOfferCsvFormat {
@@ -72,8 +74,6 @@ namespace Rebet\Common;
  *              }
  *         ];
  *     }
- *
- *     public abstract function convert(array $row) : UserForm ;
  * }
  *
  * // DBマスタ参照系
@@ -94,7 +94,6 @@ namespace Rebet\Common;
  */
 abstract class Enum implements \JsonSerializable
 {
-    
     /**
      * 列挙データキャッシュ
      *
