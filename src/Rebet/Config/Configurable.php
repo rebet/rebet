@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\ArrayUtil;
+use Rebet\Common\Arrays;
 
 /**
  * コンフィグ設定を利用する トレイト
@@ -84,7 +84,7 @@ trait Configurable
     {
         $rc   = new \ReflectionClass(static::class);
         $base = $rc->getParentClass()->getMethod('defaultConfig')->invoke(null);
-        return ArrayUtil::override($base, $diff);
+        return Arrays::override($base, $diff);
     }
 
     /**

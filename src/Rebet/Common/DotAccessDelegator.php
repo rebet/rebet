@@ -14,7 +14,6 @@ namespace Rebet\Common;
  */
 interface DotAccessDelegator
 {
-    
     /**
      * 移譲先のオブジェクトを取得します。
      */

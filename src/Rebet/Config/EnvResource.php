@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\ArrayUtil;
+use Rebet\Common\Arrays;
 
 /**
  * 環境依存のリソースローダー クラス
@@ -10,7 +10,7 @@ use Rebet\Common\ArrayUtil;
  *
  *  1. {$dir_path}/{$base_name}.{$suffix} ファイルを読み込み
  *  2. {$dir_path}/{$base_name}_{APP::getEnv()}.{$suffix} ファイルを読み込み
- *  3. 1 のデータを 2 のデータで ArrayUtil::override
+ *  3. 1 のデータを 2 のデータで Arrays::override
  *
  * なお、リソースのロードには Rebet\Config\Resource::load() が使用されるため、
  * 同クラスにローダーを追加することで自動的に本クラスでも対象のリソースを
@@ -47,6 +47,6 @@ class EnvResource
             throw new \LogicException("Resource {$base_name} {$suffix} not found in {$dir_path}.");
         }
         
-        return $env_resource === null ? $base_resource : ArrayUtil::override($base_resource, $env_resource);
+        return $env_resource === null ? $base_resource : Arrays::override($base_resource, $env_resource);
     }
 }

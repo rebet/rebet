@@ -11,7 +11,7 @@ namespace Rebet\Common;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ArrayUtil
+class Arrays
 {
     /**
      * インスタンス化禁止
@@ -24,7 +24,7 @@ class ArrayUtil
      * 対象のリストから指定の件数だけランダムに選択します。
      *
      * ex)
-     * [$winner, $loser] = ArrayUtil::randomSelect($lottery_applicants, 3);
+     * [$winner, $loser] = Arrays::randomSelect($lottery_applicants, 3);
      *
      * @param array $list 選択対象リスト
      * @param int $select_count 選択数
@@ -72,12 +72,12 @@ class ArrayUtil
       * ※null 指定時は false を返します
       *
       * ex)
-      * ArrayUtil::isSequential([]);                             //=> true
-      * ArrayUtil::isSequential([1,2,3]);                        //=> true
-      * ArrayUtil::isSequential([0 => 'a', '1' => 'b']);         //=> true
-      * ArrayUtil::isSequential([0 => 'a', 2 => 'c', 1 => 'b']); //=> false
-      * ArrayUtil::isSequential([1 => 'c', 2 => 'b']);           //=> false
-      * ArrayUtil::isSequential(['a' => 'a', 'b' => 'b']);       //=> false
+      * Arrays::isSequential([]);                             //=> true
+      * Arrays::isSequential([1,2,3]);                        //=> true
+      * Arrays::isSequential([0 => 'a', '1' => 'b']);         //=> true
+      * Arrays::isSequential([0 => 'a', 2 => 'c', 1 => 'b']); //=> false
+      * Arrays::isSequential([1 => 'c', 2 => 'b']);           //=> false
+      * Arrays::isSequential(['a' => 'a', 'b' => 'b']);       //=> false
       *
       * @param  array|null $array 配列
       * @return bool true : 連番配列／false : 連想配列 or 跳び番配列
@@ -100,8 +100,8 @@ class ArrayUtil
     * 多次元配列を一次元配列に変換します。
     *
     * ex)
-    * ArrayUtil::flatten([1, 2, [3]]);         //=> [1, 2, 3]
-    * ArrayUtil::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
+    * Arrays::flatten([1, 2, [3]]);         //=> [1, 2, 3]
+    * Arrays::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
     *
     * @param array|null $array 多次元配列
     * @return array|null 一次元配列
@@ -116,10 +116,10 @@ class ArrayUtil
      * ※$*_field には .(dot) 区切り指定による階層アクセスが指定できます。
      *
      * ex)
-     * $user_ids   = ArrayUtil::remap($users, null, 'user_id');        //=> [21, 35, 43, ...]
-     * $user_names = ArrayUtil::remap($users, 'user_id', 'name');      //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
-     * $user_banks = ArrayUtil::remap($users, 'user_id', 'bank.name'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
-     * $user_map   = ArrayUtil::remap($users, 'user_id', null);        //=> [21 => <<Row object>>, 35 => <<Row object>>, 43 => <<Row object>>, ...]
+     * $user_ids   = Arrays::remap($users, null, 'user_id');        //=> [21, 35, 43, ...]
+     * $user_names = Arrays::remap($users, 'user_id', 'name');      //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
+     * $user_banks = Arrays::remap($users, 'user_id', 'bank.name'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
+     * $user_map   = Arrays::remap($users, 'user_id', null);        //=> [21 => <<Row object>>, 35 => <<Row object>>, 43 => <<Row object>>, ...]
      *
      * @param array|null $list オブジェクトが格納された配列
      * @param int|string|null $key_field 抽出データのキーとなるフィールド名/インデックス（blank 指定時は連番配列となる）
@@ -147,7 +147,7 @@ class ArrayUtil
      *
      * 具体的には以下のような挙動をします。
      *
-     * ArrayUtil::override(
+     * Arrays::override(
      *     [
      *         'map_map'     => ['a' => 'a', 'b' => 'b'],
      *         'array_array' => ['a', 'b'],
@@ -180,7 +180,7 @@ class ArrayUtil
      * 　- 配列(Map or Array)の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
      * 　- 配列(Array)       の マージ挙動 は OverrideOption::PREPEND（='<'） によって前方追加に変更できます。
      *
-     * ArrayUtil::override(
+     * Arrays::override(
      *     [
      *         'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
      *         'array' => ['a', 'b'],
@@ -201,7 +201,7 @@ class ArrayUtil
      *
      * なお、上記のコードは下記のように差分MAPのキー名末尾に '!' を付与することでも指定可能です。
      *
-     * ArrayUtil::override(
+     * Arrays::override(
      *     [
      *         'map'    => ['a' => ['A' => 'A'], 'b' => 'b'],
      *         'array'  => ['a', 'b'],

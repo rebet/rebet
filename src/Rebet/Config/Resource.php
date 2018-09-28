@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\ArrayUtil;
+use Rebet\Common\Arrays;
 use Rebet\Config\Configurable;
 
 /**

@@ -6,7 +6,7 @@
 namespace Rebet\Common {
     use Rebet\Tests\DieException;
     use Rebet\Tests\ExitException;
-    use Rebet\Common\ArrayUtil;
+    use Rebet\Common\Arrays;
 
     class System
     {
@@ -124,7 +124,7 @@ namespace Rebet\Common {
 
         public static function headers_list() : array
         {
-            return ArrayUtil::flatten(\array_values(self::$emulated_header));
+            return Arrays::flatten(\array_values(self::$emulated_header));
         }
     }
 }

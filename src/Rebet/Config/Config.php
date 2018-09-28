@@ -2,7 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Util;
-use Rebet\Common\ArrayUtil;
+use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\StringUtil;
 
@@ -30,7 +30,7 @@ use Rebet\Common\StringUtil;
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
  * 　　　⇒ Configurable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
  *
- * なお、上記レイヤー別の上書きは挙動は Rebet\Common\ArrayUtil::override() と同様の動作をします。
+ * なお、上記レイヤー別の上書きは挙動は Rebet\Common\Arrays::override() と同様の動作をします。
  *
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
@@ -38,7 +38,7 @@ use Rebet\Common\StringUtil;
  * @todo レイヤー別の設定を配列で取得するメソッドの実装
  *
  * @see Rebet\Config\Configurable
- * @see Rebet\Common\ArrayUtil
+ * @see Rebet\Common\Arrays
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -155,7 +155,7 @@ class Config
         $compiled = static::$config[Layer::LIBRARY][$section];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
             if (isset(static::$config[$layer][$section])) {
-                $compiled = ArrayUtil::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? []);
+                $compiled = Arrays::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? []);
             }
         }
 
@@ -164,12 +164,12 @@ class Config
 
     /**
      * 対象レイヤーのコンフィグを設定／上書きします。
-     * 本設定は ArrayUtil::override() による上書き設定となります。
+     * 本設定は Arrays::override() による上書き設定となります。
      */
     protected static function put(string $layer, array $config) : void
     {
         $config = self::analyze($config, static::$option[$layer]);
-        static::$config[$layer] = ArrayUtil::override(static::$config[$layer], $config, static::$option[$layer]);
+        static::$config[$layer] = Arrays::override(static::$config[$layer], $config, static::$option[$layer]);
         foreach (\array_keys($config) as $section) {
             static::loadLibraryConfig($section);
             static::compile($section);
@@ -185,13 +185,13 @@ class Config
      */
     protected static function analyze(array $config, array &$option)
     {
-        if (!\is_array($config) || ArrayUtil::isSequential($config)) {
+        if (!\is_array($config) || Arrays::isSequential($config)) {
             return $config;
         }
         
         $analyzed = [];
         foreach ($config as $section => $value) {
-            if (\is_array($value) && !ArrayUtil::isSequential($value)) {
+            if (\is_array($value) && !Arrays::isSequential($value)) {
                 $option[$section] = $option[$section] ?? [] ;
                 $value = static::analyzeSection($value, $option[$section]);
             }
@@ -210,7 +210,7 @@ class Config
      */
     protected static function analyzeSection(array $config, array &$option)
     {
-        if (!\is_array($config) || ArrayUtil::isSequential($config)) {
+        if (!\is_array($config) || Arrays::isSequential($config)) {
             return $config;
         }
 
@@ -221,7 +221,7 @@ class Config
                 $option[$key] = $apply_option;
             }
             
-            if (\is_array($value) && !ArrayUtil::isSequential($value)) {
+            if (\is_array($value) && !Arrays::isSequential($value)) {
                 $nested_option = [];
                 $value = static::analyzeSection($value, $nested_option);
                 if ($apply_option === null && !empty($nested_option)) {
@@ -236,7 +236,7 @@ class Config
 
     /**
      * フレームワークコンフィグを設定します。
-     * 本設定は ArrayUtil::override() による上書き設定となります。
+     * 本設定は Arrays::override() による上書き設定となります。
      *
      * ex)
      * Config::framework([
@@ -260,7 +260,7 @@ class Config
 
     /**
      * アプリケーションコンフィグを設定します。
-     * 本設定は ArrayUtil::override() による上書き設定となります。
+     * 本設定は Arrays::override() による上書き設定となります。
      *
      * ex)
      * Config::application([
@@ -284,7 +284,7 @@ class Config
 
     /**
      * ランタイムコンフィグを設定します。
-     * 本設定は ArrayUtil::override() による上書き設定となります。
+     * 本設定は Arrays::override() による上書き設定となります。
      *
      * ex)
      * Config::runtime([
