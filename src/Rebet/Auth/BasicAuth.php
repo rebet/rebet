@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Auth;
 
-use Rebet\Common\Utils;
+use Rebet\Common\Reflector;
 use Rebet\Common\System;
+use Rebet\Common\Utils;
 
 /**
  * 認証関連 ユーティリティ クラス
@@ -41,9 +42,9 @@ class BasicAuth
             };
         }
         
-        $user      = Utils::get($_SERVER, 'PHP_AUTH_USER');
-        $pass      = $to_hash(Utils::get($_SERVER, 'PHP_AUTH_PW')) ;
-        $auth_pass = Utils::get($auth_list, $user);
+        $user      = Reflector::get($_SERVER, 'PHP_AUTH_USER');
+        $pass      = $to_hash(Reflector::get($_SERVER, 'PHP_AUTH_PW')) ;
+        $auth_pass = Reflector::get($auth_list, $user);
         if (!empty($user) && !empty($pass) && $auth_pass === $pass) {
             return $user;
         }

@@ -1,10 +1,11 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Utils;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
+use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
+use Rebet\Common\Utils;
 
 /**
  * コンフィグ クラス
@@ -141,7 +142,7 @@ class Config
      */
     public static function all() : array
     {
-        return Utils::get(static::$compiled, null, []);
+        return Reflector::get(static::$compiled, null, []);
     }
 
     /**
@@ -321,7 +322,7 @@ class Config
         if (Utils::isBlank($key)) {
             return isset($config[$section]);
         }
-        return isset($config[$section]) && Utils::has($config[$section], $key) ;
+        return isset($config[$section]) && Reflector::has($config[$section], $key) ;
     }
 
     /**
@@ -367,7 +368,7 @@ class Config
             static::compile($section);
         }
         
-        $value = Utils::get(static::$compiled[$section], $key);
+        $value = Reflector::get(static::$compiled[$section], $key);
         if ($required && Utils::isBlank($value)) {
             throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
         }
@@ -392,7 +393,7 @@ class Config
     /**
      * コンフィグの設定値からインスタンスを生成します。
      *
-     * @see Rebet\Common\Utils::instantiate()
+     * @see Rebet\Common\Reflector::instantiate()
      *
      * @param string $section セクション
      * @param string $key 設定キー名（.区切りで階層指定可）
@@ -404,7 +405,7 @@ class Config
      */
     public static function instantiate(string $section, string $key, bool $required = true, $default = null)
     {
-        return Utils::instantiate(self::get($section, $key, $required, $default));
+        return Reflector::instantiate(self::get($section, $key, $required, $default));
     }
 
     /**

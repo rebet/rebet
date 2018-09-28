@@ -125,7 +125,7 @@ class Arrays
      * @param int|string|null $key_field 抽出データのキーとなるフィールド名/インデックス（blank 指定時は連番配列となる）
      * @param int|string|null $value_field 抽出データの値となるフィールド名/インデックス（blank 指定時はRow要素自体が対象となる）
      * @return array 列データ
-     * @see Utils::get()
+     * @see Reflector::get()
      */
     public static function remap(?array $list, $key_field, $value_field) : array
     {
@@ -134,7 +134,7 @@ class Arrays
         }
         $remaps = [];
         foreach ($list as $i => $row) {
-            $remaps[Utils::isBlank($key_field) ? $i : Utils::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Utils::get($row, $value_field);
+            $remaps[Utils::isBlank($key_field) ? $i : Reflector::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Reflector::get($row, $value_field);
         }
         return $remaps;
     }
