@@ -11,7 +11,7 @@ namespace Rebet\Common;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class SecurityUtil
+class Securities
 {
     
     /**
@@ -25,8 +25,8 @@ class SecurityUtil
      * ランダムなコード文字列を生成します。
      *
      * ex)
-     * $init_pass = SecurityUtil::randomCode(12);
-     * $sms_code  = SecurityUtil::randomCode(6, '1234567890');
+     * $init_pass = Securities::randomCode(12);
+     * $sms_code  = Securities::randomCode(6, '1234567890');
      *
      * @param int $length コード文字列の長さ
      * @param string $chars コード文字列に使用する文字（デフォルト：半角英数字）
@@ -45,8 +45,8 @@ class SecurityUtil
      * 文字列をハッシュ化します。
      *
      * ex)
-     * $hash = SecurityUtil::hash('password');
-     * $hash = SecurityUtil::hash('password', 'salt', 'pepper');
+     * $hash = Securities::hash('password');
+     * $hash = Securities::hash('password', 'salt', 'pepper');
      *
      * @param string $text ハッシュ対象文字列
      * @param string $salt ソルト値（デフォルト：空）
@@ -67,7 +67,7 @@ class SecurityUtil
      * ランダムなをハッシュ値を生成します。
      *
      * ex)
-     * $hash = SecurityUtil::randomHash();
+     * $hash = Securities::randomHash();
      *
      * @param string $algorithm ハッシュアルゴリズム（デフォルト：SHA256）
      * @return string ハッシュ文字列
@@ -81,7 +81,7 @@ class SecurityUtil
      * 秘密鍵暗号で暗号化します。
      *
      * ex)
-     * $encrypted = Nets::encodeBase64Url(SecurityUtil::encript($text, 'secret_key'));
+     * $encrypted = Nets::encodeBase64Url(Securities::encript($text, 'secret_key'));
      *
      * @param string $plain 平文
      * @param string $secretKey 秘密鍵
@@ -101,7 +101,7 @@ class SecurityUtil
      * 秘密鍵暗号で複合化します。
      *
      * ex)
-     * $decrypted = SecurityUtil::decript(Nets::decodeBase64Url($text), 'secret_key');
+     * $decrypted = Securities::decript(Nets::decodeBase64Url($text), 'secret_key');
      *
      * @param string encrypted 暗号文
      * @param string $secretKey 秘密鍵

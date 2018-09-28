@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Rebet\Tests\StderrCapture;
 
 use Rebet\Common\Arrays;
-use Rebet\Common\SecurityUtil;
+use Rebet\Common\Securities;
 
 /**
  * Rebet用の基底テストケースクラス。
@@ -106,6 +106,6 @@ abstract class RebetTestCase extends TestCase
         if ($max_length == null) {
             $max_length = $min_length;
         }
-        return SecurityUtil::randomCode(mt_rand($min_length, $max_length), $chars);
+        return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
     }
 }
