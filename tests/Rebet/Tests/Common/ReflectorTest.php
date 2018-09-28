@@ -10,7 +10,7 @@ class ReflectorTest extends RebetTestCase
 {
     private $array       = null;
     private $map         = null;
-    private $object      = null;
+    private $objectect      = null;
     private $transparent = null;
 
     public function setUp()

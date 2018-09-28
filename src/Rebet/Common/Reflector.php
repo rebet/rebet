@@ -87,68 +87,68 @@ class Reflector
      * Reflector::get($user, 'shipping_address.0', $user->address);
      * Reflector::get($_REQUEST, 'opt_in', false);
      *
-     * @param  array|object|null $obj 配列 or オブジェクト
+     * @param  array|object|null $object 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
      * @param  mixed $default デフォルト値
      * @return mixed 値
      */
-    public static function get($obj, $key, $default = null)
+    public static function get($object, $key, $default = null)
     {
-        while ($obj instanceof DotAccessDelegator) {
-            $obj = $obj->get();
+        while ($object instanceof DotAccessDelegator) {
+            $object = $object->get();
         }
-        if ($obj === null) {
+        if ($object === null) {
             return $default;
         }
         if (Utils::isBlank($key)) {
-            return $obj === null ? $default : static::resolveDotAccessDelegator($obj) ;
+            return $object === null ? $default : static::resolveDotAccessDelegator($object) ;
         }
 
         $current = Strings::latrim($key, '.');
         if ($current != $key) {
-            $target = static::get($obj, $current);
+            $target = static::get($object, $current);
             if ($target === null) {
                 return $default;
             }
             return static::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default);
         }
 
-        if (is_array($obj)) {
-            if (!isset($obj[$current])) {
+        if (is_array($object)) {
+            if (!isset($object[$current])) {
                 return $default;
             }
-            $value = $obj[$current];
+            $value = $object[$current];
             return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
         }
 
-        if (!property_exists($obj, $current)) {
+        if (!property_exists($object, $current)) {
             return $default;
         }
-        $value = $obj->{$current};
+        $value = $object->{$current};
         return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
     }
     
     /**
      * DotAccessDelegator を解決します。
      *
-     * @param mixed $obj
+     * @param mixed $object
      * @return mixed
      */
-    private static function resolveDotAccessDelegator($obj)
+    private static function resolveDotAccessDelegator($object)
     {
-        while ($obj instanceof DotAccessDelegator) {
-            $obj = $obj->get();
+        while ($object instanceof DotAccessDelegator) {
+            $object = $object->get();
         }
 
-        if ($obj === null || \is_scalar($obj) || \is_resource($obj)) {
-            return $obj;
+        if ($object === null || \is_scalar($object) || \is_resource($object)) {
+            return $object;
         }
 
-        foreach ($obj as $key => $value) {
-            static::set($obj, $key, static::resolveDotAccessDelegator($value));
+        foreach ($object as $key => $value) {
+            static::set($object, $key, static::resolveDotAccessDelegator($value));
         }
 
-        return $obj;
+        return $object;
     }
 
     /**
@@ -163,37 +163,37 @@ class Reflector
      * Reflector::set($user, 'shipping_address.0', $user->address);
      * Reflector::set($_REQUEST, 'opt_in', false);
      *
-     * @param  array|object $obj 配列 or オブジェクト
+     * @param  array|object $object 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
      * @param  mixed $value 設定値
      * @return mixed 値
      * @throws \OutOfBoundsException
      */
-    public static function set(&$obj, $key, $value) : void
+    public static function set(&$object, $key, $value) : void
     {
-        while ($obj instanceof DotAccessDelegator) {
-            $obj = $obj->get();
+        while ($object instanceof DotAccessDelegator) {
+            $object = $object->get();
         }
         $current = Strings::latrim($key, '.');
-        if (is_array($obj)) {
-            if (!\array_key_exists($current, $obj)) {
+        if (is_array($object)) {
+            if (!\array_key_exists($current, $object)) {
                 throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
             }
             if ($current != $key) {
-                static::set($obj[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
+                static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
             } else {
-                $obj[$current] = $value;
+                $object[$current] = $value;
             }
             return;
         }
 
-        if (!\property_exists($obj, $current)) {
+        if (!\property_exists($object, $current)) {
             throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
         }
         if ($current != $key) {
-            static::set($obj->$current, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
+            static::set($object->$current, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
         } else {
-            $obj->$current = $value;
+            $object->$current = $value;
         }
         return;
     }
@@ -207,31 +207,31 @@ class Reflector
      * Reflector::has($user, 'shipping_address.0');
      * Reflector::has($_REQUEST, 'opt_in');
      *
-     * @param  array|object|null $obj 配列 or オブジェクト
+     * @param  array|object|null $object 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
      * @return bool true: 存在する, false: 存在しない
      */
-    public static function has($obj, $key)
+    public static function has($object, $key)
     {
-        while ($obj instanceof DotAccessDelegator) {
-            $obj = $obj->get();
+        while ($object instanceof DotAccessDelegator) {
+            $object = $object->get();
         }
-        if ($obj === null) {
+        if ($object === null) {
             return false;
         }
         
         $current  = Strings::latrim($key, '.');
         $nest_obj = null;
-        if (is_array($obj)) {
-            if (!array_key_exists($current, $obj)) {
+        if (is_array($object)) {
+            if (!array_key_exists($current, $object)) {
                 return false;
             }
-            $nest_obj = $obj[$current];
+            $nest_obj = $object[$current];
         } else {
-            if (!property_exists($obj, $current)) {
+            if (!property_exists($object, $current)) {
                 return false;
             }
-            $nest_obj = $obj->{$current};
+            $nest_obj = $object->{$current};
         }
         while ($nest_obj instanceof DotAccessDelegator) {
             $nest_obj = $nest_obj->get();
