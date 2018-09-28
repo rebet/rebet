@@ -78,6 +78,8 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([1, 2], Arrays::override(1, [1, 2]));
         $this->assertSame(1, Arrays::override([1, 2], 1));
         $this->assertSame([1, 2, 3], Arrays::override([1, 2], [3]));
+        $this->assertSame([3, 1, 2], Arrays::override([1, 2], [3], [], OverrideOption::PREPEND));
+        $this->assertSame([3], Arrays::override([1, 2], [3], [], OverrideOption::REPLACE));
         $this->assertSame([3], Arrays::override(['a' => 1, 'b' => 2], [3]));
         $this->assertSame(
             ['a' => 3, 'b' => 2],
@@ -166,6 +168,92 @@ class ArraysTest extends RebetTestCase
                     'map'   => ['a!' => ['B' => 'B'], 'c' => 'C'],
                     'array!' => ['c'],
                 ]
+            )
+        );
+    }
+
+    public function test_override_defaultModePrepend()
+    {
+        $this->assertSame(
+            [
+                'array' => ['c', 'a', 'b'],
+            ],
+            Arrays::override(
+                [
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'array' => ['c'],
+                ],
+                [],
+                OverrideOption::PREPEND
+            )
+        );
+
+        $this->assertSame(
+            [
+                'array' => ['c', 'a', 'b'],
+            ],
+            Arrays::override(
+                [
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'array<' => ['c'],
+                ],
+                [],
+                OverrideOption::PREPEND
+            )
+        );
+
+        $this->assertSame(
+            [
+                'array' => ['a', 'b', 'c'],
+            ],
+            Arrays::override(
+                [
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'array>' => ['c'],
+                ],
+                [],
+                OverrideOption::PREPEND
+            )
+        );
+
+        $this->assertSame(
+            [
+                'array' => ['c'],
+            ],
+            Arrays::override(
+                [
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'array!' => ['c'],
+                ],
+                [],
+                OverrideOption::PREPEND
+            )
+        );
+    }
+
+    public function test_override_defaultModeReplace()
+    {
+        $this->assertSame(
+            [
+                'array' => ['c'],
+            ],
+            Arrays::override(
+                [
+                    'array' => ['a', 'b'],
+                ],
+                [
+                    'array' => ['c'],
+                ],
+                [],
+                OverrideOption::REPLACE
             )
         );
     }

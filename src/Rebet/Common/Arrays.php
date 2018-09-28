@@ -229,7 +229,7 @@ class Arrays
         $is_base_sequential = self::isSequential($base);
         $is_diff_sequential = self::isSequential($diff);
         if ($is_base_sequential && $is_diff_sequential) {
-            return static::arrayMerge($base, $diff, $option ?: $default_array_merge_mode);
+            return static::arrayMerge($base, $diff, \is_string($option) ? $option : $default_array_merge_mode);
         }
 
         if ($is_base_sequential !== $is_diff_sequential) {
@@ -240,7 +240,7 @@ class Arrays
             [$key, $apply_option] = OverrideOption::split($key);
             $apply_option = $apply_option ?? $option[$key] ?? null ;
             if (isset($base[$key])) {
-                $base[$key] = self::override($base[$key], $value, $apply_option);
+                $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_merge_mode);
             } else {
                 $base[$key] = $value;
             }

@@ -31,7 +31,7 @@ use Rebet\Common\Utils;
  * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
  * 　　　⇒ Configurable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
  *
- * なお、上記レイヤー別の上書きは挙動は Rebet\Common\Arrays::override() と同様の動作をします。
+ * なお、上記レイヤー別の上書きは挙動は Rebet\Common\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) と同様の動作をします。
  *
  * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
@@ -147,6 +147,7 @@ class Config
 
     /**
      * 対象セクションのコンフィグ設定をコンパイルします。
+     * 本コンパイルは各レイヤー情報の Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
      *
      * @param string $section
      * @return void
@@ -156,7 +157,7 @@ class Config
         $compiled = static::$config[Layer::LIBRARY][$section];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
             if (isset(static::$config[$layer][$section])) {
-                $compiled = Arrays::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? []);
+                $compiled = Arrays::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? [], OverrideOption::PREPEND);
             }
         }
 
@@ -165,12 +166,12 @@ class Config
 
     /**
      * 対象レイヤーのコンフィグを設定／上書きします。
-     * 本設定は Arrays::override() による上書き設定となります。
+     * 本設定は Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
      */
     protected static function put(string $layer, array $config) : void
     {
         $config = self::analyze($config, static::$option[$layer]);
-        static::$config[$layer] = Arrays::override(static::$config[$layer], $config, static::$option[$layer]);
+        static::$config[$layer] = Arrays::override(static::$config[$layer], $config, static::$option[$layer], OverrideOption::PREPEND);
         foreach (\array_keys($config) as $section) {
             static::loadLibraryConfig($section);
             static::compile($section);
@@ -237,7 +238,7 @@ class Config
 
     /**
      * フレームワークコンフィグを設定します。
-     * 本設定は Arrays::override() による上書き設定となります。
+     * 本設定は Arrays::override(.., OverrideOption::PREPEND) による上書き設定となります。
      *
      * ex)
      * Config::framework([
@@ -261,7 +262,7 @@ class Config
 
     /**
      * アプリケーションコンフィグを設定します。
-     * 本設定は Arrays::override() による上書き設定となります。
+     * 本設定は Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
      *
      * ex)
      * Config::application([
@@ -285,7 +286,7 @@ class Config
 
     /**
      * ランタイムコンフィグを設定します。
-     * 本設定は Arrays::override() による上書き設定となります。
+     * 本設定は Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
      *
      * ex)
      * Config::runtime([
