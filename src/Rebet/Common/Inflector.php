@@ -27,6 +27,7 @@ use Rebet\Config\Configurable;
  *  - remove: reset()
  *  # change: static member name and static method name
  *  # change: support Rebet\Config\Configurable for rules
+ *  # change: rules plural and singular config [rule => replace, ...] to [[rule, replace], ...]
  *
  * @see https://github.com/cakephp/cakephp/blob/3.6.11/src/Utility/Inflector.php
  * @see https://github.com/cakephp/cakephp/blob/3.6.11/LICENSE

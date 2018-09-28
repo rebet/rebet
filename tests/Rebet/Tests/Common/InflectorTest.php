@@ -503,7 +503,7 @@ class InflectorTest extends RebetTestCase
      */
     public function test_CustomPluralRule()
     {
-        Inflector::rules('plural<', [['/^(custom)$/i', '\1izables']]);
+        Inflector::rules('plural', [['/^(custom)$/i', '\1izables']]);
         Inflector::rules('uninflected', ['uninflectable']);
 
         $this->assertEquals('customizables', Inflector::pluralize('custom'));
@@ -532,7 +532,7 @@ class InflectorTest extends RebetTestCase
         $this->assertEquals('eple', Inflector::singularize('epler'));
         $this->assertEquals('jente', Inflector::singularize('jenter'));
 
-        Inflector::rules('singular<', [['/^(bil)er$/i', '\1'], ['/^(inflec|contribu)tors$/i', '\1ta']]);
+        Inflector::rules('singular', [['/^(bil)er$/i', '\1'], ['/^(inflec|contribu)tors$/i', '\1ta']]);
         Inflector::rules('irregular', ['spinor' => 'spins']);
 
         $this->assertEquals('spinor', Inflector::singularize('spins'));
@@ -552,10 +552,10 @@ class InflectorTest extends RebetTestCase
         $this->assertEquals('bananas', Inflector::tableize('Banana'));
         $this->assertEquals('Bananas', Inflector::pluralize('Banana'));
 
-        Inflector::rules('singular<', [['/(.*)nas$/i', '\1zzz']]);
+        Inflector::rules('singular', [['/(.*)nas$/i', '\1zzz']]);
         $this->assertEquals('Banazzz', Inflector::singularize('Bananas'), 'Was inflected with old rules.');
 
-        Inflector::rules('plural<', [['/(.*)na$/i', '\1zzz']]);
+        Inflector::rules('plural', [['/(.*)na$/i', '\1zzz']]);
         Inflector::rules('irregular', ['corpus' => 'corpora']);
         $this->assertEquals('Banazzz', Inflector::pluralize('Banana'), 'Was inflected with old rules.');
         $this->assertEquals('corpora', Inflector::pluralize('corpus'), 'Was inflected with old irregular form.');
