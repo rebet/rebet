@@ -181,7 +181,7 @@ class Arrays
      * 　- 配列(Array)        の マージ挙動 は OverrideOption::PREPEND（='<'） によって前方追加に変更できます。
      * 　- 配列(Array)        の マージ挙動 は OverrideOption::APEND  （='>'） によって後方追加に変更できます。
      *
-     * また、配列(Array) の挙動に関しては、 $default_array_merge_mode に上記モード指定をすることでデフォルトの全体挙動を変更できます。
+     * また、配列(Array) の挙動に関しては、 $default_array_override_option に上記モード指定をすることでデフォルトの全体挙動を変更できます。
      * 
      * Arrays::override(
      *     [
@@ -220,10 +220,10 @@ class Arrays
      * @param mixed $base ベースデータ
      * @param mixed $diff 差分データ
      * @param array|string $option オプション
-     * @param string $default_array_merge_mode デフォルト配列マージモード（デフォルト：OverrideOption::APEND）
+     * @param string $default_array_override_option デフォルト配列上書オプション（デフォルト：OverrideOption::APEND）
      * @return マージ済みのデータ
      */
-    public static function override($base, $diff, $option = [], string $default_array_merge_mode = OverrideOption::APEND)
+    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND)
     {
         if (!is_array($base) || !is_array($diff) || $option === OverrideOption::REPLACE) {
             return $diff;
@@ -232,7 +232,7 @@ class Arrays
         $is_base_sequential = self::isSequential($base);
         $is_diff_sequential = self::isSequential($diff);
         if ($is_base_sequential && $is_diff_sequential) {
-            return static::arrayMerge($base, $diff, \is_string($option) ? $option : $default_array_merge_mode);
+            return static::arrayMerge($base, $diff, \is_string($option) ? $option : $default_array_override_option);
         }
 
         if ($is_base_sequential !== $is_diff_sequential) {
@@ -243,7 +243,7 @@ class Arrays
             [$key, $apply_option] = OverrideOption::split($key);
             $apply_option = $apply_option ?? $option[$key] ?? null ;
             if (isset($base[$key])) {
-                $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_merge_mode);
+                $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_override_option);
             } else {
                 $base[$key] = $value;
             }
