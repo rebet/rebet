@@ -17,10 +17,10 @@ class BasicAuthTest extends RebetTestCase
      * @expectedException Rebet\Auth\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
      */
-    public function test_basicAuthenticate()
+    public function test_authenticate()
     {
         try {
-            BasicAuth::basicAuthenticate(['id' => 'password']);
+            BasicAuth::authenticate(['id' => 'password']);
             $this->fail('Never executed.');
         } finally {
             $headers = System::headers_list();
@@ -30,11 +30,11 @@ class BasicAuthTest extends RebetTestCase
         }
     }
 
-    public function test_basicAuthenticate_pass()
+    public function test_authenticate_pass()
     {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
-        $id = BasicAuth::basicAuthenticate(['id' => 'password']);
+        $id = BasicAuth::authenticate(['id' => 'password']);
         $this->assertSame('id', $id);
     }
 
@@ -42,12 +42,12 @@ class BasicAuthTest extends RebetTestCase
      * @expectedException Rebet\Auth\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
      */
-    public function test_basicAuthenticate_faled()
+    public function test_authenticate_faled()
     {
         try {
             $_SERVER['PHP_AUTH_USER'] = 'id';
             $_SERVER['PHP_AUTH_PW']   = 'invalid';
-            $id = BasicAuth::basicAuthenticate(['id' => 'password']);
+            $id = BasicAuth::authenticate(['id' => 'password']);
             $this->fail('No Exception');
         } finally {
             $headers = System::headers_list();
@@ -57,11 +57,11 @@ class BasicAuthTest extends RebetTestCase
         }
     }
 
-    public function test_basicAuthenticate_hash()
+    public function test_authenticate_hash()
     {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
-        $id = BasicAuth::basicAuthenticate(
+        $id = BasicAuth::authenticate(
             ['id' => '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'],
             function ($password) {
                 return sha1($password);
