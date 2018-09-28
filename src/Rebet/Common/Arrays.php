@@ -177,9 +177,12 @@ class Arrays
      *
      * なお、この挙動は下記のオプション指定によって変更することができます。
      *
-     * 　- 配列(Map or Array)の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
-     * 　- 配列(Array)       の マージ挙動 は OverrideOption::PREPEND（='<'） によって前方追加に変更できます。
+     * 　- 配列(Map or Array) の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
+     * 　- 配列(Array)        の マージ挙動 は OverrideOption::PREPEND（='<'） によって前方追加に変更できます。
+     * 　- 配列(Array)        の マージ挙動 は OverrideOption::APEND  （='>'） によって後方追加に変更できます。
      *
+     * また、配列(Array) の挙動に関しては、 $default_array_merge_mode に上記モード指定をすることでデフォルトの全体挙動を変更できます。
+     * 
      * Arrays::override(
      *     [
      *         'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
@@ -199,7 +202,7 @@ class Arrays
      *     'array' => ['c', 'a', 'b'],
      * ]
      *
-     * なお、上記のコードは下記のように差分MAPのキー名末尾に '!' を付与することでも指定可能です。
+     * なお、上記のコードは下記のように差分MAPのキー名末尾に '!','<','>' を付与することでも指定可能です。
      *
      * Arrays::override(
      *     [
