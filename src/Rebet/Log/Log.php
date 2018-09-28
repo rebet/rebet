@@ -49,7 +49,7 @@ class Log
 
     /**
      * ログミドルウェアパイプライン
-     * @var Revet\Pipeline\Pipeline
+     * @var Rebet\Pipeline\Pipeline
      */
     private static $pipeline = null;
 
