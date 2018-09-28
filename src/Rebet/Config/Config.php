@@ -4,7 +4,7 @@ namespace Rebet\Config;
 use Rebet\Common\Util;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
-use Rebet\Common\StringUtil;
+use Rebet\Common\Strings;
 
 /**
  * コンフィグ クラス

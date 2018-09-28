@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\IO;
 
-use Rebet\Common\StringUtil;
+use Rebet\Common\Strings;
 
 /**
  * ファイル関連 ユーティリティ クラス
@@ -28,12 +28,12 @@ class FileUtil
         $drive        = '';
         $convert_path = \str_replace('\\', '/', $path);
         $is_relatable = true;
-        if (StringUtil::contains($convert_path, '://')) {
+        if (Strings::contains($convert_path, '://')) {
             [$protocol, $convert_path] = \explode('://', $convert_path);
             $protocol     = $protocol.'://';
             $is_relatable = false;
         }
-        if (StringUtil::contains($convert_path, ':/')) {
+        if (Strings::contains($convert_path, ':/')) {
             [$drive, $convert_path] = \explode(':/', $convert_path);
             $drive        = $drive.':/';
             $is_relatable = false;
@@ -61,8 +61,8 @@ class FileUtil
         
         $realpath = \implode('/', $absolutes);
         if ($is_relatable) {
-            if (StringUtil::startWith($convert_path, '/')) {
-                if (!StringUtil::startWith($realpath, '..')) {
+            if (Strings::startWith($convert_path, '/')) {
+                if (!Strings::startWith($realpath, '..')) {
                     $realpath = '/' . $realpath;
                 }
             } else {

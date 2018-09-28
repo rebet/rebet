@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Log\Formatter;
 
-use Rebet\Common\StringUtil;
+use Rebet\Common\Strings;
 use Rebet\Log\Log;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
@@ -33,31 +33,31 @@ class DefaultFormatter implements LogFormatter
         $message = $log->message;
 
         if (!is_string($message) && !method_exists($message, '__toString')) {
-            $message = StringUtil::rtrim(print_r($message, true), "\n");
+            $message = Strings::rtrim(print_r($message, true), "\n");
         }
         $prefix = $log->now->format('Y-m-d H:i:s.u')." ".getmypid()." [{$log->level}] ";
-        $body   = $prefix.$message; // StringUtil::indent($message, 1, $prefix);
+        $body   = $prefix.$message; // Strings::indent($message, 1, $prefix);
         
         if ($log->var) {
-            $body .= StringUtil::indent(
+            $body .= Strings::indent(
                 "\n*** VAR ***".
-                "\n".StringUtil::rtrim(print_r($log->var, true), "\n"),
+                "\n".Strings::rtrim(print_r($log->var, true), "\n"),
                 1,
                 "== " //"{$prefix}== "
             );
         }
         
         if ($log->extra) {
-            $body .= StringUtil::indent(
+            $body .= Strings::indent(
                 "\n*** EXTRA ***".
-                "\n".StringUtil::rtrim(print_r($log->extra, true), "\n"),
+                "\n".Strings::rtrim(print_r($log->extra, true), "\n"),
                 1,
                 "-- " //"{$prefix}-- "
             );
         }
         
         if ($log->level->equals(LogLevel::DEBUG())) {
-            $body .= StringUtil::indent(
+            $body .= Strings::indent(
                 "\n*** DEBUG TRACE ***".
                 "\n".self::traceToString(debug_backtrace(), false),
                 1,
@@ -67,7 +67,7 @@ class DefaultFormatter implements LogFormatter
         
         if ($log->error) {
             if ($log->error instanceof \Throwable) {
-                $body .= StringUtil::indent(
+                $body .= Strings::indent(
                     "\n*** STACK TRACE ***".
                     "\n{$log->error}",
                     1,
@@ -78,7 +78,7 @@ class DefaultFormatter implements LogFormatter
                 if ($log->level->higherEqual(LogLevel::ERROR())) {
                     $trace = "\n".self::traceToString(debug_backtrace(), true);
                 }
-                $body .= StringUtil::indent(
+                $body .= Strings::indent(
                     "\n*** STACK TRACE ***".
                     "\n{$log->error['message']} <{$log->error['type']}> ({$log->error['file']}:{$log->error['line']})".
                     $trace,

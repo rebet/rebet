@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Common;
 
-use Rebet\Common\StringUtil;
+use Rebet\Common\Strings;
 
 /**
  * 汎用 ユーティリティ クラス
@@ -139,7 +139,7 @@ class Util
             return $obj === null ? $default : static::resolveDotAccessDelegator($obj) ;
         }
 
-        $current = StringUtil::latrim($key, '.');
+        $current = Strings::latrim($key, '.');
         if ($current != $key) {
             $target = self::get($obj, $current);
             if ($target === null) {
@@ -209,7 +209,7 @@ class Util
         while ($obj instanceof DotAccessDelegator) {
             $obj = $obj->get();
         }
-        $current = StringUtil::latrim($key, '.');
+        $current = Strings::latrim($key, '.');
         if (is_array($obj)) {
             if (!\array_key_exists($current, $obj)) {
                 throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
@@ -255,7 +255,7 @@ class Util
             return false;
         }
         
-        $current  = StringUtil::latrim($key, '.');
+        $current  = Strings::latrim($key, '.');
         $nest_obj = null;
         if (is_array($obj)) {
             if (!array_key_exists($current, $obj)) {
