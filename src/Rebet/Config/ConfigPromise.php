@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\TransparentlyDotAccessible;
+use Rebet\Common\DotAccessDelegator;
 
 /**
  * コンフィグ遅延評価 クラス
@@ -16,7 +16,7 @@ use Rebet\Common\TransparentlyDotAccessible;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ConfigPromise implements TransparentlyDotAccessible
+class ConfigPromise implements DotAccessDelegator
 {
     
     /**

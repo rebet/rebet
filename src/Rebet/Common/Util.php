@@ -129,14 +129,14 @@ class Util
      */
     public static function get($obj, $key, $default = null)
     {
-        while ($obj instanceof TransparentlyDotAccessible) {
+        while ($obj instanceof DotAccessDelegator) {
             $obj = $obj->get();
         }
         if ($obj === null) {
             return $default;
         }
         if (self::isBlank($key)) {
-            return $obj === null ? $default : static::resolveTransparentlyDotAccess($obj) ;
+            return $obj === null ? $default : static::resolveDotAccessDelegator($obj) ;
         }
 
         $current = StringUtil::latrim($key, '.');
@@ -153,25 +153,25 @@ class Util
                 return $default;
             }
             $value = $obj[$current];
-            return $value === null ? $default : static::resolveTransparentlyDotAccess($value) ;
+            return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
         }
 
         if (!property_exists($obj, $current)) {
             return $default;
         }
         $value = $obj->{$current};
-        return $value === null ? $default : static::resolveTransparentlyDotAccess($value) ;
+        return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
     }
     
     /**
-     * TransparentlyDotAccessible を解決します。
+     * DotAccessDelegator を解決します。
      *
      * @param mixed $obj
      * @return mixed
      */
-    private static function resolveTransparentlyDotAccess($obj)
+    private static function resolveDotAccessDelegator($obj)
     {
-        while ($obj instanceof TransparentlyDotAccessible) {
+        while ($obj instanceof DotAccessDelegator) {
             $obj = $obj->get();
         }
 
@@ -180,7 +180,7 @@ class Util
         }
 
         foreach ($obj as $key => $value) {
-            self::set($obj, $key, static::resolveTransparentlyDotAccess($value));
+            self::set($obj, $key, static::resolveDotAccessDelegator($value));
         }
 
         return $obj;
@@ -189,7 +189,7 @@ class Util
     /**
      * 配列又はオブジェクトに値を設定します。
      *
-     * なお、本メソッドにて値を設定した場合、対象オブジェクトデータの TransparentlyDotAccessible 構造
+     * なお、本メソッドにて値を設定した場合、対象オブジェクトデータの DotAccessDelegator 構造
      * が失われますのでご注意ください。
      *
      * ex)
@@ -206,7 +206,7 @@ class Util
      */
     public static function set(&$obj, $key, $value) : void
     {
-        while ($obj instanceof TransparentlyDotAccessible) {
+        while ($obj instanceof DotAccessDelegator) {
             $obj = $obj->get();
         }
         $current = StringUtil::latrim($key, '.');
@@ -248,7 +248,7 @@ class Util
      */
     public static function has($obj, $key)
     {
-        while ($obj instanceof TransparentlyDotAccessible) {
+        while ($obj instanceof DotAccessDelegator) {
             $obj = $obj->get();
         }
         if ($obj === null) {
@@ -268,7 +268,7 @@ class Util
             }
             $nest_obj = $obj->{$current};
         }
-        while ($nest_obj instanceof TransparentlyDotAccessible) {
+        while ($nest_obj instanceof DotAccessDelegator) {
             $nest_obj = $nest_obj->get();
         }
 

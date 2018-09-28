@@ -3,7 +3,7 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Util;
-use Rebet\Common\TransparentlyDotAccessible;
+use Rebet\Common\DotAccessDelegator;
 
 class UtilTest extends RebetTestCase
 {
@@ -38,12 +38,12 @@ class UtilTest extends RebetTestCase
             'children' => null
         ];
         $this->transparent = (object) [
-            'a' => new class() implements TransparentlyDotAccessible {
+            'a' => new class() implements DotAccessDelegator {
                 public function get()
                 {
                     return [
                         'b' => 'ab',
-                        'c' => new class() implements TransparentlyDotAccessible {
+                        'c' => new class() implements DotAccessDelegator {
                             public function get()
                             {
                                 return 'ac';
@@ -52,10 +52,10 @@ class UtilTest extends RebetTestCase
                     ];
                 }
             },
-            'b' => new class() implements TransparentlyDotAccessible {
+            'b' => new class() implements DotAccessDelegator {
                 public function get()
                 {
-                    return new class() implements TransparentlyDotAccessible {
+                    return new class() implements DotAccessDelegator {
                         public function get()
                         {
                             return 'b';
