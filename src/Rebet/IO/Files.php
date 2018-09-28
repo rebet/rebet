@@ -13,7 +13,7 @@ use Rebet\Common\Strings;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FileUtil
+class Files
 {
     /**
      * インスタンス化禁止

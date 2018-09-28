@@ -2,12 +2,12 @@
 namespace Rebet\Tests\IO;
 
 use Rebet\Tests\RebetTestCase;
-use Rebet\IO\FileUtil;
+use Rebet\IO\Files;
 use Rebet\IO\ZipArchiveException;
 
 use org\bovigo\vfs\vfsStream;
 
-class FileUtilTest extends RebetTestCase
+class FilesTest extends RebetTestCase
 {
     private $root;
 
@@ -41,24 +41,24 @@ class FileUtilTest extends RebetTestCase
 
     public function test_normalizePath()
     {
-        $this->assertSame('var/www/app', FileUtil::normalizePath('var/www/app'));
-        $this->assertSame('/var/www/app', FileUtil::normalizePath('/var/www/app'));
-        $this->assertSame('c:/var/www/app', FileUtil::normalizePath('c:\\var\\www\\app'));
-        $this->assertSame('vfs://var/www/app', FileUtil::normalizePath('vfs://var/www/app'));
+        $this->assertSame('var/www/app', Files::normalizePath('var/www/app'));
+        $this->assertSame('/var/www/app', Files::normalizePath('/var/www/app'));
+        $this->assertSame('c:/var/www/app', Files::normalizePath('c:\\var\\www\\app'));
+        $this->assertSame('vfs://var/www/app', Files::normalizePath('vfs://var/www/app'));
 
-        $this->assertSame('var/www/app', FileUtil::normalizePath('./var/www/app'));
-        $this->assertSame('../var/www/app', FileUtil::normalizePath('../var/www/app'));
-        $this->assertSame('../www/app', FileUtil::normalizePath('var/../../www/app'));
-        $this->assertSame('../www/app', FileUtil::normalizePath('/var/../../www/app'));
-        $this->assertSame('../../www/app', FileUtil::normalizePath('var/../..///.//../www/app'));
-        $this->assertSame('app', FileUtil::normalizePath('var/../www/../app'));
-        $this->assertSame('www', FileUtil::normalizePath('var/../www'));
-        $this->assertSame('/www', FileUtil::normalizePath('/var/../www'));
-        $this->assertSame('.', FileUtil::normalizePath('var/..'));
-        $this->assertSame('/', FileUtil::normalizePath('/var/..'));
-        $this->assertSame('c:/', FileUtil::normalizePath('c:/var/..'));
-        $this->assertSame('file://', FileUtil::normalizePath('file://var/..'));
-        $this->assertSame('file://c:/', FileUtil::normalizePath('file://c:/var/..'));
+        $this->assertSame('var/www/app', Files::normalizePath('./var/www/app'));
+        $this->assertSame('../var/www/app', Files::normalizePath('../var/www/app'));
+        $this->assertSame('../www/app', Files::normalizePath('var/../../www/app'));
+        $this->assertSame('../www/app', Files::normalizePath('/var/../../www/app'));
+        $this->assertSame('../../www/app', Files::normalizePath('var/../..///.//../www/app'));
+        $this->assertSame('app', Files::normalizePath('var/../www/../app'));
+        $this->assertSame('www', Files::normalizePath('var/../www'));
+        $this->assertSame('/www', Files::normalizePath('/var/../www'));
+        $this->assertSame('.', Files::normalizePath('var/..'));
+        $this->assertSame('/', Files::normalizePath('/var/..'));
+        $this->assertSame('c:/', Files::normalizePath('c:/var/..'));
+        $this->assertSame('file://', Files::normalizePath('file://var/..'));
+        $this->assertSame('file://c:/', Files::normalizePath('file://c:/var/..'));
     }
 
     /**
@@ -67,7 +67,7 @@ class FileUtilTest extends RebetTestCase
      */
     public function test_normalizePath_invalid()
     {
-        $this->assertSame('app', FileUtil::normalizePath('c:/invalid/../../path'));
+        $this->assertSame('app', Files::normalizePath('c:/invalid/../../path'));
         $this->fail("Never execute.");
     }
 
@@ -81,7 +81,7 @@ class FileUtilTest extends RebetTestCase
         $this->assertFileExists('vfs://root/var');
         $this->assertFileExists('vfs://root');
 
-        FileUtil::removeDir('vfs://root/public');
+        Files::removeDir('vfs://root/public');
 
         $this->assertFileNotExists('vfs://root/public/css/normalize.css');
         $this->assertFileNotExists('vfs://root/public/js/underscore/underscore.min.js');
@@ -97,14 +97,14 @@ class FileUtilTest extends RebetTestCase
         if (DIRECTORY_SEPARATOR == '\\') {
             // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
             try {
-                FileUtil::zip('vfs://root/public', 'vfs://root/var/public.zip');
+                Files::zip('vfs://root/public', 'vfs://root/var/public.zip');
                 $this->fail("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
             } catch (ZipArchiveException $e) {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
             }
         } else {
             try {
-                FileUtil::zip('vfs://root/public', 'vfs://root/var/public.zip');
+                Files::zip('vfs://root/public', 'vfs://root/var/public.zip');
                 $this->fail("vfsStream support ZipArchive::close(), so please update test code.");
             } catch (\ErrorException $e) {
                 $this->assertSame(
@@ -120,7 +120,7 @@ class FileUtilTest extends RebetTestCase
         if (DIRECTORY_SEPARATOR == '\\') {
             // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
             try {
-                FileUtil::unzip('vfs://root/var/public.zip', 'vfs://root/public');
+                Files::unzip('vfs://root/var/public.zip', 'vfs://root/public');
                 $this->fail("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
             } catch (ZipArchiveException $e) {
                 $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
