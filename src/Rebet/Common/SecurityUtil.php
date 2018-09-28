@@ -81,13 +81,13 @@ class SecurityUtil
      * 秘密鍵暗号で暗号化します。
      *
      * ex)
-     * $encrypted = NetUtil::encodeBase64Url(SecurityUtil::encript($text, 'secret_key'));
+     * $encrypted = Nets::encodeBase64Url(SecurityUtil::encript($text, 'secret_key'));
      *
      * @param string $plain 平文
      * @param string $secretKey 秘密鍵
      * @param string $cipher 暗号器（デフォルト：AES-256-CBC）
      * @return string 暗号文
-     * @see NetUtil::encodeBase64Url();
+     * @see Nets::encodeBase64Url();
      */
     public static function encript($plain, $secretKey, $cipher='AES-256-CBC')
     {
@@ -101,7 +101,7 @@ class SecurityUtil
      * 秘密鍵暗号で複合化します。
      *
      * ex)
-     * $decrypted = SecurityUtil::decript(NetUtil::decodeBase64Url($text), 'secret_key');
+     * $decrypted = SecurityUtil::decript(Nets::decodeBase64Url($text), 'secret_key');
      *
      * @param string encrypted 暗号文
      * @param string $secretKey 秘密鍵
