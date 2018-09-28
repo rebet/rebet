@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\IO;
+namespace Rebet\File;
 
 use Rebet\Common\Strings;
 
@@ -106,7 +106,7 @@ class Files
      * @param  string $zipPath ZIPファイルパス
      * @param  string $destDir 展開先ディレクトリパス
      * @return void
-     * @throws Rebet\IO\ZipArchiveException
+     * @throws Rebet\File\ZipArchiveException
      */
     public static function unzip(string $zipPath, string $destDir) : void
     {
@@ -121,7 +121,7 @@ class Files
      *
      * @param int|bool $code 成否及びエラーコード
      * @param ?string $messsage エラー発生時のメッセージ（デフォルト： 'ZipArchive error.'）
-     * @throws Rebet\IO\ZipArchiveException
+     * @throws Rebet\File\ZipArchiveException
      */
     private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
     {
@@ -173,7 +173,7 @@ class Files
      *                                    　 （デフォルト：null = function($path) { return true; }; = 全データ格納）
      * @param  number   $outDirPermission ZIP格納ディレクトリ自動生成時のパーミッション（デフォルト：0775）
      * @return void
-     * @throws Rebet\IO\ZipArchiveException
+     * @throws Rebet\File\ZipArchiveException
      */
     public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?\Closure $filter = null, int $outDirPermission = 0775) : void
     {

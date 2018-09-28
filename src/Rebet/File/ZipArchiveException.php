@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\IO;
+namespace Rebet\File;
 
 /**
  * ZipArchive関連例外 クラス

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\IO\Files;
+use Rebet\File\Files;
 
 /**
  * アプリケーションコンフィグ クラス
