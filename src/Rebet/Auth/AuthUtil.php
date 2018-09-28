@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Auth;
 
-use Rebet\Common\Util;
+use Rebet\Common\Utils;
 use Rebet\Common\System;
 
 /**
@@ -16,7 +16,6 @@ use Rebet\Common\System;
  */
 class AuthUtil
 {
-    
     /**
      * インスタンス化禁止
      */
@@ -42,9 +41,9 @@ class AuthUtil
             };
         }
         
-        $user      = Util::get($_SERVER, 'PHP_AUTH_USER');
-        $pass      = $to_hash(Util::get($_SERVER, 'PHP_AUTH_PW')) ;
-        $auth_pass = Util::get($auth_list, $user);
+        $user      = Utils::get($_SERVER, 'PHP_AUTH_USER');
+        $pass      = $to_hash(Utils::get($_SERVER, 'PHP_AUTH_PW')) ;
+        $auth_pass = Utils::get($auth_list, $user);
         if (!empty($user) && !empty($pass) && $auth_pass === $pass) {
             return $user;
         }

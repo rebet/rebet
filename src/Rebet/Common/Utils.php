@@ -9,8 +9,8 @@ use Rebet\Common\Strings;
  * 各種特化ユーティリティに分類されない簡便なユーティリティメソッドを集めたクラスです。
  * 本クラスに定義されているメソッドは将来的に特化クラスなどへ移設される可能性があります。
  *
- * $user_name = Util::get($_REQUEST, 'user.name');
- * if(Util::isBlank($user_name)) {
+ * $user_name = Utils::get($_REQUEST, 'user.name');
+ * if(Utils::isBlank($user_name)) {
  *     // something to do
  * }
  *
@@ -19,7 +19,7 @@ use Rebet\Common\Strings;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Util
+class Utils
 {
     
     /**
@@ -33,7 +33,7 @@ class Util
      * 三項演算のメソッド版
      *
      * ex)
-     * Util::when(1 === 1, 'yes', 'no'); //=> 'yes'
+     * Utils::when(1 === 1, 'yes', 'no'); //=> 'yes'
      *
      * @param mixed $expr 判別式
      * @param mixed $ifTrue 真の場合の値
@@ -49,7 +49,7 @@ class Util
      * 空でない最初の要素を返します。
      *
      * ex)
-     * Util::coalesce(null, [], '', 0, 3, 'a'); //=> 3
+     * Utils::coalesce(null, [], '', 0, 3, 'a'); //=> 3
      *
      * @param mixed ...$items 要素
      * @return mixed 空でない最初の要素
@@ -117,10 +117,10 @@ class Util
      * 配列又はオブジェクトから値を取得します。
      *
      * ex)
-     * Util::get($user, 'name');
-     * Util::get($user, 'bank.name');
-     * Util::get($user, 'shipping_address.0', $user->address);
-     * Util::get($_REQUEST, 'opt_in', false);
+     * Utils::get($user, 'name');
+     * Utils::get($user, 'bank.name');
+     * Utils::get($user, 'shipping_address.0', $user->address);
+     * Utils::get($_REQUEST, 'opt_in', false);
      *
      * @param  array|object|null $obj 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
@@ -193,10 +193,10 @@ class Util
      * が失われますのでご注意ください。
      *
      * ex)
-     * Util::set($user, 'name', 'new name');
-     * Util::set($user, 'bank.name', 'new bank');
-     * Util::set($user, 'shipping_address.0', $user->address);
-     * Util::set($_REQUEST, 'opt_in', false);
+     * Utils::set($user, 'name', 'new name');
+     * Utils::set($user, 'bank.name', 'new bank');
+     * Utils::set($user, 'shipping_address.0', $user->address);
+     * Utils::set($_REQUEST, 'opt_in', false);
      *
      * @param  array|object $obj 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
@@ -237,10 +237,10 @@ class Util
      * 配列又はオブジェクトが指定プロパティを持つかチェックします。
      *
      * ex)
-     * Util::has($user, 'name');
-     * Util::has($user, 'bank.name');
-     * Util::has($user, 'shipping_address.0');
-     * Util::has($_REQUEST, 'opt_in');
+     * Utils::has($user, 'name');
+     * Utils::has($user, 'bank.name');
+     * Utils::has($user, 'shipping_address.0');
+     * Utils::has($_REQUEST, 'opt_in');
      *
      * @param  array|object|null $obj 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
@@ -353,7 +353,7 @@ class Util
      * ヒアドキュメントへの文字列埋め込み用の匿名関数を返します。
      *
      * ex)
-     * $_ = Util::heredocImplanter();
+     * $_ = Utils::heredocImplanter();
      * $str = <<<EOS
      *     text text text {$_(Class::CONST)}
      *     {$_(CONSTANT)} text

@@ -106,7 +106,7 @@ trait Configurable
      * 自身のコンフィグ設定を元にインスタンス生成した値を取得します。
      *
      * @see Rebet\Config\Config::instantiate()
-     * @see Rebet\Common\Util::instantiate()
+     * @see Rebet\Common\Utils::instantiate()
      *
      * @param string $key 設定キー名（.区切りで階層指定）
      * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Util;
+use Rebet\Common\Utils;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\Strings;
@@ -141,7 +141,7 @@ class Config
      */
     public static function all() : array
     {
-        return Util::get(static::$compiled, null, []);
+        return Utils::get(static::$compiled, null, []);
     }
 
     /**
@@ -318,10 +318,10 @@ class Config
      */
     protected static function isDefine(array $config, string $section, ?string $key) : bool
     {
-        if (Util::isBlank($key)) {
+        if (Utils::isBlank($key)) {
             return isset($config[$section]);
         }
-        return isset($config[$section]) && Util::has($config[$section], $key) ;
+        return isset($config[$section]) && Utils::has($config[$section], $key) ;
     }
 
     /**
@@ -333,7 +333,7 @@ class Config
      */
     protected static function validateKey(?string $key) : void
     {
-        if (Util::isBlank($key)) {
+        if (Utils::isBlank($key)) {
             return;
         }
         foreach (\explode('.', $key) as $value) {
@@ -367,8 +367,8 @@ class Config
             static::compile($section);
         }
         
-        $value = Util::get(static::$compiled[$section], $key);
-        if ($required && Util::isBlank($value)) {
+        $value = Utils::get(static::$compiled[$section], $key);
+        if ($required && Utils::isBlank($value)) {
             throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
         }
         return $value ?? $default;
@@ -392,7 +392,7 @@ class Config
     /**
      * コンフィグの設定値からインスタンスを生成します。
      *
-     * @see Rebet\Common\Util::instantiate()
+     * @see Rebet\Common\Utils::instantiate()
      *
      * @param string $section セクション
      * @param string $key 設定キー名（.区切りで階層指定可）
@@ -404,7 +404,7 @@ class Config
      */
     public static function instantiate(string $section, string $key, bool $required = true, $default = null)
     {
-        return Util::instantiate(self::get($section, $key, $required, $default));
+        return Utils::instantiate(self::get($section, $key, $required, $default));
     }
 
     /**
