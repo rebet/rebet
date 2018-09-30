@@ -21,7 +21,6 @@ use Rebet\Common\Utils;
  */
 class Reflector
 {
-    
     /**
      * インスタンス化禁止
      */
@@ -34,14 +33,14 @@ class Reflector
      * なお、インスタンス生成が対応可能な定義オブジェクトは下記の通りです。
      *
      *  string :
-     *     {ClassName}::{factoryMathod}形式
+     *     {ClassName}@{factoryMathod}形式
      *       ⇒ 対象クラスを引数無しのファクトリメソッドでインスタンス化します
      *     {ClassName}形式
      *       ⇒ 対象クラスを引数無しのコンストラクタでインスタンス化します
      *  callable :
      *       ⇒ callable() でインスタンス化します
      *  array :
-     *     [{ClassName}::{factoryMathod}, arg1, arg2, ... ]形式
+     *     [{ClassName}@{factoryMathod}, arg1, arg2, ... ]形式
      *       ⇒ 対象クラスを引数付きのファクトリメソッドでインスタンス化します
      *     [{ClassName}, arg1, arg2, ... ]形式
      *       ⇒ 対象クラスを引数付きのコンストラクタでインスタンス化します
@@ -61,7 +60,7 @@ class Reflector
             return null;
         }
         if (is_string($config)) {
-            [$class, $method] = array_pad(\explode('::', $config), 2, null);
+            [$class, $method] = array_pad(\explode('@', $config), 2, null);
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_callable($config)) {
@@ -72,7 +71,7 @@ class Reflector
             if (\is_callable($class_config)) {
                 return $class_config(...$config);
             }
-            [$class, $method] = array_pad(\explode('::', $class_config), 2, null);
+            [$class, $method] = array_pad(\explode('@', $class_config), 2, null);
             return empty($method) ? new $class(...$config) : $class::$method(...$config) ;
         }
         return $config;
