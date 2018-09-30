@@ -4,6 +4,7 @@ namespace Rebet\DateTime;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\App;
+use Rebet\Common\Convertible;
 
 /**
  * 日付 クラス
@@ -13,7 +14,7 @@ use Rebet\Config\App;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class DateTime extends \DateTimeImmutable implements \JsonSerializable
+class DateTime extends \DateTimeImmutable implements \JsonSerializable, Convertible
 {
     use Configurable;
     public static function defaultConfig()
@@ -81,7 +82,24 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable
     {
         self::setConfig(['test_now' => null, 'test_now_timezone' => null]);
     }
-        
+
+    /**
+     * 指定の値を DateTime に変換します。
+     * 本メソッドは Reflector::convert() 用の I/F となります。
+     *
+     * より詳細な DateTime 変換に関しては下記を参照／利用してください。
+     *
+     * @see static::createDateTime()
+     * @see static::analyzeDateTime()
+     *
+     * @param string|\DateTimeInterface|null $from
+     * @return DateTime|null
+     */
+    public static function valueOf($from) : ?DateTime
+    {
+        return static::createDateTime($from);
+    }
+    
     /**
      * DateTime オブジェクトを解析します。
      * 解析可能な文字列は以下の通りです。

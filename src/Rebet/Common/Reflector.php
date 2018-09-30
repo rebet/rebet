@@ -238,4 +238,37 @@ class Reflector
 
         return $current == $key ? true : static::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1));
     }
+
+    /**
+     * 指定オブジェクトのデータ型を変換します。
+     * 本メソッドは以下の手順で型変換を試みます。
+     *
+     * 　1. $from が null の場合:
+     *      -> null
+     * 　2. $to が array  の場合:
+     *      -> $from が is_array() なら変換なし
+     *      -> $from implements IteratorAggregate , ArrayAccess , Serializable , Countable なら変換なし
+     *      -> $from::toArray() があれば実行
+     *      -> $from implements JsonSerializable なら json_decode(json_encode($property), true) を実行
+     *      -> $from implements IteratorAggregate なら foreach で array 生成
+     *      -> get_object_vars($from)
+     * 　3. $to が string の場合:
+     *      -> $from implements JsonSerializable なら jsonSerialize() を実行
+     *      -> $from::__toSring() があれば実行
+     * 　4. $to が scaler の場合:
+     *      -> {$to}val($from) を実行
+     *   5. $to が object の場合:
+     *      -> $to::valueOf($from) があれば実行
+     *      -> $from::convert($to_type) が存在すれば実行
+     *      -> $from::to{$to<without namespace>}() が存在すれば実行 -> 型チェック
+     *
+     * @see Convertible
+     *
+     * @param mixed $from
+     * @param string $to
+     * @return mixed
+     */
+    public static function convert($from, string $to)
+    {
+    }
 }

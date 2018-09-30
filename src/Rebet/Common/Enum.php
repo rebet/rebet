@@ -51,7 +51,7 @@ namespace Rebet\Common;
  * // 匿名クラス拡張系
  * abstract class JobOfferCsvFormat extends Enum {
  *     public abstract function convert(array $row) : UserForm ;
- * 
+ *
  *     protected static function generate() {
  *         return [
  *              new class(1, '求人サイトA') extends JobOfferCsvFormat {
@@ -92,7 +92,7 @@ namespace Rebet\Common;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class Enum implements \JsonSerializable
+abstract class Enum implements \JsonSerializable, Convertible
 {
     /**
      * 列挙データキャッシュ
