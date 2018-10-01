@@ -357,7 +357,7 @@ class Reflector
                 }
                 return
                     static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim('\\', $type)), $type)
+                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim($type, '\\')), $type)
                 ;
 
             //---------------------------------------------
@@ -367,7 +367,7 @@ class Reflector
                 return
                     static::tryConvertByStatic($type, 'valueOf', $value) ??
                     static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim('\\', $type)), $type)
+                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim($type, '\\')), $type)
                 ;
         }
     }

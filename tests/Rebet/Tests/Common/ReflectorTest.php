@@ -464,6 +464,90 @@ class ReflectorTest extends RebetTestCase
 
         $object = new ReflectorTest_Mock();
         $this->assertSame(null, Reflector::convert($object, $type));
+
+        $convertTo = new ReflectorTest_ConvertTo();
+        $this->assertSame(123, Reflector::convert($convertTo, $type));
+        
+        $toType = new ReflectorTest_ToType();
+        $this->assertSame(123, Reflector::convert($toType, $type));
+    }
+    
+    public function test_convert_float()
+    {
+        $type = 'float';
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $this->assertSame(1.0, Reflector::convert(1, $type));
+        $this->assertSame(1.2, Reflector::convert(1.2, $type));
+        $this->assertSame(2.9, Reflector::convert(2.9, $type));
+        $this->assertSame(1.0, Reflector::convert('1', $type));
+        $this->assertSame(1.2, Reflector::convert('1.2', $type));
+        $this->assertSame(2.9, Reflector::convert('2.9', $type));
+        $this->assertSame(0.0, Reflector::convert('a', $type));
+
+        $this->assertSame(null, Reflector::convert([1, 2], $type));
+
+        $resource = fopen('vfs://root/dummy.txt', 'r');
+        $this->assertSame(null, Reflector::convert($resource, $type));
+        fclose($resource);
+
+        $object = new ReflectorTest_Mock();
+        $this->assertSame(null, Reflector::convert($object, $type));
+
+        $convertTo = new ReflectorTest_ConvertTo();
+        $this->assertSame(4.56, Reflector::convert($convertTo, $type));
+
+        $toType = new ReflectorTest_ToType();
+        $this->assertSame(1.23, Reflector::convert($toType, $type));
+    }
+
+    public function test_convert_bool()
+    {
+        $type = 'bool';
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $this->assertSame(true, Reflector::convert(1, $type));
+        $this->assertSame(true, Reflector::convert(1.2, $type));
+        $this->assertSame(true, Reflector::convert(2.9, $type));
+        $this->assertSame(true, Reflector::convert('1', $type));
+        $this->assertSame(true, Reflector::convert('1.2', $type));
+        $this->assertSame(true, Reflector::convert('2.9', $type));
+        $this->assertSame(true, Reflector::convert('a', $type));
+        $this->assertSame(false, Reflector::convert(0, $type));
+        $this->assertSame(false, Reflector::convert(false, $type));
+
+        $this->assertSame(null, Reflector::convert([1, 2], $type));
+
+        $resource = fopen('vfs://root/dummy.txt', 'r');
+        $this->assertSame(null, Reflector::convert($resource, $type));
+        fclose($resource);
+
+        $object = new ReflectorTest_Mock();
+        $this->assertSame(null, Reflector::convert($object, $type));
+
+        $convertTo = new ReflectorTest_ConvertTo();
+        $this->assertSame(false, Reflector::convert($convertTo, $type));
+
+        $toType = new ReflectorTest_ToType();
+        $this->assertSame(true, Reflector::convert($toType, $type));
+    }
+    
+    public function test_convert_object()
+    {
+        $this->assertNull(Reflector::convert(null, ReflectorTest_Gender::class));
+        $this->assertSame(ReflectorTest_Gender::MALE(), Reflector::convert(1, ReflectorTest_Gender::class));
+        $this->assertSame(ReflectorTest_Gender::FEMALE(), Reflector::convert(2, ReflectorTest_Gender::class));
+        
+        $object = new ReflectorTest_Mock();
+        $this->assertSame(null, Reflector::convert($object, ReflectorTest_ConvertTo::class));
+
+        $convertTo = new ReflectorTest_ConvertTo();
+        $this->assertEquals(new ReflectorTest_ToType(), Reflector::convert($convertTo, ReflectorTest_ToType::class));
+
+        $toType = new ReflectorTest_ToType();
+        $this->assertEquals(new ReflectorTest_ConvertTo(), Reflector::convert($toType, ReflectorTest_ConvertTo::class));
+        
+        $this->assertEquals(null, Reflector::convert($toType, ReflectorTest_Gender::class));
     }
 }
 
@@ -520,5 +604,57 @@ class ReflectorTest_Json implements \JsonSerializable
     public function __toString()
     {
         return "value: ".join(',', (array)$this->value);
+    }
+}
+class ReflectorTest_ValueOf
+{
+    private $value;
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
+    public static function valueOf($value)
+    {
+        return new static($value);
+    }
+}
+class ReflectorTest_ConvertTo
+{
+    public function convertTo($type)
+    {
+        switch ($type) {
+            case 'int':
+                return 123;
+            case 'float':
+                return 4.56;
+            case 'bool':
+                return false;
+            case ReflectorTest_ToType::class:
+                return new ReflectorTest_ToType();
+        }
+        return null;
+    }
+}
+class ReflectorTest_ToType
+{
+    public function toInt()
+    {
+        return 123;
+    }
+    public function toFloat()
+    {
+        return 1.23;
+    }
+    public function toBool()
+    {
+        return true;
+    }
+    public function toReflectorTest_ConvertTo()
+    {
+        return new ReflectorTest_ConvertTo();
+    }
+    public function toReflectorTest_Gender()
+    {
+        return 'Other Type';
     }
 }

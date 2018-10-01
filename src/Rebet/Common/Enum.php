@@ -287,6 +287,9 @@ abstract class Enum implements \JsonSerializable, Convertible
         if ($value instanceof static) {
             return $value;
         }
+        if (is_object($value)) {
+            return null;
+        }
         $maps = self::maps($field);
         return isset($maps[$value]) ? $maps[$value] : null ;
     }
