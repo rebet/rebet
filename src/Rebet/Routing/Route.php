@@ -5,7 +5,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 
 /**
- * Route interface
+ * Route class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

@@ -5,6 +5,8 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
 use Rebet\Common\Utils;
+use Rebet\Common\Enum;
+use org\bovigo\vfs\vfsStream;
 
 class ReflectorTest extends RebetTestCase
 {
@@ -63,6 +65,14 @@ class ReflectorTest extends RebetTestCase
                 }
             }
         ];
+
+        $this->root = vfsStream::setup();
+        vfsStream::create(
+            [
+                'dummy.txt' => 'dummy'
+            ],
+            $this->root
+        );
     }
 
     public function test_instantiate()
@@ -71,18 +81,18 @@ class ReflectorTest extends RebetTestCase
         $this->assertNull(Reflector::instantiate(''));
         $this->assertNull(Reflector::instantiate([]));
 
-        $this->assertSame('default', Reflector::instantiate(UtilsTest_Mock::class)->value);
-        $this->assertSame('via getInstance()', Reflector::instantiate(UtilsTest_Mock::class. '@getInstance')->value);
+        $this->assertSame('default', Reflector::instantiate(ReflectorTest_Mock::class)->value);
+        $this->assertSame('via getInstance()', Reflector::instantiate(ReflectorTest_Mock::class. '@getInstance')->value);
         $this->assertSame('callable', Reflector::instantiate(function () {
             return 'callable';
         }));
-        $this->assertSame('arg', Reflector::instantiate([UtilsTest_Mock::class, 'arg'])->value);
-        $this->assertSame('arg via build()', Reflector::instantiate([UtilsTest_Mock::class. '@build', 'arg'])->value);
+        $this->assertSame('arg', Reflector::instantiate([ReflectorTest_Mock::class, 'arg'])->value);
+        $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class. '@build', 'arg'])->value);
         $this->assertSame('arg via callable', Reflector::instantiate([function ($v) {
             return $v.' via callable';
         }, 'arg']));
         $this->assertSame(123, Reflector::instantiate(123));
-        $this->assertSame('instantiated', Reflector::instantiate(new UtilsTest_Mock('instantiated'))->value);
+        $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
     }
 
     public function test_get()
@@ -266,9 +276,198 @@ class ReflectorTest extends RebetTestCase
     {
         Reflector::set($this->object, 'partner.undefind_key', 'value');
     }
+
+    public function test_typeOf()
+    {
+        $this->assertFalse(Reflector::typeOf(null, 'int'));
+        $this->assertFalse(Reflector::typeOf(null, ReflectorTest_Mock::class));
+
+        $this->assertTrue(Reflector::typeOf(1, 'int'));
+        $this->assertFalse(Reflector::typeOf(1, 'float'));
+        $this->assertFalse(Reflector::typeOf(1, 'bool'));
+        $this->assertFalse(Reflector::typeOf(1, 'array'));
+        $this->assertFalse(Reflector::typeOf(1, 'string'));
+        $this->assertFalse(Reflector::typeOf(1, 'callable'));
+        $this->assertFalse(Reflector::typeOf(1, ReflectorTest_Mock::class));
+
+        $this->assertFalse(Reflector::typeOf(1.2, 'int'));
+        $this->assertTrue(Reflector::typeOf(1.2, 'float'));
+        $this->assertFalse(Reflector::typeOf(1.2, 'bool'));
+        $this->assertFalse(Reflector::typeOf(1.2, 'array'));
+        $this->assertFalse(Reflector::typeOf(1.2, 'string'));
+        $this->assertFalse(Reflector::typeOf(1.2, 'callable'));
+        $this->assertFalse(Reflector::typeOf(1.2, ReflectorTest_Mock::class));
+
+        $this->assertFalse(Reflector::typeOf(true, 'int'));
+        $this->assertFalse(Reflector::typeOf(true, 'float'));
+        $this->assertTrue(Reflector::typeOf(true, 'bool'));
+        $this->assertFalse(Reflector::typeOf(true, 'array'));
+        $this->assertFalse(Reflector::typeOf(true, 'string'));
+        $this->assertFalse(Reflector::typeOf(true, 'callable'));
+        $this->assertFalse(Reflector::typeOf(true, ReflectorTest_Mock::class));
+
+        $this->assertFalse(Reflector::typeOf([1, 2], 'int'));
+        $this->assertFalse(Reflector::typeOf([1, 2], 'float'));
+        $this->assertFalse(Reflector::typeOf([1, 2], 'bool'));
+        $this->assertTrue(Reflector::typeOf([1, 2], 'array'));
+        $this->assertFalse(Reflector::typeOf([1, 2], 'string'));
+        $this->assertFalse(Reflector::typeOf([1, 2], 'callable'));
+        $this->assertFalse(Reflector::typeOf([1, 2], ReflectorTest_Mock::class));
+
+        $this->assertFalse(Reflector::typeOf('abc', 'int'));
+        $this->assertFalse(Reflector::typeOf('abc', 'float'));
+        $this->assertFalse(Reflector::typeOf('abc', 'bool'));
+        $this->assertFalse(Reflector::typeOf('abc', 'array'));
+        $this->assertTrue(Reflector::typeOf('abc', 'string'));
+        $this->assertFalse(Reflector::typeOf('abc', 'callable'));
+        $this->assertFalse(Reflector::typeOf('abc', ReflectorTest_Mock::class));
+
+        $callable = function () {
+            return 1;
+        };
+        $this->assertFalse(Reflector::typeOf($callable, 'int'));
+        $this->assertFalse(Reflector::typeOf($callable, 'float'));
+        $this->assertFalse(Reflector::typeOf($callable, 'bool'));
+        $this->assertFalse(Reflector::typeOf($callable, 'array'));
+        $this->assertFalse(Reflector::typeOf($callable, 'string'));
+        $this->assertTrue(Reflector::typeOf($callable, 'callable'));
+        $this->assertFalse(Reflector::typeOf($callable, ReflectorTest_Mock::class));
+
+        $object = new ReflectorTest_Mock();
+        $this->assertFalse(Reflector::typeOf($object, 'int'));
+        $this->assertFalse(Reflector::typeOf($object, 'float'));
+        $this->assertFalse(Reflector::typeOf($object, 'bool'));
+        $this->assertFalse(Reflector::typeOf($object, 'array'));
+        $this->assertFalse(Reflector::typeOf($object, 'string'));
+        $this->assertFalse(Reflector::typeOf($object, 'callable'));
+        $this->assertTrue(Reflector::typeOf($object, ReflectorTest_Mock::class));
+        $this->assertFalse(Reflector::typeOf($object, \stdClass::class));
+    }
+
+    public function test_convert()
+    {
+        $this->assertNull(Reflector::convert(null, 'int'));
+        $this->assertNull(Reflector::convert(null, ReflectorTest_Mock::class));
+
+        $this->assertSame(1, Reflector::convert(1, 'int'));
+        $this->assertSame(1.0, Reflector::convert(1, 'float'));
+        $this->assertSame(true, Reflector::convert(1, 'bool'));
+        $this->assertSame([1], Reflector::convert(1, 'array'));
+        $this->assertSame('1', Reflector::convert(1, 'string'));
+        $this->assertSame(null, Reflector::convert(1, 'callable'));
+        $this->assertSame(null, Reflector::convert(1, ReflectorTest_Mock::class));
+        $this->assertSame(ReflectorTest_Gender::MALE(), Reflector::convert(1, ReflectorTest_Gender::class));
+
+        $this->assertSame(1, Reflector::convert('1', 'int'));
+        $this->assertSame(1.0, Reflector::convert('1', 'float'));
+        $this->assertSame(true, Reflector::convert('1', 'bool'));
+        $this->assertSame(['1'], Reflector::convert('1', 'array'));
+        $this->assertSame('1', Reflector::convert('1', 'string'));
+        $this->assertSame(null, Reflector::convert('1', 'callable'));
+        $this->assertSame(null, Reflector::convert('1', ReflectorTest_Mock::class));
+        $this->assertSame(ReflectorTest_Gender::MALE(), Reflector::convert('1', ReflectorTest_Gender::class));
+    }
+
+    public function test_convert_array()
+    {
+        $type = 'array';
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $this->assertSame([], Reflector::convert([], $type));
+        $this->assertSame([1, 2], Reflector::convert([1, 2], $type));
+        $this->assertSame(['a' => 'A'], Reflector::convert(['a' => 'A'], $type));
+
+        $this->assertSame([''], Reflector::convert('', $type));
+        $this->assertSame(['a'], Reflector::convert('a', $type));
+        $this->assertSame(['a','b','c'], Reflector::convert('a,b,c', $type));
+
+        $to_array = new ReflectorTest_ToArray([1, 2, 'a' => 'A']);
+        $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($to_array, $type));
+
+        $travers = new \ArrayObject([1, 2, 'a' => 'A']);
+        $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($travers, $type));
+
+        $jsonValue = ReflectorTest_Gender::MALE();
+        $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
+        $jsonValue = new ReflectorTest_Json('abc');
+        $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
+
+        $jsonArray = new ReflectorTest_Json([1, 2, 'a' => 'A']);
+        $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($jsonArray, $type));
+
+        $object = new ReflectorTest_Mock();
+        $this->assertSame(['value' => 'default'], Reflector::convert($object, $type));
+
+        $this->assertSame([1], Reflector::convert(1, $type));
+        $this->assertSame([1.2], Reflector::convert(1.2, $type));
+        $this->assertSame([true], Reflector::convert(true, $type));
+
+        $resource = fopen('vfs://root/dummy.txt', 'r');
+        $this->assertSame([$resource], Reflector::convert($resource, $type));
+        fclose($resource);
+    }
+
+    public function test_convert_string()
+    {
+        $type = 'string';
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $this->assertSame('', Reflector::convert('', $type));
+        $this->assertSame('a', Reflector::convert('a', $type));
+        $this->assertSame('a,b,c', Reflector::convert('a,b,c', $type));
+
+        $resource = fopen('vfs://root/dummy.txt', 'r');
+        $this->assertSame(null, Reflector::convert($resource, $type));
+        fclose($resource);
+
+        $this->assertSame('1', Reflector::convert(1, $type));
+        $this->assertSame('1.2', Reflector::convert(1.2, $type));
+        $this->assertSame('1200', Reflector::convert(1.2e3, $type));
+        $this->assertSame('1', Reflector::convert(true, $type));
+        $this->assertSame('', Reflector::convert(false, $type));
+        $this->assertSame('abc', Reflector::convert('abc', $type));
+
+        $jsonValue = ReflectorTest_Gender::MALE();
+        $this->assertSame('1', Reflector::convert($jsonValue, $type));
+        $jsonValue = new ReflectorTest_Json('abc');
+        $this->assertSame('abc', Reflector::convert($jsonValue, $type));
+
+        $jsonArray = new ReflectorTest_Json([1, 2]);
+        $this->assertSame('value: 1,2', Reflector::convert($jsonArray, $type));
+        $toString  = new ReflectorTest_Mock();
+        $this->assertSame('default', Reflector::convert($toString, $type));
+
+        $unconvertable = [1, 2];
+        $this->assertSame(null, Reflector::convert($unconvertable, $type));
+        $unconvertable = new ReflectorTest_ToArray([1, 2]);
+        $this->assertSame(null, Reflector::convert($unconvertable, $type));
+    }
+
+    public function test_convert_int()
+    {
+        $type = 'int';
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $this->assertSame(1, Reflector::convert(1, $type));
+        $this->assertSame(1, Reflector::convert(1.2, $type));
+        $this->assertSame(2, Reflector::convert(2.9, $type));
+        $this->assertSame(1, Reflector::convert('1', $type));
+        $this->assertSame(1, Reflector::convert('1.2', $type));
+        $this->assertSame(2, Reflector::convert('2.9', $type));
+        $this->assertSame(0, Reflector::convert('a', $type));
+
+        $this->assertSame(null, Reflector::convert([1, 2], $type));
+        
+        $resource = fopen('vfs://root/dummy.txt', 'r');
+        $this->assertSame(null, Reflector::convert($resource, $type));
+        fclose($resource);
+
+        $object = new ReflectorTest_Mock();
+        $this->assertSame(null, Reflector::convert($object, $type));
+    }
 }
 
-class UtilsTest_Mock
+class ReflectorTest_Mock
 {
     public $value = null;
     public function __construct($value = 'default')
@@ -282,5 +481,44 @@ class UtilsTest_Mock
     public static function build($value)
     {
         return new static($value.' via build()');
+    }
+    public function __toString()
+    {
+        return (string)$this->value;
+    }
+}
+
+class ReflectorTest_Gender extends Enum
+{
+    const MALE   = [1, '男性'];
+    const FEMALE = [2, '女性'];
+}
+
+class ReflectorTest_ToArray
+{
+    private $array;
+    public function __construct(array $array)
+    {
+        $this->array = $array;
+    }
+    public function toArray() : array
+    {
+        return $this->array;
+    }
+}
+class ReflectorTest_Json implements \JsonSerializable
+{
+    private $value;
+    public function __construct($value)
+    {
+        $this->value = $value;
+    }
+    public function jsonSerialize()
+    {
+        return $this->value;
+    }
+    public function __toString()
+    {
+        return "value: ".join(',', (array)$this->value);
     }
 }

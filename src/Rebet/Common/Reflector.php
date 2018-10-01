@@ -242,33 +242,196 @@ class Reflector
     /**
      * 指定オブジェクトのデータ型を変換します。
      * 本メソッドは以下の手順で型変換を試みます。
+     * なお、変換が出来ない場合は null が返ります。
      *
-     * 　1. $from が null の場合:
-     *      -> null
-     * 　2. $to が array  の場合:
-     *      -> $from が is_array() なら変換なし
-     *      -> $from implements IteratorAggregate , ArrayAccess , Serializable , Countable なら変換なし
-     *      -> $from::toArray() があれば実行
-     *      -> $from implements JsonSerializable なら json_decode(json_encode($property), true) を実行
-     *      -> $from implements IteratorAggregate なら foreach で array 生成
-     *      -> get_object_vars($from)
-     * 　3. $to が string の場合:
-     *      -> $from implements JsonSerializable なら jsonSerialize() を実行
-     *      -> $from::__toSring() があれば実行
-     * 　4. $to が scaler の場合:
-     *      -> {$to}val($from) を実行
-     *   5. $to が object の場合:
-     *      -> $to::valueOf($from) があれば実行
-     *      -> $from::convert($to_type) が存在すれば実行
-     *      -> $from::to{$to<without namespace>}() が存在すれば実行 -> 型チェック
+     * 　1. $value が null の場合:
+     *      -> null を返す
+     * 　2. $type が array  の場合:
+     *      -> $value が is_array() なら変換なし
+     *      -> $value が is_string() なら expload(',', $value)
+     *      -> $value::toArray() があれば実行
+     *      -> $value instanceof Traversable なら foreach で array 変換
+     *      -> $value が object で instanceof JsonSerializable なら jsonSerialize()
+     *         -> $json が is_array() なら $json
+     *         -> $json が is_array() でなければ [$value]
+     *      -> $value が object なら get_object_vars($value)
+     *      -> それ以外なら (array)$value
+     * 　3. $type が string の場合:
+     *      -> $value が is_string() なら変換なし
+     *      -> $value が is_resource() なら null
+     *      -> $value が is_scalar() なら型キャスト
+     *      -> $value が object で instanceof JsonSerializable なら jsonSerialize()
+     *         -> $json が is_scalar() なら (string)$value
+     *      -> $value::__toSring() が存在すれば実行
+     *      -> それ以外なら null
+     * 　4. $type が scaler(int|float|bool) の場合:
+     *      -> $value が is_{$type}() なら変換なし
+     *      -> $value が scaler なら {$type}val($value) を実行
+     *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
+     *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
+     *      -> それ以外なら null
+     *   5. $type が object の場合:
+     *      -> $type::valueOf($value) が存在すれば実行 -> 型チェック
+     *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
+     *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
+     *      -> それ以外なら null
      *
      * @see Convertible
      *
-     * @param mixed $from
-     * @param string $to
+     * @param mixed $value
+     * @param string $type
      * @return mixed
      */
-    public static function convert($from, string $to)
+    public static function convert($value, string $type)
     {
+        if ($value === null) {
+            return null;
+        }
+
+        switch ($type) {
+            //---------------------------------------------
+            // To Array
+            //---------------------------------------------
+            case 'array':
+                if (is_array($value)) {
+                    return $value;
+                }
+                if (is_string($value)) {
+                    return explode(',', $value);
+                }
+                if (method_exists($value, 'toArray')) {
+                    return $value->toArray();
+                }
+                if ($value instanceof \Traversable) {
+                    $array = [];
+                    foreach ($value as $key => $value) {
+                        $array[$key] = $value;
+                    }
+                    return $array;
+                }
+                if (is_object($value)) {
+                    if ($value instanceof \JsonSerializable) {
+                        $json = $value->jsonSerialize();
+                        return is_array($json) ? $json : [$value] ;
+                    }
+                    return get_object_vars($value);
+                }
+                return (array)$value;
+
+            //---------------------------------------------
+            // To String
+            //---------------------------------------------
+            case 'string':
+                if (is_string($value)) {
+                    return $value;
+                }
+                if (is_resource($value)) {
+                    return null;
+                }
+                if (is_scalar($value)) {
+                    return (string)$value;
+                }
+                if (is_object($value) && $value instanceof \JsonSerializable) {
+                    $json = $value->jsonSerialize();
+                    if (is_scalar($json)) {
+                        return (string)$json;
+                    }
+                }
+                if (method_exists($value, '__toString')) {
+                    return $value->__toString();
+                }
+                return null;
+
+            //---------------------------------------------
+            // To Scalar (int|float|bool)
+            //---------------------------------------------
+            case 'int':
+            case 'float':
+            case 'bool':
+                if (static::typeOf($value, $type)) {
+                    return $value;
+                }
+                if (is_scalar($value)) {
+                    $convertor = "{$type}val";
+                    return $convertor($value);
+                }
+                return
+                    static::tryConvertByMember($value, 'convertTo', $type) ??
+                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim('\\', $type)), $type)
+                ;
+
+            //---------------------------------------------
+            // To Object
+            //---------------------------------------------
+            default:
+                return
+                    static::tryConvertByStatic($type, 'valueOf', $value) ??
+                    static::tryConvertByMember($value, 'convertTo', $type) ??
+                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim('\\', $type)), $type)
+                ;
+        }
+    }
+
+    /**
+     * 指定タイプの static メソッドを用いて型変換を試みます。
+     *
+     * @param string $type 変換対象の型
+     * @param string $method 利用メソッド名
+     * @param mixed $value 変換元の値
+     * @return mixed
+     */
+    protected static function tryConvertByStatic(string $type, string $method, $value)
+    {
+        if (method_exists($type, $method)) {
+            $converted = $type::$method($value);
+            if (static::typeOf($converted, $type)) {
+                return $converted;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 変換元オブジェクトの member メソッドを用いて型変換を試みます。
+     *
+     * @param mixed $value 変換元の値
+     * @param string $method 利用メソッド名
+     * @param string $type 変換対象の型
+     * @return mixed
+     */
+    protected static function tryConvertByMember($value, string $method, string $type)
+    {
+        if (method_exists($value, $method)) {
+            $rm = new \ReflectionMethod($value, $method);
+            $converted = $rm->getNumberOfParameters() === 0 ? $value->$method() : $value->$method($type);
+            if (static::typeOf($converted, $type)) {
+                return $converted;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 対象の値が指定の Type かチェックします。
+     * ※value が null の場合は false を返します。
+     *
+     * @param mixed $value
+     * @param string $type type or class
+     * @return boolean
+     */
+    public static function typeOf($value, string $type) : bool
+    {
+        if ($value === null) {
+            return false;
+        }
+        if (is_object($value) && $value instanceof $type) {
+            return true;
+        } else {
+            $type_check = "is_{$type}";
+            if (function_exists($type_check) && $type_check($value)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
