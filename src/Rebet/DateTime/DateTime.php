@@ -92,7 +92,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @see static::createDateTime()
      * @see static::analyzeDateTime()
      *
-     * @param string|\DateTimeInterface|null $from
+     * @param string|\DateTimeInterface|int|null $from
      * @return DateTime|null
      */
     public static function valueOf($from) : ?DateTime
@@ -111,7 +111,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * ※本メソッドは analyzeDateTime() から日付フォーマット情報を除外して日付のみを返す簡易メソッドです。
      * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
      *
-     * @param string|\DateTimeInterface|null $value 日時文字列
+     * @param string|\DateTimeInterface|int|null $value 日時文字列
      * @param array $main_format 優先解析フォーマット（デフォルト：[]）
      * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
      * @return static|null 解析結果
@@ -133,7 +133,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * ※本メソッドは解析に成功した日付フォーマットも返します。
      * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
      *
-     * @param string|\DateTimeInterface|null $value 日時文字列
+     * @param string|\DateTimeInterface|int|null $value 日時文字列
      * @param array $main_format 優先解析フォーマット（デフォルト：[]）
      * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
      * @return array [DateTime|null, apply_format|null] or null 解析結果
@@ -143,7 +143,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if ($value === null || $value === '') {
             return [null, null];
         }
-        if ($value instanceof \DateTimeInterface) {
+        if ($value instanceof \DateTimeInterface || is_int($value)) {
             return [new static($value, $timezone), self::config('default_format')];
         }
         
@@ -220,7 +220,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * @param string|\DateTimeInterface $time
+     * @param string|\DateTimeInterface|int $time
      * @param string|\DateTimeZone $timezone タイムゾーン（デフォオルト：コンフィグ設定依存）
      */
     public function __construct($time = 'now', $timezone = null)
@@ -237,6 +237,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 $time = $time->setTimezone($adopt_timezone);
             }
             $adopt_time = $time->format('Y-m-d H:i:s.u');
+        } elseif (is_int($time)) {
+            $adopt_time = static::now()->setTimestamp($time)->format('Y-m-d H:i:s.u');
         } else {
             $test_now = self::getTestNow();
             if ($test_now) {

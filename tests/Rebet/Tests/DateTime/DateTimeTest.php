@@ -118,6 +118,9 @@ class DateTimeTest extends RebetTestCase
         $date = new DateTime($org_date, 'UTC');
         $this->assertSame('2010-10-20 01:20:30', $date->format('Y-m-d H:i:s'));
         $this->assertSame('UTC', $date->getTimezone()->getName());
+
+        $date = new DateTime('2000-01-23 04:56');
+        $this->assertEquals($date, new DateTime($date->getTimestamp()));
     }
 
     public function test_createFromFormat()
