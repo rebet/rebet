@@ -4,6 +4,7 @@ namespace Rebet\Routing;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Common\Reflector;
+use Rebet\Config\RouteNotFoundException;
 
 /**
  * Route action class
@@ -55,11 +56,21 @@ class RouteAction
         $vars = $request->attributes;
         $args = [];
         foreach ($reflector->getParameters() as $parameter) {
-            $name = $parameter->name;
-            $args[$name] = Reflector::convert($vars->has($name) ? $vars->get($name) : null, Reflector::getTypeHint($parameter));
+            $name     = $parameter->name;
+            $optional = $parameter->isOptional();
+            $origin = $vars->has($name) ? $vars->get($name) : null;
+            if (!$optional && $origin === null) {
+                throw new RouteNotFoundException("Routing parameter '{$name}' is requierd.");
+            }
+            $type      = Reflector::getTypeHint($parameter);
+            $converted = Reflector::convert($origin, $type);
+            if ($origin !== null && $converted === null) {
+                throw new RouteNotFoundException("Routing parameter '{$name}' can not convert to {$type}.");
+            }
+            $args[$name] = $converted;
         }
         
-        return $this->isFunction() ? $this->reflector->invokeArgs($args)  : $this->reflector->invokeArgs($this->instance, $args);
+        return $this->isFunction() ? $this->reflector->invokeArgs($args) : $this->reflector->invokeArgs($this->instance, $args);
     }
 
     /**

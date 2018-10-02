@@ -4,6 +4,10 @@ namespace Rebet\Routing;
 use Rebet\Config\Configurable;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
+use Rebet\Http\Request;
+use Rebet\Http\Response;
+use Rebet\Pipeline\Pipeline;
+use Rebet\Config\RouteNotFoundException;
 
 /**
  * Router Class
@@ -19,6 +23,7 @@ class Router
     public static function defaultConfig()
     {
         return [
+            'middlewares'    => [],
             'default_route'  => null,
             'fallback_route' => null,
         ];
@@ -195,5 +200,29 @@ class Router
     public static function redirect($uri, $destination, $status = 302)
     {
         //@todo 実装
+    }
+    
+    public static function handle(Request $request) : Response
+    {
+        try {
+            $route = static::findRoute($request);
+            static::$pipeline = (new Pipeline())->through(static::config('middlewares'))->then($route);
+            return static::$pipeline->send($request);
+        } catch (RouteNotFoundException $e) {
+            //@todo 実装
+        }
+    }
+    
+    protected static function findRoute(Request $request) : Route
+    {
+        return null;
+    }
+    
+    public static function shutdown() : void
+    {
+        if (static::$pipeline !== null) {
+            static::$pipeline->invoke('shutdown');
+            static::$pipeline->getDestination()->shutdown();
+        }
     }
 }

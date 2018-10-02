@@ -139,25 +139,33 @@ abstract class Route
      */
     public function handle(Request $request) : Response
     {
-        $action = $this->verify($request);
-        return $this->toResponse($request, $action->invoke($request));
+        $action   = $this->verify($request);
+        $response = $this->toResponse($request, $action->invoke($request));
+        return $response->prepare($request);
     }
 
     /**
-     * 様々な形式のアクション戻り値をレスポンス形式に変換します。
-     *
-     * @todo 実装
+     * ルートアクションの戻り値をレスポンス形式に変換します。
      *
      * @param Request $request
-     * @param mixed $response
+     * @param mixed $data
      * @return Response
      */
-    protected function toResponse($request, $response) : Response
+    protected function toResponse(Request $request, $data) : Response
     {
-        // 要実装
-
-        $response = new Response($response);
-        return $response->prepare($request);
+        if ($data instanceof Response) {
+            return $data;
+        }
+        if (is_callable($data)) {
+            return new StreamedResponse($data);
+        }
+        if (is_array($data)) {
+            return new JsonResponse($data);
+        }
+        if ($data instanceof \JsonSerializable) {
+            return new JsonResponse($data->jsonSerialize());
+        }
+        return new WebResponse($data);
     }
 
     /**

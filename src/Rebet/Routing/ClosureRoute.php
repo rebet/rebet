@@ -3,6 +3,9 @@ namespace Rebet\Routing;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Http\WebResponse;
+use Rebet\Http\JsonResponse;
+use Rebet\Http\StreamedResponse;
 
 /**
  * ClosureRoute class
