@@ -58,6 +58,7 @@ class RouteAction
             $args[$name] = $vars->has($name) ? $vars->get($name) : null ;
             
             //@todo 型変換
+            $type = (string)($parameter->getType() ?? $parameter->getClass());
         }
         
         return $this->isFunction() ? $this->reflector->invokeArgs($args)  : $this->reflector->invokeArgs($this->instance, $args);

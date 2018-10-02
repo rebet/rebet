@@ -264,13 +264,20 @@ class Reflector
      *         -> $json が is_scalar() なら (string)$value
      *      -> $value::__toSring() が存在すれば実行
      *      -> それ以外なら null
-     * 　4. $type が scaler(int|float|bool) の場合:
+     * 　4. $type が callable の場合:
+     *      -> $value が callable なら変換なし
+     *      -> それ以外なら null
+     * 　5. $type が Closure の場合:
+     *      -> $value が object で instanceof Closure なら変換なし
+     *      -> $value が callable なら Closure::fromCallable() で変換
+     *      -> それ以外なら null
+     * 　6. $type が scaler(int|float|bool) の場合:
      *      -> $value が is_{$type}() なら変換なし
      *      -> $value が scaler なら {$type}val($value) を実行
      *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
      *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
      *      -> それ以外なら null
-     *   5. $type が object の場合:
+     *   7. $type が object の場合:
      *      -> $type::valueOf($value) が存在すれば実行 -> 型チェック
      *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
      *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
@@ -343,6 +350,27 @@ class Reflector
                 return null;
 
             //---------------------------------------------
+            // To Callable
+            //---------------------------------------------
+            case 'callable':
+                if (is_callable($value)) {
+                    return $value;
+                }
+                return null;
+
+            //---------------------------------------------
+            // To Closure
+            //---------------------------------------------
+            case \Closure::class:
+                if ($value instanceof \Closure) {
+                    return $value;
+                }
+                if (is_callable($value)) {
+                    return \Closure::fromCallable($value);
+                }
+                return null;
+
+            //---------------------------------------------
             // To Scalar (int|float|bool)
             //---------------------------------------------
             case 'int':
@@ -357,17 +385,18 @@ class Reflector
                 }
                 return
                     static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim($type, '\\')), $type)
+                    static::tryConvertByMember($value, "to".Strings::capitalize($type), $type)
                 ;
 
             //---------------------------------------------
             // To Object
             //---------------------------------------------
             default:
+                $rc = new \ReflectionClass($type);
                 return
                     static::tryConvertByStatic($type, 'valueOf', $value) ??
                     static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".Strings::capitalize(Strings::rbtrim($type, '\\')), $type)
+                    static::tryConvertByMember($value, "to".$rc->getShortName(), $type)
                 ;
         }
     }
@@ -437,5 +466,20 @@ class Reflector
             }
         }
         return false;
+    }
+
+    public static function getTypeHint(\ReflectionParameter $param) : ?string
+    {
+        $type = $param->getType();
+        if (!empty($type)) {
+            return (string)$type;
+        }
+
+        $type = $param->getClass();
+        if (!empty($type)) {
+            return $type->getName();
+        }
+
+        return null;
     }
 }

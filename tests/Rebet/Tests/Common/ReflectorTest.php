@@ -346,30 +346,6 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::typeOf($object, \stdClass::class));
     }
 
-    public function test_convert()
-    {
-        $this->assertNull(Reflector::convert(null, 'int'));
-        $this->assertNull(Reflector::convert(null, ReflectorTest_Mock::class));
-
-        $this->assertSame(1, Reflector::convert(1, 'int'));
-        $this->assertSame(1.0, Reflector::convert(1, 'float'));
-        $this->assertSame(true, Reflector::convert(1, 'bool'));
-        $this->assertSame([1], Reflector::convert(1, 'array'));
-        $this->assertSame('1', Reflector::convert(1, 'string'));
-        $this->assertSame(null, Reflector::convert(1, 'callable'));
-        $this->assertSame(null, Reflector::convert(1, ReflectorTest_Mock::class));
-        $this->assertSame(ReflectorTest_Gender::MALE(), Reflector::convert(1, ReflectorTest_Gender::class));
-
-        $this->assertSame(1, Reflector::convert('1', 'int'));
-        $this->assertSame(1.0, Reflector::convert('1', 'float'));
-        $this->assertSame(true, Reflector::convert('1', 'bool'));
-        $this->assertSame(['1'], Reflector::convert('1', 'array'));
-        $this->assertSame('1', Reflector::convert('1', 'string'));
-        $this->assertSame(null, Reflector::convert('1', 'callable'));
-        $this->assertSame(null, Reflector::convert('1', ReflectorTest_Mock::class));
-        $this->assertSame(ReflectorTest_Gender::MALE(), Reflector::convert('1', ReflectorTest_Gender::class));
-    }
-
     public function test_convert_array()
     {
         $type = 'array';
@@ -443,6 +419,52 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::convert($unconvertable, $type));
         $unconvertable = new ReflectorTest_ToArray([1, 2]);
         $this->assertSame(null, Reflector::convert($unconvertable, $type));
+    }
+
+    public function test_convert_callable()
+    {
+        $type = 'callable';
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $closure = function () {
+            return 123;
+        };
+        $this->assertSame($closure, Reflector::convert($closure, $type));
+
+        $array = [$this, 'test_convert_callable'];
+        $this->assertSame([$this, 'test_convert_callable'], Reflector::convert([$this, 'test_convert_callable'], $type));
+
+        $invoke = new ReflectorTest_Invoke();
+        $this->assertSame($invoke, Reflector::convert($invoke, $type));
+
+        $not_invoke = new ReflectorTest_Mock();
+        $this->assertSame(null, Reflector::convert($not_invoke, $type));
+        $this->assertSame(null, Reflector::convert(1, $type));
+        $this->assertSame(null, Reflector::convert('1', $type));
+    }
+
+    public function test_convert_closure()
+    {
+        $type = \Closure::class;
+        $this->assertNull(Reflector::convert(null, $type));
+
+        $closure = function () {
+            return 123;
+        };
+        $this->assertSame($closure, Reflector::convert($closure, $type));
+
+        $array        = [$this, 'test_convert_callable'];
+        $arrayClosure = \Closure::fromCallable($array);
+        $this->assertEquals($arrayClosure, Reflector::convert([$this, 'test_convert_callable'], $type));
+
+        $invoke        = new ReflectorTest_Invoke();
+        $invokeClosure = \Closure::fromCallable($invoke);
+        $this->assertEquals($invokeClosure, Reflector::convert($invoke, $type));
+
+        $not_invoke = new ReflectorTest_Mock();
+        $this->assertSame(null, Reflector::convert($not_invoke, $type));
+        $this->assertSame(null, Reflector::convert(1, $type));
+        $this->assertSame(null, Reflector::convert('1', $type));
     }
 
     public function test_convert_int()
@@ -658,5 +680,12 @@ class ReflectorTest_ToType
     public function toReflectorTest_Gender()
     {
         return 'Other Type';
+    }
+}
+class ReflectorTest_Invoke
+{
+    public function __invoke()
+    {
+        return 123;
     }
 }
