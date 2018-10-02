@@ -573,6 +573,20 @@ class ReflectorTest extends RebetTestCase
         
         $this->assertEquals(null, Reflector::convert($toType, ReflectorTest_Gender::class));
     }
+
+    public function test_getTypeHint()
+    {
+        $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {
+        };
+        $rf = new \ReflectionFunction($closure);
+        $params = $rf->getParameters();
+        $this->assertSame(null, Reflector::getTypeHint($params[0]));
+        $this->assertSame('int', Reflector::getTypeHint($params[1]));
+        $this->assertSame('string', Reflector::getTypeHint($params[2]));
+        $this->assertSame('callable', Reflector::getTypeHint($params[3]));
+        $this->assertSame(\Closure::class, Reflector::getTypeHint($params[4]));
+        $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHint($params[5]));
+    }
 }
 
 class ReflectorTest_Mock

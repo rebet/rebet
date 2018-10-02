@@ -267,9 +267,9 @@ class Reflector
      * 　4. $type が callable の場合:
      *      -> $value が callable なら変換なし
      *      -> それ以外なら null
-     * 　5. $type が Closure の場合:
-     *      -> $value が object で instanceof Closure なら変換なし
-     *      -> $value が callable なら Closure::fromCallable() で変換
+     * 　5. $type が \Closure の場合:
+     *      -> $value が object で instanceof \Closure なら変換なし
+     *      -> $value が callable なら \Closure::fromCallable() で変換
      *      -> それ以外なら null
      * 　6. $type が scaler(int|float|bool) の場合:
      *      -> $value が is_{$type}() なら変換なし
@@ -468,6 +468,13 @@ class Reflector
         return false;
     }
 
+    /**
+     * タイプヒントになっている type 又は クラス名 を文字列で取得します。
+     * ※タイプヒントがついていない場合は null が返ります。
+     *
+     * @param \ReflectionParameter $param
+     * @return string|null
+     */
     public static function getTypeHint(\ReflectionParameter $param) : ?string
     {
         $type = $param->getType();
