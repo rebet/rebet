@@ -24,12 +24,12 @@ interface Convertible
      */
     public static function valueOf($value);
     
-    // /**
-    //  * 型変換を行います
-    //  * 変換できない場合は null が返ります
-    //  *
-    //  * @param string $to
-    //  * @return mixed
-    //  */
-    // public function convertTo(string $type);
+    /**
+     * 型変換を行います
+     * 変換できない場合は null が返ります
+     *
+     * @param string $type
+     * @return mixed
+     */
+    public function convertTo(string $type);
 }

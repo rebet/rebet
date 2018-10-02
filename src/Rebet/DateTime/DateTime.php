@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\DateTime;
 
+use Rebet\Common\Convertible;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\App;
-use Rebet\Common\Convertible;
 
 /**
  * 日付 クラス
@@ -238,7 +238,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             }
             $adopt_time = $time->format('Y-m-d H:i:s.u');
         } elseif (is_int($time)) {
-            $adopt_time = static::now()->setTimestamp($time)->format('Y-m-d H:i:s.u');
+            $adopt_time = static::createDateTime((string)$time, ['U'])->format('Y-m-d H:i:s.u');
+        } elseif (is_float($time)) {
+            $adopt_time = static::createDateTime((string)$time, ['U.u'])->format('Y-m-d H:i:s.u');
         } else {
             $test_now = self::getTestNow();
             if ($test_now) {
@@ -588,5 +590,42 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     public function getMicro() : int
     {
         return (int)($this->getMilliMicro() % 1000);
+    }
+
+    /**
+     * 小数点以下にマイクロ秒を含む Unix Epoch 時間を返します。
+     *
+     * 【注意】
+     * 小数点以下のマイクロ秒は float の丸め誤差の影響をうけるため正確な値を返さないことに注意して下さい。
+     *
+     * @return float
+     */
+    public function getMicroTimestamp() : float
+    {
+        return floatval($this->format('U.u')) ;
+    }
+
+    /**
+     * 型変換をします。
+     *
+     * @param string $type
+     * @return void
+     */
+    public function convertTo(string $type)
+    {
+        if (Reflector::typeOf($this, $type)) {
+            return $this;
+        }
+        switch ($type) {
+            case \DateTime::class:
+                return \DateTime::createFromFormat("Y-m-d H:i:s.u", $this->format("Y-m-d H:i:s.u"), $this->getTimezone());
+            case 'string':
+                return $this->jsonSerialize();
+            case 'int':
+                return $this->getTimestamp();
+            case 'float':
+                return $this->getMicroTimestamp();
+        }
+        return null;
     }
 }

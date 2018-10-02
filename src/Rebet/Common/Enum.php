@@ -196,11 +196,32 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
 
     /**
+     * 型変を行います。
+     *
+     * @param string $type
+     * @return void
+     */
+    public function convertTo(string $type)
+    {
+        if ($type === static::class) {
+            return $this;
+        }
+        if (Reflector::typeOf($this->value, $type)) {
+            return $this->value;
+        }
+        switch ($type) {
+            case 'string':
+                return (string)$this->value;
+        }
+        return null;
+    }
+
+    /**
      * 列挙型の const 定義から列挙オブジェクトを生成します。
      *
      * @param string $name const 定数名
      */
-    private static function constToEnum(\ReflectionClass $rc, $name) : ?Enum
+    private static function constToEnum(\ReflectionClass $rc, $name) : ?self
     {
         $clazz = $rc->getName();
         if (isset(self::$enum_data_cache[$clazz][$name])) {
@@ -282,7 +303,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * 指定フィールドの値を持つ列挙を取得します。
      * ※同じ値を持つ列挙が存在する場合、 Enum::lists() の順序で後勝ちとなります
      */
-    public static function fieldOf(string $field, $value) : ?Enum
+    public static function fieldOf(string $field, $value) : ?self
     {
         if ($value instanceof static) {
             return $value;
@@ -298,7 +319,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * 対象の値を持つ列挙を取得します。
      * ※同じ値を持つ列挙が存在する場合、 Enum::lists() の順序で後勝ちとなります
      */
-    public static function valueOf($value) : ?Enum
+    public static function valueOf($value) : ?self
     {
         return self::fieldOf('value', $value);
     }
@@ -307,7 +328,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * 対象のラベルを持つ列挙を取得します。
      * ※同じ値を持つ列挙が存在する場合、 Enum::lists() の順序で後勝ちとなります
      */
-    public static function labelOf(string $label) : ?Enum
+    public static function labelOf(string $label) : ?self
     {
         return self::fieldOf('label', $label);
     }

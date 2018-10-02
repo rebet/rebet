@@ -414,13 +414,17 @@ class Reflector
     /**
      * 対象の値が指定の Type かチェックします。
      * ※value が null の場合は false を返します。
+     * ※type が null の場合は true を返します。
      *
      * @param mixed $value
-     * @param string $type type or class
+     * @param string|null $type type or class
      * @return boolean
      */
-    public static function typeOf($value, string $type) : bool
+    public static function typeOf($value, ?string $type) : bool
     {
+        if ($type === null) {
+            return true;
+        }
         if ($value === null) {
             return false;
         }

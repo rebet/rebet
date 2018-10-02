@@ -121,6 +121,13 @@ class DateTimeTest extends RebetTestCase
 
         $date = new DateTime('2000-01-23 04:56');
         $this->assertEquals($date, new DateTime($date->getTimestamp()));
+
+        for ($i = 0; $i < 100; $i++) {
+            $microtime = microtime(true);
+            $date      = new DateTime($microtime);
+            $this->assertStringStartsWith((string)$microtime, $date->format('U.u'));
+            $this->assertEquals(floatval((string)$microtime), $date->getMicroTimestamp());
+        }
     }
 
     public function test_createFromFormat()

@@ -279,9 +279,11 @@ class ReflectorTest extends RebetTestCase
 
     public function test_typeOf()
     {
+        $this->assertTrue(Reflector::typeOf(null, null));
         $this->assertFalse(Reflector::typeOf(null, 'int'));
         $this->assertFalse(Reflector::typeOf(null, ReflectorTest_Mock::class));
 
+        $this->assertTrue(Reflector::typeOf(1, null));
         $this->assertTrue(Reflector::typeOf(1, 'int'));
         $this->assertFalse(Reflector::typeOf(1, 'float'));
         $this->assertFalse(Reflector::typeOf(1, 'bool'));

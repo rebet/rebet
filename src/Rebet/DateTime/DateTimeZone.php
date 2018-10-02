@@ -2,6 +2,7 @@
 namespace Rebet\DateTime;
 
 use Rebet\Common\Convertible;
+use Rebet\Common\Reflector;
 
 /**
  * タイムゾーン クラス
@@ -30,12 +31,14 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      * 指定の値を DateTimeZone に変換します。
      *
      * @see Reflector::convert()
-     * @param [type] $from
+     * @see Convertible
+     *
+     * @param string|\DateTimeZone $value
      * @return DateTimeZone
      */
-    public static function valueOf($from) : DateTimeZone
+    public static function valueOf($value) : DateTimeZone
     {
-        return new DateTimeZone($from);
+        return new DateTimeZone($value);
     }
     
     /**
@@ -46,5 +49,25 @@ class DateTimeZone extends \DateTimeZone implements Convertible
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * 型変換を行います。
+     *
+     * @see Convertible
+     *
+     * @param string $type
+     * @return void
+     */
+    public function convertTo(string $type)
+    {
+        if (Reflector::typeOf($this, $type)) {
+            return $this;
+        }
+        switch ($type) {
+            case 'string':
+                return $this->__toString();
+        }
+        return null;
     }
 }

@@ -4,47 +4,6 @@ namespace Rebet\Tests\Common;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Enum;
 
-class EnumTest_Gender extends Enum
-{
-    const MALE   = [1, '男性'];
-    const FEMALE = [2, '女性'];
-}
-class EnumTest_AcceptStatus extends Enum
-{
-    const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
-    const ACCEPTED = ['A', '受理'  , 'green' , 'fas fa-check-circle'];
-    const REJECTED = ['R', '却下'  , 'red'   , 'fas fa-times-circle'];
-    
-    public $color;
-    public $icon;
-
-    protected function __construct($value, $label, $color, $icon)
-    {
-        parent::__construct($value, $label);
-        $this->color = $color;
-        $this->icon  = $icon;
-    }
-
-    public static function nexts($current, ?array $context = null) : array
-    {
-        switch ($context['role']) {
-            case 'operator':
-                $current = self::valueOf($current);
-                if ($current === self::WAITING()) {
-                    return [self::WAITING(), self::ACCEPTED(), self::REJECTED()];
-                } else {
-                    return [$current];
-                }
-                // no break
-            case 'admin':
-                return self::lists();
-        }
-
-        return [];
-    }
-}
-
-
 class EnumTest extends RebetTestCase
 {
     private $male;
@@ -198,7 +157,39 @@ class EnumTest extends RebetTestCase
     public function test_valueOf()
     {
         $this->assertSame(EnumTest_Gender::MALE(), EnumTest_Gender::valueOf(1));
+        $this->assertSame(EnumTest_Gender::MALE(), EnumTest_Gender::valueOf('1'));
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::valueOf('R'));
+        $this->assertSame(EnumTest_CODE::NO_2(), EnumTest_CODE::valueOf('02'));
+
+        $this->assertSame(null, EnumTest_Gender::valueOf('01'));
+        $this->assertSame(null, EnumTest_CODE::valueOf(2));
+    }
+
+    public function test_convertTo()
+    {
+        $gender = EnumTest_Gender::MALE();
+        $this->assertSame(1, $gender->convertTo('int'));
+        $this->assertSame(null, $gender->convertTo('float'));
+        $this->assertSame('1', $gender->convertTo('string'));
+        $this->assertSame($gender, $gender->convertTo(EnumTest_Gender::class));
+        $this->assertSame(null, $gender->convertTo(EnumTest_AcceptStatus::class));
+        $this->assertSame(null, $gender->convertTo(EnumTest_Ratio::class));
+
+        $status = EnumTest_AcceptStatus::REJECTED();
+        $this->assertSame(null, $status->convertTo('int'));
+        $this->assertSame(null, $status->convertTo('float'));
+        $this->assertSame('R', $status->convertTo('string'));
+        $this->assertSame(null, $status->convertTo(EnumTest_Gender::class));
+        $this->assertSame($status, $status->convertTo(EnumTest_AcceptStatus::class));
+        $this->assertSame(null, $status->convertTo(EnumTest_Ratio::class));
+
+        $ratio = EnumTest_Ratio::HARF();
+        $this->assertSame(null, $ratio->convertTo('int'));
+        $this->assertSame(0.5, $ratio->convertTo('float'));
+        $this->assertSame('0.5', $ratio->convertTo('string'));
+        $this->assertSame(null, $ratio->convertTo(EnumTest_Gender::class));
+        $this->assertSame(null, $ratio->convertTo(EnumTest_AcceptStatus::class));
+        $this->assertSame($ratio, $ratio->convertTo(EnumTest_Ratio::class));
     }
 
     public function test_labelOf()
@@ -418,4 +409,56 @@ class EnumTest extends RebetTestCase
             EnumTest_AcceptStatus::nextLabels(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
         );
     }
+}
+
+class EnumTest_Gender extends Enum
+{
+    const MALE   = [1, '男性'];
+    const FEMALE = [2, '女性'];
+}
+class EnumTest_AcceptStatus extends Enum
+{
+    const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
+    const ACCEPTED = ['A', '受理'  , 'green' , 'fas fa-check-circle'];
+    const REJECTED = ['R', '却下'  , 'red'   , 'fas fa-times-circle'];
+    
+    public $color;
+    public $icon;
+
+    protected function __construct($value, $label, $color, $icon)
+    {
+        parent::__construct($value, $label);
+        $this->color = $color;
+        $this->icon  = $icon;
+    }
+
+    public static function nexts($current, ?array $context = null) : array
+    {
+        switch ($context['role']) {
+            case 'operator':
+                $current = self::valueOf($current);
+                if ($current === self::WAITING()) {
+                    return [self::WAITING(), self::ACCEPTED(), self::REJECTED()];
+                } else {
+                    return [$current];
+                }
+                // no break
+            case 'admin':
+                return self::lists();
+        }
+
+        return [];
+    }
+}
+class EnumTest_Ratio extends Enum
+{
+    const FULL    = [1.0 , '100%'];
+    const HARF    = [0.5 , '50%'];
+    const QUARTER = [0.25, '25%'];
+}
+class EnumTest_Code extends Enum
+{
+    const NO_1 = ['01', 'No. 1'];
+    const NO_2 = ['02', 'No. 2'];
+    const NO_3 = ['03', 'No. 3'];
 }
