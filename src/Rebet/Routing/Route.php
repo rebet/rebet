@@ -140,7 +140,24 @@ abstract class Route
     public function handle(Request $request) : Response
     {
         $action = $this->verify($request);
-        return new Response($action->invoke($request));
+        return $this->toResponse($request, $action->invoke($request));
+    }
+
+    /**
+     * 様々な形式のアクション戻り値をレスポンス形式に変換します。
+     *
+     * @todo 実装
+     *
+     * @param Request $request
+     * @param mixed $response
+     * @return Response
+     */
+    protected function toResponse($request, $response) : Response
+    {
+        // 要実装
+
+        $response = new Response($response);
+        return $response->prepare($request);
     }
 
     /**

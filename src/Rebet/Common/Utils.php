@@ -21,7 +21,6 @@ use Rebet\Common\Strings;
  */
 class Utils
 {
-    
     /**
      * インスタンス化禁止
      */

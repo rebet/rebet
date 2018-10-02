@@ -3,6 +3,7 @@ namespace Rebet\Routing;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Common\Reflector;
 
 /**
  * Route action class
@@ -47,7 +48,7 @@ class RouteAction
      * アクションを実行します。
      *
      * @param Request $request
-     * @return void
+     * @return mixed
      */
     public function invoke(Request $request)
     {
@@ -55,10 +56,7 @@ class RouteAction
         $args = [];
         foreach ($reflector->getParameters() as $parameter) {
             $name = $parameter->name;
-            $args[$name] = $vars->has($name) ? $vars->get($name) : null ;
-            
-            //@todo 型変換
-            $type = (string)($parameter->getType() ?? $parameter->getClass());
+            $args[$name] = Reflector::convert($vars->has($name) ? $vars->get($name) : null, Reflector::getTypeHint($parameter));
         }
         
         return $this->isFunction() ? $this->reflector->invokeArgs($args)  : $this->reflector->invokeArgs($this->instance, $args);

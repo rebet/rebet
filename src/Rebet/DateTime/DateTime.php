@@ -241,6 +241,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         } elseif (is_int($time)) {
             $adopt_time = static::createDateTime((string)$time, ['U'])->format('Y-m-d H:i:s.u');
         } elseif (is_float($time)) {
+            // @todo 修正
             $adopt_time = static::createDateTime((string)$time, ['U.u'])->format('Y-m-d H:i:s.u');
         } else {
             $test_now = self::getTestNow();

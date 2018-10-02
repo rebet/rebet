@@ -17,7 +17,7 @@ class ClosureRoute extends Route
     /**
      * クロージャ
      *
-     * @var callable
+     * @var \Closure
      */
     public $action = null;
     
@@ -26,11 +26,12 @@ class ClosureRoute extends Route
      *
      * @param array $methods
      * @param string $uri
+     * @param callable $action
      */
     public function __construct(array $methods, string $uri, callable $action)
     {
         parent::__construct($methods, $uri);
-        $this->action = $action;
+        $this->action = \Closure::fromCallable($action);
     }
 
     /**
