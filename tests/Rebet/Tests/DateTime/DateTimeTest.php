@@ -6,6 +6,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
 use Rebet\Config\Config;
 use Rebet\Config\App;
+use Rebet\Common\Strings;
 
 class DateTimeTest extends RebetTestCase
 {
@@ -861,5 +862,34 @@ class DateTimeTest extends RebetTestCase
         $micro = $date->getMicro();
         $this->assertInternalType(\int::class, $micro);
         $this->assertSame(10, $micro);
+    }
+
+    public function test_getMicroTimestamp()
+    {
+        for ($i = 0; $i < 100; $i++) {
+            $microtime = microtime(true);
+            $date      = new DateTime($microtime);
+            $this->assertStringStartsWith((string)$microtime, $date->format('U.u'));
+            $this->assertEquals(floatval((string)$microtime), $date->getMicroTimestamp());
+        }
+    }
+
+    public function test_convertTo()
+    {
+        $micro  = microtime(true);
+        $now    = new DateTime($micro);
+        $millis = intval(Strings::latrim($micro, '.'));
+        
+        $this->assertSame($now, $now->convertTo(DateTime::class));
+        $this->assertSame($now, $now->convertTo(\DateTimeImmutable::class));
+
+        $date = $now->convertTo(\DateTime::class);
+        $this->assertInstanceOf(\DateTime::class, $date);
+        $this->assertSame($now->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame($now->getTimezone()->getName(), $date->getTimezone()->getName());
+
+        $this->assertSame($millis, $now->convertTo('int'));
+
+        $this->assertEquals(floatval((string)$micro), $now->convertTo('float'));
     }
 }
