@@ -609,6 +609,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * 型変換をします。
      *
+     * @see Convertible
+     *
      * @param string $type
      * @return void
      */
