@@ -241,8 +241,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         } elseif (is_int($time)) {
             $adopt_time = static::createDateTime((string)$time, ['U'])->format('Y-m-d H:i:s.u');
         } elseif (is_float($time)) {
-            // @todo 修正
-            $adopt_time = static::createDateTime((string)$time, ['U.u'])->format('Y-m-d H:i:s.u');
+            [$second, $milli_micro] = array_pad(explode('.', (string)$time), 2, 0);
+            $adopt_time = static::createDateTime($second, ['U'])->setMilliMicro((int) str_pad($milli_micro, 6, '0'))->format('Y-m-d H:i:s.u');
         } else {
             $test_now = self::getTestNow();
             if ($test_now) {
@@ -518,13 +518,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     public function setMilliMicro(int $milli_micro) : DateTime
     {
         if ($milli_micro >= 0) {
-            $milli = floor($milli_micro / 1000000);
-            $u     = str_pad($milli_micro % 1000000, 6, '0', STR_PAD_LEFT);
+            $sec = floor($milli_micro / 1000000);
+            $u   = str_pad($milli_micro % 1000000, 6, '0', STR_PAD_LEFT);
         } else {
-            $milli = ceil(abs($milli_micro) / 1000000) * -1;
-            $u     = str_pad(((abs($milli) * 1000000) + $milli_micro) % 1000000, 6, '0', STR_PAD_LEFT);
+            $sec = ceil(abs($milli_micro) / 1000000) * -1;
+            $u   = str_pad(((abs($sec) * 1000000) + $milli_micro) % 1000000, 6, '0', STR_PAD_LEFT);
         }
-        return $this->modify($this->format("H:i:s.{$u}"))->addSecond($milli);
+        return $this->modify($this->format("H:i:s.{$u}"))->addSecond($sec);
     }
 
     /**
