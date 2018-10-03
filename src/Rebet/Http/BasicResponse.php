@@ -4,14 +4,14 @@ namespace Rebet\Http;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
- * Response Class
+ * Basic Response Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class WebResponse extends SymfonyResponse implements Response
+class BasicResponse extends SymfonyResponse implements Response
 {
     use Respondable;
 

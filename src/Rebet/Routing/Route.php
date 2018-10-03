@@ -3,6 +3,9 @@ namespace Rebet\Routing;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Http\BasicResponse;
+use Rebet\Http\JsonResponse;
+use Rebet\Http\StreamedResponse;
 
 /**
  * Route class
@@ -41,6 +44,16 @@ abstract class Route
     public $wheres = [];
     
     /**
+     * 文字列化します。
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return "Route: [".join('|', $this->methods)."] {$this->uri} where ".json_encode($this->wheres);
+    }
+
+    /**
      * ルートオブジェクトを構築します
      *
      * @param array $methods
@@ -75,14 +88,14 @@ abstract class Route
      * @param Request $request
      * @return bool
      */
-    public function match(Request $request) : array
+    public function match(Request $request) : bool
     {
-        if (!empty($this->methods) && in_array($request->getMethod(), $this->methods)) {
+        if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
             return false;
         }
 
         $matches  = [];
-        $is_match = preg_match($this->getMatchingRegex(), $request->getBasePath(), $matches);
+        $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUri(), $matches);
         if (!$is_match) {
             return false;
         }
@@ -167,7 +180,7 @@ abstract class Route
         if ($data instanceof \JsonSerializable) {
             return new JsonResponse($data->jsonSerialize());
         }
-        return new WebResponse($data);
+        return new BasicResponse($data);
     }
 
     /**

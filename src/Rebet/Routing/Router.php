@@ -7,7 +7,7 @@ use Rebet\Common\Utils;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
-use Rebet\Config\RouteNotFoundException;
+use Rebet\Routing\RouteNotFoundException;
 use Rebet\Config\App;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 
@@ -40,17 +40,18 @@ class Router
 
     /**
      * ルートリスト
+     * @todo 不要？
      *
      * @var array
      */
-    private static $routes;
+    private static $routes = [];
     
     /**
      * ルート探査木
      *
      * @var array
      */
-    private static $routing_tree;
+    private static $routing_tree = [];
     
     /**
      * 現在のルート
@@ -95,9 +96,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function get(string $uri, $action) : Route
+    public static function get(string $uri, $action) : Route
     {
-        return $this->match(['GET', 'HEAD'], $uri, $action);
+        return static::match(['GET', 'HEAD'], $uri, $action);
     }
 
     /**
@@ -107,9 +108,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function post(string $uri, $action) : Route
+    public static function post(string $uri, $action) : Route
     {
-        return $this->match('POST', $uri, $action);
+        return static::match('POST', $uri, $action);
     }
 
     /**
@@ -119,9 +120,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function put(string $uri, $action) : Route
+    public static function put(string $uri, $action) : Route
     {
-        return $this->match('PUT', $uri, $action);
+        return static::match('PUT', $uri, $action);
     }
 
     /**
@@ -131,9 +132,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function patch(string $uri, $action) : Route
+    public static function patch(string $uri, $action) : Route
     {
-        return $this->match('PATCH', $uri, $action);
+        return static::match('PATCH', $uri, $action);
     }
 
     /**
@@ -143,9 +144,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function delete(string $uri, $action) : Route
+    public static function delete(string $uri, $action) : Route
     {
-        return $this->match('DELETE', $uri, $action);
+        return static::match('DELETE', $uri, $action);
     }
 
     /**
@@ -155,9 +156,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function options(string $uri, $action) : Route
+    public static function options(string $uri, $action) : Route
     {
-        return $this->match('OPTIONS', $uri, $action);
+        return static::match('OPTIONS', $uri, $action);
     }
 
     /**
@@ -167,9 +168,9 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function any(string $uri, $action) : Route
+    public static function any(string $uri, $action) : Route
     {
-        return $this->match([], $uri, $action);
+        return static::match([], $uri, $action);
     }
     
     /**
@@ -213,22 +214,39 @@ class Router
         if (!static::$in_rules) {
             throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        $this->routes[] = $route;
-        
-        $nests  = explode('/', Strings::latrim($route->uri, '{'));
-        $branch = static::$routing_tree;
-        foreach ($nests as $nest) {
-            if (Utils::isBlank($nest)) {
-                continue;
-            }
-            if (!isset($branch[$nest])) {
-                $branch[$nest] = [];
-            }
-            $branch = $branch[$nest];
-        }
-        $branch[':routes:'] = $route;
+        static::$routes[] = $route; //@todo 不要？
+        static::digging(static::$routing_tree, explode('/', Strings::latrim($route->uri, '{')), $route);
     }
     
+    /**
+     * ルート探査木を掘り進めながら ルートオブジェクトを格納します。
+     *
+     * @param array $tree
+     * @param array $nests
+     * @param Route $route
+     * @return void
+     */
+    private static function digging(array &$tree, array $nests, Route $route) : void
+    {
+        if (empty($nests)) {
+            if (!isset($tree[':routes:'])) {
+                $tree[':routes:'] = [];
+            }
+            $tree[':routes:'][] = $route;
+            return;
+        }
+        $nest = array_shift($nests);
+        if (empty($nest)) {
+            static::digging($tree, $nests, $route);
+            return;
+        }
+        if (!isset($tree[$nest])) {
+            $tree[$nest] = [];
+        }
+        static::digging($tree[$nest], $nests, $route);
+        return;
+    }
+
     /**
      * フォールバックアクションを設定します。
      * ここで登録したアクションは例外発生時に呼び出されます。
@@ -270,7 +288,7 @@ class Router
         $route = null;
         try {
             $route = static::findRoute($request);
-            static::$pipeline = (new Pipeline())->through(static::config('middlewares'))->then($route);
+            static::$pipeline = (new Pipeline())->through(static::config('middlewares', false, []))->then($route);
             return static::$pipeline->send($request);
         } catch (\Throwable $e) {
             $fallback = static::config("fallback");
@@ -286,10 +304,14 @@ class Router
      */
     protected static function findRoute(Request $request) : Route
     {
-        $base_url     = $request->getBaseUrl();
-        $paths        = explode('/', $base_url);
+        $request_uri  = $request->getRequestUri();
+        $paths        = explode('/', $request_uri);
         $routing_tree = static::$routing_tree;
+
         foreach ($paths as $path) {
+            if (Utils::isBlank($path)) {
+                continue;
+            }
             if (!isset($routing_tree[$path])) {
                 break;
             }
@@ -297,7 +319,7 @@ class Router
         }
 
         if (!isset($routing_tree[':routes:'])) {
-            throw new RouteNotFoundException("Route [{$base_url}] Not Found.");
+            throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
         }
         foreach ($routing_tree[':routes:'] as $route) {
             if ($route->match($request)) {
@@ -310,7 +332,7 @@ class Router
             return $default_route;
         }
 
-        throw new RouteNotFoundException("Route not found for [{$base_url}].");
+        throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
     }
     
     /**

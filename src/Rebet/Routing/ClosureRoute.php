@@ -3,7 +3,7 @@ namespace Rebet\Routing;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\Http\WebResponse;
+use Rebet\Http\BasicResponse;
 use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
 
@@ -48,7 +48,7 @@ class ClosureRoute extends Route
      */
     public function verify(Request $request) : RouteAction
     {
-        return new RouteAction(new ReflectionFunction($this->action));
+        return new RouteAction(new \ReflectionFunction($this->action));
     }
     
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Routing;
 
 /**
  * ルート未定義例外 クラス
