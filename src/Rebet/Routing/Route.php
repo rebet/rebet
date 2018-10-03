@@ -79,33 +79,37 @@ abstract class Route
         }
         return $this;
     }
-    
+
     /**
      * 対象のリクエストが自身のルート設定にマッチするかチェックします。
      * 本メソッドは {} プレースホルダによる URI 指定を解析し、マッチ結果を返します。
      * なお、マッチングの過程で取り込まれたルーティングパラメータは $request->attributes に格納されます。
      *
+     * マッチ結果として false を返すと後続のルート検証が行われます。
+     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     *
      * @param Request $request
      * @return bool
+     * @throws RouteNotFoundException
      */
     public function match(Request $request) : bool
     {
-        if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
-            return false;
-        }
-
         $matches  = [];
         $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUri(), $matches);
         if (!$is_match) {
             return false;
         }
-        
+
+        if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
+            throw new RouteNotFoundException("Route [".join('|', $this->methods)."] {$request->getRequestUri()} not found. Invalid method {$request->getMethod()} given.");
+        }
+
         $vars = [];
         foreach ($matches as $key => $value) {
             if (!is_int($key)) {
                 $regex = $this->wheres[$key] ?: null ;
                 if ($regex && !preg_match($regex, $value)) {
-                    return false;
+                    throw new RouteNotFoundException("Route [" . join('|', $this->methods) . "] {$request->getRequestUri()} not found. Routing parameter {$key} value {$value} not match {$regex}.");
                 }
                 $vars[$key] = $value;
             }

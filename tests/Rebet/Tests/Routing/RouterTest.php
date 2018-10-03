@@ -31,8 +31,40 @@ class RouterTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 
         Router::rules('web', function () {
+            Router::get('/', function () {
+                return 'Content: /';
+            });
+
             Router::get('/get', function () {
                 return 'Content: /get';
+            });
+
+            Router::post('/post', function () {
+                return 'Content: /post';
+            });
+
+            Router::put('/put', function () {
+                return 'Content: /put';
+            });
+
+            Router::patch('/patch', function () {
+                return 'Content: /patch';
+            });
+
+            Router::delete('/delete', function () {
+                return 'Content: /delete';
+            });
+
+            Router::options('/options', function () {
+                return 'Content: /options';
+            });
+
+            Router::any('/any', function () {
+                return 'Content: /any';
+            });
+
+            Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', function () {
+                return 'Content: /match/get-head-post';
             });
 
             Router::fallback(function ($request, $route, $e) {
@@ -74,6 +106,14 @@ class RouterTest extends RebetTestCase
         });
     }
 
+    public function test_routing_root()
+    {
+        $response = Router::handle(Request::create('/'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /', $response->getContent());
+    }
+    
     public function test_routing_get()
     {
         $response = Router::handle(Request::create('/get'));
@@ -89,10 +129,106 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\RouteNotFoundException
-     * @expectedExceptionMessage Route POST /get not found.
+     * @expectedExceptionMessage Route [GET|HEAD] /get not found. Invalid method POST given.
      */
     public function test_routing_get_invalidMethod()
     {
         $response = Router::handle(Request::create('/get', 'POST'));
+    }
+    
+    public function test_routing_post()
+    {
+        $response = Router::handle(Request::create('/post', 'POST'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /post', $response->getContent());
+    }
+
+    public function test_routing_put()
+    {
+        $response = Router::handle(Request::create('/put', 'PUT'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /put', $response->getContent());
+    }
+
+    public function test_routing_patch()
+    {
+        $response = Router::handle(Request::create('/patch', 'PATCH'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /patch', $response->getContent());
+    }
+
+    public function test_routing_delete()
+    {
+        $response = Router::handle(Request::create('/delete', 'DELETE'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /delete', $response->getContent());
+    }
+
+    public function test_routing_options()
+    {
+        $response = Router::handle(Request::create('/options', 'OPTIONS'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /options', $response->getContent());
+    }
+
+    public function test_routing_any()
+    {
+        $response = Router::handle(Request::create('/any'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /any', $response->getContent());
+
+        $response = Router::handle(Request::create('/any', 'HEAD'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('', $response->getContent());
+
+        $response = Router::handle(Request::create('/any', 'POST'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /any', $response->getContent());
+
+        $response = Router::handle(Request::create('/any', 'PUT'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /any', $response->getContent());
+
+        $response = Router::handle(Request::create('/any', 'PATCH'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /any', $response->getContent());
+
+        $response = Router::handle(Request::create('/any', 'DELETE'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /any', $response->getContent());
+
+        $response = Router::handle(Request::create('/any', 'OPTIONS'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /any', $response->getContent());
+    }
+    
+    public function test_routing_match()
+    {
+        $response = Router::handle(Request::create('/match/get-head-post'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /match/get-head-post', $response->getContent());
+
+        $response = Router::handle(Request::create('/match/get-head-post', 'HEAD'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('', $response->getContent());
+
+        $response = Router::handle(Request::create('/match/get-head-post', 'POST'));
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('Content: /match/get-head-post', $response->getContent());
     }
 }
