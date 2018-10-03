@@ -72,37 +72,22 @@ class Router
      */
     private static $pipeline = null;
     
-    public static function rules($surface, callable $callback)
+    /**
+     * ルーティングルールを設定します。
+     *
+     * @param string $surface
+     * @param callable $callback
+     * @return void
+     */
+    public static function rules(string $surface, callable $callback)
     {
-        if (in_array(App::getSurface(), (array)$surface)) {
+        if ($surface === App::getSurface()) {
             static::$in_rules = true;
             $callback();
             static::$in_rules = false;
         }
     }
 
-    /**
-     * Undocumented function
-     *
-     * @param array|string $methods
-     * @param string $uri
-     * @param string|callable $action
-     * @return Route
-     */
-    public static function match($methods, string $uri, $action) : Route
-    {
-        $route = null;
-        if ($action instanceof Route) {
-            $route = $action;
-        } elseif (is_callable($action)) {
-            $route = new ClosureRoute(array_map('strtoupper', (array)$methods), $uri, $action);
-        }
-        // @todo Controller@method 形式ルートの実装
-        
-        static::addRoute($route);
-        return $route;
-    }
-    
     /**
      * Register a new GET route with the router.
      *
@@ -188,6 +173,35 @@ class Router
     }
     
     /**
+     * 指定の HTTPメソッド にマッチするルートを設定します。
+     * ※HTTPメソッドが無指定（=[]）の場合は全てのメソッドにマッチします。
+     *
+     * @param array|string $methods
+     * @param string $uri
+     * @param string|callable $action
+     * @return Route
+     */
+    public static function match($methods, string $uri, $action) : Route
+    {
+        $route = null;
+        if ($action instanceof Route) {
+            $route = $action;
+        } elseif (is_callable($action)) {
+            $route = new ClosureRoute(array_map('strtoupper', (array)$methods), $uri, $action);
+        }
+
+        // @todo Controller@method 形式ルートの実装
+        
+        static::addRoute($route);
+        return $route;
+    }
+   
+    // public static function redirect($uri, $destination, $status = 302)
+    // {
+    //     //@todo 実装
+    // }
+    
+    /**
      * ルートをルーターに追加します。
      * 本メソッドはルート解決高速化のための不完全なルート探査木を構築します。
      *
@@ -215,7 +229,15 @@ class Router
         $branch[':routes:'] = $route;
     }
     
-    public static function fallback($action)
+    /**
+     * フォールバックアクションを設定します。
+     * ここで登録したアクションは例外発生時に呼び出されます。
+     * 通常、ログ出力やエラーページ表示での利用を想定しています。
+     *
+     * @param callabel $action function(Request $request, ?Route $route, \Throwable $e) { ... }
+     * @return void
+     */
+    public static function fallback(callable $action)
     {
         if (!static::$in_rules) {
             throw new \LogicException("Routing fallback rules are defined without Router::rules(). You should wrap rules by Router::rules().");
@@ -223,6 +245,12 @@ class Router
         static::setConfig(['fallback' => $action]);
     }
 
+    /**
+     * デフォルトルートを設定します。
+     *
+     * @param mixed $route Routeオブジェクト 又は それを生成できる instantiate 設定
+     * @return void
+     */
     public static function default($route)
     {
         if (!static::$in_rules) {
@@ -231,11 +259,12 @@ class Router
         static::setConfig(['default_route' => $route]);
     }
 
-    public static function redirect($uri, $destination, $status = 302)
-    {
-        //@todo 実装
-    }
-    
+    /**
+     * 対象のリクエストをルーティングします。
+     *
+     * @param Request $request
+     * @return Response
+     */
     public static function handle(Request $request) : Response
     {
         $route = null;
@@ -249,6 +278,12 @@ class Router
         }
     }
     
+    /**
+     * リクエストにマッチするルートを検索します。
+     *
+     * @param Request $request
+     * @return Route
+     */
     protected static function findRoute(Request $request) : Route
     {
         $base_url     = $request->getBaseUrl();
@@ -271,13 +306,20 @@ class Router
         }
 
         $default_route = static::configInstantiate("default_route", false);
-        if ($default_route !== null) {
+        if ($default_route !== null && $default_route->match($request)) {
             return $default_route;
         }
 
-        throw new RouteNotFoundException("Route [{$base_url}] Not Found.");
+        throw new RouteNotFoundException("Route not found for [{$base_url}].");
     }
     
+    /**
+     * ルーターをシャットダウンします。
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
     public static function shutdown(Request $request, Response $response) : void
     {
         if (static::$pipeline !== null) {
