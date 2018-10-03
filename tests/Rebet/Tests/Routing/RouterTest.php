@@ -41,6 +41,39 @@ class RouterTest extends RebetTestCase
         });
     }
     
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().
+     */
+    public function test_invalidRuleDefine_match()
+    {
+        Router::match('GET', '/get', function () {
+            return 'Content: /get';
+        });
+    }
+    
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Routing fallback rules are defined without Router::rules(). You should wrap rules by Router::rules().
+     */
+    public function test_invalidRuleDefine_fallback()
+    {
+        Router::fallback(function ($request, $route, $e) {
+            throw $e;
+        });
+    }
+    
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().
+     */
+    public function test_invalidRuleDefine_default()
+    {
+        Router::default(function () {
+            return 'default route.';
+        });
+    }
+
     public function test_routing_get()
     {
         $response = Router::handle(Request::create('/get'));
