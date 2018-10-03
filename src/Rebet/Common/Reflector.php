@@ -244,9 +244,11 @@ class Reflector
      * 本メソッドは以下の手順で型変換を試みます。
      * なお、変換が出来ない場合は null が返ります。
      *
-     * 　1. $value が null の場合:
+     * 　1. $type が null の場合:
+     *      -> $value を返す
+     * 　2. $value が null の場合:
      *      -> null を返す
-     * 　2. $type が array  の場合:
+     * 　3. $type が array  の場合:
      *      -> $value が is_array() なら変換なし
      *      -> $value が is_string() なら expload(',', $value)
      *      -> $value::toArray() があれば実行
@@ -256,7 +258,7 @@ class Reflector
      *         -> $json が is_array() でなければ [$value]
      *      -> $value が object なら get_object_vars($value)
      *      -> それ以外なら (array)$value
-     * 　3. $type が string の場合:
+     * 　4. $type が string の場合:
      *      -> $value が is_string() なら変換なし
      *      -> $value が is_resource() なら null
      *      -> $value が is_scalar() なら型キャスト
@@ -264,20 +266,20 @@ class Reflector
      *         -> $json が is_scalar() なら (string)$value
      *      -> $value::__toSring() が存在すれば実行
      *      -> それ以外なら null
-     * 　4. $type が callable の場合:
+     * 　5. $type が callable の場合:
      *      -> $value が callable なら変換なし
      *      -> それ以外なら null
-     * 　5. $type が \Closure の場合:
+     * 　6. $type が \Closure の場合:
      *      -> $value が object で instanceof \Closure なら変換なし
      *      -> $value が callable なら \Closure::fromCallable() で変換
      *      -> それ以外なら null
-     * 　6. $type が scaler(int|float|bool) の場合:
+     * 　7. $type が scaler(int|float|bool) の場合:
      *      -> $value が is_{$type}() なら変換なし
      *      -> $value が scaler なら {$type}val($value) を実行
      *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
      *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
      *      -> それ以外なら null
-     *   7. $type が object の場合:
+     *   8. $type が object の場合:
      *      -> $type::valueOf($value) が存在すれば実行 -> 型チェック
      *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
      *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
@@ -286,11 +288,14 @@ class Reflector
      * @see Convertible
      *
      * @param mixed $value
-     * @param string $type
+     * @param string|null $type
      * @return mixed
      */
-    public static function convert($value, string $type)
+    public static function convert($value, ?string $type)
     {
+        if ($type === null) {
+            return $value;
+        }
         if ($value === null) {
             return null;
         }

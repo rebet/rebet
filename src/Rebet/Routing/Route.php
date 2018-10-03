@@ -6,6 +6,7 @@ use Rebet\Http\Response;
 use Rebet\Http\BasicResponse;
 use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
+use Rebet\Common\Strings;
 
 /**
  * Route class
@@ -94,6 +95,8 @@ abstract class Route
      */
     public function match(Request $request) : bool
     {
+        // echo "\npreg_match('{$this->getMatchingRegex()}', '". $request->getRequestUri()."');\n";
+        
         $matches  = [];
         $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUri(), $matches);
         if (!$is_match) {

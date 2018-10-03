@@ -51,14 +51,14 @@ class Router
      *
      * @var array
      */
-    private static $routing_tree = [];
+    public static $routing_tree = [];
     
     /**
      * 現在のルート
      *
      * @var Route
      */
-    private static $current;
+    private static $current = null;
     
     /**
      * ルール定義の最中か否か
@@ -72,6 +72,20 @@ class Router
      * @var Rebet\Pipeline\Pipeline
      */
     private static $pipeline = null;
+    
+    /**
+     * ルーターをクリアします。
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$routes       = [];
+        static::$routing_tree = [];
+        static::$current      = null;
+        static::$in_rules     = false;
+        static::$pipeline     = null;
+    }
     
     /**
      * ルーティングルールを設定します。

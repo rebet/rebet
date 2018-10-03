@@ -30,6 +30,7 @@ class RouterTest extends RebetTestCase
         ]);
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 
+        Router::clear();
         Router::rules('web', function () {
             Router::get('/', function () {
                 return 'Content: /';
@@ -63,6 +64,14 @@ class RouterTest extends RebetTestCase
                 return 'Content: /any';
             });
 
+            Router::get('/parameter/requierd/{id}', function ($id) {
+                return 'Content: /parameter/requierd/{id} - '.$id;
+            });
+
+            Router::get('/parameter/option/{id?}', function ($id = 'default') {
+                return 'Content: /parameter/option/{id?} - ' . $id;
+            });
+            
             Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', function () {
                 return 'Content: /match/get-head-post';
             });
@@ -82,6 +91,7 @@ class RouterTest extends RebetTestCase
         Router::match('GET', '/get', function () {
             return 'Content: /get';
         });
+        $this->fail('Never execute.');
     }
     
     /**
@@ -93,6 +103,7 @@ class RouterTest extends RebetTestCase
         Router::fallback(function ($request, $route, $e) {
             throw $e;
         });
+        $this->fail('Never execute.');
     }
     
     /**
@@ -104,6 +115,7 @@ class RouterTest extends RebetTestCase
         Router::default(function () {
             return 'default route.';
         });
+        $this->fail('Never execute.');
     }
 
     public function test_routing_root()
@@ -134,6 +146,7 @@ class RouterTest extends RebetTestCase
     public function test_routing_get_invalidMethod()
     {
         $response = Router::handle(Request::create('/get', 'POST'));
+        $this->fail('Never execute.');
     }
     
     public function test_routing_post()
@@ -230,5 +243,49 @@ class RouterTest extends RebetTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
+    }
+    
+    public function test_routing_parameterRequierd()
+    {
+        $response = Router::handle(Request::create('/parameter/requierd/1'));
+        $this->assertSame('Content: /parameter/requierd/{id} - 1', $response->getContent());
+        
+        $response = Router::handle(Request::create('/parameter/requierd/abc'));
+        $this->assertSame('Content: /parameter/requierd/{id} - abc', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route GET /parameter/requierd not found.
+     */
+    public function test_routing_parameterRequierdNothing()
+    {
+        $response = Router::handle(Request::create('/parameter/requierd'));
+        $this->fail('Never execute.');
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route GET /parameter/requierd/ not found.
+     */
+    public function test_routing_parameterRequierdNothing2()
+    {
+        $response = Router::handle(Request::create('/parameter/requierd/'));
+        $this->fail('Never execute.');
+    }
+
+    public function test_routing_parameterOption()
+    {
+        $response = Router::handle(Request::create('/parameter/option/1'));
+        $this->assertSame('Content: /parameter/option/{id?} - 1', $response->getContent());
+
+        $response = Router::handle(Request::create('/parameter/option/abc'));
+        $this->assertSame('Content: /parameter/option/{id?} - abc', $response->getContent());
+        
+        // $response = Router::handle(Request::create('/parameter/option/'));
+        // $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
+
+        // $response = Router::handle(Request::create('/parameter/option'));
+        // $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
     }
 }
