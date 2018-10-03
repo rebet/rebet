@@ -147,6 +147,8 @@ abstract class Route
     /**
      * ルートアクションの戻り値をレスポンス形式に変換します。
      *
+     * @todo 実装
+     *
      * @param Request $request
      * @param mixed $data
      * @return Response
@@ -171,9 +173,11 @@ abstract class Route
     /**
      * シャットダウン処理を行います。
      *
+     * @param Request $request
+     * @param Response $response
      * @return void
      */
-    abstract public function shutdown() : void ;
+    abstract public function shutdown(Request $request, Response $response) : void ;
 
     /**
      * ルートを Pipeline で処理できるようにします。

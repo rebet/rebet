@@ -171,23 +171,23 @@ class AppTest extends RebetTestCase
 
         App::setSurface('console');
         App::setEnv('unittest');
-        $this->assertSame('console@unittest', App::when($case));
+        $this->assertSame('console@unittest', App::when($case)->get());
 
         App::setSurface('console');
         App::setEnv('development');
-        $this->assertSame('console', App::when($case));
+        $this->assertSame('console', App::when($case)->get());
 
         App::setSurface('api');
         App::setEnv('unittest');
-        $this->assertSame('unittest', App::when($case));
+        $this->assertSame('unittest', App::when($case)->get());
 
         App::setSurface('web');
         App::setEnv('local');
-        $this->assertSame('web@local', App::when($case));
+        $this->assertSame('web@local', App::when($case)->get());
 
         App::setSurface('api');
         App::setEnv('development');
-        $this->assertSame('default', App::when($case));
+        $this->assertSame('default', App::when($case)->get());
     }
 
     public function test_getTimezone()

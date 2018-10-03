@@ -164,9 +164,16 @@ class App
      */
     public static function when(array $case)
     {
-        $surface = static::getSurface();
-        $env     = static::getEnv();
-        return $case["{$surface}@{$env}"] ?? $case[$surface] ?? $case[$env] ?? $case['default'];
+        return Config::promise(function () use ($case) {
+            $surface = App::getSurface();
+            $env     = App::getEnv();
+            return
+                $case["{$surface}@{$env}"] ??
+                $case[$surface] ??
+                $case[$env] ??
+                $case['default']
+            ;
+        }, false);
     }
 
     /**

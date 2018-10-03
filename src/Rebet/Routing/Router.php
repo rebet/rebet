@@ -8,6 +8,8 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Config\RouteNotFoundException;
+use Rebet\Config\App;
+use PHPUnit\Framework\Constraint\IsInstanceOf;
 
 /**
  * Router Class
@@ -23,9 +25,9 @@ class Router
     public static function defaultConfig()
     {
         return [
-            'middlewares'    => [],
-            'default_route'  => null,
-            'fallback_route' => null,
+            'middlewares'   => [],
+            'default_route' => null,
+            'fallback'      => null,
         ];
     }
 
@@ -58,11 +60,27 @@ class Router
     private static $current;
     
     /**
+     * ルール定義の最中か否か
+     *
+     * @var boolean
+     */
+    private static $in_rules = false;
+
+    /**
      * ルートミドルウェアパイプライン
      * @var Rebet\Pipeline\Pipeline
      */
     private static $pipeline = null;
     
+    public static function rules($surface, callable $callback)
+    {
+        if (in_array(App::getSurface(), (array)$surface)) {
+            static::$in_rules = true;
+            $callback();
+            static::$in_rules = false;
+        }
+    }
+
     /**
      * Undocumented function
      *
@@ -74,7 +92,9 @@ class Router
     public static function match($methods, string $uri, $action) : Route
     {
         $route = null;
-        if (is_callable($action)) {
+        if ($action instanceof Route) {
+            $route = $action;
+        } elseif (is_callable($action)) {
             $route = new ClosureRoute(array_map('strtoupper', (array)$methods), $uri, $action);
         }
         // @todo Controller@method 形式ルートの実装
@@ -102,7 +122,7 @@ class Router
      * @param  callable|string  $action
      * @return Route
      */
-    public function post(string $uri, $actionxe) : Route
+    public function post(string $uri, $action) : Route
     {
         return $this->match('POST', $uri, $action);
     }
@@ -176,6 +196,9 @@ class Router
      */
     protected static function addRoute(Route $route)
     {
+        if (!static::$in_rules) {
+            throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+        }
         $this->routes[] = $route;
         
         $nests  = explode('/', Strings::latrim($route->uri, '{'));
@@ -192,9 +215,20 @@ class Router
         $branch[':routes:'] = $route;
     }
     
-    public static function fallback($action) : Route
+    public static function fallback($action)
     {
-        //@todo 実装
+        if (!static::$in_rules) {
+            throw new \LogicException("Routing fallback rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+        }
+        static::setConfig(['fallback' => $action]);
+    }
+
+    public static function default($route)
+    {
+        if (!static::$in_rules) {
+            throw new \LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+        }
+        static::setConfig(['default_route' => $route]);
     }
 
     public static function redirect($uri, $destination, $status = 302)
@@ -204,25 +238,51 @@ class Router
     
     public static function handle(Request $request) : Response
     {
+        $route = null;
         try {
             $route = static::findRoute($request);
             static::$pipeline = (new Pipeline())->through(static::config('middlewares'))->then($route);
             return static::$pipeline->send($request);
-        } catch (RouteNotFoundException $e) {
-            //@todo 実装
+        } catch (\Throwable $e) {
+            $fallback = static::config("fallback");
+            return $fallback($request, $route, $e);
         }
     }
     
     protected static function findRoute(Request $request) : Route
     {
-        return null;
+        $base_url     = $request->getBaseUrl();
+        $paths        = explode('/', $base_url);
+        $routing_tree = static::$routing_tree;
+        foreach ($paths as $path) {
+            if (!isset($routing_tree[$path])) {
+                break;
+            }
+            $routing_tree = $routing_tree[$path];
+        }
+
+        if (!isset($routing_tree[':routes:'])) {
+            throw new RouteNotFoundException("Route [{$base_url}] Not Found.");
+        }
+        foreach ($routing_tree[':routes:'] as $route) {
+            if ($route->match($request)) {
+                return $route;
+            }
+        }
+
+        $default_route = static::configInstantiate("default_route", false);
+        if ($default_route !== null) {
+            return $default_route;
+        }
+
+        throw new RouteNotFoundException("Route [{$base_url}] Not Found.");
     }
     
-    public static function shutdown() : void
+    public static function shutdown(Request $request, Response $response) : void
     {
         if (static::$pipeline !== null) {
-            static::$pipeline->invoke('shutdown');
-            static::$pipeline->getDestination()->shutdown();
+            static::$pipeline->invoke('shutdown', $request, $response);
+            static::$pipeline->getDestination()->shutdown($request, $response);
         }
     }
 }
