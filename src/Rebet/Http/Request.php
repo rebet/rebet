@@ -22,6 +22,13 @@ class Request extends SymfonyRequest
     protected static $current = null;
 
     /**
+     * ルーティングにマッチしたルートオブジェクト
+     *
+     * @var Route
+     */
+    public $route = null;
+
+    /**
      * @param array                $query      The GET parameters
      * @param array                $request    The POST parameters
      * @param array                $attributes The request attributes (parameters parsed from the PATH_INFO, ...)

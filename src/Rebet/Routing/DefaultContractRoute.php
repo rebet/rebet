@@ -99,11 +99,11 @@ class DefaultContractRoute extends Route
     protected $part_of_action = null;
 
     /**
-     * 解析かれたルーティングパラメータ配列
+     * コントローラーオブジェクト
      *
-     * @var array
+     * @var Controller
      */
-    protected $args = [];
+    protected $controller = null;
 
     /**
      * ルートオブジェクトを構築します
@@ -144,7 +144,12 @@ class DefaultContractRoute extends Route
     }
 
     /**
+     * 対象のリクエストが規約ベースのルート設定にマッチするかチェックします。
+     * 本メソッドは 規約に従った URI 指定を解析し、マッチ結果を返します。
+     * なお、マッチングの過程で取り込まれたルーティングパラメータは $request->attributes に格納されます。
      *
+     * マッチ結果として false を返すと後続のルート検証が行われます。
+     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
      * @return boolean
@@ -154,14 +159,42 @@ class DefaultContractRoute extends Route
         $requests = explode(trim($request->getRequestUri(), '/')) ;
         $this->part_of_controller = array_shift($requests) ?: $this->default_controller;
         $this->part_of_action     = array_shift($requests) ?: $this->default_action;
-        $this->args               = $requests;
+        $args                     = $requests;
 
+        $controller = $this->getControllerName();
         try {
-            return new $controller();
+            $this->controller = new $controller();
+            $this->controller->request = $request;
+            $this->controller->route   = $this;
         } catch (Throwable $e) {
-            throw new NoRouteException("Route Not Found : Controller [ {$controller} ] can not instantiate.", null, $e);
+            throw new RouteNotFoundException("Route not found : Controller [ {$controller} ] can not instantiate.", null, $e);
         }
 
+        $action = $this->getActionName();
+        $method = null;
+        try {
+            $method = new \ReflectionMethod($controller, $action);
+        } catch (Throwable $e) {
+            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not exists.", null, $e);
+        }
+
+        $vars = [];
+        foreach ($method->getParameters() as $parameter) {
+            $name = $parameter->getName();
+            if (!$parameter->isOptional() && empty($args)) {
+                throw new RouteNotFoundException("Route not found : Requierd parameter '{$name}' on [ {$controller}::{$action} ] not supplied.", null, $e);
+            }
+            if (empty($args)) {
+                break;
+            }
+            $vars[$name] = array_shift($args);
+        }
+
+        $request->attributes->add($vars);
+        $this->route_action = $this->createRouteAction($request);
+        $request->route = $this;
+
+        $this->verify($request);
         return true;
     }
 
@@ -184,9 +217,18 @@ class DefaultContractRoute extends Route
      */
     public function getActionName() : string
     {
-        // @todo 実装
-        return null;
-        // return Inflector::
+        return Inflector::methodize($this->part_of_action).$this->action_suffix;
+    }
+
+    /**
+     * 実行可能な RouteAction を作成します。
+     *
+     * @param Request $request
+     * @return RouteAction
+     */
+    protected function createRouteAction(Request $request) : RouteAction
+    {
+        return new RouteAction($this, new \ReflectionMethod($this->controller, $this->getActionName()), $this->controller);
     }
 
     /**
@@ -198,9 +240,9 @@ class DefaultContractRoute extends Route
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    public function verify(Request $request) : RouteAction
+    protected function verify(Request $request) : void
     {
-        return new RouteAction($this, new \ReflectionFunction($this->action));
+        //TODO アノテーション処理
     }
     
     /**

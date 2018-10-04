@@ -22,7 +22,7 @@ class ClosureRoute extends Route
      *
      * @var \Closure
      */
-    public $action = null;
+    protected $action = null;
     
     /**
      * ルートオブジェクトを構築します
@@ -38,15 +38,13 @@ class ClosureRoute extends Route
     }
 
     /**
-     * Router によってマッチングされたルートが本当に処理可能か検証し、
-     * 問題がなければ実行可能な RouteAction を返します。
-     * ある種の Route ではアノテーションを用いた追加検証などを実施することができます。
+     * 実行可能な RouteAction を作成します。
      *
      * @param Request $request
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    public function verify(Request $request) : RouteAction
+    public function createRouteAction(Request $request) : RouteAction
     {
         return new RouteAction($this, new \ReflectionFunction($this->action));
     }

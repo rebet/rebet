@@ -24,7 +24,7 @@ abstract class Route
      *
      * @var array
      */
-    public $methods = [];
+    protected $methods = [];
 
     /**
      * ルーティング対象URI
@@ -43,8 +43,15 @@ abstract class Route
      *
      * @var array
      */
-    public $wheres = [];
+    protected $wheres = [];
     
+    /**
+     * ルートアクション
+     *
+     * @var RouteAction
+     */
+    protected $route_action = null;
+
     /**
      * 文字列化します。
      *
@@ -123,6 +130,10 @@ abstract class Route
         }
 
         $request->attributes->add($vars);
+        $this->route_action = $this->createRouteAction($request);
+        $request->route = $this;
+
+        $this->verify($request);
         return true;
     }
 
@@ -143,15 +154,25 @@ abstract class Route
     }
     
     /**
-     * Router によってマッチングされたルートが最終的に処理可能か検証し、
-     * 問題がなければ実行可能な RouteAction を返します。
-     * ある種の Route ではアノテーションを用いた追加検証などを実施することができます。
+     * 実行可能な RouteAction を作成します。
      *
      * @param Request $request
      * @return RouteAction
+     */
+    abstract protected function createRouteAction(Request $request) : RouteAction ;
+
+    /**
+     * Router によってマッチングされたルートが処理可能か追加検証します。
+     * アノテーションを用いた追加検証などを実施する場合は本メソッドをオーバーライドして下さい。
+     *
+     * @param Request $request
+     * @return bool
      * @throws RouteNotFoundException
      */
-    abstract public function verify(Request $request) : RouteAction ;
+    protected function verify(Request $request) : void
+    {
+        // Do nothing.
+    }
 
     /**
      * ルーティング処理を実行します。
@@ -163,8 +184,7 @@ abstract class Route
      */
     public function handle(Request $request) : Response
     {
-        $action   = $this->verify($request);
-        $response = $this->toResponse($request, $action->invoke($request));
+        $response = $this->toResponse($request, $this->route_action->invoke($request));
         return $response->prepare($request);
     }
 
