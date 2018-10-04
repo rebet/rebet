@@ -442,16 +442,16 @@ class InflectorTest extends RebetTestCase
     }
 
     /**
-     * testVariableNaming method
+     * testMethodizeNaming method
      *
      * @return void
      */
-    public function test_VariableNaming()
+    public function test_MethodizeNaming()
     {
-        $this->assertEquals('testField', Inflector::variable('test_field'));
-        $this->assertEquals('testFieLd', Inflector::variable('test_fieLd'));
-        $this->assertEquals('testField', Inflector::variable('test field'));
-        $this->assertEquals('testField', Inflector::variable('Test_field'));
+        $this->assertEquals('testMethod', Inflector::methodize('test_method'));
+        $this->assertEquals('testMethOd', Inflector::methodize('test_methOd'));
+        $this->assertEquals('testMethod', Inflector::methodize('test method'));
+        $this->assertEquals('testMethod', Inflector::methodize('Test_method'));
     }
 
     /**

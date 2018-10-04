@@ -29,6 +29,7 @@ use Rebet\Config\Configurable;
  *  # change: type hinting based on php ver 7.1
  *  # change: support Rebet\Config\Configurable for rules
  *  # change: rules plural and singular config [rule => replace, ...] to [[rule, replace], ...]
+ *  # cahnge: method name variable to methodize
  *
  * @see https://github.com/cakephp/cakephp/blob/3.6.11/src/Utility/Inflector.php
  * @see https://github.com/cakephp/cakephp/blob/3.6.11/LICENSE
@@ -447,17 +448,15 @@ class Inflector
      * Returns camelBacked version of an underscored string.
      *
      * @param string $string String to convert.
-     * @return string in variable form
+     * @return string in methodize form
      * @link https://book.cakephp.org/3.0/en/core-libraries/inflector.html#creating-variable-names
      */
-    public static function variable(?string $string)
+    public static function methodize(?string $string)
     {
         $result = static::cache(__FUNCTION__, $string);
 
         if ($result === false) {
-            $camelized = static::camelize(static::underscore($string));
-            $replace = strtolower(substr($camelized, 0, 1));
-            $result = $replace . substr($camelized, 1);
+            $result = lcfirst(static::camelize(static::underscore($string)));
             static::cache(__FUNCTION__, $string, $result);
         }
 
