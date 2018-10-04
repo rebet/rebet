@@ -65,13 +65,21 @@ class RouterTest extends RebetTestCase
             });
 
             Router::get('/parameter/requierd/{id}', function ($id) {
-                return 'Content: /parameter/requierd/{id} - '.$id;
+                return "Content: /parameter/requierd/{id} - {$id}";
             });
 
             Router::get('/parameter/option/{id?}', function ($id = 'default') {
-                return 'Content: /parameter/option/{id?} - ' . $id;
+                return "Content: /parameter/option/{id?} - {$id}";
             });
             
+            Router::get('/parameter/between/{from}/to/{to}', function ($from, $to) {
+                return "Content: /parameter/between/{from}/to/{to} - {$from}, {$to}";
+            });
+
+            Router::get('/parameter/between/invert/{from}/to/{to}', function ($to, $from) {
+                return "Content: /parameter/between/invert/{from}/to/{to} - {$from}, {$to}";
+            });
+
             Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', function () {
                 return 'Content: /match/get-head-post';
             });
@@ -287,5 +295,11 @@ class RouterTest extends RebetTestCase
 
         $response = Router::handle(Request::create('/parameter/option'));
         $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
+
+        $response = Router::handle(Request::create('/parameter/between/1/to/10'));
+        $this->assertSame('Content: /parameter/between/{from}/to/{to} - 1, 10', $response->getContent());
+
+        $response = Router::handle(Request::create('/parameter/between/invert/1/to/10'));
+        $this->assertSame('Content: /parameter/between/invert/{from}/to/{to} - 1, 10', $response->getContent());
     }
 }
