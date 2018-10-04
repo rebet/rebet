@@ -282,10 +282,10 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/parameter/option/abc'));
         $this->assertSame('Content: /parameter/option/{id?} - abc', $response->getContent());
         
-        // $response = Router::handle(Request::create('/parameter/option/'));
-        // $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
+        $response = Router::handle(Request::create('/parameter/option/'));
+        $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
 
-        // $response = Router::handle(Request::create('/parameter/option'));
-        // $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
+        $response = Router::handle(Request::create('/parameter/option'));
+        $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
     }
 }

@@ -7,6 +7,7 @@ use Rebet\Http\BasicResponse;
 use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
 use Rebet\Common\Strings;
+use Rebet\Common\Utils;
 
 /**
  * Route class
@@ -110,6 +111,9 @@ abstract class Route
         $vars = [];
         foreach ($matches as $key => $value) {
             if (!is_int($key)) {
+                if (Utils::isBlank($value)) {
+                    continue;
+                }
                 $regex = $this->wheres[$key] ?: null ;
                 if ($regex && !preg_match($regex, $value)) {
                     throw new RouteNotFoundException("Route [" . join('|', $this->methods) . "] {$request->getRequestUri()} not found. Routing parameter {$key} value {$value} not match {$regex}.");
@@ -130,7 +134,7 @@ abstract class Route
     protected function getMatchingRegex() : string
     {
         $regex = $this->uri;
-        $regex = preg_replace('/(\/{[^{]+?\?})/', '(?:\1)?', $regex);
+        $regex = preg_replace('/(\/{[^{]+?\?})/', '(?:\1)?/?', $regex);
         $regex = str_replace('?}', '}', $regex);
         $regex = str_replace('{', '(?P<', $regex);
         $regex = str_replace('}', '>[^/]+?)', $regex);

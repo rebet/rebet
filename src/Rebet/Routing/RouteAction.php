@@ -56,9 +56,10 @@ class RouteAction
         $vars = $request->attributes;
         $args = [];
         foreach ($this->reflector->getParameters() as $parameter) {
-            $name     = $parameter->name;
-            $optional = $parameter->isOptional();
-            $origin = $vars->has($name) ? $vars->get($name) : null;
+            $name          = $parameter->name;
+            $optional      = $parameter->isOptional();
+            $default_value = $optional ? $parameter->getDefaultValue() : null ;
+            $origin        = $vars->has($name) ? $vars->get($name) : $default_value ;
             if (!$optional && $origin === null) {
                 throw new RouteNotFoundException("Routing parameter '{$name}' is requierd.");
             }
@@ -69,7 +70,7 @@ class RouteAction
             }
             $args[$name] = $converted;
         }
-        
+
         return $this->isFunction() ? $this->reflector->invokeArgs($args) : $this->reflector->invokeArgs($this->instance, $args);
     }
 
