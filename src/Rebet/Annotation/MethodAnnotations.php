@@ -27,16 +27,33 @@ class MethodAnnotations
      */
     protected $method = null;
 
+
+    /**
+     * Create method annotations accesser.
+     *
+     * @param string|\ReflectionMethod $method
+     * @param string|object|\ReflectionClass|null $class
+     * @return MethodAnnotations
+     */
+    public static function of($method, $class = null) : MethodAnnotations
+    {
+        if (is_string($method)) {
+            $method = new \ReflectionMethod($class, $method);
+        }
+        return new MethodAnnotations($method);
+    }
+
     /**
      * メソッドアノテーションアクセッサを構築します。
      *
-     * @param AnnotationReader $reader
      * @param \ReflectionMethod $method
+     * @param AnnotationReader|null $reader
      */
-    public function __construct(AnnotationReader $reader, \ReflectionMethod $method)
+    public function __construct(\ReflectionMethod $method, ?AnnotationReader $reader)
     {
-        $this->reader = $reader;
-        $this->method  = $method;
+        $this->method = $method;
+        $this->reader = $reader ?? new AnnotationReader();
+        AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
     /**

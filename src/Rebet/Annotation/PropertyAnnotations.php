@@ -28,15 +28,31 @@ class PropertyAnnotations
     protected $property = null;
 
     /**
+     * Create property annotations accesser.
+     *
+     * @param string|\ReflectionProperty $property
+     * @param string|object|\ReflectionClass|null $class
+     * @return PropertyAnnotations
+     */
+    public static function of($property, $class = null) : PropertyAnnotations
+    {
+        if (is_string($property)) {
+            $property = new \ReflectionProperty($class, $property);
+        }
+        return new PropertyAnnotations($property);
+    }
+
+    /**
      * メソッドアノテーションアクセッサを構築します。
      *
-     * @param AnnotationReader $reader
      * @param \ReflectionProperty $property
+     * @param AnnotationReader|null $reader
      */
-    public function __construct(AnnotationReader $reader, \ReflectionProperty $property)
+    public function __construct(\ReflectionProperty $property, ?AnnotationReader $reader)
     {
-        $this->reader   = $reader;
         $this->property = $property;
+        $this->reader   = $reader ?? new AnnotationReader();
+        AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
     /**

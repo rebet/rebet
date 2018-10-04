@@ -2,6 +2,7 @@
 namespace Rebet\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * Class annotations accessor class
@@ -28,15 +29,28 @@ class ClassAnnotations
     protected $class = null;
 
     /**
-     * Undocumented function
+     * Create class annotations accesser.
      *
-     * @param AnnotationReader $reader
      * @param string|object|\ReflectionClass $class
+     * @return ClassAnnotations
      */
-    public function __construct(AnnotationReader $reader, $class)
+    public static function of($class) : ClassAnnotations
     {
-        $this->reader = $reader;
+        return new ClassAnnotations($class);
+    }
+
+    /**
+     * Undocumented function
+     * AnnotationRegistry
+     *
+     * @param string|object|\ReflectionClass $class
+     * @param AnnotationReader|null $reader
+     */
+    public function __construct($class, ?AnnotationReader $reader = null)
+    {
         $this->class  = $class instanceof \ReflectionClass ? $class : new \ReflectionClass($class) ;
+        $this->reader = $reader ?? new AnnotationReader();
+        AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
     /**
@@ -68,7 +82,7 @@ class ClassAnnotations
      */
     public function method(string $method) : MethodAnnotations
     {
-        return new MethodAnnotations($this->reader, $this->class->getMethod($method));
+        return new MethodAnnotations($this->class->getMethod($method), $this->reader);
     }
 
     /**
@@ -79,6 +93,6 @@ class ClassAnnotations
      */
     public function property(string $property) : PropertyAnnotations
     {
-        return new PropertyAnnotations($this->reader, $this->class->getProperty($property));
+        return new PropertyAnnotations($this->class->getProperty($property), $this->reader);
     }
 }
