@@ -76,7 +76,7 @@ abstract class Route
      */
     public function where($name, ?string $regex = null) : self
     {
-        foreach (is_array($name) ? $name : [$name, $regex] as $key => $value) {
+        foreach (is_array($name) ? $name : [$name => $regex] as $key => $value) {
             $this->wheres[$key] = $value;
         }
         return $this;
@@ -105,7 +105,7 @@ abstract class Route
         }
 
         if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
-            throw new RouteNotFoundException("Route [".join('|', $this->methods)."] {$request->getRequestUri()} not found. Invalid method {$request->getMethod()} given.");
+            throw new RouteNotFoundException("{$this} not found. Invalid method {$request->getMethod()} given.");
         }
 
         $vars = [];
@@ -116,7 +116,7 @@ abstract class Route
                 }
                 $regex = $this->wheres[$key] ?: null ;
                 if ($regex && !preg_match($regex, $value)) {
-                    throw new RouteNotFoundException("Route [" . join('|', $this->methods) . "] {$request->getRequestUri()} not found. Routing parameter {$key} value {$value} not match {$regex}.");
+                    throw new RouteNotFoundException("{$this} not found. Routing parameter '{$key}' value '{$value}' not match {$regex}.");
                 }
                 $vars[$key] = $value;
             }

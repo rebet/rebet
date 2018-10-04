@@ -17,18 +17,25 @@ use Rebet\Routing\RouteNotFoundException;
 class RouteAction
 {
     /**
+     * ルートオブジェクト
+     *
+     * @var Route
+     */
+    private $route = null;
+    
+    /**
      * 実行対象オブジェクト
      *
      * @var mixed
      */
-    public $instance = null;
+    private $instance = null;
     
     /**
      * アクションリフレクター
      *
      * @var \ReflectionFunction|\ReflectionMethod
      */
-    public $reflector = null;
+    private $reflector = null;
 
     /**
      * ルートアクションオブジェクトを構築します
@@ -36,11 +43,12 @@ class RouteAction
      * @param \ReflectionFunction|\ReflectionMethod $reflector
      * @param $mixed $instance
      */
-    public function __construct($reflector, $instance = null)
+    public function __construct(Route $route, $reflector, $instance = null)
     {
         if (!($reflector instanceof \ReflectionFunction) && !($reflector instanceof \ReflectionMethod)) {
             throw new \LogicException('Invalid type of reflector.');
         }
+        $this->route     = $route;
         $this->reflector = $reflector;
         $this->instance  = $instance;
     }
@@ -61,12 +69,12 @@ class RouteAction
             $default_value = $optional ? $parameter->getDefaultValue() : null ;
             $origin        = $vars->has($name) ? $vars->get($name) : $default_value ;
             if (!$optional && $origin === null) {
-                throw new RouteNotFoundException("Routing parameter '{$name}' is requierd.");
+                throw new RouteNotFoundException("{$this->route} not found. Routing parameter '{$name}' is requierd.");
             }
             $type      = Reflector::getTypeHint($parameter);
             $converted = Reflector::convert($origin, $type);
             if ($origin !== null && $converted === null) {
-                throw new RouteNotFoundException("Routing parameter '{$name}' can not convert to {$type}.");
+                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
             }
             $args[$name] = $converted;
         }

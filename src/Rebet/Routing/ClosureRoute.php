@@ -48,7 +48,7 @@ class ClosureRoute extends Route
      */
     public function verify(Request $request) : RouteAction
     {
-        return new RouteAction(new \ReflectionFunction($this->action));
+        return new RouteAction($this, new \ReflectionFunction($this->action));
     }
     
     /**
