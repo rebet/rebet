@@ -123,7 +123,7 @@ class Strings
      */
     public static function ltrim(?string  $str, string $prefix = ' ') : ?string
     {
-        return $str === null ? null : preg_replace("/^(".preg_quote($prefix).")*/u", '', $str);
+        return $str === null ? null : preg_replace("/^(".preg_quote($prefix, '/').")*/u", '', $str);
     }
     
     /**
@@ -141,7 +141,7 @@ class Strings
      */
     public static function rtrim(?string $str, string $suffix = ' ') : ?string
     {
-        return $str === null ? null : preg_replace("/(".preg_quote($suffix).")*$/u", '', $str);
+        return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/').")*$/u", '', $str);
     }
     
     /**
