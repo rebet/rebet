@@ -45,4 +45,15 @@ final class Surface
     {
         return empty($this->rejects) ? in_array($surface, $this->allows) : !in_array($surface, $this->rejects) ;
     }
+
+    /**
+     * Check acceptable the given surface.
+     *
+     * @param string $surface
+     * @return boolean
+     */
+    public function reject(string $surface) : bool
+    {
+        return !$this->allow($surface);
+    }
 }

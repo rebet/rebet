@@ -38,13 +38,24 @@ final class Method
     }
 
     /**
-     * Check acceptable the given surface.
+     * Check acceptable the given method.
      *
-     * @param string $surface
+     * @param string $method
      * @return boolean
      */
-    public function allow(string $surface) : bool
+    public function allow(string $method) : bool
     {
-        return empty($this->rejects) ? in_array($surface, $this->allows) : !in_array($surface, $this->rejects) ;
+        return empty($this->rejects) ? in_array($method, $this->allows) : !in_array($method, $this->rejects) ;
+    }
+
+    /**
+     * Check acceptable the given method.
+     *
+     * @param string $method
+     * @return boolean
+     */
+    public function reject(string $method) : bool
+    {
+        return !$this->allow($method);
     }
 }

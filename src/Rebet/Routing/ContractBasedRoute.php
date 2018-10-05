@@ -7,9 +7,13 @@ use Rebet\Http\BasicResponse;
 use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
 use Rebet\Common\Inflector;
+use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Annotation\Surface;
+use Rebet\Config\App;
 
 /**
- * Default Contract Route class
+ * Contract Based Route class
  *
  * 以下のパターンでURL解析を行い
  *
@@ -33,7 +37,7 @@ use Rebet\Common\Inflector;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class DefaultContractRoute extends Route
+class ContractBasedRoute extends Route
 {
     /**
      * 名前空間
@@ -131,19 +135,6 @@ class DefaultContractRoute extends Route
     }
 
     /**
-     * サポートされていません。
-     *
-     * @param string|array $name
-     * @param string|null $regex
-     * @return self
-     * @throws BadMethodCallException
-     */
-    public function where($name, ?string $regex = null) : self
-    {
-        throw new \BadMethodCallException("Contract based route not support where check.");
-    }
-
-    /**
      * 対象のリクエストが規約ベースのルート設定にマッチするかチェックします。
      * 本メソッドは 規約に従った URI 指定を解析し、マッチ結果を返します。
      * なお、マッチングの過程で取り込まれたルーティングパラメータは $request->attributes に格納されます。
@@ -187,14 +178,29 @@ class DefaultContractRoute extends Route
             if (empty($args)) {
                 break;
             }
-            $vars[$name] = array_shift($args);
+            $value  = array_shift($args);
+            $wheres = Utils::get($this->annotation(Where::class), 'wheres', []);
+            $regex  = $wheres[$key] ?: $this->wheres[$key] ?: null ;
+            if ($regex && !preg_match($regex, $value)) {
+                throw new RouteNotFoundException("{$this} not found. Routing parameter '{$key}' value '{$value}' not match {$regex}.");
+            }
+            $vars[$name] = $value;
         }
 
         $request->attributes->add($vars);
         $this->route_action = $this->createRouteAction($request);
         $request->route = $this;
 
-        $this->verify($request);
+        $surface = $this->annotation(Surface::class);
+        if ($surface || $surface->reject(App::getSurface())) {
+            throw new RouteNotFoundException("{$this} not found. Routing surface '".App::getSurface()."' not allowed or not annotated surface meta info.");
+        }
+
+        $method = $this->annotation(Method::class);
+        if ($method && $method->reject($request->getMethod())) {
+            throw new RouteNotFoundException("{$this} not found. Routing method '{$request->getMethod()}' not allowed.");
+        }
+
         return true;
     }
 
@@ -232,20 +238,6 @@ class DefaultContractRoute extends Route
     }
 
     /**
-     * Router によってマッチングされたルートが本当に処理可能か検証し、
-     * 問題がなければ実行可能な RouteAction を返します。
-     * ある種の Route ではアノテーションを用いた追加検証などを実施することができます。
-     *
-     * @param Request $request
-     * @return RouteAction
-     * @throws RouteNotFoundException
-     */
-    protected function verify(Request $request) : void
-    {
-        //TODO アノテーション処理
-    }
-    
-    /**
      * シャットダウン処理を行います。
      *
      * @param Request $request
@@ -255,5 +247,15 @@ class DefaultContractRoute extends Route
     public function shutdown(Request $request, Response $response) : void
     {
         // Do Nothing.
+    }
+
+    /**
+     * 文字列化します。
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return "Route: {$this->getControllerName()}::{$this->getActionName}";
     }
 }

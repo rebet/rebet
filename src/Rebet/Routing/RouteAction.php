@@ -59,7 +59,7 @@ class RouteAction
         $this->route            = $route;
         $this->reflector        = $reflector;
         $this->instance         = $instance;
-        $this->annotated_method = $reflector instanceof \ReflectionFunction ? null : AnnotatedMethod::of($reflector);
+        $this->annotated_method = $this->isFunction() ? null : AnnotatedMethod::of($reflector);
     }
     
     /**
