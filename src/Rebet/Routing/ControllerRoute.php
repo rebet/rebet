@@ -34,11 +34,11 @@ class ControllerRoute extends ConventionalRoute
     public $uri = null;
 
     /**
-     * ルーティング対象コントローラーリフレクター
+     * コントローラアクション
      *
      * @var \ReflectionClass
      */
-    protected $reflector = null;
+    protected $action = null;
 
     /**
      * ルートオブジェクトを構築します
@@ -54,10 +54,10 @@ class ControllerRoute extends ConventionalRoute
         $this->methods = (array)$methods;
         $this->uri     = $uri;
         try {
-            $this->reflector = new \ReflectionClass($controller);
-            $this->namespace = $this->reflector->getNamespaceName();
+            $this->action    = new \ReflectionClass($controller);
+            $this->namespace = $this->action->getNamespaceName();
         } catch (\ReflectionException $e) {
-            $this->reflector = new \ReflectionClass($this->namespace.'\\'.$controller);
+            $this->action    = new \ReflectionClass($this->namespace.'\\'.$controller);
         }
     }
 
@@ -90,6 +90,6 @@ class ControllerRoute extends ConventionalRoute
      */
     public function getControllerName(bool $with_namespace = true) : string
     {
-        return $with_namespace ? $this->reflector->getName() : $this->reflector->getShortName() ;
+        return $with_namespace ? $this->action->getName() : $this->action->getShortName() ;
     }
 }
