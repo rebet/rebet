@@ -133,7 +133,6 @@ abstract class Route
         $this->route_action = $this->createRouteAction($request);
         $request->route = $this;
 
-        $this->verify($request);
         return true;
     }
 
@@ -160,19 +159,6 @@ abstract class Route
      * @return RouteAction
      */
     abstract protected function createRouteAction(Request $request) : RouteAction ;
-
-    /**
-     * Router によってマッチングされたルートが処理可能か追加検証します。
-     * アノテーションを用いた追加検証などを実施する場合は本メソッドをオーバーライドして下さい。
-     *
-     * @param Request $request
-     * @return bool
-     * @throws RouteNotFoundException
-     */
-    protected function verify(Request $request) : void
-    {
-        // Do nothing.
-    }
 
     /**
      * ルーティング処理を実行します。

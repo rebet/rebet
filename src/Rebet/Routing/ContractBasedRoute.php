@@ -127,8 +127,8 @@ class ContractBasedRoute extends Route
     /**
      * ルートオブジェクトを構築します
      *
-     * @param string $namespace
      * @param array  $option [
+     *     'namespace'                  => refer App config 'namespace.controller',
      *     'default_part_of_controller' => 'top',
      *     'default_part_of_action'     => 'index',
      *     'uri_snake_separator'        => '-',
@@ -137,10 +137,10 @@ class ContractBasedRoute extends Route
      *     'accessible'                 => false
      * ]
      */
-    public function __construct(?string $namespace = null, array $option = [])
+    public function __construct(array $option = [])
     {
         parent::__construct([], null);
-        $this->namespace                  = $namespace                            ?? static::config('namespace');
+        $this->namespace                  = $option['amespace']                   ?? static::config('namespace');
         $this->default_part_of_controller = $option['default_part_of_controller'] ?? static::config('default_part_of_controller');
         $this->default_part_of_action     = $option['default_part_of_action']     ?? static::config('default_part_of_action');
         $this->uri_snake_separator        = $option['uri_snake_separator']        ?? static::config('uri_snake_separator');
@@ -162,7 +162,11 @@ class ContractBasedRoute extends Route
      */
     public function match(Request $request) : bool
     {
-        [$this->part_of_controller, $this->part_of_action, $args] = $this->resolveRequestUri($request->getRequestUri());
+        $requests = explode(trim($request->getRequestUri(), '/')) ;
+        $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
+        $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
+        $args               = $requests;
+        return [$part_of_controller, $part_of_action, $args];
 
         $controller = $this->getControllerName();
         try {
@@ -218,20 +222,6 @@ class ContractBasedRoute extends Route
         }
 
         return true;
-    }
-
-    /**
-     * リクエストURIを コントローラー／アクション／パラメータ に分割します。
-     *
-     * @param string $request_uri
-     * @return void
-     */
-    protected function resolveRequestUri(string $request_uri) {
-        $requests = explode(trim($request_uri, '/')) ;
-        $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
-        $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
-        $args               = $requests;
-        return [$part_of_controller, $part_of_action, $args];
     }
 
     /**
