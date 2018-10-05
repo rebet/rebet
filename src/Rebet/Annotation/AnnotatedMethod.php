@@ -71,7 +71,7 @@ class AnnotatedMethod
      */
     public function annotations() : array
     {
-        return $this->reader->getAnnotatedMethod($this->method);
+        return $this->reader->getMethodAnnotations($this->method);
     }
 
     /**

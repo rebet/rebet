@@ -71,7 +71,7 @@ class AnnotatedProperty
      */
     public function annotations() : array
     {
-        return $this->reader->getAnnotatedProperty($this->property);
+        return $this->reader->getPropertyAnnotations($this->property);
     }
 
     /**

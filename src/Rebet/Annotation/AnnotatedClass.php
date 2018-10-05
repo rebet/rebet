@@ -60,7 +60,7 @@ class AnnotatedClass
      */
     public function annotations() : array
     {
-        return $this->reader->getAnnotatedClass($this->class);
+        return $this->reader->getClassAnnotations($this->class);
     }
 
     /**
