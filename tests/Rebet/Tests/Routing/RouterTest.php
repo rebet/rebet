@@ -13,6 +13,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\Http\Request;
 use Rebet\Http\BasicResponse;
 use Rebet\Common\Enum;
+use Rebet\Common\NamespaceParser;
 
 class RouterTest extends RebetTestCase
 {

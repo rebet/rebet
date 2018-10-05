@@ -30,6 +30,9 @@ class App
             'locale'          => 'ja',
             'fallback_locale' => 'ja',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
+            'namespace'       => [
+                'controller'  => null,
+            ]
         ];
     }
 

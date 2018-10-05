@@ -12,6 +12,7 @@ use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Surface;
 use Rebet\Config\App;
 use Rebet\Config\Configurable;
+use Rebet\Config\Config;
 
 /**
  * Contract Based Route class
@@ -43,7 +44,7 @@ class ContractBasedRoute extends Route
     use Configurable;
     public static function defaultConfig() {
         return [
-            'namespace'                  => null,
+            'namespace'                  => Config::refer(App::class, 'namespace.controller'),
             'default_part_of_controller' => 'top',
             'default_part_of_action'     => 'index',
             'uri_snake_separator'        => '-',
@@ -161,10 +162,7 @@ class ContractBasedRoute extends Route
      */
     public function match(Request $request) : bool
     {
-        $requests = explode(trim($request->getRequestUri(), '/')) ;
-        $this->part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
-        $this->part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
-        $args                     = $requests;
+        [$this->part_of_controller, $this->part_of_action, $args] = $this->resolveRequestUri($request->getRequestUri());
 
         $controller = $this->getControllerName();
         try {
@@ -179,8 +177,12 @@ class ContractBasedRoute extends Route
         $method = null;
         try {
             $method = new \ReflectionMethod($controller, $action);
+            $method->setAccessible($this->accessible);
         } catch (Throwable $e) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not exists.", null, $e);
+        }
+        if(!$this->accessible && !$method->isPublic()) {
+            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not accessible.", null, $e);
         }
 
         $vars = [];
@@ -219,6 +221,20 @@ class ContractBasedRoute extends Route
     }
 
     /**
+     * リクエストURIを コントローラー／アクション／パラメータ に分割します。
+     *
+     * @param string $request_uri
+     * @return void
+     */
+    protected function resolveRequestUri(string $request_uri) {
+        $requests = explode(trim($request_uri, '/')) ;
+        $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
+        $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
+        $args               = $requests;
+        return [$part_of_controller, $part_of_action, $args];
+    }
+
+    /**
      * コントローラー名を取得します。
      *
      * @param bool $with_namespace
@@ -248,7 +264,7 @@ class ContractBasedRoute extends Route
      */
     protected function createRouteAction(Request $request) : RouteAction
     {
-        return new RouteAction($this, new \ReflectionMethod($this->controller, $this->getActionName()), $this->controller);
+        return new RouteAction($this, new \ReflectionMethod($this->controller, $this->getActionName()), $this->accessible, $this->controller);
     }
 
     /**

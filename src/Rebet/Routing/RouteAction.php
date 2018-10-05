@@ -48,6 +48,7 @@ class RouteAction
     /**
      * ルートアクションオブジェクトを構築します
      *
+     * @param Route $route
      * @param \ReflectionFunction|\ReflectionMethod $reflector
      * @param $mixed $instance
      */
