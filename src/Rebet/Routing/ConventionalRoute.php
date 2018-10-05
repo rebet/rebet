@@ -15,8 +15,9 @@ use Rebet\Config\Configurable;
 use Rebet\Config\Config;
 
 /**
- * Contract Based Route class
+ * Conventional Route class
  *
+ * 規約ベースのルートオブジェクト
  * 以下のパターンでURL解析を行い
  *
  * 　http://domain.of.yours/{controller}/{action}/{arg1}/{arg2}...
@@ -39,7 +40,7 @@ use Rebet\Config\Config;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ContractBasedRoute extends Route
+class ConventionalRoute extends Route
 {
     use Configurable;
     public static function defaultConfig() {

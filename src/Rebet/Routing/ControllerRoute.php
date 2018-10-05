@@ -17,8 +17,27 @@ use Rebet\Common\Inflector;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ControllerRoute extends ContractBasedRoute
+class ControllerRoute extends ConventionalRoute
 {
+    /**
+     * ルーティング対象メソッド
+     *
+     * @var array
+     */
+    protected $methods = [];
+
+    /**
+     * ルーティング対象URI
+     *
+     * @var string
+     */
+    public $uri = null;
+
+    /**
+     * ルーティング対象コントローラーリフレクター
+     *
+     * @var \ReflectionClass
+     */
     protected $reflector = null;
 
     /**
@@ -29,9 +48,11 @@ class ControllerRoute extends ContractBasedRoute
      * @param callable $action
      * @throws ReflectionException
      */
-    public function __construct(string $controller)
+    public function __construct($methods, string $uri, string $controller)
     {
         parent::__construct();
+        $this->methods = (array)$methods;
+        $this->uri     = $uri;
         try {
             $this->reflector = new \ReflectionClass($controller);
             $this->namespace = $this->reflector->getNamespaceName();
@@ -52,6 +73,10 @@ class ControllerRoute extends ContractBasedRoute
         $uri         = rtrim($this->uri, '/');
         if($request_uri !== $uri && !Strings::startWith($request_uri, "{$uri}/")) {
             return false;
+        }
+        
+        if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
+            throw new RouteNotFoundException("{$this} not found. Invalid method {$request->getMethod()} given.");
         }
 
         return parent::match($request);
