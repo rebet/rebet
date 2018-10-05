@@ -39,14 +39,6 @@ class Router
     }
 
     /**
-     * ルートリスト
-     * @todo 不要？
-     *
-     * @var array
-     */
-    private static $routes = [];
-    
-    /**
      * ルート探査木
      *
      * @var array
@@ -80,7 +72,6 @@ class Router
      */
     public static function clear() : void
     {
-        static::$routes       = [];
         static::$routing_tree = [];
         static::$current      = null;
         static::$in_rules     = false;
@@ -228,7 +219,6 @@ class Router
         if (!static::$in_rules) {
             throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        static::$routes[] = $route; //@todo 不要？
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->uri, '{')), $route);
     }
     

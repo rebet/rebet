@@ -11,6 +11,7 @@ use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Surface;
 use Rebet\Config\App;
+use Rebet\Config\Configurable;
 
 /**
  * Contract Based Route class
@@ -39,6 +40,19 @@ use Rebet\Config\App;
  */
 class ContractBasedRoute extends Route
 {
+    use Configurable;
+    public static function defaultConfig() {
+        return [
+            'namespace'                  => null,
+            'default_part_of_controller' => 'top',
+            'default_part_of_action'     => 'index',
+            'uri_snake_separator'        => '-',
+            'controller_suffix'          => 'Controller',
+            'action_suffix'              => '',
+            'accessible'                 => false,
+        ];
+    }
+
     /**
      * 名前空間
      *
@@ -47,18 +61,18 @@ class ContractBasedRoute extends Route
     protected $namespace = null;
 
     /**
-     * デフォルトコントローラー名（=top）
+     * デフォルトコントローラーパート名（=top）
      *
      * @var string
      */
-    protected $default_controller = null;
+    protected $default_part_of_controller = null;
 
     /**
-     * デフォルトアクション名（=index）
+     * デフォルトアクションパート名（=index）
      *
      * @var string
      */
-    protected $default_action = null;
+    protected $default_part_of_action = null;
 
     /**
      * URIスネークケース区切り文字（=ハイフン['-']）
@@ -114,24 +128,24 @@ class ContractBasedRoute extends Route
      *
      * @param string $namespace
      * @param array  $option [
-     *     'default_controller'  => 'top',
-     *     'default_action'      => 'index',
-     *     'uri_snake_separator' => '-',
-     *     'controller_suffix'   => 'Controller',
-     *     'action_suffix'       => '',
-     *     'accessible'          => false
+     *     'default_part_of_controller' => 'top',
+     *     'default_part_of_action'     => 'index',
+     *     'uri_snake_separator'        => '-',
+     *     'controller_suffix'          => 'Controller',
+     *     'action_suffix'              => '',
+     *     'accessible'                 => false
      * ]
      */
-    public function __construct(string $namespace, array $option)
+    public function __construct(?string $namespace = null, array $option = [])
     {
         parent::__construct([], null);
-        $this->namespace           = $namespace;
-        $this->default_controller  = $option['default_controller']  ?? 'top';
-        $this->default_action      = $option['default_action']      ?? 'index';
-        $this->uri_snake_separator = $option['uri_snake_separator'] ?? '-';
-        $this->controller_suffix   = $option['controller_suffix']   ?? 'Controller';
-        $this->action_suffix       = $option['action_suffix']       ?? '';
-        $this->accessible          = $option['accessible']          ?? false;
+        $this->namespace                  = $namespace                            ?? static::config('namespace');
+        $this->default_part_of_controller = $option['default_part_of_controller'] ?? static::config('default_part_of_controller');
+        $this->default_part_of_action     = $option['default_part_of_action']     ?? static::config('default_part_of_action');
+        $this->uri_snake_separator        = $option['uri_snake_separator']        ?? static::config('uri_snake_separator');
+        $this->controller_suffix          = $option['controller_suffix']          ?? static::config('controller_suffix');
+        $this->action_suffix              = $option['action_suffix']              ?? static::config('action_suffix');
+        $this->accessible                 = $option['accessible']                 ?? static::config('accessible');
     }
 
     /**
@@ -148,8 +162,8 @@ class ContractBasedRoute extends Route
     public function match(Request $request) : bool
     {
         $requests = explode(trim($request->getRequestUri(), '/')) ;
-        $this->part_of_controller = array_shift($requests) ?: $this->default_controller;
-        $this->part_of_action     = array_shift($requests) ?: $this->default_action;
+        $this->part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
+        $this->part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
         $args                     = $requests;
 
         $controller = $this->getControllerName();
