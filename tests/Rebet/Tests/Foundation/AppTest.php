@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Config;
+namespace Rebet\Tests\Foundation;
 
 use Rebet\Env\Env;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
-use Rebet\Config\App;
+use Rebet\Foundation\App;
 
 class AppTest extends RebetTestCase
 {

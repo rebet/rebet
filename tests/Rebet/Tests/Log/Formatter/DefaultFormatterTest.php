@@ -3,11 +3,12 @@ namespace Rebet\Tests\Log\Formatter;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Log\Formatter\DefaultFormatter;
+
+use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
+use Rebet\Foundation\App;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
-use Rebet\DateTime\DateTime;
-use Rebet\Config\Config;
-use Rebet\Config\App;
 
 class DefaultFormatterTest extends RebetTestCase
 {
@@ -17,6 +18,7 @@ class DefaultFormatterTest extends RebetTestCase
     public function setUp()
     {
         Config::clear();
+        App::initFrameworkConfig();
         App::setTimezone('UTC');
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 

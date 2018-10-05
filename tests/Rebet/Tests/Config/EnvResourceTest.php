@@ -3,7 +3,6 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Config\EnvResource;
-use Rebet\Config\App;
 
 use org\bovigo\vfs\vfsStream;
 
@@ -13,7 +12,6 @@ class EnvResourceTest extends RebetTestCase
 
     public function setUp()
     {
-        App::setEnv('unittest');
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
@@ -88,7 +86,7 @@ EOS
                 ],
                 'new' => 'NEW',
             ],
-            EnvResource::load('vfs://root/resource', 'test')
+            EnvResource::load('vfs://root/resource', 'test', 'unittest')
         );
         
         $this->assertSame(
@@ -101,7 +99,7 @@ EOS
                     'string' => 'b',
                 ]
             ],
-            EnvResource::load('vfs://root/resource', 'test', 'ini')
+            EnvResource::load('vfs://root/resource', 'test', 'unittest', 'ini')
         );
         
         $this->assertSame(
@@ -115,7 +113,7 @@ EOS
                     'array' => [1 ,2 , 3],
                 ],
             ],
-            EnvResource::load('vfs://root/resource', 'test', 'json')
+            EnvResource::load('vfs://root/resource', 'test', 'unittest', 'json')
         );
     }
 
@@ -125,7 +123,7 @@ EOS
      */
     public function test_load_notfound()
     {
-        EnvResource::load('vfs://root/resource', 'test', 'txt');
+        EnvResource::load('vfs://root/resource', 'test', 'unittest', 'txt');
         $this->fail("Never execute.");
     }
 }

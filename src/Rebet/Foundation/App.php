@@ -1,7 +1,10 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Foundation;
 
+use Rebet\Config\Configurable;
+use Rebet\Config\Config;
 use Rebet\File\Files;
+use Rebet\DateTime\DateTime;
 
 /**
  * アプリケーションコンフィグ クラス
@@ -36,6 +39,21 @@ class App
         ];
     }
 
+    /**
+     * initialize framework config.
+     *
+     * @return void
+     */
+    public static function initFrameworkConfig() : void
+    {
+        Config::framework([
+            DateTime::class => [
+                'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
+            ]
+            
+        ]);
+    }
+    
     /**
      * アプリケーションルートパスを取得します
      * ※ App::config('root') のファサードです。

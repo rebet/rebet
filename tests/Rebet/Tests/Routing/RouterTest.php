@@ -6,14 +6,14 @@ use Rebet\Tests\StderrCapture;
 
 use Rebet\Routing\Router;
 
-use Rebet\Common\System;
-use Rebet\Config\App;
-use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
-use Rebet\Http\Request;
-use Rebet\Http\BasicResponse;
 use Rebet\Common\Enum;
 use Rebet\Common\NamespaceParser;
+use Rebet\Common\System;
+use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
+use Rebet\Foundation\App;
+use Rebet\Http\Request;
+use Rebet\Http\BasicResponse;
 
 class RouterTest extends RebetTestCase
 {
@@ -21,6 +21,7 @@ class RouterTest extends RebetTestCase
     {
         System::initMock();
         Config::clear();
+        App::initFrameworkConfig();
         App::setTimezone('UTC');
         App::setSurface('web');
         Config::application([

@@ -5,9 +5,9 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Log\Middleware\WebDisplayMiddleware;
 
 use Rebet\Common\System;
-use Rebet\Config\App;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
+use Rebet\Foundation\App;
 use Rebet\Log\LogLevel;
 use Rebet\Log\LogContext;
 
@@ -21,6 +21,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
     {
         System::initMock();
         Config::clear();
+        App::initFrameworkConfig();
         App::setTimezone('UTC');
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 
@@ -43,7 +44,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
 
         $this->assertContainsOutbuffer(
             'This&nbsp;is&nbsp;test',
-            function(){
+            function () {
                 $this->middleware->handle($this->context, $this->echoback);
                 $this->middleware->terminate();
             }
@@ -54,7 +55,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
                 'This&nbsp;is&nbsp;test&nbsp;1',
                 'This&nbsp;is&nbsp;test&nbsp;2',
             ],
-            function(){
+            function () {
                 $this->context->level   = LogLevel::ERROR();
                 $this->context->message = 'This is test 1';
                 $this->middleware->handle($this->context, $this->echoback);
@@ -73,7 +74,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
 
         $this->assertContainsOutbuffer(
             'This&nbsp;is&nbsp;test',
-            function(){
+            function () {
                 $this->middleware->handle($this->context, $this->echoback);
                 $this->middleware->terminate();
             }
@@ -82,7 +83,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
         System::header('Content-Type: text/html; charset=UTF-8');
         $this->assertContainsOutbuffer(
             'This&nbsp;is&nbsp;test',
-            function(){
+            function () {
                 $this->middleware->handle($this->context, $this->echoback);
                 $this->middleware->terminate();
             }
@@ -92,7 +93,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
         System::header('Content-Type: text/json; charset=UTF-8');
         $this->assertSameOutbuffer(
             '',
-            function(){
+            function () {
                 $this->middleware->handle($this->context, $this->echoback);
                 $this->middleware->terminate();
             }

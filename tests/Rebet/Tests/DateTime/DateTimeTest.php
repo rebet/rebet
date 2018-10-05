@@ -5,14 +5,15 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
 use Rebet\Config\Config;
-use Rebet\Config\App;
 use Rebet\Common\Strings;
+use Rebet\Foundation\App;
 
 class DateTimeTest extends RebetTestCase
 {
     public function setUp()
     {
         Config::clear();
+        App::initFrameworkConfig();
         App::setTimezone('UTC');
         DateTime::setTestNow('2010-10-20 10:20:30');
     }

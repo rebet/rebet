@@ -6,11 +6,11 @@ use Rebet\Tests\StderrCapture;
 
 use Rebet\Log\Handler\StderrHandler;
 
+use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
+use Rebet\Foundation\App;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
-use Rebet\DateTime\DateTime;
-use Rebet\Config\Config;
-use Rebet\Config\App;
 
 use org\bovigo\vfs\vfsStream;
 
@@ -24,6 +24,7 @@ class StderrHandlerTest extends RebetTestCase
     {
         StderrCapture::clear();
         Config::clear();
+        App::initFrameworkConfig();
         App::setTimezone('UTC');
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 

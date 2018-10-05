@@ -3,8 +3,8 @@ namespace Rebet\Routing;
 
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
-use Rebet\Config\App;
 use Rebet\Config\Configurable;
+use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
@@ -97,7 +97,7 @@ class Router
      * Register a new GET route with the router.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -111,7 +111,7 @@ class Router
      * Register a new POST route with the router.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -125,7 +125,7 @@ class Router
      * Register a new PUT route with the router.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -139,7 +139,7 @@ class Router
      * Register a new PATCH route with the router.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -153,7 +153,7 @@ class Router
      * Register a new DELETE route with the router.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -167,7 +167,7 @@ class Router
      * Register a new OPTIONS route with the router.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -181,7 +181,7 @@ class Router
      * Register a new route responding to all methods.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -196,7 +196,7 @@ class Router
      * If given methods is empty(=[]) then match all method.
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
-     * 
+     *
      * @param array|string $methods
      * @param string $uri
      * @param string|callable $action
@@ -221,12 +221,12 @@ class Router
     /**
      * 指定の URI にマッチするコントローラールートを設定します。
      * 詳細なアクセス制御には各種ルーティングアノテーションが利用できます。
-     * 
+     *
      * また、本ルートに設定される where 条件は コントローラースコープ でグローバルな設定となります。
      * 個別のアクション単位で where 条件を設定したい場合は @Where ルーティングアノテーションをご利用下さい。
      *
      * @see Rebet\Routing\Annotation
-     * 
+     *
      * @param string $uri
      * @param string $controller
      * @return Route
