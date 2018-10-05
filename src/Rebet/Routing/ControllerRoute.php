@@ -71,10 +71,10 @@ class ControllerRoute extends ConventionalRoute
     {
         $request_uri = $request->getRequestUri();
         $uri         = rtrim($this->uri, '/');
-        if($request_uri !== $uri && !Strings::startWith($request_uri, "{$uri}/")) {
+        if($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
             return false;
         }
-        
+
         if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
             throw new RouteNotFoundException("{$this} not found. Invalid method {$request->getMethod()} given.");
         }

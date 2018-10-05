@@ -6,7 +6,7 @@ namespace Rebet\Common;
  *
  * 文字列に関連した簡便なユーティリティメソッドを集めたクラスです。
  *
- * if(Strings::endWith($file, '.pdf')) {
+ * if(Strings::endsWith($file, '.pdf')) {
  *     // Something to do
  * }
  *
@@ -148,13 +148,13 @@ class Strings
      * 指定の文字列 [$haystack] が指定の文字列 [$needle] で始まるか検査します。
      *
      * ex)
-     * Strings::startWith('abc123', 'abc'); //=> true
+     * Strings::startsWith('abc123', 'abc'); //=> true
      *
      * @param string|null $haystack 検査対象文字列
      * @param string $needle   被検査文字列
      * @return bool true : 始まる／false : 始まらない
      */
-    public static function startWith(?string $haystack, string $needle) : bool
+    public static function startsWith(?string $haystack, string $needle) : bool
     {
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
@@ -163,13 +163,13 @@ class Strings
      * 指定の文字列 [$haystack] が指定の文字列 [$needle] で終わるか検査します。
      *
      * ex)
-     * Strings::endWith('abc123', '123'); //=> true
+     * Strings::endsWith('abc123', '123'); //=> true
      *
      * @param string|null $haystack 検査対象文字列
      * @param string $needle 被検査文字列
      * @return bool true : 終わる／false : 終わらない
      */
-    public static function endWith(?string $haystack, string $needle) : bool
+    public static function endsWith(?string $haystack, string $needle) : bool
     {
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
     }
@@ -278,8 +278,8 @@ class Strings
     public static function indent(?string $string, int $depth = 1, string $char = "\t") : ?string
     {
         $indent = str_repeat($char, $depth);
-        $indened = (self::startWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
-        return self::endWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
+        $indened = (self::startsWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
+        return self::endsWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
     }
 
     /**

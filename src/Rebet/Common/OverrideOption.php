@@ -50,7 +50,7 @@ class OverrideOption
     public static function split(string $key) : array
     {
         foreach ([self::REPLACE, self::PREPEND, self::APEND] as $option) {
-            if (Strings::endWith($key, $option)) {
+            if (Strings::endsWith($key, $option)) {
                 return [Strings::ratrim($key, $option), $option];
             }
         }

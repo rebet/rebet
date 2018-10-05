@@ -61,8 +61,8 @@ class Files
         
         $realpath = \implode('/', $absolutes);
         if ($is_relatable) {
-            if (Strings::startWith($convert_path, '/')) {
-                if (!Strings::startWith($realpath, '..')) {
+            if (Strings::startsWith($convert_path, '/')) {
+                if (!Strings::startsWith($realpath, '..')) {
                     $realpath = '/' . $realpath;
                 }
             } else {

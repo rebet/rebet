@@ -80,20 +80,20 @@ class StringsTest extends RebetTestCase
         $this->assertSame('/path/to/test', Strings::rtrim('/path/to/test/', '/'));
     }
 
-    public function test_startWith()
+    public function test_startsWith()
     {
-        $this->assertFalse(Strings::startWith(null, 'abc'));
-        $this->assertFalse(Strings::startWith('', 'abc'));
-        $this->assertFalse(Strings::startWith('123abc', 'abc'));
-        $this->assertTrue(Strings::startWith('abc123', 'abc'));
+        $this->assertFalse(Strings::startsWith(null, 'abc'));
+        $this->assertFalse(Strings::startsWith('', 'abc'));
+        $this->assertFalse(Strings::startsWith('123abc', 'abc'));
+        $this->assertTrue(Strings::startsWith('abc123', 'abc'));
     }
 
     public function test_endtWith()
     {
-        $this->assertFalse(Strings::endWith(null, 'abc'));
-        $this->assertFalse(Strings::endWith('', 'abc'));
-        $this->assertTrue(Strings::endWith('123abc', 'abc'));
-        $this->assertFalse(Strings::endWith('abc123', 'abc'));
+        $this->assertFalse(Strings::endsWith(null, 'abc'));
+        $this->assertFalse(Strings::endsWith('', 'abc'));
+        $this->assertTrue(Strings::endsWith('123abc', 'abc'));
+        $this->assertFalse(Strings::endsWith('abc123', 'abc'));
     }
 
     public function test_checkDependenceChar()
