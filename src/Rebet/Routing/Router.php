@@ -356,11 +356,11 @@ class Router
      * @param Response $response
      * @return void
      */
-    public static function shutdown(Request $request, Response $response) : void
+    public static function terminate(Request $request, Response $response) : void
     {
         if (static::$pipeline !== null) {
-            static::$pipeline->invoke('shutdown', $request, $response);
-            static::$pipeline->getDestination()->shutdown($request, $response);
+            static::$pipeline->invoke('terminate', $request, $response);
+            static::$pipeline->getDestination()->terminate($request, $response);
         }
     }
 }

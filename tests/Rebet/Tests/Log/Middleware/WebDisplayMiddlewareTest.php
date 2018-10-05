@@ -45,7 +45,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
             'This&nbsp;is&nbsp;test',
             function(){
                 $this->middleware->handle($this->context, $this->echoback);
-                $this->middleware->shutdown();
+                $this->middleware->terminate();
             }
         );
 
@@ -61,12 +61,12 @@ class WebDisplayMiddlewareTest extends RebetTestCase
                 $this->context->level   = LogLevel::ERROR();
                 $this->context->message = 'This is test 2';
                 $this->middleware->handle($this->context, $this->echoback);
-                $this->middleware->shutdown();
+                $this->middleware->terminate();
             }
         );
     }
 
-    public function test_shutdown()
+    public function test_terminate()
     {
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = 'This is test';
@@ -75,7 +75,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
             'This&nbsp;is&nbsp;test',
             function(){
                 $this->middleware->handle($this->context, $this->echoback);
-                $this->middleware->shutdown();
+                $this->middleware->terminate();
             }
         );
 
@@ -84,7 +84,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
             'This&nbsp;is&nbsp;test',
             function(){
                 $this->middleware->handle($this->context, $this->echoback);
-                $this->middleware->shutdown();
+                $this->middleware->terminate();
             }
         );
         System::initMock();
@@ -94,7 +94,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
             '',
             function(){
                 $this->middleware->handle($this->context, $this->echoback);
-                $this->middleware->shutdown();
+                $this->middleware->terminate();
             }
         );
         System::initMock();

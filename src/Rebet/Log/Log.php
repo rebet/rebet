@@ -158,7 +158,7 @@ class Log
      */
     public static function init(?callable $handler = null, ?array $middlewares = null)
     {
-        self::shutdown();
+        self::terminate();
         self::$pipeline = (new Pipeline())
             ->through($middlewares ?? self::config('log_middlewares', false, []))
             ->then($handler ?? self::configInstantiate('log_handler'))
@@ -170,11 +170,11 @@ class Log
      *
      * @return void
      */
-    public static function shutdown()
+    public static function terminate()
     {
         if (self::$pipeline !== null) {
-            Log::$pipeline->invoke('shutdown');
-            Log::$pipeline->getDestination()->shutdown();
+            Log::$pipeline->invoke('terminate');
+            Log::$pipeline->getDestination()->terminate();
         }
     }
 
@@ -218,5 +218,5 @@ register_shutdown_function(function () {
     if ($error) {
         Log::errorHandle($error);
     }
-    Log::shutdown();
+    Log::terminate();
 });

@@ -74,7 +74,7 @@ EOS;
     /**
      * ミドルウェアのシャットダウン処理を実行します。
      */
-    public function shutdown() : void
+    public function terminate() : void
     {
         if (!empty($this->buffer)) {
             $matches      = [];

@@ -85,9 +85,9 @@ class PipelineTest extends RebetTestCase
         });
         
         $this->assertSameOutbuffer(
-            '[shutdown](shutdown)',
-            function(){
-                $this->pipeline->invoke('shutdown');
+            '[terminate](terminate)',
+            function () {
+                $this->pipeline->invoke('terminate');
             }
         );
         
@@ -126,9 +126,9 @@ class PipelineTest_Wrapper
         $output = $next($this->open.$input.$this->close);
         return $this->open.$output.$this->close;
     }
-    public function shutdown()
+    public function terminate()
     {
-        echo $this->open.'shutdown'.$this->close;
+        echo $this->open.'terminate'.$this->close;
     }
     public function set($open, $close)
     {

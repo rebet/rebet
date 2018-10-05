@@ -56,7 +56,7 @@ class ClosureRoute extends Route
      * @param Response $response
      * @return void
      */
-    public function shutdown(Request $request, Response $response) : void
+    public function terminate(Request $request, Response $response) : void
     {
         // Do Nothing.
     }

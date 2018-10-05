@@ -46,7 +46,7 @@ class LogTest extends RebetTestCase
         $this->assertSameOutbuffer(
             '',
             function () {
-                Log::shutdown();
+                Log::terminate();
             }
         );
         
@@ -74,7 +74,7 @@ class LogTest extends RebetTestCase
                 'Test&nbsp;log',
             ],
             function () {
-                Log::shutdown();
+                Log::terminate();
             }
         );
     }

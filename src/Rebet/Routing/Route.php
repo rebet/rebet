@@ -221,7 +221,7 @@ abstract class Route
      * @param Response $response
      * @return void
      */
-    abstract public function shutdown(Request $request, Response $response) : void ;
+    abstract public function terminate(Request $request, Response $response) : void ;
 
     /**
      * ルートを Pipeline で処理できるようにします。

@@ -53,7 +53,7 @@ class FileHandler extends FormattableHandler
     /**
      * シャットダウン処理を行います。
      */
-    public function shutdown() : void
+    public function terminate() : void
     {
         // Nothing to do
     }

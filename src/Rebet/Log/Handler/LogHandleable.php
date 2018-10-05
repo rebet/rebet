@@ -24,7 +24,7 @@ trait LogHandleable
     /**
      * ログハンドラをシャットダウンします
      */
-    abstract public function shutdown() : void ;
+    abstract public function terminate() : void ;
 
     /**
      * ログハンドラを Pipeline で処理できるようにします。
