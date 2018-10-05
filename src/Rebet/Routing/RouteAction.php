@@ -5,6 +5,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Common\Reflector;
 use Rebet\Routing\RouteNotFoundException;
+use Rebet\Annotation\AnnotatedMethod;
 
 /**
  * Route action class
@@ -38,6 +39,13 @@ class RouteAction
     private $reflector = null;
 
     /**
+     * method annotation accessor
+     *
+     * @var AnnotatedMethod
+     */
+    private $annotated_method = null;
+
+    /**
      * ルートアクションオブジェクトを構築します
      *
      * @param \ReflectionFunction|\ReflectionMethod $reflector
@@ -48,9 +56,10 @@ class RouteAction
         if (!($reflector instanceof \ReflectionFunction) && !($reflector instanceof \ReflectionMethod)) {
             throw new \LogicException('Invalid type of reflector.');
         }
-        $this->route     = $route;
-        $this->reflector = $reflector;
-        $this->instance  = $instance;
+        $this->route            = $route;
+        $this->reflector        = $reflector;
+        $this->instance         = $instance;
+        $this->annotated_method = $reflector instanceof \ReflectionFunction ? null : AnnotatedMethod::of($reflector);
     }
     
     /**
@@ -100,5 +109,26 @@ class RouteAction
     protected function isMethod() : bool
     {
         return $this->reflector instanceof \ReflectionMethod;
+    }
+
+    /**
+     * このルートアクションのアノテーションアクセッサを取得します。
+     *
+     * @return AnnotatedMethod
+     */
+    public function getAnnotatedMethod() : AnnotatedMethod
+    {
+        return $this->annotated_method;
+    }
+
+    /**
+     * このルートアクションに紐づいたアノテーションを取得します。
+     *
+     * @param string $annotation
+     * @return void
+     */
+    public function annotation(string $annotation)
+    {
+        return $this->annotated_method ? $this->annotated_method->annotation($annotation, true) : null ;
     }
 }

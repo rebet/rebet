@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Annotation;
 
 /**
- * Surface Annotation
+ * Method Annotation
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -12,15 +12,17 @@ namespace Rebet\Routing\Annotation;
  * @Annotation
  * @Target({"CLASS","METHOD"})
  */
-final class Surface
+final class Method
 {
     /**
      * @var array
+     * @Enum({"GET","HEAD","POST","PUT","PATCH","DELETE","OPTIONS"})
      */
     public $allows;
 
     /**
      * @var array
+     * @Enum({"GET","HEAD","POST","PUT","PATCH","DELETE","OPTIONS"})
      */
     public $rejects;
 

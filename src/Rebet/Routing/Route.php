@@ -233,4 +233,25 @@ abstract class Route
     {
         return $this->handle($request);
     }
+
+    /**
+     * このルートのアノテーションアクセッサを取得します。
+     *
+     * @return AnnotatedMethod
+     */
+    public function getAnnotatedMethod() : AnnotatedMethod
+    {
+        return $this->route_action ? $this->route_action->getAnnotatedMethod() : null ;
+    }
+
+    /**
+     * このルートに紐づいたアノテーションを取得します。
+     *
+     * @param string $annotation
+     * @return void
+     */
+    public function annotation(string $annotation)
+    {
+        return $this->route_action ? $this->route_action->annotation($annotation) : null ;
+    }
 }

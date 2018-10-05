@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Annotation;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * Class annotations accessor class
@@ -12,7 +12,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ClassAnnotations
+class AnnotatedClass
 {
     /**
      * Annotation reader
@@ -32,11 +32,11 @@ class ClassAnnotations
      * Create class annotations accesser.
      *
      * @param string|object|\ReflectionClass $class
-     * @return ClassAnnotations
+     * @return AnnotatedClass
      */
-    public static function of($class) : ClassAnnotations
+    public static function of($class) : AnnotatedClass
     {
-        return new ClassAnnotations($class);
+        return new AnnotatedClass($class);
     }
 
     /**
@@ -60,7 +60,7 @@ class ClassAnnotations
      */
     public function annotations() : array
     {
-        return $this->reader->getClassAnnotations($this->class);
+        return $this->reader->getAnnotatedClass($this->class);
     }
 
     /**
@@ -78,21 +78,21 @@ class ClassAnnotations
      * Get method annotation
      *
      * @param string $method
-     * @return \MethodAnnotations
+     * @return \AnnotatedMethod
      */
-    public function method(string $method) : MethodAnnotations
+    public function method(string $method) : AnnotatedMethod
     {
-        return new MethodAnnotations($this->class->getMethod($method), $this->reader);
+        return new AnnotatedMethod($this->class->getMethod($method), $this, $this->reader);
     }
 
     /**
      * Get property annotation
      *
      * @param string $method
-     * @return \MethodAnnotations
+     * @return \AnnotatedMethod
      */
-    public function property(string $property) : PropertyAnnotations
+    public function property(string $property) : AnnotatedProperty
     {
-        return new PropertyAnnotations($this->class->getProperty($property), $this->reader);
+        return new AnnotatedProperty($this->class->getProperty($property), $this, $this->reader);
     }
 }

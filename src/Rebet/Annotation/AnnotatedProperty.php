@@ -11,7 +11,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class PropertyAnnotations
+class AnnotatedProperty
 {
     /**
      * Annotation reader
@@ -28,30 +28,39 @@ class PropertyAnnotations
     protected $property = null;
 
     /**
+     * Annotated declaring class of the property.
+     *
+     * @var AnnotatedClass
+     */
+    protected $annotated_class = null;
+
+    /**
      * Create property annotations accesser.
      *
      * @param string|\ReflectionProperty $property
      * @param string|object|\ReflectionClass|null $class
-     * @return PropertyAnnotations
+     * @return AnnotatedProperty
      */
-    public static function of($property, $class = null) : PropertyAnnotations
+    public static function of($property, $class = null) : AnnotatedProperty
     {
         if (is_string($property)) {
             $property = new \ReflectionProperty($class, $property);
         }
-        return new PropertyAnnotations($property);
+        return new AnnotatedProperty($property);
     }
 
     /**
      * メソッドアノテーションアクセッサを構築します。
      *
      * @param \ReflectionProperty $property
+     * @param AnnotatedClass|null $annotated_class
      * @param AnnotationReader|null $reader
      */
-    public function __construct(\ReflectionProperty $property, ?AnnotationReader $reader)
+    public function __construct(\ReflectionProperty $property, ?AnnotatedClass $annotated_class = null, ?AnnotationReader $reader = null)
     {
-        $this->property = $property;
-        $this->reader   = $reader ?? new AnnotationReader();
+        $this->property        = $property;
+        $this->reader          = $reader ?? new AnnotationReader();
+        $this->annotated_class = $annotated_class ?? new AnnotatedClass($this->property->getDeclaringClass(), $this->reader);
         AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
@@ -62,17 +71,32 @@ class PropertyAnnotations
      */
     public function annotations() : array
     {
-        return $this->reader->getPropertyAnnotations($this->property);
+        return $this->reader->getAnnotatedProperty($this->property);
     }
 
     /**
      * Get property annotation
+     * If you want, you can check declaring class annotation too.
+     * If property annotation nothing, then check declaring class annotation and get.
      *
      * @param string $annotation
+     * @param bool $check_declaring_class
      * @return mixed @Annotation
      */
     public function annotation(string $annotation)
     {
-        return $this->reader->getPropertyAnnotation($this->property, $annotation);
+        return $this->reader->getPropertyAnnotation($this->property, $annotation) ??
+               ($check_declaring_class ? $this->annotated_class->annotation($annotation) : null)
+        ;
+    }
+
+    /**
+     * Get AnnotatedClass that is declaring class of the property.
+     *
+     * @return AnnotatedClass
+     */
+    public function declaringClass() : AnnotatedClass
+    {
+        return $this->annotated_class;
     }
 }
