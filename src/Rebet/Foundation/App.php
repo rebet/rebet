@@ -5,6 +5,8 @@ use Rebet\Config\Configurable;
 use Rebet\Config\Config;
 use Rebet\File\Files;
 use Rebet\DateTime\DateTime;
+use Rebet\Routing\MethodRoute;
+use Rebet\Routing\ConventionalRoute;
 
 /**
  * アプリケーションコンフィグ クラス
@@ -49,8 +51,15 @@ class App
         Config::framework([
             DateTime::class => [
                 'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
-            ]
-            
+            ],
+
+            MethodRoute::class => [
+                'namespace' => Config::refer(App::class, 'namespace.controller'),
+            ],
+
+            ConventionalRoute::class => [
+                'namespace' => Config::refer(App::class, 'namespace.controller'),
+            ],
         ]);
     }
     

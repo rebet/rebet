@@ -33,7 +33,6 @@ use Rebet\Common\Utils;
  *
  * なお、上記レイヤー別の上書きは挙動は Rebet\Common\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) と同様の動作をします。
  *
- * @todo frameworkレイヤーは不要では？ 要件等
  * @todo i18n 関連の考察
  * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
  * @todo レイヤー別の設定を配列で取得するメソッドの実装
@@ -440,7 +439,7 @@ class Config
      * public static function defaultConfig() {
      *     return [
      *         'default_format'   => 'Y-m-d H:i:s',
-     *         'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ?: 'UTC'),
+     *         'default_timezone' => Config::refer(Other::class, 'timezone', date_default_timezone_get() ?: 'UTC'),
      *     ];
      * }
      *

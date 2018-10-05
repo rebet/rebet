@@ -43,9 +43,10 @@ use Rebet\Config\Config;
 class ConventionalRoute extends Route
 {
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
-            'namespace'                  => Config::refer(App::class, 'namespace.controller'),
+            'namespace'                  => null,
             'default_part_of_controller' => 'top',
             'default_part_of_action'     => 'index',
             'uri_snake_separator'        => '-',
@@ -186,7 +187,7 @@ class ConventionalRoute extends Route
         } catch (Throwable $e) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not exists.", null, $e);
         }
-        if(!$this->accessible && !$method->isPublic()) {
+        if (!$this->accessible && !$method->isPublic()) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not accessible.", null, $e);
         }
 

@@ -21,9 +21,10 @@ use Rebet\Config\App;
 class MethodRoute extends DeclarativeRoute
 {
     use Configurable;
-    public static function defaultConfig() {
+    public static function defaultConfig()
+    {
         return [
-            'namespace' => Config::refer(App::class, 'namespace.controller'),
+            'namespace' => null,
         ];
     }
 
@@ -65,7 +66,7 @@ class MethodRoute extends DeclarativeRoute
         try {
             $this->action    = new \ReflectionMethod($action);
             $this->namespace = $this->action->getNamespaceName();
-        } catch(\ReflectionException $e) {
+        } catch (\ReflectionException $e) {
             $this->action = new \ReflectionMethod($this->namespace.'\\'.$action);
         }
     }
