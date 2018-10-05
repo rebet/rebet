@@ -1,15 +1,14 @@
 <?php
 namespace Rebet\Routing;
 
-use Rebet\Config\Configurable;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
+use Rebet\Config\App;
+use Rebet\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Routing\RouteNotFoundException;
-use Rebet\Config\App;
-use PHPUnit\Framework\Constraint\IsInstanceOf;
 
 /**
  * Router Class
@@ -66,7 +65,7 @@ class Router
     private static $pipeline = null;
     
     /**
-     * ルーターをクリアします。
+     * Clear all routing rules.
      *
      * @return void
      */
@@ -79,7 +78,7 @@ class Router
     }
     
     /**
-     * ルーティングルールを設定します。
+     * Set new routing rules for given surface.
      *
      * @param string $surface
      * @param callable $callback
@@ -97,6 +96,8 @@ class Router
     /**
      * Register a new GET route with the router.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -109,6 +110,8 @@ class Router
     /**
      * Register a new POST route with the router.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -121,6 +124,8 @@ class Router
     /**
      * Register a new PUT route with the router.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -133,6 +138,8 @@ class Router
     /**
      * Register a new PATCH route with the router.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -145,6 +152,8 @@ class Router
     /**
      * Register a new DELETE route with the router.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -157,6 +166,8 @@ class Router
     /**
      * Register a new OPTIONS route with the router.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -169,6 +180,8 @@ class Router
     /**
      * Register a new route responding to all methods.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param  string  $uri
      * @param  callable|string  $action
      * @return Route
@@ -179,9 +192,11 @@ class Router
     }
     
     /**
-     * 指定の HTTPメソッド にマッチするルートを設定します。
-     * ※HTTPメソッドが無指定（=[]）の場合は全てのメソッドにマッチします。
+     * Register a new route responding to some methods.
+     * If given methods is empty(=[]) then match all method.
      *
+     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * 
      * @param array|string $methods
      * @param string $uri
      * @param string|callable $action
@@ -189,19 +204,40 @@ class Router
      */
     public static function match($methods, string $uri, $action) : Route
     {
-        $route = null;
-        if ($action instanceof Route) {
-            $route = $action;
-        } elseif (is_callable($action)) {
-            $route = new ClosureRoute(array_map('strtoupper', (array)$methods), $uri, $action);
+        $route   = null;
+        $methods = array_map('strtoupper', (array)$methods);
+        if (is_callable($action)) {
+            $route = new ClosureRoute($methods, $uri, $action);
+        } elseif (is_string($action)) {
+            $route = new MethodRoute($methods, $uri, $action);
+        } else {
+            throw new \LogicException("Invalid action type for declarative routing.");
         }
-
-        // @todo Controller@method 形式ルートの実装
         
         static::addRoute($route);
         return $route;
     }
    
+    /**
+     * 指定の URI にマッチするコントローラールートを設定します。
+     * 詳細なアクセス制御には各種ルーティングアノテーションが利用できます。
+     * 
+     * また、本ルートに設定される where 条件は コントローラースコープ でグローバルな設定となります。
+     * 個別のアクション単位で where 条件を設定したい場合は @Where ルーティングアノテーションをご利用下さい。
+     *
+     * @see Rebet\Routing\Annotation
+     * 
+     * @param string $uri
+     * @param string $controller
+     * @return Route
+     */
+    public static function controller(string $uri, string $controller) : Route
+    {
+        $route = new ControllerRoute($uri, $controller);
+        static::addRoute($route);
+        return $route;
+    }
+
     // public static function redirect($uri, $destination, $status = 302)
     // {
     //     //@todo 実装

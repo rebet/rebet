@@ -20,13 +20,6 @@ use Rebet\Common\Inflector;
 class ControllerRoute extends ConventionalRoute
 {
     /**
-     * ルーティング対象メソッド
-     *
-     * @var array
-     */
-    protected $methods = [];
-
-    /**
      * ルーティング対象URI
      *
      * @var string
@@ -43,16 +36,14 @@ class ControllerRoute extends ConventionalRoute
     /**
      * ルートオブジェクトを構築します
      *
-     * @param array $methods
      * @param string $uri
      * @param callable $action
      * @throws ReflectionException
      */
-    public function __construct($methods, string $uri, string $controller)
+    public function __construct(string $uri, string $controller)
     {
         parent::__construct();
-        $this->methods = (array)$methods;
-        $this->uri     = $uri;
+        $this->uri = $uri;
         try {
             $this->action    = new \ReflectionClass($controller);
             $this->namespace = $this->action->getNamespaceName();
@@ -73,10 +64,6 @@ class ControllerRoute extends ConventionalRoute
         $uri         = rtrim($this->uri, '/');
         if($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
             return false;
-        }
-
-        if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
-            throw new RouteNotFoundException("{$this} not found. Invalid method {$request->getMethod()} given.");
         }
 
         return parent::match($request);

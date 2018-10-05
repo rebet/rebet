@@ -45,6 +45,7 @@ final class Method
      */
     public function allow(string $method) : bool
     {
+        $method = strtoupper($method);
         return empty($this->rejects) ? in_array($method, $this->allows) : !in_array($method, $this->rejects) ;
     }
 
