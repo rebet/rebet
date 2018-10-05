@@ -2,6 +2,7 @@
 namespace Rebet\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * Property annotations accessor class
