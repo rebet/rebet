@@ -19,10 +19,8 @@ class RouterTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::initMock();
-        Config::clear();
-        App::initFrameworkConfig();
-        App::setTimezone('UTC');
+        parent::setUp();
+        DateTime::setTestNow('2010-10-20 10:20:30.040050');
         App::setSurface('web');
         Config::application([
             Router::class => [
@@ -31,7 +29,6 @@ class RouterTest extends RebetTestCase
                 'fallback!'      => null,
             ]
         ]);
-        DateTime::setTestNow('2010-10-20 10:20:30.040050');
 
         Router::clear();
         Router::rules('web', function () {

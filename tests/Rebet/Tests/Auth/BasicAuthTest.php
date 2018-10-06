@@ -10,7 +10,7 @@ class BasicAuthTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::initMock();
+        parent::setUp();
     }
 
     /**

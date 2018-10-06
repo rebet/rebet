@@ -7,6 +7,9 @@ use Rebet\Tests\StderrCapture;
 
 use Rebet\Common\Arrays;
 use Rebet\Common\Securities;
+use Rebet\Common\System;
+use Rebet\Config\Config;
+use Rebet\Foundation\App;
 
 /**
  * Rebet用の基底テストケースクラス。
@@ -16,6 +19,15 @@ use Rebet\Common\Securities;
 abstract class RebetTestCase extends TestCase
 {
     private static $start_at;
+    
+    public function setUp()
+    {
+        System::initMock();
+        Config::clear();
+        App::initFrameworkConfig();
+        App::setTimezone('UTC');
+        StderrCapture::clear();
+    }
     
     public static function setUpBeforeClass()
     {

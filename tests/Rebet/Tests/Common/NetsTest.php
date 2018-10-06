@@ -10,7 +10,7 @@ class NetsTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::initMock();
+        parent::setUp();
     }
 
     public function test_encodeBase64Url()

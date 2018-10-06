@@ -11,6 +11,7 @@ class EnumTest extends RebetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->male   = EnumTest_Gender::MALE();
         $this->female = EnumTest_Gender::FEMALE();
     }

@@ -17,6 +17,7 @@ class ReflectorTest extends RebetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->array  = ['a','b','c', null];
         $this->map    = [
             'name' => 'John Smith',

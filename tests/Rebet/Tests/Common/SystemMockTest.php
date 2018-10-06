@@ -11,7 +11,7 @@ class SystemMockTest extends RebetTestCase
 {
     public function setUp()
     {
-        System::initMock();
+        parent::setUp();
     }
 
     public function test_mock_init()

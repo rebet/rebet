@@ -10,8 +10,8 @@ class ConfigTest extends RebetTestCase
 {
     public function setUp()
     {
+        parent::setUp();
         \putenv('PROMISE_TEST=');
-        Config::clear();
     }
 
     public function tearDown()
@@ -616,6 +616,8 @@ class ConfigTest extends RebetTestCase
 
     public function test_get_all()
     {
+        Config::clear();
+        
         $config = Config::all();
         $this->assertSame([], $config);
 

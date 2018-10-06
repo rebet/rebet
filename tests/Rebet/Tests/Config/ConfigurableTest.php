@@ -9,7 +9,7 @@ class ConfigurableTest extends RebetTestCase
 {
     public function setUp()
     {
-        Config::clear();
+        parent::setUp();
     }
 
     public function test_configInstantiate()

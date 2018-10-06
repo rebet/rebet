@@ -10,7 +10,7 @@ class AppTest extends RebetTestCase
 {
     public function setUp()
     {
-        Config::clear();
+        parent::setUp();
     }
 
     public function test_getRoot()
@@ -192,6 +192,7 @@ class AppTest extends RebetTestCase
 
     public function test_getTimezone()
     {
+        Config::clear();
         Config::framework([
             App::class => [
                 'timezone' => 'UTC',

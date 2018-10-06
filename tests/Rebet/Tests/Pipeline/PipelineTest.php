@@ -10,6 +10,7 @@ class PipelineTest extends RebetTestCase
     
     public function setup()
     {
+        parent::setUp();
         $this->pipeline = new Pipeline();
     }
     

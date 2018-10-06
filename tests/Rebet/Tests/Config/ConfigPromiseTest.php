@@ -13,8 +13,8 @@ class ConfigPromiseTest extends RebetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         \putenv('PROMISE_TEST=');
-        Config::clear();
         $this->promise_once  = new ConfigPromise(function () {
             return \getenv('PROMISE_TEST') ?: 'default';
         });

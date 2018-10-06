@@ -11,7 +11,7 @@ class EnvTest extends RebetTestCase
 {
     public function setUp()
     {
-        Config::clear();
+        parent::setUp();
     }
     
     /**
