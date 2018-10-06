@@ -84,7 +84,7 @@ class AnnotatedProperty
      * @param bool $check_declaring_class
      * @return mixed @Annotation
      */
-    public function annotation(string $annotation)
+    public function annotation(string $annotation, bool $check_declaring_class = false)
     {
         return $this->reader->getPropertyAnnotation($this->property, $annotation) ??
                ($check_declaring_class ? $this->annotated_class->annotation($annotation) : null)

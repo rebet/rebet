@@ -5,7 +5,6 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Routing\Annotation\Surface;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Annotation\AnnotatedProperty;
