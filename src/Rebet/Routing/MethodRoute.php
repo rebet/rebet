@@ -78,7 +78,7 @@ class MethodRoute extends DeclarativeRoute
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    public function createRouteAction(Request $request) : RouteAction
+    protected function createRouteAction(Request $request) : RouteAction
     {
         $this->controller = $this->action->getDeclaringClass()->newInstance();
         return new RouteAction($this, $this->action, $this->controller);

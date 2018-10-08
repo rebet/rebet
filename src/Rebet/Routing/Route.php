@@ -55,18 +55,45 @@ abstract class Route
      *
      * マッチ結果として false を返すと後続のルート検証が行われます。
      * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
-     * 
+     *
      * @param Request $request
      * @return boolean
      * @throws RouteNotFoundException
      */
-    abstract public function match(Request $request) : bool ;
-    
+    public function match(Request $request) : bool
+    {
+        $vars = $this->analyze($request);
+        if ($vars === false) {
+            return false;
+        }
+        $request->attributes->add($vars);
+        $request->route     = $this;
+        $this->route_action = $this->createRouteAction($request);
+        return true;
+    }
+
     /**
-     * 実行可能な RouteAction を作成します。
+     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
+     * 解析の過程で取り込んだルーティングパラメータを返します。
+     *
+     * 解析結果として false を返すと後続のルート検証が行われます。
+     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     *
+     * @param Request $request
+     * @return bool|array
+     * @throws RouteNotFoundException
+     */
+    abstract protected function analyze(Request $request) ;
+
+    /**
+     * analyze によってマッチしたリクエストを処理するための ルートアクション を返します。
+     * サブクラスではここで追加のアノテーション検証などを行うことができます。
+     *
+     * 追加検証でルーティング対象外となる場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
      * @return RouteAction
+     * @throws RouteNotFoundException
      */
     abstract protected function createRouteAction(Request $request) : RouteAction ;
 

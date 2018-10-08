@@ -87,7 +87,7 @@ class RouterTest extends RebetTestCase
             Router::get('/parameter/convert/int/{value}', function (int $value) {
                 return "Content: /parameter/convert/int/{value} - {$value} ".(is_int($value) ? 'int' : 'not int');
             });
-
+            
             Router::get('/parameter/convert/array/{value}', function (array $value) {
                 return "Content: /parameter/convert/array/{value} - ".join('/', $value);
             });

@@ -152,17 +152,13 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * 対象のリクエストが規約ベースのルート設定にマッチするかチェックします。
-     * 本メソッドは 規約に従った URI 指定を解析し、マッチ結果を返します。
-     * なお、マッチングの過程で取り込まれたルーティングパラメータは $request->attributes に格納されます。
-     *
-     * マッチ結果として false を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * ルーティングパラメータ解析を行い、対象のリクエストが自身のルートにマッチるか検証します。
      *
      * @param Request $request
-     * @return boolean
+     * @return void
+     * @throws RouteNotFoundException
      */
-    public function match(Request $request) : bool
+    protected function analyze(Request $request)
     {
         $requests = explode(trim($request->getRequestUri(), '/')) ;
         $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
@@ -208,10 +204,20 @@ class ConventionalRoute extends Route
             }
             $vars[$name] = $value;
         }
+        
+        return $vars;
+    }
 
-        $request->attributes->add($vars);
-        $this->route_action = $this->createRouteAction($request);
-        $request->route = $this;
+    /**
+     * ルートアクションを構築し、追加のアノテーション検証を行います。
+     *
+     * @param Request $request
+     * @return RouteAction
+     * @throws RouteNotFoundException
+     */
+    protected function createRouteAction(Request $request) : RouteAction
+    {
+        $this->route_action = new RouteAction($this, new \ReflectionMethod($this->controller, $this->getActionName()), $this->accessible, $this->controller);
 
         $surface = $this->annotation(Surface::class);
         if ($surface || $surface->reject(App::getSurface())) {
@@ -246,17 +252,6 @@ class ConventionalRoute extends Route
     public function getActionName() : string
     {
         return Inflector::methodize($this->part_of_action).$this->action_suffix;
-    }
-
-    /**
-     * 実行可能な RouteAction を作成します。
-     *
-     * @param Request $request
-     * @return RouteAction
-     */
-    protected function createRouteAction(Request $request) : RouteAction
-    {
-        return new RouteAction($this, new \ReflectionMethod($this->controller, $this->getActionName()), $this->accessible, $this->controller);
     }
 
     /**

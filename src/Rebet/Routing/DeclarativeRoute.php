@@ -13,7 +13,7 @@ use Rebet\Common\Utils;
  * Declarative Route class
  *
  * 宣言的なルートオブジェクト
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -63,18 +63,13 @@ abstract class DeclarativeRoute extends Route
     }
 
     /**
-     * 対象のリクエストが自身のルート設定にマッチするかチェックします。
-     * 本メソッドは {} プレースホルダによる URI 指定を解析し、マッチ結果を返します。
-     * なお、マッチングの過程で取り込まれたルーティングパラメータは $request->attributes に格納されます。
-     *
-     * マッチ結果として false を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * ルーティングパラメータ解析を行い、対象のリクエストが自身のルートにマッチるか検証します。
      *
      * @param Request $request
-     * @return bool
+     * @return void
      * @throws RouteNotFoundException
      */
-    public function match(Request $request) : bool
+    protected function analyze(Request $request)
     {
         // echo "\npreg_match('{$this->getMatchingRegex()}', '". $request->getRequestUri()."');\n";
         
@@ -101,12 +96,8 @@ abstract class DeclarativeRoute extends Route
                 $vars[$key] = $value;
             }
         }
-
-        $request->attributes->add($vars);
-        $this->route_action = $this->createRouteAction($request);
-        $request->route = $this;
-
-        return true;
+        
+        return $vars;
     }
 
     /**

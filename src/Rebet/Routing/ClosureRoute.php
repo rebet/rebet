@@ -44,7 +44,7 @@ class ClosureRoute extends DeclarativeRoute
      * @return RouteAction
      * @throws RouteNotFoundException
      */
-    public function createRouteAction(Request $request) : RouteAction
+    protected function createRouteAction(Request $request) : RouteAction
     {
         return new RouteAction($this, new \ReflectionFunction($this->action));
     }
