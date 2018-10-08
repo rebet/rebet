@@ -50,6 +50,13 @@ class MethodRoute extends DeclarativeRoute
     protected $controller = null;
 
     /**
+     * アクセス制御
+     *
+     * @var boolean
+     */
+    protected $accessible = false;
+    
+    /**
      * ルートオブジェクトを構築します
      *
      * @param array $methods
@@ -81,6 +88,7 @@ class MethodRoute extends DeclarativeRoute
     protected function createRouteAction(Request $request) : RouteAction
     {
         $this->controller = $this->action->getDeclaringClass()->newInstance();
+        $this->action->setAccessible($this->accessible);
         return new RouteAction($this, $this->action, $this->controller);
     }
     
@@ -94,5 +102,17 @@ class MethodRoute extends DeclarativeRoute
     public function terminate(Request $request, Response $response) : void
     {
         // Do Nothing.
+    }
+    
+    /**
+     * 非公開メソッドへのアクセス制御を設定します。
+     *
+     * @param boolean $accessible
+     * @return self
+     */
+    public function accessible(bool $accessible) : self
+    {
+        $this->accessible = $accessible;
+        return $this;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Log;
+namespace Rebet\Tests\Routing;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\StderrCapture;
@@ -14,6 +14,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\BasicResponse;
+use Rebet\Routing\Controller;
 
 class RouterTest extends RebetTestCase
 {
@@ -23,6 +24,11 @@ class RouterTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         App::setSurface('web');
         Config::application([
+            App::class => [
+                'namespace' => [
+                    'controller' => '\Rebet\Tests\Routing',
+                ]
+            ],
             Router::class => [
                 'middlewares!'   => [],
                 'default_route!' => null,
@@ -103,7 +109,15 @@ class RouterTest extends RebetTestCase
             Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', function () {
                 return 'Content: /match/get-head-post';
             });
-
+            
+            Router::get('/method/private-call', 'RouterTest_Controller@privateCall');
+            Router::get('/method/private-call-accessible', 'RouterTest_Controller@privateCall')->accessible(true);
+            Router::get('/method/protected-call', 'RouterTest_Controller@protectedCall');
+            Router::get('/method/protected-call-accessible', 'RouterTest_Controller@protectedCall')->accessible(true);
+            Router::get('/method/public-call', 'RouterTest_Controller@publicCall');
+            Router::get('/method/with-param/{id}', 'RouterTest_Controller@withParam');
+            Router::get('/method/with-optional-param/{id?}', 'RouterTest_Controller@withOptionalParam');
+            
             Router::fallback(function ($request, $route, $e) {
                 throw $e;
             });
@@ -353,18 +367,139 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} where [] not found. Routing parameter value(=3) can not convert to Rebet\Tests\Log\RouterTest_Gender.
+     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} where [] not found. Routing parameter value(=3) can not convert to Rebet\Tests\Routing\RouterTest_Gender.
      */
     public function test_routing_parameterOptionInvalidConvert()
     {
         $response = Router::handle(Request::create('/parameter/convert/enum/3'));
         $this->fail('Never execute.');
     }
-}
 
+    /**
+     * @expectedException \ReflectionException
+     */
+    public function test_routing_methodPrivateCall()
+    {
+        $response = Router::handle(Request::create('/method/private-call'));
+        $this->fail("Never execute.");
+    }
+
+    public function test_routing_methodPrivateCallAccessible()
+    {
+        $response = Router::handle(Request::create('/method/private-call-accessible'));
+        $this->assertSame('Controller: privateCall', $response->getContent());
+    }
+
+    /**
+     * @expectedException \ReflectionException
+     */
+    public function test_routing_methodProtectedCall()
+    {
+        $response = Router::handle(Request::create('/method/protected-call'));
+        $this->fail("Never execute.");
+    }
+
+    public function test_routing_methodProtectedCallAccessible()
+    {
+        $response = Router::handle(Request::create('/method/protected-call-accessible'));
+        $this->assertSame('Controller: protectedCall', $response->getContent());
+    }
+    
+    public function test_routing_methodPublicCall()
+    {
+        $response = Router::handle(Request::create('/method/public-call'));
+        $this->assertSame('Controller: publicCall', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route GET /method/with-param/ not found.
+     */
+    public function test_routing_methodWithParam()
+    {
+        $response = Router::handle(Request::create('/method/with-param/123'));
+        $this->assertSame('Controller: withParam - 123', $response->getContent());
+        
+        $response = Router::handle(Request::create('/method/with-param/'));
+        $this->fail('Never execute.');
+    }
+
+    public function test_routing_methodWithOptionalParam()
+    {
+        $response = Router::handle(Request::create('/method/with-optional-param/123'));
+        $this->assertSame('Controller: withOptionalParam - 123', $response->getContent());
+        
+        $response = Router::handle(Request::create('/method/with-optional-param/'));
+        $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+
+        $response = Router::handle(Request::create('/method/with-optional-param'));
+        $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+    }
+}
 
 class RouterTest_Gender extends Enum
 {
     const MALE   = [1, '男性'];
     const FEMALE = [2, '女性'];
+}
+
+/**
+ * @Surface("web")
+ * @Where({"user_id": "[0-9]+"})
+ */
+class RouterTest_Controller extends Controller
+{
+    private function privateCall()
+    {
+        return 'Controller: privateCall';
+    }
+
+    protected function protectedCall()
+    {
+        return 'Controller: protectedCall';
+    }
+   
+    public function publicCall()
+    {
+        return 'Controller: publicCall';
+    }
+   
+    public function withParam($id)
+    {
+        return "Controller: withParam - {$id}";
+    }
+
+    public function withOptionalParam($id = 'default')
+    {
+        return "Controller: withOptionalParam - {$id}";
+    }
+    
+    public function withParamConvertEnum(RouterTest_Gender $enum)
+    {
+        return "Controller: withParamConvertEnum - {$enum}";
+    }
+    
+    /**
+     * @Surface("api")
+     */
+    public function annotationSurfaceApi()
+    {
+        return 'Controller: annotationSurfaceWeb';
+    }
+
+    /**
+     * @Method("GET")
+     */
+    public function annotationMethodGet()
+    {
+        return 'Controller: annotationMethodGet';
+    }
+
+    /**
+     * @Where({"id": "[a-zA-Z]+"})
+     */
+    public function annotationWhere($id)
+    {
+        return "Controller: annotationWhere - {$id}";
+    }
 }
