@@ -21,6 +21,7 @@ use Rebet\Routing\Annotation\Where;
 use Rebet\Tests\Different\DifferentController;
 use Rebet\Tests\Mock\DifferentNamespaceController;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Routing\ConventionalRoute;
 
 class RouterTest extends RebetTestCase
 {
@@ -665,6 +666,59 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/where/with-param/ABC'));
         $this->fail("Never Execute.");
     }
+
+    public function test_routing_default()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class);
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+        });
+
+        $response = Router::handle(Request::create('/router-test/public-call'));
+        $this->assertSame('Controller: publicCall', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-param/123'));
+        $this->assertSame('Controller: withParam - 123', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-optional-param/abc'));
+        $this->assertSame('Controller: withOptionalParam - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-optional-param/'));
+        $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-optional-param'));
+        $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-multi-param/1/10'));
+        $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-multi-invert-param/1/10'));
+        $this->assertSame('Controller: withMultiInvertParam - 10 to 1', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-convert-enum-param/1'));
+        $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/annotation-method-get'));
+        $this->assertSame('Controller: annotationMethodGet', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/annotation-where/abc'));
+        $this->assertSame('Controller: annotationWhere - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/annotation-class-where/123'));
+        $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/'));
+        $this->assertSame('Controller: index', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test'));
+        $this->assertSame('Controller: index', $response->getContent());
+
+        $response = Router::handle(Request::create('/'));
+        $this->assertSame('Top: index', $response->getContent());
+    }
 }
 
 /**
@@ -745,5 +799,16 @@ class RouterTestController extends Controller
     public function annotationClassWhere($user_id)
     {
         return "Controller: annotationClassWhere - {$user_id}";
+    }
+}
+
+/**
+ * @Surface("web")
+ */
+class TopController extends Controller
+{
+    public function index()
+    {
+        return 'Top: index';
     }
 }

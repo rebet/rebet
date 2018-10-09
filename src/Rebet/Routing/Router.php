@@ -358,12 +358,11 @@ class Router
             $routing_tree = $routing_tree[$path];
         }
 
-        if (!isset($routing_tree[':routes:'])) {
-            throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
-        }
-        foreach ($routing_tree[':routes:'] as $route) {
-            if ($route->match($request)) {
-                return $route;
+        if (isset($routing_tree[':routes:'])) {
+            foreach ($routing_tree[':routes:'] as $route) {
+                if ($route->match($request)) {
+                    return $route;
+                }
             }
         }
 

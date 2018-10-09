@@ -160,7 +160,7 @@ class ConventionalRoute extends Route
      */
     protected function resolveRequestUri(string $request_uri) : array
     {
-        $requests = explode(trim($request_uri, '/')) ;
+        $requests = explode('/', trim($request_uri, '/')) ;
         $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
         $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
         $args               = $requests;
