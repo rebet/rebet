@@ -22,6 +22,7 @@ use Rebet\Tests\Different\DifferentController;
 use Rebet\Tests\Mock\DifferentNamespaceController;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Routing\ConventionalRoute;
+use Rebet\Routing\Annotation\NotRouting;
 
 class RouterTest extends RebetTestCase
 {
@@ -596,6 +597,16 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::annotationNotRouting ] is not routing.
+     */
+    public function test_routing_controllerAnnotationNotRouting()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-not-routing'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::undefinedAction ] not exists.
      */
     public function test_routing_controllerUndefinedAction()
@@ -799,6 +810,14 @@ class RouterTestController extends Controller
     public function annotationClassWhere($user_id)
     {
         return "Controller: annotationClassWhere - {$user_id}";
+    }
+
+    /**
+     * @NotRouting
+     */
+    public function annotationNotRouting()
+    {
+        return "Controller: annotationNotRouting";
     }
 }
 

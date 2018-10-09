@@ -15,6 +15,7 @@ use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Surface;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Routing\Annotation\NotRouting;
 
 /**
  * Conventional Route class
@@ -203,7 +204,12 @@ class ConventionalRoute extends Route
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not accessible.", null, $e);
         }
 
-        $vars = [];
+        $am   = AnnotatedMethod::of($method);
+        if ($am->annotation(NotRouting::class, true)) {
+            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.", null, $e);
+        }
+        $wheres = Reflector::get($am->annotation(Where::class, true), 'wheres', []);
+        $vars   = [];
         foreach ($method->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (!$parameter->isOptional() && empty($args)) {
@@ -212,9 +218,8 @@ class ConventionalRoute extends Route
             if (empty($args)) {
                 break;
             }
-            $value  = array_shift($args);
-            $wheres = Reflector::get(AnnotatedMethod::of($method)->annotation(Where::class, true), 'wheres', []);
-            $regex  = $wheres[$name] ?: $this->wheres[$name] ?: null ;
+            $value = array_shift($args);
+            $regex = $wheres[$name] ?: $this->wheres[$name] ?: null ;
             if ($regex && !preg_match($regex, $value)) {
                 throw new RouteNotFoundException("{$this} not found. Routing parameter '{$name}' value '{$value}' not match {$regex}.");
             }
