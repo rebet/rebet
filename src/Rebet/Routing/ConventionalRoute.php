@@ -2,6 +2,7 @@
 namespace Rebet\Routing;
 
 use Rebet\Common\Inflector;
+use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Config\Config;
 use Rebet\Foundation\App;
@@ -13,6 +14,7 @@ use Rebet\Http\StreamedResponse;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Surface;
 use Rebet\Routing\Annotation\Where;
+use Rebet\Annotation\AnnotatedMethod;
 
 /**
  * Conventional Route class
@@ -185,7 +187,7 @@ class ConventionalRoute extends Route
             $this->controller = new $controller();
             $this->controller->request = $request;
             $this->controller->route   = $this;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw new RouteNotFoundException("Route not found : Controller [ {$controller} ] can not instantiate.", null, $e);
         }
 
@@ -194,7 +196,7 @@ class ConventionalRoute extends Route
         try {
             $method = new \ReflectionMethod($controller, $action);
             $method->setAccessible($this->accessible);
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not exists.", null, $e);
         }
         if (!$this->accessible && !$method->isPublic()) {
@@ -211,10 +213,10 @@ class ConventionalRoute extends Route
                 break;
             }
             $value  = array_shift($args);
-            $wheres = Utils::get($this->annotation(Where::class), 'wheres', []);
-            $regex  = $wheres[$key] ?: $this->wheres[$key] ?: null ;
+            $wheres = Reflector::get(AnnotatedMethod::of($method)->annotation(Where::class), 'wheres', []);
+            $regex  = $wheres[$name] ?: $this->wheres[$name] ?: null ;
             if ($regex && !preg_match($regex, $value)) {
-                throw new RouteNotFoundException("{$this} not found. Routing parameter '{$key}' value '{$value}' not match {$regex}.");
+                throw new RouteNotFoundException("{$this} not found. Routing parameter '{$name}' value '{$value}' not match {$regex}.");
             }
             $vars[$name] = $value;
         }

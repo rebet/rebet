@@ -515,6 +515,99 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/controller/namespace/short/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-param/123'));
+        $this->assertSame('Controller: withParam - 123', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-optional-param/abc'));
+        $this->assertSame('Controller: withOptionalParam - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-optional-param/'));
+        $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-optional-param'));
+        $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-multi-param/1/10'));
+        $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-multi-invert-param/1/10'));
+        $this->assertSame('Controller: withMultiInvertParam - 10 to 1', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/with-convert-enum-param/1'));
+        $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-method-get'));
+        $this->assertSame('Controller: annotationMethodGet', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-where/abc'));
+        $this->assertSame('Controller: annotationWhere - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short/'));
+        $this->assertSame('Controller: index', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/namespace/short'));
+        $this->assertSame('Controller: index', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationSurfaceApi not found. Routing surface 'web' not allowed or not annotated surface meta info.
+     */
+    public function test_routing_controllerAnnotationSurfaceReject()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-surface-api'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationMethodGet not found. Routing method 'POST' not allowed.
+     */
+    public function test_routing_controllerAnnotationMethodReject()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-method-get', 'POST'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.
+     */
+    public function test_routing_controllerAnnotationWhereReject()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-where/123'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::undefinedAction ] not exists.
+     */
+    public function test_routing_controllerUndefinedAction()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/undefined-action'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::privateCall ] not accessible.
+     */
+    public function test_routing_controllerPrivateCall()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/private-call'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::protectedCall ] not accessible.
+     */
+    public function test_routing_controllerProtectedCall()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/protected-call'));
+        $this->fail("Never Execute.");
     }
 }
 
@@ -574,7 +667,7 @@ class RouterTestController extends Controller
      */
     public function annotationSurfaceApi()
     {
-        return 'Controller: annotationSurfaceWeb';
+        return 'Controller: annotationSurfaceApi';
     }
 
     /**
@@ -586,7 +679,7 @@ class RouterTestController extends Controller
     }
 
     /**
-     * @Where({"id": "[a-zA-Z]+"})
+     * @Where({"id": "/^[a-zA-Z]+$/"})
      */
     public function annotationWhere($id)
     {

@@ -38,7 +38,7 @@ class App
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'namespace'       => [
                 'controller'  => null,
-            ]
+            ],
         ];
     }
 
