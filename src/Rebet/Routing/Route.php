@@ -57,13 +57,13 @@ abstract class Route
      * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
-     * @return boolean
+     * @return bool
      * @throws RouteNotFoundException
      */
     public function match(Request $request) : bool
     {
         $vars = $this->analyze($request);
-        if ($vars === false) {
+        if ($vars === null) {
             return false;
         }
         $request->attributes->add($vars);
@@ -76,14 +76,14 @@ abstract class Route
      * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
      * 解析の過程で取り込んだルーティングパラメータを返します。
      *
-     * 解析結果として false を返すと後続のルート検証が行われます。
+     * 解析結果として null を返すと後続のルート検証が行われます。
      * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
-     * @return bool|array
+     * @return array|null
      * @throws RouteNotFoundException
      */
-    abstract protected function analyze(Request $request) ;
+    abstract protected function analyze(Request $request) : ?array;
 
     /**
      * analyze によってマッチしたリクエストを処理するための ルートアクション を返します。

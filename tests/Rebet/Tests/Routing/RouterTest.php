@@ -116,7 +116,12 @@ class RouterTest extends RebetTestCase
             Router::get('/method/protected-call-accessible', 'RouterTest_Controller@protectedCall')->accessible(true);
             Router::get('/method/public-call', 'RouterTest_Controller@publicCall');
             Router::get('/method/with-param/{id}', 'RouterTest_Controller@withParam');
+            Router::get('/method/with-param/where/{id}', 'RouterTest_Controller@withParam')->where('id', '/^[0-9]+$/');
+            Router::get('/method/with-param/missmatch/{bad_name}', 'RouterTest_Controller@withParam');
             Router::get('/method/with-optional-param/{id?}', 'RouterTest_Controller@withOptionalParam');
+            Router::get('/method/with-multi-param/{from}/to/{to}', 'RouterTest_Controller@withMultiParam');
+            Router::get('/method/with-multi-param/invert/{from}/to/{to}', 'RouterTest_Controller@withMultiInvertParam');
+            Router::get('/method/with-convert-enum-param/{gender}', 'RouterTest_Controller@withConvertEnumParam');
             
             Router::fallback(function ($request, $route, $e) {
                 throw $e;
@@ -424,6 +429,29 @@ class RouterTest extends RebetTestCase
         $this->fail('Never execute.');
     }
 
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/where/{id} where {"id":"\/^[0-9]+$\/"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.
+     */
+    public function test_routing_methodWithParamWhere()
+    {
+        $response = Router::handle(Request::create('/method/with-param/where/123'));
+        $this->assertSame('Controller: withParam - 123', $response->getContent());
+        
+        $response = Router::handle(Request::create('/method/with-param/where/abc'));
+        $this->fail('Never execute.');
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} where [] not found. Routing parameter 'id' is requierd.
+     */
+    public function test_routing_methodWithMissmatchParam()
+    {
+        $response = Router::handle(Request::create('/method/with-param/missmatch/123'));
+        $this->fail('Never execute.');
+    }
+
     public function test_routing_methodWithOptionalParam()
     {
         $response = Router::handle(Request::create('/method/with-optional-param/123'));
@@ -434,6 +462,27 @@ class RouterTest extends RebetTestCase
 
         $response = Router::handle(Request::create('/method/with-optional-param'));
         $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
+    }
+    
+    public function test_routing_methodWithMultiParam()
+    {
+        $response = Router::handle(Request::create('/method/with-multi-param/1/to/10'));
+        $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
+    }
+    
+    public function test_routing_methodWithMultiInvertParam()
+    {
+        $response = Router::handle(Request::create('/method/with-multi-param/invert/1/to/10'));
+        $this->assertSame('Controller: withMultiInvertParam - 1 to 10', $response->getContent());
+    }
+    
+    public function test_routing_methodWithConvertEnumParam()
+    {
+        $response = Router::handle(Request::create('/method/with-convert-enum-param/1'));
+        $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
+
+        $response = Router::handle(Request::create('/method/with-convert-enum-param/2'));
+        $this->assertSame('Controller: withConvertEnumParam - 女性', $response->getContent());
     }
 }
 
@@ -474,9 +523,19 @@ class RouterTest_Controller extends Controller
         return "Controller: withOptionalParam - {$id}";
     }
     
-    public function withParamConvertEnum(RouterTest_Gender $enum)
+    public function withMultiParam($from, $to)
     {
-        return "Controller: withParamConvertEnum - {$enum}";
+        return "Controller: withMultiParam - {$from} to {$to}";
+    }
+
+    public function withMultiInvertParam($to, $from)
+    {
+        return "Controller: withMultiInvertParam - {$from} to {$to}";
+    }
+
+    public function withConvertEnumParam(RouterTest_Gender $gender)
+    {
+        return "Controller: withConvertEnumParam - {$gender}";
     }
     
     /**

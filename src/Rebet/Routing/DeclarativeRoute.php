@@ -63,20 +63,24 @@ abstract class DeclarativeRoute extends Route
     }
 
     /**
-     * ルーティングパラメータ解析を行い、対象のリクエストが自身のルートにマッチるか検証します。
+     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
+     * 解析の過程で取り込んだルーティングパラメータを返します。
+     *
+     * 解析結果として null を返すと後続のルート検証が行われます。
+     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
-     * @return void
+     * @return array|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request)
+    protected function analyze(Request $request) : ?array
     {
         // echo "\npreg_match('{$this->getMatchingRegex()}', '". $request->getRequestUri()."');\n";
         
         $matches  = [];
         $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUri(), $matches);
         if (!$is_match) {
-            return false;
+            return null;
         }
 
         if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {

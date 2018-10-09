@@ -152,19 +152,34 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * ルーティングパラメータ解析を行い、対象のリクエストが自身のルートにマッチるか検証します。
+     * リクエストURIを コントローラー名／アクション名／引数 に分解します。
      *
-     * @param Request $request
-     * @return void
-     * @throws RouteNotFoundException
+     * @param string $request_uri
+     * @return array
      */
-    protected function analyze(Request $request)
+    protected function resolveRequestUri(string $request_uri) : array
     {
-        $requests = explode(trim($request->getRequestUri(), '/')) ;
+        $requests = explode(trim($request_uri, '/')) ;
         $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
         $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
         $args               = $requests;
         return [$part_of_controller, $part_of_action, $args];
+    }
+
+    /**
+     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
+     * 解析の過程で取り込んだルーティングパラメータを返します。
+     *
+     * 解析結果として null を返すと後続のルート検証が行われます。
+     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     *
+     * @param Request $request
+     * @return array|null
+     * @throws RouteNotFoundException
+     */
+    protected function analyze(Request $request) : ?array
+    {
+        [$this->part_of_controller, $this->part_of_action, $args] = $this->resolveRequestUri($request->getRequestUri());
 
         $controller = $this->getControllerName();
         try {

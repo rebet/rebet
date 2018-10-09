@@ -53,20 +53,41 @@ class ControllerRoute extends ConventionalRoute
     }
 
     /**
-     * Undocumented function
+     * リクエストURIを コントローラー名／アクション名／引数 に分解します。
+     *
+     * @param string $request_uri
+     * @return array
+     */
+    protected function resolveRequestUri(string $request_uri) : array
+    {
+        $request_uri        = ltrim($request_uri, $this->uri);
+        $requests           = explode(trim($request_uri, '/')) ;
+        $part_of_controller = Inflector::delimit(rtrim($this->action->getShortName(), $this->controller_suffix), $this->uri_snake_separator);
+        $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
+        $args               = $requests;
+        return [$part_of_controller, $part_of_action, $args];
+    }
+
+    /**
+     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
+     * 解析の過程で取り込んだルーティングパラメータを返します。
+     *
+     * 解析結果として null を返すと後続のルート検証が行われます。
+     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
-     * @return boolean
+     * @return array|null
+     * @throws RouteNotFoundException
      */
-    public function match(Request $request): bool
+    protected function analyze(Request $request) : ?array
     {
         $request_uri = $request->getRequestUri();
         $uri         = rtrim($this->uri, '/');
-        if($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
-            return false;
+        if ($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
+            return null;
         }
 
-        return parent::match($request);
+        return parent::analyze($request);
     }
 
     /**
