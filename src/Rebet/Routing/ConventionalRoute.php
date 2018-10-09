@@ -141,13 +141,12 @@ class ConventionalRoute extends Route
      */
     public function __construct(array $option = [])
     {
-        parent::__construct([], null);
         $this->namespace                  = $option['amespace']                   ?? static::config('namespace');
         $this->default_part_of_controller = $option['default_part_of_controller'] ?? static::config('default_part_of_controller');
         $this->default_part_of_action     = $option['default_part_of_action']     ?? static::config('default_part_of_action');
         $this->uri_snake_separator        = $option['uri_snake_separator']        ?? static::config('uri_snake_separator');
-        $this->controller_suffix          = $option['controller_suffix']          ?? static::config('controller_suffix');
-        $this->action_suffix              = $option['action_suffix']              ?? static::config('action_suffix');
+        $this->controller_suffix          = $option['controller_suffix']          ?? static::config('controller_suffix', false, '');
+        $this->action_suffix              = $option['action_suffix']              ?? static::config('action_suffix', false, '');
         $this->accessible                 = $option['accessible']                 ?? static::config('accessible');
     }
 
@@ -289,5 +288,17 @@ class ConventionalRoute extends Route
     public function __toString()
     {
         return "Route: {$this->getControllerName()}::{$this->getActionName}";
+    }
+
+    /**
+     * 非公開メソッドへのアクセス制御を設定します。
+     *
+     * @param boolean $accessble
+     * @return self
+     */
+    public function accessble(bool $accessble) : self
+    {
+        $this->accessble = $accessble;
+        return $this;
     }
 }

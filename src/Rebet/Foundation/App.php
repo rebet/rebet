@@ -7,6 +7,7 @@ use Rebet\File\Files;
 use Rebet\DateTime\DateTime;
 use Rebet\Routing\MethodRoute;
 use Rebet\Routing\ConventionalRoute;
+use Rebet\Routing\ControllerRoute;
 
 /**
  * アプリケーションコンフィグ クラス
@@ -54,6 +55,10 @@ class App
             ],
 
             MethodRoute::class => [
+                'namespace' => Config::refer(App::class, 'namespace.controller'),
+            ],
+
+            ControllerRoute::class => [
                 'namespace' => Config::refer(App::class, 'namespace.controller'),
             ],
 

@@ -19,6 +19,11 @@ use Rebet\Common\Inflector;
  */
 class ControllerRoute extends ConventionalRoute
 {
+    // public static function defaultConfig()
+    // {
+    //     return parent::defaultConfig();
+    // }
+
     /**
      * ルーティング対象URI
      *
@@ -42,7 +47,7 @@ class ControllerRoute extends ConventionalRoute
      */
     public function __construct(string $uri, string $controller)
     {
-        parent::__construct();
+        parent::__construct([]);
         $this->uri = $uri;
         try {
             $this->action    = new \ReflectionClass($controller);
