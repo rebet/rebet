@@ -511,11 +511,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Different: foo', $response->getContent());
     }
 
-    // public function test_routing_controllerNamespaceShort()
-    // {
-    //     $response = Router::handle(Request::create('/controller/namespace/short/public-call'));
-    //     $this->assertSame('Controller: publicCall', $response->getContent());
-    // }
+    public function test_routing_controllerNamespaceShort()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/public-call'));
+        $this->assertSame('Controller: publicCall', $response->getContent());
+    }
 }
 
 /**

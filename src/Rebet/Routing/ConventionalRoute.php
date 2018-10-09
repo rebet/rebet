@@ -223,7 +223,10 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * ルートアクションを構築し、追加のアノテーション検証を行います。
+     * analyze によってマッチしたリクエストを処理するための ルートアクション を返します。
+     * サブクラスではここで追加のアノテーション検証などを行うことができます。
+     *
+     * 追加検証でルーティング対象外となる場合は RouteNotFoundException を throw して下さい。
      *
      * @param Request $request
      * @return RouteAction
@@ -231,19 +234,21 @@ class ConventionalRoute extends Route
      */
     protected function createRouteAction(Request $request) : RouteAction
     {
-        $this->route_action = new RouteAction($this, new \ReflectionMethod($this->controller, $this->getActionName()), $this->accessible, $this->controller);
+        $method = new \ReflectionMethod($this->controller, $this->getActionName());
+        $method->setAccessible($this->accessible);
+        $route_action = new RouteAction($this, $method, $this->controller);
 
-        $surface = $this->annotation(Surface::class);
-        if ($surface || $surface->reject(App::getSurface())) {
+        $surface = $route_action->annotation(Surface::class);
+        if (!$surface || $surface->reject(App::getSurface())) {
             throw new RouteNotFoundException("{$this} not found. Routing surface '".App::getSurface()."' not allowed or not annotated surface meta info.");
         }
 
-        $method = $this->annotation(Method::class);
+        $method = $route_action->annotation(Method::class);
         if ($method && $method->reject($request->getMethod())) {
             throw new RouteNotFoundException("{$this} not found. Routing method '{$request->getMethod()}' not allowed.");
         }
 
-        return true;
+        return $route_action;
     }
 
     /**
