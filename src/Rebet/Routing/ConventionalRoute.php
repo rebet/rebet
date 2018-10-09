@@ -55,6 +55,7 @@ class ConventionalRoute extends Route
             'uri_snake_separator'        => '-',
             'controller_suffix'          => 'Controller',
             'action_suffix'              => '',
+            'aliases'                    => [],
             'accessible'                 => false,
         ];
     }
@@ -109,6 +110,13 @@ class ConventionalRoute extends Route
     protected $accessible = false;
 
     /**
+     * ルーティングエイリアス
+     *
+     * @var array
+     */
+    protected $aliases = [];
+    
+    /**
      * 解析されたコントローラーパート文字列
      *
      * @var string
@@ -139,7 +147,8 @@ class ConventionalRoute extends Route
      *     'uri_snake_separator'        => '-',
      *     'controller_suffix'          => 'Controller',
      *     'action_suffix'              => '',
-     *     'accessible'                 => false
+     *     'aliases'                    => [],
+     *     'accessible'                 => false,
      * ]
      */
     public function __construct(array $option = [])
@@ -150,6 +159,7 @@ class ConventionalRoute extends Route
         $this->uri_snake_separator        = $option['uri_snake_separator']        ?? static::config('uri_snake_separator');
         $this->controller_suffix          = $option['controller_suffix']          ?? static::config('controller_suffix', false, '');
         $this->action_suffix              = $option['action_suffix']              ?? static::config('action_suffix', false, '');
+        $this->aliases                    = $option['aliases']                    ?? static::config('aliases', false, []);
         $this->accessible                 = $option['accessible']                 ?? static::config('accessible');
     }
 
@@ -311,6 +321,21 @@ class ConventionalRoute extends Route
     public function accessible(bool $accessible) : self
     {
         $this->accessible = $accessible;
+        return $this;
+    }
+
+    /**
+     * エイリアスを設定します。
+     *
+     * @param array|string $alias or [$alias => $path, ...]
+     * @param string|null $path
+     * @return self
+     */
+    public function aliases($alias, ? string $path = null) : self
+    {
+        foreach (is_array($alias) ? $alias : [$alias => $path] as $key => $value) {
+            $this->aliases[$key] = $value;
+        }
         return $this;
     }
 }
