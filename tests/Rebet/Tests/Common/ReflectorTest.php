@@ -7,6 +7,7 @@ use Rebet\Common\Reflector;
 use Rebet\Common\Utils;
 use Rebet\Common\Enum;
 use org\bovigo\vfs\vfsStream;
+use Rebet\Tests\Mock\Gender;
 
 class ReflectorTest extends RebetTestCase
 {
@@ -366,7 +367,7 @@ class ReflectorTest extends RebetTestCase
         $travers = new \ArrayObject([1, 2, 'a' => 'A']);
         $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($travers, $type));
 
-        $jsonValue = ReflectorTest_Gender::MALE();
+        $jsonValue = Gender::MALE();
         $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
         $jsonValue = new ReflectorTest_Json('abc');
         $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
@@ -406,7 +407,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('', Reflector::convert(false, $type));
         $this->assertSame('abc', Reflector::convert('abc', $type));
 
-        $jsonValue = ReflectorTest_Gender::MALE();
+        $jsonValue = Gender::MALE();
         $this->assertSame('1', Reflector::convert($jsonValue, $type));
         $jsonValue = new ReflectorTest_Json('abc');
         $this->assertSame('abc', Reflector::convert($jsonValue, $type));
@@ -559,9 +560,9 @@ class ReflectorTest extends RebetTestCase
     
     public function test_convert_object()
     {
-        $this->assertNull(Reflector::convert(null, ReflectorTest_Gender::class));
-        $this->assertSame(ReflectorTest_Gender::MALE(), Reflector::convert(1, ReflectorTest_Gender::class));
-        $this->assertSame(ReflectorTest_Gender::FEMALE(), Reflector::convert(2, ReflectorTest_Gender::class));
+        $this->assertNull(Reflector::convert(null, Gender::class));
+        $this->assertSame(Gender::MALE(), Reflector::convert(1, Gender::class));
+        $this->assertSame(Gender::FEMALE(), Reflector::convert(2, Gender::class));
         
         $object = new ReflectorTest_Mock();
         $this->assertSame(null, Reflector::convert($object, ReflectorTest_ConvertTo::class));
@@ -572,7 +573,7 @@ class ReflectorTest extends RebetTestCase
         $toType = new ReflectorTest_ToType();
         $this->assertEquals(new ReflectorTest_ConvertTo(), Reflector::convert($toType, ReflectorTest_ConvertTo::class));
         
-        $this->assertEquals(null, Reflector::convert($toType, ReflectorTest_Gender::class));
+        $this->assertEquals(null, Reflector::convert($toType, Gender::class));
     }
 
     public function test_convert_not()
@@ -616,12 +617,6 @@ class ReflectorTest_Mock
     {
         return (string)$this->value;
     }
-}
-
-class ReflectorTest_Gender extends Enum
-{
-    const MALE   = [1, '男性'];
-    const FEMALE = [2, '女性'];
 }
 
 class ReflectorTest_ToArray
@@ -699,7 +694,7 @@ class ReflectorTest_ToType
     {
         return new ReflectorTest_ConvertTo();
     }
-    public function toReflectorTest_Gender()
+    public function toGender()
     {
         return 'Other Type';
     }

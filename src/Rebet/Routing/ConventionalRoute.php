@@ -1,18 +1,18 @@
 <?php
 namespace Rebet\Routing;
 
-use Rebet\Http\Request;
-use Rebet\Http\Response;
-use Rebet\Http\BasicResponse;
-use Rebet\Http\JsonResponse;
-use Rebet\Http\StreamedResponse;
 use Rebet\Common\Inflector;
-use Rebet\Routing\Annotation\Where;
-use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\Surface;
-use Rebet\Config\App;
 use Rebet\Config\Configurable;
 use Rebet\Config\Config;
+use Rebet\Foundation\App;
+use Rebet\Http\BasicResponse;
+use Rebet\Http\JsonResponse;
+use Rebet\Http\Request;
+use Rebet\Http\Response;
+use Rebet\Http\StreamedResponse;
+use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Where;
 
 /**
  * Conventional Route class
@@ -287,7 +287,7 @@ class ConventionalRoute extends Route
      */
     public function __toString()
     {
-        return "Route: {$this->getControllerName()}::{$this->getActionName}";
+        return "Route: {$this->getControllerName()}::{$this->getActionName()}";
     }
 
     /**
