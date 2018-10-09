@@ -2,12 +2,11 @@
 namespace Rebet\Tests\Env;
 
 use Rebet\Tests\RebetTestCase;
-use Rebet\Env\Env;
+use Rebet\Env\Dotenv;
 
 use Rebet\Config\Config;
-use Dotenv\Dotenv;
 
-class EnvTest extends RebetTestCase
+class DotenvTest extends RebetTestCase
 {
     public function setUp()
     {
@@ -19,18 +18,18 @@ class EnvTest extends RebetTestCase
      * @expectedException \Dotenv\Exception\InvalidPathException
      * @expectedExceptionMessage Unable to read the environment file at
      */
-    public function test_loadDotenv_notfound()
+    public function test_init_notfound()
     {
-        $dotenv = Env::load(__DIR__);
+        $dotenv = Dotenv::init(__DIR__);
         $this->fail("Never execute.");
     }
     
     /**
      * @runInSeparateProcess
      */
-    public function test_loadDotenv()
+    public function test_init()
     {
-        $dotenv = Env::load(__DIR__.'/../../../', '.env.unittest');
+        $dotenv = Dotenv::init(__DIR__.'/../../../', '.env.unittest');
         $this->assertSame('unittest', \getenv('APP_ENV'));
     }
 }
