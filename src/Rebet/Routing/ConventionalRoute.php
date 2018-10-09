@@ -213,7 +213,7 @@ class ConventionalRoute extends Route
                 break;
             }
             $value  = array_shift($args);
-            $wheres = Reflector::get(AnnotatedMethod::of($method)->annotation(Where::class), 'wheres', []);
+            $wheres = Reflector::get(AnnotatedMethod::of($method)->annotation(Where::class, true), 'wheres', []);
             $regex  = $wheres[$name] ?: $this->wheres[$name] ?: null ;
             if ($regex && !preg_match($regex, $value)) {
                 throw new RouteNotFoundException("{$this} not found. Routing parameter '{$name}' value '{$value}' not match {$regex}.");
@@ -300,12 +300,12 @@ class ConventionalRoute extends Route
     /**
      * 非公開メソッドへのアクセス制御を設定します。
      *
-     * @param boolean $accessble
+     * @param boolean $accessible
      * @return self
      */
-    public function accessble(bool $accessble) : self
+    public function accessible(bool $accessible) : self
     {
-        $this->accessble = $accessble;
+        $this->accessible = $accessible;
         return $this;
     }
 }

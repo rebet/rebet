@@ -134,7 +134,7 @@ class RouterTest extends RebetTestCase
             Router::controller('/controller/namespace/short', 'RouterTestController');
             Router::controller('/controller/namespace/nest', 'Nest\\NestController');
             Router::controller('/controller/namespace/different', DifferentNamespaceController::class);
-            Router::controller('/controller/accessble', 'RouterTestController')->accessble(true);
+            Router::controller('/controller/accessble', 'RouterTestController')->accessible(true);
             Router::controller('/controller/where', 'RouterTestController')->where('id', '/^[a-z]*$/');
 
             Router::fallback(function ($request, $route, $e) {
@@ -543,6 +543,9 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-where/abc'));
         $this->assertSame('Controller: annotationWhere - abc', $response->getContent());
 
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-class-where/123'));
+        $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
+
         $response = Router::handle(Request::create('/controller/namespace/short/'));
         $this->assertSame('Controller: index', $response->getContent());
 
@@ -582,6 +585,16 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.
+     */
+    public function test_routing_controllerAnnotationClassWhereReject()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-class-where/abc'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::undefinedAction ] not exists.
      */
     public function test_routing_controllerUndefinedAction()
@@ -609,11 +622,54 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/controller/namespace/short/protected-call'));
         $this->fail("Never Execute.");
     }
+
+    public function test_routing_controllerNamespaceNest()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/nest/foo'));
+        $this->assertSame('Nest: foo', $response->getContent());
+    }
+
+    public function test_routing_controllerNamespaceDifferent()
+    {
+        $response = Router::handle(Request::create('/controller/namespace/different/foo'));
+        $this->assertSame('Different: foo', $response->getContent());
+    }
+
+    public function test_routing_controllerAccessble()
+    {
+        $response = Router::handle(Request::create('/controller/accessble/private-call'));
+        $this->assertSame('Controller: privateCall', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/accessble/protected-call'));
+        $this->assertSame('Controller: protectedCall', $response->getContent());
+    }
+
+    public function test_routing_controllerWhere()
+    {
+        $response = Router::handle(Request::create('/controller/where/with-param/abc'));
+        $this->assertSame('Controller: withParam - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/where/annotation-where/ABC'));
+        $this->assertSame('Controller: annotationWhere - ABC', $response->getContent());
+
+        $response = Router::handle(Request::create('/controller/where/annotation-class-where/123'));
+        $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     */
+    public function test_routing_controllerWhereReject()
+    {
+        $response = Router::handle(Request::create('/controller/where/with-param/ABC'));
+        $this->fail("Never Execute.");
+    }
 }
 
 /**
  * @Surface("web")
- * @Where({"user_id": "[0-9]+"})
+ * @Where({"user_id": "/^[0-9]+$/"})
  */
 class RouterTestController extends Controller
 {
@@ -684,5 +740,10 @@ class RouterTestController extends Controller
     public function annotationWhere($id)
     {
         return "Controller: annotationWhere - {$id}";
+    }
+
+    public function annotationClassWhere($user_id)
+    {
+        return "Controller: annotationClassWhere - {$user_id}";
     }
 }
