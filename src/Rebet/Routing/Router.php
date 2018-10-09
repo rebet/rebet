@@ -9,6 +9,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Routing\RouteNotFoundException;
+use Rebet\Common\Reflector;
 
 /**
  * Router Class
@@ -309,12 +310,14 @@ class Router
      * @param mixed $route Routeオブジェクト 又は それを生成できる instantiate 設定
      * @return void
      */
-    public static function default($route)
+    public static function default($route) : Route
     {
         if (!static::$in_rules) {
             throw new \LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
+        $route = Reflector::instantiate($route);
         static::setConfig(['default_route' => $route]);
+        return $route;
     }
 
     /**

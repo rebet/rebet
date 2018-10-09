@@ -85,9 +85,6 @@ class ReflectorTest extends RebetTestCase
 
         $this->assertSame('default', Reflector::instantiate(ReflectorTest_Mock::class)->value);
         $this->assertSame('via getInstance()', Reflector::instantiate(ReflectorTest_Mock::class. '@getInstance')->value);
-        $this->assertSame('callable', Reflector::instantiate(function () {
-            return 'callable';
-        }));
         $this->assertSame('arg', Reflector::instantiate([ReflectorTest_Mock::class, 'arg'])->value);
         $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class. '@build', 'arg'])->value);
         $this->assertSame('arg via callable', Reflector::instantiate([function ($v) {

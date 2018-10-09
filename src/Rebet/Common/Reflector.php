@@ -37,8 +37,6 @@ class Reflector
      *       ⇒ 対象クラスを引数無しのファクトリメソッドでインスタンス化します
      *     {ClassName}形式
      *       ⇒ 対象クラスを引数無しのコンストラクタでインスタンス化します
-     *  callable :
-     *       ⇒ callable() でインスタンス化します
      *  array :
      *     [{ClassName}@{factoryMathod}, arg1, arg2, ... ]形式
      *       ⇒ 対象クラスを引数付きのファクトリメソッドでインスタンス化します
@@ -62,9 +60,6 @@ class Reflector
         if (is_string($config)) {
             [$class, $method] = array_pad(\explode('@', $config), 2, null);
             return empty($method) ? new $class() : $class::$method() ;
-        }
-        if (is_callable($config)) {
-            return $config();
         }
         if (is_array($config)) {
             $class_config = array_shift($config);

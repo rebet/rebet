@@ -678,7 +678,7 @@ class RouterTest extends RebetTestCase
         $this->fail("Never Execute.");
     }
 
-    public function test_routing_default()
+    public function test_routing_defaultConventionalRoute()
     {
         Router::clear();
         Router::rules('web', function () {
@@ -729,6 +729,82 @@ class RouterTest extends RebetTestCase
 
         $response = Router::handle(Request::create('/'));
         $this->assertSame('Top: index', $response->getContent());
+    }
+    
+    public function test_routing_defaultConventionalRouteWhere()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class)->where('id', '/^[a-z]+$/');
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+        });
+
+        $response = Router::handle(Request::create('/top/with-param/abc'));
+        $this->assertSame('Top: withParam - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/with-param/abc'));
+        $this->assertSame('Controller: withParam - abc', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/annotation-where/ABC'));
+        $this->assertSame('Controller: annotationWhere - ABC', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/annotation-class-where/123'));
+        $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: \Rebet\Tests\Routing\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     */
+    public function test_routing_defaultConventionalRouteWhereRejectTop()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+        });
+
+        $response = Router::handle(Request::create('/top/with-param/ABC'));
+        $this->fail("Never Execute.");
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route: \Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     */
+    public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+        });
+
+        $response = Router::handle(Request::create('/router-test/with-param/ABC'));
+        $this->fail("Never Execute.");
+    }
+    
+    public function test_routing_defaultConventionalRouteAccessible()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class)->accessible(true);
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+            
+            $response = Router::handle(Request::create('/router-test/private-call'));
+            $this->assertSame('Controller: privateCall', $response->getContent());
+
+            $response = Router::handle(Request::create('/router-test/protected-call'));
+            $this->assertSame('Controller: protectedCall', $response->getContent());
+        });
     }
 }
 
@@ -829,5 +905,10 @@ class TopController extends Controller
     public function index()
     {
         return 'Top: index';
+    }
+    
+    public function withParam($id)
+    {
+        return "Top: withParam - {$id}";
     }
 }
