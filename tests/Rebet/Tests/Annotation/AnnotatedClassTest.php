@@ -47,7 +47,7 @@ class AnnotatedClassTest extends RebetTestCase
     public function test_nonAnnotaion()
     {
         $ac = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
-        $this->assertNull($ac->annotation(Method::class));
+        $this->assertNull($ac->annotation(Method::class, false));
     }
     
     public function test_annotaions()

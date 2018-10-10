@@ -36,10 +36,10 @@ class AnnotatedMethodTest extends RebetTestCase
     public function test_annotaion()
     {
         $am = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
-        $surface = $am->annotation(Surface::class);
+        $surface = $am->annotation(Surface::class, false);
         $this->assertNull($surface);
         
-        $surface = $am->annotation(Surface::class, true);
+        $surface = $am->annotation(Surface::class);
         $this->assertInstanceOf(Surface::class, $surface);
         $this->assertSame(['web'], $surface->allows);
 
@@ -48,7 +48,7 @@ class AnnotatedMethodTest extends RebetTestCase
         $this->assertSame(['id' => '[0-9]+'], $where->wheres);
 
         $am = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
-        $surface = $am->annotation(Surface::class, true);
+        $surface = $am->annotation(Surface::class);
         $this->assertInstanceOf(Surface::class, $surface);
         $this->assertSame(['api'], $surface->allows);
 
@@ -59,8 +59,8 @@ class AnnotatedMethodTest extends RebetTestCase
     public function test_nonAnnotaion()
     {
         $am = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
+        $this->assertNull($am->annotation(Method::class, false));
         $this->assertNull($am->annotation(Method::class));
-        $this->assertNull($am->annotation(Method::class, true));
     }
     
     public function test_annotaions()

@@ -84,7 +84,7 @@ class AnnotatedMethod
      * @param bool $check_declaring_class
      * @return mixed @Annotation
      */
-    public function annotation(string $annotation, bool $check_declaring_class = false)
+    public function annotation(string $annotation, bool $check_declaring_class = true)
     {
         return $this->reader->getMethodAnnotation($this->method, $annotation) ??
                ($check_declaring_class ? $this->annotated_class->annotation($annotation) : null)

@@ -34,15 +34,15 @@ class AnnotatedPropertyTest extends RebetTestCase
     public function test_annotaion()
     {
         $ap = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
-        $annot = $ap->annotation(PropertyAnnot::class);
+        $annot = $ap->annotation(PropertyAnnot::class, false);
         $this->assertNull($annot);
         
-        $annot = $ap->annotation(PropertyAnnot::class, true);
+        $annot = $ap->annotation(PropertyAnnot::class);
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('prop', $annot->value);
 
         $ap = AnnotatedProperty::of('bar', AnnotatedPropertyTest_Mock::class);
-        $annot = $ap->annotation(PropertyAnnot::class, true);
+        $annot = $ap->annotation(PropertyAnnot::class);
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('bar-prop', $annot->value);
     }
@@ -50,8 +50,8 @@ class AnnotatedPropertyTest extends RebetTestCase
     public function test_nonAnnotaion()
     {
         $ap = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
+        $this->assertNull($ap->annotation(Surface::class, false));
         $this->assertNull($ap->annotation(Surface::class));
-        $this->assertNull($ap->annotation(Surface::class, true));
     }
     
     public function test_annotaions()

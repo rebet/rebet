@@ -130,6 +130,6 @@ class RouteAction
      */
     public function annotation(string $annotation)
     {
-        return $this->annotated_method ? $this->annotated_method->annotation($annotation, true) : null ;
+        return $this->annotated_method ? $this->annotated_method->annotation($annotation) : null ;
     }
 }

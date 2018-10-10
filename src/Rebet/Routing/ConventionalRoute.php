@@ -16,6 +16,7 @@ use Rebet\Routing\Annotation\Surface;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Routing\Annotation\NotRouting;
+use Rebet\Common\Strings;
 
 /**
  * Conventional Route class
@@ -191,7 +192,16 @@ class ConventionalRoute extends Route
      */
     protected function analyze(Request $request) : ?array
     {
-        [$this->part_of_controller, $this->part_of_action, $args] = $this->resolveRequestUri($request->getRequestUri());
+        $request_uri = $request->getRequestUri();
+        $is_alias    = false;
+        foreach ($this->aliases as $alias => $path) {
+            if (Strings::startsWith($request_uri, $alias)) {
+                $request_uri = str_replace($alias, $path, $request_uri);
+                $is_alias    = true;
+                break;
+            }
+        }
+        [$this->part_of_controller, $this->part_of_action, $args] = $this->resolveRequestUri($request_uri);
 
         $controller = $this->getControllerName();
         try {
@@ -215,10 +225,13 @@ class ConventionalRoute extends Route
         }
 
         $am   = AnnotatedMethod::of($method);
-        if ($am->annotation(NotRouting::class, true)) {
+        if ($am->annotation(NotRouting::class)) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.", null, $e);
         }
-        $wheres = Reflector::get($am->annotation(Where::class, true), 'wheres', []);
+        if ($am->annotation(AliasOnly::class) && !$is_alias) {
+            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.", null, $e);
+        }
+        $wheres = Reflector::get($am->annotation(Where::class), 'wheres', []);
         $vars   = [];
         foreach ($method->getParameters() as $parameter) {
             $name = $parameter->getName();
