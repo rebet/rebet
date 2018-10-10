@@ -385,7 +385,7 @@ class Reflector
                 }
                 return
                     static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".Strings::capitalize($type), $type)
+                    static::tryConvertByMember($value, "to".ucfirst($type), $type)
                 ;
 
             //---------------------------------------------

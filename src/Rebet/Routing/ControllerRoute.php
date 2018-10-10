@@ -7,7 +7,7 @@ use Rebet\Http\BasicResponse;
 use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
 use Rebet\Common\Strings;
-use Rebet\Common\Inflector;
+use Rebet\Inflector\Inflector;
 
 /**
  * ControllerRoute class
@@ -67,7 +67,7 @@ class ControllerRoute extends ConventionalRoute
     {
         $request_uri        = Strings::ltrim($request_uri, $this->uri);
         $requests           = explode('/', trim($request_uri, '/')) ;
-        $part_of_controller = Inflector::delimit(Strings::rtrim($this->action->getShortName(), $this->controller_suffix), $this->uri_snake_separator);
+        $part_of_controller = Inflector::snakize(Strings::rtrim($this->action->getShortName(), $this->controller_suffix), $this->uri_snake_separator);
         $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
         $args               = $requests;
         return [$part_of_controller, $part_of_action, $args];

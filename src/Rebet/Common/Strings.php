@@ -212,62 +212,6 @@ class Strings
     }
     
     /**
-     * スネークケース(snake_case)文字列をキャメルケース(CamelCase)文字列に変換します。
-     *
-     * ex)
-     * Strings::camelize('snake_case'); //=> 'SnakeCase'
-     *
-     * @param string|null $str スネークケース文字列
-     * @return string|null キャメルケース文字列
-     */
-    public static function camelize(?string $str) : ?string
-    {
-        return $str === null ? null : str_replace('_', '', ucwords($str, '_'));
-    }
-    
-    /**
-     * キャメルケース(CamelCase) 文字列をスネークケース(snake_case)文字列に変換します。
-     *
-     * ex)
-     * Strings::camelize('CamelCase'); //=> 'camel_case'
-     *
-     * @param  string|null $str キャメルケース文字列
-     * @return string|null スネークケース文字列
-     */
-    public static function snakize(?string $str) : ?string
-    {
-        return $str === null ? null : strtolower(preg_replace('/[a-z]+(?=[A-Z])|[A-Z]+(?=[A-Z][a-z])/', '\0_', $str));
-    }
-    
-    /**
-     * 指定文字の先頭を大文字にします。
-     *
-     * ex)
-     * Strings::capitalize('snake_case'); //=> 'Snake_case'
-     *
-     * @param string|null $str 文字列
-     * @return string|null 文字列
-     */
-    public static function capitalize(?string $str) : ?string
-    {
-        return $str === null ? null : ucfirst($str);
-    }
-    
-    /**
-     * 指定文字の先頭を小文字にします。
-     *
-     * ex)
-     * Strings::capitalize('CamelCase'); //=> 'camelCase'
-     *
-     * @param string|null $str 文字列
-     * @return string|null 文字列
-     */
-    public static function uncapitalize(?string $str) : ?string
-    {
-        return $str === null ? null : lcfirst($str);
-    }
-    
-    /**
      * 指定の文字列をインデントします。
      * ※対象の文字列が空の場合もインデントされます。
      *

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Routing;
 
-use Rebet\Common\Inflector;
+use Rebet\Inflector\Inflector;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Config\Config;
@@ -297,7 +297,7 @@ class ConventionalRoute extends Route
     public function getControllerName(bool $with_namespace = true) : string
     {
         $namespace = $with_namespace ? $this->namespace.'\\' : '' ;
-        return $namespace.Inflector::camelize($this->part_of_controller, $this->uri_snake_separator).$this->controller_suffix;
+        return $namespace.Inflector::pascalize($this->part_of_controller, $this->uri_snake_separator).$this->controller_suffix;
     }
 
     /**
@@ -307,7 +307,7 @@ class ConventionalRoute extends Route
      */
     public function getActionName() : string
     {
-        return Inflector::methodize($this->part_of_action).$this->action_suffix;
+        return Inflector::camelize($this->part_of_action).$this->action_suffix;
     }
 
     /**

@@ -88,7 +88,7 @@ class StringsTest extends RebetTestCase
         $this->assertTrue(Strings::startsWith('abc123', 'abc'));
     }
 
-    public function test_endtWith()
+    public function test_endsWith()
     {
         $this->assertFalse(Strings::endsWith(null, 'abc'));
         $this->assertFalse(Strings::endsWith('', 'abc'));
@@ -110,42 +110,6 @@ class StringsTest extends RebetTestCase
         $this->assertSame([], Strings::toCharArray(''));
         $this->assertSame(['a','b','c'], Strings::toCharArray('abc'));
         $this->assertSame(['あ','い','う'], Strings::toCharArray('あいう'));
-    }
-
-    public function test_camelize()
-    {
-        $this->assertNull(Strings::camelize(null));
-        $this->assertSame('', Strings::camelize(''));
-        $this->assertSame('SnakeCase', Strings::camelize('snake_case'));
-        $this->assertSame('CamelCase', Strings::camelize('CamelCase'));
-        $this->assertSame('CamelCase', Strings::camelize('camelCase'));
-    }
-
-    public function test_snakize()
-    {
-        $this->assertNull(Strings::snakize(null));
-        $this->assertSame('', Strings::snakize(''));
-        $this->assertSame('snake_case', Strings::snakize('snake_case'));
-        $this->assertSame('camel_case', Strings::snakize('CamelCase'));
-        $this->assertSame('camel_case', Strings::snakize('camelCase'));
-    }
-
-    public function test_capitalize()
-    {
-        $this->assertNull(Strings::capitalize(null));
-        $this->assertSame('', Strings::capitalize(''));
-        $this->assertSame('Snake_case', Strings::capitalize('snake_case'));
-        $this->assertSame('CamelCase', Strings::capitalize('CamelCase'));
-        $this->assertSame('CamelCase', Strings::capitalize('camelCase'));
-    }
-
-    public function test_uncapitalize()
-    {
-        $this->assertNull(Strings::uncapitalize(null));
-        $this->assertSame('', Strings::uncapitalize(''));
-        $this->assertSame('snake_case', Strings::uncapitalize('snake_case'));
-        $this->assertSame('camelCase', Strings::uncapitalize('CamelCase'));
-        $this->assertSame('camelCase', Strings::uncapitalize('camelCase'));
     }
 
     public function test_indent()
