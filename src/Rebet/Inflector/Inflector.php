@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Inflector;
 
-use Doctrine\Inflector\Inflector as DoctrineInflector;
 use Doctrine\Inflector\CachedWordInflector;
 use Doctrine\Inflector\RulesetInflector;
 use Doctrine\Inflector\Rules\English;
@@ -22,14 +21,8 @@ class Inflector
     public static function defaultConfig()
     {
         return [
-            'inflector' => new DoctrineInflector(
-                new CachedWordInflector(new RulesetInflector(
-                    English\Rules::getSingularRuleset()
-                )),
-                new CachedWordInflector(new RulesetInflector(
-                    English\Rules::getPluralRuleset()
-                ))
-            )
+            'singularizer' => new CachedWordInflector(new RulesetInflector(English\Rules::getSingularRuleset())),
+            'pluralizer'   => new CachedWordInflector(new RulesetInflector(English\Rules::getPluralRuleset())),
         ];
     }
 
@@ -161,7 +154,7 @@ class Inflector
      */
     public static function singularize(?string $word) : ?string
     {
-        return $word === null ? null : static::config('inflector')->singularize($word);
+        return $word === null ? null : static::config('singularizer')->inflect($word);
     }
 
     /**
@@ -172,6 +165,6 @@ class Inflector
      */
     public static function pluralize(?string $word) : ?string
     {
-        return $word === null ? null : static::config('inflector')->pluralize($word);
+        return $word === null ? null : static::config('pluralizer')->inflect($word);
     }
 }
