@@ -25,9 +25,7 @@ class Router
     public static function defaultConfig()
     {
         return [
-            'middlewares'   => [],
-            'default_route' => null,
-            'fallback'      => null,
+            'middlewares' => [],
         ];
     }
 
@@ -46,24 +44,38 @@ class Router
     public static $routing_tree = [];
     
     /**
+     * デフォルトルート
+     *
+     * @var Route
+     */
+    protected static $default_route = null;
+
+    /**
+     * フォールバックアクション
+     *
+     * @var \Closure
+     */
+    protected static $fallback = null;
+
+    /**
      * 現在のルート
      *
      * @var Route
      */
-    private static $current = null;
+    protected static $current = null;
     
     /**
      * ルール定義の最中か否か
      *
      * @var boolean
      */
-    private static $in_rules = false;
+    protected static $in_rules = false;
 
     /**
      * ルートミドルウェアパイプライン
      * @var Rebet\Pipeline\Pipeline
      */
-    private static $pipeline = null;
+    protected static $pipeline = null;
     
     /**
      * Clear all routing rules.
@@ -301,7 +313,7 @@ class Router
         if (!static::$in_rules) {
             throw new \LogicException("Routing fallback rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        static::setConfig(['fallback' => $action]);
+        static::$fallback = $action;
     }
 
     /**
@@ -315,9 +327,8 @@ class Router
         if (!static::$in_rules) {
             throw new \LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        $route = Reflector::instantiate($route);
-        static::setConfig(['default_route' => $route]);
-        return $route;
+        static::$default_route = Reflector::instantiate($route);
+        return static::$default_route;
     }
 
     /**
@@ -335,7 +346,7 @@ class Router
             static::$pipeline = (new Pipeline())->through(static::config('middlewares', false, []))->then($route);
             return static::$pipeline->send($request);
         } catch (\Throwable $e) {
-            $fallback = static::config("fallback");
+            $fallback = static::$fallback;
             return $fallback($request, $route, $e);
         }
     }
@@ -370,9 +381,8 @@ class Router
             }
         }
 
-        $default_route = static::configInstantiate("default_route", false);
-        if ($default_route !== null && $default_route->match($request)) {
-            return $default_route;
+        if (static::$default_route !== null && static::$default_route->match($request)) {
+            return static::$default_route;
         }
 
         throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
