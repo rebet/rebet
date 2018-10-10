@@ -23,6 +23,7 @@ use Rebet\Tests\Mock\DifferentNamespaceController;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Routing\ConventionalRoute;
 use Rebet\Routing\Annotation\NotRouting;
+use Rebet\Routing\Annotation\AliasOnly;
 
 class RouterTest extends RebetTestCase
 {
@@ -806,6 +807,69 @@ class RouterTest extends RebetTestCase
             $this->assertSame('Controller: protectedCall', $response->getContent());
         });
     }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage Route not found : Action [ \Rebet\Tests\Routing\RouterTestController::annotationAliasOnly ] accespt only alias access.
+     */
+    public function test_routing_defaultConventionalRouteAliasOnly()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class);
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+        });
+
+        $response = Router::handle(Request::create('/router-test/annotation-alias-only'));
+        $this->fail("Never Execute.");
+    }
+
+    public function test_routing_defaultConventionalRouteAlias()
+    {
+        Router::clear();
+        Router::rules('web', function () {
+            Router::default(ConventionalRoute::class)->aliases([
+                '/alias'       => '/router-test/annotation-alias-only',
+                '/param'       => '/router-test/with-param',
+                '/one-to'      => '/router-test/with-multi-param/1',
+                '/annotation/' => '/router-test/annotation-',
+                '/foo/bar'     => '/top',
+            ]);
+            Router::fallback(function ($request, $route, $e) {
+                throw $e;
+            });
+        });
+
+        $response = Router::handle(Request::create('/alias'));
+        $this->assertSame('Controller: annotationAliasOnly', $response->getContent());
+        $this->assertSame('/alias', Router::current()->getAliasName());
+
+        $response = Router::handle(Request::create('/param/123'));
+        $this->assertSame('Controller: withParam - 123', $response->getContent());
+        $this->assertSame('/param', Router::current()->getAliasName());
+
+        $response = Router::handle(Request::create('/one-to/10'));
+        $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
+        $this->assertSame('/one-to', Router::current()->getAliasName());
+
+        $response = Router::handle(Request::create('/foo/bar'));
+        $this->assertSame('Top: index', $response->getContent());
+        $this->assertSame('/foo/bar', Router::current()->getAliasName());
+
+        $response = Router::handle(Request::create('/foo/bar/with-param/123'));
+        $this->assertSame('Top: withParam - 123', $response->getContent());
+        $this->assertSame('/foo/bar', Router::current()->getAliasName());
+
+        $response = Router::handle(Request::create('/annotation/where/ABC'));
+        $this->assertSame('Controller: annotationWhere - ABC', $response->getContent());
+        $this->assertSame('/annotation/', Router::current()->getAliasName());
+
+        $response = Router::handle(Request::create('/annotation/class-where/123'));
+        $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
+        $this->assertSame('/annotation/', Router::current()->getAliasName());
+    }
 }
 
 /**
@@ -894,6 +958,14 @@ class RouterTestController extends Controller
     public function annotationNotRouting()
     {
         return "Controller: annotationNotRouting";
+    }
+
+    /**
+     * @AliasOnly
+     */
+    public function annotationAliasOnly()
+    {
+        return "Controller: annotationAliasOnly";
     }
 }
 

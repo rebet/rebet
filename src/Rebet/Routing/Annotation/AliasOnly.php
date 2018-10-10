@@ -10,7 +10,7 @@ namespace Rebet\Routing\Annotation;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
  * @Annotation
- * @Target("METHOD")
+ * @Target({"CLASS","METHOD"})
  */
 final class AliasOnly
 {

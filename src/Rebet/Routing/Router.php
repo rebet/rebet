@@ -331,6 +331,7 @@ class Router
         $route = null;
         try {
             $route = static::findRoute($request);
+            static::$current  = $route;
             static::$pipeline = (new Pipeline())->through(static::config('middlewares', false, []))->then($route);
             return static::$pipeline->send($request);
         } catch (\Throwable $e) {
@@ -390,5 +391,15 @@ class Router
             static::$pipeline->invoke('terminate', $request, $response);
             static::$pipeline->getDestination()->terminate($request, $response);
         }
+    }
+
+    /**
+     * 現在ルーティングされているルートを取得します。
+     *
+     * @return Route|null
+     */
+    public static function current() : ?Route
+    {
+        return static::$current;
     }
 }

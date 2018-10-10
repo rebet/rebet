@@ -17,6 +17,7 @@ use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Common\Strings;
+use Rebet\Routing\Annotation\AliasOnly;
 
 /**
  * Conventional Route class
@@ -118,6 +119,13 @@ class ConventionalRoute extends Route
     protected $aliases = [];
     
     /**
+     * 経由エイリアス名
+     *
+     * @var string
+     */
+    protected $alias = null;
+
+    /**
      * 解析されたコントローラーパート文字列
      *
      * @var string
@@ -193,11 +201,10 @@ class ConventionalRoute extends Route
     protected function analyze(Request $request) : ?array
     {
         $request_uri = $request->getRequestUri();
-        $is_alias    = false;
         foreach ($this->aliases as $alias => $path) {
             if (Strings::startsWith($request_uri, $alias)) {
                 $request_uri = str_replace($alias, $path, $request_uri);
-                $is_alias    = true;
+                $this->alias = $alias;
                 break;
             }
         }
@@ -228,8 +235,8 @@ class ConventionalRoute extends Route
         if ($am->annotation(NotRouting::class)) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.", null, $e);
         }
-        if ($am->annotation(AliasOnly::class) && !$is_alias) {
-            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.", null, $e);
+        if ($am->annotation(AliasOnly::class) && !$this->alias) {
+            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] accespt only alias access.", null, $e);
         }
         $wheres = Reflector::get($am->annotation(Where::class), 'wheres', []);
         $vars   = [];
@@ -301,6 +308,16 @@ class ConventionalRoute extends Route
     public function getActionName() : string
     {
         return Inflector::methodize($this->part_of_action).$this->action_suffix;
+    }
+
+    /**
+     * 経由エイリアス名を取得します。
+     *
+     * @return string|null
+     */
+    public function getAliasName() : ?string
+    {
+        return $this->alias;
     }
 
     /**
