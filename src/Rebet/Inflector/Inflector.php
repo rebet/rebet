@@ -41,9 +41,9 @@ class Inflector
      * @param string $delimiter
      * @return string
      */
-    public static function tableize(string $word, string $delimiter = '-') : string
+    public static function tableize(?string $word, string $replacement = '_', string $delimiters = ' _-') : ?string
     {
-        return $word === null ? null : static::pluralize(static::snakize($word, $delimiter));
+        return $word === null ? null : static::pluralize(static::snakize($word, $replacement, $delimiters));
     }
 
     /**
@@ -67,9 +67,9 @@ class Inflector
      * @param string $delimiters
      * @return string|null
      */
-    public function pascalize(?string $word, string $delimiters = ' _-') : ?string
+    public static function pascalize(?string $word, string $delimiters = ' _-') : ?string
     {
-        return static::humanize($word, $delimiters, '');
+        return static::humanize($word, '', $delimiters);
     }
 
     /**
@@ -81,7 +81,7 @@ class Inflector
      * @param string $delimiters
      * @return string|null
      */
-    public function camelize(?string $word, string $delimiters = ' _-') : ?string
+    public static function camelize(?string $word, string $delimiters = ' _-') : ?string
     {
         return $word === null ? null : lcfirst(static::pascalize($word, $delimiters));
     }
@@ -91,12 +91,13 @@ class Inflector
      * Converts 'ModelName' to 'model_name'.
      *
      * @param string|null $word
-     * @param string $delimiter default '_'
+     * @param string $replacement default '_'
+     * @param string $delimiters default ' _-'
      * @return string|null
      */
-    public static function snakize(?string $word, string $delimiter = '_') : ?string
+    public static function snakize(?string $word, string $replacement = '_', string $delimiters = ' _-') : ?string
     {
-        return $word === null ? null : mb_strtolower(preg_replace('~(?<=\\w)([A-Z])~u', preg_quote($delimiter)."$1", $word));
+        return $word === null ? null : str_replace(Strings::toCharArray($delimiters), $replacement, mb_strtolower(static::splitize($word, $replacement)));
     }
 
     /**
@@ -105,11 +106,39 @@ class Inflector
      * Converts 'ModelName' to 'model-name'.
      *
      * @param string|null $word
+     * @param string $delimiters default ' _-'
      * @return string|null
      */
-    public static function kebabize(?string $word) : ?string
+    public static function kebabize(?string $word, string $delimiters = ' _-') : ?string
     {
-        return static::snakize($word, '-');
+        return static::snakize($word, '-', $delimiters);
+    }
+
+    /**
+     * Converts a word into the format for a human readable form.
+     * Returns the input pascal/camel/snake case string like 'PascalCase/camelCase/snake_case' to human readable string like 'Pascal Case/Camel Case/Snake Case'.
+     * (Delimiters are replaced by spaces and capitalized following words.)
+     *
+     * @param string|null $word
+     * @param string $delimiters
+     * @param string $replacement
+     * @return string|null
+     */
+    public static function humanize(?string $word, string $replacement = ' ', string $delimiters = ' _-') : ?string
+    {
+        return $word === null ? null : str_replace(Strings::toCharArray($delimiters), $replacement, ucwords(static::splitize($word, $replacement), $delimiters));
+    }
+
+    /**
+     * Converts a word into the format for a split before upper case letter form.
+     *
+     * @param string $word
+     * @param string $delimiter
+     * @return string
+     */
+    protected static function splitize(string $word, string $delimiter) : string
+    {
+        return preg_replace('~(?<=\\w)([A-Z])~u', "{$delimiter}$1", $word);
     }
 
     /**
@@ -122,20 +151,6 @@ class Inflector
     public static function capitalize(?string $text, string $delimiters = " \t\r\n\f\v") : ?string
     {
         return $text === null ? null : ucwords($text, $delimiters);
-    }
-
-    /**
-     * Converts a word into the format for a human readable form.
-     * Returns the input pascal/camel/snake case string like 'PascalCase/camelCase/snake_case' to human readable string like 'Pascal Case/Camel Case/Snake Case'.
-     * (Delimiters are replaced by spaces and capitalized following words.)
-     *
-     * @param string|null $word
-     * @param string $delimiters
-     * @return string|null
-     */
-    public static function humanize(?string $word, string $delimiters = ' _-', string $replacement = ' ') : ?string
-    {
-        return str_replace(Strings::toCharArray($delimiters), $replacement, ucwords($word, $delimiters));
     }
 
     /**
