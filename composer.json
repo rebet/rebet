@@ -23,8 +23,11 @@
         "vlucas/phpdotenv": "^2.5"
     },
 	"require-dev": {
+        "illuminate/view": "^5.7",
         "mikey179/vfsStream": "^1.6",
-        "phpunit/phpunit": "^7.3.0"
+        "phpunit/phpunit": "^7.3.0",
+        "smarty/smarty": "^3.1",
+        "twig/twig": "^2.5"
     },
 	"autoload": {
 		"psr-4": {
@@ -35,6 +38,11 @@
 		"psr-4": {
 			"Rebet\\Tests\\": "tests/Rebet/Tests/"
 		}
+	},
+    "suggest": {
+        "illuminate/view": "Required to use the 'Blade' view template engine (^5.7).",
+        "smarty/smarty": "Required to use the 'Smarty' view template engine (^3.1).",
+        "twig/twig": "Required to use the 'Twig' view template engine (^3.1)."
 	},
 	"config": {
 		"sort-packages": true
