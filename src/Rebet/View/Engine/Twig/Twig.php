@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\View\Engine\Smarty;
+namespace Rebet\View\Engine\Twig;
 
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;

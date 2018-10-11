@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\View\Engine\Smarty;
+namespace Rebet\View\Engine\Blade;
 
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
@@ -30,11 +30,22 @@ class Blade extends Factory implements Engine
         return [
             'view_path'   => [],
             'cache_path'  => null,
-            'directives'  => [],
-            'ifs'         => [],
+            'custom'      => [
+                'directive' => [],
+                'if'        => [],
+                'component' => [],
+                'include'   => [],
+            ],
             'file_suffix' => '.blade.php',
         ];
     }
+    
+    /**
+     * Allow methods for register custom directives.
+     *
+     * @var array
+     */
+    private const ALLOW_DIRECTIVE_METHODS = ['directive', 'if', 'component', 'include'];
 
     /**
      * Template file suffix
@@ -48,13 +59,13 @@ class Blade extends Factory implements Engine
      */
     public function __construct(array $config = [])
     {
-        $this->file_suffix = $config['file_suffix']  ?? static::config('file_suffix') ;
-        $view_path         = (array)($config['view_path'] ?? static::config('view_path')) ;
-        $cache_path        = $config['cache_path'] ?? static::config('cache_path', false) ;
-        $directives        = $config['directives'] ?? static::config('directives', false, []) ;
+        $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
+        $view_path         = $config['view_path']   ?? static::config('view_path') ;
+        $cache_path        = $config['cache_path']  ?? static::config('cache_path', false) ;
+        $custom            = $config['custom']      ?? static::config('custom', false, []) ;
 
         $resolver   = new EngineResolver();
-        $finder     = new FileViewFinder(new Filesystem(), $view_path);
+        $finder     = new FileViewFinder(new Filesystem(), (array)$view_path);
         $dispatcher = new Dispatcher();
 
         $resolver->register("blade", function () use ($cache_path) {
@@ -67,8 +78,13 @@ class Blade extends Factory implements Engine
 
         parent::__construct($resolver, $finder, $dispatcher);
 
-        foreach ($directives as [$register, $directive, $compiler]) {
-            $this->compiler()->$register($directive, $compiler);
+        foreach ($custom as $register => $directives) {
+            if (empty($directives) || !in_array($register, static::ALLOW_DIRECTIVE_METHODS)) {
+                continue;
+            }
+            foreach ($directives as $directive) {
+                $this->compiler()->$register(...$directive);
+            }
         }
     }
 
