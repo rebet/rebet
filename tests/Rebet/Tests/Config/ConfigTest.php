@@ -25,6 +25,31 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_arg')->value);
     }
 
+    public function test_clear()
+    {
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+
+        Config::framework([
+            ConfigTest_Mock::class => [
+                'driver' => 'sqlite',
+            ],
+            ConfigTest_MockOption::class => [
+                'map' => ['a' => 'A']
+            ]
+        ]);
+        $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('A', Config::get(ConfigTest_MockOption::class, 'map.a'));
+
+        Config::clear(ConfigTest_MockOption::class);
+        $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+
+        Config::clear();
+        $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+    }
+
     public function test_get()
     {
         $this->assertSame(

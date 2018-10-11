@@ -155,6 +155,21 @@ class ConfigurableTest extends RebetTestCase
         $this->assertSame('mysql', $mock->configInMember('driver'));
         $this->assertNull(ConfigurableTest_Mock::config('encode', false));
     }
+
+    public function test_config_clear()
+    {
+        $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
+
+        Config::application([
+            ConfigurableTest_Mock::class => [
+                'driver' => 'oracle',
+            ]
+        ]);
+        $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
+
+        ConfigurableTest_Mock::clear();
+        $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
+    }
 }
 
 
@@ -193,6 +208,11 @@ class ConfigurableTest_Mock
     {
         return static::configInstantiate($key);
     }
+
+    public static function clear()
+    {
+        return static::clearConfig();
+    }
 }
 class ConfigurableTest_MockChildA extends ConfigurableTest_Mock
 {
@@ -202,7 +222,7 @@ class ConfigurableTest_MockChildB extends ConfigurableTest_Mock
 {
     public static function defaultConfig()
     {
-        return self::overrideConfig([
+        return self::parentConfigOverride([
             'driver' => 'sqlite',
             'encode' => 'utf8mb4',
         ]);
@@ -221,7 +241,7 @@ class ConfigurableTest_MockGrandChildA extends ConfigurableTest_MockChildB
 {
     public static function defaultConfig()
     {
-        return self::overrideConfig([
+        return self::parentConfigOverride([
             'encode' => 'utf8',
             'new_key' => 'new_value',
         ]);

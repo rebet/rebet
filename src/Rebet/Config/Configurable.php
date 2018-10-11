@@ -65,7 +65,7 @@ trait Configurable
      *
      * // Configurable を実装したクラスを継承し、サブクラスで新しい設定を導入/上書する定義例
      * public static function defaultConfig() {
-     *     return self::overrideConfig([
+     *     return self::parentConfigOverride([
      *         'default_format' => 'M d, Y g:i A',
      *         'new_key' => 'new_value',
      *     ];
@@ -80,7 +80,7 @@ trait Configurable
      * @param array $config 差分コンフィグ設定
      * @return array オーバーライド後の設定内容
      */
-    protected static function overrideConfig(array $diff) : array
+    protected static function parentConfigOverride(array $diff) : array
     {
         $rc   = new \ReflectionClass(static::class);
         $base = $rc->getParentClass()->getMethod('defaultConfig')->invoke(null);
