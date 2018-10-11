@@ -428,10 +428,10 @@ class Inflector
             return $cache[$word];
         }
         if (!isset($compiled['merged']['irregular'])) {
-            $compiled['merged']['irregular'] = static::config('plural.irregular');
+            $compiled['merged']['irregular'] = static::config('plural.irregular', false, []);
         }
         if (!isset($compiled['merged']['uninflected'])) {
-            $compiled['merged']['uninflected'] = array_merge(static::config('plural.uninflected'), static::config('uninflected'));
+            $compiled['merged']['uninflected'] = array_merge(static::config('plural.uninflected', false, []), static::config('uninflected', false, []));
         }
         if (!isset($compiled['regex']['uninflected']) || !isset($compiled['regex']['irregular'])) {
             $compiled['regex']['uninflected'] = '(?:' . implode('|', $compiled['merged']['uninflected']) . ')';
@@ -445,7 +445,7 @@ class Inflector
             $cache[$word] = $word;
             return $word;
         }
-        foreach (static::config('plural.rules') as [$rule, $replacement]) {
+        foreach (static::config('plural.rules', false, []) as [$rule, $replacement]) {
             if (preg_match($rule, $word)) {
                 $cache[$word] = preg_replace($rule, $replacement, $word);
                 return $cache[$word];
@@ -473,10 +473,10 @@ class Inflector
             return $cache[$word];
         }
         if (!isset($compiled['merged']['irregular'])) {
-            $compiled['merged']['irregular'] = array_merge(static::config('singular.irregular'), array_flip(static::config('plural.irregular')));
+            $compiled['merged']['irregular'] = array_merge(static::config('singular.irregular', false, []), array_flip(static::config('plural.irregular', false, [])));
         }
         if (!isset($compiled['merged']['uninflected'])) {
-            $compiled['merged']['uninflected'] = array_merge(static::config('singular.uninflected'), static::config('uninflected'));
+            $compiled['merged']['uninflected'] = array_merge(static::config('singular.uninflected', false, []), static::config('uninflected', false, []));
         }
         if (!isset($compiled['regex']['uninflected']) || !isset($compiled['regex']['irregular'])) {
             $compiled['regex']['uninflected'] = '(?:' . implode('|', $compiled['merged']['uninflected']) . ')';
@@ -490,7 +490,7 @@ class Inflector
             $cache[$word] = $word;
             return $word;
         }
-        foreach (static::config('singular.rules') as [$rule, $replacement]) {
+        foreach (static::config('singular.rules', false, []) as [$rule, $replacement]) {
             if (preg_match($rule, $word)) {
                 $cache[$word] = preg_replace($rule, $replacement, $word);
                 return $cache[$word];

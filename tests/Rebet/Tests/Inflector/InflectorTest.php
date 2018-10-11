@@ -3,6 +3,7 @@ namespace Rebet\Tests\Inflector;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Inflector\Inflector;
+use Rebet\Config\Config;
 
 /**
  * Tests for the fonction pluralize and singularize are borrowed from doctrine/inflector ver 1.3.x with some modifications.
@@ -400,5 +401,98 @@ class InflectorTest extends RebetTestCase
     public function testInflectingPlurals(string $singular, string $plural) : void
     {
         $this->assertEquals($plural, Inflector::pluralize($singular), "'{$singular}' should be pluralized to '{$plural}'");
+    }
+
+    public function testCustomPluralRule() : void
+    {
+        Inflector::reset();
+        Config::application([
+            Inflector::class => [
+                'plural' => [
+                    'rules' => [
+                        ['/^(custom)$/i', '\1izables'],
+                    ],
+                ],
+            ]
+        ]);
+        $this->assertEquals(Inflector::pluralize('custom'), 'customizables');
+
+        Config::application([
+            Inflector::class => [
+                'plural' => [
+                    'uninflected' => [
+                        'uninflectable',
+                    ],
+                ],
+            ]
+        ]);
+        $this->assertEquals(Inflector::pluralize('uninflectable'), 'uninflectable');
+
+        Config::application([
+            Inflector::class => [
+                'plural' => [
+                    'rules'       => [['/^(alert)$/i', '\1ables']],
+                    'uninflected' => ['noflect', 'abtuse'],
+                    'irregular'   => ['amaze' => 'amazable', 'phone' => 'phonezes']
+                ],
+            ]
+        ]);
+        $this->assertEquals(Inflector::pluralize('noflect'), 'noflect');
+        $this->assertEquals(Inflector::pluralize('abtuse'), 'abtuse');
+        $this->assertEquals(Inflector::pluralize('alert'), 'alertables');
+        $this->assertEquals(Inflector::pluralize('amaze'), 'amazable');
+        $this->assertEquals(Inflector::pluralize('phone'), 'phonezes');
+    }
+
+    public function testCustomSingularRule() : void
+    {
+        Inflector::reset();
+        Config::application([
+            Inflector::class => [
+                'singular' => [
+                    'rules' => [['/(eple)r$/i', '\1'], ['/(jente)r$/i', '\1']]
+                ],
+            ]
+        ]);
+        $this->assertEquals(Inflector::singularize('epler'), 'eple');
+        $this->assertEquals(Inflector::singularize('jenter'), 'jente');
+
+        Config::application([
+            Inflector::class => [
+                'singular' => [
+                    'rules'       => [['/^(bil)er$/i', '\1'], ['/^(inflec|contribu)tors$/i', '\1ta']],
+                    'uninflected' => ['singulars'],
+                    'irregular'   => ['spins' => 'spinor']
+                ],
+            ]
+        ]);
+        $this->assertEquals(Inflector::singularize('inflectors'), 'inflecta');
+        $this->assertEquals(Inflector::singularize('contributors'), 'contributa');
+        $this->assertEquals(Inflector::singularize('spins'), 'spinor');
+        $this->assertEquals(Inflector::singularize('singulars'), 'singulars');
+    }
+
+    public function testCustomRuleWithReset() : void
+    {
+        Inflector::reset();
+        $uninflected      = ['atlas', 'lapis', 'onibus', 'pires', 'virus', '.*x'];
+        $plural_irregular = ['as' => 'ases'];
+        Config::application([
+            Inflector::class => [
+                'singular!' => [
+                    'rules'       => [['/^(.*)(a|e|o|u)is$/i', '\1\2l']],
+                    'uninflected' => $uninflected,
+                ],
+                'plural!' => [
+                    'rules'       => [['/^(.*)(a|e|o|u)l$/i', '\1\2is']],
+                    'uninflected' => $uninflected,
+                    'irregular'   => $plural_irregular
+                ],
+            ]
+        ]);
+        $this->assertEquals(Inflector::pluralize('Alcool'), 'Alcoois');
+        $this->assertEquals(Inflector::pluralize('Atlas'), 'Atlas');
+        $this->assertEquals(Inflector::singularize('Alcoois'), 'Alcool');
+        $this->assertEquals(Inflector::singularize('Atlas'), 'Atlas');
     }
 }
