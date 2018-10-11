@@ -19,7 +19,6 @@
 	"require": {
         "php": "^7.1",
         "doctrine/annotations": "^1.6",
-        "doctrine/inflector": "^2.0-dev",
         "symfony/http-foundation": "^4.1",
         "vlucas/phpdotenv": "^2.5"
     },

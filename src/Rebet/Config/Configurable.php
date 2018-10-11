@@ -129,4 +129,12 @@ trait Configurable
     {
         Config::runtime([static::class => $config]);
     }
+
+    /**
+     * 自身のコンフィグ設定をクリアします。
+     */
+    protected static function clearConfig() : void
+    {
+        Config::clear(static::class);
+    }
 }

@@ -111,23 +111,21 @@ class Config
     /**
      * コンフィグデータを全てクリアします
      */
-    public static function clear() : void
+    public static function clear(?string $section = null) : void
     {
-        static::$config = [
-            Layer::LIBRARY     => [],
-            Layer::FRAMEWORK   => [],
-            Layer::APPLICATION => [],
-            Layer::RUNTIME     => [],
-        ];
-
-        static::$option = [
-            Layer::LIBRARY     => [],
-            Layer::FRAMEWORK   => [],
-            Layer::APPLICATION => [],
-            Layer::RUNTIME     => [],
-        ];
-
-        static::$compiled = [];
+        if ($section === null) {
+            foreach ([Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
+                static::$config[$layer] = [];
+                static::$option[$layer] = [];
+            }
+            static::$compiled = [];
+        } else {
+            foreach ([Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
+                unset(static::$config[$layer][$section]);
+                unset(static::$option[$layer][$section]);
+            }
+            unset(static::$compiled[$section]);
+        }
     }
 
     /**
