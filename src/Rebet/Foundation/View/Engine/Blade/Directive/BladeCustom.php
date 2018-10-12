@@ -21,7 +21,7 @@ class BladeCustom
     public static function if() : iterable
     {
         // ------------------------------------------------
-        // env check Blade directive for Rebet
+        // env check
         // ------------------------------------------------
         yield ['env', function ($env) {
             return in_array(App::getEnv(), (array)$env) ;
