@@ -77,8 +77,21 @@ class Blade extends Factory implements Engine
             if (empty($directives) || !in_array($register, static::ALLOW_DIRECTIVE_METHODS)) {
                 continue;
             }
-            foreach ($directives as $directive) {
-                $this->compiler()->$register(...$directive);
+            foreach (array_reverse($directives) as $directive) {
+                if (empty($directive)) {
+                    continue;
+                }
+                if (is_array($directive)) {
+                    $this->compiler()->$register(...$directive);
+                    continue;
+                }
+                if (is_iterable($directive)) {
+                    foreach ($directive as $item) {
+                        $this->compiler()->$register(...$item);
+                    }
+                    continue;
+                }
+                throw new \LogicException("Invalid Blade custom configure in custom.{$register}.");
             }
         }
     }

@@ -8,13 +8,16 @@ use Rebet\DateTime\DateTime;
 use Rebet\Routing\MethodRoute;
 use Rebet\Routing\ConventionalRoute;
 use Rebet\Routing\ControllerRoute;
+use Rebet\View\View;
+use Rebet\View\Engine\Blade\Blade;
+use Rebet\Foundation\View\Engine\Blade\BladeCustom;
 
 /**
- * アプリケーションコンフィグ クラス
+ * Application Config Class
  *
- * アプリケーションの各種設定を管理するクラス
+ * Define and manage application and framework configuration settings.
  *
- * @todo 英語リソースを作成し、ライブラリデフォルトの設定を ja => en に変更する
+ * @todo Create an English resource and change the library default setting to ja => en
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -50,10 +53,16 @@ class App
     public static function initFrameworkConfig() : void
     {
         Config::framework([
+            //---------------------------------------------
+            // DateTime Configure
+            //---------------------------------------------
             DateTime::class => [
                 'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
             ],
 
+            //---------------------------------------------
+            // Routing Configure
+            //---------------------------------------------
             MethodRoute::class => [
                 'namespace' => Config::refer(App::class, 'namespace.controller'),
             ],
@@ -65,12 +74,27 @@ class App
             ConventionalRoute::class => [
                 'namespace' => Config::refer(App::class, 'namespace.controller'),
             ],
+
+            //---------------------------------------------
+            // View Engine Configure
+            //---------------------------------------------
+            Blade::class => Config::promise(function () {
+                return [
+                    'custom' => [
+                        'directive' => [BladeCustom::directive()],
+                        'if'        => [BladeCustom::if()],
+                        'component' => [BladeCustom::component()],
+                        'include'   => [BladeCustom::include()],
+                    ],
+                ];
+            }),
         ]);
     }
     
     /**
-     * アプリケーションルートパスを取得します
-     * ※ App::config('root') のファサードです。
+     * Get application root path
+     *
+     * @return string
      */
     public static function getRoot() : string
     {
@@ -78,9 +102,9 @@ class App
     }
 
     /**
-     * アプリケーションルートパスを設定します
+     * Set application root path by given path
      *
-     * @param string $app_root_path アプリケーションルートパス
+     * @param string $app_root_path
      */
     public static function setRoot(string $app_root_path) : void
     {
@@ -88,10 +112,10 @@ class App
     }
 
     /**
-     * アプリケーションルートからのルート相対パスを絶対パスに変換します。
+     * Convert application root relative path to absolute path.
      *
-     * @param $root_relative_path アプリケーションルートからの相対パス
-     * @return string 絶対パス
+     * @param $root_relative_path
+     * @return string
      */
     public static function path(string $root_relative_path) : string
     {
@@ -99,8 +123,9 @@ class App
     }
 
     /**
-     * 現在のロケールを取得します。
-     * ※ App::config('locale') のファサードです。
+     * Get the current locale.
+     *
+     * @return string
      */
     public static function getLocale() : string
     {
@@ -108,9 +133,9 @@ class App
     }
 
     /**
-     * ロケールを設定します。
+     * Set the current locale by given locale.
      *
-     * @param string $locale ロケール
+     * @param string $locale
      */
     public static function setLocale(string $locale) : void
     {
@@ -118,9 +143,9 @@ class App
     }
 
     /**
-     * 特定のロケールであるか判定します。
+     * Determine whether it is a specific locale.
      *
-     * @param string ...$locale ロケール
+     * @param string ...$locale
      */
     public static function localeIn(string ...$locale) : bool
     {
@@ -128,8 +153,9 @@ class App
     }
 
     /**
-     * 現在の環境を取得します。
-     * ※ App::config('env') のファサードです。
+     * Get the current environment.
+     *
+     * @return string
      */
     public static function getEnv() : string
     {
@@ -137,7 +163,7 @@ class App
     }
 
     /**
-     * 現在の環境を設定します。
+     * Set the current environment by given environment.
      *
      * @param string $env 環境
      */
@@ -147,9 +173,9 @@ class App
     }
 
     /**
-     * 特定の環境であるか判定します。
+     * Determine whether it is a specific environment.
      *
-     * @param string ...$env 環境
+     * @param string ...$env
      */
     public static function envIn(string ...$env) : bool
     {
@@ -157,8 +183,9 @@ class App
     }
 
     /**
-     * 現在の流入経路口（web|api|console など）を取得します。
-     * ※ App::config('surface') のファサードです。
+     * Get the current surface (inflow route/application invoke interface) like web, api, console.
+     *
+     * @return string
      */
     public static function getSurface() : string
     {
@@ -166,9 +193,9 @@ class App
     }
 
     /**
-     * 現在の流入経路口（web|api|console など）を設定します。
+     * Set the current surface (inflow route/application invoke interface) like web, api, console.
      *
-     * @param string $surface 流入経路口
+     * @param string $surface
      */
     public static function setSurface(string $surface) : void
     {
@@ -176,9 +203,9 @@ class App
     }
 
     /**
-     * 特定の流入経路口（web|api|console など）であるか判定します。
+     * Determine whether it is a specific surface (inflow route/application invoke interface) like web, api, console.
      *
-     * @param string ...$surface 流入経路口
+     * @param string ...$surface
      */
     public static function surfaceIn(string ...$surface) : bool
     {
@@ -186,8 +213,8 @@ class App
     }
     
     /**
-     * 現在の実行環境を元に環境に則した値を返します。
-     * $case のキー名には以下が指定でき、1 => 4 の優先度に従って値が取得されます。
+     * It returns the value according to the environment based on the current execution environment.
+     * The following can be specified for the key name of $case, and the value is acquired according to the priority of 1 => 4.
      *
      *  1. surface@env
      *  2. surface
@@ -212,8 +239,9 @@ class App
     }
 
     /**
-     * 現在のエントリポイント名を取得します。
-     * ※ App::config('entry_point') のファサードです。
+     * Get the current entry point name.
+     *
+     * @return string
      */
     public static function getEntryPoint() : string
     {
@@ -221,7 +249,7 @@ class App
     }
 
     /**
-     * 現在のエントリポイント名を設定します。
+     * Set the current entry point name.
      *
      * @param string $entry_point エントリポイント名
      */
@@ -231,18 +259,19 @@ class App
     }
     
     /**
-     * 現在のタイムゾーンを取得します。
-     * ※ App::config('timezone') のファサードです。
+     * Get the current time zone.
+     *
+     * @return string
      */
-    public static function getTimezone()
+    public static function getTimezone() : string
     {
         return self::config('timezone');
     }
 
     /**
-     * タイムゾーンを設定します。
+     * Set the time zone.
      *
-     * @param string $timezone タイムゾーン
+     * @param string $timezone
      */
     public static function setTimezone(string $timezone) : void
     {

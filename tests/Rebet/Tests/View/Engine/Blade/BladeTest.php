@@ -7,6 +7,8 @@ use Rebet\View\Engine\Blade\Blade;
 use org\bovigo\vfs\vfsStream;
 use Illuminate\View\Compilers\BladeCompiler;
 use Rebet\Foundation\App;
+use Rebet\View\View;
+use Rebet\Config\Config;
 
 class BladeTest extends RebetTestCase
 {
@@ -19,6 +21,7 @@ class BladeTest extends RebetTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
@@ -90,6 +93,10 @@ production
 @else
 Not production.
 @endenv
+EOS
+                    ,
+                    'hello.blade.php' => <<<'EOS'
+@hello(World)
 EOS
                     ,
                     'empty.blade.php'  => '', // empty file
@@ -172,15 +179,27 @@ EOS
         $this->blade = new Blade([
             'view_path'  => 'vfs://root/view',
             'cache_path' => 'vfs://root/cache',
-            'custom' => [
-                'if' => [
-                    ['env', function ($env) {
-                        return in_array(App::getEnv(), (array)$env) ;
+            'custom'     => [
+                'directive' => [
+                    ['hello', function ($word) {
+                        return "Hello {$word}!" ;
                     }],
                 ]
             ]
         ]);
 
+        $this->assertSame(
+            <<<EOS
+Hello World!
+EOS
+            ,
+            $this->blade->render('hello')
+        );
+    }
+
+    public function test_render_directiveItterable()
+    {
+        // Register 'env' custom directive in App::initFrameworkConfig()
         App::setEnv('unittest');
         $this->assertSame(
             <<<EOS

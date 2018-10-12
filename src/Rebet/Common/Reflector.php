@@ -134,7 +134,12 @@ class Reflector
             $object = $object->get();
         }
 
-        if ($object === null || \is_scalar($object) || \is_resource($object)) {
+        if (
+            $object === null ||
+            \is_scalar($object) ||
+            \is_resource($object) ||
+            (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess))
+        ) {
             return $object;
         }
 
