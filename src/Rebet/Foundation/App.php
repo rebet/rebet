@@ -10,7 +10,8 @@ use Rebet\Routing\ConventionalRoute;
 use Rebet\Routing\ControllerRoute;
 use Rebet\View\View;
 use Rebet\View\Engine\Blade\Blade;
-use Rebet\Foundation\View\Engine\Blade\BladeCustom;
+use Rebet\Foundation\View\Engine\Blade\Directive\BladeCustom;
+use Rebet\View\Engine\Smarty\Smarty;
 
 /**
  * Application Config Class
@@ -78,6 +79,7 @@ class App
             //---------------------------------------------
             // View Engine Configure
             //---------------------------------------------
+            // Blade template settings
             Blade::class => Config::promise(function () {
                 return [
                     'custom' => [
@@ -88,6 +90,13 @@ class App
                     ],
                 ];
             }),
+
+            // Smarty template settings
+            Smarty::class => [
+                'plugins_dir' => [
+                    Files::normalizePath(__DIR__.'/View/Engine/Smarty/Plugin'),
+                ],
+            ],
         ]);
     }
     

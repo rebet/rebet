@@ -99,7 +99,6 @@ EOS
 @hello(World)
 EOS
                     ,
-                    'empty.blade.php'  => '', // empty file
                 ],
                 'cache' => [],
             ],
@@ -223,12 +222,4 @@ EOS
             $this->blade->render('custom')
         );
     }
-
-    // /**
-    //  * @expectedException \LogicException
-    //  * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
-    //  */
-    // public function test_normalizePath_invalid()
-    // {
-    // }
 }

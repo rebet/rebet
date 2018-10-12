@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Foundation\View\Engine\Blade;
+namespace Rebet\Foundation\View\Engine\Blade\Directive;
 
 use Rebet\Foundation\App;
 

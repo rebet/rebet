@@ -16,7 +16,7 @@ use Rebet\File\Files;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Smarty implements Engine
+class Smarty extends \Smarty implements Engine
 {
     use Configurable;
     public static function defaultConfig()
@@ -26,21 +26,11 @@ class Smarty implements Engine
             'compile_dir'  => null,
             'config_dir'   => null,
             'cache_dir'    => null,
-            'plugins_dir'  => [
-                'plugins',
-                Files::normalizePath(__DIR__.'/Plugin'),
-            ],
+            'plugins_dir'  => ['plugins'],
             'file_suffix'  => '.tpl',
             'escape_html'  => true,
         ];
     }
-
-    /**
-     * Real smarty template object.
-     *
-     * @var \Smarty
-     */
-    public $smarty = null;
 
     /**
      * Template file suffix
@@ -56,15 +46,15 @@ class Smarty implements Engine
      */
     public function __construct(array $config)
     {
-        $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
+        parent::__construct();
 
-        $this->smarty = new \Smarty();
-        $this->smarty->template_dir = $config['template_dir'] ?? static::config('template_dir');
-        $this->smarty->compile_dir  = $config['compile_dir']  ?? static::config('compile_dir');
-        $this->smarty->config_dir   = $config['config_dir']   ?? static::config('config_dir', false);
-        $this->smarty->cache_dir    = $config['cache_dir']    ?? static::config('cache_dir', false);
-        $this->smarty->plugins_dir  = $config['plugins_dir']  ?? static::config('plugins_dir');
-        $this->smarty->escape_html  = $config['escape_html']  ?? static::config('escape_html');
+        $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
+        $this->setTemplateDir($config['template_dir'] ?? static::config('template_dir'));
+        $this->setCompileDir($config['compile_dir'] ?? static::config('compile_dir'));
+        $this->setConfigDir($config['config_dir'] ?? static::config('config_dir', false));
+        $this->setCacheDir($config['cache_dir'] ?? static::config('cache_dir', false));
+        $this->setPluginsDir($config['plugins_dir'] ?? static::config('plugins_dir'));
+        $this->escape_html = $config['escape_html'] ?? static::config('escape_html');
     }
 
     /**
@@ -76,7 +66,51 @@ class Smarty implements Engine
      */
     public function render(string $name, array $data = []) : string
     {
-        $this->smarty->assign($data);
-        return $this->smarty->fetch($name.$this->file_suffix);
+        $this->assign($data);
+        return $this->fetch($name.$this->file_suffix);
+    }
+
+    /**
+     * Normalize path
+     *  - remove /./ and /../
+     *  - make it absolute if required
+     *  - replace \ to /
+     *
+     * @param string $path     file path
+     * @param bool   $realpath if true - convert to absolute
+     *                         false - convert to relative
+     *                         null - keep as it is but
+     *                         remove /./ /../
+     *
+     * @return string
+     */
+    public function _realpath($path, $realpath = null)
+    {
+        preg_match(
+            '%^(?<root>(?:[[:alpha:]]:[\\\\/]|/|[\\\\]{2}[[:alpha:]]+|[[:print:]]{2,}:[/]{2}|[\\\\])?)(?<path>(.*))$%u',
+            $path,
+            $parts
+        );
+        $path = $parts[ 'path' ];
+        if ($parts[ 'root' ] === '\\') {
+            $parts[ 'root' ] = substr(getcwd(), 0, 2) . $parts[ 'root' ];
+        } else {
+            if ($realpath !== null && !$parts[ 'root' ]) {
+                $path = getcwd() . '/' . $path;
+            }
+        }
+        // normalize '/'
+        $path = str_replace('\\', '/', $path);
+        $parts[ 'root' ] = str_replace('\\', '/', $parts[ 'root' ]);
+        do {
+            $path = preg_replace(
+                array('#[\\\\/]{2}#', '#[\\\\/][.][\\\\/]#', '#[\\\\/]([^\\\\/.]+)[\\\\/][.][.][\\\\/]#'),
+                '/',
+                $path,
+                -1,
+                $count
+            );
+        } while ($count > 0);
+        return $realpath !== false ? $parts[ 'root' ] . $path : str_ireplace(getcwd(), '.', $parts[ 'root' ] . $path);
     }
 }

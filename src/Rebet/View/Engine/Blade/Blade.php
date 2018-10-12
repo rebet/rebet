@@ -13,7 +13,7 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\Support\Facades\Blade as LaravelBlade;
 
 /**
- * Blade templeate engine Class
+ * Blade Templeate Engine Class
  *
  * This class depends on illuminate/view ^5.7, so you should run composer command like below.
  * $ composer require illuminate/view
