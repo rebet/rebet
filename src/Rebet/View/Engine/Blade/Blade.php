@@ -10,6 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Events\Dispatcher;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\Support\Facades\Blade as LaravelBlade;
 
 /**
  * Blade templeate engine Class
@@ -36,7 +37,6 @@ class Blade extends Factory implements Engine
                 'component' => [],
                 'include'   => [],
             ],
-            'file_suffix' => '.blade.php',
         ];
     }
     
@@ -48,21 +48,13 @@ class Blade extends Factory implements Engine
     private const ALLOW_DIRECTIVE_METHODS = ['directive', 'if', 'component', 'include'];
 
     /**
-     * Template file suffix
-     *
-     * @var string
-     */
-    protected $file_suffix = null;
-
-    /**
      * Create Blade template engine
      */
     public function __construct(array $config = [])
     {
-        $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
-        $view_path         = $config['view_path']   ?? static::config('view_path') ;
-        $cache_path        = $config['cache_path']  ?? static::config('cache_path', false) ;
-        $custom            = $config['custom']      ?? static::config('custom', false, []) ;
+        $view_path  = $config['view_path']  ?? static::config('view_path') ;
+        $cache_path = $config['cache_path'] ?? static::config('cache_path', false) ;
+        $custom     = $config['custom']     ?? static::config('custom', false, []) ;
 
         $resolver   = new EngineResolver();
         $finder     = new FileViewFinder(new Filesystem(), (array)$view_path);
@@ -77,6 +69,9 @@ class Blade extends Factory implements Engine
         });
 
         parent::__construct($resolver, $finder, $dispatcher);
+        $app = LaravelBlade::getFacadeApplication();
+        $app['view'] = $this;
+        LaravelBlade::setFacadeApplication($app);
 
         foreach ($custom as $register => $directives) {
             if (empty($directives) || !in_array($register, static::ALLOW_DIRECTIVE_METHODS)) {
@@ -105,8 +100,8 @@ class Blade extends Factory implements Engine
      * @param array $data
      * @return string
      */
-    public function render(string $name, array $data) : string
+    public function render(string $name, array $data = []) : string
     {
-        return $this->make($name.$this->file_suffix, $data)->render();
+        return $this->make($name, $data)->render();
     }
 }

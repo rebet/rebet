@@ -18,5 +18,5 @@ interface Engine
      * @param array $data
      * @return string
      */
-    public function render(string $name, array $data) : string;
+    public function render(string $name, array $data = []) : string;
 }

@@ -70,7 +70,7 @@ class Twig implements Engine
      * @param array $data
      * @return string
      */
-    public function render(string $name, array $data) : string
+    public function render(string $name, array $data = []) : string
     {
         return $this->twig->render($name.$this->file_suffix, $data);
     }

@@ -74,7 +74,7 @@ class Smarty implements Engine
      * @param array $data
      * @return string
      */
-    public function render(string $name, array $data) : string
+    public function render(string $name, array $data = []) : string
     {
         $this->smarty->assign($data);
         return $this->smarty->fetch($name.$this->file_suffix);
