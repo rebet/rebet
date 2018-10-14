@@ -2,7 +2,6 @@
 namespace Rebet\Foundation\View\Engine\Smarty;
 
 use Rebet\Foundation\App;
-use Illuminate\View\Compilers\SmartyCompiler;
 use Rebet\View\Engine\Smarty\Smarty;
 
 /**
@@ -16,12 +15,12 @@ use Rebet\View\Engine\Smarty\Smarty;
 class SmartyCustomizer
 {
     /**
-     * define costom directives for Rebet.
+     * define costom plugins for Rebet.
      */
     public static function customize(Smarty $smarty) : void
     {
         // ------------------------------------------------
-        // env check
+        // Check current environment
         // ------------------------------------------------
         // Params:
         //   in     : string|array - allow enviroments

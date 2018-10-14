@@ -67,9 +67,9 @@ EOS
         );
     }
 
-    public function test_render_directiveItterable()
+    public function test_render_customizer()
     {
-        // Register 'env' plugin dir in App::initFrameworkConfig()
+        // Register 'env' plugin in App::initFrameworkConfig()
         App::setEnv('unittest');
         $this->assertSame(
             <<<EOS
@@ -93,12 +93,4 @@ EOS
             $this->smarty->render('custom')
         );
     }
-
-    // /**
-    //  * @expectedException \LogicException
-    //  * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
-    //  */
-    // public function test_normalizePath_invalid()
-    // {
-    // }
 }

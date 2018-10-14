@@ -30,18 +30,17 @@ Hello, {{name}}.
 EOS
                     ,
                     'custom.twig' => <<<'EOS'
-{env in='unittest'}
+{% if 'unittest' is env %}
 unittest
-{/env}
-{env in=['unittest','local']}
+{% endif %}
+{% if ['unittest','local'] is env %}
 unittest or local
-{/env}
-{env in='production'}
+{% endif %}
+{% if 'production' is env %}
 production
-{/env}
-{env not_in='production'}
+{% else %}
 Not production.
-{/env}
+{% endif %}
 EOS
                     ,
                 ],
@@ -69,38 +68,30 @@ EOS
         );
     }
 
-//     public function test_render_directiveItterable()
-//     {
-//         // Register 'env' plugin dir in App::initFrameworkConfig()
-//         App::setEnv('unittest');
-//         $this->assertSame(
-//             <<<EOS
-// unittest
-// unittest or local
-// Not production.
+    public function test_render_customizer()
+    {
+        // Register 'env' extention in App::initFrameworkConfig()
+        App::setEnv('unittest');
+        $this->assertSame(
+            <<<EOS
+unittest
+unittest or local
+Not production.
 
-// EOS
-//             ,
-//             $this->twig->render('custom')
-//         );
+EOS
+            ,
+            $this->twig->render('custom')
+        );
 
-//         App::setEnv('local');
-//         $this->assertSame(
-//             <<<EOS
-// unittest or local
-// Not production.
+        App::setEnv('local');
+        $this->assertSame(
+            <<<EOS
+unittest or local
+Not production.
 
-// EOS
-//             ,
-//             $this->twig->render('custom')
-//         );
-//    }
-
-    // /**
-    //  * @expectedException \LogicException
-    //  * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
-    //  */
-    // public function test_normalizePath_invalid()
-    // {
-    // }
+EOS
+            ,
+            $this->twig->render('custom')
+        );
+    }
 }

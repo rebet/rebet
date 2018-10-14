@@ -1,34 +1,33 @@
 <?php
-namespace Rebet\Foundation\View\Engine\Blade;
+namespace Rebet\Foundation\View\Engine\Twig;
 
 use Rebet\Foundation\App;
-use Illuminate\View\Compilers\BladeCompiler;
 
 /**
- * Blade custom directives for Rebet
+ * Twig custom extentions for Rebet
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class BladeCustomizer
+class TwigCustomizer
 {
     /**
-     * define costom directives for Rebet.
+     * define costom extentions for Rebet.
      */
-    public static function customize(BladeCompiler $blade) : void
+    public static function customize(\Twig_Environment $twig) : void
     {
         // ------------------------------------------------
         // Check current environment
         // ------------------------------------------------
         // Params:
-        //   $env : string|array - allow enviroments
+        //   $env : string|array - allow environments
         // Usage:
-        //   @env('local') ... @else ... @endenv
-        //   @env(['local','testing']) ... @else ... @endenv
-        $blade->if('env', function ($env) {
+        //   {% if 'local' is env %} ... {% else %} ... {% endif %}
+        //   {% if ['local','testing'] is env %} ... {% else% %} ... {% endif %}
+        $twig->addTest(new \Twig_Test('env', function ($env) {
             return in_array(App::getEnv(), (array)$env);
-        });
+        }));
     }
 }

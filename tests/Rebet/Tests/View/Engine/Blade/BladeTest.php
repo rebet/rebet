@@ -194,7 +194,7 @@ EOS
         );
     }
 
-    public function test_render_directiveItterable()
+    public function test_render_customizer()
     {
         // Register 'env' custom directive in App::initFrameworkConfig()
         App::setEnv('unittest');

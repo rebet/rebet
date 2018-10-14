@@ -25,7 +25,7 @@ class Twig implements Engine
         return [
             'template_dir' => null,
             'options'      => [],
-            'extensions'   => [],
+            'customizers'  => [],
             'file_suffix'  => '.twig',
         ];
     }
@@ -54,12 +54,14 @@ class Twig implements Engine
         $this->file_suffix = $config['file_suffix']  ?? static::config('file_suffix') ;
         $template_dir      = $config['template_dir'] ?? static::config('template_dir') ;
         $options           = $config['options']      ?? static::config('options', false, []) ;
-        $extensions        = $config['extensions']   ?? static::config('extensions', false, []) ;
+        $customizers       = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
 
         $loader = new \Twig_Loader_Filesystem($template_dir);
         $this->twig = new \Twig_Environment($loader, $options);
-        foreach ($extensions as $extension) {
-            $this->twig->addExtension(Reflector::instantiate($extension));
+        
+        foreach (array_reverse($customizers) as $customizer) {
+            $invoker = \Closure::fromCallable($customizer);
+            $invoker($this->twig);
         }
     }
 

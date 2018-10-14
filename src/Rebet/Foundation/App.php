@@ -12,6 +12,7 @@ use Rebet\View\View;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\Foundation\View\Engine\Blade\Directive\BladeCustom;
 use Rebet\View\Engine\Smarty\Smarty;
+use Rebet\View\Engine\Twig\Twig;
 
 /**
  * Application Config Class
@@ -87,6 +88,11 @@ class App
             // Smarty template settings
             Smarty::class => [
                 'customizers' => ['Rebet\\Foundation\\View\\Engine\\Smarty\\SmartyCustomizer::customize'],
+            ],
+
+            // Twig template settings
+            Twig::class => [
+                'customizers' => ['Rebet\\Foundation\\View\\Engine\\Twig\\TwigCustomizer::customize'],
             ],
         ]);
     }
