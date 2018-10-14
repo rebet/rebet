@@ -35,7 +35,7 @@ class OverrideOption
     public const APEND = '>';
     
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

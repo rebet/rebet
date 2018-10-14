@@ -48,7 +48,7 @@ use Rebet\Common\Utils;
 class Config
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

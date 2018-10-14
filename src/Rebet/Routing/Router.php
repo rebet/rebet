@@ -30,7 +30,7 @@ class Router
     }
 
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

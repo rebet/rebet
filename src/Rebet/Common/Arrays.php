@@ -2,9 +2,7 @@
 namespace Rebet\Common;
 
 /**
- * 配列関連 ユーティリティ クラス
- *
- * 配列制御に関連する簡便なユーティリティメソッドを集めたクラスです。
+ * Array Utility Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -14,21 +12,21 @@ namespace Rebet\Common;
 class Arrays
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {
     }
 
     /**
-     * 対象のリストから指定の件数だけランダムに選択します。
+     * It randomly selects the specified number of items from the target list.
      *
      * ex)
      * [$winner, $loser] = Arrays::randomSelect($lottery_applicants, 3);
      *
-     * @param array $list 選択対象リスト
-     * @param int $select_count 選択数
-     * @return array [ [選択された要素], [選択されなかった要素] ]
+     * @param array $list
+     * @param int $select_count
+     * @return array [[selected_item, ...], [not_selected_items, ...]]
      */
     public static function randomSelect(array $list, int $select_count) : array
     {
@@ -66,22 +64,22 @@ class Arrays
         
         return [$selected, array_merge($list)];
     }
-    
+
     /**
-      * 指定の配列が index = 0 から始まる連番配列かチェックします。
-      * ※null 指定時は false を返します
-      *
-      * ex)
-      * Arrays::isSequential([]);                             //=> true
-      * Arrays::isSequential([1,2,3]);                        //=> true
-      * Arrays::isSequential([0 => 'a', '1' => 'b']);         //=> true
-      * Arrays::isSequential([0 => 'a', 2 => 'c', 1 => 'b']); //=> false
-      * Arrays::isSequential([1 => 'c', 2 => 'b']);           //=> false
-      * Arrays::isSequential(['a' => 'a', 'b' => 'b']);       //=> false
-      *
-      * @param  array|null $array 配列
-      * @return bool true : 連番配列／false : 連想配列 or 跳び番配列
-      */
+     * It checks whether the specified array is a sequential number array starting at index = 0.
+     * #If null was given, return false.
+     *
+     * ex)
+     * Arrays::isSequential([]);                             //=> true
+     * Arrays::isSequential([1,2,3]);                        //=> true
+     * Arrays::isSequential([0 => 'a', '1' => 'b']);         //=> true
+     * Arrays::isSequential([0 => 'a', 2 => 'c', 1 => 'b']); //=> false
+     * Arrays::isSequential([1 => 'c', 2 => 'b']);           //=> false
+     * Arrays::isSequential(['a' => 'a', 'b' => 'b']);       //=> false
+     *
+     * @param  array|null $array
+     * @return bool
+     */
     public static function isSequential(?array $array) : bool
     {
         if ($array === null) {
@@ -95,36 +93,36 @@ class Arrays
         }
         return true;
     }
-    
+
     /**
-    * 多次元配列を一次元配列に変換します。
-    *
-    * ex)
-    * Arrays::flatten([1, 2, [3]]);         //=> [1, 2, 3]
-    * Arrays::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
-    *
-    * @param array|null $array 多次元配列
-    * @return array|null 一次元配列
-    */
+     * Convert a multidimensional array to a one-dimensional array.
+     *
+     * ex)
+     * Arrays::flatten([1, 2, [3]]);         //=> [1, 2, 3]
+     * Arrays::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
+     *
+     * @param array|null $array
+     * @return array|null
+     */
     public static function flatten(?array $array) : ?array
     {
         return $array === null ? null : iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array)), false);
     }
-    
+
     /**
-     * Row要素（＝オブジェクトor配列）を含む配列(Table)から指定のプロパティ要素(Column)をキー及び値として連想配列を再構築します。
-     * ※$*_field には .(dot) 区切り指定による階層アクセスが指定できます。
+     * Reassemble a map of given columns (as key or value) from an array containing object or array.
+     * # You can use dot access of Reflector::get() in $key_field and $value_field.
      *
      * ex)
-     * $user_ids   = Arrays::remap($users, null, 'user_id');        //=> [21, 35, 43, ...]
-     * $user_names = Arrays::remap($users, 'user_id', 'name');      //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
+     * $user_ids   = Arrays::remap($users, null     , 'user_id'  ); //=> [21, 35, 43, ...]
+     * $user_names = Arrays::remap($users, 'user_id', 'name'     ); //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
      * $user_banks = Arrays::remap($users, 'user_id', 'bank.name'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
-     * $user_map   = Arrays::remap($users, 'user_id', null);        //=> [21 => <<Row object>>, 35 => <<Row object>>, 43 => <<Row object>>, ...]
+     * $user_map   = Arrays::remap($users, 'user_id', null       ); //=> [21 => <User object>, 35 => <User object>, 43 => <User object>, ...]
      *
-     * @param array|null $list オブジェクトが格納された配列
-     * @param int|string|null $key_field 抽出データのキーとなるフィールド名/インデックス（blank 指定時は連番配列となる）
-     * @param int|string|null $value_field 抽出データの値となるフィールド名/インデックス（blank 指定時はRow要素自体が対象となる）
-     * @return array 列データ
+     * @param array|null $list
+     * @param int|string|null $key_field Field name / index as key of extracted data (It becomes serial number array when blank is specified)
+     * @param int|string|null $value_field Field name / index as the value of extracted data (Row element itself is targeted when blank is specified)
+     * @return array 
      * @see Reflector::get()
      */
     public static function remap(?array $list, $key_field, $value_field) : array
@@ -140,12 +138,12 @@ class Arrays
     }
 
     /**
-     * ベースとなる連想配列に対して、差分の連想配列でマージ／上書します。
+     * Merge / overwrite with a differences map to the base map.
      *
-     * 本メソッドは連想配列の値が連想配列である場合は再帰的にマージ／上書処理をされる点で array_merge と異なり、
-     * 連想配列の値がオブジェクトの場合に値を上書きする点で array_merge_recursive と異なります。
+     * This method differs from 'array_merge' in that it merges / overwrites recursively when the value is a map,
+     * And it differs from 'array_merge_recursive' in that it overwrites the value if the value is an object.
      *
-     * 具体的には以下のような挙動をします。
+     * Specifically, it behaves as follows.
      *
      * Arrays::override(
      *     [
@@ -175,14 +173,14 @@ class Arrays
      *     'added'       => 'added',
      * ]
      *
-     * なお、この挙動は下記のオプション指定によって変更することができます。
+     * This behavior can be changed by specifying the option below.
      *
-     * 　- 配列(Map or Array) の マージ挙動 は OverrideOption::REPLACE（='!'） によって置換挙動に変更できます。
-     * 　- 配列(Array)        の マージ挙動 は OverrideOption::PREPEND（='<'） によって前方追加に変更できます。
-     * 　- 配列(Array)        の マージ挙動 は OverrideOption::APEND  （='>'） によって後方追加に変更できます。
+     * 　- The merge behavior of Map or Array can be changed to replacement       by OverrideOption :: REPLACE (= '!').
+     * 　- The merge behavior of        Array can be changed to forward addition  by OverrideOption :: PREPEND (= '<').
+     * 　- The merge behavior of        Array can be changed to backward addition by OverrideOption :: APEND   (= '>').
      *
-     * また、配列(Array) の挙動に関しては、 $default_array_override_option に上記モード指定をすることでデフォルトの全体挙動を変更できます。
-     * 
+     * Also, regarding the behavior of an array, you can change the default overall behavior by specifying the above mode for $default_array_override_option.
+     *
      * Arrays::override(
      *     [
      *         'map'   => ['a' => ['A' => 'A'], 'b' => 'b'],
@@ -202,7 +200,7 @@ class Arrays
      *     'array' => ['c', 'a', 'b'],
      * ]
      *
-     * なお、上記のコードは下記のように差分MAPのキー名末尾に '!','<','>' を付与することでも指定可能です。
+     * The above code can also be specified by giving '!', '<', '>' At the end of the difference map key name as shown below.
      *
      * Arrays::override(
      *     [
@@ -217,11 +215,11 @@ class Arrays
      *
      * @see OverrideOption
      *
-     * @param mixed $base ベースデータ
-     * @param mixed $diff 差分データ
-     * @param array|string $option オプション
-     * @param string $default_array_override_option デフォルト配列上書オプション（デフォルト：OverrideOption::APEND）
-     * @return マージ済みのデータ
+     * @param mixed $base
+     * @param mixed $diff
+     * @param array|string $option
+     * @param string $default_array_override_option Default: OverrideOption::APEND
+     * @return mixed
      */
     public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND)
     {
@@ -251,9 +249,9 @@ class Arrays
 
         return $base;
     }
-    
+
     /**
-     * オプションの内容にしたがって連番配列をマージします。
+     * Merge the sequential number array according to the option contents.
      *
      * @param array $base
      * @param array $diff

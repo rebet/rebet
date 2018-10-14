@@ -51,7 +51,7 @@ class AnnotatedMethod
     }
 
     /**
-     * メソッドアノテーションアクセッサを構築します。
+     * Create a method annotation accessor
      *
      * @param \ReflectionMethod $method
      * @param AnnotatedClass|null $annotated_class
@@ -77,8 +77,8 @@ class AnnotatedMethod
 
     /**
      * Get method annotation.
-     * If you want, you can check declaring class annotation too.
      * If method annotation nothing, then check declaring class annotation and get.
+     * If you don't want to check declaring class annotation, just given $check_declaring_class as false.
      *
      * @param string $annotation
      * @param bool $check_declaring_class

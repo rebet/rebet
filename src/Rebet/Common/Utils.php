@@ -22,7 +22,7 @@ use Rebet\Common\Strings;
 class Utils
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

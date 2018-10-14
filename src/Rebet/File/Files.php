@@ -16,7 +16,7 @@ use Rebet\Common\Strings;
 class Files
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

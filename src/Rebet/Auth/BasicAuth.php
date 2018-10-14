@@ -18,7 +18,7 @@ use Rebet\Common\Utils;
 class BasicAuth
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

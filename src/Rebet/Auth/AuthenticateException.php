@@ -2,7 +2,7 @@
 namespace Rebet\Auth;
 
 /**
- * 認証エラー クラス
+ * Authenticate Exception Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

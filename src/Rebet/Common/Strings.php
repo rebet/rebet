@@ -18,7 +18,7 @@ namespace Rebet\Common;
 class Strings
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {

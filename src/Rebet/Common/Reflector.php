@@ -22,7 +22,7 @@ use Rebet\Common\Utils;
 class Reflector
 {
     /**
-     * インスタンス化禁止
+     * No instantiation
      */
     private function __construct()
     {
