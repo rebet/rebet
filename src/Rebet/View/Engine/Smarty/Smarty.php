@@ -29,6 +29,7 @@ class Smarty extends \Smarty implements Engine
             'plugins_dir'  => ['plugins'],
             'file_suffix'  => '.tpl',
             'escape_html'  => true,
+            'customizers'  => [],
         ];
     }
 
@@ -55,6 +56,12 @@ class Smarty extends \Smarty implements Engine
         $this->setCacheDir($config['cache_dir'] ?? static::config('cache_dir', false));
         $this->setPluginsDir($config['plugins_dir'] ?? static::config('plugins_dir'));
         $this->escape_html = $config['escape_html'] ?? static::config('escape_html');
+        $customizers = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
+
+        foreach (array_reverse($customizers) as $customizer) {
+            $invoker = \Closure::fromCallable($customizer);
+            $invoker($this);
+        }
     }
 
     /**

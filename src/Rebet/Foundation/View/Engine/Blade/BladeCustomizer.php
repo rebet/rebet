@@ -17,11 +17,16 @@ class BladeCustomizer
     /**
      * define costom directives for Rebet.
      */
-    public static function customize(BladeCompiler &$blade) : void
+    public static function customize(BladeCompiler $blade) : void
     {
         // ------------------------------------------------
         // env check
         // ------------------------------------------------
+        // Params:
+        //   string|array - allow enviroments
+        // Usage:
+        //   @env('local') ... @else ... @endenv
+        //   @env(['local','testing']) ... @else ... @endenv
         $blade->if('env', function ($env) {
             return in_array(App::getEnv(), (array)$env);
         });

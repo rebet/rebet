@@ -86,9 +86,7 @@ class App
 
             // Smarty template settings
             Smarty::class => [
-                'plugins_dir' => [
-                    Files::normalizePath(__DIR__.'/View/Engine/Smarty/Plugin'),
-                ],
+                'customizers' => ['Rebet\\Foundation\\View\\Engine\\Smarty\\SmartyCustomizer::customize'],
             ],
         ]);
     }
