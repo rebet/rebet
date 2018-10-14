@@ -176,15 +176,13 @@ EOS
     public function test_render_directive()
     {
         $this->blade = new Blade([
-            'view_path'  => 'vfs://root/view',
-            'cache_path' => 'vfs://root/cache',
-            'custom'     => [
-                'directive' => [
-                    ['hello', function ($word) {
-                        return "Hello {$word}!" ;
-                    }],
-                ]
-            ]
+            'view_path'   => 'vfs://root/view',
+            'cache_path'  => 'vfs://root/cache',
+            'customizers' => [function (BladeCompiler $blade) {
+                $blade->directive('hello', function ($word) {
+                    return "Hello {$word}!";
+                });
+            }],
         ]);
 
         $this->assertSame(

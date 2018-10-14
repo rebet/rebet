@@ -80,16 +80,9 @@ class App
             // View Engine Configure
             //---------------------------------------------
             // Blade template settings
-            Blade::class => Config::promise(function () {
-                return [
-                    'custom' => [
-                        'directive' => [BladeCustom::directive()],
-                        'if'        => [BladeCustom::if()],
-                        'component' => [BladeCustom::component()],
-                        'include'   => [BladeCustom::include()],
-                    ],
-                ];
-            }),
+            Blade::class => [
+                'customizers' => ['Rebet\\Foundation\\View\\Engine\\Blade\\BladeCustomizer::customize'],
+            ],
 
             // Smarty template settings
             Smarty::class => [

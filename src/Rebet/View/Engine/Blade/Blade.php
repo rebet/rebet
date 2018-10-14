@@ -31,12 +31,7 @@ class Blade extends Factory implements Engine
         return [
             'view_path'   => [],
             'cache_path'  => null,
-            'custom'      => [
-                'directive' => [],
-                'if'        => [],
-                'component' => [],
-                'include'   => [],
-            ],
+            'customizers' => [],
         ];
     }
     
@@ -52,9 +47,9 @@ class Blade extends Factory implements Engine
      */
     public function __construct(array $config = [])
     {
-        $view_path  = $config['view_path']  ?? static::config('view_path') ;
-        $cache_path = $config['cache_path'] ?? static::config('cache_path', false) ;
-        $custom     = $config['custom']     ?? static::config('custom', false, []) ;
+        $view_path   = $config['view_path']   ?? static::config('view_path') ;
+        $cache_path  = $config['cache_path']  ?? static::config('cache_path', false) ;
+        $customizers = array_merge($config['customizers'] ?? [], static::config('customizers', false, [])) ;
 
         $resolver   = new EngineResolver();
         $finder     = new FileViewFinder(new Filesystem(), (array)$view_path);
@@ -73,26 +68,9 @@ class Blade extends Factory implements Engine
         $app['view'] = $this;
         LaravelBlade::setFacadeApplication($app);
 
-        foreach ($custom as $register => $directives) {
-            if (empty($directives) || !in_array($register, static::ALLOW_DIRECTIVE_METHODS)) {
-                continue;
-            }
-            foreach (array_reverse($directives) as $directive) {
-                if (empty($directive)) {
-                    continue;
-                }
-                if (is_array($directive)) {
-                    $this->compiler()->$register(...$directive);
-                    continue;
-                }
-                if (is_iterable($directive)) {
-                    foreach ($directive as $item) {
-                        $this->compiler()->$register(...$item);
-                    }
-                    continue;
-                }
-                throw new \LogicException("Invalid Blade custom configure in custom.{$register}.");
-            }
+        foreach (array_reverse($customizers) as $customizer) {
+            $invoker = \Closure::fromCallable($customizer);
+            $invoker($this->compiler());
         }
     }
 
