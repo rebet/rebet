@@ -2,7 +2,6 @@
 namespace Rebet\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * Class annotations accessor class
@@ -49,7 +48,7 @@ class AnnotatedClass
     public function __construct($class, ?AnnotationReader $reader = null)
     {
         $this->class  = $class instanceof \ReflectionClass ? $class : new \ReflectionClass($class) ;
-        $this->reader = $reader ?? new AnnotationReader();
+        $this->reader = $reader ?? AnnotationReader::getShared();
         AnnotationRegistry::registerUniqueLoader('class_exists');
     }
 
