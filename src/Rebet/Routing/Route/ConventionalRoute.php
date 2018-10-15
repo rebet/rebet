@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Routing;
+namespace Rebet\Routing\Route;
 
 use Rebet\Inflector\Inflector;
 use Rebet\Common\Reflector;
@@ -18,6 +18,8 @@ use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Common\Strings;
 use Rebet\Routing\Annotation\AliasOnly;
+use Rebet\Routing\RouteNotFoundException;
+use Rebet\Routing\RouteAction;
 
 /**
  * Conventional Route class

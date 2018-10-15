@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Routing;
+namespace Rebet\Routing\Route;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -9,6 +9,7 @@ use Rebet\Http\StreamedResponse;
 use Rebet\Config\Configurable;
 use Rebet\Config\Config;
 use Rebet\Config\App;
+use Rebet\Routing\RouteAction;
 
 /**
  * MethodRoute class

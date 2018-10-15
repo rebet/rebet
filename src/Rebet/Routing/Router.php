@@ -10,6 +10,10 @@ use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Routing\RouteNotFoundException;
 use Rebet\Common\Reflector;
+use Rebet\Routing\Route\ClosureRoute;
+use Rebet\Routing\Route\MethodRoute;
+use Rebet\Routing\Route\ControllerRoute;
+use Rebet\Routing\Route\Route;
 
 /**
  * Router Class

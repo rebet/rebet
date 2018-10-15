@@ -6,6 +6,7 @@ use Rebet\Http\Response;
 use Rebet\Common\Reflector;
 use Rebet\Routing\RouteNotFoundException;
 use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Routing\Route\Route;
 
 /**
  * Route action class

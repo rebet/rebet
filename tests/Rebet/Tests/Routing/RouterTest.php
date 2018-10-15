@@ -14,16 +14,16 @@ use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\BasicResponse;
 use Rebet\Routing\Controller;
-use Rebet\Routing\ControllerRoute;
+use Rebet\Routing\Route\ControllerRoute;
+use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Annotation\Surface;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Annotation\NotRouting;
+use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Tests\Different\DifferentController;
 use Rebet\Tests\Mock\DifferentNamespaceController;
 use Rebet\Tests\Mock\Gender;
-use Rebet\Routing\ConventionalRoute;
-use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\View\View;
 use Rebet\View\Engine\Blade\Blade;
 use org\bovigo\vfs\vfsStream;
@@ -38,7 +38,7 @@ class RouterTest extends RebetTestCase
         Config::application([
             App::class => [
                 'namespace' => [
-                    'controller' => '\Rebet\Tests\Routing',
+                    'controller' => '\\Rebet\\Tests\\Routing',
                 ]
             ],
             Router::class => [
