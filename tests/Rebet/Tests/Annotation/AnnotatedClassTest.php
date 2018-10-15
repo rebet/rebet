@@ -75,6 +75,12 @@ class AnnotatedClassTest extends RebetTestCase
         $am = AnnotatedClass::of(AnnotatedClassTest_Mock::class)->property('foo');
         $this->assertInstanceOf(AnnotatedProperty::class, $am);
     }
+
+    public function test_reflector()
+    {
+        $ac = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
+        $this->assertInstanceOf(\ReflectionClass::class, $ac->reflector());
+    }
 }
 
 /**

@@ -94,4 +94,14 @@ class AnnotatedClass
     {
         return new AnnotatedProperty($this->class->getProperty($property), $this, $this->reader);
     }
+
+    /**
+     * Get the reflector of target class
+     *
+     * @return \ReflectionClass
+     */
+    public function reflector() : \ReflectionClass
+    {
+        return $this->class;
+    }
 }

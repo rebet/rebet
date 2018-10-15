@@ -82,6 +82,12 @@ class AnnotatedMethodTest extends RebetTestCase
         $this->assertInstanceOf(Surface::class, $surface);
         $this->assertSame(['web'], $surface->allows);
     }
+
+    public function test_reflector()
+    {
+        $am = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
+        $this->assertInstanceOf(\ReflectionMethod::class, $am->reflector());
+    }
 }
 
 /**

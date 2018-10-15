@@ -99,4 +99,14 @@ class AnnotatedProperty
     {
         return $this->annotated_class;
     }
+
+    /**
+     * Get the reflector of target property
+     *
+     * @return \ReflectionProperty
+     */
+    public function reflector() : \ReflectionProperty
+    {
+        return $this->property;
+    }
 }

@@ -99,4 +99,14 @@ class AnnotatedMethod
     {
         return $this->annotated_class;
     }
+
+    /**
+     * Get the reflector of target method
+     *
+     * @return \ReflectionMethod
+     */
+    public function reflector() : \ReflectionMethod
+    {
+        return $this->method;
+    }
 }
