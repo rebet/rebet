@@ -8,6 +8,7 @@ use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
+use Rebet\Bridge\Renderable;
 
 /**
  * Route class
@@ -124,6 +125,9 @@ abstract class Route
     {
         if ($data instanceof Response) {
             return $data;
+        }
+        if ($data instanceof Renderable) {
+            return new BasicResponse($data->render());
         }
         if (is_callable($data)) {
             return new StreamedResponse($data);

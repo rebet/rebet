@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\View;
 
+use Rebet\Bridge\Renderable;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
 
@@ -12,7 +13,7 @@ use Rebet\View\Engine\Engine;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class View
+class View implements Renderable
 {
     use Configurable;
     public static function defaultConfig()

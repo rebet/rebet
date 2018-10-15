@@ -24,6 +24,9 @@ use Rebet\Tests\Mock\Gender;
 use Rebet\Routing\ConventionalRoute;
 use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\AliasOnly;
+use Rebet\View\View;
+use Rebet\View\Engine\Blade\Blade;
+use org\bovigo\vfs\vfsStream;
 
 class RouterTest extends RebetTestCase
 {
@@ -39,11 +42,27 @@ class RouterTest extends RebetTestCase
                 ]
             ],
             Router::class => [
-                'middlewares!'   => [],
-                'default_route!' => null,
-                'fallback!'      => null,
-            ]
+                'middlewares!' => [],
+            ],
+            View::class => [
+                'engine' => Blade::class,
+            ],
+            Blade::class => [
+                'view_path'  => 'vfs://root/view',
+                'cache_path' => 'vfs://root/cache',
+            ],
         ]);
+
+        $this->root = vfsStream::setup();
+        vfsStream::create(
+            [
+                'view' => [
+                    'welcome.blade.php' => 'Hello, {{ $name }}.',
+                ],
+                'cache' => [],
+            ],
+            $this->root
+        );
 
         Router::clear();
         Router::rules('web', function () {
@@ -117,6 +136,18 @@ class RouterTest extends RebetTestCase
 
             Router::match(['GET', 'HEAD', 'POST'], '/match/get-head-post', function () {
                 return 'Content: /match/get-head-post';
+            });
+
+            Router::get('/json/array', function () {
+                return [1, 2, 3];
+            });
+
+            Router::get('/json/jsonSerializable', function () {
+                return DateTime::now();
+            });
+
+            Router::get('/renderable', function () {
+                return View::of('welcome')->with(['name' => 'Samantha']);
             });
             
             Router::get('/method/private-call', 'RouterTestController@privateCall');
@@ -395,6 +426,24 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/parameter/convert/enum/3'));
         $this->fail('Never execute.');
+    }
+
+    public function test_routing_jsonArray()
+    {
+        $response = Router::handle(Request::create('/json/array'));
+        $this->assertSame('[1,2,3]', $response->getContent());
+    }
+
+    public function test_routing_jsonJsonSerializable()
+    {
+        $response = Router::handle(Request::create('/json/jsonSerializable'));
+        $this->assertSame('"2010-10-20 10:20:30"', $response->getContent());
+    }
+    
+    public function test_routing_renderable()
+    {
+        $response = Router::handle(Request::create('/renderable'));
+        $this->assertSame('Hello, Samantha.', $response->getContent());
     }
 
     /**
