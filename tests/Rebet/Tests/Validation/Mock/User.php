@@ -4,11 +4,12 @@ namespace Rebet\Tests\Validation\Mock;
 use Rebet\Validation\Validatable;
 use Rebet\Validation\Annotation\Nest;
 
-class User {
+class User
+{
     use Validatable;
 
-    public $name;
-    public $birthday;
+    public $name = null;
+    public $birthday = null;
 
     /**
      * @Nest(Bank::class)

@@ -17,12 +17,14 @@ class ValidatableTest extends RebetTestCase
         parent::setUp();
         $this->request = Request::create('/test', 'POST', [
             'name'               => 'John Smith',
+            'altanate_name'      => 'JOHN SMITH',
             'birthday'           => '1987-01-23',
             'bank'               => [
-                'name'   => 'SampleBank',
-                'branch' => 'FooBranch',
-                'number' => '1234567',
-                'holder' => 'John Smith',
+                'name'       => 'SampleBank',
+                'short_name' => 'SB',
+                'branch'     => 'FooBranch',
+                'number'     => '1234567',
+                'holder'     => 'John Smith',
             ],
             'shipping_addresses' => [
                 [
@@ -37,10 +39,10 @@ class ValidatableTest extends RebetTestCase
                 ]
             ],
         ]);
-
     }
 
-    public function test_popurate() {
+    public function test_popurate()
+    {
         $user = new User();
         $user->popurate($this->request->request->all());
 
@@ -50,5 +52,42 @@ class ValidatableTest extends RebetTestCase
         $this->assertInstanceOf(Address::class, $user->shipping_addresses[0]);
         $this->assertSame('1230001', $user->shipping_addresses[0]->zip);
     }
+    
+    public function test_popurateOptionAlias()
+    {
+        $user = new User();
+        $user->popurate($this->request->request->all(), null, [
+            'aliases' => [
+                'name' => 'altanate_name',
+                'bank' => [
+                    'name' => 'short_name'
+                ],
+            ],
+        ]);
+        
+        $this->assertSame('JOHN SMITH', $user->name);
+        $this->assertSame('1987-01-23', $user->birthday);
+        $this->assertSame('SB', $user->bank->name);
+        $this->assertSame('31', $user->shipping_addresses[1]->prefecture);
+    }
 
+    public function test_popurateOptionInclude()
+    {
+        $user = new User();
+        $user->popurate($this->request->request->all(), null, [
+            'includes' => [
+                'name',
+                'bank' => [
+                    'name'
+                ],
+            ],
+        ]);
+
+        $this->assertSame('John Smith', $user->name);
+        $this->assertNull($user->birthday);
+        $this->assertInstanceOf(Bank::class, $user->bank);
+        $this->assertSame('SampleBank', $user->bank->name);
+        $this->assertNull($user->bank->branch);
+        $this->assertSame([], $user->shipping_addresses);
+    }
 }
