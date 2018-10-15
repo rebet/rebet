@@ -77,22 +77,22 @@ class AnnotatedClass
      * Get method annotation
      *
      * @param string $method
-     * @return \AnnotatedMethod
+     * @return \AnnotatedMethod|null
      */
-    public function method(string $method) : AnnotatedMethod
+    public function method(string $method) : ?AnnotatedMethod
     {
-        return new AnnotatedMethod($this->class->getMethod($method), $this, $this->reader);
+        return $this->class->hasMethod($method) ? new AnnotatedMethod($this->class->getMethod($method), $this, $this->reader) : null ;
     }
 
     /**
      * Get property annotation
      *
      * @param string $method
-     * @return \AnnotatedMethod
+     * @return \AnnotatedMethod|null
      */
-    public function property(string $property) : AnnotatedProperty
+    public function property(string $property) : ?AnnotatedProperty
     {
-        return new AnnotatedProperty($this->class->getProperty($property), $this, $this->reader);
+        return $this->class->hasProperty($property) ? new AnnotatedProperty($this->class->getProperty($property), $this, $this->reader) : null ;
     }
 
     /**

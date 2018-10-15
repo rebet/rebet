@@ -3,6 +3,7 @@ namespace Rebet\Http;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Rebet\Common\Reflector;
 
 /**
  * Request Class
@@ -51,5 +52,23 @@ class Request extends SymfonyRequest
     public static function current() : Request
     {
         return static::$current;
+    }
+
+    public function validate($forms, string $crud, string $role, string $fallback_url, array $option = [])
+    {
+        $valid  = [];
+        $errors = [];
+        foreach ((array)$forms as $form) {
+            $form = Reflector::instantiate($form);
+            $form->popurate(array_merge($this->query->all(), $this->request->all()), $this->files->all());
+            $errors = array_merge($errors, $form->validate($crud, $role, $option));
+            $valid[] = $form;
+        }
+
+        if (!empty($errors)) {
+            throw new FallbackException($this, $errors, $fallback_url);
+        }
+
+        return count($valid) === 1 ? $valid[0] : $valid ;
     }
 }
