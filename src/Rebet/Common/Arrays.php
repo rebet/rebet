@@ -122,7 +122,7 @@ class Arrays
      * @param array|null $list
      * @param int|string|null $key_field Field name / index as key of extracted data (It becomes serial number array when blank is specified)
      * @param int|string|null $value_field Field name / index as the value of extracted data (Row element itself is targeted when blank is specified)
-     * @return array 
+     * @return array
      * @see Reflector::get()
      */
     public static function remap(?array $list, $key_field, $value_field) : array
@@ -270,5 +270,26 @@ class Arrays
         }
 
         throw new \LogicException("Invalid array merge mode '{$option}' given.");
+    }
+
+    /**
+     * Get a list of duplicate values from the given array.
+     *
+     * @param array|null $array
+     * @return array|null
+     */
+    public static function duplicate(?array $array) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        $duplicate = [];
+        foreach (array_count_values($array) as $value => $count) {
+            if (1 < $count) {
+                $duplicate[] = $value;
+            }
+        }
+        return $duplicate;
     }
 }
