@@ -90,4 +90,25 @@ class ValidatableTest extends RebetTestCase
         $this->assertNull($user->bank->branch);
         $this->assertSame([], $user->shipping_addresses);
     }
+
+    public function test_popurateOptionExclude()
+    {
+        $user = new User();
+        $user->popurate($this->request->request->all(), null, [
+            'excludes' => [
+                'name',
+                'bank' => [
+                    'name'
+                ],
+            ],
+        ]);
+
+        $this->assertNull($user->name);
+        $this->assertSame('1987-01-23', $user->birthday);
+        $this->assertInstanceOf(Bank::class, $user->bank);
+        $this->assertNull($user->bank->name);
+        $this->assertSame('FooBranch', $user->bank->branch);
+        $this->assertInstanceOf(Address::class, $user->shipping_addresses[0]);
+        $this->assertSame('1230001', $user->shipping_addresses[0]->zip);
+    }
 }

@@ -256,7 +256,7 @@ class Reflector
      * 　2. When $value is null:
      *      -> return null
      *
-     * 　3. When $type is array:
+     * 　3. When $type is 'array':
      *      -> If $value is is_array() then return $value (no convert)
      *      -> If $value is is_string() then return expload(',', $value)
      *      -> If $value has toArray() method then invoke that
@@ -267,7 +267,7 @@ class Reflector
      *      -> If $value is object then return get_object_vars($value)
      *      -> Otherwise return (array)$value (array casted value)
      *
-     * 　4. When $type is string:
+     * 　4. When $type is 'string':
      *      -> If $value is string then return $value (no convert)
      *      -> If $value is resource then return null
      *      -> If $value is scalar then return type casted value

@@ -134,7 +134,7 @@ trait Validatable
             }
         }
 
-        $excludes = $option['exclude'] ?? null;
+        $excludes = $option['excludes'] ?? null;
         if ($excludes) {
             $excludes = Reflector::get($excludes, rtrim($prefix, '.'));
             if (in_array($field, $excludes)) {
