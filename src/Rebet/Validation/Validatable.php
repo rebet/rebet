@@ -33,7 +33,7 @@ trait Validatable
      */
     public function popurate($src, $files = null, $option = []) : self
     {
-        return $this->recursivePopurate($src, $files, $option, '');
+        return $this->_popurate($src, $files, $option, '');
     }
 
     /**
@@ -45,7 +45,7 @@ trait Validatable
      * @param string $prefix
      * @return self
      */
-    protected function recursivePopurate($src, $files = null, $option = [], string $prefix) : self
+    protected function _popurate($src, $files = null, $option = [], string $prefix) : self
     {
         if (empty($src) && empty($files)) {
             return $this;
@@ -98,7 +98,7 @@ trait Validatable
     {
         $nested = Reflector::instantiate($class);
         Reflector::set($nested, '_parent_', $parent, true);
-        Reflector::invoke($nested, 'recursivePopurate', [$src, null, $option, $prefix], true);
+        Reflector::invoke($nested, '_popurate', [$src, null, $option, $prefix], true);
         return $nested;
     }
     
