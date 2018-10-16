@@ -84,9 +84,10 @@ class Reflector
      * @param  array|object|null $object 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
      * @param  mixed $default デフォルト値
+     * @param  bool $accessible
      * @return mixed 値
      */
-    public static function get($object, $key, $default = null)
+    public static function get($object, $key, $default = null, bool $accessible = false)
     {
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
@@ -100,11 +101,11 @@ class Reflector
 
         $current = Strings::latrim($key, '.');
         if ($current != $key) {
-            $target = static::get($object, $current);
+            $target = static::get($object, $current, null, $accessible);
             if ($target === null) {
                 return $default;
             }
-            return static::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default);
+            return static::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default, $accessible);
         }
 
         if (is_array($object)) {
@@ -118,7 +119,9 @@ class Reflector
         if (!property_exists($object, $current)) {
             return $default;
         }
-        $value = $object->{$current};
+        $rp = new \ReflectionProperty($object, $current);
+        $rp->setAccessible($accessible);
+        $value = $rp->getValue($object);
         return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
     }
     
@@ -144,7 +147,7 @@ class Reflector
         }
 
         foreach ($object as $key => $value) {
-            static::set($object, $key, static::resolveDotAccessDelegator($value));
+            static::set($object, $key, static::resolveDotAccessDelegator($value), true);
         }
 
         return $object;
@@ -165,10 +168,11 @@ class Reflector
      * @param  array|object $object 配列 or オブジェクト
      * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
      * @param  mixed $value 設定値
+     * @param  bool $accessible アクセス制御（オブジェクト時のみ有効）
      * @return mixed 値
      * @throws \OutOfBoundsException
      */
-    public static function set(&$object, $key, $value) : void
+    public static function set(&$object, $key, $value, bool $accessible = false) : void
     {
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
@@ -179,20 +183,26 @@ class Reflector
                 if (!\array_key_exists($current, $object)) {
                     throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
                 }
-                static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
+                static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
             } else {
                 $object[$current] = $value;
             }
             return;
         }
 
+        if (!\property_exists($object, $current)) {
+            throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
+        }
         if ($current != $key) {
-            if (!\property_exists($object, $current)) {
-                throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
-            }
-            static::set($object->$current, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
+            $rp = new \ReflectionProperty($object, $current);
+            $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+            $target = $rp->getValue($object);
+            static::set($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
+            $rp->setValue($object, $target);
         } else {
-            $object->$current = $value;
+            $rp = new \ReflectionProperty($object, $current);
+            $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+            $rp->setValue($object, $value);
         }
         return;
     }
@@ -493,5 +503,21 @@ class Reflector
         }
 
         return null;
+    }
+
+    /**
+     * Invoke a method given object
+     *
+     * @param string|object $object
+     * @param string $method
+     * @param array $args
+     * @param boolean $accessible
+     * @return void
+     */
+    public static function invoke($object, string $method, array $args = [], bool $accessible = false)
+    {
+        $method = new \ReflectionMethod($object, $method);
+        $method->setAccessible($accessible);
+        return $method->invoke(is_object($object) ? $object : null, ...$args);
     }
 }

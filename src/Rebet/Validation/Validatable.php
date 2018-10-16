@@ -97,15 +97,8 @@ trait Validatable
     private function createNest($class, $parent, $src, array $option, string $prefix)
     {
         $nested = Reflector::instantiate($class);
-        
-        $parent = new \ReflectionProperty($class, '_parent_');
-        $parent->setAccessible(true);
-        $parent->setValue($nested, $parent);
-
-        $method = new \ReflectionMethod($class, 'recursivePopurate');
-        $method->setAccessible(true);
-        $method->invoke($nested, $src, null, $option, $prefix);
-        
+        Reflector::set($nested, '_parent_', $parent, true);
+        Reflector::invoke($nested, 'recursivePopurate', [$src, null, $option, $prefix], true);
         return $nested;
     }
     

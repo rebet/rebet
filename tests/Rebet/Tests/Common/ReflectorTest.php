@@ -13,8 +13,9 @@ class ReflectorTest extends RebetTestCase
 {
     private $array       = null;
     private $map         = null;
-    private $objectect      = null;
+    private $objectect   = null;
     private $transparent = null;
+    private $accessible  = null;
 
     public function setUp()
     {
@@ -67,6 +68,10 @@ class ReflectorTest extends RebetTestCase
                 }
             }
         ];
+
+        $this->accessible = new ReflectorTest_Accessible();
+        $this->accessible->public_parent = new ReflectorTest_Accessible();
+        $this->accessible->setPrivateParent(new ReflectorTest_Accessible());
 
         $this->root = vfsStream::setup();
         vfsStream::create(
@@ -261,25 +266,68 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->map, 'partner.undefind_key'));
     }
 
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Nested key 'undefind_key' does not exist.
+     */
     public function test_set_undefindKeyObject()
     {
         Reflector::set($this->object, 'undefind_key', 'value');
-        $this->assertSame('value', Reflector::get($this->object, 'undefind_key'));
-    }
-
-    public function test_set_nestedTerminateUndefindKeyObject()
-    {
-        Reflector::set($this->object, 'partner.undefind_key', 'value');
-        $this->assertSame('value', Reflector::get($this->object, 'partner.undefind_key'));
     }
 
     /**
      * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested parent key 'undefind_key' does not exist.
+     * @expectedExceptionMessage Nested key 'undefind_key' does not exist.
+     */
+    public function test_set_nestedTerminateUndefindKeyObject()
+    {
+        Reflector::set($this->object, 'partner.undefind_key', 'value');
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Nested key 'undefind_key' does not exist.
      */
     public function test_set_nestedUndefindKeyObject()
     {
         Reflector::set($this->object, 'undefind_key.partner', 'value');
+    }
+
+    public function test_set_accessible()
+    {
+        Reflector::set($this->accessible, 'public', 'value');
+        $this->assertSame('value', Reflector::get($this->accessible, 'public'));
+
+        Reflector::set($this->accessible, 'public', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible, 'public'));
+
+        Reflector::set($this->accessible, 'protected', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible, 'protected', null, true));
+
+        Reflector::set($this->accessible, 'private', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible, 'private', null, true));
+
+        Reflector::set($this->accessible, 'public_parent.public', 'value');
+        $this->assertSame('value', Reflector::get($this->accessible, 'public_parent.public'));
+
+        Reflector::set($this->accessible, 'public_parent.private', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible, 'public_parent.private', null, true));
+
+        Reflector::set($this->accessible, 'private_parent.public', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible, 'private_parent.public', null, true));
+
+        Reflector::set($this->accessible, 'private_parent.private', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible, 'private_parent.private', null, true));
+    }
+
+    public function test_invoke()
+    {
+        $this->assertSame('public', Reflector::invoke($this->accessible, 'callPublic'));
+        $this->assertSame('protected', Reflector::invoke($this->accessible, 'callProtected', [], true));
+        $this->assertSame('private', Reflector::invoke($this->accessible, 'callPrivate', [], true));
+        $this->assertSame('public', Reflector::invoke($this->accessible, 'callStaticPublic'));
+        $this->assertSame('protected', Reflector::invoke($this->accessible, 'callStaticProtected', [], true));
+        $this->assertSame('private', Reflector::invoke($this->accessible, 'callStaticPrivate', [], true));
     }
 
     public function test_typeOf()
@@ -707,5 +755,54 @@ class ReflectorTest_Invoke
     public function __invoke()
     {
         return 123;
+    }
+}
+class ReflectorTest_Accessible
+{
+    private $private     = 'private';
+    protected $protected = 'protected';
+    public $public       = 'public';
+
+    private $private_parent = null;
+    public $public_parent = null;
+
+    public function __construct()
+    {
+        $this->dinamic = 'dinamic';
+    }
+
+    public function setPrivateParent($private_parent)
+    {
+        $this->private_parent = $private_parent;
+    }
+
+    private function callPrivate()
+    {
+        return 'private';
+    }
+
+    protected function callProtected()
+    {
+        return 'protected';
+    }
+
+    public function callPublic()
+    {
+        return 'public';
+    }
+
+    private static function callStaticPrivate()
+    {
+        return 'private';
+    }
+
+    protected static function callStaticProtected()
+    {
+        return 'protected';
+    }
+
+    public static function callStaticPublic()
+    {
+        return 'public';
     }
 }
