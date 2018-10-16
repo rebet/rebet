@@ -260,7 +260,11 @@ class ArraysTest extends RebetTestCase
 
     public function test_duplicate()
     {
-        $array = [1, 2, 3, '1', 3, 'a', 'b', 'c', 'a', 'a', 'B'];
-        $this->assertSame([1, 3, 'a'], Arrays::duplicate($array));
+        $this->assertNull(Arrays::duplicate(null));
+        $this->assertSame([], Arrays::duplicate([]));
+        $this->assertSame([], Arrays::duplicate([1, 2, 3]));
+        $this->assertSame([1, 3, 'a'], Arrays::duplicate(
+            [1, 2, 3, '1', 3, 'a', 'b', 'c', 'a', 'a', 'B']
+        ));
     }
 }
