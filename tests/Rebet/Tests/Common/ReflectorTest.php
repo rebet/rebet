@@ -92,9 +92,6 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('via getInstance()', Reflector::instantiate(ReflectorTest_Mock::class. '@getInstance')->value);
         $this->assertSame('arg', Reflector::instantiate([ReflectorTest_Mock::class, 'arg'])->value);
         $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class. '@build', 'arg'])->value);
-        $this->assertSame('arg via callable', Reflector::instantiate([function ($v) {
-            return $v.' via callable';
-        }, 'arg']));
         $this->assertSame(123, Reflector::instantiate(123));
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
     }
@@ -328,6 +325,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('public', Reflector::invoke($this->accessible, 'callStaticPublic'));
         $this->assertSame('protected', Reflector::invoke($this->accessible, 'callStaticProtected', [], true));
         $this->assertSame('private', Reflector::invoke($this->accessible, 'callStaticPrivate', [], true));
+        $this->assertSame('public - 123', Reflector::invoke($this->accessible, 'callPublicWithArgs', [123]));
     }
 
     public function test_typeOf()
@@ -804,5 +802,10 @@ class ReflectorTest_Accessible
     public static function callStaticPublic()
     {
         return 'public';
+    }
+
+    public function callPublicWithArgs($arg)
+    {
+        return 'public - '.$arg;
     }
 }

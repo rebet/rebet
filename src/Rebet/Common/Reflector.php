@@ -5,14 +5,7 @@ use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 
 /**
- * リフレクター クラス
- *
- * 各種リフレクション関連の処理を行います。
- *
- * $user_name = Reflector::get($_REQUEST, 'user.name');
- * if(Utils::isBlank($user_name)) {
- *     // something to do
- * }
+ * Reflector Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -29,25 +22,26 @@ class Reflector
     }
 
     /**
-     * 定義オブジェクトを元にインスタンス生成を行います。
-     * なお、インスタンス生成が対応可能な定義オブジェクトは下記の通りです。
+     * Instantiate based on the definition object.
+     * The definition objects that instance creation can deal with are as follows.
      *
      *  string :
-     *     {ClassName}@{factoryMathod}形式
-     *       ⇒ 対象クラスを引数無しのファクトリメソッドでインスタンス化します
-     *     {ClassName}形式
-     *       ⇒ 対象クラスを引数無しのコンストラクタでインスタンス化します
+     *     {ClassName}@{factoryMathod}
+     *       => Instantiate the target class with a factory method without arguments
+     *     {ClassName}
+     *       => Instantiate the target class with a constructor without arguments
+     *
      *  array :
-     *     [{ClassName}@{factoryMathod}, arg1, arg2, ... ]形式
-     *       ⇒ 対象クラスを引数付きのファクトリメソッドでインスタンス化します
-     *     [{ClassName}, arg1, arg2, ... ]形式
-     *       ⇒ 対象クラスを引数付きのコンストラクタでインスタンス化します
-     *     [callable, arg1, arg2, ... ]形式
-     *       ⇒ callable(arg1, arg2, ...) でインスタンス化します
+     *     [{ClassName}@{factoryMathod}, arg1, arg2, ... ]
+     *       ⇒ Instantiate the target class with a factory method with arguments
+     *     [{ClassName}, arg1, arg2, ... ]
+     *       ⇒ Instantiate the target class with a constructor with arguments
+     *
      *  brank : (= null, '', [])
-     *       ⇒ null を返します
-     *  other :
-     *       ⇒ そのまま値を返します
+     *       ⇒ return null
+     *
+     *  other : (= already instantiated)
+     *       ⇒ return input value
      *
      * @param mixed $config
      * @return mixed
@@ -62,10 +56,7 @@ class Reflector
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_array($config)) {
-            $class_config = array_shift($config);
-            if (\is_callable($class_config)) {
-                return $class_config(...$config);
-            }
+            $class_config     = array_shift($config);
             [$class, $method] = array_pad(\explode('@', $class_config), 2, null);
             return empty($method) ? new $class(...$config) : $class::$method(...$config) ;
         }
@@ -73,7 +64,8 @@ class Reflector
     }
 
     /**
-     * 配列又はオブジェクトから値を取得します。
+     * Get value from an array or object.
+     * You can refer to hierarchical objects with dot notation designation.
      *
      * ex)
      * Reflector::get($user, 'name');
@@ -81,11 +73,13 @@ class Reflector
      * Reflector::get($user, 'shipping_address.0', $user->address);
      * Reflector::get($_REQUEST, 'opt_in', false);
      *
-     * @param  array|object|null $object 配列 or オブジェクト
-     * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
-     * @param  mixed $default デフォルト値
-     * @param  bool $accessible
-     * @return mixed 値
+     * @param  array|object|null $object
+     * @param  int|string $key You can use dot notation
+     * @param  mixed $default (default: null)
+     * @param  bool $accessible (default: false)
+     * @return mixed
+     *
+     * @see DotAccessDelegator
      */
     public static function get($object, $key, $default = null, bool $accessible = false)
     {
@@ -126,7 +120,7 @@ class Reflector
     }
     
     /**
-     * DotAccessDelegator を解決します。
+     * Resolve DotAccessDelegator.
      *
      * @param mixed $object
      * @return mixed
@@ -154,10 +148,10 @@ class Reflector
     }
 
     /**
-     * 配列又はオブジェクトに値を設定します。
+     * Set a value to an array or object.
      *
-     * なお、本メソッドにて値を設定した場合、対象オブジェクトデータの DotAccessDelegator 構造
-     * が失われますのでご注意ください。
+     * Please be aware that if you set a value with this method,
+     * the DotAccessDelegator structure of the target object data will be lost.
      *
      * ex)
      * Reflector::set($user, 'name', 'new name');
@@ -165,10 +159,10 @@ class Reflector
      * Reflector::set($user, 'shipping_address.0', $user->address);
      * Reflector::set($_REQUEST, 'opt_in', false);
      *
-     * @param  array|object $object 配列 or オブジェクト
-     * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
-     * @param  mixed $value 設定値
-     * @param  bool $accessible アクセス制御（オブジェクト時のみ有効）
+     * @param  array|object $object
+     * @param  int|string $key You can use dot notation
+     * @param  mixed $value
+     * @param  bool $accessible (default: false) ... Valid only for objects
      * @return mixed 値
      * @throws \OutOfBoundsException
      */
@@ -208,7 +202,7 @@ class Reflector
     }
     
     /**
-     * 配列又はオブジェクトが指定プロパティを持つかチェックします。
+     * It checks whether an array or object has a given property.
      *
      * ex)
      * Reflector::has($user, 'name');
@@ -216,9 +210,9 @@ class Reflector
      * Reflector::has($user, 'shipping_address.0');
      * Reflector::has($_REQUEST, 'opt_in');
      *
-     * @param  array|object|null $object 配列 or オブジェクト
-     * @param  int|string $key キー名(.[dot]区切りでオブジェクトプロパティ階層指定可)
-     * @return bool true: 存在する, false: 存在しない
+     * @param  array|object|null $object
+     * @param  int|string $key You can use dot notation
+     * @return bool
      */
     public static function has($object, $key)
     {
@@ -250,50 +244,55 @@ class Reflector
     }
 
     /**
-     * 指定オブジェクトのデータ型を変換します。
-     * 本メソッドは以下の手順で型変換を試みます。
-     * なお、変換が出来ない場合は null が返ります。
+     * Converts the data type of the given object.
+     * This method attempts type conversion by the following procedure.
+     * If conversion is impossible, null is returned.
      *
-     * 　1. $type が null の場合:
-     *      -> $value を返す
-     * 　2. $value が null の場合:
-     *      -> null を返す
-     * 　3. $type が array  の場合:
-     *      -> $value が is_array() なら変換なし
-     *      -> $value が is_string() なら expload(',', $value)
-     *      -> $value::toArray() があれば実行
-     *      -> $value instanceof Traversable なら foreach で array 変換
-     *      -> $value が object で instanceof JsonSerializable なら jsonSerialize()
-     *         -> $json が is_array() なら $json
-     *         -> $json が is_array() でなければ [$value]
-     *      -> $value が object なら get_object_vars($value)
-     *      -> それ以外なら (array)$value
-     * 　4. $type が string の場合:
-     *      -> $value が is_string() なら変換なし
-     *      -> $value が is_resource() なら null
-     *      -> $value が is_scalar() なら型キャスト
-     *      -> $value が object で instanceof JsonSerializable なら jsonSerialize()
-     *         -> $json が is_scalar() なら (string)$value
-     *      -> $value::__toSring() が存在すれば実行
-     *      -> それ以外なら null
-     * 　5. $type が callable の場合:
-     *      -> $value が callable なら変換なし
-     *      -> それ以外なら null
-     * 　6. $type が \Closure の場合:
-     *      -> $value が object で instanceof \Closure なら変換なし
-     *      -> $value が callable なら \Closure::fromCallable() で変換
-     *      -> それ以外なら null
-     * 　7. $type が scaler(int|float|bool) の場合:
-     *      -> $value が is_{$type}() なら変換なし
-     *      -> $value が scaler なら {$type}val($value) を実行
-     *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
-     *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
-     *      -> それ以外なら null
-     *   8. $type が object の場合:
-     *      -> $type::valueOf($value) が存在すれば実行 -> 型チェック
-     *      -> $value::convertTo($type) が存在すれば実行 -> 型チェック
-     *      -> $value::to{$type<without namespace>}() が存在すれば実行 -> 型チェック
-     *      -> それ以外なら null
+     *   $converted = Reflector::convert($value, $type);
+     *
+     * 　1. When $type is null:
+     *      -> return $value
+     *
+     * 　2. When $value is null:
+     *      -> return null
+     *
+     * 　3. When $type is array:
+     *      -> If $value is is_array() then return $value (no convert)
+     *      -> If $value is is_string() then return expload(',', $value)
+     *      -> If $value has toArray() method then invoke that
+     *      -> If $value instanceof Traversable then create array using foreach
+     *      -> If $value is object and instanceof JsonSerializable then call jsonSerialize()
+     *         -> And then if the $serialize is array then return $serialize
+     *         -> And then if the serialize is not array then return [$value]
+     *      -> If $value is object then return get_object_vars($value)
+     *      -> Otherwise return (array)$value (array casted value)
+     *
+     * 　4. When $type is string:
+     *      -> If $value is string then return $value (no convert)
+     *      -> If $value is resource then return null
+     *      -> If $value is scalar then return type casted value
+     *      -> If $value is object and instanceof JsonSerializable then call jsonSerialize()
+     *         -> $And then if $serialize is scalar then return (string)$value
+     *      -> If $value has __toSring() method then invoke that
+     *      -> Otherwise return null
+     *
+     * 　6. When $type is \Closure:
+     *      -> If $value is object and instanceof \Closure then return $value (no convert)
+     *      -> If $value is callable then call \Closure::fromCallable()
+     *      -> Otherwise return null
+     *
+     * 　7. When $type is scaler(int|float|bool):
+     *      -> If $value is_{$type}() then return $value
+     *      -> If $value is scaler then invoke {$type}val($value)
+     *      -> If $value has convertTo($type) method then invoke that and check return value type
+     *      -> If $value has to{$type<without namespace>}() method then invoke that and check return value type
+     *      -> Otherwise return null
+     *
+     *   8. When $type is object:
+     *      -> If $type has valueOf($value) static method then invoke that and check return value type
+     *      -> If $value has convertTo($type) method then invoke that and check return value type
+     *      -> If $value has to{$type<without namespace>}() method then invoke that and check return value type
+     *      -> Otherwise return null
      *
      * @see Convertible
      *
@@ -417,11 +416,11 @@ class Reflector
     }
 
     /**
-     * 指定タイプの static メソッドを用いて型変換を試みます。
+     * Try to convert another type using static method of given type.
      *
-     * @param string $type 変換対象の型
-     * @param string $method 利用メソッド名
-     * @param mixed $value 変換元の値
+     * @param string $type
+     * @param string $method
+     * @param mixed $value
      * @return mixed
      */
     protected static function tryConvertByStatic(string $type, string $method, $value)
@@ -436,11 +435,11 @@ class Reflector
     }
 
     /**
-     * 変換元オブジェクトの member メソッドを用いて型変換を試みます。
+     * Try to convert another type using member method of given object.
      *
-     * @param mixed $value 変換元の値
-     * @param string $method 利用メソッド名
-     * @param string $type 変換対象の型
+     * @param mixed $value
+     * @param string $method
+     * @param string $type
      * @return mixed
      */
     protected static function tryConvertByMember($value, string $method, string $type)
@@ -456,9 +455,9 @@ class Reflector
     }
     
     /**
-     * 対象の値が指定の Type かチェックします。
-     * ※value が null の場合は false を返します。
-     * ※type が null の場合は true を返します。
+     * It checks whether the target value is the given Type
+     * # If value is null then return false
+     * # If type is null then return true
      *
      * @param mixed $value
      * @param string|null $type type or class
@@ -484,8 +483,8 @@ class Reflector
     }
 
     /**
-     * タイプヒントになっている type 又は クラス名 を文字列で取得します。
-     * ※タイプヒントがついていない場合は null が返ります。
+     * Get type or class name which is a type hint as a character string.
+     * # If type hint is nothing then return null.
      *
      * @param \ReflectionParameter $param
      * @return string|null
@@ -512,7 +511,7 @@ class Reflector
      * @param string $method
      * @param array $args
      * @param boolean $accessible
-     * @return void
+     * @return mixed
      */
     public static function invoke($object, string $method, array $args = [], bool $accessible = false)
     {
