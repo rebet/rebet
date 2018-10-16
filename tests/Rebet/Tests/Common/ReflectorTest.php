@@ -240,40 +240,46 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(Reflector::get($this->transparent, 'b'), 'B');
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
-     */
     public function test_set_undefindKeyArray()
     {
         Reflector::set($this->array, 'undefind_key', 'value');
+        $this->assertSame('value', Reflector::get($this->array, 'undefind_key'));
     }
 
     /**
      * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
+     * @expectedExceptionMessage Nested parent key 'undefind_key' does not exist.
      */
     public function test_set_nestedUndefindKeyArray()
     {
-        Reflector::set($this->map, 'partner.undefind_key', 'value');
+        Reflector::set($this->map, 'undefind_key.name', 'value');
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
-     */
+    public function test_set_nestedTerminateUndefindKeyArray()
+    {
+        Reflector::set($this->map, 'partner.undefind_key', 'value');
+        $this->assertSame('value', Reflector::get($this->map, 'partner.undefind_key'));
+    }
+
     public function test_set_undefindKeyObject()
     {
         Reflector::set($this->object, 'undefind_key', 'value');
+        $this->assertSame('value', Reflector::get($this->object, 'undefind_key'));
+    }
+
+    public function test_set_nestedTerminateUndefindKeyObject()
+    {
+        Reflector::set($this->object, 'partner.undefind_key', 'value');
+        $this->assertSame('value', Reflector::get($this->object, 'partner.undefind_key'));
     }
 
     /**
      * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested terminate key undefind_key does not exist.
+     * @expectedExceptionMessage Nested parent key 'undefind_key' does not exist.
      */
     public function test_set_nestedUndefindKeyObject()
     {
-        Reflector::set($this->object, 'partner.undefind_key', 'value');
+        Reflector::set($this->object, 'undefind_key.partner', 'value');
     }
 
     public function test_typeOf()

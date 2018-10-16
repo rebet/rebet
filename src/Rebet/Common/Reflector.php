@@ -175,10 +175,10 @@ class Reflector
         }
         $current = Strings::latrim($key, '.');
         if (is_array($object)) {
-            if (!\array_key_exists($current, $object)) {
-                throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
-            }
             if ($current != $key) {
+                if (!\array_key_exists($current, $object)) {
+                    throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
+                }
                 static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
             } else {
                 $object[$current] = $value;
@@ -186,10 +186,10 @@ class Reflector
             return;
         }
 
-        if (!\property_exists($object, $current)) {
-            throw new \OutOfBoundsException("Nested terminate key {$current} does not exist.");
-        }
         if ($current != $key) {
+            if (!\property_exists($object, $current)) {
+                throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
+            }
             static::set($object->$current, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value);
         } else {
             $object->$current = $value;
