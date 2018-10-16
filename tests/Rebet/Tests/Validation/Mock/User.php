@@ -38,7 +38,7 @@ class User
     /**
      * @Label("性別")
      */
-    public $sex;
+    public $gender;
     
     /**
      * @Label("生年月日")
@@ -69,46 +69,48 @@ class User
     {
         return [
             'user_id' => [
-                ['_RUD', 'AUG', Valid::REQUIRED.'!']
+                ['RUD', Valid::REQUIRED.'!']
             ],
             'name' => [
-                ['C_U_', 'AUG', Valid::REQUIRED.'!'],
-                ['C_U_', 'AUG', Valid::MAX_LENGTH, 20],
-                ['C_U_', 'AUG', Valid::DEPENDENCE_CHAR]
+                ['CU', Valid::REQUIRED.'!'],
+                ['CU', Valid::MAX_LENGTH, 20],
+                ['CU', Valid::DEPENDENCE_CHAR]
             ],
             'mail_address' => [
-                ['C_U_', 'AUG', Valid::REQUIRED.'!'],
-                ['C_U_', 'AUG', Valid::MAIL_ADDRESS],
-                ['C_U_', 'AUG', Valid::STIL_NO_ERROR, 'then' =>[
-                    ['C_U_', 'AUG', 'mail_address_exists'] // カスタム Validation の実行
+                ['CU', Valid::REQUIRED.'!'],
+                ['CU', Valid::MAIL_ADDRESS],
+                ['CU', Valid::IF_STIL_NO_ERROR, 'then' => [
+                    ['CU', 'mail_address_exists'] // カスタム Validation の実行
                 ]],
             ],
             'password' => [
-                ['C_U_', 'AUG', Valid::REQUIRED.'!'],
-                ['C_U_', 'AUG', Valid::MIN_LENGTH, 8]
+                ['C' , Valid::REQUIRED.'!'],
+                ['CU', Valid::MIN_LENGTH, 8]
             ],
             'password_confirm' => [
-                ['C_U_', '_UG', Valid::REQUIRED.'!'],
-                ['C_U_', '_UG', Valid::SAME_AS_INPUTTED, 'password']
+                ['CU', Valid::IF_LOGIN_ROLE, Role::ADMIN(), 'else' => [
+                    ['C' , Valid::REQUIRED . '!'],
+                    ['CU', Valid::SAME_AS_INPUTTED, 'password']
+                ]],
             ],
             'avatar' => [
-                ['C_U_', 'AUG', Valid::FILE_SIZE, '2M'],
-                ['C_U_', 'AUG', Valid::FILE_WEB_IMAGE_SUFFIX]
+                ['CU', Valid::FILE_SIZE, '2M'],
+                ['CU', Valid::FILE_WEB_IMAGE_SUFFIX]
             ],
-            'sex' => [
-                ['C_U_', 'AUG', Valid::REQUIRED.'!'],
-                ['C_U_', 'AUG', Valid::CONTAINS, Gender::values()]
+            'gender' => [
+                ['C', Valid::REQUIRED.'!'],
+                ['C', Valid::CONTAINS, Gender::values()]
             ],
             'birthday' => [
-                ['C_U_', 'AUG', Valid::REQUIRED.'!'],
-                ['C_U_', 'AUG', Valid::DATETIME.'!', 'convert' => DateTime::class],
-                ['C_U_', 'AUG', Valid::AGE_GREATER_EQUAL, 18],
-                ['C_U_', 'AUG', Valid::AGE_LESS_EQUAL, 100]
+                ['C', Valid::REQUIRED.'!'],
+                ['C', Valid::DATETIME.'!', 'convert' => DateTime::class], // @Convert アノテーションの方がいいか？
+                ['C', Valid::AGE_GREATER_EQUAL, 18],
+                ['C', Valid::AGE_LESS_EQUAL, 100]
             ],
             'shipping_addresses' => [
-                ['C_U_', 'AUG', Valid::REQUIRED.'!'],
-                ['C_U_', 'AUG', Valid::MAX_SELECT_COUNT.'!', 5],
-                ['C_U_', 'AUG', Valid::SUB_FORM_SERIAL_NO, 'shipping_no'],
+                ['CU', Valid::REQUIRED.'!'],
+                ['CU', Valid::MAX_SELECT_COUNT.'!', 5],
+                ['CU', Valid::SUB_FORM_SERIAL_NO, 'shipping_no'],
             ],
         ];
     }
@@ -116,15 +118,6 @@ class User
     // カスタム Validation の定義
     protected function valid_mail_address_exists($field, $label, $value)
     {
-        if ($this->_empty($value)) {
-            return null;
-        }
-        if (Dao::exists(
-            "SELECTFROM user WHERE mail_address=:mail_address" . (!empty($this->user_id) ? " AND user_id<>:user_id" : ""),
-            ['mail_address' => $value, 'user_id' => $this->user_id]
-        )) {
-            return "ご指定の{$label}は既に存在しています。";
-        }
         return null;
     }
 }
