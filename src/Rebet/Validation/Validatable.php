@@ -187,7 +187,7 @@ trait Validatable
                     continue;
                 }
             }
-            $dest->$field = $this->applyOption($option, $field, Reflector::has($this, $field), $this, Reflector::get($this, $field), $dest, $origin);
+            $dest->$field = $this->applyOption($option, '', $field, Reflector::has($this, $field, true), $this, Reflector::get($this, $field, null, true), $dest, $origin);
         }
         
         return $dest;

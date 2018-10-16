@@ -111,4 +111,35 @@ class ValidatableTest extends RebetTestCase
         $this->assertInstanceOf(Address::class, $user->shipping_addresses[0]);
         $this->assertSame('1230001', $user->shipping_addresses[0]->zip);
     }
+
+    public function test_inject()
+    {
+        $dest = new User();
+        $this->assertNull($dest->name);
+        $this->assertNull($dest->bank);
+        $this->assertEmpty($dest->shipping_addresses);
+
+        $src = new User();
+        $src->popurate($this->request->request->all());
+        $src->inject($dest);
+
+        $this->assertSame('John Smith', $dest->name);
+        $this->assertInstanceOf(Bank::class, $src->bank);
+        $this->assertNull($dest->bank);
+        $this->assertInstanceOf(Address::class, $src->shipping_addresses[0]);
+        $this->assertEmpty($dest->shipping_addresses);
+    }
+
+    public function test_describe()
+    {
+        $src = new User();
+        $src->popurate($this->request->request->all());
+        $dest = $src->describe(User::class);
+
+        $this->assertSame('John Smith', $dest->name);
+        $this->assertInstanceOf(Bank::class, $src->bank);
+        $this->assertNull($dest->bank);
+        $this->assertInstanceOf(Address::class, $src->shipping_addresses[0]);
+        $this->assertEmpty($dest->shipping_addresses);
+    }
 }

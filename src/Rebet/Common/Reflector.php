@@ -212,9 +212,10 @@ class Reflector
      *
      * @param  array|object|null $object
      * @param  int|string $key You can use dot notation
+     * @param  bool $accessible
      * @return bool
      */
-    public static function has($object, $key)
+    public static function has($object, $key, bool $accessible = false)
     {
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
@@ -234,13 +235,16 @@ class Reflector
             if (!property_exists($object, $current)) {
                 return false;
             }
-            $nest_obj = $object->{$current};
+            $rp = new \ReflectionProperty($object, $current);
+            $rp->setAccessible($accessible);
+            $nest_obj = $rp->getValue($object);
+            // $nest_obj = $object->{$current};
         }
         while ($nest_obj instanceof DotAccessDelegator) {
             $nest_obj = $nest_obj->get();
         }
 
-        return $current == $key ? true : static::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1));
+        return $current == $key ? true : static::has($nest_obj, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
     }
 
     /**
