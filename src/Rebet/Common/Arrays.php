@@ -344,7 +344,7 @@ class Arrays
         if ($array === null) {
             return false;
         }
-        if ($array instanceof ArrayAccess) {
+        if ($array instanceof \ArrayAccess) {
             return $array->offsetExists($key);
         }
         return array_key_exists($key, $array);

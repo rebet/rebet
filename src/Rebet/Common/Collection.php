@@ -31,7 +31,7 @@ use IteratorAggregate;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Convertible
+class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable //, Convertible
 {
     use Describable;
 

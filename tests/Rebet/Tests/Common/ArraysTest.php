@@ -4,6 +4,7 @@ namespace Rebet\Tests\Common;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
+use Rebet\Common\Collection;
 
 class ArraysTest extends RebetTestCase
 {
@@ -47,6 +48,35 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([1, 2, 3, 4], Arrays::flatten([1, 2, [3, [4]]]));
         $this->assertSame([1, 2, 3, 4, 5], Arrays::flatten([1, 2, [3, [4], 5]]));
         $this->assertSame([1, 2, 3, 4, 5, 6], Arrays::flatten([1, 2, [3, [4], 5, [], 6]]));
+
+        
+        // Flat arrays are unaffected
+        $array = ['#foo', '#bar', '#baz'];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Nested arrays are flattened with existing flat items
+        $array = [['#foo', '#bar'], '#baz'];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Flattened array includes "null" items
+        $array = [['#foo', null], '#baz', null];
+        $this->assertEquals(['#foo', null, '#baz', null], Arrays::flatten($array));
+        // Sets of nested arrays are flattened
+        $array = [['#foo', '#bar'], ['#baz']];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Deeply nested arrays are flattened
+        $array = [['#foo', ['#bar']], ['#baz']];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Nested arrays are flattened alongside arrays
+        $array = [new Collection(['#foo', '#bar']), ['#baz']];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Nested arrays containing plain arrays are flattened
+        $array = [new Collection(['#foo', ['#bar']]), ['#baz']];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Nested arrays containing arrays are flattened
+        $array = [['#foo', new Collection(['#bar'])], ['#baz']];
+        $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
+        // Nested arrays containing arrays containing arrays are flattened
+        $array = [['#foo', new Collection(['#bar', ['#zap']])], ['#baz']];
+        $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arrays::flatten($array));
     }
 
     public function test_pluck()
@@ -266,5 +296,191 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([1, 3, 'a'], Arrays::duplicate(
             [1, 2, 3, '1', 3, 'a', 'b', 'c', 'a', 'a', 'B']
         ));
+    }
+    
+    public function test_shuffleWithSeed()
+    {
+        $this->assertNull(Arrays::shuffle(null, 1234));
+        $this->assertEquals([], Arrays::shuffle([], 1234));
+        
+        $this->assertEquals(
+            Arrays::shuffle(range(0, 100, 10), 1234),
+            Arrays::shuffle(range(0, 100, 10), 1234)
+        );
+    }
+
+    public function test_pull()
+    {
+        $array = ['name' => 'Desk', 'price' => 100];
+        $name = Arrays::pull($array, 'name');
+        $this->assertEquals('Desk', $name);
+        $this->assertEquals(['price' => 100], $array);
+        // Works on first level keys with out nest
+        $array = ['joe@example.com' => 'Joe', 'jane@localhost' => 'Jane'];
+        $name = Arrays::pull($array, 'joe@example.com');
+        $this->assertEquals('Joe', $name);
+        $this->assertEquals(['jane@localhost' => 'Jane'], $array);
+        // Works on nested last level keys
+        $array = ['emails' => ['joe@example.com' => 'Joe', 'jane@localhost' => 'Jane']];
+        $name = Arrays::pull($array, 'emails.joe@example.com');
+        $this->assertEquals('Joe', $name);
+        $this->assertEquals(['emails' => ['joe@example.com' => 'Joe', 'jane@localhost' => 'Jane']], $array);
+        // Does not work for nested middle keys
+        $array = ['joe@example.com' => ['name' => 'Joe']];
+        $name = Arrays::pull($array, 'joe@example.com.name');
+        $this->assertNull($name);
+        $this->assertEquals(['joe@example.com' => ['name' => 'Joe']], $array);
+    }
+    
+    public function test_prepend()
+    {
+        $array = Arrays::prepend(['one', 'two', 'three', 'four'], 'zero');
+        $this->assertEquals(['zero', 'one', 'two', 'three', 'four'], $array);
+        $array = Arrays::prepend(['one' => 1, 'two' => 2], 0, 'zero');
+        $this->assertEquals(['zero' => 0, 'one' => 1, 'two' => 2], $array);
+    }
+    
+    public function test_only()
+    {
+        $array = ['name' => 'Desk', 'price' => 100, 'orders' => 10];
+        $array = Arrays::only($array, ['name', 'price']);
+        $this->assertEquals(['name' => 'Desk', 'price' => 100], $array);
+    }
+
+    public function test_last()
+    {
+        $array = [100, 200, 300];
+        $last = Arrays::last($array, function ($value) {
+            return $value < 250;
+        });
+        $this->assertEquals(200, $last);
+        $last = Arrays::last($array, function ($value, $key) {
+            return $key < 2;
+        });
+        $this->assertEquals(200, $last);
+        $this->assertEquals(300, Arrays::last($array));
+    }
+
+    public function test_first()
+    {
+        $array = [100, 200, 300];
+        $value = Arrays::first($array, function ($value) {
+            return $value >= 150;
+        });
+        $this->assertEquals(200, $value);
+        $this->assertEquals(100, Arrays::first($array));
+    }
+
+    public function test_where()
+    {
+        $array = [100, '200', 300, '400', 500];
+        $array = Arrays::where($array, function ($value, $key) {
+            return is_string($value);
+        });
+        $this->assertEquals([1 => 200, 3 => 400], $array);
+    }
+
+    public function test_forget()
+    {
+        $array = ['products' => ['desk' => ['price' => 100]]];
+        Arrays::forget($array, null);
+        $this->assertEquals(['products' => ['desk' => ['price' => 100]]], $array);
+        $array = ['products' => ['desk' => ['price' => 100]]];
+        Arrays::forget($array, []);
+        $this->assertEquals(['products' => ['desk' => ['price' => 100]]], $array);
+        $array = ['products' => ['desk' => ['price' => 100]]];
+        Arrays::forget($array, 'products.desk');
+        $this->assertEquals(['products' => []], $array);
+        $array = ['products' => ['desk' => ['price' => 100]]];
+        Arrays::forget($array, 'products.desk.price');
+        $this->assertEquals(['products' => ['desk' => []]], $array);
+        $array = ['products' => ['desk' => ['price' => 100]]];
+        Arrays::forget($array, 'products.final.price');
+        $this->assertEquals(['products' => ['desk' => ['price' => 100]]], $array);
+        $array = ['shop' => ['cart' => [150 => 0]]];
+        Arrays::forget($array, 'shop.final.cart');
+        $this->assertEquals(['shop' => ['cart' => [150 => 0]]], $array);
+        $array = ['products' => ['desk' => ['price' => ['original' => 50, 'taxes' => 60]]]];
+        Arrays::forget($array, 'products.desk.price.taxes');
+        $this->assertEquals(['products' => ['desk' => ['price' => ['original' => 50]]]], $array);
+        $array = ['products' => ['desk' => ['price' => ['original' => 50, 'taxes' => 60]]]];
+        Arrays::forget($array, 'products.desk.final.taxes');
+        $this->assertEquals(['products' => ['desk' => ['price' => ['original' => 50, 'taxes' => 60]]]], $array);
+        $array = ['products' => ['desk' => ['price' => 50], null => 'something']];
+        Arrays::forget($array, ['products.amount.all', 'products.desk.price']);
+        $this->assertEquals(['products' => ['desk' => [], null => 'something']], $array);
+        // Only works on first level keys
+        $array = ['joe@example.com' => 'Joe', 'jane@example.com' => 'Jane'];
+        Arrays::forget($array, 'joe@example.com');
+        $this->assertEquals(['jane@example.com' => 'Jane'], $array);
+        // Does not work for nested keys
+        $array = ['emails' => ['joe@example.com' => ['name' => 'Joe'], 'jane@localhost' => ['name' => 'Jane']]];
+        Arrays::forget($array, ['emails.joe@example.com', 'emails.jane@localhost']);
+        $this->assertEquals(['emails' => ['joe@example.com' => ['name' => 'Joe']]], $array);
+    }
+
+    public function test_except()
+    {
+        $array = ['name' => 'Desk', 'price' => 100];
+        $array = Arrays::except($array, ['price']);
+        $this->assertEquals(['name' => 'Desk'], $array);
+    }
+
+    public function test_exists()
+    {
+        $this->assertTrue(Arrays::exists([1], 0));
+        $this->assertTrue(Arrays::exists([null], 0));
+        $this->assertTrue(Arrays::exists(['a' => 1], 'a'));
+        $this->assertTrue(Arrays::exists(['a' => null], 'a'));
+        $this->assertTrue(Arrays::exists(new Collection(['a' => null]), 'a'));
+        $this->assertFalse(Arrays::exists([1], 1));
+        $this->assertFalse(Arrays::exists([null], 1));
+        $this->assertFalse(Arrays::exists(['a' => 1], 0));
+        $this->assertFalse(Arrays::exists(new Collection(['a' => null]), 'b'));
+    }
+
+    public function test_crossJoin()
+    {
+        // Single dimension
+        $this->assertSame(
+            [[1, 'a'], [1, 'b'], [1, 'c']],
+            Arrays::crossJoin([1], ['a', 'b', 'c'])
+        );
+        // Square matrix
+        $this->assertSame(
+            [[1, 'a'], [1, 'b'], [2, 'a'], [2, 'b']],
+            Arrays::crossJoin([1, 2], ['a', 'b'])
+        );
+        // Rectangular matrix
+        $this->assertSame(
+            [[1, 'a'], [1, 'b'], [1, 'c'], [2, 'a'], [2, 'b'], [2, 'c']],
+            Arrays::crossJoin([1, 2], ['a', 'b', 'c'])
+        );
+        // 3D matrix
+        $this->assertSame(
+            [
+                [1, 'a', 'I'], [1, 'a', 'II'], [1, 'a', 'III'],
+                [1, 'b', 'I'], [1, 'b', 'II'], [1, 'b', 'III'],
+                [2, 'a', 'I'], [2, 'a', 'II'], [2, 'a', 'III'],
+                [2, 'b', 'I'], [2, 'b', 'II'], [2, 'b', 'III'],
+            ],
+            Arrays::crossJoin([1, 2], ['a', 'b'], ['I', 'II', 'III'])
+        );
+        // With 1 empty dimension
+        $this->assertEmpty(Arrays::crossJoin([], ['a', 'b'], ['I', 'II', 'III']));
+        $this->assertEmpty(Arrays::crossJoin([1, 2], [], ['I', 'II', 'III']));
+        $this->assertEmpty(Arrays::crossJoin([1, 2], ['a', 'b'], []));
+        // With empty arrays
+        $this->assertEmpty(Arrays::crossJoin([], [], []));
+        $this->assertEmpty(Arrays::crossJoin([], []));
+        $this->assertEmpty(Arrays::crossJoin([]));
+        // Not really a proper usage, still, test for preserving BC
+        $this->assertSame([[]], Arrays::crossJoin());
+    }
+    
+    public function test_collapse()
+    {
+        $data = [['foo', 'bar'], ['baz']];
+        $this->assertEquals(['foo', 'bar', 'baz'], Arrays::collapse($data));
     }
 }

@@ -91,6 +91,10 @@ class Reflector
         if (Utils::isBlank($key)) {
             return $object === null ? $default : static::resolveDotAccessDelegator($object) ;
         }
+        
+        if (is_array($object) && array_key_exists($key, $object)) {
+            return static::resolveDotAccessDelegator($object[$key]) ?? $default ;
+        }
 
         $current = Strings::latrim($key, '.');
         if ($current != $key) {
@@ -172,6 +176,10 @@ class Reflector
     {
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
+        }
+        if (is_array($object) && array_key_exists($key, $object)) {
+            $object[$key] = $value;
+            return;
         }
         $current = Strings::latrim($key, '.');
         if (is_array($object)) {
