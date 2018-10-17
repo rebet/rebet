@@ -108,11 +108,6 @@ abstract class RebetTestCase extends TestCase
         }
     }
     
-    protected function _remap(?array $list, $key_field, $value_field) : array
-    {
-        return Arrays::remap($list, $key_field, $value_field);
-    }
-
     protected function _randomCode(int $min_length, ?int $max_length = null, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
     {
         if ($max_length == null) {

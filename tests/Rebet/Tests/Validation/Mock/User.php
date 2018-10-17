@@ -88,8 +88,10 @@ class User
                 ['CU', Valid::MIN_LENGTH, 8]
             ],
             'password_confirm' => [
-                ['CU', Valid::IF_LOGIN_ROLE, Role::ADMIN(), 'else' => [
-                    ['C' , Valid::REQUIRED . '!'],
+                ['CU', Valid::IF, function ($context) {
+                    return !Auth::isAdmin();
+                }, 'then' => [
+                    ['C' , Valid::REQUIRED.'!'],
                     ['CU', Valid::SAME_AS_INPUTTED, 'password']
                 ]],
             ],
@@ -99,7 +101,7 @@ class User
             ],
             'gender' => [
                 ['C', Valid::REQUIRED.'!'],
-                ['C', Valid::CONTAINS, Gender::values()]
+                ['C', Valid::CONTAINS, Gender::values(), 'convert' => Gender::class]
             ],
             'birthday' => [
                 ['C', Valid::REQUIRED.'!'],

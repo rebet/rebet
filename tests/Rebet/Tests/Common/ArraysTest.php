@@ -7,13 +7,13 @@ use Rebet\Common\OverrideOption;
 
 class ArraysTest extends RebetTestCase
 {
-    public function test_randomSelect()
+    public function test_random()
     {
         $list = ['a','b','c','d','e','f'];
         sort($list);
         $size = count($list);
         for ($i=0; $i <= $size; $i++) {
-            [$actual_winner, $actual_loser] = Arrays::randomSelect($list, $i);
+            [$actual_winner, $actual_loser] = Arrays::random($list, $i);
             $this->assertSame($i, count($actual_winner));
             $this->assertSame($size - $i, count($actual_loser));
             $combined_actual = array_merge($actual_winner, $actual_loser);
@@ -49,7 +49,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([1, 2, 3, 4, 5, 6], Arrays::flatten([1, 2, [3, [4], 5, [], 6]]));
     }
 
-    public function test_remap()
+    public function test_pluck()
     {
         $list = [
             ['user_id' => 21, 'name' => 'John'],
@@ -57,17 +57,17 @@ class ArraysTest extends RebetTestCase
             ['user_id' => 43, 'name' => 'Linda'],
         ];
 
-        $this->assertSame([], Arrays::remap(null, null, 'user_id'));
-        $this->assertSame([], Arrays::remap([], null, 'user_id'));
-        $this->assertSame([21, 35, 43], Arrays::remap($list, null, 'user_id'));
-        $this->assertSame([21 => 'John', 35 => 'David', 43 => 'Linda'], Arrays::remap($list, 'user_id', 'name'));
+        $this->assertSame([], Arrays::pluck(null, 'user_id'));
+        $this->assertSame([], Arrays::pluck([], 'user_id'));
+        $this->assertSame([21, 35, 43], Arrays::pluck($list, 'user_id'));
+        $this->assertSame([21 => 'John', 35 => 'David', 43 => 'Linda'], Arrays::pluck($list, 'name', 'user_id'));
         $this->assertSame(
             [
                 21 => ['user_id' => 21, 'name' => 'John'],
                 35 => ['user_id' => 35, 'name' => 'David'],
                 43 => ['user_id' => 43, 'name' => 'Linda']
             ],
-            Arrays::remap($list, 'user_id', null)
+            Arrays::pluck($list, null, 'user_id')
         );
     }
     

@@ -64,8 +64,7 @@ class Reflector
     }
 
     /**
-     * Get value from an array or object.
-     * You can refer to hierarchical objects with dot notation designation.
+     * Get value from an array or object using "dot" notation.
      *
      * ex)
      * Reflector::get($user, 'name');
@@ -114,6 +113,9 @@ class Reflector
             return $default;
         }
         $rp = new \ReflectionProperty($object, $current);
+        if (!$accessible && !$rp->isPublic()) {
+            return $default;
+        }
         $rp->setAccessible($accessible);
         $value = $rp->getValue($object);
         return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
@@ -236,6 +238,9 @@ class Reflector
                 return false;
             }
             $rp = new \ReflectionProperty($object, $current);
+            if (!$accessible && !$rp->isPublic()) {
+                return false;
+            }
             $rp->setAccessible($accessible);
             $nest_obj = $rp->getValue($object);
             // $nest_obj = $object->{$current};

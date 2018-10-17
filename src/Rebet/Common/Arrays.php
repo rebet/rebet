@@ -4,6 +4,14 @@ namespace Rebet\Common;
 /**
  * Array Utility Class
  *
+ * Belows fonction implementation are borrowed from Illuminate\Support\Arr of laravel/framework ver 5.7 with some modifications.
+ *
+ *  - shuffle / pull / prepend / only / last / flatten / value (from helpers.php) / first
+ *  - where / forget / except / exists / crossJoin / collapse
+ *
+ * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Support/Arr.php
+ * @see https://github.com/laravel/framework/blob/5.7/LICENSE.md
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -19,18 +27,18 @@ class Arrays
     }
 
     /**
-     * It randomly selects the specified number of items from the target list.
+     * It randomly selects the given number of items from the target list.
      *
      * ex)
-     * [$winner, $loser] = Arrays::randomSelect($lottery_applicants, 3);
+     * [$winner, $loser] = Arrays::random($lottery_applicants, 3);
      *
      * @param array $list
-     * @param int $select_count
+     * @param int $number
      * @return array [[selected_item, ...], [not_selected_items, ...]]
      */
-    public static function randomSelect(array $list, int $select_count) : array
+    public static function random(array $list, int $number) : array
     {
-        if (count($list) <= $select_count) {
+        if (count($list) <= $number) {
             return [$list, []] ;
         }
         
@@ -39,7 +47,7 @@ class Arrays
         $i          = 0;
         $missselect = 0;
         shuffle($list);
-        while ($i < $select_count) {
+        while ($i < $number) {
             $idx = mt_rand(0, $max_idx);
             if (isset($selected[$idx])) {
                 if ($missselect++ < 10) {
@@ -54,7 +62,7 @@ class Arrays
         }
         $selected = array_merge($selected);
 
-        while ($i < $select_count) {
+        while ($i < $number) {
             shuffle($list);
             $idx        = mt_rand(0, count($list) - 1);
             $selected[] = $list[$idx];
@@ -95,29 +103,14 @@ class Arrays
     }
 
     /**
-     * Convert a multidimensional array to a one-dimensional array.
-     *
-     * ex)
-     * Arrays::flatten([1, 2, [3]]);         //=> [1, 2, 3]
-     * Arrays::flatten([1, 2, [3, [4], 5]]); //=> [1, 2, 3, 4, 5]
-     *
-     * @param array|null $array
-     * @return array|null
-     */
-    public static function flatten(?array $array) : ?array
-    {
-        return $array === null ? null : iterator_to_array(new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array)), false);
-    }
-
-    /**
-     * Reassemble a map of given columns (as key or value) from an array containing object or array.
+     * Pluck an array of values from an array.
      * # You can use dot access of Reflector::get() in $key_field and $value_field.
      *
      * ex)
-     * $user_ids   = Arrays::remap($users, null     , 'user_id'  ); //=> [21, 35, 43, ...]
-     * $user_names = Arrays::remap($users, 'user_id', 'name'     ); //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
-     * $user_banks = Arrays::remap($users, 'user_id', 'bank.name'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
-     * $user_map   = Arrays::remap($users, 'user_id', null       ); //=> [21 => <User object>, 35 => <User object>, 43 => <User object>, ...]
+     * $user_ids   = Arrays::pluck($users, 'user_id'  , null     ); //=> [21, 35, 43, ...]
+     * $user_names = Arrays::pluck($users, 'name'     , 'user_id'); //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
+     * $user_banks = Arrays::pluck($users, 'bank.name', 'user_id'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
+     * $user_map   = Arrays::pluck($users, null       , 'user_id'); //=> [21 => <User object>, 35 => <User object>, 43 => <User object>, ...]
      *
      * @param array|null $list
      * @param int|string|null $key_field Field name / index as key of extracted data (It becomes serial number array when blank is specified)
@@ -125,16 +118,16 @@ class Arrays
      * @return array
      * @see Reflector::get()
      */
-    public static function remap(?array $list, $key_field, $value_field) : array
+    public static function pluck(?array $list, $value_field, $key_field = null) : array
     {
         if (Utils::isEmpty($list)) {
             return [];
         }
-        $remaps = [];
+        $plucks = [];
         foreach ($list as $i => $row) {
-            $remaps[Utils::isBlank($key_field) ? $i : Reflector::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Reflector::get($row, $value_field);
+            $plucks[Utils::isBlank($key_field) ? $i : Reflector::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Reflector::get($row, $value_field);
         }
-        return $remaps;
+        return $plucks;
     }
 
     /**
@@ -291,5 +284,298 @@ class Arrays
             }
         }
         return $duplicate;
+    }
+
+    /**
+     * Collapse an array of arrays into a single array.
+     *
+     * @param  array|null  $array
+     * @return array|null
+     */
+    public static function collapse($array) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        $results = [];
+        foreach ($array as $values) {
+            if ($values instanceof Collection) {
+                $values = $values->all();
+            } elseif (! is_array($values)) {
+                continue;
+            }
+            $results = array_merge($results, $values);
+        }
+        return $results;
+    }
+
+    /**
+     * Cross join the given arrays, returning all possible permutations.
+     *
+     * @param  array  ...$arrays
+     * @return array
+     */
+    public static function crossJoin(...$arrays) : array
+    {
+        $results = [[]];
+        foreach ($arrays as $index => $array) {
+            $append = [];
+            foreach ($results as $product) {
+                foreach ($array as $item) {
+                    $product[$index] = $item;
+                    $append[] = $product;
+                }
+            }
+            $results = $append;
+        }
+        return $results;
+    }
+
+    /**
+     * Determine if the given key exists in the provided array.
+     *
+     * @param  \ArrayAccess|array|null  $array
+     * @param  string|int|null  $key
+     * @return bool
+     */
+    public static function exists($array, $key) : bool
+    {
+        if ($array === null) {
+            return false;
+        }
+        if ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+        return array_key_exists($key, $array);
+    }
+
+    /**
+     * Get all of the given array except for a specified array of keys.
+     *
+     * @param  array|null  $array
+     * @param  array|string  $keys
+     * @return array|null
+     */
+    public static function except(?array $array, $keys)
+    {
+        if ($array === null) {
+            return null;
+        }
+        static::forget($array, $keys);
+        return $array;
+    }
+
+    /**
+     * Remove one or many array items from a given array using "dot" notation.
+     *
+     * @param  array|unll  $array
+     * @param  array|string  $keys
+     * @return void
+     */
+    public static function forget(?array &$array, $keys)
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        $original = &$array;
+        $keys = (array) $keys;
+        if (count($keys) === 0) {
+            return;
+        }
+        foreach ($keys as $key) {
+            // if the exact key exists in the top-level, remove it
+            if (static::exists($array, $key)) {
+                unset($array[$key]);
+                continue;
+            }
+            $parts = explode('.', $key);
+            // clean up before each pass
+            $array = &$original;
+            while (count($parts) > 1) {
+                $part = array_shift($parts);
+                if (isset($array[$part]) && is_array($array[$part])) {
+                    $array = &$array[$part];
+                } else {
+                    continue 2;
+                }
+            }
+            unset($array[array_shift($parts)]);
+        }
+    }
+    
+    /**
+     * Filter the array using the given callback.
+     *
+     * @param  array|null  $array
+     * @param  callable  $callback
+     * @return array
+     */
+    public static function where(?array $array, callable $callback)
+    {
+        if ($array === null) {
+            return null;
+        }
+        return array_filter($array, $callback, ARRAY_FILTER_USE_BOTH);
+    }
+    
+    /**
+     * Return the first element in an array passing a given truth test.
+     *
+     * @param  array|null  $array
+     * @param  callable|null  $callback
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public static function first($array, callable $callback = null, $default = null)
+    {
+        if ($array === null) {
+            return static::value($default);
+        }
+        if (is_null($callback)) {
+            if (empty($array)) {
+                return static::value($default);
+            }
+            foreach ($array as $item) {
+                return $item;
+            }
+        }
+        foreach ($array as $key => $value) {
+            if (call_user_func($callback, $value, $key)) {
+                return $value;
+            }
+        }
+        return static::value($default);
+    }
+
+    /**
+     * Return the default value of the given value.
+     *
+     * @param  mixed  $value
+     * @return mixed
+     */
+    private static function value($value)
+    {
+        return $value instanceof \Closure ? $value() : $value;
+    }
+
+    /**
+     * Flatten a multi-dimensional array into a single level.
+     *
+     * @param  array|null  $array
+     * @param  int  $depth
+     * @return array
+     */
+    public static function flatten(?array $array, $depth = INF) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+        $result = [];
+        foreach ($array as $item) {
+            $item = $item instanceof Collection ? $item->all() : $item;
+            if (! is_array($item)) {
+                $result[] = $item;
+            } elseif ($depth === 1) {
+                $result = array_merge($result, array_values($item));
+            } else {
+                $result = array_merge($result, static::flatten($item, $depth - 1));
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Return the last element in an array passing a given truth test.
+     *
+     * @param  array|null  $array
+     * @param  callable|null  $callback
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public static function last(?array $array, callable $callback = null, $default = null)
+    {
+        if ($array === null) {
+            return null;
+        }
+        if (is_null($callback)) {
+            return empty($array) ? static::value($default) : end($array);
+        }
+        return static::first(array_reverse($array, true), $callback, $default);
+    }
+
+    /**
+     * Get a subset of the items from the given array.
+     *
+     * @param  array|ull  $array
+     * @param  array|string  $keys
+     * @return array
+     */
+    public static function only(?array $array, $keys) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+        return array_intersect_key($array, array_flip((array) $keys));
+    }
+
+    /**
+     * Push an item onto the beginning of an array.
+     *
+     * @param  array|null  $array
+     * @param  mixed  $value
+     * @param  mixed  $key
+     * @return array
+     */
+    public static function prepend(?array $array, $value, $key = null) : array
+    {
+        if ($array === null) {
+            return is_null($key) ? [$value] : [$key => $value] ;
+        }
+        if (is_null($key)) {
+            array_unshift($array, $value);
+        } else {
+            $array = [$key => $value] + $array;
+        }
+        return $array;
+    }
+
+    /**
+     * Get a value from the array, and remove it.
+     *
+     * @param  array   $array
+     * @param  string  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    public static function pull(&$array, $key, $default = null)
+    {
+        $value = Reflector::get($array, $key, $default);
+        static::forget($array, $key);
+        return $value;
+    }
+
+    /**
+     * Shuffle the given array and return the result.
+     *
+     * @param  array|null  $array
+     * @param  int|null  $seed
+     * @return array
+     */
+    public static function shuffle(?array $array, $seed = null) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+        if (is_null($seed)) {
+            shuffle($array);
+        } else {
+            srand($seed);
+            usort($array, function () {
+                return rand(-1, 1);
+            });
+        }
+        return $array;
     }
 }
