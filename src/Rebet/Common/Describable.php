@@ -23,7 +23,7 @@ trait Describable
     public function inject(&$dest, array $option = [])
     {
         foreach ($dest as $field => $origin) {
-            Reflector::set($dest, $field, $this->applyOption($option, $this, $field, $origin), true);
+            Reflector::set($dest, $field, $this->applyDescribeOption($option, $this, $field, $origin), true);
         }
         
         return $dest;
@@ -51,7 +51,7 @@ trait Describable
      * @param mixed $origin
      * @return void
      */
-    protected function applyOption(array $option, $src, string $field, $origin)
+    protected function applyDescribeOption(array $option, $src, string $field, $origin)
     {
         $defined = Reflector::has($src, $field, true);
         $value   = Reflector::get($src, $field, null, true);
