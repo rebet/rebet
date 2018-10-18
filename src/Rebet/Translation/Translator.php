@@ -8,6 +8,8 @@ use Rebet\Common\Collection;
 /**
  * Translator Class
  *
+ * @todo pluralization support
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -19,7 +21,7 @@ class Translator
     public static function defaultConfig()
     {
         return [
-            'locale'          => null,
+            'default_locale'  => null,
             'fallback_locale' => 'en',
         ];
     }
@@ -61,6 +63,17 @@ class Translator
     protected $fallback_locale;
 
     /**
+     * Set default locale by given locale
+     *
+     * @param string $locale
+     * @return void
+     */
+    public static function setDefaultLocale(string $locale) : void
+    {
+        static::setConfig(['default_locale' => $locale]);
+    }
+    
+    /**
      * Create a new translator instance.
      *
      * @param Loader $loader
@@ -70,35 +83,35 @@ class Translator
     public function __construct(Loader $loader, ?string $locale = null, ?string $fallback_locale = null)
     {
         $this->loader          = $loader;
-        $this->locale          = $locale          ?? static::config('locale') ;
+        $this->locale          = $locale          ?? static::config('default_locale') ;
         $this->fallback_locale = $fallback_locale ?? static::config('fallback_locale', false, 'en') ;
     }
 
     /**
      * Load the specified language group.
      *
-     * @param string $locale
      * @param string $group
+     * @param string $locale
      * @return self
      */
-    public function load(string $locale, string $group) : self
+    public function load(string $group, string $locale) : self
     {
-        if ($this->isLoaded($locale, $group)) {
+        if ($this->isLoaded($group, $locale)) {
             return $this;
         }
-        $this->resouces[$locale][$group] = $this->loader->load($locale, $group);
+        $this->resouces[$group][$locale] = $this->loader->load($group, $locale);
     }
 
     /**
      * Determine if the given group has been loaded.
      *
-     * @param string $locale
      * @param string $group
+     * @param string $locale
      * @return boolean
      */
-    public function isLoaded(string $locale, string $group) : bool
+    public function isLoaded(string $group, string $locale) : bool
     {
-        return isset($this->resouces[$locale][$group]);
+        return isset($this->resouces[$group][$locale]);
     }
 
     /**
@@ -116,8 +129,8 @@ class Translator
 
         $line = null;
         foreach ($locales as $locale) {
-            $this->load($locale, $group);
-            $line = Reflector::get($this->resouces[$locale][$group], $key);
+            $this->load($group, $locale);
+            $line = Reflector::get($this->resouces[$group][$locale], $key);
             if ($line) {
                 break;
             }

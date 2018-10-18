@@ -52,11 +52,11 @@ class FileLoader implements Loader
     /**
      * Load the messages for the given locale.
      *
-     * @param string $locale
      * @param string $group
+     * @param string $locale
      * @return array
      */
-    public function load(string $locale, string $group) : array
+    public function load(string $group, string $locale) : array
     {
         return LocaleResource::load($this->loading_path, $locale, $group, $this->suffix, $this->option);
     }

@@ -101,7 +101,7 @@ class App
             // Translation Configure
             //---------------------------------------------
             Translator::class => [
-                'locale'          => Config::refer(App::class, 'locale'),
+                'default_locale'  => Config::refer(App::class, 'locale'),
                 'fallback_locale' => Config::refer(App::class, 'fallback_locale', false, 'en'),
             ]
         ]);
