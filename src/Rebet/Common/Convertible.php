@@ -2,11 +2,12 @@
 namespace Rebet\Common;
 
 /**
- * 型変換 インターフェース
+ * Type Convertible Interface
  *
- * Reflector::convert() による型変換が可能であることを "明示" するインターフェースです。
- * なお、Reflector::convert($value, $type) は メソッドの存在有無を判定して動作するため、
- * 必ずしも本インターフェースを実装している必要はありません。
+ * It is an interface that "explicitly" indicates that type conversion by Reflector::convert() is possible.
+ * Note that Reflector::convert($value, $type) does not necessarily have to implement this interface as it operates by determining the existence of a method.
+ *
+ * @see Rebet\Common\Reflector::convert
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -16,8 +17,8 @@ namespace Rebet\Common;
 interface Convertible
 {
     /**
-     * 型変換を行います。
-     * 変換できない場合は null が返ります
+     * Convert the type from other to self.
+     * If conversion is not possible then return null.
      *
      * @param mixed $value
      * @return mixed
@@ -25,8 +26,8 @@ interface Convertible
     public static function valueOf($value);
     
     /**
-     * 型変換を行います
-     * 変換できない場合は null が返ります
+     * Convert the type from self to other.
+     * If conversion is not possible then return null.
      *
      * @param string $type
      * @return mixed

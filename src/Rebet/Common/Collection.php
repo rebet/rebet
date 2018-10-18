@@ -31,7 +31,7 @@ use IteratorAggregate;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable //, Convertible
+class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Convertible
 {
     use Describable;
 
@@ -1574,7 +1574,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     public function toArray()
     {
         return array_map(function ($value) {
-            return $value instanceof Arrayable ? $value->toArray() : $value;
+            return method_exists($value, 'toArray') ? $value->toArray() : $value;
         }, $this->items);
     }
 
@@ -1588,9 +1588,9 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
         return array_map(function ($value) {
             if ($value instanceof JsonSerializable) {
                 return $value->jsonSerialize();
-            } elseif ($value instanceof Jsonable) {
+            } elseif (method_exists($value, 'toJson')) {
                 return json_decode($value->toJson(), true);
-            } elseif ($value instanceof Arrayable) {
+            } elseif (method_exists($value, 'toArray')) {
                 return $value->toArray();
             }
             return $value;
@@ -1720,9 +1720,9 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             return $items;
         } elseif ($items instanceof self) {
             return $items->all();
-        } elseif ($items instanceof Arrayable) {
+        } elseif (method_exists($items, 'toArray')) {
             return $items->toArray();
-        } elseif ($items instanceof Jsonable) {
+        } elseif (method_exists($items, 'toJson')) {
             return json_decode($items->toJson(), true);
         } elseif ($items instanceof JsonSerializable) {
             return $items->jsonSerialize();
@@ -1757,5 +1757,29 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             throw new Exception("Property [{$key}] does not exist on this collection instance.");
         }
         return new HigherOrderCollectionProxy($this, $key);
+    }
+
+    public static function valueOf($value) : ?self
+    {
+        if (is_null($value)) {
+            return null;
+        }
+        if (is_string($value)) {
+            $value = Strings::contains($value, ',') ? explode(',', $value) : $value ;
+        }
+        return new Collection($value);
+    }
+
+    public function convertTo(string $type)
+    {
+        if (Reflector::typeOf($this, $type)) {
+            return $this;
+        }
+        switch ($type) {
+            case 'array':
+                return $this->toArray();
+        }
+
+        return null;
     }
 }
