@@ -13,6 +13,8 @@ use Rebet\View\Engine\Blade\Blade;
 use Rebet\Foundation\View\Engine\Blade\Directive\BladeCustom;
 use Rebet\View\Engine\Smarty\Smarty;
 use Rebet\View\Engine\Twig\Twig;
+use Rebet\Validation\Validator;
+use Rebet\Translation\Translator;
 
 /**
  * Application Config Class
@@ -38,8 +40,8 @@ class App
             }),
             'entry_point'     => null,
             'root'            => null,
-            'locale'          => 'ja',
-            'fallback_locale' => 'ja',
+            'locale'          => null,
+            'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'namespace'       => [
                 'controller'  => null,
@@ -94,6 +96,14 @@ class App
             Twig::class => [
                 'customizers' => ['Rebet\\Foundation\\View\\Engine\\Twig\\TwigCustomizer::customize'],
             ],
+
+            //---------------------------------------------
+            // Translation Configure
+            //---------------------------------------------
+            Translator::class => [
+                'locale'          => Config::refer(App::class, 'locale'),
+                'fallback_locale' => Config::refer(App::class, 'fallback_locale', false, 'en'),
+            ]
         ]);
     }
     

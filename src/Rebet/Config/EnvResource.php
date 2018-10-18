@@ -4,17 +4,16 @@ namespace Rebet\Config;
 use Rebet\Common\Arrays;
 
 /**
- * 環境依存のリソースローダー クラス
+ * Environment Dependent Resource Loader Class
  *
- * 現在の実行環境に応じて下記の手順でリソースファイルをロードします。
+ * Load the resource file according to the current environment by the following procedure.
  *
- *  1. {$dir_path}/{$base_name}.{$suffix} ファイルを読み込み
- *  2. {$dir_path}/{$base_name}_{$env}.{$suffix} ファイルを読み込み
- *  3. 1 のデータを 2 のデータで Arrays::override
+ *  1. Load {$dir_path}/{$base_name}.{$suffix} file.
+ *  2. Load {$dir_path}/{$base_name}_{$env}.{$suffix} file.
+ *  3. Data of 1 is overridden by data of 2 using Arrays::override
  *
- * なお、リソースのロードには Rebet\Config\Resource::load() が使用されるため、
- * 同クラスにローダーを追加することで自動的に本クラスでも対象のリソースを
- * 扱うことができるようになります。
+ * Furthermore, Rebet\Config\Resource::load() is used for loading resources.
+ * So adding a loader to the class will automatically be able to handle the target resource in this class as well .
  *
  * @see Rebet\Config\Resource
  *
@@ -26,14 +25,14 @@ use Rebet\Common\Arrays;
 class EnvResource
 {
     /**
-     * 指定のリソースをロードします。
+     * Load the given resource.
      *
-     * @param string $dir_path リソースファイルが存在するディレクトリパス
-     * @param string $base_name リソースファイルベース名
-     * @param string $env 環境名
-     * @param string $suffix リソースサフィックス（デフォルト： php）
-     * @param array $option ロードオプション（デフォルト： []）
-     * @return リソースデータ
+     * @param string $dir_path
+     * @param string $base_name
+     * @param string $env
+     * @param string $suffix (default: .php)
+     * @param array $option (default: [])
+     * @return array
      * @throws \LogicException
      */
     public static function load(string $dir_path, string $base_name, string $env, string $suffix = 'php', array $option = []) : array

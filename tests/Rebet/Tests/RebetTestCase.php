@@ -26,6 +26,7 @@ abstract class RebetTestCase extends TestCase
         Config::clear();
         App::initFrameworkConfig();
         App::setTimezone('UTC');
+        App::setLocale('ja');
         StderrCapture::clear();
     }
     

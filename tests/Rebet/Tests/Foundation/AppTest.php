@@ -62,7 +62,7 @@ class AppTest extends RebetTestCase
     {
         $this->assertSame('ja', App::getLocale());
 
-        Config::application([
+        Config::runtime([
             App::class => [
                 'locale' => 'en',
             ],
