@@ -92,7 +92,7 @@ class Reflector
             return $object === null ? $default : static::resolveDotAccessDelegator($object) ;
         }
         
-        if (is_array($object) && array_key_exists($key, $object)) {
+        if (Arrays::accessible($object) && Arrays::exists($object ,$key)) {
             return static::resolveDotAccessDelegator($object[$key]) ?? $default ;
         }
 
@@ -105,7 +105,7 @@ class Reflector
             return static::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default, $accessible);
         }
 
-        if (is_array($object)) {
+        if (Arrays::accessible($object)) {
             if (!isset($object[$current])) {
                 return $default;
             }
@@ -177,12 +177,12 @@ class Reflector
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
         }
-        if (is_array($object) && array_key_exists($key, $object)) {
+        if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
             $object[$key] = $value;
             return;
         }
         $current = Strings::latrim($key, '.');
-        if (is_array($object)) {
+        if (Arrays::accessible($object)) {
             if ($current != $key) {
                 if (!\array_key_exists($current, $object)) {
                     throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
@@ -236,8 +236,8 @@ class Reflector
         
         $current  = Strings::latrim($key, '.');
         $nest_obj = null;
-        if (is_array($object)) {
-            if (!array_key_exists($current, $object)) {
+        if (Arrays::accessible($object)) {
+            if (!Arrays::exists($object, $current)) {
                 return false;
             }
             $nest_obj = $object[$current];

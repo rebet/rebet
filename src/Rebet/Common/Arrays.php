@@ -7,7 +7,7 @@ namespace Rebet\Common;
  * Belows fonction implementation are borrowed from Illuminate\Support\Arr of laravel/framework ver 5.7 with some modifications.
  *
  *  - shuffle / pull / prepend / only / last / flatten / value (from helpers.php) / first
- *  - where / forget / except / exists / crossJoin / collapse
+ *  - where / forget / except / exists / crossJoin / collapse / accessible
  *
  * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Support/Arr.php
  * @see https://github.com/laravel/framework/blob/5.7/LICENSE.md
@@ -124,8 +124,9 @@ class Arrays
             return [];
         }
         $plucks = [];
-        foreach ($list as $i => $row) {
-            $plucks[Utils::isBlank($key_field) ? $i : Reflector::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Reflector::get($row, $value_field);
+        $i      = 0;
+        foreach ($list as $row) {
+            $plucks[Utils::isBlank($key_field) ? $i++ : Reflector::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Reflector::get($row, $value_field);
         }
         return $plucks;
     }
@@ -333,6 +334,17 @@ class Arrays
     }
 
     /**
+     * Determine whether the given value is array accessible.
+     *
+     * @param  mixed  $value
+     * @return bool
+     */
+    public static function accessible($value)
+    {
+        return is_array($value) || $value instanceof \ArrayAccess;
+    }
+    
+    /**
      * Determine if the given key exists in the provided array.
      *
      * @param  \ArrayAccess|array|null  $array
@@ -376,7 +388,7 @@ class Arrays
     public static function forget(?array &$array, $keys)
     {
         if ($array === null) {
-            return null;
+            return;
         }
 
         $original = &$array;

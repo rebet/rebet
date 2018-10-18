@@ -85,7 +85,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         return $value instanceof self
             ? new static($value)
-            : new static((array)($value ?? []));
+            : new static(is_array($value) ? $value : ($value ? [$value] : []));
     }
 
     /**
@@ -246,7 +246,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         if (func_num_args() === 2) {
             return $this->contains(function ($item) use ($key, $value) {
-                return data_get($item, $key) === $value;
+                return Reflector::get($item, $key) === $value;
             });
         }
         if ($this->useAsCallable($key)) {
@@ -393,7 +393,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * Get all items except for those with the specified keys.
      *
-     * @param  \Illuminate\Support\Collection|mixed  $keys
+     * @param  \Rebet\Common\Collection|mixed  $keys
      * @return static
      */
     public function except($keys)
@@ -483,7 +483,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             $operator = '=';
         }
         return function ($item) use ($key, $operator, $value) {
-            $retrieved = data_get($item, $key);
+            $retrieved = Reflector::get($item, $key);
             $strings = array_filter([$retrieved, $value], function ($value) {
                 return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
             });
@@ -530,7 +530,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         $values = $this->getArrayableItems($values);
         return $this->filter(function ($item) use ($key, $values, $strict) {
-            return in_array(data_get($item, $key), $values, $strict);
+            return in_array(Reflector::get($item, $key), $values, $strict);
         });
     }
 
@@ -558,7 +558,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         $values = $this->getArrayableItems($values);
         return $this->reject(function ($item) use ($key, $values, $strict) {
-            return in_array(data_get($item, $key), $values, $strict);
+            return in_array(Reflector::get($item, $key), $values, $strict);
         });
     }
 
@@ -1530,7 +1530,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             return $value;
         }
         return function ($item) use ($value) {
-            return data_get($item, $value);
+            return Reflector::get($item, $value);
         };
     }
 
@@ -1642,7 +1642,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * Get a base Support collection instance from this collection.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Rebet\Common\Collection
      */
     public function toBase()
     {
