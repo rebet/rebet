@@ -246,7 +246,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         if (func_num_args() === 2) {
             return $this->contains(function ($item) use ($key, $value) {
-                return Reflector::get($item, $key) === $value;
+                return data_get($item, $key) === $value;
             });
         }
         if ($this->useAsCallable($key)) {
@@ -393,7 +393,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * Get all items except for those with the specified keys.
      *
-     * @param  \Rebet\Common\Collection|mixed  $keys
+     * @param  \Illuminate\Support\Collection|mixed  $keys
      * @return static
      */
     public function except($keys)
@@ -483,7 +483,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             $operator = '=';
         }
         return function ($item) use ($key, $operator, $value) {
-            $retrieved = Reflector::get($item, $key);
+            $retrieved = data_get($item, $key);
             $strings = array_filter([$retrieved, $value], function ($value) {
                 return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
             });
@@ -530,7 +530,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         $values = $this->getArrayableItems($values);
         return $this->filter(function ($item) use ($key, $values, $strict) {
-            return in_array(Reflector::get($item, $key), $values, $strict);
+            return in_array(data_get($item, $key), $values, $strict);
         });
     }
 
@@ -558,7 +558,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         $values = $this->getArrayableItems($values);
         return $this->reject(function ($item) use ($key, $values, $strict) {
-            return in_array(Reflector::get($item, $key), $values, $strict);
+            return in_array(data_get($item, $key), $values, $strict);
         });
     }
 
@@ -1530,7 +1530,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             return $value;
         }
         return function ($item) use ($value) {
-            return Reflector::get($item, $value);
+            return data_get($item, $value);
         };
     }
 
@@ -1642,7 +1642,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * Get a base Support collection instance from this collection.
      *
-     * @return \Rebet\Common\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function toBase()
     {
@@ -1759,6 +1759,13 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
         return new HigherOrderCollectionProxy($this, $key);
     }
 
+    /**
+     * Convert the type from other to self.
+     * If conversion is not possible then return null.
+     *
+     * @param mixed $value
+     * @return self
+     */
     public static function valueOf($value) : ?self
     {
         if (is_null($value)) {
@@ -1770,6 +1777,13 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
         return new Collection($value);
     }
 
+    /**
+     * Convert the type from self to other.
+     * If conversion is not possible then return null.
+     *
+     * @param string $type
+     * @return mixed
+     */
     public function convertTo(string $type)
     {
         if (Reflector::typeOf($this, $type)) {

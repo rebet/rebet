@@ -120,9 +120,9 @@ class Translator
      * @param string $key
      * @param array $replace
      * @param string $locale
-     * @return string
+     * @return string|null
      */
-    public function get(string $key, array $replace = [], ?string $locale = null) : string
+    public function get(string $key, array $replace = [], ?string $locale = null) : ?string
     {
         [$group, $key] = explode('.', $key, 2);
         $locales = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
@@ -137,7 +137,7 @@ class Translator
         }
 
         if ($line === null) {
-            throw new \LogicException("Not found [{$group}.{$key}] in ".join('/', $locales)." locale.");
+            return null;
         }
 
         if (empty($replace)) {

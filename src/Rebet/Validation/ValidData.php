@@ -1,15 +1,16 @@
 <?php
 namespace Rebet\Validation;
 
+use Rebet\Common\Collection;
+
 /**
- * Valid Class
+ * Valid Data Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Valid
+class ValidData extends Collection
 {
-    const REQUIRED = 'Required|';
 }
