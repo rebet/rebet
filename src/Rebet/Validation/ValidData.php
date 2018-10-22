@@ -13,4 +13,5 @@ use Rebet\Common\Collection;
  */
 class ValidData extends Collection
 {
+    // Currently nothing to implement
 }

@@ -72,6 +72,8 @@ class Reflector
      * Reflector::get($user, 'shipping_address.0', $user->address);
      * Reflector::get($_REQUEST, 'opt_in', false);
      *
+     * @todo Wiled card access like 'array.*.key' support
+     *
      * @param  array|object|null $object
      * @param  int|string $key You can use dot notation
      * @param  mixed $default (default: null)
@@ -92,7 +94,7 @@ class Reflector
             return $object === null ? $default : static::resolveDotAccessDelegator($object) ;
         }
         
-        if (Arrays::accessible($object) && Arrays::exists($object ,$key)) {
+        if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
             return static::resolveDotAccessDelegator($object[$key]) ?? $default ;
         }
 

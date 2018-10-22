@@ -6,6 +6,7 @@ use Rebet\Translation\Translator;
 use Rebet\Common\Strings;
 use Rebet\Inflector\Inflector;
 use Rebet\Common\Arrays;
+use Rebet\Common\Reflector;
 
 /**
  * Validate Context Class
@@ -143,32 +144,32 @@ class Context
      * If the key starts with "@", it uses the key name without the "@" as the message.
      * This is useful when implementing extended validation with a service where the locale can be fixed.
      *
+     * If this method is called before initBy(), the message is stored in the message key 'global'.
+     *
      * @param string $key
      * @param array $replace (default: [])
-     * @return void
+     * @return self
      */
-    public function appendError(string $key, array $replace = [])
+    public function appendError(string $key, array $replace = []) : self
     {
         $replace['label'] = $this->label;
         $replace['value'] = $this->value;
-        $replace['key']   = $this->key;
         $prefix           = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
-        $this->errors["{$prefix}{$this->filed}"][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get($key, $replace) ;
+        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get($key, $replace) ;
+        return $this;
     }
 
     /**
      * Initialize the context by the given field
      *
      * @param string $field
-     * @param string|int|null $key
      * @param mixed|null $value (default: $this->value($field))
      * @param string|null $label (default: $this->label($field))
      * @return self
      */
-    public function initBy(string $field, $key = null, $value = null, string $label = null) : self
+    public function initBy(string $field, $value = null, string $label = null) : self
     {
         $this->field = $field;
-        $this->key   = $key;
         $this->value = $value ?? $this->value($field);
         $this->label = $label ?? $this->label($field);
         return $this;
@@ -200,7 +201,7 @@ class Context
             $label  = $rule[$parts]['label'] ?? Inflector::humanize($parts);
             $label  = str_replace(':parent', $parent, $label);
             $parent = $label;
-            $rule   = $rule[$parts]['nest'] ?? [];
+            $rule   = $rule[$parts]['nests'] ?? $rule[$parts]['nest'] ?? [];
         }
 
         return $label ;
@@ -237,18 +238,21 @@ class Context
     }
 
     /**
-     * Create nested context
+     * Create a nested context
      *
      * @param string|int|null $key
-     * @param int|null $int
      * @return Context
      */
     public function nest($key = null) : Context
     {
         $nested = clone $this;
-        $nested->prefix = "{$nested->prefix}{$nested->field}.";
-        $nested->data   = $key ? $nested->data[$nested->field][$key] : $nested->data[$nested->field] ;
+        $nested->prefix = "{$this->prefix}{$this->field}.";
+        $nested->data   = !is_null($key) ? $this->data[$this->field][$key] : $this->data[$this->field] ;
         $nested->key    = $key;
         $nested->parent = $this;
+        $nested->filed  = null;
+        $nested->lavel  = null;
+        $nested->value  = null;
+        return $nested;
     }
 }

@@ -169,7 +169,7 @@ class Validator
                 }
             }
     
-            [$name, $option] = array_pad(explode('|', $validation), 2, '');
+            [$name, $option] = array_pad(explode(':', $validation), 2, '');
             $valid           = false;
             if ($custom_validator && $custom_validator->hasCustomValidation($name)) {
                 $valid = $custom_validator->validate($name, $context, ...$args);

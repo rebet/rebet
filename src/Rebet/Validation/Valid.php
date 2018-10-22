@@ -11,5 +11,17 @@ namespace Rebet\Validation;
  */
 class Valid
 {
-    const REQUIRED = 'Required|';
+    const REQUIRED = 'Required:';
+
+
+    const MAX_LENGTH = 'MaxLength:';
+
+
+    const DEPENDENCE_CHAR = 'DependenceChar:';
+
+
+    const DATETIME = 'Datetime:';
+
+
+    const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
 }

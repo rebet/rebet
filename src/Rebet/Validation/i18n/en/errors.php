@@ -8,5 +8,6 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-
+    "Required"  => "The ':label' field is required.",
+    "MaxLength" => "The ':label' may not be greater than :max characters.",
 ];

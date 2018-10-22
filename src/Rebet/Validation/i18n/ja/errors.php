@@ -8,5 +8,6 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-
+    "Required"  => ":labelを入力して下さい。",
+    "MaxLength" => ":labelは:max文字以下で入力して下さい。",
 ];

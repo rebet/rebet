@@ -100,6 +100,7 @@ class Translator
             return $this;
         }
         $this->resouces[$group][$locale] = $this->loader->load($group, $locale);
+        return $this;
     }
 
     /**
