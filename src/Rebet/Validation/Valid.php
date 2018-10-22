@@ -33,7 +33,20 @@ class Valid
      */
     const REQUIRED = 'Required:!';
 
+    /**
+     * RequiredIf validation.
+     * If 'other' field value is given 'value', then check the target fields.
+     * This validation const includes '!'(validation stop if failed) option defaultly.
+     * If you don't want to stop validation, you will give 'RequiredIf' string.
+     *
+     * ex)
+     *   - ['CU', Valid::REQUIRED_IF, 'other', value]
+     */
+    const REQUIRED_IF = 'RequiredIf:!';
 
+    
+    
+    
     const MAX_LENGTH = 'MaxLength:';
 
 

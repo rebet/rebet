@@ -33,11 +33,11 @@ class ValidatorTest extends RebetTestCase
     public function test_validateMethods(array $data, array $rules, array $errors) : void
     {
         App::setLocale('en');
-        $validator  = new Validator($data);
-        $valid_data = $validator->validate('C', $rules);
-        $errors     = $validator->errors();
-        $this->assertSame(empty($errors), !is_null($valid_data));
-        $this->assertSame($errors, $errors);
+        $validator    = new Validator($data);
+        $valid_data   = $validator->validate('C', $rules);
+        $valid_errors = $validator->errors();
+        $this->assertSame(empty($valid_errors), !is_null($valid_data));
+        $this->assertSame($errors, $valid_errors);
     }
 
     public function dataValidateMethods() : array
@@ -49,69 +49,129 @@ class ValidatorTest extends RebetTestCase
             // @todo When UploadFile
             [
                 [],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 ['attribute' => ["The 'Attribute' field is required."]]
             ],
             [
                 ['attribute' => null],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 ['attribute' => ["The 'Attribute' field is required."]]
             ],
             [
                 ['attribute' => ''],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 ['attribute' => ["The 'Attribute' field is required."]]
             ],
             [
                 ['attribute' => []],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 ['attribute' => ["The 'Attribute' field is required."]]
             ],
             [
                 ['attribute' => 0],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 []
             ],
             [
                 ['attribute' => '0'],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 []
             ],
             [
                 ['attribute' => false],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 []
             ],
             [
                 ['attribute' => 'value'],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 []
             ],
             [
                 ['attribute' => ['value']],
-                ['attribute' => ['rule' => [  ['C', Valid::REQUIRED]  ]]],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
                 []
             ],
 
+            // --------------------------------------------
+            // Valid::REQUIRED_IF
+            // --------------------------------------------
+            // @todo When UploadFile
+            [
+                [],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', 'foo']
+                ]]],
+                []
+            ],
+            [
+                ['other' => 'bar'],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', 'foo']
+                ]]],
+                []
+            ],
+            [
+                ['other' => 'foo'],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', 'foo']
+                ]]],
+                ['attribute' => ["The 'Attribute' field is required when 'Other' is foo."]]
+            ],
+            [
+                ['attribute' => 123, 'other' => 'foo'],
+                ['attribute' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', 'foo']
+                ]]],
+                []
+            ],
 
             
             // --------------------------------------------
             // Valid::IF
             // --------------------------------------------
-            [
-                ['attribute' => ['value']],
-                ['attribute' => ['rule' => [  ['C', Valid::IF, function (Context $c) {
-                    return $c->value === 'value';
-                }, 'then' => ['C', 'Ok'], 'else' => ['C', 'Ng'] ]  ]]],
-                []
-            ],
-            [
-                ['attribute' => ['not-value']],
-                ['attribute' => ['rule' => [  ['C', Valid::IF, function (Context $c) {
-                    return $c->value === 'value';
-                }, 'then' => ['C', 'Ok'], 'else' => ['C', 'Ng'] ]  ]]],
-                ['attribute' => ["The 'Attribute' is NG."]]
-            ],
+            // [
+            //     ['attribute' => ['value']],
+            //     ['attribute' => ['rule' => [
+            //         ['C', Valid::IF, function (Context $c) {
+            //             return $c->value === 'value';
+            //         },
+            //         'then' => ['C', 'Ok'],
+            //         'else' => ['C', 'Ng']
+            //         ]
+            //     ]]],
+            //     []
+            // ],
+            // [
+            //     ['attribute' => ['not-value']],
+            //     ['attribute' => ['rule' => [
+            //         ['C', Valid::IF, function (Context $c) {
+            //             return $c->value === 'value';
+            //         },
+            //         'then' => ['C', 'Ok'],
+            //         'else' => ['C', 'Ng']
+            //         ]
+            //     ]]],
+            //     ['attribute' => ["The 'Attribute' is NG."]]
+            // ],
         ];
     }
 }

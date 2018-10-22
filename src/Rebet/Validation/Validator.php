@@ -170,14 +170,18 @@ class Validator
             }
     
             [$name, $option] = array_pad(explode(':', $validation), 2, '');
-            $valid           = false;
+            if (Strings::contains($option, '?')) {
+                $context->quiet(true);
+            }
+            $valid = false;
             if ($custom_validator && $custom_validator->hasCustomValidation($name)) {
                 $valid = $custom_validator->validate($name, $context, ...$args);
             } else {
-                $global_validator = static::config("validation.{$name}", false, null);
+                $global_validator = static::config("validations.{$name}", false, null);
                 $method = "validate{$name}";
                 $valid  = $global_validator ? call_user_func($global_validator, $context, ...$args) : $this->$method($context, ...$args) ;
             }
+            $context->quiet(false);
     
             if (!$valid && Strings::contains($option, '!')) {
                 return;
@@ -198,10 +202,10 @@ class Validator
      * Add global validation to validator.
      *
      * @param string $name
-     * @param callable $validation
+     * @param \Closure $validation
      * @return void
      */
-    public static function addValidation(string $name, callable $validation, array $messages = []) : void
+    public static function addValidation(string $name, \Closure $validation) : void
     {
         static::setConfig(['validations' => [$name => $validation]]);
     }
@@ -221,7 +225,7 @@ class Validator
     // Built-in Validation Methods
     // ====================================================
     /**
-     * Required validation
+     * Required Validation
      *
      * @param Context $c
      * @return boolean
@@ -235,6 +239,22 @@ class Validator
         return true;
     }
 
+    /**
+     * Required If Validation
+     *
+     * @param Context $c
+     * @param string $other field name
+     * @param mixed $value
+     * @return boolean
+     */
+    protected function validateRequiredIf(Context $c, string $other, $value) : bool
+    {
+        if ($c->value($other) == $value && $c->empty()) {
+            $c->appendError('errors.RequiredIf', ['other' => $c->label($other), 'value' => $value]);
+            return false;
+        }
+        return true;
+    }
     
     // ====================================================
     // Built-in Condition Methods
