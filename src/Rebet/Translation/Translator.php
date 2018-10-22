@@ -155,4 +155,19 @@ class Translator
 
         return $line;
     }
+
+    /**
+     * Put the message for the given key and locale.
+     *
+     * @param string $key
+     * @param string $locale
+     * @param string $message
+     * @return self
+     */
+    public function put(string $key, string $locale, string $message) : self
+    {
+        [$group, $key] = explode('.', $key, 2);
+        $this->load($group, $locale);
+        $this->resouces[$group][$locale][$key] = $message;
+    }
 }

@@ -69,7 +69,7 @@ class Validator
      *
      * @param string $crud
      * @param array|Rule $rules
-     * @return Collection|null
+     * @return ValidData|null
      */
     public function validate(string $crud, $rules) : ?ValidData
     {
@@ -201,8 +201,53 @@ class Validator
      * @param callable $validation
      * @return void
      */
-    public static function addValidation(string $name, callable $validation) : void
+    public static function addValidation(string $name, callable $validation, array $messages = []) : void
     {
-        static::setConfig(['validation' => [$name => $validation]]);
+        static::setConfig(['validations' => [$name => $validation]]);
+    }
+
+    /**
+     * Get the validation errors.
+     *
+     * @return array
+     */
+    public function errors() : array
+    {
+        return $this->errors;
+    }
+
+
+    // ====================================================
+    // Built-in Validation Methods
+    // ====================================================
+    /**
+     * Required validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    protected function validateRequired(Context $c) : bool
+    {
+        if ($c->empty()) {
+            $c->appendError('errors.Required');
+            return false;
+        }
+        return true;
+    }
+
+    
+    // ====================================================
+    // Built-in Condition Methods
+    // ====================================================
+    /**
+     * If condition
+     *
+     * @param Context $c
+     * @param \Closure $test
+     * @return boolean
+     */
+    protected function validateIf(Context $c, \Closure $test) : bool
+    {
+        return $test($c);
     }
 }
