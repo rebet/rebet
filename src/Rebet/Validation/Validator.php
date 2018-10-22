@@ -97,15 +97,16 @@ class Validator
     {
         $valid_data = [];
         foreach ($rules as $field => $config) {
+            // Init context
             $context->initBy($field);
 
-            // handle before filter
+            // Handle before filter
             $before = (array)($config['before'] ?? []);
             foreach ($before as $filter) {
                 $context->value = $filter($context->value);
             }
 
-            // handle validation rule
+            // Handle validation rules
             $this->validateRules($context, $config['rule'] ?? [], $custom_validator);
             $data  = null;
             $nest  = $config['nest']  ?? [] ;
@@ -125,17 +126,17 @@ class Validator
                 continue;
             }
             
-            // handle convert
+            // Handle convert
             $convert = $config['convert'] ?? null;
             if ($convert) {
                 $converted = Reflector::convert($data, $convert);
                 if (is_null($converted) && !is_null($data)) {
-                    $context->appendError('', ['convert' => $convert]);
+                    $context->appendError('', ['convert' => $convert]); // @todo 要実装
                 }
                 $data = $converted;
             }
 
-            // handle after filter
+            // Handle after filter
             $after = (array)($config['after'] ?? []);
             foreach ($after as $filter) {
                 $data = $filter($data);
