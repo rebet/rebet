@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Inflector;
+namespace Rebet\Inflection;
 
 use Rebet\Config\Configurable;
 use Rebet\Common\Strings;

@@ -7,7 +7,7 @@ use Rebet\Http\BasicResponse;
 use Rebet\Http\JsonResponse;
 use Rebet\Http\StreamedResponse;
 use Rebet\Common\Strings;
-use Rebet\Inflector\Inflector;
+use Rebet\Inflection\Inflector;
 
 /**
  * ControllerRoute class

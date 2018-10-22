@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Common\Utils;
-use Rebet\Translation\Translator;
-use Rebet\Common\Strings;
-use Rebet\Inflector\Inflector;
 use Rebet\Common\Arrays;
 use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
+use Rebet\Common\Utils;
+use Rebet\Inflection\Inflector;
+use Rebet\Translation\Translator;
 
 /**
  * Validate Context Class

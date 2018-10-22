@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Inflector\Inflector;
+use Rebet\Inflection\Inflector;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Config\Config;
