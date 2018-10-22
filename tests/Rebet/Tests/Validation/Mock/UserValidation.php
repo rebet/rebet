@@ -11,7 +11,7 @@ class UserValidation extends Rule
 {
     // Validation ルール定義
     // 仕様策定中
-    protected function rules()
+    public function rules() : array
     {
         return [
             'user_id' => [
@@ -130,7 +130,7 @@ class UserValidation extends Rule
             return true;
         }
         if (Strings::startsWith($c->value, 'invalid@')) {
-            $c->appendError("@{$c->label} is invalid mail address.");
+            $c->appendError("@{$c->label} is not exists.");
             return false;
         }
         if (Strings::startsWith($c->value, 'custom-errors@')) {

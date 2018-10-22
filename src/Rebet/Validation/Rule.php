@@ -18,7 +18,7 @@ abstract class Rule
      * @param array $data
      * @return string
      */
-    abstract public static function rules() : array;
+    abstract public function rules() : array;
 
     /**
      * Check the rule has custom validation of given name.
