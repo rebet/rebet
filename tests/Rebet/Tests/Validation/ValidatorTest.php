@@ -272,6 +272,20 @@ class ValidatorTest extends RebetTestCase
                 []
             ],
             [
+                ['field_name' => null, 'other' => 'foo'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', ['foo', 'bar', 'baz']]
+                ]]],
+                ['field_name' => ["The 'Field Name' field is required when Other is in foo,bar,baz."]]
+            ],
+            [
+                ['field_name' => null, 'other' => 'xxx'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', ['foo', 'bar', 'baz']]
+                ]]],
+                []
+            ],
+            [
                 ['field_name' => 123, 'other' => 'foo', 'target' => 'foo'],
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', ':target']
@@ -324,6 +338,20 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
                 ]]],
                 []
+            ],
+            [
+                ['field_name' => null, 'other' => 'foo'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', ['foo', 'bar', 'baz']]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => null, 'other' => 'xxx'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', ['foo', 'bar', 'baz']]
+                ]]],
+                ['field_name' => ["The 'Field Name' field is required when Other is not in foo,bar,baz."]]
             ],
             [
                 ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],

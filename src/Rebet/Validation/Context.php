@@ -246,7 +246,7 @@ class Context
     public function resolve($value) : array
     {
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
-            return [$value, $value];
+            return [$value, is_array($value) ? 'in '.implode(',', $value) : $value];
         }
         $field = Strings::ltrim($value, ':');
         return [$this->value($field), $this->label($field)];

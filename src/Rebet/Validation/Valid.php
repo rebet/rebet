@@ -100,6 +100,7 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::REQUIRED_IF, 'other', value]
+     *   - ['CU', Valid::REQUIRED_IF, 'other', [value1, value2, ...]]
      *   - ['CU', Valid::REQUIRED_IF, 'other', ':field']
      */
     const REQUIRED_IF = 'RequiredIf:!';
@@ -112,6 +113,7 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', value]
+     *   - ['CU', Valid::REQUIRED_UNLESS, 'other', [value1, value2, ...]]
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', ':field']
      */
     const REQUIRED_UNLESS = 'RequiredUnless:!';
