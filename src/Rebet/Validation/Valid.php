@@ -124,7 +124,27 @@ class Valid
      */
     const REQUIRED_WITHOUT = 'RequiredWithout:!';
 
+    /**
+     * Empty If Validation.
+     * If 'other' field value is given 'value', then check the target fields.
+     *
+     * ex)
+     *   - ['CU', Valid::EMPTY_IF, 'other', value]
+     *   - ['CU', Valid::EMPTY_IF, 'other', [value1, value2, ...]]
+     *   - ['CU', Valid::EMPTY_IF, 'other', ':field']
+     */
+    const EMPTY_IF = 'EmptyIf:';
     
+    /**
+     * Empty Unless Validation.
+     * If 'other' field value is given 'value', then check the target fields.
+     *
+     * ex)
+     *   - ['CU', Valid::EMPTY_UNLESS, 'other', value]
+     *   - ['CU', Valid::EMPTY_UNLESS, 'other', [value1, value2, ...]]
+     *   - ['CU', Valid::EMPTY_UNLESS, 'other', ':field']
+     */
+    const EMPTY_UNLESS = 'EmptyUnless:';
     
     
     

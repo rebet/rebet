@@ -430,6 +430,112 @@ class ValidatorTest extends RebetTestCase
             ],
 
             // --------------------------------------------
+            // Valid::EMPTY_IF
+            // --------------------------------------------
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'bar', 1]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'baz', 2]
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Baz is 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'baz', [1, 2, 3]]
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Baz is in 1, 2, 3."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'baz', [4, 5, 6]]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'bar', ':baz']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 'a', 'quux' => 'a'],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'qux', ':quux']
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Qux is Quux."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_IF, 'qux', ':quux']
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Qux is Quux."]]
+            ],
+
+            // --------------------------------------------
+            // Valid::EMPTY_UNLESS
+            // --------------------------------------------
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'bar', 9]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'baz', 9]
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Baz is not 9."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'baz', [7, 8, 9]]
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Baz is not in 7, 8, 9."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'baz', [1, 2, 3]]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => 1],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'bar', ':quux']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 'a', 'quux' => 'b'],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'qux', ':quux']
+                ]]],
+                ['bar' => ["The 'Bar' field must be empty when Qux is not Quux."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::EMPTY_UNLESS, 'qux', ':quux']
+                ]]],
+                []
+            ],
+
+            // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
             [

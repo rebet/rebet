@@ -272,7 +272,7 @@ class Validator
         }
 
         [$value, $label] = $c->resolve($value);
-        if (in_array($c->value($other), (array)$value)) {
+        if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
             $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
@@ -294,7 +294,7 @@ class Validator
         }
 
         [$value, $label] = $c->resolve($value);
-        if (!in_array($c->value($other), (array)$value)) {
+        if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
             $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
@@ -355,6 +355,51 @@ class Validator
         return true;
     }
     
+    /**
+     * Empty If Validation
+     *
+     * @param Context $c
+     * @param string $other field name
+     * @param mixed $value value or array or :field_name
+     * @return boolean
+     */
+    protected function validateEmptyIf(Context $c, string $other, $value) : bool
+    {
+        if ($c->empty()) {
+            return true;
+        }
+
+        [$value, $label] = $c->resolve($value);
+        if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+            $c->appendError('validation.EmptyIf', ['other' => $c->label($other), 'value' => $label]);
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Empty Unless Validation
+     *
+     * @param Context $c
+     * @param string $other field name
+     * @param mixed $value value or array or :field_name
+     * @return boolean
+     */
+    protected function validateEmptyUnless(Context $c, string $other, $value) : bool
+    {
+        if ($c->empty()) {
+            return true;
+        }
+
+        [$value, $label] = $c->resolve($value);
+        if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+            $c->appendError('validation.EmptyUnless', ['other' => $c->label($other), 'value' => $label]);
+            return false;
+        }
+        return true;
+    }
+
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================
@@ -369,7 +414,7 @@ class Validator
     protected function validateIf(Context $c, string $other, $value) : bool
     {
         [$value, ] = $c->resolve($value);
-        return in_array($c->value($other), (array)$value);
+        return in_array($c->value($other), is_null($value) ? [null] : (array)$value);
     }
 
     /**
@@ -383,6 +428,6 @@ class Validator
     protected function validateUnless(Context $c, string $other, $value) : bool
     {
         [$value, ] = $c->resolve($value);
-        return !in_array($c->value($other), (array)$value);
+        return !in_array($c->value($other), is_null($value) ? [null] : (array)$value);
     }
 }
