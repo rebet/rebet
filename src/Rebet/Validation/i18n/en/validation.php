@@ -15,6 +15,8 @@ return [
     "RequiredWithout" => "The ':label' field is required when :others are not present at least :at_least.",
     "EmptyIf"         => "The ':label' field must be empty when :other is :value.",
     "EmptyUnless"     => "The ':label' field must be empty when :other is not :value.",
+    "EmptyWith"       => "The ':label' field must be empty when :others are present at least :at_least.",
+    "EmptyWithout"    => "The ':label' field must be empty when :others are not present at least :at_least.",
 
     "LengthMax"  => "The ':label' may not be greater than :max characters.",
 ];

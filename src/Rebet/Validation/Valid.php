@@ -146,7 +146,31 @@ class Valid
      */
     const EMPTY_UNLESS = 'EmptyUnless:';
     
-    
+    /**
+     * Empty With Validation.
+     * If 'other' fields are present at least N, then check the target fields.
+     *
+     * ex)
+     *   - ['CU', Valid::EMPTY_WITH, 'other']
+     *   - ['CU', Valid::EMPTY_WITH, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::EMPTY_WITH, ['other1', 'other2', ...], 1]
+     */
+    const EMPTY_WITH = 'EmptyWith:';
+
+    /**
+     * Empty Without Validation.
+     * If 'other' fields are not present at least N, then check the target fields.
+     *
+     * ex)
+     *   - ['CU', Valid::EMPTY_WITHOUT, 'other']
+     *   - ['CU', Valid::EMPTY_WITHOUT, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::EMPTY_WITHOUT, ['other1', 'other2', ...], 1]
+     */
+    const EMPTY_WITHOUT = 'EmptyWithout:';
+
+
+
+
     
     const LENGTH_MAX = 'LengthMax:';
 
