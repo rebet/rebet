@@ -184,7 +184,7 @@ class Validator
                 $valid = $custom_validator->validate($name, $context, ...$args);
             } else {
                 $global_validator = static::config("validations.{$name}", false, null);
-                $method = "validate{$name}";
+                $method = "validation{$name}";
                 $valid  = $global_validator ? call_user_func($global_validator, $context, ...$args) : $this->$method($context, ...$args) ;
             }
             $context->quiet(false);
@@ -237,7 +237,7 @@ class Validator
      * @param \Closure $test
      * @return boolean
      */
-    protected function validateSatisfy(Context $c, \Closure $test) : bool
+    protected function validationSatisfy(Context $c, \Closure $test) : bool
     {
         return $test($c);
     }
@@ -248,7 +248,7 @@ class Validator
      * @param Context $c
      * @return boolean
      */
-    protected function validateRequired(Context $c) : bool
+    protected function validationRequired(Context $c) : bool
     {
         if ($c->empty()) {
             $c->appendError('validation.Required');
@@ -265,7 +265,7 @@ class Validator
      * @param mixed $value value or array or :field_name
      * @return boolean
      */
-    protected function validateRequiredIf(Context $c, string $other, $value) : bool
+    protected function validationRequiredIf(Context $c, string $other, $value) : bool
     {
         if (!$c->empty()) {
             return true;
@@ -287,7 +287,7 @@ class Validator
      * @param mixed $value value or array or :field_name
      * @return boolean
      */
-    protected function validateRequiredUnless(Context $c, string $other, $value) : bool
+    protected function validationRequiredUnless(Context $c, string $other, $value) : bool
     {
         if (!$c->empty()) {
             return true;
@@ -309,7 +309,7 @@ class Validator
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    protected function validateRequiredWith(Context $c, $others, ?int $at_least = null) : bool
+    protected function validationRequiredWith(Context $c, $others, ?int $at_least = null) : bool
     {
         if (!$c->empty()) {
             return true;
@@ -336,7 +336,7 @@ class Validator
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    protected function validateRequiredWithout(Context $c, $others, ?int $at_least = null) : bool
+    protected function validationRequiredWithout(Context $c, $others, ?int $at_least = null) : bool
     {
         if (!$c->empty()) {
             return true;
@@ -363,7 +363,7 @@ class Validator
      * @param mixed $value value or array or :field_name
      * @return boolean
      */
-    protected function validateEmptyIf(Context $c, string $other, $value) : bool
+    protected function validationEmptyIf(Context $c, string $other, $value) : bool
     {
         if ($c->empty()) {
             return true;
@@ -385,7 +385,7 @@ class Validator
      * @param mixed $value value or array or :field_name
      * @return boolean
      */
-    protected function validateEmptyUnless(Context $c, string $other, $value) : bool
+    protected function validationEmptyUnless(Context $c, string $other, $value) : bool
     {
         if ($c->empty()) {
             return true;
@@ -411,7 +411,7 @@ class Validator
      * @param mixed $value value or array :field_name
      * @return boolean
      */
-    protected function validateIf(Context $c, string $other, $value) : bool
+    protected function validationIf(Context $c, string $other, $value) : bool
     {
         [$value, ] = $c->resolve($value);
         return in_array($c->value($other), is_null($value) ? [null] : (array)$value);
@@ -425,7 +425,7 @@ class Validator
      * @param mixed $value value or array or @field_name
      * @return boolean
      */
-    protected function validateUnless(Context $c, string $other, $value) : bool
+    protected function validationUnless(Context $c, string $other, $value) : bool
     {
         [$value, ] = $c->resolve($value);
         return !in_array($c->value($other), is_null($value) ? [null] : (array)$value);

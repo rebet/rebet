@@ -28,9 +28,9 @@ class ValidatorTest extends RebetTestCase
     }
 
     /**
-     * @dataProvider dataValidateMethods
+     * @dataProvider dataValidationMethods
      */
-    public function test_validateMethods(array $data, array $rules, array $errors) : void
+    public function test_validationMethods(array $data, array $rules, array $errors) : void
     {
         App::setLocale('en');
         $validator    = new Validator($data);
@@ -40,7 +40,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame($errors, $valid_errors);
     }
 
-    public function dataValidateMethods() : array
+    public function dataValidationMethods() : array
     {
         return [
             // --------------------------------------------
