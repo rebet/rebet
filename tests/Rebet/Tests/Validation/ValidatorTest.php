@@ -262,7 +262,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when 'Other' is foo."]]
+                ['field_name' => ["The 'Field Name' field is required when Other is foo."]]
             ],
             [
                 ['field_name' => 123, 'other' => 'foo'],
@@ -283,7 +283,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', ':target']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when 'Other' is Target."]]
+                ['field_name' => ["The 'Field Name' field is required when Other is Target."]]
             ],
             [
                 ['field_name' => null, 'other' => 'foo', 'target' => 'bar'],
@@ -291,6 +291,60 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::REQUIRED_IF, 'other', ':target']
                 ]]],
                 []
+            ],
+
+            // --------------------------------------------
+            // Valid::REQUIRED_UNLESS
+            // --------------------------------------------
+            // @todo When UploadFile
+            [
+                [],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
+                ]]],
+                ['field_name' => ["The 'Field Name' field is required when Other is not foo."]]
+            ],
+            [
+                ['other' => 'bar'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
+                ]]],
+                ['field_name' => ["The 'Field Name' field is required when Other is not foo."]]
+            ],
+            [
+                ['other' => 'foo'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 123, 'other' => 'bar'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 123, 'other' => 'foo', 'target' => 'bar'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => null, 'other' => 'foo', 'target' => 'bar'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
+                ]]],
+                ['field_name' => ["The 'Field Name' field is required when Other is not Target."]]
             ],
 
             // --------------------------------------------

@@ -8,7 +8,9 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-    "Required"   => ":labelを入力して下さい。",
-    "RequiredIf" => ":otherが:valueの場合は:labelを入力して下さい。",
+    "Required"       => ":labelを入力して下さい。",
+    "RequiredIf"     => ":otherが:valueの場合は:labelを入力して下さい。",
+    "RequiredUnless" => ":otherが:value以外の場合は:labelを入力して下さい。",
+
     "LengthMax"  => ":labelは:max文字以下で入力して下さい。",
 ];

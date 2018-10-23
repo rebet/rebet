@@ -24,7 +24,7 @@ namespace Rebet\Validation;
 class Valid
 {
     /**
-     * If condition.
+     * If Condition.
      * This validation does not output an error message even test is failed.
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
@@ -35,7 +35,7 @@ class Valid
     const IF = 'If:';
 
     /**
-     * If In condition.
+     * If In Condition.
      * This validation does not output an error message even test is failed.
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
@@ -46,7 +46,7 @@ class Valid
     const IF_IN = 'IfIn:';
 
     /**
-     * If In condition.
+     * If In Condition.
      * This validation does not output an error message even test is failed.
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
@@ -57,7 +57,7 @@ class Valid
     const IF_NOT_IN = 'IfNotIn:';
 
     /**
-     * Unless condition.
+     * Unless Condition.
      * This validation does not output an error message even test is failed.
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
@@ -68,7 +68,7 @@ class Valid
     const UNLESS = 'Unless:';
 
     /**
-     * Satisfy validation/condition.
+     * Satisfy Validation/Condition.
      * This validation does not output an error message by own.
      * If you need to output an error message you have to call Context::appendError() in the $test callback.
      * That means you can do any validation test by this validation.
@@ -83,7 +83,7 @@ class Valid
     const SATISFY = 'Satisfy:';
 
     /**
-     * Required validation.
+     * Required Validation.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
      * If you don't want to stop validation, you will give 'Required' string.
      *
@@ -93,7 +93,7 @@ class Valid
     const REQUIRED = 'Required:!';
 
     /**
-     * RequiredIf validation.
+     * Required If Validation.
      * If 'other' field value is given 'value', then check the target fields.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
      * If you don't want to stop validation, you will give 'RequiredIf' string.
@@ -104,6 +104,19 @@ class Valid
      */
     const REQUIRED_IF = 'RequiredIf:!';
 
+    /**
+     * Required Unless Validation.
+     * If 'other' field value is not given 'value', then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
+     * If you don't want to stop validation, you will give 'RequiredIf' string.
+     *
+     * ex)
+     *   - ['CU', Valid::REQUIRED_UNLESS, 'other', value]
+     *   - ['CU', Valid::REQUIRED_UNLESS, 'other', ':field']
+     */
+    const REQUIRED_UNLESS = 'RequiredUnless:!';
+
+    
     
     
     
