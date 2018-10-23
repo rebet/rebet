@@ -206,7 +206,6 @@ class ValidatorTest extends RebetTestCase
             // --------------------------------------------
             // Valid::REQUIRED_IF
             // --------------------------------------------
-            // @todo When UploadFile
             [
                 [],
                 ['field_name' => ['rule' => [
@@ -240,7 +239,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', ['foo', 'bar', 'baz']]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is in foo,bar,baz."]]
+                ['field_name' => ["The 'Field Name' field is required when Other is in foo, bar, baz."]]
             ],
             [
                 ['field_name' => null, 'other' => 'xxx'],
@@ -274,7 +273,6 @@ class ValidatorTest extends RebetTestCase
             // --------------------------------------------
             // Valid::REQUIRED_UNLESS
             // --------------------------------------------
-            // @todo When UploadFile
             [
                 [],
                 ['field_name' => ['rule' => [
@@ -315,7 +313,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_UNLESS, 'other', ['foo', 'bar', 'baz']]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is not in foo,bar,baz."]]
+                ['field_name' => ["The 'Field Name' field is required when Other is not in foo, bar, baz."]]
             ],
             [
                 ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],
@@ -337,6 +335,98 @@ class ValidatorTest extends RebetTestCase
                     ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
                 ]]],
                 ['field_name' => ["The 'Field Name' field is required when Other is not Target."]]
+            ],
+
+            // --------------------------------------------
+            // Valid::REQUIRED_WITH
+            // --------------------------------------------
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITH, 'baz']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITH, 'bar']
+                ]]],
+                ['foo' => ["The 'Foo' field is required when Bar are present at least 1."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITH, ['bar', 'baz']]
+                ]]],
+                ['foo' => ["The 'Foo' field is required when Bar, Baz are present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITH, ['bar', 'baz', 'qux']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITH, ['bar', 'baz', 'qux'], 2]
+                ]]],
+                ['foo' => ["The 'Foo' field is required when Bar, Baz, Qux are present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITH, ['qux', 'quux'], 1]
+                ]]],
+                []
+            ],
+
+            // --------------------------------------------
+            // Valid::REQUIRED_WITHOUT
+            // --------------------------------------------
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITHOUT, 'qux']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITHOUT, 'qux']
+                ]]],
+                ['foo' => ["The 'Foo' field is required when Qux are not present at least 1."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux']]
+                ]]],
+                ['foo' => ["The 'Foo' field is required when Qux, Quux are not present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux', 'bar']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux', 'bar'], 2]
+                ]]],
+                ['foo' => ["The 'Foo' field is required when Qux, Quux, Bar are not present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REQUIRED_WITHOUT, ['bar', 'baz'], 1]
+                ]]],
+                []
             ],
 
             // --------------------------------------------

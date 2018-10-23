@@ -157,15 +157,17 @@ class Context
     }
     
     /**
-     * Check validation target value is empty
+     * Check validation target value (or given field) is empty
      *
      * @todo When Upload File
      *
+     * @param string $field
      * @return boolean
      */
-    public function empty() : bool
+    public function empty(string $field = null) : bool
     {
-        return Utils::isBlank($this->value) ;
+        $value = $field ? $this->value($field) : $this->value ;
+        return Utils::isBlank($value) ;
     }
 
     /**
@@ -234,7 +236,21 @@ class Context
             $rule   = $rule[$parts]['nests'] ?? $rule[$parts]['nest'] ?? [];
         }
 
-        return $label ;
+        return $label;
+    }
+
+    /**
+     * Get the labels of given fields
+     *
+     * @param array $fields
+     * @param string $delimiter (default: ',')
+     * @return string
+     */
+    public function labels(array $fields, string $delimiter = ', ') : string
+    {
+        return implode($delimiter, array_map(function ($field) {
+            return $this->label($field);
+        }, $fields));
     }
 
     /**
@@ -246,7 +262,7 @@ class Context
     public function resolve($value) : array
     {
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
-            return [$value, is_array($value) ? 'in '.implode(',', $value) : $value];
+            return [$value, is_array($value) ? 'in '.implode(', ', $value) : $value];
         }
         $field = Strings::ltrim($value, ':');
         return [$this->value($field), $this->label($field)];

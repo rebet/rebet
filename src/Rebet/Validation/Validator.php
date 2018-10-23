@@ -301,6 +301,60 @@ class Validator
         return true;
     }
     
+    /**
+     * Required With Validation
+     *
+     * @param Context $c
+     * @param string|array $others field names
+     * @param int|null $at_least (default: null)
+     * @return boolean
+     */
+    protected function validateRequiredWith(Context $c, $others, ?int $at_least = null) : bool
+    {
+        if (!$c->empty()) {
+            return true;
+        }
+        $others   = (array)$others;
+        $at_least = $at_least ?? count($others);
+        $inputed  = 0;
+        foreach ($others as $field) {
+            $inputed += $c->empty($field) ? 0 : 1 ;
+        }
+        if ($inputed >= $at_least) {
+            $c->appendError('validation.RequiredWith', ['others' => $c->labels($others), 'at_least' => $at_least]);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Required Without Validation
+     *
+     * @param Context $c
+     * @param string|array $others field names
+     * @param int|null $at_least (default: null)
+     * @return boolean
+     */
+    protected function validateRequiredWithout(Context $c, $others, ?int $at_least = null) : bool
+    {
+        if (!$c->empty()) {
+            return true;
+        }
+        $others      = (array)$others;
+        $at_least    = $at_least ?? count($others);
+        $not_inputed = 0;
+        foreach ($others as $field) {
+            $not_inputed += $c->empty($field) ? 1 : 0 ;
+        }
+        if ($not_inputed >= $at_least) {
+            $c->appendError('validation.RequiredWithout', ['others' => $c->labels($others), 'at_least' => $at_least]);
+            return false;
+        }
+
+        return true;
+    }
+    
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

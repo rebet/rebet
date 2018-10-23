@@ -89,7 +89,7 @@ class Valid
      * Required Unless Validation.
      * If 'other' field value is not given 'value', then check the target fields.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
-     * If you don't want to stop validation, you will give 'RequiredIf' string.
+     * If you don't want to stop validation, you will give 'RequiredUnless' string.
      *
      * ex)
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', value]
@@ -97,6 +97,32 @@ class Valid
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', ':field']
      */
     const REQUIRED_UNLESS = 'RequiredUnless:!';
+
+    /**
+     * Required With Validation.
+     * If 'other' fields are present at least N, then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
+     * If you don't want to stop validation, you will give 'RequiredWith' string.
+     *
+     * ex)
+     *   - ['CU', Valid::REQUIRED_WITH, 'other']
+     *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...], 1]
+     */
+    const REQUIRED_WITH = 'RequiredWith:!';
+
+    /**
+     * Required Without Validation.
+     * If 'other' fields are not present at least N, then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
+     * If you don't want to stop validation, you will give 'RequiredWithout' string.
+     *
+     * ex)
+     *   - ['CU', Valid::REQUIRED_WITHOUT, 'other']
+     *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...], 1]
+     */
+    const REQUIRED_WITHOUT = 'RequiredWithout:!';
 
     
     
