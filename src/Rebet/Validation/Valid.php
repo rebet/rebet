@@ -29,32 +29,11 @@ class Valid
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
      * ex)
-     *   - ['CU', Valid::IF, 'other', value   , 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::IF, 'other', value, 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::IF, 'other', [value1, value2, ...], 'then' => [...], 'else' => [...]]
      *   - ['CU', Valid::IF, 'other', ':field', 'then' => [...], 'else' => [...]]
      */
     const IF = 'If:';
-
-    /**
-     * If In Condition.
-     * This validation does not output an error message even test is failed.
-     * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
-     *
-     * ex)
-     *   - ['CU', Valid::IF_IN, 'other', [value1, value2, ...], 'then' => [...], 'else' => [...]]
-     *   - ['CU', Valid::IF_IN, 'other', 'value1,value2,...'  , 'then' => [...], 'else' => [...]]
-     */
-    const IF_IN = 'IfIn:';
-
-    /**
-     * If In Condition.
-     * This validation does not output an error message even test is failed.
-     * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
-     *
-     * ex)
-     *   - ['CU', Valid::IF_NOT_IN, 'other', [value1, value2, ...], 'then' => [...], 'else' => [...]]
-     *   - ['CU', Valid::IF_NOT_IN, 'other', 'value1,value2,...'  , 'then' => [...], 'else' => [...]]
-     */
-    const IF_NOT_IN = 'IfNotIn:';
 
     /**
      * Unless Condition.
@@ -63,6 +42,7 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::UNLESS, 'other', value, 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::UNLESS, 'other', [value1, value2, ...], 'then' => [...], 'else' => [...]]
      *   - ['CU', Valid::UNLESS, 'other', ':field', 'then' => [...], 'else' => [...]]
      */
     const UNLESS = 'Unless:';

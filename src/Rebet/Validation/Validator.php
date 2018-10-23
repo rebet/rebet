@@ -267,8 +267,12 @@ class Validator
      */
     protected function validateRequiredIf(Context $c, string $other, $value) : bool
     {
+        if (!$c->empty()) {
+            return true;
+        }
+
         [$value, $label] = $c->resolve($value);
-        if ($c->empty() && in_array($c->value($other), (array)$value)) {
+        if (in_array($c->value($other), (array)$value)) {
             $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
@@ -285,8 +289,12 @@ class Validator
      */
     protected function validateRequiredUnless(Context $c, string $other, $value) : bool
     {
+        if (!$c->empty()) {
+            return true;
+        }
+
         [$value, $label] = $c->resolve($value);
-        if ($c->empty() && !in_array($c->value($other), (array)$value)) {
+        if (!in_array($c->value($other), (array)$value)) {
             $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
@@ -301,39 +309,13 @@ class Validator
      *
      * @param Context $c
      * @param string $other
-     * @param mixed $value value or @field_name
+     * @param mixed $value value or array :field_name
      * @return boolean
      */
     protected function validateIf(Context $c, string $other, $value) : bool
     {
         [$value, ] = $c->resolve($value);
-        return $c->value($other) == $value;
-    }
-
-    /**
-     * If In condition
-     *
-     * @param Context $c
-     * @param string $other
-     * @param string|array $value
-     * @return boolean
-     */
-    protected function validateIfIn(Context $c, string $other, $values) : bool
-    {
-        return in_array($c->value($other), is_string($values) ? explode(',', $values) : $values);
-    }
-
-    /**
-     * If Not In condition
-     *
-     * @param Context $c
-     * @param string $other
-     * @param string|array $value
-     * @return boolean
-     */
-    protected function validateIfNotIn(Context $c, string $other, $values) : bool
-    {
-        return !$this->validateIfIn($c, $other, $values);
+        return in_array($c->value($other), (array)$value);
     }
 
     /**
@@ -341,12 +323,12 @@ class Validator
      *
      * @param Context $c
      * @param string $other
-     * @param mixed $value value or @field_name
+     * @param mixed $value value or array or @field_name
      * @return boolean
      */
     protected function validateUnless(Context $c, string $other, $value) : bool
     {
         [$value, ] = $c->resolve($value);
-        return $c->value($other) != $value;
+        return !in_array($c->value($other), (array)$value);
     }
 }

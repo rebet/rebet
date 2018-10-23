@@ -74,69 +74,19 @@ class ValidatorTest extends RebetTestCase
                 ]]],
                 ['field_name' => ["The 'Field Name' is NG."]]
             ],
-
-            // --------------------------------------------
-            // Valid::IF_IN
-            // --------------------------------------------
             [
                 ['field_name' => 'value', 'other' => 2],
                 ['field_name' => ['rule' => [
-                    ['C', Valid::IF_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                    ['C', Valid::IF, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
                 []
             ],
             [
                 ['field_name' => 'value', 'other' => 9],
                 ['field_name' => ['rule' => [
-                    ['C', Valid::IF_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                    ['C', Valid::IF, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
                 ['field_name' => ["The 'Field Name' is NG."]]
-            ],
-            [
-                ['field_name' => 'value', 'other' => 2],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::IF_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-                ]]],
-                []
-            ],
-            [
-                ['field_name' => 'value', 'other' => 9],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::IF_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-                ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
-            ],
-
-            // --------------------------------------------
-            // Valid::IF_NOT_IN
-            // --------------------------------------------
-            [
-                ['field_name' => 'value', 'other' => 2],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::IF_NOT_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-                ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
-            ],
-            [
-                ['field_name' => 'value', 'other' => 9],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::IF_NOT_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-                ]]],
-                []
-            ],
-            [
-                ['field_name' => 'value', 'other' => 2],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::IF_NOT_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-                ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
-            ],
-            [
-                ['field_name' => 'value', 'other' => 9],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::IF_NOT_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-                ]]],
-                []
             ],
 
             // --------------------------------------------
@@ -167,6 +117,20 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => 'value', 'other' => 'not-value'],
                 ['field_name' => ['rule' => [
                     ['C', Valid::UNLESS, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 2],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::UNLESS, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 9],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::UNLESS, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
                 []
             ],
