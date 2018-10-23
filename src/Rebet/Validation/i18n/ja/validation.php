@@ -10,5 +10,5 @@
 return [
     "Required"   => ":labelを入力して下さい。",
     "RequiredIf" => ":otherが:valueの場合は:labelを入力して下さい。",
-    "MaxLength"  => ":labelは:max文字以下で入力して下さい。",
+    "LengthMax"  => ":labelは:max文字以下で入力して下さい。",
 ];

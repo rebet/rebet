@@ -156,7 +156,13 @@ class Validator
      */
     protected function validateRules(Context $context, array $rules, ?Rule $custom_validator) : void
     {
+        if (!is_array($rules)) {
+            throw new \LogicException("Invalid rules format. A 'rule/then/else' list should be array.");
+        }
         foreach ($rules as $rule) {
+            if (!is_array($rule)) {
+                throw new \LogicException("Invalid rules format. A 'rule/then/else' list item should be array.");
+            }
             $crud = array_shift($rule);
             if (!Strings::contains($crud, $context->crud())) {
                 continue;
@@ -225,6 +231,18 @@ class Validator
     // Built-in Validation Methods
     // ====================================================
     /**
+     * Satisfy validation/condition
+     *
+     * @param Context $c
+     * @param \Closure $test
+     * @return boolean
+     */
+    protected function validateSatisfy(Context $c, \Closure $test) : bool
+    {
+        return $test($c);
+    }
+
+    /**
      * Required Validation
      *
      * @param Context $c
@@ -233,7 +251,7 @@ class Validator
     protected function validateRequired(Context $c) : bool
     {
         if ($c->empty()) {
-            $c->appendError('errors.Required');
+            $c->appendError('validation.Required');
             return false;
         }
         return true;
@@ -250,7 +268,7 @@ class Validator
     protected function validateRequiredIf(Context $c, string $other, $value) : bool
     {
         if ($c->value($other) == $value && $c->empty()) {
-            $c->appendError('errors.RequiredIf', ['other' => $c->label($other), 'value' => $value]);
+            $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $value]);
             return false;
         }
         return true;
@@ -263,11 +281,51 @@ class Validator
      * If condition
      *
      * @param Context $c
-     * @param \Closure $test
+     * @param string $other
+     * @param mixed $value
      * @return boolean
      */
-    protected function validateIf(Context $c, \Closure $test) : bool
+    protected function validateIf(Context $c, string $other, $value) : bool
     {
-        return $test($c);
+        return $c->value($other) == $value;
+    }
+
+    /**
+     * If In condition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param string|array $value
+     * @return boolean
+     */
+    protected function validateIfIn(Context $c, string $other, $values) : bool
+    {
+        return in_array($c->value($other), is_string($values) ? explode(',', $values) : $values);
+    }
+
+    /**
+     * If Not In condition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param string|array $value
+     * @return boolean
+     */
+    protected function validateIfNotIn(Context $c, string $other, $values) : bool
+    {
+        return !$this->validateIfIn($c, $other, $values);
+    }
+
+    /**
+     * Unless condition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param mixed $value
+     * @return boolean
+     */
+    protected function validateUnless(Context $c, string $other, $value) : bool
+    {
+        return $c->value($other) != $value;
     }
 }

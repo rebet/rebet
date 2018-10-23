@@ -10,5 +10,5 @@
 return [
     "Required"   => "The ':label' field is required.",
     "RequiredIf" => "The ':label' field is required when ':other' is :value.",
-    "MaxLength"  => "The ':label' may not be greater than :max characters.",
+    "LengthMax"  => "The ':label' may not be greater than :max characters.",
 ];

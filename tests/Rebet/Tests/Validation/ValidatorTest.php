@@ -16,7 +16,7 @@ class ValidatorTest extends RebetTestCase
             return true;
         });
         Validator::addValidation('Ng', function (Context $c) {
-            $c->appendError("@The {$c->label} is NG.");
+            $c->appendError("@The '{$c->label}' is NG.");
             return false;
         });
     }
@@ -49,63 +49,63 @@ class ValidatorTest extends RebetTestCase
             // @todo When UploadFile
             [
                 [],
-                ['attribute' => ['rule' => [
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['attribute' => ["The 'Attribute' field is required."]]
+                ['field_name' => ["The 'Field Name' field is required."]]
             ],
             [
-                ['attribute' => null],
-                ['attribute' => ['rule' => [
+                ['field_name' => null],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['attribute' => ["The 'Attribute' field is required."]]
+                ['field_name' => ["The 'Field Name' field is required."]]
             ],
             [
-                ['attribute' => ''],
-                ['attribute' => ['rule' => [
+                ['field_name' => ''],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['attribute' => ["The 'Attribute' field is required."]]
+                ['field_name' => ["The 'Field Name' field is required."]]
             ],
             [
-                ['attribute' => []],
-                ['attribute' => ['rule' => [
+                ['field_name' => []],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['attribute' => ["The 'Attribute' field is required."]]
+                ['field_name' => ["The 'Field Name' field is required."]]
             ],
             [
-                ['attribute' => 0],
-                ['attribute' => ['rule' => [
-                    ['C', Valid::REQUIRED]
-                ]]],
-                []
-            ],
-            [
-                ['attribute' => '0'],
-                ['attribute' => ['rule' => [
+                ['field_name' => 0],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
                 []
             ],
             [
-                ['attribute' => false],
-                ['attribute' => ['rule' => [
+                ['field_name' => '0'],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
                 []
             ],
             [
-                ['attribute' => 'value'],
-                ['attribute' => ['rule' => [
+                ['field_name' => false],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
                 []
             ],
             [
-                ['attribute' => ['value']],
-                ['attribute' => ['rule' => [
+                ['field_name' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => ['value']],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
                 []
@@ -117,61 +117,73 @@ class ValidatorTest extends RebetTestCase
             // @todo When UploadFile
             [
                 [],
-                ['attribute' => ['rule' => [
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
                 ]]],
                 []
             ],
             [
                 ['other' => 'bar'],
-                ['attribute' => ['rule' => [
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
                 ]]],
                 []
             ],
             [
                 ['other' => 'foo'],
-                ['attribute' => ['rule' => [
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
                 ]]],
-                ['attribute' => ["The 'Attribute' field is required when 'Other' is foo."]]
+                ['field_name' => ["The 'Field Name' field is required when 'Other' is foo."]]
             ],
             [
-                ['attribute' => 123, 'other' => 'foo'],
-                ['attribute' => ['rule' => [
+                ['field_name' => 123, 'other' => 'foo'],
+                ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
                 ]]],
                 []
             ],
 
-            
             // --------------------------------------------
-            // Valid::IF
+            // Valid::SATISFY
             // --------------------------------------------
-            // [
-            //     ['attribute' => ['value']],
-            //     ['attribute' => ['rule' => [
-            //         ['C', Valid::IF, function (Context $c) {
-            //             return $c->value === 'value';
-            //         },
-            //         'then' => ['C', 'Ok'],
-            //         'else' => ['C', 'Ng']
-            //         ]
-            //     ]]],
-            //     []
-            // ],
-            // [
-            //     ['attribute' => ['not-value']],
-            //     ['attribute' => ['rule' => [
-            //         ['C', Valid::IF, function (Context $c) {
-            //             return $c->value === 'value';
-            //         },
-            //         'then' => ['C', 'Ok'],
-            //         'else' => ['C', 'Ng']
-            //         ]
-            //     ]]],
-            //     ['attribute' => ["The 'Attribute' is NG."]]
-            // ],
+            [
+                ['field_name' => 'not_value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::SATISFY, function (Context $c) {
+                        if ($c->value !== 'value') {
+                            $c->appendError("@The '{$c->label}' is not 'value'.");
+                            return false;
+                        }
+                        return true;
+                    }]
+                ]]],
+                ['field_name' => ["The 'Field Name' is not 'value'."]]
+            ],
+            [
+                ['field_name' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::SATISFY, function (Context $c) {
+                        return $c->value === 'value';
+                    },
+                    'then' => [['C', 'Ok']],
+                    'else' => [['C', 'Ng']]
+                    ]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'not-value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::SATISFY, function (Context $c) {
+                        return $c->value === 'value';
+                    },
+                    'then' => [['C', 'Ok']],
+                    'else' => [['C', 'Ng']]
+                    ]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
         ];
     }
 }
