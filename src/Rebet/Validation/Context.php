@@ -238,6 +238,21 @@ class Context
     }
 
     /**
+     * Resolve value or :field_name string
+     *
+     * @param mixed $value value or :field_name string
+     * @return array [$value, $label]
+     */
+    public function resolve($value) : array
+    {
+        if (!is_string($value) || !Strings::startsWith($value, ':')) {
+            return [$value, $value];
+        }
+        $field = Strings::ltrim($value, ':');
+        return [$this->value($field), $this->label($field)];
+    }
+
+    /**
      * Get Validation CRUD mode.
      *
      * @return string

@@ -29,7 +29,8 @@ class Valid
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
      * ex)
-     *   - ['CU', Valid::IF, 'other', value, 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::IF, 'other', value   , 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::IF, 'other', ':field', 'then' => [...], 'else' => [...]]
      */
     const IF = 'If:';
 
@@ -62,6 +63,7 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::UNLESS, 'other', value, 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::UNLESS, 'other', ':field', 'then' => [...], 'else' => [...]]
      */
     const UNLESS = 'Unless:';
 
@@ -98,6 +100,7 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::REQUIRED_IF, 'other', value]
+     *   - ['CU', Valid::REQUIRED_IF, 'other', ':field']
      */
     const REQUIRED_IF = 'RequiredIf:!';
 

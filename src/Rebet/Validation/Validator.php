@@ -262,13 +262,14 @@ class Validator
      *
      * @param Context $c
      * @param string $other field name
-     * @param mixed $value
+     * @param mixed $value value or @field_name
      * @return boolean
      */
     protected function validateRequiredIf(Context $c, string $other, $value) : bool
     {
+        [$value, $label] = $c->resolve($value);
         if ($c->value($other) == $value && $c->empty()) {
-            $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $value]);
+            $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
         return true;
@@ -282,11 +283,12 @@ class Validator
      *
      * @param Context $c
      * @param string $other
-     * @param mixed $value
+     * @param mixed $value value or @field_name
      * @return boolean
      */
     protected function validateIf(Context $c, string $other, $value) : bool
     {
+        [$value, ] = $c->resolve($value);
         return $c->value($other) == $value;
     }
 
@@ -321,11 +323,12 @@ class Validator
      *
      * @param Context $c
      * @param string $other
-     * @param mixed $value
+     * @param mixed $value value or @field_name
      * @return boolean
      */
     protected function validateUnless(Context $c, string $other, $value) : bool
     {
+        [$value, ] = $c->resolve($value);
         return $c->value($other) != $value;
     }
 }

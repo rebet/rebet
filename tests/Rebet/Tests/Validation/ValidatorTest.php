@@ -44,6 +44,134 @@ class ValidatorTest extends RebetTestCase
     {
         return [
             // --------------------------------------------
+            // Valid::IF
+            // --------------------------------------------
+            [
+                ['field_name' => 'value', 'other' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 'not-value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 'not-value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+
+            // --------------------------------------------
+            // Valid::IF_IN
+            // --------------------------------------------
+            [
+                ['field_name' => 'value', 'other' => 2],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 9],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 2],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 9],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+
+            // --------------------------------------------
+            // Valid::IF_NOT_IN
+            // --------------------------------------------
+            [
+                ['field_name' => 'value', 'other' => 2],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_NOT_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 9],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_NOT_IN, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 2],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_NOT_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 9],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::IF_NOT_IN, 'other', '1,2,3', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+
+            // --------------------------------------------
+            // Valid::UNLESS
+            // --------------------------------------------
+            [
+                ['field_name' => 'value', 'other' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::UNLESS, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 'not-value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::UNLESS, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'value', 'other' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::UNLESS, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                ['field_name' => ["The 'Field Name' is NG."]]
+            ],
+            [
+                ['field_name' => 'value', 'other' => 'not-value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::UNLESS, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
+                ]]],
+                []
+            ],
+            
+            // --------------------------------------------
             // Valid::REQUIRED
             // --------------------------------------------
             // @todo When UploadFile
@@ -140,6 +268,27 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => 123, 'other' => 'foo'],
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 123, 'other' => 'foo', 'target' => 'foo'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', ':target']
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', ':target']
+                ]]],
+                ['field_name' => ["The 'Field Name' field is required when 'Other' is Target."]]
+            ],
+            [
+                ['field_name' => null, 'other' => 'foo', 'target' => 'bar'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::REQUIRED_IF, 'other', ':target']
                 ]]],
                 []
             ],
