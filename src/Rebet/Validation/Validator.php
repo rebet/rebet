@@ -356,14 +356,14 @@ class Validator
     }
     
     /**
-     * Empty If Validation
+     * Blank If Validation
      *
      * @param Context $c
      * @param string $other field name
      * @param mixed $value value or array or :field_name
      * @return boolean
      */
-    protected function validationEmptyIf(Context $c, string $other, $value) : bool
+    protected function validationBlankIf(Context $c, string $other, $value) : bool
     {
         if ($c->blank()) {
             return true;
@@ -371,21 +371,21 @@ class Validator
 
         [$value, $label] = $c->resolve($value);
         if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
-            $c->appendError('validation.EmptyIf', ['other' => $c->label($other), 'value' => $label]);
+            $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
         return true;
     }
     
     /**
-     * Empty Unless Validation
+     * Blank Unless Validation
      *
      * @param Context $c
      * @param string $other field name
      * @param mixed $value value or array or :field_name
      * @return boolean
      */
-    protected function validationEmptyUnless(Context $c, string $other, $value) : bool
+    protected function validationBlankUnless(Context $c, string $other, $value) : bool
     {
         if ($c->blank()) {
             return true;
@@ -393,7 +393,7 @@ class Validator
 
         [$value, $label] = $c->resolve($value);
         if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
-            $c->appendError('validation.EmptyUnless', ['other' => $c->label($other), 'value' => $label]);
+            $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label]);
             return false;
         }
         return true;

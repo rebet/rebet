@@ -125,48 +125,48 @@ class Valid
     const REQUIRED_WITHOUT = 'RequiredWithout:!';
 
     /**
-     * Empty If Validation.
+     * Blank If Validation.
      * If 'other' field value is given 'value', then check the target fields.
      *
      * ex)
-     *   - ['CU', Valid::EMPTY_IF, 'other', value]
-     *   - ['CU', Valid::EMPTY_IF, 'other', [value1, value2, ...]]
-     *   - ['CU', Valid::EMPTY_IF, 'other', ':field']
+     *   - ['CU', Valid::BLANK_IF, 'other', value]
+     *   - ['CU', Valid::BLANK_IF, 'other', [value1, value2, ...]]
+     *   - ['CU', Valid::BLANK_IF, 'other', ':field']
      */
-    const EMPTY_IF = 'EmptyIf:';
+    const BLANK_IF = 'BlankIf:';
     
     /**
      * Empty Unless Validation.
      * If 'other' field value is given 'value', then check the target fields.
      *
      * ex)
-     *   - ['CU', Valid::EMPTY_UNLESS, 'other', value]
-     *   - ['CU', Valid::EMPTY_UNLESS, 'other', [value1, value2, ...]]
-     *   - ['CU', Valid::EMPTY_UNLESS, 'other', ':field']
+     *   - ['CU', Valid::BLANK_UNLESS, 'other', value]
+     *   - ['CU', Valid::BLANK_UNLESS, 'other', [value1, value2, ...]]
+     *   - ['CU', Valid::BLANK_UNLESS, 'other', ':field']
      */
-    const EMPTY_UNLESS = 'EmptyUnless:';
+    const BLANK_UNLESS = 'BlankUnless:';
     
     /**
-     * Empty With Validation.
+     * Blank With Validation.
      * If 'other' fields are present at least N, then check the target fields.
      *
      * ex)
-     *   - ['CU', Valid::EMPTY_WITH, 'other']
-     *   - ['CU', Valid::EMPTY_WITH, ['other1', 'other2', ...]]
-     *   - ['CU', Valid::EMPTY_WITH, ['other1', 'other2', ...], 1]
+     *   - ['CU', Valid::BLANK_WITH, 'other']
+     *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...], 1]
      */
-    const EMPTY_WITH = 'EmptyWith:';
+    const BLANK_WITH = 'BlankWith:';
 
     /**
-     * Empty Without Validation.
+     * Blank Without Validation.
      * If 'other' fields are not present at least N, then check the target fields.
      *
      * ex)
-     *   - ['CU', Valid::EMPTY_WITHOUT, 'other']
-     *   - ['CU', Valid::EMPTY_WITHOUT, ['other1', 'other2', ...]]
-     *   - ['CU', Valid::EMPTY_WITHOUT, ['other1', 'other2', ...], 1]
+     *   - ['CU', Valid::BLANK_WITHOUT, 'other']
+     *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...], 1]
      */
-    const EMPTY_WITHOUT = 'EmptyWithout:';
+    const BLANK_WITHOUT = 'BlankWithout:';
 
 
 

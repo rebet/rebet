@@ -13,10 +13,10 @@ return [
     "RequiredUnless"  => "The ':label' field is required when :other is not :value.",
     "RequiredWith"    => "The ':label' field is required when :others are present at least :at_least.",
     "RequiredWithout" => "The ':label' field is required when :others are not present at least :at_least.",
-    "EmptyIf"         => "The ':label' field must be empty when :other is :value.",
-    "EmptyUnless"     => "The ':label' field must be empty when :other is not :value.",
-    "EmptyWith"       => "The ':label' field must be empty when :others are present at least :at_least.",
-    "EmptyWithout"    => "The ':label' field must be empty when :others are not present at least :at_least.",
+    "BlankIf"         => "The ':label' field must be blank when :other is :value.",
+    "BlankUnless"     => "The ':label' field must be blank when :other is not :value.",
+    "BlankWith"       => "The ':label' field must be blank when :others are present at least :at_least.",
+    "BlankWithout"    => "The ':label' field must be blank when :others are not present at least :at_least.",
 
     "LengthMax"  => "The ':label' may not be greater than :max characters.",
 ];

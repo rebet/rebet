@@ -13,10 +13,10 @@ return [
     "RequiredUnless"  => ":otherが:value以外の場合は:labelを入力して下さい。",
     "RequiredWith"    => ":othersが:at_least項目以上入力されている場合は:labelを入力して下さい。",
     "RequiredWithout" => ":othersが:at_least項目以上入力されていない場合は:labelを入力して下さい。",
-    "EmptyIf"         => ":otherが:valueの場合は:labelを空にして下さい。",
-    "EmptyUnless"     => ":otherが:value以外の場合は:labelを空にして下さい。",
-    "EmptyWith"       => ":othersが:at_least項目以上入力されている場合は:labelを空にして下さい。",
-    "EmptyWithout"    => ":othersが:at_least項目以上入力されていない場合は:labelを空にして下さい。",
+    "BlankIf"         => ":otherが:valueの場合は:labelを空にして下さい。",
+    "BlankUnless"     => ":otherが:value以外の場合は:labelを空にして下さい。",
+    "BlankWith"       => ":othersが:at_least項目以上入力されている場合は:labelを空にして下さい。",
+    "BlankWithout"    => ":othersが:at_least項目以上入力されていない場合は:labelを空にして下さい。",
 
     "LengthMax"  => ":labelは:max文字以下で入力して下さい。",
 ];
