@@ -536,6 +536,98 @@ class ValidatorTest extends RebetTestCase
             ],
 
             // --------------------------------------------
+            // Valid::BLANK_WITH
+            // --------------------------------------------
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::BLANK_WITH, 'baz']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITH, 'bar']
+                ]]],
+                ['bar' => ["The 'Bar' field must be blank when Bar are present at least 1."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITH, ['bar', 'baz']]
+                ]]],
+                ['bar' => ["The 'Bar' field must be blank when Bar, Baz are present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITH, ['bar', 'baz', 'qux']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITH, ['bar', 'baz', 'qux'], 2]
+                ]]],
+                ['bar' => ["The 'Bar' field must be blank when Bar, Baz, Qux are present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITH, ['qux', 'quux'], 1]
+                ]]],
+                []
+            ],
+
+            // --------------------------------------------
+            // Valid::BLANK_WITHOUT
+            // --------------------------------------------
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::BLANK_WITHOUT, 'qux']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITHOUT, 'qux']
+                ]]],
+                ['bar' => ["The 'Bar' field must be blank when Qux are not present at least 1."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITHOUT, ['qux', 'quux']]
+                ]]],
+                ['bar' => ["The 'Bar' field must be blank when Qux, Quux are not present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITHOUT, ['qux', 'quux', 'bar']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITHOUT, ['qux', 'quux', 'bar'], 2]
+                ]]],
+                ['bar' => ["The 'Bar' field must be blank when Qux, Quux, Bar are not present at least 2."]]
+            ],
+            [
+                ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                ['bar' => ['rule' => [
+                    ['C', Valid::BLANK_WITHOUT, ['bar', 'baz'], 1]
+                ]]],
+                []
+            ],
+
+            // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
             [
