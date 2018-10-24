@@ -335,21 +335,21 @@ class Validator
      * Handle With validation precondition
      *
      * @param Context $c
-     * @param string|array $others
+     * @param string|array $other
      * @param integer|null $at_least
      * @param callable $callback
      * @return boolean
      */
-    protected function handleWith(Context $c, $others, ?int $at_least, callable $callback) : bool
+    protected function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
     {
-        $others   = (array)$others;
-        $at_least = $at_least ?? count($others);
+        $other    = (array)$other;
+        $at_least = $at_least ?? count($other);
         $inputed  = 0;
-        foreach ($others as $field) {
+        foreach ($other as $field) {
             $inputed += $c->blank($field) ? 0 : 1 ;
         }
         if ($inputed >= $at_least) {
-            return $callback($c, $others, $at_least, $inputed);
+            return $callback($c, $other, $at_least, $inputed);
         }
 
         return true;
@@ -359,21 +359,21 @@ class Validator
      * Handle Without validation precondition
      *
      * @param Context $c
-     * @param string|array $others
+     * @param string|array $other
      * @param integer|null $at_least
      * @param callable $callback
      * @return boolean
      */
-    protected function handleWithout(Context $c, $others, ?int $at_least, callable $callback) : bool
+    protected function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
     {
-        $others      = (array)$others;
-        $at_least    = $at_least ?? count($others);
+        $other       = (array)$other;
+        $at_least    = $at_least ?? count($other);
         $not_inputed = 0;
-        foreach ($others as $field) {
+        foreach ($other as $field) {
             $not_inputed += $c->blank($field) ? 1 : 0 ;
         }
         if ($not_inputed >= $at_least) {
-            return $callback($c, $others, $at_least, $not_inputed);
+            return $callback($c, $other, $at_least, $not_inputed);
         }
 
         return true;
@@ -383,17 +383,17 @@ class Validator
      * Required With Validation
      *
      * @param Context $c
-     * @param string|array $others field names
+     * @param string|array $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    protected function validationRequiredWith(Context $c, $others, ?int $at_least = null) : bool
+    protected function validationRequiredWith(Context $c, $other, ?int $at_least = null) : bool
     {
         if (!$c->blank()) {
             return true;
         }
-        return $this->handleWith($c, $others, $at_least, function ($c, $others, $at_least, $inputed) {
-            $c->appendError('validation.RequiredWith', ['others' => $c->labels($others), 'at_least' => $at_least]);
+        return $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $inputed) {
+            $c->appendError('validation.RequiredWith', ['other' => $c->labels($other), 'at_least' => $at_least]);
             return false;
         });
     }
@@ -402,17 +402,17 @@ class Validator
      * Required Without Validation
      *
      * @param Context $c
-     * @param string|array $others field names
+     * @param string|array $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    protected function validationRequiredWithout(Context $c, $others, ?int $at_least = null) : bool
+    protected function validationRequiredWithout(Context $c, $other, ?int $at_least = null) : bool
     {
         if (!$c->blank()) {
             return true;
         }
-        return $this->handleWithout($c, $others, $at_least, function ($c, $others, $at_least, $not_inputed) {
-            $c->appendError('validation.RequiredWithout', ['others' => $c->labels($others), 'at_least' => $at_least]);
+        return $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $not_inputed) {
+            $c->appendError('validation.RequiredWithout', ['other' => $c->labels($other), 'at_least' => $at_least]);
             return false;
         });
     }
@@ -459,17 +459,17 @@ class Validator
      * Blank With Validation
      *
      * @param Context $c
-     * @param string|array $others field names
+     * @param string|array $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    protected function validationBlankWith(Context $c, $others, ?int $at_least = null) : bool
+    protected function validationBlankWith(Context $c, $other, ?int $at_least = null) : bool
     {
         if ($c->blank()) {
             return true;
         }
-        return $this->handleWith($c, $others, $at_least, function ($c, $others, $at_least, $inputed) {
-            $c->appendError('validation.BlankWith', ['others' => $c->labels($others), 'at_least' => $at_least]);
+        return $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $inputed) {
+            $c->appendError('validation.BlankWith', ['other' => $c->labels($other), 'at_least' => $at_least]);
             return false;
         });
     }
@@ -478,17 +478,17 @@ class Validator
      * Blank Without Validation
      *
      * @param Context $c
-     * @param string|array $others field names
+     * @param string|array $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    protected function validationBlankWithout(Context $c, $others, ?int $at_least = null) : bool
+    protected function validationBlankWithout(Context $c, $other, ?int $at_least = null) : bool
     {
         if ($c->blank()) {
             return true;
         }
-        return $this->handleWithout($c, $others, $at_least, function ($c, $others, $at_least, $not_inputed) {
-            $c->appendError('validation.BlankWithout', ['others' => $c->labels($others), 'at_least' => $at_least]);
+        return $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $not_inputed) {
+            $c->appendError('validation.BlankWithout', ['other' => $c->labels($other), 'at_least' => $at_least]);
             return false;
         });
     }
