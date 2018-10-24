@@ -155,7 +155,7 @@ class ContextTest extends RebetTestCase
         $this->assertTrue($c->hasError('other'));
     }
 
-    public function test_empty()
+    public function test_blank()
     {
         $c = new Context(
             'C',
@@ -164,13 +164,13 @@ class ContextTest extends RebetTestCase
             ['name' => $this->rule_set['name']],
             $this->translator
         );
-        $this->assertTrue($c->empty());
+        $this->assertTrue($c->blank());
 
         $c->initBy('name');
-        $this->assertFalse($c->empty());
+        $this->assertFalse($c->blank());
 
         $c->initBy('dummy');
-        $this->assertTrue($c->empty());
+        $this->assertTrue($c->blank());
     }
 
     public function test_appendError()

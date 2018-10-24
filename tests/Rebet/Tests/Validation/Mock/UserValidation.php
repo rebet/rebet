@@ -126,7 +126,7 @@ class UserValidation extends Rule
     // カスタム Validation の定義
     protected function validateMailAddressExists(Context $c) : bool
     {
-        if ($c->empty()) {
+        if ($c->blank()) {
             return true;
         }
         if (Strings::startsWith($c->value, 'invalid@')) {

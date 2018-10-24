@@ -157,14 +157,14 @@ class Context
     }
     
     /**
-     * Check validation target value (or given field) is empty
+     * Check validation target value (or given field) is blank
      *
      * @todo When Upload File
      *
      * @param string $field
      * @return boolean
      */
-    public function empty(string $field = null) : bool
+    public function blank(string $field = null) : bool
     {
         $value = $field ? $this->value($field) : $this->value ;
         return Utils::isBlank($value) ;

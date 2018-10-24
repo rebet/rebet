@@ -250,7 +250,7 @@ class Validator
      */
     protected function validationRequired(Context $c) : bool
     {
-        if ($c->empty()) {
+        if ($c->blank()) {
             $c->appendError('validation.Required');
             return false;
         }
@@ -267,7 +267,7 @@ class Validator
      */
     protected function validationRequiredIf(Context $c, string $other, $value) : bool
     {
-        if (!$c->empty()) {
+        if (!$c->blank()) {
             return true;
         }
 
@@ -289,7 +289,7 @@ class Validator
      */
     protected function validationRequiredUnless(Context $c, string $other, $value) : bool
     {
-        if (!$c->empty()) {
+        if (!$c->blank()) {
             return true;
         }
 
@@ -311,14 +311,14 @@ class Validator
      */
     protected function validationRequiredWith(Context $c, $others, ?int $at_least = null) : bool
     {
-        if (!$c->empty()) {
+        if (!$c->blank()) {
             return true;
         }
         $others   = (array)$others;
         $at_least = $at_least ?? count($others);
         $inputed  = 0;
         foreach ($others as $field) {
-            $inputed += $c->empty($field) ? 0 : 1 ;
+            $inputed += $c->blank($field) ? 0 : 1 ;
         }
         if ($inputed >= $at_least) {
             $c->appendError('validation.RequiredWith', ['others' => $c->labels($others), 'at_least' => $at_least]);
@@ -338,14 +338,14 @@ class Validator
      */
     protected function validationRequiredWithout(Context $c, $others, ?int $at_least = null) : bool
     {
-        if (!$c->empty()) {
+        if (!$c->blank()) {
             return true;
         }
         $others      = (array)$others;
         $at_least    = $at_least ?? count($others);
         $not_inputed = 0;
         foreach ($others as $field) {
-            $not_inputed += $c->empty($field) ? 1 : 0 ;
+            $not_inputed += $c->blank($field) ? 1 : 0 ;
         }
         if ($not_inputed >= $at_least) {
             $c->appendError('validation.RequiredWithout', ['others' => $c->labels($others), 'at_least' => $at_least]);
@@ -365,7 +365,7 @@ class Validator
      */
     protected function validationEmptyIf(Context $c, string $other, $value) : bool
     {
-        if ($c->empty()) {
+        if ($c->blank()) {
             return true;
         }
 
@@ -387,7 +387,7 @@ class Validator
      */
     protected function validationEmptyUnless(Context $c, string $other, $value) : bool
     {
-        if ($c->empty()) {
+        if ($c->blank()) {
             return true;
         }
 
