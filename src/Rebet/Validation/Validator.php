@@ -258,6 +258,42 @@ class Validator
     }
 
     /**
+     * Handle If validation precondition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param string|array $value value or array or :field_name
+     * @param callable $callback
+     * @return boolean
+     */
+    protected function handleIf(Context $c, string $other, $value, callable $callback) : bool
+    {
+        [$value, $label] = $c->resolve($value);
+        if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+            return $callback($c, $other, $value, $label);
+        }
+        return true;
+    }
+
+    /**
+     * Handle Unless validation precondition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param string|array $value value or array or :field_name
+     * @param callable $callback
+     * @return boolean
+     */
+    protected function handleUnless(Context $c, string $other, $value, callable $callback) : bool
+    {
+        [$value, $label] = $c->resolve($value);
+        if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+            return $callback($c, $other, $value, $label);
+        }
+        return true;
+    }
+
+    /**
      * Required If Validation
      *
      * @param Context $c
@@ -270,13 +306,10 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-
-        [$value, $label] = $c->resolve($value);
-        if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+        return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label]);
             return false;
-        }
-        return true;
+        });
     }
     
     /**
@@ -292,15 +325,60 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-
-        [$value, $label] = $c->resolve($value);
-        if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+        return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label]);
             return false;
-        }
-        return true;
+        });
     }
     
+    /**
+     * Handle With validation precondition
+     *
+     * @param Context $c
+     * @param string|array $others
+     * @param integer|null $at_least
+     * @param callable $callback
+     * @return boolean
+     */
+    protected function handleWith(Context $c, $others, ?int $at_least, callable $callback) : bool
+    {
+        $others   = (array)$others;
+        $at_least = $at_least ?? count($others);
+        $inputed  = 0;
+        foreach ($others as $field) {
+            $inputed += $c->blank($field) ? 0 : 1 ;
+        }
+        if ($inputed >= $at_least) {
+            return $callback($c, $others, $at_least, $inputed);
+        }
+
+        return true;
+    }
+
+    /**
+     * Handle Without validation precondition
+     *
+     * @param Context $c
+     * @param string|array $others
+     * @param integer|null $at_least
+     * @param callable $callback
+     * @return boolean
+     */
+    protected function handleWithout(Context $c, $others, ?int $at_least, callable $callback) : bool
+    {
+        $others      = (array)$others;
+        $at_least    = $at_least ?? count($others);
+        $not_inputed = 0;
+        foreach ($others as $field) {
+            $not_inputed += $c->blank($field) ? 1 : 0 ;
+        }
+        if ($not_inputed >= $at_least) {
+            return $callback($c, $others, $at_least, $not_inputed);
+        }
+
+        return true;
+    }
+
     /**
      * Required With Validation
      *
@@ -314,18 +392,10 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-        $others   = (array)$others;
-        $at_least = $at_least ?? count($others);
-        $inputed  = 0;
-        foreach ($others as $field) {
-            $inputed += $c->blank($field) ? 0 : 1 ;
-        }
-        if ($inputed >= $at_least) {
+        return $this->handleWith($c, $others, $at_least, function ($c, $others, $at_least, $inputed) {
             $c->appendError('validation.RequiredWith', ['others' => $c->labels($others), 'at_least' => $at_least]);
             return false;
-        }
-
-        return true;
+        });
     }
 
     /**
@@ -341,18 +411,10 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-        $others      = (array)$others;
-        $at_least    = $at_least ?? count($others);
-        $not_inputed = 0;
-        foreach ($others as $field) {
-            $not_inputed += $c->blank($field) ? 1 : 0 ;
-        }
-        if ($not_inputed >= $at_least) {
+        return $this->handleWithout($c, $others, $at_least, function ($c, $others, $at_least, $not_inputed) {
             $c->appendError('validation.RequiredWithout', ['others' => $c->labels($others), 'at_least' => $at_least]);
             return false;
-        }
-
-        return true;
+        });
     }
     
     /**
@@ -368,13 +430,10 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-
-        [$value, $label] = $c->resolve($value);
-        if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+        return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label]);
             return false;
-        }
-        return true;
+        });
     }
     
     /**
@@ -390,15 +449,49 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-
-        [$value, $label] = $c->resolve($value);
-        if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
+        return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label]);
             return false;
-        }
-        return true;
+        });
     }
 
+    /**
+     * Blank With Validation
+     *
+     * @param Context $c
+     * @param string|array $others field names
+     * @param int|null $at_least (default: null)
+     * @return boolean
+     */
+    protected function validationBlankWith(Context $c, $others, ?int $at_least = null) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        return $this->handleWith($c, $others, $at_least, function ($c, $others, $at_least, $inputed) {
+            $c->appendError('validation.BlankWith', ['others' => $c->labels($others), 'at_least' => $at_least]);
+            return false;
+        });
+    }
+
+    /**
+     * Blank Without Validation
+     *
+     * @param Context $c
+     * @param string|array $others field names
+     * @param int|null $at_least (default: null)
+     * @return boolean
+     */
+    protected function validationBlankWithout(Context $c, $others, ?int $at_least = null) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        return $this->handleWithout($c, $others, $at_least, function ($c, $others, $at_least, $not_inputed) {
+            $c->appendError('validation.BlankWithout', ['others' => $c->labels($others), 'at_least' => $at_least]);
+            return false;
+        });
+    }
 
     // ====================================================
     // Built-in Condition Methods
