@@ -8,8 +8,6 @@ use Rebet\Common\Collection;
 /**
  * Translator Class
  *
- * @todo pluralization support
- *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -120,10 +118,11 @@ class Translator
      *
      * @param string $key
      * @param array $replace
+     * @param int|string|null $selector (default: null)
      * @param string $locale
      * @return string|null
      */
-    public function get(string $key, array $replace = [], ?string $locale = null) : ?string
+    public function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : ?string
     {
         [$group, $key] = explode('.', $key, 2);
         $locales = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
@@ -140,6 +139,8 @@ class Translator
         if ($line === null) {
             return null;
         }
+
+        $line = $this->choose($line, $selector);
 
         if (empty($replace)) {
             return $line;
@@ -169,5 +170,66 @@ class Translator
         [$group, $key] = explode('.', $key, 2);
         $this->load($group, $locale);
         $this->resouces[$group][$locale][$key] = $message;
+    }
+
+    /**
+     * Select a proper translation string based on the given selector.
+     *
+     * @param  string  $line
+     * @param  int|string|null  $selector
+     * @return string|null
+     * @throws LogicException
+     */
+    protected function choose(string $line, $selector) : ?string
+    {
+        if (is_null($selector)) {
+            return $line;
+        }
+        $segments = explode('|', $line);
+        $line     = null;
+        foreach ($segments as $part) {
+            if (! is_null($line = static::extract($part, $selector))) {
+                break;
+            }
+        }
+        if (is_null($line)) {
+            throw new \LogicException("Can not select message for '{$selector}' from '{$line}'.");
+        }
+        return trim($line) ;
+    }
+
+    /**
+     * Get the translation string if the condition matches.
+     *
+     * @param  string  $part
+     * @param  int|string  $number
+     * @return string|null
+     */
+    protected function extract(string $part, $selector) : ?string
+    {
+        preg_match('/^[\{\[]([^\[\]\{\}]*)[\}\]](.*)/s', $part, $matches);
+        if (count($matches) !== 3) {
+            return $part;
+        }
+        $condition = $matches[1];
+        $value     = $matches[2];
+        if (Strings::startsWith($part, '[')) {
+            if (Strings::contains($condition, ',')) {
+                [$from, $to] = array_pad(explode(',', $condition, 2), 2, null);
+                if ($to === null && $selector == $from) {
+                    return $value;
+                } elseif ($to === '*' && $selector >= $from) {
+                    return $value;
+                } elseif ($from === '*' && $selector <= $to) {
+                    return $value;
+                } elseif ($selector >= $from && $selector <= $to) {
+                    return $value;
+                }
+            } elseif ($condition == $selector) {
+                return $value;
+            }
+            return null;
+        }
+        return in_array($selector, explode(',', $condition)) ? $value : null;
     }
 }
