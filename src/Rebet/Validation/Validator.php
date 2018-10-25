@@ -566,6 +566,7 @@ class Validator
 
     /**
      * Handle Listable Value Type Validation
+     * If you use this handler then you have to define @List message key too.
      *
      * @param Context $c
      * @param callable $test function($value) { ... }
@@ -593,6 +594,7 @@ class Validator
 
     /**
      * Handle Regex Type Validation
+     * If you use this handler then you have to define @List message key too.
      *
      * @param Context $c
      * @param string $pattern
@@ -631,6 +633,7 @@ class Validator
 
     /**
      * Handle Not Regex type validation
+     * If you use this handler then you have to define @List message key too.
      *
      * @param Context $c
      * @param string $pattern
