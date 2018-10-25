@@ -22,6 +22,11 @@ class Translator
         return [
             'default_locale'  => null,
             'fallback_locale' => 'en',
+            'ordinalize' => [
+                'en' => function (int $num) {
+                    return in_array($num % 100, [11, 12, 13]) ? $num.'th' : $num.(['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
+                }
+            ]
         ];
     }
     
@@ -151,8 +156,10 @@ class Translator
             return mb_strlen($k) * -1;
         });
 
+        $delimiter = Reflector::get($this->resouces[$group][$locale], '@delimiter', false, ', ');
         foreach ($replace as $key => $value) {
-            $line = str_replace(':'.$key, $value, $line);
+            $value = is_array($value) ? implode($delimiter, $value) : $value ;
+            $line  = str_replace(':'.$key, $value, $line);
         }
 
         return $line;
@@ -171,6 +178,36 @@ class Translator
         [$group, $key] = explode('.', $key, 2);
         $this->load($group, $locale);
         $this->resouces[$group][$locale][$key] = $message;
+    }
+
+    /**
+     * Set the ordinalize callback for given locale.
+     *
+     * @param string $locale
+     * @param callable $ordinalize
+     * @return void
+     */
+    public static function setOrdinalize(string $locale, callable $ordinalize) : void
+    {
+        static::setConfig(['ordinalize' => [$locale => \Closure::fromCallable($ordinalize)]]);
+    }
+
+    /**
+     * Get the ordinalize number for given locale.
+     * If the ordinalize for given locale is nothing then return given number as it is.
+     *
+     * @param integer $num
+     * @param string|null $locale (default: depend on self locale)
+     * @return string
+     */
+    public function ordinalize(int $num, ?string $locale = null) : string
+    {
+        $locale = $locale ?? $this->locale;
+        $ordinalize = static::config("ordinalize.{$locale}", false, function (int $num) {
+            return "{$num}";
+        });
+
+        return (string)$ordinalize($num);
     }
 
     /**

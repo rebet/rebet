@@ -8,6 +8,8 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
+    "@delimiter"      => ", ",
+    
     "Required"        => "The :attribute field is required.",
     "RequiredIf"      => [
         "[1]   The :attribute field is required when :other is :value.",
@@ -51,13 +53,13 @@ return [
         "{*} The :attribute format is invalid.",
     ],
     "Regex@List"      => [
-        "{*} The format of the :attribute (:value) at #:no is invalid.",
+        "{*} The :nth :attribute (:value) format is invalid.",
     ],
     "NotRegex"        => [
         "{*} The :attribute format is invalid.",
     ],
     "NotRegex@List"   => [
-        "{*} The format of the :attribute (:value) at #:no is invalid.",
+        "{*} The :nth :attribute (:value) format is invalid.",
     ],
 
     "MaxLength"  => "The :attribute may not be greater than :max characters.",

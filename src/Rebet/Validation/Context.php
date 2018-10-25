@@ -263,10 +263,22 @@ class Context
     public function resolve($value) : array
     {
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
-            return [$value, is_array($value) ? implode(', ', $value) : $value];
+            return [$value, $value];
         }
         $field = Strings::ltrim($value, ':');
         return [$this->value($field), $this->label($field)];
+    }
+
+    /**
+     * Get the ordinalize number for current locale.
+     * If the ordinalize for current locale is nothing then return given number as it is.
+     *
+     * @param integer $num
+     * @return string
+     */
+    public function ordinalize(int $num) : string
+    {
+        return $this->translator->ordinalize($num);
     }
 
     /**

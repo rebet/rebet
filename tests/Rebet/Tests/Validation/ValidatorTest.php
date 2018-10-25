@@ -28,13 +28,13 @@ return [
         "{digits} The :attribute must be digits.",
     ],
     'Regex@List' => [
-        "{digits} The format of the :attribute (:value) at #:no must be digits.",
+        "{digits} The :nth :attribute (:value) must be digits.",
     ],
     'NotRegex' => [
         "{digits} The :attribute must be not digits.",
     ],
     'NotRegex@List' => [
-        "{digits} The format of the :attribute (:value) at #:no must be not digits.",
+        "{digits} The :nth :attribute (:value) must be not digits.",
     ],
 ];
 EOS
@@ -794,8 +794,8 @@ EOS
                     ['C', Valid::REGEX, '/^[0-9]+$/']
                 ]]],
                 ['foo' => [
-                    "The format of the Foo (abc) at #2 is invalid.",
-                    "The format of the Foo (def) at #3 is invalid.",
+                    "The 2nd Foo (abc) format is invalid.",
+                    "The 3rd Foo (def) format is invalid.",
                 ]]
             ],
             [
@@ -804,8 +804,8 @@ EOS
                     ['C', Valid::REGEX, '/^[0-9]+$/', 'digits']
                 ]]],
                 ['foo' => [
-                    "The format of the Foo (abc) at #2 must be digits.",
-                    "The format of the Foo (def) at #3 must be digits.",
+                    "The 2nd Foo (abc) must be digits.",
+                    "The 3rd Foo (def) must be digits.",
                 ]]
             ],
 
@@ -853,8 +853,8 @@ EOS
                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
                 ]]],
                 ['foo' => [
-                    "The format of the Foo (123) at #2 is invalid.",
-                    "The format of the Foo (456) at #3 is invalid.",
+                    "The 2nd Foo (123) format is invalid.",
+                    "The 3rd Foo (456) format is invalid.",
                 ]]
             ],
             [
@@ -863,8 +863,8 @@ EOS
                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/', 'digits']
                 ]]],
                 ['foo' => [
-                    "The format of the Foo (123) at #2 must be not digits.",
-                    "The format of the Foo (456) at #3 must be not digits.",
+                    "The 2nd Foo (123) must be not digits.",
+                    "The 3rd Foo (456) must be not digits.",
                 ]]
             ],
 

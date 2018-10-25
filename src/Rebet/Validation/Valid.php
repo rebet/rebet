@@ -242,8 +242,8 @@ class Valid
      *   - ['CU', Valid::REGEX, pattern]
      *   - ['CU', Valid::REGEX, pattern, $selector]
      * message)
-     *   Key         - Regex
-     *   Placeholder - :attribute, :self, :selector, :pattern, :no, :value
+     *   Key         - Regex, Regex@List
+     *   Placeholder - :attribute, :self, :selector, :pattern, :nth, :value
      *   Selector    - none or given selector
      */
     const REGEX = 'Regex:';
@@ -256,8 +256,8 @@ class Valid
      *   - ['CU', Valid::NOT_REGEX, pattern]
      *   - ['CU', Valid::NOT_REGEX, pattern, $selector]
      * message)
-     *   Key         - Regex
-     *   Placeholder - :attribute, :self, :selector, :pattern, :no, :value
+     *   Key         - NotRegex, NotRegex@List
+     *   Placeholder - :attribute, :self, :selector, :pattern, :nth, :value
      *   Selector    - none or given selector
      */
     const NOT_REGEX = 'NotRegex:';

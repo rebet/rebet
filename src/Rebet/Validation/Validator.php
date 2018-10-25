@@ -580,9 +580,9 @@ class Validator
             return true;
         }
         $valid = true;
-        foreach ((array)$c->value as $no => $value) {
+        foreach ((array)$c->value as $num => $value) {
             if (!preg_match($pattern, $value)) {
-                $replacement['no']    = $no + 1;
+                $replacement['nth']   = $c->ordinalize($num + 1);
                 $replacement['value'] = $value;
                 $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector);
                 $valid = false;
@@ -620,9 +620,9 @@ class Validator
             return true;
         }
         $valid = true;
-        foreach ((array)$c->value as $no => $value) {
+        foreach ((array)$c->value as $num => $value) {
             if (preg_match($pattern, $value)) {
-                $replacement['no']    = $no + 1;
+                $replacement['nth']   = $c->ordinalize($num + 1);
                 $replacement['value'] = $value;
                 $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector);
                 $valid = false;

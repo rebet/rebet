@@ -8,6 +8,8 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
+    "@delimiter"      => "／",
+
     "Required"        => ":attributeを入力して下さい。",
     "RequiredIf"      => ":otherが:valueの場合は:attributeを入力して下さい。",
     "RequiredUnless"  => ":otherが:value以外の場合は:attributeを入力して下さい。",
@@ -35,13 +37,13 @@ return [
         "{*} :attributeの書式が正しくありません。",
     ],
     "Regex@List"      => [
-        "{*} :no番目の:attribute（:value）の書式が正しくありません。",
+        "{*} :nth番目の:attribute（:value）の書式が正しくありません。",
     ],
     "NotRegex"        => [
         "{*} :attributeの書式が正しくありません。",
     ],
     "NotRegex@List"   => [
-        "{*} :no番目の:attribute（:value）の書式が正しくありません。",
+        "{*} :nth番目の:attribute（:value）の書式が正しくありません。",
     ],
 
     "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",
