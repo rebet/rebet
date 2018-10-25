@@ -511,6 +511,26 @@ class Validator
         });
     }
 
+    /**
+     * Same As Validation
+     *
+     * @param Context $c
+     * @param mixed $value
+     * @return boolean
+     */
+    protected function validationSameAs(Context $c, $value) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        [$value, $label] = $c->resolve($value);
+        if ($c->value == $value) {
+            return true;
+        }
+        $c->appendError('validation.SameAs', ['value' => $label]);
+        return false;
+    }
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

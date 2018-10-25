@@ -8,43 +8,44 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-    "Required"        => "The ':label' field is required.",
+    "Required"        => "The :attribute field is required.",
     "RequiredIf"      => [
-        "[1]   The ':label' field is required when :other is :value.",
-        "[2,*] The ':label' field is required when :other is in :value.",
+        "[1]   The :attribute field is required when :other is :value.",
+        "[2,*] The :attribute field is required when :other is in :value.",
     ],
     "RequiredUnless"  => [
-        "[1]   The ':label' field is required when :other is not :value.",
-        "[2,*] The ':label' field is required when :other is not in :value.",
+        "[1]   The :attribute field is required when :other is not :value.",
+        "[2,*] The :attribute field is required when :other is not in :value.",
     ],
     "RequiredWith"    => [
-        "{one}  The ':label' field is required when :other is present.",
-        "{some} The ':label' field is required when :other are present at least :at_least.",
-        "{all}  The ':label' field is required when :other are present.",
+        "{one}  The :attribute field is required when :other is present.",
+        "{some} The :attribute field is required when :other are present at least :at_least.",
+        "{all}  The :attribute field is required when :other are present.",
     ],
     "RequiredWithout" => [
-        "{one}  The ':label' field is required when :other is not present.",
-        "{some} The ':label' field is required when :other are not present at least :at_least.",
-        "{all}  The ':label' field is required when :other are not present.",
+        "{one}  The :attribute field is required when :other is not present.",
+        "{some} The :attribute field is required when :other are not present at least :at_least.",
+        "{all}  The :attribute field is required when :other are not present.",
     ],
     "BlankIf"         => [
-        "[1]   The ':label' field must be blank when :other is :value.",
-        "[2,*] The ':label' field must be blank when :other is in :value.",
+        "[1]   The :attribute field must be blank when :other is :value.",
+        "[2,*] The :attribute field must be blank when :other is in :value.",
     ],
     "BlankUnless"     => [
-        "[1]   The ':label' field must be blank when :other is not :value.",
-        "[2,*] The ':label' field must be blank when :other is not in :value.",
+        "[1]   The :attribute field must be blank when :other is not :value.",
+        "[2,*] The :attribute field must be blank when :other is not in :value.",
     ],
     "BlankWith"       => [
-        "{one}  The ':label' field must be blank when :other is present.",
-        "{some} The ':label' field must be blank when :other are present at least :at_least.",
-        "{all}  The ':label' field must be blank when :other are present.",
+        "{one}  The :attribute field must be blank when :other is present.",
+        "{some} The :attribute field must be blank when :other are present at least :at_least.",
+        "{all}  The :attribute field must be blank when :other are present.",
     ],
     "BlankWithout"    => [
-        "{one}  The ':label' field must be blank when :other is not present.",
-        "{some} The ':label' field must be blank when :other are not present at least :at_least.",
-        "{all}  The ':label' field must be blank when :other are not present.",
+        "{one}  The :attribute field must be blank when :other is not present.",
+        "{some} The :attribute field must be blank when :other are not present at least :at_least.",
+        "{all}  The :attribute field must be blank when :other are not present.",
     ],
+    "SameAs"          => "The :attribute and :value must match.",
 
-    "LengthMax"  => "The ':label' may not be greater than :max characters.",
+    "LengthMax"  => "The :attribute may not be greater than :max characters.",
 ];

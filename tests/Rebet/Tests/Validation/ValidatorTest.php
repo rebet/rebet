@@ -16,7 +16,7 @@ class ValidatorTest extends RebetTestCase
             return true;
         });
         Validator::addValidation('Ng', function (Context $c) {
-            $c->appendError("@The '{$c->label}' is NG.");
+            $c->appendError("@The {$c->label} is NG.");
             return false;
         });
     }
@@ -58,7 +58,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::IF, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
             [
                 ['field_name' => 'value', 'other' => 'value'],
@@ -72,7 +72,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::IF, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
             [
                 ['field_name' => 'value', 'other' => 2],
@@ -86,7 +86,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::IF, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
 
             // --------------------------------------------
@@ -97,7 +97,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::UNLESS, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
             [
                 ['field_name' => 'value', 'other' => 'not-value'],
@@ -111,7 +111,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::UNLESS, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
             [
                 ['field_name' => 'value', 'other' => 'not-value'],
@@ -125,7 +125,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::UNLESS, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
             [
                 ['field_name' => 'value', 'other' => 9],
@@ -144,28 +144,28 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required."]]
+                ['field_name' => ["The Field Name field is required."]]
             ],
             [
                 ['field_name' => null],
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required."]]
+                ['field_name' => ["The Field Name field is required."]]
             ],
             [
                 ['field_name' => ''],
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required."]]
+                ['field_name' => ["The Field Name field is required."]]
             ],
             [
                 ['field_name' => []],
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required."]]
+                ['field_name' => ["The Field Name field is required."]]
             ],
             [
                 ['field_name' => 0],
@@ -225,7 +225,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is foo."]]
+                ['field_name' => ["The Field Name field is required when Other is foo."]]
             ],
             [
                 ['field_name' => 123, 'other' => 'foo'],
@@ -239,7 +239,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', ['foo', 'bar', 'baz']]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is in foo, bar, baz."]]
+                ['field_name' => ["The Field Name field is required when Other is in foo, bar, baz."]]
             ],
             [
                 ['field_name' => null, 'other' => 'xxx'],
@@ -260,7 +260,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_IF, 'other', ':target']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is Target."]]
+                ['field_name' => ["The Field Name field is required when Other is Target."]]
             ],
             [
                 ['field_name' => null, 'other' => 'foo', 'target' => 'bar'],
@@ -278,14 +278,14 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is not foo."]]
+                ['field_name' => ["The Field Name field is required when Other is not foo."]]
             ],
             [
                 ['other' => 'bar'],
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is not foo."]]
+                ['field_name' => ["The Field Name field is required when Other is not foo."]]
             ],
             [
                 ['other' => 'foo'],
@@ -313,7 +313,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_UNLESS, 'other', ['foo', 'bar', 'baz']]
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is not in foo, bar, baz."]]
+                ['field_name' => ["The Field Name field is required when Other is not in foo, bar, baz."]]
             ],
             [
                 ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],
@@ -334,7 +334,7 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
                 ]]],
-                ['field_name' => ["The 'Field Name' field is required when Other is not Target."]]
+                ['field_name' => ["The Field Name field is required when Other is not Target."]]
             ],
 
             // --------------------------------------------
@@ -352,14 +352,14 @@ class ValidatorTest extends RebetTestCase
                 ['foo' => ['rule' => [
                     ['C', Valid::REQUIRED_WITH, 'bar']
                 ]]],
-                ['foo' => ["The 'Foo' field is required when Bar is present."]]
+                ['foo' => ["The Foo field is required when Bar is present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['foo' => ['rule' => [
                     ['C', Valid::REQUIRED_WITH, ['bar', 'baz']]
                 ]]],
-                ['foo' => ["The 'Foo' field is required when Bar, Baz are present."]]
+                ['foo' => ["The Foo field is required when Bar, Baz are present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -373,7 +373,7 @@ class ValidatorTest extends RebetTestCase
                 ['foo' => ['rule' => [
                     ['C', Valid::REQUIRED_WITH, ['bar', 'baz', 'qux'], 2]
                 ]]],
-                ['foo' => ["The 'Foo' field is required when Bar, Baz, Qux are present at least 2."]]
+                ['foo' => ["The Foo field is required when Bar, Baz, Qux are present at least 2."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -398,14 +398,14 @@ class ValidatorTest extends RebetTestCase
                 ['foo' => ['rule' => [
                     ['C', Valid::REQUIRED_WITHOUT, 'qux']
                 ]]],
-                ['foo' => ["The 'Foo' field is required when Qux is not present."]]
+                ['foo' => ["The Foo field is required when Qux is not present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['foo' => ['rule' => [
                     ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux']]
                 ]]],
-                ['foo' => ["The 'Foo' field is required when Qux, Quux are not present."]]
+                ['foo' => ["The Foo field is required when Qux, Quux are not present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -419,7 +419,7 @@ class ValidatorTest extends RebetTestCase
                 ['foo' => ['rule' => [
                     ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux', 'bar'], 2]
                 ]]],
-                ['foo' => ["The 'Foo' field is required when Qux, Quux, Bar are not present at least 2."]]
+                ['foo' => ["The Foo field is required when Qux, Quux, Bar are not present at least 2."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -444,14 +444,14 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_IF, 'baz', 2]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Baz is 2."]]
+                ['bar' => ["The Bar field must be blank when Baz is 2."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_IF, 'baz', [1, 2, 3]]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Baz is in 1, 2, 3."]]
+                ['bar' => ["The Bar field must be blank when Baz is in 1, 2, 3."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -472,14 +472,14 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_IF, 'qux', ':quux']
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Qux is Quux."]]
+                ['bar' => ["The Bar field must be blank when Qux is Quux."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_IF, 'qux', ':quux']
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Qux is Quux."]]
+                ['bar' => ["The Bar field must be blank when Qux is Quux."]]
             ],
 
             // --------------------------------------------
@@ -497,14 +497,14 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_UNLESS, 'baz', 9]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Baz is not 9."]]
+                ['bar' => ["The Bar field must be blank when Baz is not 9."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_UNLESS, 'baz', [7, 8, 9]]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Baz is not in 7, 8, 9."]]
+                ['bar' => ["The Bar field must be blank when Baz is not in 7, 8, 9."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -525,7 +525,7 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_UNLESS, 'qux', ':quux']
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Qux is not Quux."]]
+                ['bar' => ["The Bar field must be blank when Qux is not Quux."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -550,14 +550,14 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITH, 'bar']
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Bar is present."]]
+                ['bar' => ["The Bar field must be blank when Bar is present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITH, ['bar', 'baz']]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Bar, Baz are present."]]
+                ['bar' => ["The Bar field must be blank when Bar, Baz are present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -571,7 +571,7 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITH, ['bar', 'baz', 'qux'], 2]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Bar, Baz, Qux are present at least 2."]]
+                ['bar' => ["The Bar field must be blank when Bar, Baz, Qux are present at least 2."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -596,14 +596,14 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITHOUT, 'qux']
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Qux is not present."]]
+                ['bar' => ["The Bar field must be blank when Qux is not present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITHOUT, ['qux', 'quux']]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Qux, Quux are not present."]]
+                ['bar' => ["The Bar field must be blank when Qux, Quux are not present."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
@@ -617,12 +617,51 @@ class ValidatorTest extends RebetTestCase
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITHOUT, ['qux', 'quux', 'bar'], 2]
                 ]]],
-                ['bar' => ["The 'Bar' field must be blank when Qux, Quux, Bar are not present at least 2."]]
+                ['bar' => ["The Bar field must be blank when Qux, Quux, Bar are not present at least 2."]]
             ],
             [
                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 ['bar' => ['rule' => [
                     ['C', Valid::BLANK_WITHOUT, ['bar', 'baz'], 1]
+                ]]],
+                []
+            ],
+
+            // --------------------------------------------
+            // Valid::SAME_AS
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::SAME_AS, 1]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::SAME_AS, 1]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::SAME_AS, 2]
+                ]]],
+                ['foo' => ["The Foo and 2 must match."]]
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::SAME_AS, ':bar']
+                ]]],
+                ['foo' => ["The Foo and Bar must match."]]
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::SAME_AS, ':baz']
                 ]]],
                 []
             ],
@@ -636,13 +675,13 @@ class ValidatorTest extends RebetTestCase
                 ['field_name' => ['rule' => [
                     ['C', Valid::SATISFY, function (Context $c) {
                         if ($c->value !== 'value') {
-                            $c->appendError("@The '{$c->label}' is not 'value'.");
+                            $c->appendError("@The {$c->label} is not 'value'.");
                             return false;
                         }
                         return true;
                     }]
                 ]]],
-                ['field_name' => ["The 'Field Name' is not 'value'."]]
+                ['field_name' => ["The Field Name is not 'value'."]]
             ],
             [
                 ['field_name' => 'value'],
@@ -666,7 +705,7 @@ class ValidatorTest extends RebetTestCase
                     'else' => [['C', 'Ng']]
                     ]
                 ]]],
-                ['field_name' => ["The 'Field Name' is NG."]]
+                ['field_name' => ["The Field Name is NG."]]
             ],
         ];
     }
