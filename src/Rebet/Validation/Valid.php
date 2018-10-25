@@ -67,7 +67,7 @@ class Valid
      * message)
      *   Key         - Required
      *   Placeholder - :attribute
-     *   Selector    - (none)
+     *   Selector    - none
      */
     const REQUIRED = 'Required:!';
 
@@ -216,7 +216,7 @@ class Valid
      * message)
      *   Key         - SameAs
      *   Placeholder - :attribute, :self, :value
-     *   Selector    - (none)
+     *   Selector    - none
      */
     const SAME_AS = 'SameAs:';
 
@@ -230,7 +230,7 @@ class Valid
      * message)
      *   Key         - NotSameAs
      *   Placeholder - :attribute, :self, :value
-     *   Selector    - (none)
+     *   Selector    - none
      */
     const NOT_SAME_AS = 'NotSameAs:';
 
@@ -262,7 +262,17 @@ class Valid
      */
     const NOT_REGEX = 'NotRegex:';
 
-
+    /**
+     * Max Length Validation.
+     * It checks the value character length will less equal given max length.
+     *
+     * ex)
+     *   - ['CU', Valid::MAX_LENGTH, max]
+     * message)
+     *   Key         - MaxLength, MaxLength@List
+     *   Placeholder - :attribute, :self, :max, :nth, :value
+     *   Selector    - none
+     */
     const MAX_LENGTH = 'MaxLength:';
 
 

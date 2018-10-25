@@ -869,6 +869,41 @@ EOS
             ],
 
             // --------------------------------------------
+            // Valid::MAX_LENGTH
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_LENGTH, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_LENGTH, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abcd'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_LENGTH, 3]
+                ]]],
+                ['foo' => ["The Foo may not be greater than 3 characters."]]
+            ],
+            [
+                ['foo' => ['1234','1','123','12345']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_LENGTH, 3]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (1234) may not be greater than 3 characters.",
+                    "The 4th Foo (12345) may not be greater than 3 characters.",
+                ]]
+            ],
+            
+            // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
             [

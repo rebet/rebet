@@ -61,6 +61,7 @@ return [
     "NotRegex@List"   => [
         "{*} The :nth :attribute (:value) format is invalid.",
     ],
+    "MaxLength"       => "The :attribute may not be greater than :max characters.",
+    "MaxLength@List"  => "The :nth :attribute (:value) may not be greater than :max characters.",
 
-    "MaxLength"  => "The :attribute may not be greater than :max characters.",
 ];

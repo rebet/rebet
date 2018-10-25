@@ -45,6 +45,7 @@ return [
     "NotRegex@List"   => [
         "{*} :nth番目の:attribute（:value）の書式が正しくありません。",
     ],
+    "MaxLength"       => ":attributeは:max文字以下で入力して下さい。",
+    "MaxLength@List"  => ":nth番目の:attribute（:value）は:max文字以下で入力して下さい。",
 
-    "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",
 ];

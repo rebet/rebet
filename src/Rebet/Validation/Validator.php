@@ -565,7 +565,34 @@ class Validator
     }
 
     /**
-     * Handle Regex type validation
+     * Handle Listable Value Type Validation
+     *
+     * @param Context $c
+     * @param callable $test function($value) { ... }
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @param callable $selector function($value) { ... } (default: null)
+     * @return boolean
+     */
+    public static function handleListableValue(Context $c, \Closure $test, string $messsage_key, array $replacement = [], \Closure $selector = null) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        $valid = true;
+        foreach ((array)$c->value as $i => $value) {
+            if (!$test($value)) {
+                $replacement['nth']   = $c->ordinalize($i + 1);
+                $replacement['value'] = $value;
+                $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
+                $valid = false;
+            }
+        }
+        return $valid;
+    }
+
+    /**
+     * Handle Regex Type Validation
      *
      * @param Context $c
      * @param string $pattern
@@ -576,19 +603,17 @@ class Validator
      */
     public static function handleRegex(Context $c, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        $valid = true;
-        foreach ((array)$c->value as $num => $value) {
-            if (!preg_match($pattern, $value)) {
-                $replacement['nth']   = $c->ordinalize($num + 1);
-                $replacement['value'] = $value;
-                $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector);
-                $valid = false;
+        return static::handleListableValue(
+            $c,
+            function ($value) use ($pattern) {
+                return preg_match($pattern, $value);
+            },
+            $messsage_key,
+            $replacement,
+            function ($value) use ($selector) {
+                return $selector;
             }
-        }
-        return $valid;
+        );
     }
     
     /**
@@ -616,21 +641,39 @@ class Validator
      */
     public static function handleNotRegex(Context $c, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        $valid = true;
-        foreach ((array)$c->value as $num => $value) {
-            if (preg_match($pattern, $value)) {
-                $replacement['nth']   = $c->ordinalize($num + 1);
-                $replacement['value'] = $value;
-                $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector);
-                $valid = false;
+        return static::handleListableValue(
+            $c,
+            function ($value) use ($pattern) {
+                return !preg_match($pattern, $value);
+            },
+            $messsage_key,
+            $replacement,
+            function ($value) use ($selector) {
+                return $selector;
             }
-        }
-        return $valid;
+        );
     }
     
+    /**
+     * Max Length Validation
+     *
+     * @param Context $c
+     * @param integer $max
+     * @return boolean
+     */
+    public function validationMaxLength(Context $c, int $max) : bool
+    {
+        return static::handleListableValue(
+            $c,
+            function ($value) use ($max) {
+                return mb_strlen($value) <= $max;
+            },
+            'validation.MaxLength',
+            ['max' => $max]
+        );
+    }
+    
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================
