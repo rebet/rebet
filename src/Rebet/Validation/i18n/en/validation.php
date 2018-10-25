@@ -17,8 +17,16 @@ return [
         "[1]   The ':label' field is required when :other is not :value.",
         "[2,*] The ':label' field is required when :other is not in :value.",
     ],
-    "RequiredWith"    => "The ':label' field is required when :other are present at least :at_least.",
-    "RequiredWithout" => "The ':label' field is required when :other are not present at least :at_least.",
+    "RequiredWith"    => [
+        "{one}  The ':label' field is required when :other is present.",
+        "{some} The ':label' field is required when :other are present at least :at_least.",
+        "{all}  The ':label' field is required when :other are present.",
+    ],
+    "RequiredWithout" => [
+        "{one}  The ':label' field is required when :other is not present.",
+        "{some} The ':label' field is required when :other are not present at least :at_least.",
+        "{all}  The ':label' field is required when :other are not present.",
+    ],
     "BlankIf"         => [
         "[1]   The ':label' field must be blank when :other is :value.",
         "[2,*] The ':label' field must be blank when :other is in :value.",
@@ -27,8 +35,16 @@ return [
         "[1]   The ':label' field must be blank when :other is not :value.",
         "[2,*] The ':label' field must be blank when :other is not in :value.",
     ],
-    "BlankWith"       => "The ':label' field must be blank when :other are present at least :at_least.",
-    "BlankWithout"    => "The ':label' field must be blank when :other are not present at least :at_least.",
+    "BlankWith"       => [
+        "{one}  The ':label' field must be blank when :other is present.",
+        "{some} The ':label' field must be blank when :other are present at least :at_least.",
+        "{all}  The ':label' field must be blank when :other are present.",
+    ],
+    "BlankWithout"    => [
+        "{one}  The ':label' field must be blank when :other is not present.",
+        "{some} The ':label' field must be blank when :other are not present at least :at_least.",
+        "{all}  The ':label' field must be blank when :other are not present.",
+    ],
 
     "LengthMax"  => "The ':label' may not be greater than :max characters.",
 ];

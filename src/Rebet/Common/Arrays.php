@@ -590,4 +590,25 @@ class Arrays
         }
         return $array;
     }
+
+    /**
+     * Count items of given value.
+     *
+     * @param mixed $value
+     * @return int
+     */
+    public static function count($value) : int
+    {
+        if (is_array($value) || $value instanceof \Countable) {
+            return count($value);
+        }
+        if (is_iterable($value)) {
+            $count = 0;
+            foreach ($value as $item) {
+                $count++;
+            }
+            return $count;
+        }
+        return 1;
+    }
 }

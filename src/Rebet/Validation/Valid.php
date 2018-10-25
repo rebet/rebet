@@ -69,6 +69,10 @@ class Valid
      *
      * ex)
      *   - ['CU', Valid::REQUIRED]
+     * message)
+     *   Key         - Required
+     *   Placeholder - :label
+     *   Selector    - (none)
      */
     const REQUIRED = 'Required:!';
 
@@ -82,6 +86,10 @@ class Valid
      *   - ['CU', Valid::REQUIRED_IF, 'other', value]
      *   - ['CU', Valid::REQUIRED_IF, 'other', [value1, value2, ...]]
      *   - ['CU', Valid::REQUIRED_IF, 'other', ':field']
+     * message)
+     *   Key         - RequiredIf
+     *   Placeholder - :label, :selector, :other, :value
+     *   Selector    - number of count :value
      */
     const REQUIRED_IF = 'RequiredIf:!';
 
@@ -95,6 +103,10 @@ class Valid
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', value]
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', [value1, value2, ...]]
      *   - ['CU', Valid::REQUIRED_UNLESS, 'other', ':field']
+     * message)
+     *   Key         - RequiredUnless
+     *   Placeholder - :label, :selector, :other, :value
+     *   Selector    - number of count :value
      */
     const REQUIRED_UNLESS = 'RequiredUnless:!';
 
@@ -107,7 +119,11 @@ class Valid
      * ex)
      *   - ['CU', Valid::REQUIRED_WITH, 'other']
      *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...]]
-     *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...], 1]
+     *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...], at_least]
+     * message)
+     *   Key         - RequiredWith
+     *   Placeholder - :label, :selector, :other, :at_least
+     *   Selector    - one(when count(other) is one), some(when at_least < count(other)), all
      */
     const REQUIRED_WITH = 'RequiredWith:!';
 
@@ -121,6 +137,10 @@ class Valid
      *   - ['CU', Valid::REQUIRED_WITHOUT, 'other']
      *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...]]
      *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...], 1]
+     * message)
+     *   Key         - RequiredWithout
+     *   Placeholder - :label, :selector, :other, :at_least
+     *   Selector    - one(when count(other) is one), some(when at_least < count(other)), all
      */
     const REQUIRED_WITHOUT = 'RequiredWithout:!';
 
@@ -132,6 +152,10 @@ class Valid
      *   - ['CU', Valid::BLANK_IF, 'other', value]
      *   - ['CU', Valid::BLANK_IF, 'other', [value1, value2, ...]]
      *   - ['CU', Valid::BLANK_IF, 'other', ':field']
+     * message)
+     *   Key         - BlankIf
+     *   Placeholder - :label, :self, :selector, :other, :value
+     *   Selector    - number of count :value
      */
     const BLANK_IF = 'BlankIf:';
     
@@ -143,6 +167,10 @@ class Valid
      *   - ['CU', Valid::BLANK_UNLESS, 'other', value]
      *   - ['CU', Valid::BLANK_UNLESS, 'other', [value1, value2, ...]]
      *   - ['CU', Valid::BLANK_UNLESS, 'other', ':field']
+     * message)
+     *   Key         - BlankUnless
+     *   Placeholder - :label, :self, :selector, :other, :value
+     *   Selector    - number of count :value
      */
     const BLANK_UNLESS = 'BlankUnless:';
     
@@ -153,7 +181,11 @@ class Valid
      * ex)
      *   - ['CU', Valid::BLANK_WITH, 'other']
      *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...]]
-     *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...], 1]
+     *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...], at_least]
+     * message)
+     *   Key         - BlankWith
+     *   Placeholder - :label, :self, :selector, :other, :at_least
+     *   Selector    - one(when count(other) is one), some(when at_least < count(other)), all
      */
     const BLANK_WITH = 'BlankWith:';
 
@@ -164,7 +196,11 @@ class Valid
      * ex)
      *   - ['CU', Valid::BLANK_WITHOUT, 'other']
      *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...]]
-     *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...], 1]
+     *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...], at_least]
+     * message)
+     *   Key         - BlankWith
+     *   Placeholder - :label, :self, :selector, :other, :at_least
+     *   Selector    - one(when count(other) is one), some(when at_least < count(other)), all
      */
     const BLANK_WITHOUT = 'BlankWithout:';
 
