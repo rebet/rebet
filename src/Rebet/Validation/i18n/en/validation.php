@@ -50,8 +50,14 @@ return [
     "Regex"           => [
         "{*} The :attribute format is invalid.",
     ],
-    "NotRegex"         => [
+    "Regex@List"      => [
+        "{*} The format of the :attribute (:value) at #:no is invalid.",
+    ],
+    "NotRegex"        => [
         "{*} The :attribute format is invalid.",
+    ],
+    "NotRegex@List"   => [
+        "{*} The format of the :attribute (:value) at #:no is invalid.",
     ],
 
     "MaxLength"  => "The :attribute may not be greater than :max characters.",

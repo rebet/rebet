@@ -27,8 +27,14 @@ return [
     'Regex' => [
         "{digits} The :attribute must be digits.",
     ],
+    'Regex@List' => [
+        "{digits} The format of the :attribute (:value) at #:no must be digits.",
+    ],
     'NotRegex' => [
         "{digits} The :attribute must be not digits.",
+    ],
+    'NotRegex@List' => [
+        "{digits} The format of the :attribute (:value) at #:no must be not digits.",
     ],
 ];
 EOS
@@ -775,7 +781,34 @@ EOS
                 ]]],
                 ['foo' => ["The Foo must be digits."]]
             ],
-            
+            [
+                ['foo' => ['123','456','789']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['123','abc','def']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/']
+                ]]],
+                ['foo' => [
+                    "The format of the Foo (abc) at #2 is invalid.",
+                    "The format of the Foo (def) at #3 is invalid.",
+                ]]
+            ],
+            [
+                ['foo' => ['123','abc','def']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/', 'digits']
+                ]]],
+                ['foo' => [
+                    "The format of the Foo (abc) at #2 must be digits.",
+                    "The format of the Foo (def) at #3 must be digits.",
+                ]]
+            ],
+
             // --------------------------------------------
             // Valid::NOT_REGEX
             // --------------------------------------------
@@ -807,7 +840,34 @@ EOS
                 ]]],
                 ['foo' => ["The Foo must be not digits."]]
             ],
-            
+            [
+                ['foo' => ['abc','def','ghi']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['abc','123','456']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
+                ]]],
+                ['foo' => [
+                    "The format of the Foo (123) at #2 is invalid.",
+                    "The format of the Foo (456) at #3 is invalid.",
+                ]]
+            ],
+            [
+                ['foo' => ['abc','123','456']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/', 'digits']
+                ]]],
+                ['foo' => [
+                    "The format of the Foo (123) at #2 must be not digits.",
+                    "The format of the Foo (456) at #3 must be not digits.",
+                ]]
+            ],
+
             // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------

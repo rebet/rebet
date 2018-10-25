@@ -34,8 +34,14 @@ return [
     "Regex"           => [
         "{*} :attributeの書式が正しくありません。",
     ],
+    "Regex@List"      => [
+        "{*} :no番目の:attribute（:value）の書式が正しくありません。",
+    ],
     "NotRegex"        => [
         "{*} :attributeの書式が正しくありません。",
+    ],
+    "NotRegex@List"   => [
+        "{*} :no番目の:attribute（:value）の書式が正しくありません。",
     ],
 
     "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",

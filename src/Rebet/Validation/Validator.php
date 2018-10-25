@@ -579,11 +579,16 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-        if (preg_match($pattern, $c->value)) {
-            return true;
+        $valid = true;
+        foreach ((array)$c->value as $no => $value) {
+            if (!preg_match($pattern, $value)) {
+                $replacement['no']    = $no + 1;
+                $replacement['value'] = $value;
+                $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector);
+                $valid = false;
+            }
         }
-        $c->appendError($messsage_key, $replacement, $selector);
-        return false;
+        return $valid;
     }
     
     /**
@@ -614,11 +619,16 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-        if (!preg_match($pattern, $c->value)) {
-            return true;
+        $valid = true;
+        foreach ((array)$c->value as $no => $value) {
+            if (preg_match($pattern, $value)) {
+                $replacement['no']    = $no + 1;
+                $replacement['value'] = $value;
+                $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector);
+                $valid = false;
+            }
         }
-        $c->appendError($messsage_key, $replacement, $selector);
-        return false;
+        return $valid;
     }
     
     // ====================================================
