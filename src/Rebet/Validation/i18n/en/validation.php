@@ -67,7 +67,9 @@ return [
     "MinLength@List"  => "The :nth :attribute (:value) must be at least :min characters.",
     "Length"          => "The :attribute must be :length characters.",
     "Length@List"     => "The :nth :attribute (:value) must be :length characters.",
-    "Numeric"         => "The :attribute must be Numeric.",
-    "Numeric@List"    => "The :nth :attribute (:value) must be Numeric.",
+    "Numeric"         => "The :attribute must be numeric.",
+    "Numeric@List"    => "The :nth :attribute (:value) must be numeric.",
+    "Integer"         => "The :attribute must be integer.",
+    "Integer@List"    => "The :nth :attribute (:value) must be integer.",
 
 ];

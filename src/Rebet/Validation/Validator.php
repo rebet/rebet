@@ -725,6 +725,17 @@ class Validator
         return static::handleListableValue($c, 'is_numeric', 'validation.Numeric');
     }
 
+    /**
+     * Integer Validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationInteger(Context $c) : bool
+    {
+        return static::handleRegex($c, '/^[+-]?[0-9]+$/u', 'validation.Integer');
+    }
+    
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

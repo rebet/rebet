@@ -994,7 +994,7 @@ EOS
                 ['foo' => ['rule' => [
                     ['C', Valid::NUMERIC]
                 ]]],
-                ['foo' => ["The Foo must be Numeric."]]
+                ['foo' => ["The Foo must be numeric."]]
             ],
             [
                 ['foo' => ['+123.4', '-1234', '1.234e3', '123']],
@@ -1008,7 +1008,49 @@ EOS
                 ['foo' => ['rule' => [
                     ['C', Valid::NUMERIC]
                 ]]],
-                ['foo' => ["The 2nd Foo (-1,234) must be Numeric."]]
+                ['foo' => ["The 2nd Foo (-1,234) must be numeric."]]
+            ],
+            
+            // --------------------------------------------
+            // Valid::INTEGER
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::INTEGER]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::INTEGER]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::INTEGER]
+                ]]],
+                ['foo' => ["The Foo must be integer."]]
+            ],
+            [
+                ['foo' => ['+123', '-1234', '+1234']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::INTEGER]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['+123.4', '123', 'abc']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::INTEGER]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (+123.4) must be integer.",
+                    "The 3rd Foo (abc) must be integer.",
+                ]]
             ],
             
             // --------------------------------------------

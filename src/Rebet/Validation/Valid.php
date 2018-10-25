@@ -313,6 +313,19 @@ class Valid
      *   Selector    - none
      */
     const NUMERIC = 'Numeric:';
+
+    /**
+     * Integer Validation.
+     * It checks the value is integer.
+     *
+     * ex)
+     *   - ['CU', Valid::INTEGER]
+     * message)
+     *   Key         - Integer, Integer@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const INTEGER = 'Integer:';
     
     
     const DEPENDENCE_CHAR = 'DependenceChar:';
