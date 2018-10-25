@@ -715,14 +715,14 @@ class Validator
     }
 
     /**
-     * Numeric Validation
+     * Number Validation
      *
      * @param Context $c
      * @return boolean
      */
-    public function validationNumeric(Context $c) : bool
+    public function validationNumber(Context $c) : bool
     {
-        return static::handleListableValue($c, 'is_numeric', 'validation.Numeric');
+        return static::handleRegex($c, "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'validation.Number');
     }
 
     /**

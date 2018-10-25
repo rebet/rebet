@@ -302,17 +302,17 @@ class Valid
     const LENGTH = 'Length:';
 
     /**
-     * Numeric Validation.
-     * It checks the value is numeric using is_numeric().
+     * Number Validation.
+     * It checks the value is number.
      *
      * ex)
-     *   - ['CU', Valid::NUMERIC]
+     *   - ['CU', Valid::NUMBER]
      * message)
-     *   Key         - Numeric, Numeric@List
+     *   Key         - Number, Number@List
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const NUMERIC = 'Numeric:';
+    const NUMBER = 'Number:';
 
     /**
      * Integer Validation.

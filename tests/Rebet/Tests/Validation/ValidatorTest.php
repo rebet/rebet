@@ -973,42 +973,42 @@ EOS
             ],
             
             // --------------------------------------------
-            // Valid::NUMERIC
+            // Valid::NUMBER
             // --------------------------------------------
             [
                 [],
                 ['foo' => ['rule' => [
-                    ['C', Valid::NUMERIC]
+                    ['C', Valid::NUMBER]
                 ]]],
                 []
             ],
             [
                 ['foo' => '123'],
                 ['foo' => ['rule' => [
-                    ['C', Valid::NUMERIC]
+                    ['C', Valid::NUMBER]
                 ]]],
                 []
             ],
             [
                 ['foo' => 'abc'],
                 ['foo' => ['rule' => [
-                    ['C', Valid::NUMERIC]
+                    ['C', Valid::NUMBER]
                 ]]],
-                ['foo' => ["The Foo must be numeric."]]
+                ['foo' => ["The Foo must be number."]]
             ],
             [
-                ['foo' => ['+123.4', '-1234', '1.234e3', '123']],
+                ['foo' => ['+123.4', '-1234', '1.234', '123']],
                 ['foo' => ['rule' => [
-                    ['C', Valid::NUMERIC]
+                    ['C', Valid::NUMBER]
                 ]]],
                 []
             ],
             [
-                ['foo' => ['+123.4', '-1,234', '1.234e3']],
+                ['foo' => ['+123.4', '-1,234', '1.234']],
                 ['foo' => ['rule' => [
-                    ['C', Valid::NUMERIC]
+                    ['C', Valid::NUMBER]
                 ]]],
-                ['foo' => ["The 2nd Foo (-1,234) must be numeric."]]
+                ['foo' => ["The 2nd Foo (-1,234) must be number."]]
             ],
             
             // --------------------------------------------
