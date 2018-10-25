@@ -204,9 +204,8 @@ class Translator
     {
         $locale = $locale ?? $this->locale;
         $ordinalize = static::config("ordinalize.{$locale}", false, function (int $num) {
-            return "{$num}";
+            return $num;
         });
-
         return (string)$ordinalize($num);
     }
 
