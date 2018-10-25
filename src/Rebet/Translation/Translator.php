@@ -4,6 +4,7 @@ namespace Rebet\Translation;
 use Rebet\Config\Configurable;
 use Rebet\Common\Reflector;
 use Rebet\Common\Collection;
+use Rebet\Common\Strings;
 
 /**
  * Translator Class
@@ -175,17 +176,17 @@ class Translator
     /**
      * Select a proper translation string based on the given selector.
      *
-     * @param  string  $line
+     * @param  string|array  $line
      * @param  int|string|null  $selector
      * @return string|null
      * @throws LogicException
      */
-    protected function choose(string $line, $selector) : ?string
+    protected function choose($line, $selector) : ?string
     {
         if (is_null($selector)) {
             return $line;
         }
-        $segments = explode('|', $line);
+        $segments = is_array($line) ? $line : explode('|', $line) ;
         $line     = null;
         foreach ($segments as $part) {
             if (! is_null($line = static::extract($part, $selector))) {

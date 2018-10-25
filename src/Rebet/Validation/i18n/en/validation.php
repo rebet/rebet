@@ -9,12 +9,24 @@
  */
 return [
     "Required"        => "The ':label' field is required.",
-    "RequiredIf"      => "The ':label' field is required when :other is :value.",
-    "RequiredUnless"  => "The ':label' field is required when :other is not :value.",
+    "RequiredIf"      => [
+        "[1]   The ':label' field is required when :other is :value.",
+        "[2,*] The ':label' field is required when :other is in :value.",
+    ],
+    "RequiredUnless"  => [
+        "[1]   The ':label' field is required when :other is not :value.",
+        "[2,*] The ':label' field is required when :other is not in :value.",
+    ],
     "RequiredWith"    => "The ':label' field is required when :other are present at least :at_least.",
     "RequiredWithout" => "The ':label' field is required when :other are not present at least :at_least.",
-    "BlankIf"         => "The ':label' field must be blank when :other is :value.",
-    "BlankUnless"     => "The ':label' field must be blank when :other is not :value.",
+    "BlankIf"         => [
+        "[1]   The ':label' field must be blank when :other is :value.",
+        "[2,*] The ':label' field must be blank when :other is in :value.",
+    ],
+    "BlankUnless"     => [
+        "[1]   The ':label' field must be blank when :other is not :value.",
+        "[2,*] The ':label' field must be blank when :other is not in :value.",
+    ],
     "BlankWith"       => "The ':label' field must be blank when :other are present at least :at_least.",
     "BlankWithout"    => "The ':label' field must be blank when :other are not present at least :at_least.",
 

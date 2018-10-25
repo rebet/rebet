@@ -182,12 +182,13 @@ class Context
      * @param array $replace (default: [])
      * @return self
      */
-    public function appendError(string $key, array $replace = []) : self
+    public function appendError(string $key, array $replace = [], $selector = null) : self
     {
-        $replace['label'] = $this->label;
-        $replace['self']  = $this->value;
-        $prefix           = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
-        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get($key, $replace) ;
+        $replace['label']    = $this->label;
+        $replace['self']     = $this->value;
+        $replace['selector'] = $selector;
+        $prefix              = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
+        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get($key, $replace, $selector) ;
         return $this;
     }
 

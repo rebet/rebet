@@ -307,7 +307,7 @@ class Validator
             return true;
         }
         return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label]);
+            $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label], is_array($value) ? count($value) : 1);
             return false;
         });
     }
@@ -326,7 +326,7 @@ class Validator
             return true;
         }
         return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label]);
+            $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label], is_array($value) ? count($value) : 1);
             return false;
         });
     }
@@ -431,7 +431,7 @@ class Validator
             return true;
         }
         return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label]);
+            $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label], is_array($value) ? count($value) : 1);
             return false;
         });
     }
@@ -450,7 +450,7 @@ class Validator
             return true;
         }
         return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label]);
+            $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label], is_array($value) ? count($value) : 1);
             return false;
         });
     }
