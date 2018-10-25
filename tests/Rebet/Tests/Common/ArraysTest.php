@@ -5,6 +5,8 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\Collection;
+use Rebet\Tests\Mock\CountableStub;
+use Rebet\Tests\Mock\IteratorAggregateStub;
 
 class ArraysTest extends RebetTestCase
 {
@@ -482,5 +484,16 @@ class ArraysTest extends RebetTestCase
     {
         $data = [['foo', 'bar'], ['baz']];
         $this->assertEquals(['foo', 'bar', 'baz'], Arrays::collapse($data));
+    }
+
+    public function test_count()
+    {
+        $this->assertSame(1, Arrays::count(null));
+        $this->assertSame(1, Arrays::count(''));
+        $this->assertSame(1, Arrays::count(0));
+        $this->assertSame(0, Arrays::count([]));
+        $this->assertSame(3, Arrays::count([1, 2, 3]));
+        $this->assertSame(4, Arrays::count(new CountableStub(4)));
+        $this->assertSame(5, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5])));
     }
 }
