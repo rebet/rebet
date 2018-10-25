@@ -326,10 +326,10 @@ class Valid
      *   Selector    - none
      */
     const INTEGER = 'Integer:';
-    
+
     /**
      * Float Validation.
-     * It checks the value is Float.
+     * It checks the value is real number up to given number decimal places.
      *
      * ex)
      *   - ['CU', Valid::FLOAT, decimal]
