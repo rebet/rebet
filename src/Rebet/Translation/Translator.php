@@ -22,7 +22,7 @@ class Translator
         return [
             'default_locale'  => null,
             'fallback_locale' => 'en',
-            'ordinalize' => [
+            'ordinalize'      => [
                 'en' => function (int $num) {
                     return in_array($num % 100, [11, 12, 13]) ? $num.'th' : $num.(['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
                 }
