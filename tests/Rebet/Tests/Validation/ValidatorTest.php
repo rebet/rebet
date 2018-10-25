@@ -666,6 +666,44 @@ class ValidatorTest extends RebetTestCase
                 []
             ],
 
+            // --------------------------------------------
+            // Valid::NOT_SAME_AS
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_SAME_AS, 1]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_SAME_AS, 2]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_SAME_AS, 1]
+                ]]],
+                ['foo' => ["The Foo and 1 must not match."]]
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_SAME_AS, ':baz']
+                ]]],
+                ['foo' => ["The Foo and Baz must not match."]]
+            ],
+            [
+                ['foo' => 1, 'bar' => 2, 'baz' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_SAME_AS, ':bar']
+                ]]],
+                []
+            ],
 
             // --------------------------------------------
             // Valid::SATISFY

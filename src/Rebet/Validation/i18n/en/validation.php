@@ -46,6 +46,7 @@ return [
         "{all}  The :attribute field must be blank when :other are not present.",
     ],
     "SameAs"          => "The :attribute and :value must match.",
+    "NotSameAs"       => "The :attribute and :value must not match.",
 
     "MaxLength"  => "The :attribute may not be greater than :max characters.",
 ];

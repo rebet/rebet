@@ -29,7 +29,8 @@ return [
         "{some} :otherが:at_least項目以上入力されていない場合は:attributeを空にして下さい。",
         "{*}    :otherが入力されていない場合は:attributeを空にして下さい。",
     ],
-    "SameAs"          => ":attributeの値が:valueと異なります。",
+    "SameAs"          => ":attributeの値が:valueと一致しません。",
+    "NotSameAs"       => ":attributeの値が:valueと一致してはなりません。",
 
     "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",
 ];

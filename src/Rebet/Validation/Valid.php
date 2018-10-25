@@ -16,6 +16,7 @@ class Valid
 {
     /**
      * If Condition.
+     * It checks the value of other field is [given value/in given array/value of given field].
      * This validation does not output an error message even test is failed.
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
@@ -28,6 +29,7 @@ class Valid
 
     /**
      * Unless Condition.
+     * It checks the value of other field is not [given value/in given array/value of given field].
      * This validation does not output an error message even test is failed.
      * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
      *
@@ -40,7 +42,9 @@ class Valid
 
     /**
      * Satisfy Validation/Condition.
+     * It checks the value will satisfy given test callback.
      * This validation does not output an error message by own.
+     *
      * If you need to output an error message you have to call Context::appendError() in the $test callback.
      * That means you can do any validation test by this validation.
      *
@@ -55,8 +59,8 @@ class Valid
 
     /**
      * Required Validation.
+     * It checks the value is not blank.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
-     * If you don't want to stop validation, you will give 'Required' string.
      *
      * ex)
      *   - ['CU', Valid::REQUIRED]
@@ -69,9 +73,9 @@ class Valid
 
     /**
      * Required If Validation.
+     * It checks the value is not blank.
      * If 'other' field value is given 'value', then check the target fields.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
-     * If you don't want to stop validation, you will give 'RequiredIf' string.
      *
      * ex)
      *   - ['CU', Valid::REQUIRED_IF, 'other', value]
@@ -86,6 +90,7 @@ class Valid
 
     /**
      * Required Unless Validation.
+     * It checks the value is not blank.
      * If 'other' field value is not given 'value', then check the target fields.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
      * If you don't want to stop validation, you will give 'RequiredUnless' string.
@@ -103,6 +108,7 @@ class Valid
 
     /**
      * Required With Validation.
+     * It checks the value is not blank.
      * If 'other' fields are present at least N, then check the target fields.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
      * If you don't want to stop validation, you will give 'RequiredWith' string.
@@ -120,6 +126,7 @@ class Valid
 
     /**
      * Required Without Validation.
+     * It checks the value is not blank.
      * If 'other' fields are not present at least N, then check the target fields.
      * This validation constant includes '!'(validation stop if failed) option defaultly.
      * If you don't want to stop validation, you will give 'RequiredWithout' string.
@@ -137,6 +144,7 @@ class Valid
 
     /**
      * Blank If Validation.
+     * It checks the value is blank.
      * If 'other' field value is given 'value', then check the target fields.
      *
      * ex)
@@ -152,6 +160,7 @@ class Valid
     
     /**
      * Empty Unless Validation.
+     * It checks the value is blank.
      * If 'other' field value is given 'value', then check the target fields.
      *
      * ex)
@@ -167,6 +176,7 @@ class Valid
     
     /**
      * Blank With Validation.
+     * It checks the value is blank.
      * If 'other' fields are present at least N, then check the target fields.
      *
      * ex)
@@ -182,6 +192,7 @@ class Valid
 
     /**
      * Blank Without Validation.
+     * It checks the value is blank.
      * If 'other' fields are not present at least N, then check the target fields.
      *
      * ex)
@@ -209,6 +220,19 @@ class Valid
      */
     const SAME_AS = 'SameAs:';
 
+    /**
+     * Not Same As Validation.
+     * It checks the value does not same as a given value or field.
+     *
+     * ex)
+     *   - ['CU', Valid::NOT_SAME_AS, value]
+     *   - ['CU', Valid::NOT_SAME_AS, ':field']
+     * message)
+     *   Key         - NotSameAs
+     *   Placeholder - :attribute, :self, :value
+     *   Selector    - (none)
+     */
+    const NOT_SAME_AS = 'NotSameAs:';
 
     
     const MAX_LENGTH = 'MaxLength:';
