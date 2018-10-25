@@ -65,5 +65,7 @@ return [
     "MaxLength@List"  => "The :nth :attribute (:value) may not be greater than :max characters.",
     "MinLength"       => "The :attribute must be at least :min characters.",
     "MinLength@List"  => "The :nth :attribute (:value) must be at least :min characters.",
+    "Length"          => "The :attribute must be :length characters.",
+    "Length@List"     => "The :nth :attribute (:value) must be :length characters.",
 
 ];

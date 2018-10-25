@@ -694,6 +694,25 @@ class Validator
             ['min' => $min]
         );
     }
+
+    /**
+     * Length Validation
+     *
+     * @param Context $c
+     * @param integer $length
+     * @return boolean
+     */
+    public function validationLength(Context $c, int $length) : bool
+    {
+        return static::handleListableValue(
+            $c,
+            function ($value) use ($length) {
+                return mb_strlen($value) === $length;
+            },
+            'validation.Length',
+            ['length' => $length]
+        );
+    }
     
 
     // ====================================================

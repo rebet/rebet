@@ -288,6 +288,19 @@ class Valid
      */
     const MIN_LENGTH = 'MinLength:';
 
+    /**
+     * Length Validation.
+     * It checks the value character length will equal given length.
+     *
+     * ex)
+     *   - ['CU', Valid::LENGTH, length]
+     * message)
+     *   Key         - Length, Length@List
+     *   Placeholder - :attribute, :self, :length, :nth, :value
+     *   Selector    - none
+     */
+    const LENGTH = 'Length:';
+
     
     
     const DEPENDENCE_CHAR = 'DependenceChar:';

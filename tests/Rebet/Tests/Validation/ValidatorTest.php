@@ -938,6 +938,41 @@ EOS
             ],
             
             // --------------------------------------------
+            // Valid::LENGTH
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::LENGTH, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::LENGTH, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'ab'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::LENGTH, 3]
+                ]]],
+                ['foo' => ["The Foo must be 3 characters."]]
+            ],
+            [
+                ['foo' => ['12', '1', '123']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::LENGTH, 3]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (12) must be 3 characters.",
+                    "The 2nd Foo (1) must be 3 characters.",
+                ]]
+            ],
+            
+            // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
             [
