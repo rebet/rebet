@@ -24,7 +24,7 @@ class UserValidation extends Rule
                 'label' => '氏名',
                 'rule' => [
                     ['CU', Valid::REQUIRED.'!'],
-                    ['CU', Valid::LENGTH_MAX, 20],
+                    ['CU', Valid::MAX_LENGTH, 20],
                     ['CU', Valid::DEPENDENCE_CHAR]
                 ]
             ],
@@ -114,7 +114,7 @@ class UserValidation extends Rule
                         'label' => ':parent住所',
                         'rule' => [
                             ['CU', Valid::REQUIRED.'!'],
-                            ['CU', Valid::LENGTH_MAX, 127],
+                            ['CU', Valid::MAX_LENGTH, 127],
                             ['CU', Valid::DEPENDENCE_CHAR],
                         ],
                     ],

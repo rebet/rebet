@@ -205,7 +205,7 @@ class ContextTest extends RebetTestCase
 
         $c->initBy('name');
         $this->assertNull($this->errors['name'] ?? null);
-        $c->appendError('validation.LengthMax', ['max' => 12]);
+        $c->appendError('validation.MaxLength', ['max' => 12]);
         $this->assertSame(['氏名は12文字以下で入力して下さい。'], $this->errors['name'] ?? null);
     }
 

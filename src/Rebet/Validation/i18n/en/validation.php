@@ -47,5 +47,5 @@ return [
     ],
     "SameAs"          => "The :attribute and :value must match.",
 
-    "LengthMax"  => "The :attribute may not be greater than :max characters.",
+    "MaxLength"  => "The :attribute may not be greater than :max characters.",
 ];

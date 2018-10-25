@@ -7,15 +7,6 @@ namespace Rebet\Validation;
  * This class is constants list of built-in validation names.
  * Some definitions (ex REQUIRED/DATE_TIME) includes '!' (validation stop if failed) option defaultly.
  *
- * The validation names of Rebet is a naming rule assuming a forward match type IDE input completion.
- * For example,
- *
- *   Usually    => In Rebet
- *   ------------------------
- *   LENGTH     => LENGTH
- *   MIN_LENGTH => LENGTH_MIN
- *   MAX_LENGTH => LENGTH_MAX
- *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -220,7 +211,7 @@ class Valid
 
 
     
-    const LENGTH_MAX = 'LengthMax:';
+    const MAX_LENGTH = 'MaxLength:';
 
 
     const DEPENDENCE_CHAR = 'DependenceChar:';

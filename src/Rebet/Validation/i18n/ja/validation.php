@@ -31,5 +31,5 @@ return [
     ],
     "SameAs"          => ":attributeの値が:valueと異なります。",
 
-    "LengthMax"  => ":attributeは:max文字以下で入力して下さい。",
+    "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",
 ];
