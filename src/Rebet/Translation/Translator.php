@@ -231,6 +231,6 @@ class Translator
             }
             return null;
         }
-        return in_array($selector, explode(',', $condition)) ? $value : null;
+        return $condition === '*' || in_array($selector, explode(',', $condition)) ? $value : null;
     }
 }
