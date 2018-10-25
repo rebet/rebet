@@ -34,6 +34,9 @@ return [
     "Regex"           => [
         "{*} :attributeの書式が正しくありません。",
     ],
+    "NotRegex"        => [
+        "{*} :attributeの書式が正しくありません。",
+    ],
 
     "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",
 ];

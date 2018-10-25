@@ -556,10 +556,10 @@ class Validator
      *
      * @param Context $c
      * @param string $pattern
-     * @param string $selector (default: '*')
+     * @param string $selector (default: null)
      * @return boolean
      */
-    protected function validationRegex(Context $c, string $pattern, string $selector = '*') : bool
+    protected function validationRegex(Context $c, string $pattern, string $selector = null) : bool
     {
         return static::handleRegex($c, $pattern, 'validation.Regex', ['pattern' => $pattern], $selector);
     }
@@ -580,6 +580,41 @@ class Validator
             return true;
         }
         if (preg_match($pattern, $c->value)) {
+            return true;
+        }
+        $c->appendError($messsage_key, $replacement, $selector);
+        return false;
+    }
+    
+    /**
+     * Not Regex Validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @param string $selector (default: null)
+     * @return boolean
+     */
+    protected function validationNotRegex(Context $c, string $pattern, string $selector = null) : bool
+    {
+        return static::handleNotRegex($c, $pattern, 'validation.NotRegex', ['pattern' => $pattern], $selector);
+    }
+
+    /**
+     * Handle Not Regex type validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @param int|string $selector (default: null)
+     * @return boolean
+     */
+    public static function handleNotRegex(Context $c, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        if (!preg_match($pattern, $c->value)) {
             return true;
         }
         $c->appendError($messsage_key, $replacement, $selector);

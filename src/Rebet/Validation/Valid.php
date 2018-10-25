@@ -248,8 +248,21 @@ class Valid
      */
     const REGEX = 'Regex:';
     
+    /**
+     * Not Regex Validation.
+     * It checks the value will not match given pattern.
+     *
+     * ex)
+     *   - ['CU', Valid::NOT_REGEX, pattern]
+     *   - ['CU', Valid::NOT_REGEX, pattern, $selector]
+     * message)
+     *   Key         - Regex
+     *   Placeholder - :attribute, :self, :selector, :pattern
+     *   Selector    - none or given selector
+     */
+    const NOT_REGEX = 'NotRegex:';
 
-    
+
     const MAX_LENGTH = 'MaxLength:';
 
 

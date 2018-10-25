@@ -26,7 +26,10 @@ class ValidatorTest extends RebetTestCase
 return [
     'Regex' => [
         "{digits} The :attribute must be digits.",
-    ]
+    ],
+    'NotRegex' => [
+        "{digits} The :attribute must be not digits.",
+    ],
 ];
 EOS
                     ],
@@ -771,6 +774,38 @@ EOS
                     ['C', Valid::REGEX, '/^[0-9]+$/', 'digits']
                 ]]],
                 ['foo' => ["The Foo must be digits."]]
+            ],
+            
+            // --------------------------------------------
+            // Valid::NOT_REGEX
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
+                ]]],
+                ['foo' => ["The Foo format is invalid."]]
+            ],
+            [
+                ['foo' => '123'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NOT_REGEX, '/^[0-9]+$/', 'digits']
+                ]]],
+                ['foo' => ["The Foo must be not digits."]]
             ],
             
             // --------------------------------------------
