@@ -575,7 +575,7 @@ class Validator
      * @param callable $selector function($value) { ... } (default: null)
      * @return boolean
      */
-    public static function handleListableValue(Context $c, \Closure $test, string $messsage_key, array $replacement = [], \Closure $selector = null) : bool
+    public static function handleListableValue(Context $c, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         if ($c->blank()) {
             return true;
@@ -713,7 +713,17 @@ class Validator
             ['length' => $length]
         );
     }
-    
+
+    /**
+     * Numeric Validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationNumeric(Context $c) : bool
+    {
+        return static::handleListableValue($c, 'is_numeric', 'validation.Numeric');
+    }
 
     // ====================================================
     // Built-in Condition Methods

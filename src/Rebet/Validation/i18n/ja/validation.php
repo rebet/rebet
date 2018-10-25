@@ -51,5 +51,7 @@ return [
     "MinLength@List"  => ":nth番目の:attribute（:value）は:min文字以上で入力して下さい。",
     "Length"          => ":attributeは:min文字で入力して下さい。",
     "Length@List"     => ":nth番目の:attribute（:value）は:min文字で入力して下さい。",
+    "Numeric"         => ":attributeは数値で入力して下さい。",
+    "Numeric@List"    => ":nth番目の:attribute（:value）は数値で入力して下さい。",
 
 ];
