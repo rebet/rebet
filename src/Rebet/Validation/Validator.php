@@ -733,7 +733,19 @@ class Validator
      */
     public function validationInteger(Context $c) : bool
     {
-        return static::handleRegex($c, '/^[+-]?[0-9]+$/u', 'validation.Integer');
+        return static::handleRegex($c, "/^[+-]?[0-9]+$/u", 'validation.Integer');
+    }
+
+    /**
+     * Float Validation
+     *
+     * @param Context $c
+     * @param int $decimal
+     * @return boolean
+     */
+    public function validationFloat(Context $c, int $decimal) : bool
+    {
+        return static::handleRegex($c, "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'validation.Float', ['decimal' => $decimal]);
     }
     
     // ====================================================

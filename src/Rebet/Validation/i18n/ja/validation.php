@@ -37,23 +37,25 @@ return [
         "{*} :attributeの書式が正しくありません。",
     ],
     "Regex@List"      => [
-        "{*} :nth番目の:attribute（:value）の書式が正しくありません。",
+        "{*} :nth番目の:attribute(:value)の書式が正しくありません。",
     ],
     "NotRegex"        => [
         "{*} :attributeの書式が正しくありません。",
     ],
     "NotRegex@List"   => [
-        "{*} :nth番目の:attribute（:value）の書式が正しくありません。",
+        "{*} :nth番目の:attribute(:value)の書式が正しくありません。",
     ],
     "MaxLength"       => ":attributeは:max文字以下で入力して下さい。",
-    "MaxLength@List"  => ":nth番目の:attribute（:value）は:max文字以下で入力して下さい。",
+    "MaxLength@List"  => ":nth番目の:attribute(:value)は:max文字以下で入力して下さい。",
     "MinLength"       => ":attributeは:min文字以上で入力して下さい。",
-    "MinLength@List"  => ":nth番目の:attribute（:value）は:min文字以上で入力して下さい。",
+    "MinLength@List"  => ":nth番目の:attribute(:value)は:min文字以上で入力して下さい。",
     "Length"          => ":attributeは:min文字で入力して下さい。",
-    "Length@List"     => ":nth番目の:attribute（:value）は:min文字で入力して下さい。",
+    "Length@List"     => ":nth番目の:attribute(:value)は:min文字で入力して下さい。",
     "Numeric"         => ":attributeは数値で入力して下さい。",
-    "Numeric@List"    => ":nth番目の:attribute（:value）は数値で入力して下さい。",
+    "Numeric@List"    => ":nth番目の:attribute(:value)は数値で入力して下さい。",
     "Integer"         => ":attributeは整数で入力して下さい。",
-    "Integer@List"    => ":nth番目の:attribute（:value）は整数で入力して下さい。",
+    "Integer@List"    => ":nth番目の:attribute(:value)は整数で入力して下さい。",
+    "Float"           => ":attributeは実数(小数点:decimal桁まで)で入力して下さい。",
+    "Float@List"      => ":nth番目の:attribute(:value)は実数(小数点:decimal桁まで)で入力して下さい。",
 
 ];

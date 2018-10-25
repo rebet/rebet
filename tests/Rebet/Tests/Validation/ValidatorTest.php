@@ -1054,6 +1054,62 @@ EOS
             ],
             
             // --------------------------------------------
+            // Valid::FLOAT
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123.12'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123.123'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                ['foo' => ["The Foo must be real number (up to 2 decimal places)."]]
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                ['foo' => ["The Foo must be real number (up to 2 decimal places)."]]
+            ],
+            [
+                ['foo' => ['+123', '-123.4', '+12.34']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['+123.4', '123.230', 'abc']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FLOAT, 2]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (123.230) must be real number (up to 2 decimal places).",
+                    "The 3rd Foo (abc) must be real number (up to 2 decimal places).",
+                ]]
+            ],
+            
+            // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
             [

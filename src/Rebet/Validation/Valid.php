@@ -327,6 +327,19 @@ class Valid
      */
     const INTEGER = 'Integer:';
     
+    /**
+     * Float Validation.
+     * It checks the value is Float.
+     *
+     * ex)
+     *   - ['CU', Valid::FLOAT, decimal]
+     * message)
+     *   Key         - Float, Float@List
+     *   Placeholder - :attribute, :self, :decimal, :nth, :value
+     *   Selector    - none
+     */
+    const FLOAT = 'Float:';
+    
     
     const DEPENDENCE_CHAR = 'DependenceChar:';
     const DATETIME = 'Datetime:';
