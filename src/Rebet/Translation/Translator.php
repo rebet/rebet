@@ -183,7 +183,7 @@ class Translator
      */
     protected function choose($line, $selector) : ?string
     {
-        if (is_null($selector)) {
+        if (is_null($selector) && is_string($line)) {
             return $line;
         }
         $segments = is_array($line) ? $line : explode('|', $line) ;

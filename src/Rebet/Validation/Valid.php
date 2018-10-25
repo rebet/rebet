@@ -208,7 +208,7 @@ class Valid
 
     /**
      * Same As Validation.
-     * It checks the value same as a given value or field.
+     * It checks the value will same as a given value or field.
      *
      * ex)
      *   - ['CU', Valid::SAME_AS, value]
@@ -222,7 +222,7 @@ class Valid
 
     /**
      * Not Same As Validation.
-     * It checks the value does not same as a given value or field.
+     * It checks the value will not same as a given value or field.
      *
      * ex)
      *   - ['CU', Valid::NOT_SAME_AS, value]
@@ -233,6 +233,21 @@ class Valid
      *   Selector    - (none)
      */
     const NOT_SAME_AS = 'NotSameAs:';
+
+    /**
+     * Regex Validation.
+     * It checks the value will match given pattern.
+     *
+     * ex)
+     *   - ['CU', Valid::REGEX, pattern]
+     *   - ['CU', Valid::REGEX, pattern, $selector]
+     * message)
+     *   Key         - Regex
+     *   Placeholder - :attribute, :self, :selector, :pattern
+     *   Selector    - none or given selector
+     */
+    const REGEX = 'Regex:';
+    
 
     
     const MAX_LENGTH = 'MaxLength:';

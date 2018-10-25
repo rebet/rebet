@@ -31,6 +31,9 @@ return [
     ],
     "SameAs"          => ":attributeの値が:valueと一致しません。",
     "NotSameAs"       => ":attributeの値が:valueと一致してはなりません。",
+    "Regex"           => [
+        "{*} :attributeの書式が正しくありません。",
+    ],
 
     "MaxLength"  => ":attributeは:max文字以下で入力して下さい。",
 ];

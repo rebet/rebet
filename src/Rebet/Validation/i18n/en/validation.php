@@ -47,6 +47,9 @@ return [
     ],
     "SameAs"          => "The :attribute and :value must match.",
     "NotSameAs"       => "The :attribute and :value must not match.",
+    "Regex"           => [
+        "{*} The :attribute format is invalid.",
+    ],
 
     "MaxLength"  => "The :attribute may not be greater than :max characters.",
 ];

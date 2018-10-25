@@ -270,7 +270,7 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-        return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
+        return static::handleIf($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
             return false;
         });
@@ -289,22 +289,22 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-        return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
+        return static::handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
             return false;
         });
     }
     
     /**
-     * Handle If validation precondition
+     * Handle If validate precondition
      *
      * @param Context $c
      * @param string $other
      * @param string|array $value value or array or :field_name
-     * @param callable $callback
+     * @param callable $callback function(Context $c, string $other, $value, string $label) { ... }
      * @return boolean
      */
-    protected function handleIf(Context $c, string $other, $value, callable $callback) : bool
+    public static function handleIf(Context $c, string $other, $value, callable $callback) : bool
     {
         [$value, $label] = $c->resolve($value);
         if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
@@ -314,15 +314,15 @@ class Validator
     }
 
     /**
-     * Handle Unless validation precondition
+     * Handle Unless validate precondition
      *
      * @param Context $c
      * @param string $other
      * @param string|array $value value or array or :field_name
-     * @param callable $callback
+     * @param callable $callback function(Context $c, string $other, $value, string $label) { ... }
      * @return boolean
      */
-    protected function handleUnless(Context $c, string $other, $value, callable $callback) : bool
+    public static function handleUnless(Context $c, string $other, $value, callable $callback) : bool
     {
         [$value, $label] = $c->resolve($value);
         if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
@@ -344,7 +344,7 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-        return $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
+        return static::handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             $c->appendError(
                 'validation.RequiredWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
@@ -367,7 +367,7 @@ class Validator
         if (!$c->blank()) {
             return true;
         }
-        return $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
+        return static::handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             $c->appendError(
                 'validation.RequiredWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
@@ -378,15 +378,15 @@ class Validator
     }
     
     /**
-     * Handle With validation precondition
+     * Handle With validate precondition
      *
      * @param Context $c
      * @param string|array $other
      * @param integer|null $at_least
-     * @param callable $callback
+     * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $inputed){ ... }
      * @return boolean
      */
-    protected function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
+    public static function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
     {
         $other    = (array)$other;
         $max      = count($other);
@@ -403,15 +403,15 @@ class Validator
     }
 
     /**
-     * Handle Without validation precondition
+     * Handle Without validate precondition
      *
      * @param Context $c
      * @param string|array $other
      * @param integer|null $at_least
-     * @param callable $callback
+     * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $not_inputed){ ... }
      * @return boolean
      */
-    protected function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
+    public static function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
     {
         $other       = (array)$other;
         $max         = count($other);
@@ -440,7 +440,7 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-        return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
+        return static::handleIf($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
             return false;
         });
@@ -459,7 +459,7 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-        return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
+        return static::handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
             $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
             return false;
         });
@@ -478,7 +478,7 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-        return $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
+        return static::handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             $c->appendError(
                 'validation.BlankWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
@@ -501,7 +501,7 @@ class Validator
         if ($c->blank()) {
             return true;
         }
-        return $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
+        return static::handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             $c->appendError(
                 'validation.BlankWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
@@ -551,6 +551,41 @@ class Validator
         return false;
     }
 
+    /**
+     * Regex Validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @param string $selector (default: '*')
+     * @return boolean
+     */
+    protected function validationRegex(Context $c, string $pattern, string $selector = '*') : bool
+    {
+        return static::handleRegex($c, $pattern, 'validation.Regex', ['pattern' => $pattern], $selector);
+    }
+
+    /**
+     * Handle Regex type validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @param int|string $selector (default: null)
+     * @return boolean
+     */
+    public static function handleRegex(Context $c, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        if (preg_match($pattern, $c->value)) {
+            return true;
+        }
+        $c->appendError($messsage_key, $replacement, $selector);
+        return false;
+    }
+    
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

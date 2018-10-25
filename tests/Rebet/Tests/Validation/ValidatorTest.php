@@ -6,19 +6,48 @@ use Rebet\Validation\Validator;
 use Rebet\Foundation\App;
 use Rebet\Validation\Valid;
 use Rebet\Validation\Context;
+use Rebet\Config\Config;
+use org\bovigo\vfs\vfsStream;
 
 class ValidatorTest extends RebetTestCase
 {
+    private $root;
+
     public function setup()
     {
         parent::setUp();
-        Validator::addValidation('Ok', function (Context $c) {
-            return true;
-        });
-        Validator::addValidation('Ng', function (Context $c) {
-            $c->appendError("@The {$c->label} is NG.");
-            return false;
-        });
+        $this->root = vfsStream::setup();
+        vfsStream::create(
+            [
+                'resources' => [
+                    'en' => [
+                        'validation.php' => <<<'EOS'
+<?php
+return [
+    'Regex' => [
+        "{digits} The :attribute must be digits.",
+    ]
+];
+EOS
+                    ],
+                ],
+            ],
+            $this->root
+        );
+        Config::application([
+            Validator::class => [
+                'resources_dir' => ['vfs://root/resources'],
+                'validations'   => [
+                    'Ok' => function (Context $c) {
+                        return true;
+                    },
+                    'Ng' => function (Context $c) {
+                        $c->appendError("@The {$c->label} is NG.");
+                        return false;
+                    },
+                ]
+            ]
+        ]);
     }
 
     public function test_cunstract()
@@ -705,6 +734,45 @@ class ValidatorTest extends RebetTestCase
                 []
             ],
 
+            // --------------------------------------------
+            // Valid::REGEX
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'bar'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/']
+                ]]],
+                ['foo' => ["The Foo format is invalid."]]
+            ],
+            [
+                ['foo' => 'bar'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::REGEX, '/^[0-9]+$/', 'digits']
+                ]]],
+                ['foo' => ["The Foo must be digits."]]
+            ],
+            
             // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
