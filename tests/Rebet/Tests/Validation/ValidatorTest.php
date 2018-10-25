@@ -904,6 +904,40 @@ EOS
             ],
             
             // --------------------------------------------
+            // Valid::MIN_LENGTH
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_LENGTH, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_LENGTH, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'ab'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_LENGTH, 3]
+                ]]],
+                ['foo' => ["The Foo must be at least 3 characters."]]
+            ],
+            [
+                ['foo' => ['1234', '1', '123']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_LENGTH, 3]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (1) must be at least 3 characters.",
+                ]]
+            ],
+            
+            // --------------------------------------------
             // Valid::SATISFY
             // --------------------------------------------
             [

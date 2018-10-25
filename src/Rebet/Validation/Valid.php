@@ -275,12 +275,22 @@ class Valid
      */
     const MAX_LENGTH = 'MaxLength:';
 
+    /**
+     * Min Length Validation.
+     * It checks the value character length will greater equal given min length.
+     *
+     * ex)
+     *   - ['CU', Valid::MIN_LENGTH, min]
+     * message)
+     *   Key         - MinLength, MinLength@List
+     *   Placeholder - :attribute, :self, :min, :nth, :value
+     *   Selector    - none
+     */
+    const MIN_LENGTH = 'MinLength:';
 
+    
+    
     const DEPENDENCE_CHAR = 'DependenceChar:';
-
-
     const DATETIME = 'Datetime:';
-
-
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
 }
