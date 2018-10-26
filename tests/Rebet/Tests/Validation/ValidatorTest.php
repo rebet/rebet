@@ -1312,6 +1312,62 @@ EOS
                     "The 5th Foo (3.5) must be at least 10.",
                 ]]
             ],
+
+            // --------------------------------------------
+            // Valid::EMAIL
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMAIL]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'foo@rebet.com'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMAIL]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '.foo@rebet.com'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMAIL]
+                ]]],
+                ['foo' => ["The Foo must be a valid email address."]]
+            ],
+            [
+                ['foo' => '.foo@rebet.com'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMAIL, false]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMAIL]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (.bar@rebet.com) must be a valid email address.",
+                    "The 3rd Foo (abc) must be a valid email address.",
+                    "The 5th Foo (foo..baz@rebet.com) must be a valid email address.",
+                ]]
+            ],
+            [
+                ['foo' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::EMAIL, false]
+                ]]],
+                ['foo' => [
+                    "The 3rd Foo (abc) must be a valid email address.",
+                ]]
+            ],
+
+
+
+
         ];
     }
 }

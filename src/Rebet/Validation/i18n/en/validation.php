@@ -8,74 +8,75 @@
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
 return [
-    "@delimiter"      => ", ",
+    "@delimiter"       => ", ",
     
-    "Required"        => "The :attribute field is required.",
-    "RequiredIf"      => [
+    "Required"         => "The :attribute field is required.",
+    "RequiredIf"       => [
         "[1]   The :attribute field is required when :other is :value.",
         "[2,*] The :attribute field is required when :other is in :value.",
     ],
-    "RequiredUnless"  => [
+    "RequiredUnless"   => [
         "[1]   The :attribute field is required when :other is not :value.",
         "[2,*] The :attribute field is required when :other is not in :value.",
     ],
-    "RequiredWith"    => [
+    "RequiredWith"     => [
         "{one}  The :attribute field is required when :other is present.",
         "{some} The :attribute field is required when :other are present at least :at_least.",
         "{all}  The :attribute field is required when :other are present.",
     ],
-    "RequiredWithout" => [
+    "RequiredWithout"  => [
         "{one}  The :attribute field is required when :other is not present.",
         "{some} The :attribute field is required when :other are not present at least :at_least.",
         "{all}  The :attribute field is required when :other are not present.",
     ],
-    "BlankIf"         => [
+    "BlankIf"          => [
         "[1]   The :attribute field must be blank when :other is :value.",
         "[2,*] The :attribute field must be blank when :other is in :value.",
     ],
-    "BlankUnless"     => [
+    "BlankUnless"      => [
         "[1]   The :attribute field must be blank when :other is not :value.",
         "[2,*] The :attribute field must be blank when :other is not in :value.",
     ],
-    "BlankWith"       => [
+    "BlankWith"        => [
         "{one}  The :attribute field must be blank when :other is present.",
         "{some} The :attribute field must be blank when :other are present at least :at_least.",
         "{all}  The :attribute field must be blank when :other are present.",
     ],
-    "BlankWithout"    => [
+    "BlankWithout"     => [
         "{one}  The :attribute field must be blank when :other is not present.",
         "{some} The :attribute field must be blank when :other are not present at least :at_least.",
         "{all}  The :attribute field must be blank when :other are not present.",
     ],
-    "SameAs"          => "The :attribute and :value must match.",
-    "NotSameAs"       => "The :attribute and :value must not match.",
-    "Regex"           => [
+    "SameAs"           => "The :attribute and :value must match.",
+    "NotSameAs"        => "The :attribute and :value must not match.",
+    "Regex"            => [
         "{*} The :attribute format is invalid.",
     ],
-    "Regex@List"      => [
+    "Regex@List"       => [
         "{*} The :nth :attribute (:value) format is invalid.",
     ],
-    "NotRegex"        => [
+    "NotRegex"         => [
         "{*} The :attribute format is invalid.",
     ],
-    "NotRegex@List"   => [
+    "NotRegex@List"    => [
         "{*} The :nth :attribute (:value) format is invalid.",
     ],
-    "MaxLength"       => "The :attribute may not be greater than :max characters.",
-    "MaxLength@List"  => "The :nth :attribute (:value) may not be greater than :max characters.",
-    "MinLength"       => "The :attribute must be at least :min characters.",
-    "MinLength@List"  => "The :nth :attribute (:value) must be at least :min characters.",
-    "Length"          => "The :attribute must be :length characters.",
-    "Length@List"     => "The :nth :attribute (:value) must be :length characters.",
-    "Number"          => "The :attribute must be number.",
-    "Number@List"     => "The :nth :attribute (:value) must be number.",
-    "Integer"         => "The :attribute must be integer.",
-    "Integer@List"    => "The :nth :attribute (:value) must be integer.",
-    "Float"           => "The :attribute must be real number (up to :decimal decimal places).",
-    "Float@List"      => "The :nth :attribute (:value) must be real number (up to :decimal decimal places).",
-    "MaxNumber"       => "The :attribute may not be greater than :max.",
-    "MaxNumber@List"  => "The :nth :attribute (:value) may not be greater than :max.",
-    "MinNumber"       => "The :attribute must be at least :min.",
-    "MinNumber@List"  => "The :nth :attribute (:value) must be at least :min.",
-
+    "MaxLength"        => "The :attribute may not be greater than :max characters.",
+    "MaxLength@List"   => "The :nth :attribute (:value) may not be greater than :max characters.",
+    "MinLength"        => "The :attribute must be at least :min characters.",
+    "MinLength@List"   => "The :nth :attribute (:value) must be at least :min characters.",
+    "Length"           => "The :attribute must be :length characters.",
+    "Length@List"      => "The :nth :attribute (:value) must be :length characters.",
+    "Number"           => "The :attribute must be number.",
+    "Number@List"      => "The :nth :attribute (:value) must be number.",
+    "Integer"          => "The :attribute must be integer.",
+    "Integer@List"     => "The :nth :attribute (:value) must be integer.",
+    "Float"            => "The :attribute must be real number (up to :decimal decimal places).",
+    "Float@List"       => "The :nth :attribute (:value) must be real number (up to :decimal decimal places).",
+    "MaxNumber"        => "The :attribute may not be greater than :max.",
+    "MaxNumber@List"   => "The :nth :attribute (:value) may not be greater than :max.",
+    "MinNumber"        => "The :attribute must be at least :min.",
+    "MinNumber@List"   => "The :nth :attribute (:value) must be at least :min.",
+    "Email"            => "The :attribute must be a valid email address.",
+    "Email@List"       => "The :nth :attribute (:value) must be a valid email address.",
 ];

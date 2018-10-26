@@ -372,7 +372,23 @@ class Valid
      */
     const MIN_NUMBER = 'MinNumber:';
     
-
+    /**
+     * Email Validation.
+     * It checks the value format is mail address.
+     * If the given strict is ture then use filter_var($value, FILTER_VALIDATE_EMAIL),
+     * otherwise use loose regular expression.
+     * This non strict mode validation also allows mail address format not compliant with RFC
+     * which could be created by Japanese carriers in the past.
+     *
+     * ex)
+     *   - ['CU', Valid::EMAIL]
+     *   - ['CU', Valid::EMAIL, strict]
+     * message)
+     *   Key         - Email, Email@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const EMAIL = 'Email:';
 
 
     const DEPENDENCE_CHAR = 'DependenceChar:';

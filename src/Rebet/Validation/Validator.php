@@ -810,6 +810,28 @@ class Validator
         return $valid;
     }
 
+    /**
+     * Email Validation
+     *
+     * @param Context $c
+     * @param bool $strict (default: true)
+     * @return boolean
+     */
+    public function validationEmail(Context $c, bool $strict = true) : bool
+    {
+        if ($strict) {
+            return static::handleListableValue(
+                $c,
+                Kind::TYPE_CONSISTENCY_CHECK(),
+                function ($value) {
+                    return filter_var($value, FILTER_VALIDATE_EMAIL);
+                },
+                'validation.Email'
+            );
+        }
+
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'validation.Email');
+    }
 
 
     // ====================================================
