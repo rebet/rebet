@@ -103,6 +103,13 @@ class Context
     private $quiet = false;
     
     /**
+     * Extra infomation for handle validation
+     *
+     * @var array
+     */
+    private $extra = [];
+
+    /**
      * Create validation context instance.
      *
      * @param string $crud
@@ -294,9 +301,9 @@ class Context
     /**
      * Get the parent context
      *
-     * @return Context|null
+     * @return self|null
      */
-    public function parent() : ?Context
+    public function parent() : ?self
     {
         return $this->parent;
     }
@@ -315,9 +322,9 @@ class Context
      * Create a nested context
      *
      * @param string|int|null $key
-     * @return Context
+     * @return self
      */
-    public function nest($key = null) : Context
+    public function nest($key = null) : self
     {
         $nested = clone $this;
         $nested->prefix = "{$this->prefix}{$this->field}.";
@@ -328,6 +335,31 @@ class Context
         $nested->lavel  = null;
         $nested->value  = null;
         $nested->quiet  = false;
+        $nested->extra  = [];
         return $nested;
+    }
+
+    /**
+     * Set the extra information for validation by given key
+     *
+     * @param string $key
+     * @param [type] $value
+     * @return self
+     */
+    public function setExtra(string $key, $value) : self
+    {
+        $this->extra[$this->field][$key] = $value;
+        return $this;
+    }
+
+    /**
+     * Get the extra information for validation by given key
+     *
+     * @param string $key
+     * @return void
+     */
+    public function extra(string $key)
+    {
+        return $this->extra[$this->field][$key] ?? null;
     }
 }

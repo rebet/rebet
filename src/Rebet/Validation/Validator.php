@@ -561,7 +561,7 @@ class Validator
      */
     protected function validationRegex(Context $c, string $pattern, string $selector = null) : bool
     {
-        return static::handleRegex($c, $pattern, 'validation.Regex', ['pattern' => $pattern], $selector);
+        return static::handleRegex($c, false, $pattern, 'validation.Regex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -569,26 +569,35 @@ class Validator
      * If you use this handler then you have to define @List message key too.
      *
      * @param Context $c
+     * @param bool $record_error_indices
      * @param callable $test function($value) { ... }
      * @param string $messsage_key
      * @param array $replacement (default: [])
      * @param callable $selector function($value) { ... } (default: null)
      * @return boolean
      */
-    public static function handleListableValue(Context $c, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    public static function handleListableValue(Context $c, bool $record_error_indices, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         if ($c->blank()) {
             return true;
         }
-        $valid = true;
+        $valid         = true;
+        $error_indices = $c->extra('error_indices') ?? [];
         foreach ((array)$c->value as $i => $value) {
+            if ($error_indices[$i] ?? false) {
+                continue;
+            }
             if (!$test($value)) {
                 $replacement['nth']   = $c->ordinalize($i + 1);
                 $replacement['value'] = $value;
                 $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
                 $valid = false;
+                if ($record_error_indices) {
+                    $error_indices[$i] = true;
+                }
             }
         }
+        $c->setExtra('error_indices', $error_indices);
         return $valid;
     }
 
@@ -597,16 +606,18 @@ class Validator
      * If you use this handler then you have to define @List message key too.
      *
      * @param Context $c
+     * @param bool $record_error_indices
      * @param string $pattern
      * @param string $messsage_key
      * @param array $replacement (default: [])
      * @param int|string $selector (default: null)
      * @return boolean
      */
-    public static function handleRegex(Context $c, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
+    public static function handleRegex(Context $c, bool $record_error_indices, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
     {
         return static::handleListableValue(
             $c,
+            $record_error_indices,
             function ($value) use ($pattern) {
                 return preg_match($pattern, $value);
             },
@@ -628,7 +639,7 @@ class Validator
      */
     protected function validationNotRegex(Context $c, string $pattern, string $selector = null) : bool
     {
-        return static::handleNotRegex($c, $pattern, 'validation.NotRegex', ['pattern' => $pattern], $selector);
+        return static::handleNotRegex($c, false, $pattern, 'validation.NotRegex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -636,16 +647,18 @@ class Validator
      * If you use this handler then you have to define @List message key too.
      *
      * @param Context $c
+     * @param bool $record_error_indices
      * @param string $pattern
      * @param string $messsage_key
      * @param array $replacement (default: [])
      * @param int|string $selector (default: null)
      * @return boolean
      */
-    public static function handleNotRegex(Context $c, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
+    public static function handleNotRegex(Context $c, bool $record_error_indices, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
     {
         return static::handleListableValue(
             $c,
+            $record_error_indices,
             function ($value) use ($pattern) {
                 return !preg_match($pattern, $value);
             },
@@ -668,6 +681,7 @@ class Validator
     {
         return static::handleListableValue(
             $c,
+            false,
             function ($value) use ($max) {
                 return mb_strlen($value) <= $max;
             },
@@ -687,6 +701,7 @@ class Validator
     {
         return static::handleListableValue(
             $c,
+            false,
             function ($value) use ($min) {
                 return mb_strlen($value) >= $min;
             },
@@ -706,6 +721,7 @@ class Validator
     {
         return static::handleListableValue(
             $c,
+            false,
             function ($value) use ($length) {
                 return mb_strlen($value) === $length;
             },
@@ -722,7 +738,7 @@ class Validator
      */
     public function validationNumber(Context $c) : bool
     {
-        return static::handleRegex($c, "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'validation.Number');
+        return static::handleRegex($c, true, "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'validation.Number');
     }
 
     /**
@@ -733,7 +749,7 @@ class Validator
      */
     public function validationInteger(Context $c) : bool
     {
-        return static::handleRegex($c, "/^[+-]?[0-9]+$/u", 'validation.Integer');
+        return static::handleRegex($c, true, "/^[+-]?[0-9]+$/u", 'validation.Integer');
     }
 
     /**
@@ -745,7 +761,7 @@ class Validator
      */
     public function validationFloat(Context $c, int $decimal) : bool
     {
-        return static::handleRegex($c, "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'validation.Float', ['decimal' => $decimal]);
+        return static::handleRegex($c, true, "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'validation.Float', ['decimal' => $decimal]);
     }
     
     // ====================================================
