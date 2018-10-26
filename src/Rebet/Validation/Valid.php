@@ -356,6 +356,22 @@ class Valid
      */
     const MAX_NUMBER = 'MaxNumber:';
     
+    /**
+     * Min Number Validation.
+     * It checks the value number will greater equal given min number.
+     * This validation use Valid::INTEGER or Valid::FLOAT validation for type consistency check.
+     * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
+     *
+     * ex)
+     *   - ['CU', Valid::MIN_RANGE, min]
+     *   - ['CU', Valid::MIN_RANGE, min, decimal]
+     * message)
+     *   Key         - MinNumber, MinNumber@List
+     *   Placeholder - :attribute, :self, :min, :decimal, :nth, :value
+     *   Selector    - none
+     */
+    const MIN_NUMBER = 'MinNumber:';
+    
 
 
 

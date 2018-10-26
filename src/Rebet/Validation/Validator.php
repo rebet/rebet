@@ -584,7 +584,7 @@ class Validator
         $valid         = true;
         $error_indices = $c->extra('error_indices') ?? [];
         foreach ((array)$c->value as $i => $value) {
-            if (!$kind->equals(Kind::OTHER()) && $error_indices[$i] ?? false) {
+            if (!$c->isQuiet() && !$kind->equals(Kind::OTHER()) && $error_indices[$i] ?? false) {
                 continue;
             }
             if (!$test($value)) {
@@ -787,6 +787,28 @@ class Validator
         return $valid;
     }
 
+    /**
+     * Min Number Validation
+     *
+     * @param Context $c
+     * @param int|float|string $min
+     * @param int $decimal (default: 0)
+     * @return boolean
+     */
+    public function validationMinNumber(Context $c, $min, int $decimal = 0) : bool
+    {
+        $valid  = $decimal === 0 ? $this->validationInteger($c) : $this->validationFloat($c, $decimal) ;
+        $valid &= static::handleListableValue(
+            $c,
+            Kind::TYPE_DEPENDENT_CHECK(),
+            function ($value) use ($min, $decimal) {
+                return bccomp((string)$min, (string)$value, $decimal) !== 1;
+            },
+            'validation.MinNumber',
+            ['min' => $min, 'decimal' => $decimal]
+        );
+        return $valid;
+    }
 
 
 

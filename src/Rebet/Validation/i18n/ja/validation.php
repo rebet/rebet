@@ -57,5 +57,9 @@ return [
     "Integer@List"    => ":nth番目の:attribute(:value)は整数で入力して下さい。",
     "Float"           => ":attributeは実数(小数点:scale桁まで)で入力して下さい。",
     "Float@List"      => ":nth番目の:attribute(:value)は実数(小数点:scale桁まで)で入力して下さい。",
+    "MaxNumber"       => ":attributeは:max以下で入力して下さい。",
+    "MaxNumber@List"  => ":nth番目の:attribute(:value)は:max以下で入力して下さい。",
+    "MinNumber"       => ":attributeは:min以上で入力して下さい。",
+    "MinNumber@List"  => ":nth番目の:attribute(:value)は:min以上で入力して下さい。",
 
 ];

@@ -1231,7 +1231,87 @@ EOS
                 ]]
             ],
             
-
+            // --------------------------------------------
+            // Valid::MIN_NUMBER
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '10'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '-11'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                ['foo' => ["The Foo must be at least 10."]]
+            ],
+            [
+                ['foo' => '11'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '10.1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                ['foo' => ["The Foo must be integer."]]
+            ],
+            [
+                ['foo' => '10.1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10, 1]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                ['foo' => ["The Foo must be integer."]]
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10, 1]
+                ]]],
+                ['foo' => ["The Foo must be real number (up to 1 decimal places)."]]
+            ],
+            [
+                ['foo' => ['abc', '10', '2', 123, '3.5']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (abc) must be integer.",
+                    "The 5th Foo (3.5) must be integer.",
+                    "The 3rd Foo (2) must be at least 10.",
+                ]]
+            ],
+            [
+                ['foo' => ['abc', '10', '2', 123, '3.5']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_NUMBER, 10, 1]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (abc) must be real number (up to 1 decimal places).",
+                    "The 3rd Foo (2) must be at least 10.",
+                    "The 5th Foo (3.5) must be at least 10.",
+                ]]
+            ],
         ];
     }
 }
