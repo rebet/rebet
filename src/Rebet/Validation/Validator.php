@@ -763,7 +763,33 @@ class Validator
     {
         return static::handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'validation.Float', ['decimal' => $decimal]);
     }
-    
+
+    /**
+     * Max Number Validation
+     *
+     * @param Context $c
+     * @param int|float|string $max
+     * @param int $decimal (default: 0)
+     * @return boolean
+     */
+    public function validationMaxNumber(Context $c, $max, int $decimal = 0) : bool
+    {
+        $valid  = $decimal === 0 ? $this->validationInteger($c) : $this->validationFloat($c, $decimal) ;
+        $valid &= static::handleListableValue(
+            $c,
+            Kind::TYPE_DEPENDENT_CHECK(),
+            function ($value) use ($max, $decimal) {
+                return bccomp((string)$value, (string)$max, $decimal) !== 1;
+            },
+            'validation.MaxNumber',
+            ['max' => $max, 'decimal' => $decimal]
+        );
+        return $valid;
+    }
+
+
+
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

@@ -174,6 +174,47 @@ EOS
             ],
             
             // --------------------------------------------
+            // Valid::SATISFY
+            // --------------------------------------------
+            [
+                ['field_name' => 'not_value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::SATISFY, function (Context $c) {
+                        if ($c->value !== 'value') {
+                            $c->appendError("@The {$c->label} is not 'value'.");
+                            return false;
+                        }
+                        return true;
+                    }]
+                ]]],
+                ['field_name' => ["The Field Name is not 'value'."]]
+            ],
+            [
+                ['field_name' => 'value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::SATISFY, function (Context $c) {
+                        return $c->value === 'value';
+                    },
+                    'then' => [['C', 'Ok']],
+                    'else' => [['C', 'Ng']]
+                    ]
+                ]]],
+                []
+            ],
+            [
+                ['field_name' => 'not-value'],
+                ['field_name' => ['rule' => [
+                    ['C', Valid::SATISFY, function (Context $c) {
+                        return $c->value === 'value';
+                    },
+                    'then' => [['C', 'Ok']],
+                    'else' => [['C', 'Ng']]
+                    ]
+                ]]],
+                ['field_name' => ["The Field Name is NG."]]
+            ],
+            
+            // --------------------------------------------
             // Valid::REQUIRED
             // --------------------------------------------
             // @todo When UploadFile
@@ -1110,45 +1151,87 @@ EOS
             ],
             
             // --------------------------------------------
-            // Valid::SATISFY
+            // Valid::MAX_NUMBER
             // --------------------------------------------
             [
-                ['field_name' => 'not_value'],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::SATISFY, function (Context $c) {
-                        if ($c->value !== 'value') {
-                            $c->appendError("@The {$c->label} is not 'value'.");
-                            return false;
-                        }
-                        return true;
-                    }]
-                ]]],
-                ['field_name' => ["The Field Name is not 'value'."]]
-            ],
-            [
-                ['field_name' => 'value'],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::SATISFY, function (Context $c) {
-                        return $c->value === 'value';
-                    },
-                    'then' => [['C', 'Ok']],
-                    'else' => [['C', 'Ng']]
-                    ]
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
                 ]]],
                 []
             ],
             [
-                ['field_name' => 'not-value'],
-                ['field_name' => ['rule' => [
-                    ['C', Valid::SATISFY, function (Context $c) {
-                        return $c->value === 'value';
-                    },
-                    'then' => [['C', 'Ok']],
-                    'else' => [['C', 'Ng']]
-                    ]
+                ['foo' => '10'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
                 ]]],
-                ['field_name' => ["The Field Name is NG."]]
+                []
             ],
+            [
+                ['foo' => '-11'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '11'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
+                ]]],
+                ['foo' => ["The Foo may not be greater than 10."]]
+            ],
+            [
+                ['foo' => '10.1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
+                ]]],
+                ['foo' => ["The Foo must be integer."]]
+            ],
+            [
+                ['foo' => '10.1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10, 1]
+                ]]],
+                ['foo' => ["The Foo may not be greater than 10."]]
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
+                ]]],
+                ['foo' => ["The Foo must be integer."]]
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10, 1]
+                ]]],
+                ['foo' => ["The Foo must be real number (up to 1 decimal places)."]]
+            ],
+            [
+                ['foo' => ['abc', '10', '2', 123, '3.5']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (abc) must be integer.",
+                    "The 5th Foo (3.5) must be integer.",
+                    "The 4th Foo (123) may not be greater than 10.",
+                ]]
+            ],
+            [
+                ['foo' => ['abc', '10', '2', 123, '3.5']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MAX_NUMBER, 10, 1]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (abc) must be real number (up to 1 decimal places).",
+                    "The 4th Foo (123) may not be greater than 10.",
+                ]]
+            ],
+            
+
         ];
     }
 }

@@ -73,5 +73,7 @@ return [
     "Integer@List"    => "The :nth :attribute (:value) must be integer.",
     "Float"           => "The :attribute must be real number (up to :decimal decimal places).",
     "Float@List"      => "The :nth :attribute (:value) must be real number (up to :decimal decimal places).",
+    "MaxNumber"       => "The :attribute may not be greater than :max.",
+    "MaxNumber@List"  => "The :nth :attribute (:value) may not be greater than :max.",
 
 ];

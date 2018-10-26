@@ -340,7 +340,23 @@ class Valid
      */
     const FLOAT = 'Float:';
     
+    /**
+     * Max Number Validation.
+     * It checks the value number will less equal given max number.
+     *
+     * ex)
+     *   - ['CU', Valid::MAX_RANGE, max]
+     *   - ['CU', Valid::MAX_RANGE, max, decimal]
+     * message)
+     *   Key         - MaxNumber, MaxNumber@List
+     *   Placeholder - :attribute, :self, :max, :decimal, :nth, :value
+     *   Selector    - none
+     */
+    const MAX_NUMBER = 'MaxNumber:';
     
+
+
+
     const DEPENDENCE_CHAR = 'DependenceChar:';
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';

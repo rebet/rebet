@@ -55,7 +55,7 @@ return [
     "Number@List"     => ":nth番目の:attribute(:value)は数値で入力して下さい。",
     "Integer"         => ":attributeは整数で入力して下さい。",
     "Integer@List"    => ":nth番目の:attribute(:value)は整数で入力して下さい。",
-    "Float"           => ":attributeは実数(小数点:decimal桁まで)で入力して下さい。",
-    "Float@List"      => ":nth番目の:attribute(:value)は実数(小数点:decimal桁まで)で入力して下さい。",
+    "Float"           => ":attributeは実数(小数点:scale桁まで)で入力して下さい。",
+    "Float@List"      => ":nth番目の:attribute(:value)は実数(小数点:scale桁まで)で入力して下さい。",
 
 ];
