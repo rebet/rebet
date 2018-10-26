@@ -79,4 +79,12 @@ return [
     "MinNumber@List"   => "The :nth :attribute (:value) must be at least :min.",
     "Email"            => "The :attribute must be a valid email address.",
     "Email@List"       => "The :nth :attribute (:value) must be a valid email address.",
+    "Url"              => [
+        "{nonactive} The :attribute is not a valid URL.",
+        "{*}         The :attribute format is invalid.",
+    ],
+    "Url@List"         => [
+        "{nonactive} The :nth :attribute (:value) is not a valid URL.",
+        "{*}         The :nth :attribute (:value) format is invalid.",
+    ],
 ];

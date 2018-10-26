@@ -114,8 +114,8 @@ class Valid
      * If you don't want to stop validation, you will give 'RequiredWith' string.
      *
      * ex)
-     *   - ['CU', Valid::REQUIRED_WITH, 'other']
-     *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::REQUIRED_WITH, 'other'] (at_least: null)
+     *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...]] (at_least: null)
      *   - ['CU', Valid::REQUIRED_WITH, ['other1', 'other2', ...], at_least]
      * message)
      *   Key         - RequiredWith
@@ -132,8 +132,8 @@ class Valid
      * If you don't want to stop validation, you will give 'RequiredWithout' string.
      *
      * ex)
-     *   - ['CU', Valid::REQUIRED_WITHOUT, 'other']
-     *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::REQUIRED_WITHOUT, 'other'] (at_least: null)
+     *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...]] (at_least: null)
      *   - ['CU', Valid::REQUIRED_WITHOUT, ['other1', 'other2', ...], at_least]
      * message)
      *   Key         - RequiredWithout
@@ -180,8 +180,8 @@ class Valid
      * If 'other' fields are present at least N, then check the target fields.
      *
      * ex)
-     *   - ['CU', Valid::BLANK_WITH, 'other']
-     *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::BLANK_WITH, 'other'] (at_least: null)
+     *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...]] (at_least: null)
      *   - ['CU', Valid::BLANK_WITH, ['other1', 'other2', ...], at_least]
      * message)
      *   Key         - BlankWith
@@ -196,8 +196,8 @@ class Valid
      * If 'other' fields are not present at least N, then check the target fields.
      *
      * ex)
-     *   - ['CU', Valid::BLANK_WITHOUT, 'other']
-     *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...]]
+     *   - ['CU', Valid::BLANK_WITHOUT, 'other'] (at_least: null)
+     *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...]] (at_least: null)
      *   - ['CU', Valid::BLANK_WITHOUT, ['other1', 'other2', ...], at_least]
      * message)
      *   Key         - BlankWith
@@ -239,8 +239,8 @@ class Valid
      * It checks the value will match given pattern.
      *
      * ex)
-     *   - ['CU', Valid::REGEX, pattern]
-     *   - ['CU', Valid::REGEX, pattern, $selector]
+     *   - ['CU', Valid::REGEX, pattern] (selector: null)
+     *   - ['CU', Valid::REGEX, pattern, selector]
      * message)
      *   Key         - Regex, Regex@List
      *   Placeholder - :attribute, :self, :selector, :pattern, :nth, :value
@@ -253,8 +253,8 @@ class Valid
      * It checks the value will not match given pattern.
      *
      * ex)
-     *   - ['CU', Valid::NOT_REGEX, pattern]
-     *   - ['CU', Valid::NOT_REGEX, pattern, $selector]
+     *   - ['CU', Valid::NOT_REGEX, pattern] (selector: null)
+     *   - ['CU', Valid::NOT_REGEX, pattern, selector]
      * message)
      *   Key         - NotRegex, NotRegex@List
      *   Placeholder - :attribute, :self, :selector, :pattern, :nth, :value
@@ -347,7 +347,7 @@ class Valid
      * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
      *
      * ex)
-     *   - ['CU', Valid::MAX_RANGE, max]
+     *   - ['CU', Valid::MAX_RANGE, max] (decimal: 0)
      *   - ['CU', Valid::MAX_RANGE, max, decimal]
      * message)
      *   Key         - MaxNumber, MaxNumber@List
@@ -363,7 +363,7 @@ class Valid
      * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
      *
      * ex)
-     *   - ['CU', Valid::MIN_RANGE, min]
+     *   - ['CU', Valid::MIN_RANGE, min] (decimal: 0)
      *   - ['CU', Valid::MIN_RANGE, min, decimal]
      * message)
      *   Key         - MinNumber, MinNumber@List
@@ -381,7 +381,7 @@ class Valid
      * which could be created by Japanese carriers in the past.
      *
      * ex)
-     *   - ['CU', Valid::EMAIL]
+     *   - ['CU', Valid::EMAIL] (strict: true)
      *   - ['CU', Valid::EMAIL, strict]
      * message)
      *   Key         - Email, Email@List
@@ -389,6 +389,22 @@ class Valid
      *   Selector    - none
      */
     const EMAIL = 'Email:';
+
+    /**
+     * Url Validation.
+     * It checks the value format is url.
+     * If the given dns_check is ture then use dns_get_record() to check dns is active.
+     *
+     * ex)
+     *   - ['CU', Valid::URL] (dns_check: false)
+     *   - ['CU', Valid::URL, dns_check]
+     * message)
+     *   Key         - Url, Url@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const URL = 'Url:';
+
 
 
     const DEPENDENCE_CHAR = 'DependenceChar:';

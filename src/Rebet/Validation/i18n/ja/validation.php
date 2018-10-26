@@ -63,5 +63,13 @@ return [
     "MinNumber@List"   => ":nth番目の:attribute(:value)は:min以上で入力して下さい。",
     "Email"            => ":attributeはメールアドレス形式で入力して下さい。",
     "Email@List"       => ":nth番目の:attribute(:value)はメールアドレス形式で入力して下さい。",
+    "Url"              => [
+        "{nonactive} :attributeは有効なURLではありません。",
+        "{*}         :attributeはURL形式で入力して下さい。",
+    ],
+    "Url@List"         => [
+        "{nonactive} :nth番目の:attribute(:value)は有効なURLではありません。",
+        "{*}         :nth番目の:attribute(:value)はURL形式で入力して下さい。",
+    ],
 
 ];

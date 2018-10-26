@@ -1365,7 +1365,58 @@ EOS
                 ]]
             ],
 
-
+            // --------------------------------------------
+            // Valid::URL
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'https://github.com/rebet/rebet'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'https://github.com/rebet/rebet'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL, true]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'https://invalid[foo]/rebet'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL]
+                ]]],
+                ['foo' => ["The Foo format is invalid."]]
+            ],
+            [
+                ['foo' => 'https://invalid.local/rebet'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL, true]
+                ]]],
+                ['foo' => ["The Foo is not a valid URL."]]
+            ],
+            [
+                ['foo' => ['https://github.com/rebet/rebet', 'https://invalid[foo]/rebet']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL]
+                ]]],
+                ['foo' => ["The 2nd Foo (https://invalid[foo]/rebet) format is invalid."]]
+            ],
+            [
+                ['foo' => ['https://github.com/rebet/rebet', 'https://invalid.local/rebet']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::URL, true]
+                ]]],
+                ['foo' => ["The 2nd Foo (https://invalid.local/rebet) is not a valid URL."]]
+            ],
 
 
         ];
