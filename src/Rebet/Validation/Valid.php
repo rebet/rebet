@@ -343,6 +343,8 @@ class Valid
     /**
      * Max Number Validation.
      * It checks the value number will less equal given max number.
+     * This validation use Valid::INTEGER or Valid::FLOAT validation for type consistency check.
+     * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
      *
      * ex)
      *   - ['CU', Valid::MAX_RANGE, max]
