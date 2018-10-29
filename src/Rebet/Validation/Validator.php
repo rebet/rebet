@@ -968,6 +968,18 @@ class Validator
         return static::handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9".preg_quote($mark, '/')."]+$/u", 'validation.AlphaDigitMark', ['mark' => $mark]);
     }
 
+    /**
+     * Hiragana Validation
+     *
+     * @param Context $c
+     * @param string $extra (default: '')
+     * @return boolean
+     */
+    public function validationHiragana(Context $c, string $extra = '') : bool
+    {
+        return static::handleRegex($c, Kind::OTHER(), "/^[\p{Hiragana}ー".preg_quote($extra, '/')."]+$/u", 'validation.Hiragana', ['extra' => $extra]);
+    }
+
 
 
 

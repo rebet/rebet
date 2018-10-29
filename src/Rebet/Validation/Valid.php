@@ -473,6 +473,21 @@ class Valid
      */
     const ALPHA_DIGIT_MARK = 'AlphaDigitMark:';
 
+    /**
+     * Hiragana Validation.
+     * It checks the value may only contain Hiragana in Japanese.
+     * This validation not allowed full width space, so you can use extra if you want to allow full width space and etc.
+     *
+     * ex)
+     *   - ['CU', Valid::HIRAGANA] (extra: '')
+     *   - ['CU', Valid::HIRAGANA, extra]
+     * message)
+     *   Key         - Hiragana, Hiragana@List
+     *   Placeholder - :attribute, :self, :extra, :nth, :value
+     *   Selector    - none
+     */
+    const HIRAGANA = 'Hiragana:';
+
 
 
 

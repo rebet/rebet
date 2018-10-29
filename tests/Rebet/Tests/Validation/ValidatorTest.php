@@ -1685,6 +1685,55 @@ EOS
                 ]]
             ],
 
+            // --------------------------------------------
+            // Valid::HIRAGANA
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::HIRAGANA]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'あいうえお'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::HIRAGANA]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::HIRAGANA]
+                ]]],
+                ['foo' => ["The Foo may only contain Hiragana in Japanese."]]
+            ],
+            [
+                ['foo' => 'あいう　えお'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::HIRAGANA]
+                ]]],
+                ['foo' => ["The Foo may only contain Hiragana in Japanese."]]
+            ],
+            [
+                ['foo' => 'あいう　えお'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::HIRAGANA, '　 ']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['a', 'ア', 'あ','1']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::HIRAGANA]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (a) may only contain Hiragana in Japanese.",
+                    "The 2nd Foo (ア) may only contain Hiragana in Japanese.",
+                    "The 4th Foo (1) may only contain Hiragana in Japanese.",
+                ]]
+            ],
 
 
 
