@@ -1736,6 +1736,62 @@ EOS
             ],
 
 
+            // --------------------------------------------
+            // Valid::KANA
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'アイウエオ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'ｱｲｳｴｵ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA]
+                ]]],
+                ['foo' => ["The Foo may only contain full width Kana in Japanese."]]
+            ],
+            [
+                ['foo' => 'abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA]
+                ]]],
+                ['foo' => ["The Foo may only contain full width Kana in Japanese."]]
+            ],
+            [
+                ['foo' => 'アイウ　エオ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA]
+                ]]],
+                ['foo' => ["The Foo may only contain full width Kana in Japanese."]]
+            ],
+            [
+                ['foo' => 'アイウ　エオ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA, '　 ']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['a', 'ア', 'あ','1']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::KANA]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (a) may only contain full width Kana in Japanese.",
+                    "The 3rd Foo (あ) may only contain full width Kana in Japanese.",
+                    "The 4th Foo (1) may only contain full width Kana in Japanese.",
+                ]]
+            ],
 
 
 

@@ -488,6 +488,21 @@ class Valid
      */
     const HIRAGANA = 'Hiragana:';
 
+    /**
+     * Kana Validation.
+     * It checks the value may only contain full width Kana in Japanese.
+     * This validation not allowed full width space, so you can use extra if you want to allow full width space and etc.
+     *
+     * ex)
+     *   - ['CU', Valid::KANA] (extra: '')
+     *   - ['CU', Valid::KANA, extra]
+     * message)
+     *   Key         - Kana, Kana@List
+     *   Placeholder - :attribute, :self, :extra, :nth, :value
+     *   Selector    - none
+     */
+    const KANA = 'Kana:';
+
 
 
 

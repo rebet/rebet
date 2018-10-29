@@ -99,4 +99,6 @@ return [
     "AlphaDigitMark@List" => "The :nth :attribute (:value) may only contain letters, digits or marks (include :mark).",
     "Hiragana"            => "The :attribute may only contain Hiragana in Japanese.",
     "Hiragana@List"       => "The :nth :attribute (:value) may only contain Hiragana in Japanese.",
+    "Kana"                => "The :attribute may only contain full width Kana in Japanese.",
+    "Kana@List"           => "The :nth :attribute (:value) may only contain full width Kana in Japanese.",
 ];

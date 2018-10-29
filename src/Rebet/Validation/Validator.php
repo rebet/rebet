@@ -980,6 +980,18 @@ class Validator
         return static::handleRegex($c, Kind::OTHER(), "/^[\p{Hiragana}ー".preg_quote($extra, '/')."]+$/u", 'validation.Hiragana', ['extra' => $extra]);
     }
 
+    /**
+     * Kana Validation
+     *
+     * @param Context $c
+     * @param string $extra (default: '')
+     * @return boolean
+     */
+    public function validationKana(Context $c, string $extra = '') : bool
+    {
+        return static::handleRegex($c, Kind::OTHER(), "/^[ァ-ヾ".preg_quote($extra, '/')."]+$/u", 'validation.Kana', ['extra' => $extra]);
+    }
+
 
 
 
