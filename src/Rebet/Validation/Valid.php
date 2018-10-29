@@ -517,8 +517,41 @@ class Valid
      */
     const DEPENDENCE_CHAR = 'DependenceChar:';
 
-
-
+    /**
+     * Ng Word Validation.
+     * It checks the value contains the given ng words.
+     *
+     * $ng_words is the file path of the array or word list.
+     * Word list is defined by a line break separator.
+     * Registering word like below will result in an ambiguous search.
+     *
+     * · Alphanumeric characters are lowercase letters
+     * · Japanese is full-width Kana and Kanji
+     * · In other languages, you can add definitions in config settings
+     *
+     * You can also make a absolute match search by defining short words as ^○○$.
+     *
+     * ex)
+     *   - ['CU', Valid::NG_WORD, 'ng_words_file_path']
+     *   - ['CU', Valid::NG_WORD, ['ng_word1', 'ng_word2', ...]]
+     *   - ['CU', Valid::NG_WORD, ng_words, delimiter_pattern, omission_pattern, omission_length, omission_ratio]
+     *       $delimiter_pattern: (default: [\p{Common}])
+     *         The character specified here is ignored as a delimiter when checking.
+     *         ex) It will specify delimiter like dot and space to match 'd.u.m.m.y' or 'd u m m y' to 'dummy'.
+     *       $omission_pattern: (default: [\p{M}\p{S}〇*＊_＿])
+     *         The character specified here will be processed as an omission character when checking.
+     *         ex) It will specify omission character like circle and asterisk to match 'd○mmy' or 'dum*y' to 'dummy'.
+     *       $omission_length: (default: 3)
+     *         The minimum ng word length to apply omission character pattern check.
+     *       $omission_Ratio: (default: 0.4)
+     *         The ratio of omission characters in ng words.
+     *         ex) In the case of 0.4 setting, 'a*s', 'dum*y', 'd*m*y' match 'sex' and 'dummy' respectively, but '*s*', 'd***y' does not match.
+     * message)
+     *   Key         - NgWord, NgWord@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const NG_WORD = 'NgWord:';
 
 
     const DATETIME = 'Datetime:';

@@ -103,4 +103,6 @@ return [
     "Kana@List"           => "The :nth :attribute (:value) may only contain full width Kana in Japanese.",
     "DependenceChar"      => "The :attribute must not contain platform dependent character [:dependences].",
     "DependenceChar@List" => "The :nth :attribute (:value) must not contain platform dependent character [:dependences].",
+    "NgWord"              => "The :attribute must not contain the word ':ng_word'.",
+    "NgWord@List"         => "The :nth :attribute (:value) must not contain the word ':ng_word'.",
 ];

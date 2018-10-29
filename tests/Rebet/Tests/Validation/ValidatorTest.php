@@ -38,6 +38,12 @@ return [
     ],
 ];
 EOS
+                    ,
+                    'ng_word.txt' => <<<'EOS'
+admin
+test
+テスト
+EOS
                     ],
                 ],
             ],
@@ -1833,6 +1839,52 @@ EOS
                     'The 5th Foo (髙) must not contain platform dependent character [髙].',
                     'The 6th Foo (①②) must not contain platform dependent character [①, ②].',
                 ]]
+            ],
+
+            // --------------------------------------------
+            // Valid::NG_WORD
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'foo bar'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'foo bar'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, 'vfs://root/resources/ng_word.txt']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'foo bar baz qux'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                ['foo' => ["The Foo must not contain the word 'baz'."]]
+            ],
+            [
+                ['foo' => 'foo bar b.a.z qux'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                ['foo' => ["The Foo must not contain the word 'b.a.z'."]]
+            ],
+            [
+                ['foo' => 'foo bar b*z qux'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                ['foo' => ["The Foo must not contain the word 'b*z'."]]
             ],
 
 

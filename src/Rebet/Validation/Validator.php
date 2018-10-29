@@ -33,7 +33,143 @@ class Validator
 
             // Specific validation settings
             'default' => [
-                'DependenceChar' => ['encode' => 'sjis-win'],
+                'DependenceChar' => [
+                    'encode' => 'sjis-win'
+                ],
+                'NgWord'         => [
+                    'word_split_pattern' => '[\p{Z}]',
+                    'delimiter_pattern'  => '[\p{Common}]',
+                    'omission_pattern'   => '[\p{M}\p{S}〇*＊_＿]',
+                    'omission_length'    => 3,
+                    'omission_ratio'     => 0.4,
+                    'ambiguous_patterns' => [
+                        "^" => "^",
+                        "$" => "$",
+                        "a" => "([aAａＡⒶⓐ🄰🅐🅰@＠])",
+                        "b" => "([bBｂＢⒷⓑ🄱🅑🅱])",
+                        "c" => "([cCｃＣⒸⓒ🄲🅒🅲©])",
+                        "d" => "([dDｄＤⒹⓓ🄳🅓🅳])",
+                        "e" => "([eEｅＥⒺⓔ🄴🅔🅴])",
+                        "f" => "([fFｆＦⒻⓕ🄵🅕🅵])",
+                        "g" => "([gGｇＧⒼⓖ🄶🅖🅶])",
+                        "h" => "([hHｈＨⒽⓗ🄷🅗🅷])",
+                        "i" => "([iIｉＩⒾⓘ🄸🅘🅸])",
+                        "j" => "([jJｊＪⒿⓙ🄹🅙🅹])",
+                        "k" => "([kKｋＫⓀⓚ🄺🅚🅺])",
+                        "l" => "([lLｌＬⓁⓛ🄻🅛🅻])",
+                        "m" => "([mMｍＭⓂⓜ🄼🅜🅼])",
+                        "n" => "([nNｎＮⓃⓝ🄽🅝🅽])",
+                        "o" => "([oOｏＯⓄⓞ🄾🅞🅾])",
+                        "p" => "([pPｐＰⓅⓟ🄿🅟🅿℗])",
+                        "q" => "([qQｑＱⓆⓠ🅀🅠🆀])",
+                        "r" => "([rRｒＲⓇⓡ🅁🅡🆁®])",
+                        "s" => "([sSｓＳⓈⓢ🅂🅢🆂])",
+                        "t" => "([tTｔＴⓉⓣ🅃🅣🆃])",
+                        "u" => "([uUｕＵⓊⓤ🅄🅤🆄])",
+                        "v" => "([vVｖＶⓋⓥ🅅🅥🆅])",
+                        "w" => "([wWｗＷⓌⓦ🅆🅦🆆])",
+                        "x" => "([xXｘＸⓍⓧ🅇🅧🆇])",
+                        "y" => "([yYｙＹⓎⓨ🅈🅨🆈])",
+                        "z" => "([zZｚＺⓏⓩ🅉🅩🆉])",
+                        "0" => "([0０⓿])",
+                        "1" => "([1１①⓵❶➀➊㊀一壱壹弌🈩])",
+                        "2" => "([2２②⓶❷➁➋㊁二弐貳弎🈔])",
+                        "3" => "([3３③⓷❸➂➌㊂三参參弎🈪])",
+                        "4" => "([4４④⓸❹➃➍㊃四肆])",
+                        "5" => "([5５⑤⓹❺➄➎㊄五伍])",
+                        "6" => "([6６⑥⓺❻➅➏㊅六陸])",
+                        "7" => "([7７⑦⓻❼➆➐㊆七漆柒質])",
+                        "8" => "([8８⑧⓼❽➇➑㊇八捌])",
+                        "9" => "([9９⑨⓽❾➈➒㊈九玖])",
+                        'ア' => '([アｱ㋐あァｧぁ])',
+                        'イ' => '([イｲ㋑㋼いィｨぃヰゐ])',
+                        'ウ' => '([ウｳ㋒うゥｩぅヱゑ])',
+                        'エ' => '([エｴ㋓㋽えェｪぇ])',
+                        'オ' => '([オｵ㋔おォｫぉ])',
+                        'カ' => '([カｶ㋕かヵゕ])',
+                        'キ' => '([キｷ㋖き])',
+                        'ク' => '([クｸ㋗く])',
+                        'ケ' => '([ケｹ㋘けヶ])',
+                        'コ' => '([コｺ㋙こ])',
+                        'サ' => '([サｻ㋚さ🈂])',
+                        'シ' => '([シｼ㋛し])',
+                        'ス' => '([スｽ㋜す])',
+                        'セ' => '([セｾ㋝せ])',
+                        'ソ' => '([ソｿ㋞そ])',
+                        'タ' => '([タﾀ㋟た])',
+                        'チ' => '([チﾁ㋠ち])',
+                        'ツ' => '([ツﾂ㋡つッｯっ])',
+                        'テ' => '([テﾃ㋢て])',
+                        'ト' => '([トﾄ㋣と])',
+                        'ナ' => '([ナﾅ㋤な])',
+                        'ニ' => '([ニﾆ㊁㋥に🈔])',
+                        'ヌ' => '([ヌﾇ㋦ぬ])',
+                        'ネ' => '([ネﾈ㋧ね])',
+                        'ノ' => '([ノﾉ㋨の])',
+                        'ハ' => '([ハﾊ㋩は])',
+                        'ヒ' => '([ヒﾋ㋪ひ])',
+                        'フ' => '([フﾌ㋫ふ])',
+                        'ヘ' => '([ヘﾍ㋬へ])',
+                        'ホ' => '([ホﾎ㋭ほ])',
+                        'マ' => '([マﾏ㋮ま])',
+                        'ミ' => '([ミﾐ㋯み])',
+                        'ム' => '([ムﾑ㋰む])',
+                        'メ' => '([メﾒ㋱め])',
+                        'モ' => '([モﾓ㋲も])',
+                        'ヤ' => '([ヤﾔ㋳やャｬゃ])',
+                        'ユ' => '([ユﾕ㋴ゆュｭゅ])',
+                        'ヨ' => '([ヨﾖ㋵よョｮょ])',
+                        'ラ' => '([ラﾗ㋶ら])',
+                        'リ' => '([リﾘ㋷り])',
+                        'ル' => '([ルﾙ㋸る])',
+                        'レ' => '([レﾚ㋹れ])',
+                        'ロ' => '([ロﾛ㋺ろ])',
+                        'ワ' => '([ワﾜ㋻わヮゎ])',
+                        'ヲ' => '([ヲｦ㋾を])',
+                        'ン' => '([ンﾝん])',
+                        'ガ' => '([ガが]|[カヵｶか][゛ﾞ])',
+                        'ギ' => '([ギぎ]|[キｷき][゛ﾞ])',
+                        'グ' => '([グぐ]|[クｸく][゛ﾞ])',
+                        'ゲ' => '([ゲげ]|[ケヶｹけ][゛ﾞ])',
+                        'ゴ' => '([ゴご]|[コｺこ][゛ﾞ])',
+                        'ザ' => '([ザざ]|[サｻさ][゛ﾞ])',
+                        'ジ' => '([ジじ]|[シｼし][゛ﾞ])',
+                        'ズ' => '([ズず]|[スｽす][゛ﾞ])',
+                        'ゼ' => '([ゼぜ]|[セｾせ][゛ﾞ])',
+                        'ゾ' => '([ゾぞ]|[ソｿそ][゛ﾞ])',
+                        'ダ' => '([ダだ]|[タﾀた][゛ﾞ])',
+                        'ヂ' => '([ヂぢ]|[チﾁち][゛ﾞ])',
+                        'ヅ' => '([ヅづ]|[ツッﾂつっ][゛ﾞ])',
+                        'デ' => '([デで]|[テﾃて][゛ﾞ])',
+                        'ド' => '([ドど]|[トﾄと][゛ﾞ])',
+                        'バ' => '([バば]|[ハﾊは][゛ﾞ])',
+                        'ビ' => '([ビび]|[ヒﾋひ][゛ﾞ])',
+                        'ブ' => '([ブぶ]|[フﾌふ][゛ﾞ])',
+                        'ベ' => '([ベべ]|[ヘﾍへ][゛ﾞ])',
+                        'ボ' => '([ボぼ]|[ホﾎほ][゜ﾟ])',
+                        'パ' => '([パぱ]|[ハﾊは][゜ﾟ])',
+                        'ピ' => '([ピぴ]|[ヒﾋひ][゜ﾟ])',
+                        'プ' => '([プぷ]|[フﾌふ][゜ﾟ])',
+                        'ペ' => '([ペぺ]|[ヘﾍへ][゜ﾟ])',
+                        'ポ' => '([ポぽ]|[ホﾎほ][゜ﾟ])',
+                        'ヴ' => '(ヴ|[ウゥｳうぅ][゛ﾞ])',
+                        'ァ' => '([アｱ㋐あァｧぁ])',
+                        'ィ' => '([イｲ㋑㋼いィｨぃヰゐ])',
+                        'ゥ' => '([ウｳ㋒うゥｩぅヱゑ])',
+                        'ェ' => '([エｴ㋓㋽えェｪぇ])',
+                        'ォ' => '([オｵ㋔おォｫぉ])',
+                        'ヵ' => '([カｶ㋕かヵゕ])',
+                        'ヶ' => '([ケｹ㋘けヶ])',
+                        'ッ' => '([ツﾂ㋡つッｯっ])',
+                        'ャ' => '([ヤﾔ㋳やャｬゃ])',
+                        'ュ' => '([ユﾕ㋴ゆュｭゅ])',
+                        'ョ' => '([ヨﾖ㋵よョｮょ])',
+                        'ヮ' => '([ワﾜ㋻わヮゎ])',
+                        '゛' => '([゛ﾞ])',
+                        '゜' => '([゜ﾟ])',
+                        'ー' => '([ー-])',
+                    ],
+                ]
             ],
         ];
     }
@@ -1026,7 +1162,111 @@ class Validator
         );
     }
 
+    /**
+     * Ng Word Validation
+     *
+     * @param Context $c
+     * @param string|array $ng_words
+     * @param string|null $word_split_pattern (default: depend on configure)
+     * @param string|null $delimiter_pattern (default: depend on configure)
+     * @param string|null $omission_pattern (default: depend on configure)
+     * @param int|null $omission_length (default: depend on configure)
+     * @param float|null $omission_ratio (default: depend on configure)
+     * @return boolean
+     */
+    public function validationNgWord(Context $c, $ng_words, ?string $delimiter_pattern = null, ?string $omission_pattern = null, ?int $omission_length = null, ?float $omission_ratio = null) : bool
+    {
+        $word_split_pattern = $word_split_pattern ?? static::config('default.NgWord.word_split_pattern') ;
+        $delimiter_pattern  = $delimiter_pattern  ?? static::config('default.NgWord.delimiter_pattern') ;
+        $omission_pattern   = $omission_pattern   ?? static::config('default.NgWord.omission_pattern') ;
+        $omission_length    = $omission_length    ?? static::config('default.NgWord.omission_length') ;
+        $omission_ratio     = $omission_ratio     ?? static::config('default.NgWord.omission_ratio') ;
+        $ambiguous_patterns = static::config('default.NgWord.ambiguous_patterns') ;
 
+        if (!is_array($ng_words)) {
+            $ng_words = file($ng_words, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        }
+        
+        $ng_word = null;
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$ng_word) {
+                $words = array_unique(array_merge(
+                    preg_split("/{$word_split_pattern}+/u", $text, -1, PREG_SPLIT_NO_EMPTY),
+                    [$text]
+                ));
+
+                // var_dump($words); @todo 区切りパターンによる回避の対応
+
+                foreach ($words as $word) {
+                    // Prehandle: omission characters
+                    $length         = mb_strlen($word);
+                    $omission_index = [];
+                    $ng_word        = null;
+                    if ($length >= $omission_length) {
+                        $index = 0;
+                        foreach (Strings::toCharArray($word) as $letter) {
+                            if (preg_match('/^'.$omission_pattern.'$/u', $letter)) {
+                                $omission_index[] = $index++;
+                                continue;
+                            }
+                            if (preg_match('/^'.$delimiter_pattern.'$/u', $letter)) {
+                                continue;
+                            }
+                            $index++;
+                        }
+                    }
+                    if ($length * $omission_ratio < count($omission_index)) {
+                        $omission_index = [];
+                    }
+
+                    // Check: ng word
+                    $matches = [];
+                    foreach ($ng_words as $ng_word) {
+                        if (mb_strlen(trim($ng_word, '^$')) > $length) {
+                            continue;
+                        }
+                        $regex = $this->ngWordToMatcher($ng_word, $delimiter_pattern, $omission_pattern, $omission_index, $ambiguous_patterns);
+                        if (preg_match($regex, $word, $matches)) {
+                            $ng_word = $matches[0];
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            },
+            'validation.NgWord',
+            ['ng_word' => &$ng_word]
+        );
+    }
+
+    /**
+     * Create a regex matcher from given ng word.
+     *
+     * @param string $word
+     * @param string $delimiter_pattern
+     * @param string $omission_pattern
+     * @param array $omission_index
+     * @param array $ambiguous_patterns
+     * @return string
+     */
+    private function ngWordToMatcher(string $word, string $delimiter_pattern, string $omission_pattern, array $omission_index, array $ambiguous_patterns) : string
+    {
+        $regex = '';
+        $i = 0;
+        foreach (Strings::toCharArray($word) as $letter) {
+            $ambiguous_pattern = $ambiguous_patterns[$letter] ?? preg_quote($letter, '/') ;
+            if (in_array($ambiguous_pattern, array('^','$'))) {
+                $regex .= $ambiguous_pattern.$delimiter_pattern.'*';
+                continue;
+            }
+            $regex .= in_array($i++, $omission_index) ? $omission_pattern.'?'.$ambiguous_pattern.'?' : $ambiguous_pattern ;
+            $regex .= $delimiter_pattern.'*';
+        }
+        $regex = mb_substr($regex, 0, mb_strlen($regex) - mb_strlen($delimiter_pattern.'*'));
+        return '/'.$regex.'/u';
+    }
 
 
 
