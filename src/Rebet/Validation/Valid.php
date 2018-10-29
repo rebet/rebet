@@ -422,7 +422,7 @@ class Valid
 
     /**
      * Digit Validation.
-     * It checks the value may only contain harf digits.
+     * It checks the value may only contain half digits.
      *
      * ex)
      *   - ['CU', Valid::DIGIT]
@@ -435,7 +435,7 @@ class Valid
 
     /**
      * Alpha Validation.
-     * It checks the value may only contain harf alphabets.
+     * It checks the value may only contain half alphabets.
      *
      * ex)
      *   - ['CU', Valid::ALPHA]
@@ -448,7 +448,7 @@ class Valid
 
     /**
      * Alpha Digit Validation.
-     * It checks the value may only contain harf alphabets or digits.
+     * It checks the value may only contain half alphabets or digits.
      *
      * ex)
      *   - ['CU', Valid::ALPHA_DIGIT]
@@ -458,6 +458,20 @@ class Valid
      *   Selector    - none
      */
     const ALPHA_DIGIT = 'AlphaDigit:';
+
+    /**
+     * Alpha Digit Mark Validation.
+     * It checks the value may only contain half alphabets, digits or given marks.
+     *
+     * ex)
+     *   - ['CU', Valid::ALPHA_DIGIT_MARK] (mark: '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ')
+     *   - ['CU', Valid::ALPHA_DIGIT_MARK, mark]
+     * message)
+     *   Key         - AlphaDigitMark, AlphaDigitMark@List
+     *   Placeholder - :attribute, :self, :mark, :nth, :value
+     *   Selector    - none
+     */
+    const ALPHA_DIGIT_MARK = 'AlphaDigitMark:';
 
 
 

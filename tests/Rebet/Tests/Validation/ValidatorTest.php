@@ -1599,18 +1599,18 @@ EOS
                 []
             ],
             [
-                ['foo' => 'abcDEF'],
+                ['foo' => '123abcDEF'],
                 ['foo' => ['rule' => [
                     ['C', Valid::ALPHA_DIGIT]
                 ]]],
                 []
             ],
             [
-                ['foo' => '123abc'],
+                ['foo' => '123-abc'],
                 ['foo' => ['rule' => [
                     ['C', Valid::ALPHA_DIGIT]
                 ]]],
-                []
+                ['foo' => ["The Foo may only contain letters or digits."]]
             ],
             [
                 ['foo' => 'ＡＢＣ'],
@@ -1626,6 +1626,62 @@ EOS
                 ]]],
                 ['foo' => [
                     "The 3rd Foo (あいう) may only contain letters or digits.",
+                ]]
+            ],
+
+            // --------------------------------------------
+            // Valid::ALPHA_DIGIT_MARK
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abcDEF'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '[123-abc]'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'ＡＢＣ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK]
+                ]]],
+                ['foo' => ["The Foo may only contain letters, digits or marks (include !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ )."]]
+            ],
+            [
+                ['foo' => '[123-abc]'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK, "-_"]
+                ]]],
+                ['foo' => ["The Foo may only contain letters, digits or marks (include -_)."]]
+            ],
+            [
+                ['foo' => '[123-abc]'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK, "[-]"]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['123-abc', '1,234', 'FOO_BAR', 123, 'foo@rebet.com']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT_MARK, "-_"]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (1,234) may only contain letters, digits or marks (include -_).",
+                    "The 5th Foo (foo@rebet.com) may only contain letters, digits or marks (include -_).",
                 ]]
             ],
 

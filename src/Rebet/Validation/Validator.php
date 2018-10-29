@@ -956,6 +956,18 @@ class Validator
         return static::handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9]+$/u", 'validation.AlphaDigit');
     }
 
+    /**
+     * Alpha Digit Mark Validation
+     *
+     * @param Context $c
+     * @param string $mark (default: '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ')
+     * @return boolean
+     */
+    public function validationAlphaDigitMark(Context $c, string $mark = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ') : bool
+    {
+        return static::handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9".preg_quote($mark, '/')."]+$/u", 'validation.AlphaDigitMark', ['mark' => $mark]);
+    }
+
 
 
 
