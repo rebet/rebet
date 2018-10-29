@@ -77,5 +77,7 @@ return [
     "Digit@List"       => ":nth番目の:attribute(:value)は半角数字で入力して下さい。",
     "Alpha"            => ":attributeは半角英字で入力して下さい。",
     "Alpha@List"       => ":nth番目の:attribute(:value)は半角英字で入力して下さい。",
+    "AlphaDigit"       => ":attributeは半角英数字で入力して下さい。",
+    "AlphaDigit@List"  => ":nth番目の:attribute(:value)は半角英数字で入力して下さい。",
 
 ];

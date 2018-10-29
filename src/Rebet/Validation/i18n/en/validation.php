@@ -93,4 +93,6 @@ return [
     "Digit@List"       => "The :nth :attribute (:value) may only contain digits.",
     "Alpha"            => "The :attribute may only contain letters.",
     "Alpha@List"       => "The :nth :attribute (:value) may only contain letters.",
+    "AlphaDigit"       => "The :attribute may only contain letters or digits.",
+    "AlphaDigit@List"  => "The :nth :attribute (:value) may only contain letters or digits.",
 ];

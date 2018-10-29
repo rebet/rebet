@@ -422,7 +422,7 @@ class Valid
 
     /**
      * Digit Validation.
-     * It checks the value is harf digit.
+     * It checks the value may only contain harf digits.
      *
      * ex)
      *   - ['CU', Valid::DIGIT]
@@ -435,7 +435,7 @@ class Valid
 
     /**
      * Alpha Validation.
-     * It checks the value is harf alphabet.
+     * It checks the value may only contain harf alphabets.
      *
      * ex)
      *   - ['CU', Valid::ALPHA]
@@ -446,7 +446,18 @@ class Valid
      */
     const ALPHA = 'Alpha:';
 
-
+    /**
+     * Alpha Digit Validation.
+     * It checks the value may only contain harf alphabets or digits.
+     *
+     * ex)
+     *   - ['CU', Valid::ALPHA_DIGIT]
+     * message)
+     *   Key         - AlphaDigit, AlphaDigit@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const ALPHA_DIGIT = 'AlphaDigit:';
 
 
 

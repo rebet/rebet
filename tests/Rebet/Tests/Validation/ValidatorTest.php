@@ -1588,6 +1588,46 @@ EOS
                 ]]
             ],
 
+            // --------------------------------------------
+            // Valid::ALPHA_DIGIT
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abcDEF'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'ＡＢＣ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT]
+                ]]],
+                ['foo' => ["The Foo may only contain letters or digits."]]
+            ],
+            [
+                ['foo' => ['ABC', '123', 'あいう', 'abc', 987]],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA_DIGIT]
+                ]]],
+                ['foo' => [
+                    "The 3rd Foo (あいう) may only contain letters or digits.",
+                ]]
+            ],
 
 
 
