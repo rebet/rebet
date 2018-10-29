@@ -934,6 +934,17 @@ class Validator
         return static::handleRegex($c, Kind::OTHER(), "/^[0-9]+$/u", 'validation.Digit');
     }
 
+    /**
+     * Alpha Validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationAlpha(Context $c) : bool
+    {
+        return static::handleRegex($c, Kind::OTHER(), "/^[a-zA-Z]+$/u", 'validation.Alpha');
+    }
+
 
 
 

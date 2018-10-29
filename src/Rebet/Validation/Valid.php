@@ -433,9 +433,24 @@ class Valid
      */
     const DIGIT = 'Digit:';
 
+    /**
+     * Alpha Validation.
+     * It checks the value is harf alphabet.
+     *
+     * ex)
+     *   - ['CU', Valid::ALPHA]
+     * message)
+     *   Key         - Alpha, Alpha@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const ALPHA = 'Alpha:';
 
 
-    
+
+
+
+
     const DEPENDENCE_CHAR = 'DependenceChar:';
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';

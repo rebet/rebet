@@ -89,6 +89,8 @@ return [
     ],
     "Ipv4"             => "The :attribute must be a valid IPv4(CIDR) address.",
     "Ipv4@List"        => "The :nth :attribute (:value) must be a valid IPv4(CIDR) address.",
-    "Digit"            => "The :attribute must be digit.",
-    "Digit@List"       => "The :nth :attribute (:value) must be digit.",
+    "Digit"            => "The :attribute may only contain digits.",
+    "Digit@List"       => "The :nth :attribute (:value) may only contain digits.",
+    "Alpha"            => "The :attribute may only contain letters.",
+    "Alpha@List"       => "The :nth :attribute (:value) may only contain letters.",
 ];

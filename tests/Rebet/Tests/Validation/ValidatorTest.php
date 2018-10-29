@@ -1526,14 +1526,14 @@ EOS
                 ['foo' => ['rule' => [
                     ['C', Valid::DIGIT]
                 ]]],
-                ['foo' => ["The Foo must be digit."]]
+                ['foo' => ["The Foo may only contain digits."]]
             ],
             [
                 ['foo' => '１２３'],
                 ['foo' => ['rule' => [
                     ['C', Valid::DIGIT]
                 ]]],
-                ['foo' => ["The Foo must be digit."]]
+                ['foo' => ["The Foo may only contain digits."]]
             ],
             [
                 ['foo' => ['１２３', '123', 'abc', 987]],
@@ -1541,10 +1541,60 @@ EOS
                     ['C', Valid::DIGIT]
                 ]]],
                 ['foo' => [
-                    "The 1st Foo (１２３) must be digit.",
-                    "The 3rd Foo (abc) must be digit.",
+                    "The 1st Foo (１２３) may only contain digits.",
+                    "The 3rd Foo (abc) may only contain digits.",
                 ]]
             ],
+
+            // --------------------------------------------
+            // Valid::ALPHA
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'abcDEF'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA]
+                ]]],
+                ['foo' => ["The Foo may only contain letters."]]
+            ],
+            [
+                ['foo' => 'ＡＢＣ'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA]
+                ]]],
+                ['foo' => ["The Foo may only contain letters."]]
+            ],
+            [
+                ['foo' => ['ABC', '123', 'abc', 987]],
+                ['foo' => ['rule' => [
+                    ['C', Valid::ALPHA]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (123) may only contain letters.",
+                    "The 4th Foo (987) may only contain letters.",
+                ]]
+            ],
+
+
+
+
+
+
+
+
 
         ];
     }
