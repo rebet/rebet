@@ -28,8 +28,13 @@ class Validator
     public static function defaultConfig()
     {
         return [
-            'resources_dir' => [Files::normalizePath(__DIR__.'/i18n')],
-            'validations'   => [],
+            'resources_dir'          => [Files::normalizePath(__DIR__.'/i18n')],
+            'validations'            => [],
+
+            // Specific validation settings
+            'default' => [
+                'DependenceChar' => ['encode' => 'sjis-win'],
+            ],
         ];
     }
 
@@ -992,6 +997,34 @@ class Validator
         return static::handleRegex($c, Kind::OTHER(), "/^[ァ-ヾ".preg_quote($extra, '/')."]+$/u", 'validation.Kana', ['extra' => $extra]);
     }
 
+    /**
+     * Dependence Char Validation
+     *
+     * @param Context $c
+     * @param string $encode (default: depend on configure)
+     * @return boolean
+     */
+    public function validationDependenceChar(Context $c, string $encode = null) : bool
+    {
+        $encode      = $encode ?? static::config('default.DependenceChar.encode');
+        $dependences = [];
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function ($value) use ($encode, &$dependences) {
+                $org         = $value;
+                $conv        = mb_convert_encoding(mb_convert_encoding($value, $encode, 'UTF-8'), 'UTF-8', $encode);
+                $dependences = [];
+                if (strlen($org) != strlen($conv)) {
+                    $dependences = array_diff(Strings::toCharArray($org), Strings::toCharArray($conv));
+                    return empty($dependences);
+                }
+                return true;
+            },
+            'validation.DependenceChar',
+            ['encode' => $encode, 'dependences' => &$dependences]
+        );
+    }
 
 
 

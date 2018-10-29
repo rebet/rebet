@@ -1735,7 +1735,6 @@ EOS
                 ]]
             ],
 
-
             // --------------------------------------------
             // Valid::KANA
             // --------------------------------------------
@@ -1793,6 +1792,48 @@ EOS
                 ]]
             ],
 
+            // --------------------------------------------
+            // Valid::DEPENDENCE_CHAR
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DEPENDENCE_CHAR]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'aA1$Ａアあ漢字髙①'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DEPENDENCE_CHAR]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'aA1$Ａア♬あ漢字髙①'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DEPENDENCE_CHAR]
+                ]]],
+                ['foo' => ['The Foo must not contain platform dependent character [♬].']]
+            ],
+            [
+                ['foo' => 'aA1$Ａア♬あ漢字髙①'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DEPENDENCE_CHAR, 'iso-2022-jp']
+                ]]],
+                ['foo' => ['The Foo must not contain platform dependent character [♬, 髙, ①].']]
+            ],
+            [
+                ['foo' => ['aA1','$Ａア','♬あ','漢字','髙','①②']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DEPENDENCE_CHAR, 'iso-2022-jp']
+                ]]],
+                ['foo' => [
+                    'The 3rd Foo (♬あ) must not contain platform dependent character [♬].',
+                    'The 5th Foo (髙) must not contain platform dependent character [髙].',
+                    'The 6th Foo (①②) must not contain platform dependent character [①, ②].',
+                ]]
+            ],
 
 
 

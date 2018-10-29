@@ -503,10 +503,24 @@ class Valid
      */
     const KANA = 'Kana:';
 
-
-
-
+    /**
+     * Dependence Char Validation.
+     * It checks the value contain platform dependent characters.
+     *
+     * ex)
+     *   - ['CU', Valid::DEPENDENCE_CHAR] (encode: depend on configure)
+     *   - ['CU', Valid::DEPENDENCE_CHAR, encode]
+     * message)
+     *   Key         - DependenceChar, DependenceChar@List
+     *   Placeholder - :attribute, :self, :encode, :dependences, :nth, :value
+     *   Selector    - none
+     */
     const DEPENDENCE_CHAR = 'DependenceChar:';
+
+
+
+
+
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
 }

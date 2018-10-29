@@ -83,5 +83,7 @@ return [
     "AlphaDigitMark@List" => ":nth番目の:attribute(:value)は半角英数記号(:markを含む)で入力して下さい。",
     "Hiragana"            => ":attributeはひらがなで入力して下さい。",
     "Hiragana@List"       => ":nth番目の:attribute(:value)はひらがなで入力して下さい。",
+    "DependenceChar"      => ":attributeは機種依存文字 [:dependences] を含まないで下さい。",
+    "DependenceChar@List" => ":nth番目の:attribute(:value)は機種依存文字 [:dependences] を含まないで下さい。",
 
 ];
