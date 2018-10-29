@@ -71,5 +71,7 @@ return [
         "{nonactive} :nth番目の:attribute(:value)は有効なURLではありません。",
         "{*}         :nth番目の:attribute(:value)はURL形式で入力して下さい。",
     ],
+    "Ipv4"             => ":attributeはIPv4(CIDR)形式で入力して下さい。",
+    "Ipv4@List"        => ":nth番目の:attribute(:value)はIPv4(CIDR)形式で入力して下さい。",
 
 ];

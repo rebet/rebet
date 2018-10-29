@@ -87,4 +87,6 @@ return [
         "{nonactive} The :nth :attribute (:value) is not a valid URL.",
         "{*}         The :nth :attribute (:value) format is invalid.",
     ],
+    "Ipv4"             => "The :attribute must be a valid IPv4(CIDR) address.",
+    "Ipv4@List"        => "The :nth :attribute (:value) must be a valid IPv4(CIDR) address.",
 ];

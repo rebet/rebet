@@ -72,6 +72,31 @@ namespace Rebet\Common {
             511 => '511 Network Authentication Required',
         ];
 
+        private const EMULATED_DNS = [
+            'github.com' => [
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "SOA","mname" => "ns1.p16.dynect.net","rname" => "hostmaster.github.com","serial" => 1540354846,"refresh" => 3600,"retry" => 600,"expire" => 604800,"minimum-ttl" => 60],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns-520.awsdns-01.net"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns-421.awsdns-52.com"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns4.p16.dynect.net"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns-1707.awsdns-21.co.uk"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns3.p16.dynect.net"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns-1283.awsdns-32.org"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns2.p16.dynect.net"],
+                ["host" => "github.com","class" => "IN","ttl" => 836 ,"type" => "NS","target" => "ns1.p16.dynect.net"],
+                ["host" => "github.com","class" => "IN","ttl" => 60  ,"type" => "A","ip" => "192.30.253.112"],
+                ["host" => "github.com","class" => "IN","ttl" => 60  ,"type" => "A","ip" => "192.30.253.113"],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "MX","pri" => 10,"target" => "ALT4.ASPMX.L.GOOGLE.com"],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "MX","pri" => 1,"target" => "ASPMX.L.GOOGLE.com"],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "MX","pri" => 5,"target" => "ALT1.ASPMX.L.GOOGLE.com"],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "MX","pri" => 10,"target" => "ALT3.ASPMX.L.GOOGLE.com"],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "MX","pri" => 5,"target" => "ALT2.ASPMX.L.GOOGLE.com"],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "TXT","txt" => "MS=ms44452932","entries" => ["MS=ms44452932"]],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "TXT","txt" => "MS=6BF03E6AF5CB689E315FB6199603BABF2C88D805","entries" => ["MS=6BF03E6AF5CB689E315FB6199603BABF2C88D805"]],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "TXT","txt" => "v=spf1 ip4:192.30.252.0\/22 ip4:208.74.204.0\/22 ip4:46.19.168.0\/23 include:_spf.google.com include:esp.github.com include:_spf.createsend.com include:mail.zendesk.com include:servers.mcsv.net ~all","entries" => ["v=spf1 ip4:192.30.252.0\/22 ip4:208.74.204.0\/22 ip4:46.19.168.0\/23 include:_spf.google.com include:esp.github.com include:_spf.createsend.com include:mail.zendesk.com include:servers.mcsv.net ~all"]],
+                ["host" => "github.com","class" => "IN","ttl" => 3600,"type" => "TXT","txt" => "docusign=087098e3-3d46-47b7-9b4e-8a23028154cd","entries" => ["docusign=087098e3-3d46-47b7-9b4e-8a23028154cd"]],
+            ],
+        ];
+
         public static $header_raw_arges = [];
         private static $emulated_header = ['http' => ['HTTP/1.1 200 OK']];
 
@@ -125,6 +150,47 @@ namespace Rebet\Common {
         public static function headers_list() : array
         {
             return Arrays::flatten(\array_values(self::$emulated_header));
+        }
+
+        /**
+         * Emulate dns_get_record()
+         * # $authns, $addtl and $raw emulate currently not supported.
+         *
+         * @param string $hostname
+         * @param integer $type
+         * @param array|null $authns
+         * @param array|null $addtl
+         * @param boolean $raw
+         * @return array
+         */
+        public static function dns_get_record(string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false) : array
+        {
+            if (isset(static::EMULATED_DNS[$hostname])) {
+                $c = new Collection(static::EMULATED_DNS[$hostname]);
+                return array_values($c->filter(function ($v) use ($type) {
+                    $vt = Reflector::get($v, 'type');
+                    switch (true) {
+                        case DNS_ANY === $type: return true;
+                        case DNS_ALL === $type: return true;
+                        case DNS_A     & $type && $vt === 'A': return true;
+                        case DNS_CNAME & $type && $vt === 'CNAME': return true;
+                        case DNS_HINFO & $type && $vt === 'HINFO': return true;
+                        case DNS_CAA   & $type && $vt === 'CAA': return true;
+                        case DNS_MX    & $type && $vt === 'MX': return true;
+                        case DNS_NS    & $type && $vt === 'NS': return true;
+                        case DNS_PTR   & $type && $vt === 'PTR': return true;
+                        case DNS_SOA   & $type && $vt === 'SOA': return true;
+                        case DNS_TXT   & $type && $vt === 'TXT': return true;
+                        case DNS_AAAA  & $type && $vt === 'AAAA': return true;
+                        case DNS_SRV   & $type && $vt === 'SRV': return true;
+                        case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
+                        case DNS_A6    & $type && $vt === 'A6': return true;
+                        case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
+                    }
+                    return false;
+                })->toArray());
+            }
+            return [];
         }
     }
 }

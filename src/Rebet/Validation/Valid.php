@@ -405,6 +405,21 @@ class Valid
      */
     const URL = 'Url:';
 
+    /**
+     * IPv4 Validation.
+     * It checks the value format is IPv4 with/without CIDR.
+     * If the delimiter will be given then split value by the given delimiter first and trim each then validate.
+     *
+     * ex)
+     *   - ['CU', Valid::IPV4] (delimiter: null)
+     *   - ['CU', Valid::IPV4, delimiter]
+     * message)
+     *   Key         - Ipv4, Ipv4@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const IPV4 = 'Ipv4:';
+
 
 
     const DEPENDENCE_CHAR = 'DependenceChar:';

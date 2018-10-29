@@ -11,6 +11,8 @@ use Rebet\Common\Collection;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Arrays;
+use Rebet\Common\Utils;
+use Rebet\Common\System;
 
 /**
  * Validator Class
@@ -885,7 +887,7 @@ class Validator
                     if (isset($host_state[$host])) {
                         return $host_state[$host];
                     }
-                    $active = $host ? count(dns_get_record($host, DNS_A | DNS_AAAA)) > 0 : false ;
+                    $active = $host ? count(System::dns_get_record($host, DNS_A | DNS_AAAA)) > 0 : false ;
                     $host_state[$host] = $active;
                     return $active;
                 },
@@ -898,6 +900,29 @@ class Validator
         }
         return $valid;
     }
+
+    /**
+     * IPv4 Validation
+     *
+     * @param Context $c
+     * @param bool $delimiter (default: null)
+     * @return boolean
+     */
+    public function validationIpv4(Context $c, string $delimiter = null) : bool
+    {
+        if (!is_null($delimiter) && is_string($c->value)) {
+            $splited = [];
+            foreach (explode($delimiter, $c->value) as $value) {
+                $value = trim($value);
+                if (!Utils::isBlank($value)) {
+                    $splited[] = $value;
+                }
+            }
+            $c->value = $splited;
+        }
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'validation.Ipv4');
+    }
+
 
 
     // ====================================================

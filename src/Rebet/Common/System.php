@@ -2,12 +2,12 @@
 namespace Rebet\Common;
 
 /**
- * システム クラス
+ * System Class
  *
- * exit / die などの言語構造や、header などの SAPI でのみ動作する機能群などについて、
- * ユニットテスト時にフック出来るようにすることを目的としたクラスです。
+ * It is a class aimed to make it possible to hook on unit tests about linguistic structures such as exit / die
+ * and functions that operate only with SAPI such as header.
  *
- * 本クラスはユニットテストの際にモッククラスに置換えられます。
+ * This class can be replaced with mock class in unit testing.
  * @see tests/mocks.php
  *
  * @package   Rebet
@@ -17,7 +17,6 @@ namespace Rebet\Common;
  */
 class System
 {
-    
     /**
      * No instantiation
      */
@@ -26,9 +25,9 @@ class System
     }
 
     /**
-     * exit() のラッパーメソッドです。
+     * The wrapper method of exit().
      *
-     * @param int|string|null ステータス
+     * @param int|string|null (default: null)
      */
     public static function exit($status = null) : void
     {
@@ -39,9 +38,9 @@ class System
     }
 
     /**
-     * die() のラッパーメソッドです。
+     * The wrapper method of die().
      *
-     * @param int|string|null ステータス
+     * @param int|string|null (default: null)
      */
     public static function die($status = null) : void
     {
@@ -52,11 +51,11 @@ class System
     }
 
     /**
-     * header() のラッパーメソッドです。
+     * The wrapper method of header().
      *
-     * @param string $header ヘッダ文字列
-     * @param bool $replace 上書き（デフォルト：true）
-     * @param int $http_response_code HTTPレスポンスコード（デフォルト：null）
+     * @param string $header
+     * @param bool $replace (default: true)
+     * @param int $http_response_code (default: null)
      */
     public static function header(string $header, bool $replace = true, int $http_response_code = null) : void
     {
@@ -64,10 +63,27 @@ class System
     }
 
     /**
-     * headers_list() のラッパーメソッドです。
+     * The wrapper method of headers_list().
+     *
+     * @return array
      */
     public static function headers_list() : array
     {
         return \headers_list();
+    }
+
+    /**
+     * The wrapper method of dns_get_record().
+     *
+     * @param string $hostname
+     * @param integer $type (default: DNS_ANY)
+     * @param array|null $authns (default: null)
+     * @param array|null $addtl (default: null)
+     * @param boolean $raw (default: false)
+     * @return array
+     */
+    public static function dns_get_record(string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false) : array
+    {
+        return dns_get_record($hostname, $type, $authns, $addtl, $raw);
     }
 }

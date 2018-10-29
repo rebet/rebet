@@ -1418,6 +1418,92 @@ EOS
                 ['foo' => ["The 2nd Foo (https://invalid.local/rebet) is not a valid URL."]]
             ],
 
+            // --------------------------------------------
+            // Valid::IPV4
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '192.168.1.1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '192.168.1.0/24'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '192.168.1.256'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                ['foo' => ["The Foo must be a valid IPv4(CIDR) address."]]
+            ],
+            [
+                ['foo' => '192.168.1.0/33'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                ['foo' => ["The Foo must be a valid IPv4(CIDR) address."]]
+            ],
+            [
+                ['foo' => ['192.168.1.1', '192.168.1.3', '192.168.2.0/24']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => <<<EOS
+192.168.1.1
+192.168.1.3
+
+192.168.2.0/24
+EOS
+                ],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4, "\n"]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['192.168.1.1', 'abc', '192.168.2.0/24','192.168.2.0/34']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (abc) must be a valid IPv4(CIDR) address.",
+                    "The 4th Foo (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
+                ]]
+            ],
+            [
+                ['foo' => <<<EOS
+192.168.1.1
+abc
+
+192.168.2.0/24
+192.168.2.0/34
+EOS
+                ],
+                ['foo' => ['rule' => [
+                    ['C', Valid::IPV4, "\n"]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (abc) must be a valid IPv4(CIDR) address.",
+                    "The 4th Foo (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
+                ]]
+            ],
+
 
         ];
     }
