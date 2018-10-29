@@ -1504,6 +1504,47 @@ EOS
                 ]]
             ],
 
+            // --------------------------------------------
+            // Valid::DIGIT
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DIGIT]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123456'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DIGIT]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '123abc'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DIGIT]
+                ]]],
+                ['foo' => ["The Foo must be digit."]]
+            ],
+            [
+                ['foo' => '１２３'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DIGIT]
+                ]]],
+                ['foo' => ["The Foo must be digit."]]
+            ],
+            [
+                ['foo' => ['１２３', '123', 'abc', 987]],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DIGIT]
+                ]]],
+                ['foo' => [
+                    "The 1st Foo (１２３) must be digit.",
+                    "The 3rd Foo (abc) must be digit.",
+                ]]
+            ],
 
         ];
     }

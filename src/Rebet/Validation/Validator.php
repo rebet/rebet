@@ -923,6 +923,21 @@ class Validator
         return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'validation.Ipv4');
     }
 
+    /**
+     * Digit Validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationDigit(Context $c) : bool
+    {
+        return static::handleRegex($c, Kind::OTHER(), "/^[0-9]+$/u", 'validation.Digit');
+    }
+
+
+
+
+
 
 
     // ====================================================

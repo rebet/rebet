@@ -401,7 +401,7 @@ class Valid
      * message)
      *   Key         - Url, Url@List
      *   Placeholder - :attribute, :self, :nth, :value
-     *   Selector    - none
+     *   Selector    - none or nonactive(when dns_check and dns is not active)
      */
     const URL = 'Url:';
 
@@ -415,13 +415,27 @@ class Valid
      *   - ['CU', Valid::IPV4, delimiter]
      * message)
      *   Key         - Ipv4, Ipv4@List
-     *   Placeholder - :attribute, :self, :nth, :value
+     *   Placeholder - :attribute, :self, :delimiter, :nth, :value
      *   Selector    - none
      */
     const IPV4 = 'Ipv4:';
 
+    /**
+     * Digit Validation.
+     * It checks the value is harf digit.
+     *
+     * ex)
+     *   - ['CU', Valid::DIGIT]
+     * message)
+     *   Key         - Digit, Digit@List
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const DIGIT = 'Digit:';
 
 
+
+    
     const DEPENDENCE_CHAR = 'DependenceChar:';
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';

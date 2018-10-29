@@ -73,5 +73,7 @@ return [
     ],
     "Ipv4"             => ":attributeはIPv4(CIDR)形式で入力して下さい。",
     "Ipv4@List"        => ":nth番目の:attribute(:value)はIPv4(CIDR)形式で入力して下さい。",
+    "Digit"            => ":attributeは半角数字で入力して下さい。",
+    "Digit@List"       => ":nth番目の:attribute(:value)は半角数字で入力して下さい。",
 
 ];
