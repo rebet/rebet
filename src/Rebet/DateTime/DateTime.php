@@ -138,7 +138,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if ($value === null || $value === '') {
             return [null, null];
         }
-        if ($value instanceof \DateTimeInterface || is_int($value)) {
+        if ($value instanceof \DateTimeInterface || is_int($value) || is_float($value)) {
             return [new static($value, $timezone), self::config('default_format')];
         }
         

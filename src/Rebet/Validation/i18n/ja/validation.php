@@ -97,5 +97,7 @@ return [
     "Unique"              => ":attributeには異なる値を入力して下さい。[:duplicate] が重複しています。",
     "Datetime"            => ":attributeは正しい日付／日時形式で入力して下さい。",
     "Datetime@List"       => ":nth番目の:attributeは正しい日付／日時形式で入力して下さい。",
+    "FutureThan"          => ":attributeは:at_timeよりも未来の日付を入力して下さい。",
+    "FutureThan@List"     => ":nth番目の:attributeは:at_timeよりも未来の日付を入力して下さい。",
 
 ];

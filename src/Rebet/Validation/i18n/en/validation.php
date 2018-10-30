@@ -125,4 +125,8 @@ return [
     ],
     "Datetime"            => "The :attribute is not a valid date time.",
     "Datetime@List"       => "The :nth :attribute (:value) is not a valid date time.",
+    "FutureThan"          => "The :attribute must be a date future than :at_time.",
+    "FutureThan@List"     => "The :nth :attribute (:value) must be a date future than :at_time.",
+    
+
 ];

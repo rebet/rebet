@@ -333,11 +333,10 @@ class Validator
                 $method = "validation{$name}";
                 $valid  = $global_validator ? call_user_func($global_validator, $context, ...$args) : $this->$method($context, ...$args) ;
             }
-            $context->quiet(false);
-    
-            if (!$valid && Strings::contains($option, '!')) {
+            if (!$valid && !$context->isQuiet() && Strings::contains($option, '!')) {
                 return;
             }
+            $context->quiet(false);
 
             $then = $rule['then'] ?? null;
             $else = $rule['else'] ?? null;
@@ -984,7 +983,7 @@ class Validator
             );
         }
 
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'validation.Email');
+        return static::handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'validation.Email');
     }
 
     /**
@@ -1020,10 +1019,10 @@ class Validator
             (:[0-9]+)?                              # a port (optional)
             (/?|/\S+|\?\S*|\#\S*)                   # a /, nothing, a / with something, a query or a fragment
         $~ixu';
-        $valid = $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), $pattern, 'validation.Url');
+        $valid = static::handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), $pattern, 'validation.Url');
         if ($dns_check) {
             $host_state = [];
-            $valid &= $this->handleListableValue(
+            $valid &= static::handleListableValue(
                 $c,
                 Kind::TYPE_DEPENDENT_CHECK(),
                 function ($value) use (&$host_state) {
@@ -1064,7 +1063,7 @@ class Validator
             }
             $c->value = $splited;
         }
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'validation.Ipv4');
+        return static::handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'validation.Ipv4');
     }
 
     /**
@@ -1147,7 +1146,7 @@ class Validator
     {
         $encode      = $encode ?? static::config('default.DependenceChar.encode');
         $dependences = [];
-        return $this->handleListableValue(
+        return static::handleListableValue(
             $c,
             Kind::OTHER(),
             function ($value) use ($encode, &$dependences) {
@@ -1191,7 +1190,7 @@ class Validator
         }
         
         $hit_ng_word = null;
-        return $this->handleListableValue(
+        return static::handleListableValue(
             $c,
             Kind::OTHER(),
             function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$hit_ng_word) {
@@ -1269,7 +1268,7 @@ class Validator
      */
     public function validationContains(Context $c, array $list) : bool
     {
-        return $this->handleListableValue(
+        return static::handleListableValue(
             $c,
             Kind::TYPE_CONSISTENCY_CHECK(),
             function ($value) use ($list) {
@@ -1359,17 +1358,70 @@ class Validator
      */
     public function validationDatetime(Context $c, $format = []) : bool
     {
-        return $this->handleListableValue(
+        return static::handleListableValue(
             $c,
             Kind::TYPE_CONSISTENCY_CHECK(),
             function ($value) use ($format) {
                 return !is_null(DateTime::createDateTime($value, $format));
             },
-            'validation.Datetime',
-            ['format' => array_merge((array)$format, DateTime::config('acceptable_datetime_format')) ]
+            'validation.Datetime'
         );
     }
 
+    /**
+     * Future Than Validation
+     *
+     * @param Context $c
+     * @param string|\DateTimeInterface $at_time
+     * @param string|array $format
+     * @return boolean
+     */
+    public function validationFutureThan(Context $c, $at_time, $format = []) : bool
+    {
+        return $this->handleDatetime(
+            $c,
+            $at_time,
+            $format,
+            function (DateTime $value, DateTime $at_time) {
+                return $value > $at_time;
+            },
+            'validation.FutureThan'
+        );
+    }
+
+    /**
+     * Handle Datetime validation.
+     * If you use this handler then you have to define @List message key too.
+     *
+     * @param Context $c
+     * @param string|\DateTimeInterface $at_time
+     * @param string|array $format
+     * @param callable $test function(DateTime $value, DateTime at_time){ ... }
+     * @param string $messsage_key
+     * @return boolean
+     */
+    public function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    {
+        [$at_time, $at_time_label] = $c->resolve($at_time);
+        $replacement['at_time']    = $at_time_label;
+        $valid  = $this->validationDatetime($c, $format);
+        $valid &= static::handleListableValue(
+            $c,
+            Kind::TYPE_DEPENDENT_CHECK(),
+            function ($value) use ($at_time, $format, $test) {
+                try {
+                    $at_time = DateTime::createDateTime($at_time, $format) ?? new DateTime($at_time);
+                } catch (\Exception $e) {
+                    return true;
+                }
+                return $test(DateTime::createDateTime($value, $format), $at_time);
+            },
+            $messsage_key,
+            $replacement,
+            $selector
+        );
+        return $valid;
+    }
 
 
 

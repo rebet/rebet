@@ -273,7 +273,8 @@ class Context
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
             return [
                 $value instanceof Enum ? $value->value : $value,
-                $value instanceof Enum ? $value->label : $value,            ];
+                $value instanceof Enum ? $value->label : $value,
+            ];
         }
         $field = Strings::ltrim($value, ':');
         return [$this->value($field), $this->label($field)];

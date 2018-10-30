@@ -2218,6 +2218,30 @@ EOS
             ],
 
 
+            // --------------------------------------------
+            // Valid::FUTURE_THAN
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FUTURE_THAN, 'now']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '2100-01-01'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FUTURE_THAN, 'now']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '1999-01-01'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::FUTURE_THAN, 'now']
+                ]]],
+                ['foo' => ["The Foo must be a date future than now."]]
+            ],
 
 
 

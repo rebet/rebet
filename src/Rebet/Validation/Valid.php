@@ -146,6 +146,7 @@ class Valid
      * Blank If Validation.
      * It checks the value is blank.
      * If 'other' field value is given 'value', then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
      *   - ['CU', Valid::BLANK_IF, 'other', value]
@@ -156,12 +157,13 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :value
      *   Selector    - count of value
      */
-    const BLANK_IF = 'BlankIf:';
+    const BLANK_IF = 'BlankIf:!';
     
     /**
      * Empty Unless Validation.
      * It checks the value is blank.
      * If 'other' field value is given 'value', then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
      *   - ['CU', Valid::BLANK_UNLESS, 'other', value]
@@ -172,12 +174,13 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :value
      *   Selector    - count of value
      */
-    const BLANK_UNLESS = 'BlankUnless:';
+    const BLANK_UNLESS = 'BlankUnless:!';
     
     /**
      * Blank With Validation.
      * It checks the value is blank.
      * If 'other' fields are present at least N, then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
      *   - ['CU', Valid::BLANK_WITH, 'other'] (at_least: null)
@@ -188,12 +191,13 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :at_least
      *   Selector    - one(when other count is one), some(when at_least < other count), all
      */
-    const BLANK_WITH = 'BlankWith:';
+    const BLANK_WITH = 'BlankWith:!';
 
     /**
      * Blank Without Validation.
      * It checks the value is blank.
      * If 'other' fields are not present at least N, then check the target fields.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
      *   - ['CU', Valid::BLANK_WITHOUT, 'other'] (at_least: null)
@@ -204,7 +208,7 @@ class Valid
      *   Placeholder - :attribute, :self, :selector, :other, :at_least
      *   Selector    - one(when other count is one), some(when at_least < other count), all
      */
-    const BLANK_WITHOUT = 'BlankWithout:';
+    const BLANK_WITHOUT = 'BlankWithout:!';
 
     /**
      * Same As Validation.
@@ -317,6 +321,7 @@ class Valid
     /**
      * Integer Validation.
      * It checks the value is integer.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
      *   - ['CU', Valid::INTEGER]
@@ -325,11 +330,12 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const INTEGER = 'Integer:';
+    const INTEGER = 'Integer:!';
 
     /**
      * Float Validation.
      * It checks the value is real number up to given number decimal places.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
      *   - ['CU', Valid::FLOAT, decimal]
@@ -338,7 +344,7 @@ class Valid
      *   Placeholder - :attribute, :self, :decimal, :nth, :value
      *   Selector    - none
      */
-    const FLOAT = 'Float:';
+    const FLOAT = 'Float:!';
     
     /**
      * Max Number Validation.
@@ -624,17 +630,34 @@ class Valid
     /**
      * Datetime Validation.
      * It checks the value format is datetime.
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
      *
      * ex)
-     *   - ['CU', Valid::DATETIME]
+     *   - ['CU', Valid::DATETIME] (format: [])
      *   - ['CU', Valid::DATETIME, format]
      *   - ['CU', Valid::DATETIME, [format1, format2, ...]]
      * message)
      *   Key         - Datetime, Datetime@List
-     *   Placeholder - :attribute, :self, :format
+     *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const DATETIME = 'Datetime:';
+    const DATETIME = 'Datetime:!';
+
+    /**
+     * Future Than Validation.
+     * It checks the value of datetime is future than at_time.
+     *
+     * ex)
+     *   - ['CU', Valid::FUTURE_THAN, 'at_time'] (format: [])
+     *   - ['CU', Valid::FUTURE_THAN, 'at_time', format]
+     *   - ['CU', Valid::FUTURE_THAN, 'at_time', [format1, format2, ...]]
+     *   - ['CU', Valid::FUTURE_THAN, ':field' , (snip)]
+     * message)
+     *   Key         - FutureThan, FutureThan@List
+     *   Placeholder - :attribute, :self, :at_time, :nth, :value
+     *   Selector    - none
+     */
+    const FUTURE_THAN = 'FutureThan:';
 
 
 
