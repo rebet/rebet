@@ -189,11 +189,11 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '2010年10月20日 12:34';
+        $input = '2010/10/20 12:34';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
-        $this->assertSame('Y年m月d日 H:i', $apply_format);
+        $this->assertSame('Y/m/d H:i', $apply_format);
         $this->assertSame('2010-10-20 12:34:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
