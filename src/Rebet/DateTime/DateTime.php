@@ -202,7 +202,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         $value = is_string($value) ? $value : (string)$value ;
         
         $date = parent::createFromFormat($format, $value, self::adoptTimezone($timezone));
-        return $date ? new static($date) : $date ;
+        $le   = static::getLastErrors();
+        return $date === false || !empty($le['errors']) || !empty($le['warnings']) ? false : new static($date) ;
     }
 
     /**

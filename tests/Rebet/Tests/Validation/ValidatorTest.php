@@ -2179,6 +2179,13 @@ EOS
                 []
             ],
             [
+                ['foo' => '2010-02-31'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                ['foo' => ["The Foo is not a valid date time."]]
+            ],
+            [
                 ['foo' => '2010-01-23 12:34:56'],
                 ['foo' => ['rule' => [
                     ['C', Valid::DATETIME]
