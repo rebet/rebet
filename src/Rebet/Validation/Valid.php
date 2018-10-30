@@ -556,11 +556,12 @@ class Valid
     const NG_WORD = 'NgWord:';
 
     /**
-     * Contains Char Validation.
-     * It checks the value contain platform dependent characters.
+     * Contains Validation.
+     * It checks the value contain given list.
      *
      * ex)
      *   - ['CU', Valid::CONTAINS, [value1, value2, ...]]
+     *   - ['CU', Valid::CONTAINS, Enum::values()]
      * message)
      *   Key         - ContainsChar, ContainsChar@List
      *   Placeholder - :attribute, :self, :list, :nth, :value
@@ -568,7 +569,21 @@ class Valid
      */
     const CONTAINS = 'Contains:';
 
+    /**
+     * Min Select Count Validation.
+     * It checks the value must have at least min items.
+     *
+     * ex)
+     *   - ['CU', Valid::MIN_COUNT, min]
+     * message)
+     *   Key         - MinCount
+     *   Placeholder - :attribute, :self, :count, :min
+     *   Selector    - number of given min
+     */
+    const MIN_COUNT = 'MinCount:';
 
+
+    
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
 }

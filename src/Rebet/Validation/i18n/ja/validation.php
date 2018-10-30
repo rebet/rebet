@@ -91,5 +91,6 @@ return [
     "NgWord@List"         => ":nth番目の:attribute(:value)に利用できない単語「:ng_word」が含まれます。",
     "Contains"            => ":attributeは指定の一覧から選択して下さい。",
     "Contains@List"       => ":nth番目の:attribute(:value)は指定の一覧から選択して下さい。",
+    "MinCount"            => ":attributeは:min個以上選択して下さい。",
 
 ];

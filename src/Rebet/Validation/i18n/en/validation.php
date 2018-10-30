@@ -107,4 +107,8 @@ return [
     "NgWord@List"         => "The :nth :attribute (:value) must not contain the word ':ng_word'.",
     "Contains"            => "The :attribute must be selected from the specified list.",
     "Contains@List"       => "The :nth :attribute must be selected from the specified list.",
+    "MinCount"            => [
+        "[1]   The :attribute must have at least :min item.",
+        "[2,*] The :attribute must have at least :min items.",
+    ],
 ];

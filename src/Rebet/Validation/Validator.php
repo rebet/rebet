@@ -1279,6 +1279,23 @@ class Validator
         );
     }
 
+    /**
+     * Min Count Validation
+     *
+     * @param Context $c
+     * @param int $min
+     * @return boolean
+     */
+    public function validationMinCount(Context $c, int $min) : bool
+    {
+        $count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        if ($count < $min) {
+            $c->appendError('validation.MinCount', ['count' => $count, 'min' => $min], $min);
+            return false;
+        }
+        return true;
+    }
+
 
 
     // ====================================================

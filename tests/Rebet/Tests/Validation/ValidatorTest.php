@@ -1962,6 +1962,52 @@ EOS
             ],
 
 
+            // --------------------------------------------
+            // Valid::MIN_COUNT
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_COUNT, 3]
+                ]]],
+                ['foo' => ["The Foo must have at least 3 items."]]
+            ],
+            [
+                ['foo' => []],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_COUNT, 1]
+                ]]],
+                ['foo' => ["The Foo must have at least 1 item."]]
+            ],
+            [
+                ['foo' => '1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_COUNT, 3]
+                ]]],
+                ['foo' => ["The Foo must have at least 3 items."]]
+            ],
+            [
+                ['foo' => ['1', '2']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_COUNT, 3]
+                ]]],
+                ['foo' => ["The Foo must have at least 3 items."]]
+            ],
+            [
+                ['foo' => ['1', '2', '3']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_COUNT, 3]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['1', '2', '3', '4']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::MIN_COUNT, 3]
+                ]]],
+                []
+            ],
+
 
         ];
     }
