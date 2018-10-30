@@ -7,6 +7,7 @@ use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Inflection\Inflector;
 use Rebet\Translation\Translator;
+use Rebet\Common\Enum;
 
 /**
  * Validate Context Class
@@ -262,15 +263,17 @@ class Context
     }
 
     /**
-     * Resolve value or :field_name string
+     * Resolve value / :field_name string / Enum object
      *
-     * @param mixed $value value or :field_name string
+     * @param mixed $value value or :field_name string or Enum object
      * @return array [$value, $label]
      */
     public function resolve($value) : array
     {
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
-            return [$value, $value];
+            return [
+                $value instanceof Enum ? $value->value : $value,
+                $value instanceof Enum ? $value->label : $value,            ];
         }
         $field = Strings::ltrim($value, ':');
         return [$this->value($field), $this->label($field)];

@@ -1202,7 +1202,7 @@ class Validator
 
                     $word_length = mb_strlen($ng_word);
                     $tolerance   = $word_length * $omission_ratio;
-                    $regex       = $this->ngWordToMatcher($ng_word, $word_split_pattern, $delimiter_pattern, $omission_pattern, $ambiguous_patterns);
+                    $regex       = $this->ngWordToMatcher($ng_word, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $ambiguous_patterns);
                     $matches     = [];
                     $offset      = 0;
                     while (preg_match($regex, $text, $matches, PREG_OFFSET_CAPTURE, $offset)) {
@@ -1236,9 +1236,10 @@ class Validator
      * @param array $ambiguous_patterns
      * @return string
      */
-    private function ngWordToMatcher(string $ng_word, string $word_split_pattern, string $delimiter_pattern, string $omission_pattern, array $ambiguous_patterns) : string
+    private function ngWordToMatcher(string $ng_word, string $word_split_pattern, string $delimiter_pattern, string $omission_pattern, int $omission_length, array $ambiguous_patterns) : string
     {
-        $regex = '';
+        $regex          = '';
+        $ng_word_length = mb_strlen($ng_word);
         foreach (Strings::toCharArray($ng_word) as $i => $letter) {
             $ambiguous_pattern = $ambiguous_patterns[$letter] ?? preg_quote($letter, '/') ;
             switch ($ambiguous_pattern) {
@@ -1247,6 +1248,9 @@ class Validator
                     continue;
                 case '$':
                     $regex .= $ambiguous_pattern;
+                    continue;
+                case $ng_word_length < $omission_length:
+                    $regex .= "{$ambiguous_pattern}{$delimiter_pattern}*";
                     continue;
                 default:
                     $regex .= "(?:{$ambiguous_pattern}|(?<o{$i}>{$omission_pattern})){$delimiter_pattern}*";

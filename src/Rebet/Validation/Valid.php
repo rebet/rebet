@@ -534,16 +534,17 @@ class Valid
      * ex)
      *   - ['CU', Valid::NG_WORD, 'ng_words_file_path']
      *   - ['CU', Valid::NG_WORD, ['ng_word1', 'ng_word2', ...]]
-     *   - ['CU', Valid::NG_WORD, ng_words, delimiter_pattern, omission_pattern, omission_length, omission_ratio]
-     *       $delimiter_pattern: (default: [\p{Common}])
+     *   - ['CU', Valid::NG_WORD, ng_words, word_split_pattern, delimiter_pattern, omission_pattern, omission_length, omission_ratio]
+     *       $word_split_pattern: (default: depend on configure)
+     *       $delimiter_pattern: (default: depend on configure)
      *         The character specified here is ignored as a delimiter when checking.
      *         ex) It will specify delimiter like dot and space to match 'd.u.m.m.y' or 'd u m m y' to 'dummy'.
-     *       $omission_pattern: (default: [\p{M}\p{S}〇*＊_＿])
+     *       $omission_pattern: (default: depend on configure)
      *         The character specified here will be processed as an omission character when checking.
      *         ex) It will specify omission character like circle and asterisk to match 'd○mmy' or 'dum*y' to 'dummy'.
-     *       $omission_length: (default: 3)
+     *       $omission_length: (default: depend on configure)
      *         The minimum ng word length to apply omission character pattern check.
-     *       $omission_Ratio: (default: 0.4)
+     *       $omission_Ratio: (default: depend on configure)
      *         The ratio of omission characters in ng words.
      *         ex) In the case of 0.4 setting, 'a*s', 'dum*y', 'd*m*y' match 'sex' and 'dummy' respectively, but '*s*', 'd***y' does not match.
      * message)
@@ -552,6 +553,9 @@ class Valid
      *   Selector    - none
      */
     const NG_WORD = 'NgWord:';
+
+
+
 
 
     const DATETIME = 'Datetime:';
