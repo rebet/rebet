@@ -1296,6 +1296,23 @@ class Validator
         return true;
     }
 
+    /**
+     * Max Count Validation
+     *
+     * @param Context $c
+     * @param int $max
+     * @return boolean
+     */
+    public function validationMaxCount(Context $c, int $max) : bool
+    {
+        $count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        if ($count > $max) {
+            $c->appendError('validation.MaxCount', ['count' => $count, 'max' => $max], $max);
+            return false;
+        }
+        return true;
+    }
+
 
 
     // ====================================================

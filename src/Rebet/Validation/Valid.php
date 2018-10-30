@@ -582,8 +582,21 @@ class Valid
      */
     const MIN_COUNT = 'MinCount:';
 
+    /**
+     * Max Select Count Validation.
+     * It checks the value may not have more than max items.
+     *
+     * ex)
+     *   - ['CU', Valid::MAX_COUNT, max]
+     * message)
+     *   Key         - MaxCount
+     *   Placeholder - :attribute, :self, :count, :max
+     *   Selector    - number of given max
+     */
+    const MAX_COUNT = 'MaxCount:';
 
-    
+
+
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
 }
