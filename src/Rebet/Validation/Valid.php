@@ -570,7 +570,7 @@ class Valid
     const CONTAINS = 'Contains:';
 
     /**
-     * Min Select Count Validation.
+     * Min Count Validation.
      * It checks the value must have at least min items.
      *
      * ex)
@@ -583,7 +583,7 @@ class Valid
     const MIN_COUNT = 'MinCount:';
 
     /**
-     * Max Select Count Validation.
+     * Max Count Validation.
      * It checks the value may not have more than max items.
      *
      * ex)
