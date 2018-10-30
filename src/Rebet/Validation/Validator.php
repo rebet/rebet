@@ -1330,6 +1330,25 @@ class Validator
         return true;
     }
 
+    /**
+     * Unique Validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationUnique(Context $c) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        $duplicate = Arrays::duplicate((array)$c->value);
+        if (!empty($duplicate)) {
+            $c->appendError('validation.Unique', ['duplicate' => $duplicate], count($duplicate));
+            return false;
+        }
+        return true;
+    }
+
 
 
     // ====================================================

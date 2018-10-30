@@ -2106,6 +2106,40 @@ EOS
                 ['foo' => ["The Foo must have 3 items."]]
             ],
 
+            // --------------------------------------------
+            // Valid::UNIQUE
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::UNIQUE]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => [1, 2, 3, 'a']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::UNIQUE]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => [1, 2, 1, 'a']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::UNIQUE]
+                ]]],
+                ['foo' => ["The Foo must be entered a different value. [1] was duplicated."]]
+            ],
+            [
+                ['foo' => [1, 2, 1, 'a', 'b', 'a']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::UNIQUE]
+                ]]],
+                ['foo' => [
+                    "The Foo must be entered a different value. [1, a] were duplicated."
+                ]]
+            ],
+
         ];
     }
 }

@@ -94,5 +94,6 @@ return [
     "MinCount"            => ":attributeは:min個以上選択して下さい。",
     "MaxCount"            => ":attributeは:max個以下で選択して下さい。",
     "Count"               => ":attributeは:count個選択して下さい。",
+    "Unique"              => ":attributeには異なる値を入力して下さい。[:duplicate] が重複しています。",
 
 ];

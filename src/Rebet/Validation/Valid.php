@@ -608,6 +608,25 @@ class Valid
      */
     const COUNT = 'Count:';
 
+    /**
+     * Unique Validation.
+     * It checks the value have unique items.
+     *
+     * ex)
+     *   - ['CU', Valid::UNIQUE]
+     * message)
+     *   Key         - Unique
+     *   Placeholder - :attribute, :self, :duplicate
+     *   Selector    - count of duplicate
+     */
+    const UNIQUE = 'Unique:';
+
+
+
+
+
+
+
 
     const DATETIME = 'Datetime:';
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';

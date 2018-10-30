@@ -119,4 +119,8 @@ return [
         "[1]   The :attribute must have :count item.",
         "[2,*] The :attribute must have :count items.",
     ],
+    "Unique"              => [
+        "[1]   The :attribute must be entered a different value. [:duplicate] was duplicated.",
+        "[2,*] The :attribute must be entered a different value. [:duplicate] were duplicated.",
+    ],
 ];
