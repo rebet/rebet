@@ -105,4 +105,6 @@ return [
     "DependenceChar@List" => "The :nth :attribute (:value) must not contain platform dependent character [:dependences].",
     "NgWord"              => "The :attribute must not contain the word ':ng_word'.",
     "NgWord@List"         => "The :nth :attribute (:value) must not contain the word ':ng_word'.",
+    "Contains"            => "The :attribute must be selected from the specified list.",
+    "Contains@List"       => "The :nth :attribute must be selected from the specified list.",
 ];

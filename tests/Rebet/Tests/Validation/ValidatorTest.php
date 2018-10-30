@@ -8,6 +8,7 @@ use Rebet\Validation\Valid;
 use Rebet\Validation\Context;
 use Rebet\Config\Config;
 use org\bovigo\vfs\vfsStream;
+use Rebet\Tests\Mock\Gender;
 
 class ValidatorTest extends RebetTestCase
 {
@@ -1839,6 +1840,7 @@ EOS
             // --------------------------------------------
             // Valid::NG_WORD
             // --------------------------------------------
+            // @todo implements more test cases.
             [
                 [],
                 ['foo' => ['rule' => [
@@ -1924,6 +1926,40 @@ EOS
                 ]]
             ],
 
+            // --------------------------------------------
+            // Valid::CONTAINS
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::CONTAINS, Gender::values()]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '1'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::CONTAINS, Gender::values()]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '3'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::CONTAINS, Gender::values()]
+                ]]],
+                ['foo' => ["The Foo must be selected from the specified list."]]
+            ],
+            [
+                ['foo' => [1, 'a', '2', 3]],
+                ['foo' => ['rule' => [
+                    ['C', Valid::CONTAINS, Gender::values()]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo must be selected from the specified list.",
+                    "The 4th Foo must be selected from the specified list.",
+                ]]
+            ],
 
 
 

@@ -536,6 +536,7 @@ class Valid
      *   - ['CU', Valid::NG_WORD, ['ng_word1', 'ng_word2', ...]]
      *   - ['CU', Valid::NG_WORD, ng_words, word_split_pattern, delimiter_pattern, omission_pattern, omission_length, omission_ratio]
      *       $word_split_pattern: (default: depend on configure)
+     *         The character specified here is using as word split letters when checking.
      *       $delimiter_pattern: (default: depend on configure)
      *         The character specified here is ignored as a delimiter when checking.
      *         ex) It will specify delimiter like dot and space to match 'd.u.m.m.y' or 'd u m m y' to 'dummy'.
@@ -546,7 +547,7 @@ class Valid
      *         The minimum ng word length to apply omission character pattern check.
      *       $omission_Ratio: (default: depend on configure)
      *         The ratio of omission characters in ng words.
-     *         ex) In the case of 0.4 setting, 'a*s', 'dum*y', 'd*m*y' match 'sex' and 'dummy' respectively, but '*s*', 'd***y' does not match.
+     *         ex) In the case of 0.4 setting, 'a*s', 'dum*y', 'd*m*y' match 'ass' and 'dummy' respectively, but '*s*', 'd***y' does not match.
      * message)
      *   Key         - NgWord, NgWord@List
      *   Placeholder - :attribute, :self, :nth, :value
@@ -554,8 +555,18 @@ class Valid
      */
     const NG_WORD = 'NgWord:';
 
-
-
+    /**
+     * Contains Char Validation.
+     * It checks the value contain platform dependent characters.
+     *
+     * ex)
+     *   - ['CU', Valid::CONTAINS, [value1, value2, ...]]
+     * message)
+     *   Key         - ContainsChar, ContainsChar@List
+     *   Placeholder - :attribute, :self, :list, :nth, :value
+     *   Selector    - none
+     */
+    const CONTAINS = 'Contains:';
 
 
     const DATETIME = 'Datetime:';

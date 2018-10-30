@@ -1259,6 +1259,25 @@ class Validator
         return empty($word_split_pattern) ? "/{$regex}/u" : "/(?:{$word_split_pattern}|^){$regex}(?:{$word_split_pattern}|$)/u";
     }
 
+    /**
+     * Contains Validation
+     *
+     * @param Context $c
+     * @param array $list
+     * @return boolean
+     */
+    public function validationContains(Context $c, array $list) : bool
+    {
+        return $this->handleListableValue(
+            $c,
+            Kind::TYPE_CONSISTENCY_CHECK(),
+            function ($value) use ($list) {
+                return in_array($value, $list);
+            },
+            'validation.Contains',
+            ['list' => $list]
+        );
+    }
 
 
 

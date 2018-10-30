@@ -89,5 +89,7 @@ return [
     "DependenceChar@List" => ":nth番目の:attribute(:value)は機種依存文字 [:dependences] を含まないで下さい。",
     "NgWord"              => ":attributeに利用できない単語「:ng_word」が含まれます。",
     "NgWord@List"         => ":nth番目の:attribute(:value)に利用できない単語「:ng_word」が含まれます。",
+    "Contains"            => ":attributeは指定の一覧から選択して下さい。",
+    "Contains@List"       => ":nth番目の:attribute(:value)は指定の一覧から選択して下さい。",
 
 ];
