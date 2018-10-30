@@ -123,4 +123,6 @@ return [
         "[1]   The :attribute must be entered a different value. [:duplicate] was duplicated.",
         "[2,*] The :attribute must be entered a different value. [:duplicate] were duplicated.",
     ],
+    "Datetime"            => "The :attribute is not a valid date time.",
+    "Datetime@List"       => "The :nth :attribute (:value) is not a valid date time.",
 ];

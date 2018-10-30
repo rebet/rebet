@@ -95,5 +95,7 @@ return [
     "MaxCount"            => ":attributeは:max個以下で選択して下さい。",
     "Count"               => ":attributeは:count個選択して下さい。",
     "Unique"              => ":attributeには異なる値を入力して下さい。[:duplicate] が重複しています。",
+    "Datetime"            => ":attributeは正しい日付／日時形式で入力して下さい。",
+    "Datetime@List"       => ":nth番目の:attributeは正しい日付／日時形式で入力して下さい。",
 
 ];

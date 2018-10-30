@@ -112,11 +112,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
      *
      * @param string|\DateTimeInterface|int|null $value 日時文字列
-     * @param array $main_format 優先解析フォーマット（デフォルト：[]）
+     * @param string|array $main_format 優先解析フォーマット（デフォルト：[]）
      * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
      * @return static|null 解析結果
      */
-    public static function createDateTime($value, array $main_format = [], $timezone = null) : ?DateTime
+    public static function createDateTime($value, $main_format = [], $timezone = null) : ?DateTime
     {
         [$date, ] = self::analyzeDateTime($value, $main_format, $timezone);
         return $date;
@@ -134,11 +134,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
      *
      * @param string|\DateTimeInterface|int|null $value 日時文字列
-     * @param array $main_format 優先解析フォーマット（デフォルト：[]）
+     * @param string|array $main_format 優先解析フォーマット（デフォルト：[]）
      * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
      * @return array [DateTime|null, apply_format|null] or null 解析結果
      */
-    public static function analyzeDateTime($value, array $main_format = [], $timezone = null) : array
+    public static function analyzeDateTime($value, $main_format = [], $timezone = null) : array
     {
         if ($value === null || $value === '') {
             return [null, null];
@@ -147,7 +147,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             return [new static($value, $timezone), self::config('default_format')];
         }
         
-        $formats   = $main_format + self::config('acceptable_datetime_format');
+        $formats   = ((array)$main_format) + self::config('acceptable_datetime_format');
         $formats[] = self::config('default_format');
         
         $date         = null;

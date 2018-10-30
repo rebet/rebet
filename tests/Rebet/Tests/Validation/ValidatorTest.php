@@ -2117,6 +2117,13 @@ EOS
                 []
             ],
             [
+                ['foo' => 1],
+                ['foo' => ['rule' => [
+                    ['C', Valid::UNIQUE]
+                ]]],
+                []
+            ],
+            [
                 ['foo' => [1, 2, 3, 'a']],
                 ['foo' => ['rule' => [
                     ['C', Valid::UNIQUE]
@@ -2139,6 +2146,75 @@ EOS
                     "The Foo must be entered a different value. [1, a] were duplicated."
                 ]]
             ],
+
+            // --------------------------------------------
+            // Valid::DATETIME
+            // --------------------------------------------
+            [
+                [],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => null],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ''],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '2010-01-23'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '2010-01-23 12:34:56'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => '2010|01|23'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                ['foo' => ["The Foo is not a valid date time."]]
+            ],
+            [
+                ['foo' => '2010|01|23'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME, 'Y\|m\|d']
+                ]]],
+                []
+            ],
+            [
+                ['foo' => ['2010-01-23', 'abc','2010|01|23']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::DATETIME]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (abc) is not a valid date time.",
+                    "The 3rd Foo (2010|01|23) is not a valid date time.",
+                ]]
+            ],
+
+
+
+
+
+
 
         ];
     }

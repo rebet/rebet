@@ -621,13 +621,25 @@ class Valid
      */
     const UNIQUE = 'Unique:';
 
-
-
-
-
-
-
-
+    /**
+     * Datetime Validation.
+     * It checks the value format is datetime.
+     *
+     * ex)
+     *   - ['CU', Valid::DATETIME]
+     *   - ['CU', Valid::DATETIME, format]
+     *   - ['CU', Valid::DATETIME, [format1, format2, ...]]
+     * message)
+     *   Key         - Datetime, Datetime@List
+     *   Placeholder - :attribute, :self, :format
+     *   Selector    - none
+     */
     const DATETIME = 'Datetime:';
+
+
+
+
+
+
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
 }

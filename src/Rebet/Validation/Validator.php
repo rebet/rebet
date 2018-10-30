@@ -14,6 +14,7 @@ use Rebet\Common\Arrays;
 use Rebet\Common\Utils;
 use Rebet\Common\System;
 use Rebet\Config\Resource;
+use Rebet\DateTime\DateTime;
 
 /**
  * Validator Class
@@ -1348,6 +1349,33 @@ class Validator
         }
         return true;
     }
+
+    /**
+     * Datetime Validation
+     *
+     * @param Context $c
+     * @param string|array $format
+     * @return boolean
+     */
+    public function validationDatetime(Context $c, $format = []) : bool
+    {
+        return $this->handleListableValue(
+            $c,
+            Kind::TYPE_CONSISTENCY_CHECK(),
+            function ($value) use ($format) {
+                return !is_null(DateTime::createDateTime($value, $format));
+            },
+            'validation.Datetime',
+            ['format' => array_merge((array)$format, DateTime::config('acceptable_datetime_format')) ]
+        );
+    }
+
+
+
+
+
+
+
 
 
 
