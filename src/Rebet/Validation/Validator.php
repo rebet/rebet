@@ -13,6 +13,7 @@ use Rebet\Common\Strings;
 use Rebet\Common\Arrays;
 use Rebet\Common\Utils;
 use Rebet\Common\System;
+use Rebet\Config\Resource;
 
 /**
  * Validator Class
@@ -37,7 +38,7 @@ class Validator
                     'encode' => 'sjis-win'
                 ],
                 'NgWord'         => [
-                    'word_split_pattern' => '[\p{Z}]',
+                    'word_split_pattern' => '[\p{Z}\p{P}]',
                     'delimiter_pattern'  => '[\p{Common}]',
                     'omission_pattern'   => '[\p{M}\p{S}〇*＊_＿]',
                     'omission_length'    => 3,
@@ -45,38 +46,39 @@ class Validator
                     'ambiguous_patterns' => [
                         "^" => "^",
                         "$" => "$",
-                        "a" => "([aAａＡⒶⓐ🄰🅐🅰@＠])",
-                        "b" => "([bBｂＢⒷⓑ🄱🅑🅱])",
-                        "c" => "([cCｃＣⒸⓒ🄲🅒🅲©])",
-                        "d" => "([dDｄＤⒹⓓ🄳🅓🅳])",
-                        "e" => "([eEｅＥⒺⓔ🄴🅔🅴])",
-                        "f" => "([fFｆＦⒻⓕ🄵🅕🅵])",
-                        "g" => "([gGｇＧⒼⓖ🄶🅖🅶])",
-                        "h" => "([hHｈＨⒽⓗ🄷🅗🅷])",
-                        "i" => "([iIｉＩⒾⓘ🄸🅘🅸])",
-                        "j" => "([jJｊＪⒿⓙ🄹🅙🅹])",
-                        "k" => "([kKｋＫⓀⓚ🄺🅚🅺])",
-                        "l" => "([lLｌＬⓁⓛ🄻🅛🅻])",
-                        "m" => "([mMｍＭⓂⓜ🄼🅜🅼])",
-                        "n" => "([nNｎＮⓃⓝ🄽🅝🅽])",
-                        "o" => "([oOｏＯⓄⓞ🄾🅞🅾])",
-                        "p" => "([pPｐＰⓅⓟ🄿🅟🅿℗])",
-                        "q" => "([qQｑＱⓆⓠ🅀🅠🆀])",
-                        "r" => "([rRｒＲⓇⓡ🅁🅡🆁®])",
-                        "s" => "([sSｓＳⓈⓢ🅂🅢🆂])",
-                        "t" => "([tTｔＴⓉⓣ🅃🅣🆃])",
-                        "u" => "([uUｕＵⓊⓤ🅄🅤🆄])",
-                        "v" => "([vVｖＶⓋⓥ🅅🅥🆅])",
-                        "w" => "([wWｗＷⓌⓦ🅆🅦🆆])",
-                        "x" => "([xXｘＸⓍⓧ🅇🅧🆇])",
-                        "y" => "([yYｙＹⓎⓨ🅈🅨🆈])",
-                        "z" => "([zZｚＺⓏⓩ🅉🅩🆉])",
+                        // @todo 同位系の列挙 https://ja.wikipedia.org/wiki/A
+                        "a" => "([aAꜸꜹꜺꜻꜼꜽꜲꜳⱯɐⱭɑɒẚÁáÀàĂăẮắẰằẴẵẲẳÂâẤấẦầẪẫẨẩǍǎÅåǺǻÄäǞǟÃãȦȧǠǡĄąĄ̈ą̈ĀāẢảȀȁȂȃẠạẶặẬậḀḁȺⱥᶏǼǽǢǣᶐΛａＡⒶⓐ🄰🅐🅰@＠🄐⒜])",
+                        "b" => "([bBƄƅÞþẞßʙḂḃḄḅḆḇɃƀᵬᶀƁɓƂƃｂＢⒷⓑ🄱🅑🅱])",
+                        "c" => "([cCƆɔↃↄꜾꜿĈĉČčĊċÇçḈḉȻȼƇƈɕｃＣⒸⓒ🄲🅒🅲©])",
+                        "d" => "([dDȸĎďḊḋḐḑḌḍḒḓḎḏĐđÐðᵭᶁƉɖƊɗᶑƋƌȡｄＤⒹⓓ🄳🅓🅳])",
+                        "e" => "([eEƎǝƏəƐɛɘɜɞʚÉéÈèĔĕÊêẾếỀềỄễỂểĚěËëẼẽĖėȨȩḜḝĘęĒēḖḗḔḕẺẻȄȅȆȇẸẹỆệḘḙḚḛɆɇᶒᶕɚᶓᶔɝｅＥⒺⓔ🄴🅔🅴])",
+                        "f" => "([fFʩꝻꝼℲⅎḞḟᵮᶂƑƒｆＦⒻⓕ🄵🅕🅵])",
+                        "g" => "([gGɡᵹɢʛᵷƔɣƢƣǴǵĞğĜĝǦǧĠġĢģḠḡǤǥᶃƓɠｇＧⒼⓖ🄶🅖🅶])",
+                        "h" => "([hHʜǶƕɦⱵⱶɧĤĥȞȟḦḧḢḣḨḩḤḥḪḫH̱ẖĦħⱧⱨｈＨⒽⓗ🄷🅗🅷])",
+                        "i" => "([iIɪƖɩÍíÌìĬĭÎîǏǐÏïḮḯĨĩİiĮįĪīỈỉȈȉȊȋỊịḬḭIıƗɨᵻᶖｉＩⒾⓘ🄸🅘🅸])",
+                        "j" => "([jJĴĵJ̌ǰȷɈɉʝɟʄｊＪⒿⓙ🄹🅙🅹])",
+                        "k" => "([kKĸʞḰḱǨǩĶķḲḳḴḵꝄꝅꝂꝃꝀꝁᶄƘƙⱩⱪｋＫⓀⓚ🄺🅚🅺])",
+                        "l" => "([lLʟɮꞀꞁĹĺĽľĻļḶḷḸḹḼḽḺḻŁłŁ̣ł̣ĿŀȽƚⱠⱡⱢɫꝈꝉꝆꝇɬᶅɭȴｌＬⓁⓛ🄻🅛🅻])",
+                        "m" => "([mMḾḿṀṁṂṃᵯᶆɱｍＭⓂⓜ🄼🅜🅼])",
+                        "n" => "([nNɴŃńǸǹN̂n̂ŇňN̈n̈N̄n̄ÑñṄṅŅņṆṇṊṋṈṉᵰƝɲȠƞŊŋᶇɳȵｎＮⓃⓝ🄽🅝🅽])",
+                        "o" => "([oOÓóÒòŎŏÔôỐốỒồỖỗỔổǑǒÖöȪȫŐőÕõṌṍṎṏȬȭȮȯȰȱØøǾǿǪǫǬǭŌōṒṓṐṑỎỏȌȍȎȏƠơỚớỜờỠỡỞởỢợỌọỘộƟɵꝊꝋꝌꝍ0ｏＯⓄⓞ🄾🅞🅾])",
+                        "p" => "([pPǷƿṔṕṖṗⱣᵽꝐꝑᶈƤƥꝒꝓꝔꝕP̃p̃ꝤꝥꝦꝧｐＰⓅⓟ🄿🅟🅿℗])",
+                        "q" => "([qQʠꝘꝙɊɋQ̊q̊Q̧q̧ｑｑＱⓆⓠ🅀🅠🆀])",
+                        "r" => "([rRƦʀɹɺʁŔŕŘřṘṙŖŗȐȑȒȓṚṛṜṝṞṟɌɍᵲᶉɼꞂꞃⱤɽɾᵳｒＲⓇⓡ🅁🅡🆁®])",
+                        "s" => "([sSŚśṤṥŜŝŠšṦṧṠṡŞşṢṣṨṩȘșᵴᶊʂȿS̩s̩ｓＳⓈⓢ🅂🅢🆂])",
+                        "t" => "([tTꞄꞅᶋᶘŤťT̈ẗṪṫŢţṬṭȚțṰṱṮṯŦŧȾⱦᵵƫƬƭƮʈȶｔＴⓉⓣ🅃🅣🆃])",
+                        "u" => "([uUÚúÙùŬŭÛûǓǔŮůÜüǗǘǛǜǙǚǕǖŰűŨũṸṹŲųŪūṺṻỦủȔȕȖȗƯưỨứỪừỮữỬửỰựỤụṲṳṶṷṴṵɄʉᵾᶙᵿｕＵⓊⓤ🅄🅤🆄])",
+                        "v" => "([vVɅʌṼṽṾṿᶌƲʋⱴｖＶⓋⓥ🅅🅥🆅])",
+                        "w" => "([wWƜʍɯẂẃẀẁŴŵW̊ẘẄẅẆẇẈẉꝠꝡｗＷⓌⓦ🅆🅦🆆])",
+                        "x" => "([xXẌẍẊẋᶍｘＸⓍⓧ🅇🅧🆇])",
+                        "y" => "([yYʎÝýỲỳŶŷY̊ẙŸÿỸỹẎẏȲȳỶỷỴỵʏɎɏƳƴｙＹⓎⓨ🅈🅨🆈])",
+                        "z" => "([zZŹźẐẑŽžŻżẒẓẔẕƵƶᵶᶎȤȥʐʑɀⱫⱬǮǯᶚƺꝢꝣｚＺⓏⓩ🅉🅩🆉])",
                         "0" => "([0０⓿])",
                         "1" => "([1１①⓵❶➀➊㊀一壱壹弌🈩])",
                         "2" => "([2２②⓶❷➁➋㊁二弐貳弎🈔])",
-                        "3" => "([3３③⓷❸➂➌㊂三参參弎🈪])",
-                        "4" => "([4４④⓸❹➃➍㊃四肆])",
-                        "5" => "([5５⑤⓹❺➄➎㊄五伍])",
+                        "3" => "([3Ʒʒ３③⓷❸➂➌㊂三参參弎🈪])",
+                        "4" => "([4４Ꝝꝝ④⓸❹➃➍㊃四肆])",
+                        "5" => "([5Ƽƽ５⑤⓹❺➄➎㊄五伍])",
                         "6" => "([6６⑥⓺❻➅➏㊅六陸])",
                         "7" => "([7７⑦⓻❼➆➐㊆七漆柒質])",
                         "8" => "([8８⑧⓼❽➇➑㊇八捌])",
@@ -1174,7 +1176,7 @@ class Validator
      * @param float|null $omission_ratio (default: depend on configure)
      * @return boolean
      */
-    public function validationNgWord(Context $c, $ng_words, ?string $delimiter_pattern = null, ?string $omission_pattern = null, ?int $omission_length = null, ?float $omission_ratio = null) : bool
+    public function validationNgWord(Context $c, $ng_words, ?string $word_split_pattern = null, ?string $delimiter_pattern = null, ?string $omission_pattern = null, ?int $omission_length = null, ?float $omission_ratio = null) : bool
     {
         $word_split_pattern = $word_split_pattern ?? static::config('default.NgWord.word_split_pattern') ;
         $delimiter_pattern  = $delimiter_pattern  ?? static::config('default.NgWord.delimiter_pattern') ;
@@ -1187,49 +1189,32 @@ class Validator
             $ng_words = file($ng_words, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         }
         
-        $ng_word = null;
+        $hit_ng_word = null;
         return $this->handleListableValue(
             $c,
             Kind::OTHER(),
-            function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$ng_word) {
-                $words = array_unique(array_merge(
-                    preg_split("/{$word_split_pattern}+/u", $text, -1, PREG_SPLIT_NO_EMPTY),
-                    [$text]
-                ));
-
-                // var_dump($words); @todo 区切りパターンによる回避の対応
-
-                foreach ($words as $word) {
-                    // Prehandle: omission characters
-                    $length         = mb_strlen($word);
-                    $omission_index = [];
-                    $ng_word        = null;
-                    if ($length >= $omission_length) {
-                        $index = 0;
-                        foreach (Strings::toCharArray($word) as $letter) {
-                            if (preg_match('/^'.$omission_pattern.'$/u', $letter)) {
-                                $omission_index[] = $index++;
-                                continue;
-                            }
-                            if (preg_match('/^'.$delimiter_pattern.'$/u', $letter)) {
-                                continue;
-                            }
-                            $index++;
-                        }
-                    }
-                    if ($length * $omission_ratio < count($omission_index)) {
-                        $omission_index = [];
+            function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$hit_ng_word) {
+                $length = mb_strlen($text);
+                foreach ($ng_words as $ng_word) {
+                    if (mb_strlen(trim($ng_word, '^$')) > $length) {
+                        continue;
                     }
 
-                    // Check: ng word
-                    $matches = [];
-                    foreach ($ng_words as $ng_word) {
-                        if (mb_strlen(trim($ng_word, '^$')) > $length) {
-                            continue;
+                    $word_length = mb_strlen($ng_word);
+                    $tolerance   = $word_length * $omission_ratio;
+                    $regex       = $this->ngWordToMatcher($ng_word, $word_split_pattern, $delimiter_pattern, $omission_pattern, $ambiguous_patterns);
+                    $matches     = [];
+                    $offset      = 0;
+                    while (preg_match($regex, $text, $matches, PREG_OFFSET_CAPTURE, $offset)) {
+                        $hit_word = empty($word_split_pattern) ? $matches[0][0] : preg_replace("/^{$word_split_pattern}|{$word_split_pattern}$/u", '', $matches[0][0]) ;
+                        $offset   = $matches[0][1] + 1;
+                        $distance = 0;
+
+                        for ($i = 0 ; $i < $word_length ; $i++) {
+                            $distance += ($matches["o{$i}"][0] ?: false) ? 1 : 0 ;
                         }
-                        $regex = $this->ngWordToMatcher($ng_word, $delimiter_pattern, $omission_pattern, $omission_index, $ambiguous_patterns);
-                        if (preg_match($regex, $word, $matches)) {
-                            $ng_word = $matches[0];
+                        if ($distance <= $tolerance) {
+                            $hit_ng_word = $hit_word;
                             return false;
                         }
                     }
@@ -1237,35 +1222,37 @@ class Validator
                 return true;
             },
             'validation.NgWord',
-            ['ng_word' => &$ng_word]
+            ['ng_word' => &$hit_ng_word]
         );
     }
 
     /**
      * Create a regex matcher from given ng word.
      *
-     * @param string $word
+     * @param string $ng_word
+     * @param string|null $word_split_pattern
      * @param string $delimiter_pattern
      * @param string $omission_pattern
-     * @param array $omission_index
      * @param array $ambiguous_patterns
      * @return string
      */
-    private function ngWordToMatcher(string $word, string $delimiter_pattern, string $omission_pattern, array $omission_index, array $ambiguous_patterns) : string
+    private function ngWordToMatcher(string $ng_word, string $word_split_pattern, string $delimiter_pattern, string $omission_pattern, array $ambiguous_patterns) : string
     {
         $regex = '';
-        $i = 0;
-        foreach (Strings::toCharArray($word) as $letter) {
+        foreach (Strings::toCharArray($ng_word) as $i => $letter) {
             $ambiguous_pattern = $ambiguous_patterns[$letter] ?? preg_quote($letter, '/') ;
-            if (in_array($ambiguous_pattern, array('^','$'))) {
-                $regex .= $ambiguous_pattern.$delimiter_pattern.'*';
-                continue;
+            switch ($ambiguous_pattern) {
+                case '^':
+                    $regex .= $ambiguous_pattern.$delimiter_pattern.'*';
+                    continue;
+                case '$':
+                    $regex .= $ambiguous_pattern;
+                    continue;
+                default:
+                    $regex .= "(?:{$ambiguous_pattern}|(?<o{$i}>{$omission_pattern})){$delimiter_pattern}*";
             }
-            $regex .= in_array($i++, $omission_index) ? $omission_pattern.'?'.$ambiguous_pattern.'?' : $ambiguous_pattern ;
-            $regex .= $delimiter_pattern.'*';
         }
-        $regex = mb_substr($regex, 0, mb_strlen($regex) - mb_strlen($delimiter_pattern.'*'));
-        return '/'.$regex.'/u';
+        return empty($word_split_pattern) ? "/{$regex}/u" : "/(?:{$word_split_pattern}|^){$regex}(?:{$word_split_pattern}|$)/u";
     }
 
 

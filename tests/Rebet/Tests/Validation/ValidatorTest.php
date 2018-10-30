@@ -38,12 +38,6 @@ return [
     ],
 ];
 EOS
-                    ,
-                    'ng_word.txt' => <<<'EOS'
-admin
-test
-テスト
-EOS
                     ],
                 ],
             ],
@@ -86,6 +80,7 @@ EOS
 
     public function dataValidationMethods() : array
     {
+        App::setRoot(__DIR__.'../../../../');
         return [
             // --------------------------------------------
             // Valid::IF
@@ -1861,7 +1856,7 @@ EOS
             [
                 ['foo' => 'foo bar'],
                 ['foo' => ['rule' => [
-                    ['C', Valid::NG_WORD, 'vfs://root/resources/ng_word.txt']
+                    ['C', Valid::NG_WORD, App::path('/resources/ng_word.txt')]
                 ]]],
                 []
             ],
@@ -1880,11 +1875,53 @@ EOS
                 ['foo' => ["The Foo must not contain the word 'b.a.z'."]]
             ],
             [
-                ['foo' => 'foo bar b*z qux'],
+                ['foo' => 'foo bar.b*z qux'],
                 ['foo' => ['rule' => [
                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
                 ]]],
                 ['foo' => ["The Foo must not contain the word 'b*z'."]]
+            ],
+            [
+                ['foo' => 'foo bar.b** qux'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                []
+            ],
+            [
+                ['foo' => 'foo bar Ḏ*ṃɱɏ qux'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy']]
+                ]]],
+                ['foo' => ["The Foo must not contain the word 'Ḏ*ṃɱɏ'."]]
+            ],
+            [
+                ['foo' => 'てすと'],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, App::path('/resources/ng_word.txt')]
+                ]]],
+                ['foo' => ["The Foo must not contain the word 'てすと'."]]
+            ],
+            [
+                ['foo' => ['foo bar', 'bar.b@z', 'ḎU**Ⓨ qux', 'はこだてストリート']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy', 'テスト']]
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (bar.b@z) must not contain the word 'b@z'.",
+                    "The 3rd Foo (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
+                ]]
+            ],
+            [
+                ['foo' => ['foo bar', 'bar.b@z', 'ḎU**Ⓨ qux', 'はこだてストリート']],
+                ['foo' => ['rule' => [
+                    ['C', Valid::NG_WORD, ['baz', 'dummy', 'テスト'], '[\p{Z}\p{P}]?']
+                ]]],
+                ['foo' => [
+                    "The 2nd Foo (bar.b@z) must not contain the word 'b@z'.",
+                    "The 3rd Foo (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
+                    "The 4th Foo (はこだてストリート) must not contain the word 'てスト'.",
+                ]]
             ],
 
 

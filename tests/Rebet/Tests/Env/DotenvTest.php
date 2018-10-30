@@ -29,7 +29,7 @@ class DotenvTest extends RebetTestCase
      */
     public function test_init()
     {
-        $dotenv = Dotenv::init(__DIR__.'/../../../', '.env.unittest');
+        $dotenv = Dotenv::init(__DIR__.'/../../../resources', '.env.unittest');
         $this->assertSame('unittest', \getenv('APP_ENV'));
     }
 }

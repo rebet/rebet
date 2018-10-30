@@ -25,6 +25,7 @@ abstract class RebetTestCase extends TestCase
         System::initMock();
         Config::clear();
         App::initFrameworkConfig();
+        App::setRoot(__DIR__.'/../../');
         App::setTimezone('UTC');
         App::setLocale('ja');
         StderrCapture::clear();
