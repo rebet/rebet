@@ -577,7 +577,7 @@ class Valid
      *   - ['CU', Valid::MIN_COUNT, min]
      * message)
      *   Key         - MinCount
-     *   Placeholder - :attribute, :self, :count, :min
+     *   Placeholder - :attribute, :self, :item_count, :min
      *   Selector    - number of given min
      */
     const MIN_COUNT = 'MinCount:';
@@ -590,11 +590,23 @@ class Valid
      *   - ['CU', Valid::MAX_COUNT, max]
      * message)
      *   Key         - MaxCount
-     *   Placeholder - :attribute, :self, :count, :max
+     *   Placeholder - :attribute, :self, :item_count, :max
      *   Selector    - number of given max
      */
     const MAX_COUNT = 'MaxCount:';
 
+    /**
+     * Count Validation.
+     * It checks the value have count items.
+     *
+     * ex)
+     *   - ['CU', Valid::COUNT, count]
+     * message)
+     *   Key         - Count
+     *   Placeholder - :attribute, :self, :item_count, :count
+     *   Selector    - number of given count
+     */
+    const COUNT = 'Count:';
 
 
     const DATETIME = 'Datetime:';

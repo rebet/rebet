@@ -1288,9 +1288,9 @@ class Validator
      */
     public function validationMinCount(Context $c, int $min) : bool
     {
-        $count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        if ($count < $min) {
-            $c->appendError('validation.MinCount', ['count' => $count, 'min' => $min], $min);
+        $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        if ($item_count < $min) {
+            $c->appendError('validation.MinCount', ['item_count' => $item_count, 'min' => $min], $min);
             return false;
         }
         return true;
@@ -1305,9 +1305,26 @@ class Validator
      */
     public function validationMaxCount(Context $c, int $max) : bool
     {
-        $count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        if ($count > $max) {
-            $c->appendError('validation.MaxCount', ['count' => $count, 'max' => $max], $max);
+        $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        if ($item_count > $max) {
+            $c->appendError('validation.MaxCount', ['item_count' => $item_count, 'max' => $max], $max);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Count Validation
+     *
+     * @param Context $c
+     * @param int $count
+     * @return boolean
+     */
+    public function validationCount(Context $c, int $count) : bool
+    {
+        $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        if ($item_count !== $count) {
+            $c->appendError('validation.Count', ['item_count' => $item_count, 'count' => $count], $count);
             return false;
         }
         return true;

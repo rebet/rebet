@@ -93,5 +93,6 @@ return [
     "Contains@List"       => ":nth番目の:attribute(:value)は指定の一覧から選択して下さい。",
     "MinCount"            => ":attributeは:min個以上選択して下さい。",
     "MaxCount"            => ":attributeは:max個以下で選択して下さい。",
+    "Count"               => ":attributeは:count個選択して下さい。",
 
 ];

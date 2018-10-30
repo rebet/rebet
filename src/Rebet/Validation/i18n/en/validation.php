@@ -115,4 +115,8 @@ return [
         "[1]   The :attribute may not have more than :max item.",
         "[2,*] The :attribute may not have more than :max items.",
     ],
+    "Count"               => [
+        "[1]   The :attribute must have :count item.",
+        "[2,*] The :attribute must have :count items.",
+    ],
 ];
