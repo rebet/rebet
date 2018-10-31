@@ -9,10 +9,10 @@ use Rebet\Validation\Context;
 use Rebet\Config\Config;
 use org\bovigo\vfs\vfsStream;
 use Rebet\Tests\Mock\Gender;
-use Rebet\Validation\Validations;
+use Rebet\Validation\BuiltinValidations;
 use Rebet\Translation\Translator;
 
-class ValidationsTest extends RebetTestCase
+class BuiltinValidationsTest extends RebetTestCase
 {
     private $root;
     private $validations;
@@ -52,13 +52,13 @@ EOS
                 'resources_dir' => ['vfs://root/resources'],
             ]
         ]);
-        $this->validations = new Validations();
+        $this->validations = new BuiltinValidations();
     }
 
     public function test_cunstract()
     {
-        $validations = new Validations();
-        $this->assertInstanceOf(Validations::class, $validations);
+        $validations = new BuiltinValidations();
+        $this->assertInstanceOf(BuiltinValidations::class, $validations);
     }
     
     public function test_translator()
