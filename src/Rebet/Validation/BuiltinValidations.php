@@ -37,10 +37,10 @@ class BuiltinValidations extends Validations
                 ],
                 'NgWord' => [
                     'word_split_pattern' => '[\p{Z}\p{P}]',
-                    'delimiter_pattern' => '[\p{Common}]',
-                    'omission_pattern' => '[\p{M}\p{S}〇*＊_＿]',
-                    'omission_length' => 3,
-                    'omission_ratio' => 0.4,
+                    'delimiter_pattern'  => '[\p{Common}]',
+                    'omission_pattern'   => '[\p{M}\p{S}〇*＊_＿]',
+                    'omission_length'    => 3,
+                    'omission_ratio'     => 0.4,
                     'ambiguous_patterns' => [
                         "^" => "^",
                         "$" => "$",
