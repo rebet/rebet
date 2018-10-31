@@ -180,6 +180,7 @@ class Context
 
     /**
      * Append validation error message using translator.
+     * This method always return false, this behavior may be useful when implementing validations. 
      *
      * If the key starts with "@", it uses the key name without the "@" as the message.
      * This is useful when implementing extended validation with a service where the locale can be fixed.
@@ -188,16 +189,16 @@ class Context
      *
      * @param string $key
      * @param array $replace (default: [])
-     * @return self
+     * @return bool false
      */
-    public function appendError(string $key, array $replace = [], $selector = null) : self
+    public function appendError(string $key, array $replace = [], $selector = null) : bool
     {
         $replace['attribute'] = $this->label;
         $replace['self']      = $this->value;
         $replace['selector']  = $selector;
         $prefix               = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
         $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get($key, $replace, $selector) ;
-        return $this;
+        return false;
     }
 
     /**

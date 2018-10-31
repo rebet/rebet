@@ -48,7 +48,7 @@ EOS
             $this->root
         );
         Config::application([
-            Validations::class => [
+            BuiltinValidations::class => [
                 'resources_dir' => ['vfs://root/resources'],
             ]
         ]);
@@ -75,13 +75,13 @@ EOS
         extract($record);
         $errors = [];
         $c = new Context('C', $data, $errors, [], $this->validations->translator());
-        $c->initBy($field);
-        foreach ($tests as $i => $test) {
+        foreach ($tests as $i => [$field, $args, $expect_valid, $expect_errors]) {
+            $c->initBy($field);
             $errors  = [];
-            $valid   = $this->validations->validate($name, $c, ...$test[0]);
-            $message = "Failed [CASE: {$i}] validation{$name}(" . join(', ', $test[0]) . ")";
-            $this->assertSame($test[1], $valid , "{$message} result failed.");
-            $this->assertSame($test[2], $errors, "{$message} error messages unmatched.");
+            $valid   = $this->validations->validate($name, $c, ...$args);
+            $message = "Failed [NAME: {$name} NO: {$i} FIELD: {$field}]";
+            $this->assertSame($expect_valid , $valid , "{$message} result failed.");
+            $this->assertSame($expect_errors, $errors, "{$message} error messages unmatched.");
         }
     }
 
@@ -93,68 +93,52 @@ EOS
             // Valid::IF
             // --------------------------------------------
             [[
-                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
-                'field' => 'foo',
                 'name'  => 'If',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
                 'tests' => [
-                    [['bar', 1], true, []],
-                    [['bar', 2], false, []],
-                    [['bar', ':foo'], true, []],
-                    [['bar', ':baz'], false, []],
-                    [['bar', [1, 3, 5]], true, []],
-                    [['bar', [2, 4, 6]], false, []],
+                    ['foo', ['bar', 1], true, []],
+                    ['foo', ['bar', 2], false, []],
+                    ['foo', ['bar', ':foo'], true, []],
+                    ['foo', ['bar', ':baz'], false, []],
+                    ['foo', ['bar', [1, 3, 5]], true, []],
+                    ['foo', ['bar', [2, 4, 6]], false, []],
                 ]
             ]],
             
-//             // --------------------------------------------
-//             // Valid::UNLESS
-//             // --------------------------------------------
-//             [
-//                 ['field_name' => 'value', 'other' => 'value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::UNLESS, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-//                 ]]],
-//                 ['field_name' => ["The Field Name is NG."]]
-//             ],
-//             [
-//                 ['field_name' => 'value', 'other' => 'not-value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::UNLESS, 'other', 'value', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 'value', 'other' => 'value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::UNLESS, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-//                 ]]],
-//                 ['field_name' => ["The Field Name is NG."]]
-//             ],
-//             [
-//                 ['field_name' => 'value', 'other' => 'not-value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::UNLESS, 'other', ':field_name', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 'value', 'other' => 2],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::UNLESS, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-//                 ]]],
-//                 ['field_name' => ["The Field Name is NG."]]
-//             ],
-//             [
-//                 ['field_name' => 'value', 'other' => 9],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::UNLESS, 'other', [1, 2, 3], 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]]
-//                 ]]],
-//                 []
-//             ],
+            // --------------------------------------------
+            // Valid::UNLESS
+            // --------------------------------------------
+            [[
+                'name'  => 'Unless',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
+                'tests' => [
+                    ['foo', ['bar', 1], false, []],
+                    ['foo', ['bar', 2], true, []],
+                    ['foo', ['bar', ':foo'], false, []],
+                    ['foo', ['bar', ':baz'], true, []],
+                    ['foo', ['bar', [1, 3, 5]], false, []],
+                    ['foo', ['bar', [2, 4, 6]], true, []],
+                ]
+            ]],
             
-//             // --------------------------------------------
-//             // Valid::SATISFY
-//             // --------------------------------------------
+            // --------------------------------------------
+            // Valid::SATISFY
+            // --------------------------------------------
+            [[
+                'name'  => 'Satisfy',
+                'data'  => ['foo' => 1, 'bar' => 2, 'baz' => 2],
+                'tests' => [
+                    ['foo', [function (Context $c) {
+                        return $c->value != 1 ? $c->appendError("@The {$c->label} is not 1.") : true ;
+                    }], true, []],
+                    ['bar', [function (Context $c) {
+                        return $c->value != 1 ? $c->appendError("@The {$c->label} is not 1.") : true ;
+                    }], false, ['bar' => ["The Bar is not 1."]]],
+
+                ]
+            ]],
+
+
 //             [
 //                 ['field_name' => 'not_value'],
 //                 ['field_name' => ['rule' => [

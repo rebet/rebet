@@ -207,11 +207,7 @@ class BuiltinValidations extends Validations
      */
     public function validationRequired(Context $c) : bool
     {
-        if ($c->blank()) {
-            $c->appendError('validation.Required');
-            return false;
-        }
-        return true;
+        return $c->blank() ? $c->appendError('validation.Required') : true ;
     }
 
     /**
@@ -224,12 +220,8 @@ class BuiltinValidations extends Validations
      */
     public function validationRequiredIf(Context $c, string $other, $value) : bool
     {
-        if (!$c->blank()) {
-            return true;
-        }
-        return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-            return false;
+        return !$c->blank() ? true : $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
+            return $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
     
@@ -243,12 +235,8 @@ class BuiltinValidations extends Validations
      */
     public function validationRequiredUnless(Context $c, string $other, $value) : bool
     {
-        if (!$c->blank()) {
-            return true;
-        }
-        return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-            return false;
+        return !$c->blank() ? true : $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
+            return $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
     
@@ -298,16 +286,12 @@ class BuiltinValidations extends Validations
      */
     public function validationRequiredWith(Context $c, $other, ?int $at_least = null) : bool
     {
-        if (!$c->blank()) {
-            return true;
-        }
-        return $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
-            $c->appendError(
+        return !$c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
+            return $c->appendError(
                 'validation.RequiredWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
-            return false;
         });
     }
 
@@ -321,16 +305,12 @@ class BuiltinValidations extends Validations
      */
     public function validationRequiredWithout(Context $c, $other, ?int $at_least = null) : bool
     {
-        if (!$c->blank()) {
-            return true;
-        }
-        return $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
-            $c->appendError(
+        return !$c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
+            return $c->appendError(
                 'validation.RequiredWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
-            return false;
         });
     }
     
@@ -355,7 +335,6 @@ class BuiltinValidations extends Validations
         if ($inputed >= $at_least) {
             return $callback($c, $other, $at_least, $max, $inputed);
         }
-
         return true;
     }
 
@@ -380,7 +359,6 @@ class BuiltinValidations extends Validations
         if ($not_inputed >= $at_least) {
             return $callback($c, $other, $at_least, $max, $not_inputed);
         }
-
         return true;
     }
     
@@ -394,12 +372,8 @@ class BuiltinValidations extends Validations
      */
     public function validationBlankIf(Context $c, string $other, $value) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        return $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-            return false;
+        return $c->blank() ? true : $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
+            return $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
     
@@ -413,12 +387,8 @@ class BuiltinValidations extends Validations
      */
     public function validationBlankUnless(Context $c, string $other, $value) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        return $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
-            return false;
+        return $c->blank() ? true : $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
+            return $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
 
@@ -432,16 +402,12 @@ class BuiltinValidations extends Validations
      */
     public function validationBlankWith(Context $c, $other, ?int $at_least = null) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        return $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
-            $c->appendError(
+        return $c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
+            return $c->appendError(
                 'validation.BlankWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
-            return false;
         });
     }
 
@@ -455,16 +421,12 @@ class BuiltinValidations extends Validations
      */
     public function validationBlankWithout(Context $c, $other, ?int $at_least = null) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        return $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
-            $c->appendError(
+        return $c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
+            return $c->appendError(
                 'validation.BlankWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
-            return false;
         });
     }
 
@@ -477,15 +439,11 @@ class BuiltinValidations extends Validations
      */
     public function validationSameAs(Context $c, $value) : bool
     {
-        if ($c->blank()) {
+        if ($c->blank()) { 
             return true;
         }
         [$value, $label] = $c->resolve($value);
-        if ($c->value == $value) {
-            return true;
-        }
-        $c->appendError('validation.SameAs', ['value' => $label]);
-        return false;
+        return $c->value == $value ? true : $c->appendError('validation.SameAs', ['value' => $label]);
     }
 
     /**
@@ -501,11 +459,7 @@ class BuiltinValidations extends Validations
             return true;
         }
         [$value, $label] = $c->resolve($value);
-        if ($c->value != $value) {
-            return true;
-        }
-        $c->appendError('validation.NotSameAs', ['value' => $label]);
-        return false;
+        return $c->value != $value ? true : $c->appendError('validation.NotSameAs', ['value' => $label]);
     }
 
     /**
@@ -547,8 +501,7 @@ class BuiltinValidations extends Validations
             if (!$test($value)) {
                 $replacement['nth']   = $c->ordinalize($i + 1);
                 $replacement['value'] = $value;
-                $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
-                $valid = false;
+                $valid = $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
                 if ($kind->equals(Kind::TYPE_CONSISTENCY_CHECK())) {
                     $error_indices[$i] = true;
                 }
@@ -1101,11 +1054,7 @@ class BuiltinValidations extends Validations
     public function validationMinCount(Context $c, int $min) : bool
     {
         $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        if ($item_count < $min) {
-            $c->appendError('validation.MinCount', ['item_count' => $item_count, 'min' => $min], $min);
-            return false;
-        }
-        return true;
+        return $item_count < $min ? $c->appendError('validation.MinCount', ['item_count' => $item_count, 'min' => $min], $min) : true;
     }
 
     /**
@@ -1118,11 +1067,7 @@ class BuiltinValidations extends Validations
     public function validationMaxCount(Context $c, int $max) : bool
     {
         $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        if ($item_count > $max) {
-            $c->appendError('validation.MaxCount', ['item_count' => $item_count, 'max' => $max], $max);
-            return false;
-        }
-        return true;
+        return $item_count > $max ? $c->appendError('validation.MaxCount', ['item_count' => $item_count, 'max' => $max], $max) : true;
     }
 
     /**
@@ -1135,11 +1080,7 @@ class BuiltinValidations extends Validations
     public function validationCount(Context $c, int $count) : bool
     {
         $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        if ($item_count !== $count) {
-            $c->appendError('validation.Count', ['item_count' => $item_count, 'count' => $count], $count);
-            return false;
-        }
-        return true;
+        return $item_count !== $count ? $c->appendError('validation.Count', ['item_count' => $item_count, 'count' => $count], $count) : true;
     }
 
     /**
@@ -1154,11 +1095,7 @@ class BuiltinValidations extends Validations
             return true;
         }
         $duplicate = Arrays::duplicate((array)$c->value);
-        if (!empty($duplicate)) {
-            $c->appendError('validation.Unique', ['duplicate' => $duplicate], count($duplicate));
-            return false;
-        }
-        return true;
+        return empty($duplicate) ? true : $c->appendError('validation.Unique', ['duplicate' => $duplicate], count($duplicate)) ;
     }
 
     /**
