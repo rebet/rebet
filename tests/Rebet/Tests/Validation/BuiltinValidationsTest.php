@@ -1,16 +1,16 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Validation\Validator;
-use Rebet\Foundation\App;
-use Rebet\Validation\Valid;
-use Rebet\Validation\Context;
-use Rebet\Config\Config;
 use org\bovigo\vfs\vfsStream;
+use Rebet\Config\Config;
+use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Gender;
-use Rebet\Validation\BuiltinValidations;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
+use Rebet\Validation\BuiltinValidations;
+use Rebet\Validation\Context;
+use Rebet\Validation\Valid;
+use Rebet\DateTime\DateTime;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
@@ -20,6 +20,8 @@ class BuiltinValidationsTest extends RebetTestCase
     public function setup()
     {
         parent::setUp();
+        DateTime::setTestNow('2010-01-23 12:34:56');
+
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
@@ -35,10 +37,10 @@ return [
         "{digits} The :nth :attribute (:value) must be digits.",
     ],
     'NotRegex' => [
-        "{digits} The :attribute must be not digits.",
+        "{digits} The :attribute must contain non-digits characters.",
     ],
     'NotRegex@List' => [
-        "{digits} The :nth :attribute (:value) must be not digits.",
+        "{digits} The :nth :attribute (:value) must contain non-digits characters.",
     ],
 ];
 EOS
@@ -72,22 +74,26 @@ EOS
     public function test_validationMethods(array $record) : void
     {
         App::setLocale('en');
+        App::setTimezone('UTC');
         extract($record);
-        $errors = [];
-        $c = new Context('C', $data, $errors, [], $this->validations->translator());
+        $errors     = [];
+        $translator = $this->validations->translator();
         foreach ($tests as $i => [$field, $args, $expect_valid, $expect_errors]) {
+            $c = new Context('C', $data, $errors, [], $translator);
             $c->initBy($field);
             $errors  = [];
             $valid   = $this->validations->validate($name, $c, ...$args);
-            $message = "Failed [NAME: {$name} NO: {$i} FIELD: {$field}]";
-            $this->assertSame($expect_valid , $valid , "{$message} result failed.");
+            $message = "Failed [NAME: {$name} IDX: {$i} FIELD: {$field}]";
+            $this->assertSame($expect_valid, $valid, "{$message} result '{$valid}' failed.");
             $this->assertSame($expect_errors, $errors, "{$message} error messages unmatched.");
         }
     }
 
     public function dataValidationMethods() : array
     {
-        App::setRoot(__DIR__.'../../../../');
+        $this->setUp();
+        $ng_word_file = App::path('/resources/ng_word.txt');
+
         return [
             // --------------------------------------------
             // Valid::IF
@@ -96,11 +102,11 @@ EOS
                 'name'  => 'If',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
                 'tests' => [
-                    ['foo', ['bar', 1], true, []],
-                    ['foo', ['bar', 2], false, []],
-                    ['foo', ['bar', ':foo'], true, []],
-                    ['foo', ['bar', ':baz'], false, []],
-                    ['foo', ['bar', [1, 3, 5]], true, []],
+                    ['foo', ['bar', 1        ], true , []],
+                    ['foo', ['bar', 2        ], false, []],
+                    ['foo', ['bar', ':foo'   ], true , []],
+                    ['foo', ['bar', ':baz'   ], false, []],
+                    ['foo', ['bar', [1, 3, 5]], true , []],
                     ['foo', ['bar', [2, 4, 6]], false, []],
                 ]
             ]],
@@ -112,12 +118,12 @@ EOS
                 'name'  => 'Unless',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
                 'tests' => [
-                    ['foo', ['bar', 1], false, []],
-                    ['foo', ['bar', 2], true, []],
-                    ['foo', ['bar', ':foo'], false, []],
-                    ['foo', ['bar', ':baz'], true, []],
+                    ['foo', ['bar', 1        ], false, []],
+                    ['foo', ['bar', 2        ], true , []],
+                    ['foo', ['bar', ':foo'   ], false, []],
+                    ['foo', ['bar', ':baz'   ], true , []],
                     ['foo', ['bar', [1, 3, 5]], false, []],
-                    ['foo', ['bar', [2, 4, 6]], true, []],
+                    ['foo', ['bar', [2, 4, 6]], true , []],
                 ]
             ]],
             
@@ -128,2081 +134,841 @@ EOS
                 'name'  => 'Satisfy',
                 'data'  => ['foo' => 1, 'bar' => 2, 'baz' => 2],
                 'tests' => [
-                    ['foo', [function (Context $c) {
-                        return $c->value != 1 ? $c->appendError("@The {$c->label} is not 1.") : true ;
-                    }], true, []],
-                    ['bar', [function (Context $c) {
-                        return $c->value != 1 ? $c->appendError("@The {$c->label} is not 1.") : true ;
-                    }], false, ['bar' => ["The Bar is not 1."]]],
-
+                    ['foo', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], true , []],
+                    ['bar', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], false, ['bar' => ["The Bar is not 1."]]],
+                    ['foo', [function (Context $c) { return $c->value == 1; }                                                        ], true , []],
+                    ['bar', [function (Context $c) { return $c->value == 1; }                                                        ], false, []],
                 ]
             ]],
 
+            // --------------------------------------------
+            // Valid::REQUIRED
+            // --------------------------------------------
+            // @todo When UploadFile
+            [[
+                'name'  => 'Required',
+                'data'  => ['null' => null, 'empty_string' => '', 'empty_array' => [], 'zero' => 0, 'zero_string' => '0', 'false' => false, 'array' => [1]],
+                'tests' => [
+                    ['nothing'     , [], false, ['nothing'      => ["The Nothing field is required."]]],
+                    ['null'        , [], false, ['null'         => ["The Null field is required."]]],
+                    ['empty_string', [], false, ['empty_string' => ["The Empty String field is required."]]],
+                    ['empty_array' , [], false, ['empty_array'  => ["The Empty Array field is required."]]],
+                    ['zero'        , [], true , []],
+                    ['zero_string' , [], true , []],
+                    ['false'       , [], true , []],
+                    ['array'       , [], true , []],
+                ]
+            ]],
 
-//             [
-//                 ['field_name' => 'not_value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::SATISFY, function (Context $c) {
-//                         if ($c->value !== 'value') {
-//                             $c->appendError("@The {$c->label} is not 'value'.");
-//                             return false;
-//                         }
-//                         return true;
-//                     }]
-//                 ]]],
-//                 ['field_name' => ["The Field Name is not 'value'."]]
-//             ],
-//             [
-//                 ['field_name' => 'value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::SATISFY, function (Context $c) {
-//                         return $c->value === 'value';
-//                     },
-//                     'then' => [['C', 'Ok']],
-//                     'else' => [['C', 'Ng']]
-//                     ]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 'not-value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::SATISFY, function (Context $c) {
-//                         return $c->value === 'value';
-//                     },
-//                     'then' => [['C', 'Ok']],
-//                     'else' => [['C', 'Ng']]
-//                     ]
-//                 ]]],
-//                 ['field_name' => ["The Field Name is NG."]]
-//             ],
+            // --------------------------------------------
+            // Valid::REQUIRED_IF
+            // --------------------------------------------
+            [[
+                'name'  => 'RequiredIf',
+                'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 2],
+                'tests' => [
+                    ['foo', ['nothing', 1        ], true , []],
+                    ['foo', ['baz'    , 1        ], true , []],
+                    ['foo', ['baz'    , 2        ], false, ['foo' => ["The Foo field is required when Baz is 2."]]],
+                    ['bar', ['baz'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], false, ['foo' => ["The Foo field is required when Baz is in 2, 4, 6."]]],
+                    ['foo', ['baz'    , [1, 3, 5]], true , []],
+                    ['foo', ['baz'    , ':bar'   ], true , []],
+                    ['foo', ['baz'    , ':qux'   ], false, ['foo' => ["The Foo field is required when Baz is Qux."]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::REQUIRED_UNLESS
+            // --------------------------------------------
+            [[
+                'name'  => 'RequiredUnless',
+                'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 2],
+                'tests' => [
+                    ['foo', ['nothing', 1        ], false, ['foo' => ["The Foo field is required when Nothing is not 1."]]],
+                    ['foo', ['baz'    , 1        ], false, ['foo' => ["The Foo field is required when Baz is not 1."]]],
+                    ['bar', ['baz'    , 1        ], true , []],
+                    ['foo', ['baz'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], true , []],
+                    ['foo', ['baz'    , [1, 3, 5]], false, ['foo' => ["The Foo field is required when Baz is not in 1, 3, 5."]]],
+                    ['foo', ['baz'    , ':bar'   ], false, ['foo' => ["The Foo field is required when Baz is not Bar."]]],
+                    ['foo', ['baz'    , ':qux'   ], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::REQUIRED_WITH
+            // --------------------------------------------
+            [[
+                'name'  => 'RequiredWith',
+                'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                'tests' => [
+                    ['foo', ['nothing'               ], true , []],
+                    ['foo', ['bar'                   ], false, ['foo' => ["The Foo field is required when Bar is present."]]],
+                    ['baz', ['bar'                   ], true , []],
+                    ['foo', [['bar', 'baz']          ], false, ['foo' => ["The Foo field is required when Bar, Baz are present."]]],
+                    ['foo', [['bar', 'baz', 'qux']   ], true , []],
+                    ['foo', [['bar', 'baz', 'qux'], 2], false, ['foo' => ["The Foo field is required when Bar, Baz, Qux are present at least 2."]]],
+                    ['foo', [['qux', 'quxx']      , 1], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::REQUIRED_WITHOUT
+            // --------------------------------------------
+            [[
+                'name'  => 'RequiredWithout',
+                'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                'tests' => [
+                    ['foo', ['nothing'                ], false, ['foo' => ["The Foo field is required when Nothing is not present."]]],
+                    ['foo', ['qux'                    ], false, ['foo' => ["The Foo field is required when Qux is not present."]]],
+                    ['baz', ['qux'                    ], true , []],
+                    ['foo', [['qux', 'quux']          ], false, ['foo' => ["The Foo field is required when Qux, Quux are not present."]]],
+                    ['foo', [['qux', 'quux', 'bar']   ], true , []],
+                    ['foo', [['qux', 'quux', 'bar'], 2], false, ['foo' => ["The Foo field is required when Qux, Quux, Bar are not present at least 2."]]],
+                    ['foo', [['qux', 'bar', 'baz'] , 2], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::BLANK_IF
+            // --------------------------------------------
+            [[
+                'name'  => 'BlankIf',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                'tests' => [
+                    ['foo', ['nothing', 2        ], true , []],
+                    ['foo', ['bar'    , 2        ], true , []],
+                    ['foo', ['baz'    , 2        ], false, ['foo' => ["The Foo field must be blank when Baz is 2."]]],
+                    ['qux', ['baz'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], false, ['foo' => ["The Foo field must be blank when Baz is in 2, 4, 6."]]],
+                    ['foo', ['baz'    , [1, 3, 5]], true , []],
+                    ['foo', ['bar'    , ':baz'   ], true , []],
+                    ['foo', ['foo'    , ':bar'   ], false, ['foo' => ["The Foo field must be blank when Foo is Bar."]]],
+                    ['foo', ['qux'    , ':quux'  ], false, ['foo' => ["The Foo field must be blank when Qux is Quux."]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::BLANK_UNLESS
+            // --------------------------------------------
+            [[
+                'name'  => 'BlankUnless',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                'tests' => [
+                    ['foo', ['nothing', 2        ], false, ['foo' => ["The Foo field must be blank when Nothing is not 2."]]],
+                    ['foo', ['bar'    , 2        ], false, ['foo' => ["The Foo field must be blank when Bar is not 2."]]],
+                    ['foo', ['baz'    , 2        ], true , []],
+                    ['qux', ['bar'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], true , []],
+                    ['foo', ['baz'    , [1, 3, 5]], false, ['foo' => ["The Foo field must be blank when Baz is not in 1, 3, 5."]]],
+                    ['foo', ['bar'    , ':baz'   ], false, ['foo' => ["The Foo field must be blank when Bar is not Baz."]]],
+                    ['foo', ['foo'    , ':bar'   ], true , []],
+                    ['foo', ['qux'    , ':quux'  ], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::BLANK_WITH
+            // --------------------------------------------
+            [[
+                'name'  => 'BlankWith',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                'tests' => [
+                    ['foo', ['nothing'               ], true , []],
+                    ['foo', ['bar'                   ], false, ['foo' => ["The Foo field must be blank when Bar is present."]]],
+                    ['qux', ['bar'                   ], true , []],
+                    ['foo', [['bar', 'baz']          ], false, ['foo' => ["The Foo field must be blank when Bar, Baz are present."]]],
+                    ['foo', [['bar', 'baz', 'qux']   ], true , []],
+                    ['foo', [['bar', 'baz', 'qux'], 2], false, ['foo' => ["The Foo field must be blank when Bar, Baz, Qux are present at least 2."]]],
+                    ['foo', [['qux', 'quxx']      , 1], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::BLANK_WITHOUT
+            // --------------------------------------------
+            [[
+                'name'  => 'BlankWithout',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
+                'tests' => [
+                    ['foo', ['nothing'                ], false, ['foo' => ["The Foo field must be blank when Nothing is not present."]]],
+                    ['foo', ['qux'                    ], false, ['foo' => ["The Foo field must be blank when Qux is not present."]]],
+                    ['qux', ['qux'                    ], true , []],
+                    ['foo', [['qux', 'quux']          ], false, ['foo' => ["The Foo field must be blank when Qux, Quux are not present."]]],
+                    ['foo', [['qux', 'quux', 'bar']   ], true , []],
+                    ['foo', [['qux', 'quux', 'bar'], 2], false, ['foo' => ["The Foo field must be blank when Qux, Quux, Bar are not present at least 2."]]],
+                    ['foo', [['qux', 'bar', 'baz'] , 2], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::SAME_AS
+            // --------------------------------------------
+            [[
+                'name'  => 'SameAs',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null],
+                'tests' => [
+                    ['nothing', [1               ], true , []],
+                    ['qux'    , [1               ], true , []],
+                    ['foo'    , [1               ], true , []],
+                    ['foo'    , [2               ], false, ['foo' => ["The Foo and 2 must match."]]],
+                    ['foo'    , [Gender::FEMALE()], false, ['foo' => ["The Foo and 女性 must match."]]], //@todo i18n
+                    ['foo'    , [':bar'          ], true , []],
+                    ['foo'    , [':baz'          ], false, ['foo' => ["The Foo and Baz must match."]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::NOT_SAME_AS
+            // --------------------------------------------
+            [[
+                'name'  => 'NotSameAs',
+                'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null],
+                'tests' => [
+                    ['nothing', [1     ], true , []],
+                    ['qux'    , [1     ], true , []],
+                    ['foo'    , [1     ], false, ['foo' => ["The Foo and 1 must not match."]]],
+                    ['foo'    , [2     ], true , []],
+                    ['foo'    , [':bar'], false, ['foo' => ["The Foo and Bar must not match."]]],
+                    ['foo'    , [':baz'], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::REGEX
+            // --------------------------------------------
+            [[
+                'name'  => 'Regex',
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => '123', 'baz' => 'abc', 'qux' => ['123','456','789'], 'quux' => ['123','abc','def']],
+                'tests' => [
+                    ['nothing', ['/^[0-9]+$/'          ], true , []],
+                    ['null'   , ['/^[0-9]+$/'          ], true , []],
+                    ['foo'    , ['/^[0-9]+$/'          ], true , []],
+                    ['bar'    , ['/^[0-9]+$/'          ], true , []],
+                    ['baz'    , ['/^[0-9]+$/'          ], false, ['baz'  => ["The Baz format is invalid."]]],
+                    ['baz'    , ['/^[0-9]+$/', 'digits'], false, ['baz'  => ["The Baz must be digits."]]],
+                    ['qux'    , ['/^[0-9]+$/'          ], true , []],
+                    ['quux'   , ['/^[0-9]+$/'          ], false, ['quux' => [
+                        "The 2nd Quux (abc) format is invalid.",
+                        "The 3rd Quux (def) format is invalid.",
+                    ]]],
+                    ['quux'   , ['/^[0-9]+$/', 'digits'], false, ['quux' => [
+                        "The 2nd Quux (abc) must be digits.",
+                        "The 3rd Quux (def) must be digits.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::NOT_REGEX
+            // --------------------------------------------
+            [[
+                'name'  => 'NotRegex',
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => 'abc', 'baz' => '123', 'qux' => ['abc','def','ghi'], 'quux' => ['abc','123','456']],
+                'tests' => [
+                    ['nothing', ['/^[0-9]+$/'          ], true , []],
+                    ['null'   , ['/^[0-9]+$/'          ], true , []],
+                    ['foo'    , ['/^[0-9]+$/'          ], false, ['foo'  => ["The Foo format is invalid."]]],
+                    ['bar'    , ['/^[0-9]+$/'          ], true , []],
+                    ['baz'    , ['/^[0-9]+$/'          ], false, ['baz'  => ["The Baz format is invalid."]]],
+                    ['baz'    , ['/^[0-9]+$/', 'digits'], false, ['baz'  => ["The Baz must contain non-digits characters."]]],
+                    ['qux'    , ['/^[0-9]+$/'          ], true , []],
+                    ['quux'   , ['/^[0-9]+$/'          ], false, ['quux' => [
+                        "The 2nd Quux (123) format is invalid.",
+                        "The 3rd Quux (456) format is invalid.",
+                    ]]],
+                    ['quux'   , ['/^[0-9]+$/', 'digits'], false, ['quux' => [
+                        "The 2nd Quux (123) must contain non-digits characters.",
+                        "The 3rd Quux (456) must contain non-digits characters.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::MAX_LENGTH
+            // --------------------------------------------
+            [[
+                'name'  => 'MaxLength',
+                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'abcd', 'baz' => ['1234','1','123','12345']],
+                'tests' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [3], true , []],
+                    ['bar'    , [3], false, ['bar' => ["The Bar may not be greater than 3 characters."]]],
+                    ['baz'    , [3], false, ['baz' => [
+                        "The 1st Baz (1234) may not be greater than 3 characters.",
+                        "The 4th Baz (12345) may not be greater than 3 characters.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::MIN_LENGTH
+            // --------------------------------------------
+            [[
+                'name'  => 'MinLength',
+                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'ab', 'baz' => ['1234', '1', '123']],
+                'tests' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [3], true , []],
+                    ['bar'    , [3], false, ['bar' => ["The Bar must be at least 3 characters."]]],
+                    ['baz'    , [3], false, ['baz' => [
+                        "The 2nd Baz (1) must be at least 3 characters.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::LENGTH
+            // --------------------------------------------
+            [[
+                'name'  => 'Length',
+                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'ab', 'baz' => 'abcd', 'qux' => ['1234', '1', '123']],
+                'tests' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [3], true , []],
+                    ['bar'    , [3], false, ['bar' => ["The Bar must be 3 characters."]]],
+                    ['baz'    , [3], false, ['baz' => ["The Baz must be 3 characters."]]],
+                    ['qux'    , [3], false, ['qux' => [
+                        "The 1st Qux (1234) must be 3 characters.",
+                        "The 2nd Qux (1) must be 3 characters.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::NUMBER
+            // --------------------------------------------
+            [[
+                'name'  => 'Number',
+                'data'  => ['null' => null, 'foo' => '123', 'bar' => 'abc', 'baz' => ['+123.4', '-1234', '1.234', '123'], 'qux' => ['+123.4', '-1,234', '1.234']],
+                'tests' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar must be number."]]],
+                    ['baz'    , [], true , []],
+                    ['qux'    , [], false, ['qux' => [
+                        "The 2nd Qux (-1,234) must be number.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::INTEGER
+            // --------------------------------------------
+            [[
+                'name'  => 'Integer',
+                'data'  => ['null' => null, 'foo' => '123', 'bar' => 'abc', 'baz' => ['+123', '-1234', '+1234'], 'qux' => ['+123.4', '123', 'abc']],
+                'tests' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar must be integer."]]],
+                    ['baz'    , [], true , []],
+                    ['qux'    , [], false, ['qux' => [
+                        "The 1st Qux (+123.4) must be integer.",
+                        "The 3rd Qux (abc) must be integer.",
+                    ]]],
+                ]
+            ]],
             
-//             // --------------------------------------------
-//             // Valid::REQUIRED
-//             // --------------------------------------------
-//             // @todo When UploadFile
-//             [
-//                 [],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required."]]
-//             ],
-//             [
-//                 ['field_name' => null],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required."]]
-//             ],
-//             [
-//                 ['field_name' => ''],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required."]]
-//             ],
-//             [
-//                 ['field_name' => []],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required."]]
-//             ],
-//             [
-//                 ['field_name' => 0],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => '0'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => false],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 'value'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => ['value']],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED]
-//                 ]]],
-//                 []
-//             ],
+            // --------------------------------------------
+            // Valid::FLOAT
+            // --------------------------------------------
+            [[
+                'name'  => 'Float',
+                'data'  => ['null' => null, 'foo' => '123', 'bar' => '123.12', 'baz' => '123.123', 'qux' => 'abc', 'quux' => ['+123', '-123.4', '+12.34'], 'foobar' => ['+123.4', '123.230', 'abc']],
+                'tests' => [
+                    ['nothing', [2], true , []],
+                    ['null'   , [2], true , []],
+                    ['foo'    , [2], true , []],
+                    ['bar'    , [2], true , []],
+                    ['baz'    , [2], false, ['baz'    => ["The Baz must be real number (up to 2 decimal places)."]]],
+                    ['qux'    , [2], false, ['qux'    => ["The Qux must be real number (up to 2 decimal places)."]]],
+                    ['quux'   , [2], true , []],
+                    ['foobar' , [2], false, ['foobar' => [
+                        "The 2nd Foobar (123.230) must be real number (up to 2 decimal places).",
+                        "The 3rd Foobar (abc) must be real number (up to 2 decimal places).",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::REQUIRED_IF
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['other' => 'bar'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['other' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is foo."]]
-//             ],
-//             [
-//                 ['field_name' => 123, 'other' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', 'foo']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', ['foo', 'bar', 'baz']]
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is in foo, bar, baz."]]
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'xxx'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', ['foo', 'bar', 'baz']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 123, 'other' => 'foo', 'target' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', ':target']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', ':target']
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is Target."]]
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'foo', 'target' => 'bar'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_IF, 'other', ':target']
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::REQUIRED_UNLESS
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is not foo."]]
-//             ],
-//             [
-//                 ['other' => 'bar'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is not foo."]]
-//             ],
-//             [
-//                 ['other' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 123, 'other' => 'bar'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', 'foo']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', ['foo', 'bar', 'baz']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'xxx'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', ['foo', 'bar', 'baz']]
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is not in foo, bar, baz."]]
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'foo', 'target' => 'foo'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => 123, 'other' => 'foo', 'target' => 'bar'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['field_name' => null, 'other' => 'foo', 'target' => 'bar'],
-//                 ['field_name' => ['rule' => [
-//                     ['C', Valid::REQUIRED_UNLESS, 'other', ':target']
-//                 ]]],
-//                 ['field_name' => ["The Field Name field is required when Other is not Target."]]
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::REQUIRED_WITH
-//             // --------------------------------------------
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITH, 'baz']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITH, 'bar']
-//                 ]]],
-//                 ['foo' => ["The Foo field is required when Bar is present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITH, ['bar', 'baz']]
-//                 ]]],
-//                 ['foo' => ["The Foo field is required when Bar, Baz are present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITH, ['bar', 'baz', 'qux']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITH, ['bar', 'baz', 'qux'], 2]
-//                 ]]],
-//                 ['foo' => ["The Foo field is required when Bar, Baz, Qux are present at least 2."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITH, ['qux', 'quux'], 1]
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::REQUIRED_WITHOUT
-//             // --------------------------------------------
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITHOUT, 'qux']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITHOUT, 'qux']
-//                 ]]],
-//                 ['foo' => ["The Foo field is required when Qux is not present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux']]
-//                 ]]],
-//                 ['foo' => ["The Foo field is required when Qux, Quux are not present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux', 'bar']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITHOUT, ['qux', 'quux', 'bar'], 2]
-//                 ]]],
-//                 ['foo' => ["The Foo field is required when Qux, Quux, Bar are not present at least 2."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REQUIRED_WITHOUT, ['bar', 'baz'], 1]
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::BLANK_IF
-//             // --------------------------------------------
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'bar', 1]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'baz', 2]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Baz is 2."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'baz', [1, 2, 3]]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Baz is in 1, 2, 3."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'baz', [4, 5, 6]]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'bar', ':baz']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 'a', 'quux' => 'a'],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'qux', ':quux']
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Qux is Quux."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_IF, 'qux', ':quux']
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Qux is Quux."]]
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::BLANK_UNLESS
-//             // --------------------------------------------
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'bar', 9]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'baz', 9]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Baz is not 9."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'baz', [7, 8, 9]]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Baz is not in 7, 8, 9."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'baz', [1, 2, 3]]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => 1],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'bar', ':quux']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 'a', 'quux' => 'b'],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'qux', ':quux']
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Qux is not Quux."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_UNLESS, 'qux', ':quux']
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::BLANK_WITH
-//             // --------------------------------------------
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::BLANK_WITH, 'baz']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITH, 'bar']
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Bar is present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITH, ['bar', 'baz']]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Bar, Baz are present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITH, ['bar', 'baz', 'qux']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITH, ['bar', 'baz', 'qux'], 2]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Bar, Baz, Qux are present at least 2."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITH, ['qux', 'quux'], 1]
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::BLANK_WITHOUT
-//             // --------------------------------------------
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::BLANK_WITHOUT, 'qux']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITHOUT, 'qux']
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Qux is not present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITHOUT, ['qux', 'quux']]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Qux, Quux are not present."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITHOUT, ['qux', 'quux', 'bar']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITHOUT, ['qux', 'quux', 'bar'], 2]
-//                 ]]],
-//                 ['bar' => ["The Bar field must be blank when Qux, Quux, Bar are not present at least 2."]]
-//             ],
-//             [
-//                 ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
-//                 ['bar' => ['rule' => [
-//                     ['C', Valid::BLANK_WITHOUT, ['bar', 'baz'], 1]
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::SAME_AS
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::SAME_AS, 1]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::SAME_AS, 1]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::SAME_AS, 2]
-//                 ]]],
-//                 ['foo' => ["The Foo and 2 must match."]]
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::SAME_AS, ':bar']
-//                 ]]],
-//                 ['foo' => ["The Foo and Bar must match."]]
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::SAME_AS, ':baz']
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::NOT_SAME_AS
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_SAME_AS, 1]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_SAME_AS, 2]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_SAME_AS, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo and 1 must not match."]]
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_SAME_AS, ':baz']
-//                 ]]],
-//                 ['foo' => ["The Foo and Baz must not match."]]
-//             ],
-//             [
-//                 ['foo' => 1, 'bar' => 2, 'baz' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_SAME_AS, ':bar']
-//                 ]]],
-//                 []
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::REGEX
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'bar'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 ['foo' => ["The Foo format is invalid."]]
-//             ],
-//             [
-//                 ['foo' => 'bar'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/', 'digits']
-//                 ]]],
-//                 ['foo' => ["The Foo must be digits."]]
-//             ],
-//             [
-//                 ['foo' => ['123','456','789']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['123','abc','def']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (abc) format is invalid.",
-//                     "The 3rd Foo (def) format is invalid.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => ['123','abc','def']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::REGEX, '/^[0-9]+$/', 'digits']
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (abc) must be digits.",
-//                     "The 3rd Foo (def) must be digits.",
-//                 ]]
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::NOT_REGEX
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 ['foo' => ["The Foo format is invalid."]]
-//             ],
-//             [
-//                 ['foo' => '123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/', 'digits']
-//                 ]]],
-//                 ['foo' => ["The Foo must be not digits."]]
-//             ],
-//             [
-//                 ['foo' => ['abc','def','ghi']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['abc','123','456']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/']
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (123) format is invalid.",
-//                     "The 3rd Foo (456) format is invalid.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => ['abc','123','456']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NOT_REGEX, '/^[0-9]+$/', 'digits']
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (123) must be not digits.",
-//                     "The 3rd Foo (456) must be not digits.",
-//                 ]]
-//             ],
-
-//             // --------------------------------------------
-//             // Valid::MAX_LENGTH
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_LENGTH, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_LENGTH, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abcd'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_LENGTH, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo may not be greater than 3 characters."]]
-//             ],
-//             [
-//                 ['foo' => ['1234','1','123','12345']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_LENGTH, 3]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (1234) may not be greater than 3 characters.",
-//                     "The 4th Foo (12345) may not be greater than 3 characters.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::MAX_NUMBER
+            // --------------------------------------------
+            [[
+                'name'  => 'MaxNumber',
+                'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
+                'tests' => [
+                    ['nothing', [10   ], true , []],
+                    ['null'   , [10   ], true , []],
+                    ['foo'    , [10   ], true , []],
+                    ['bar'    , [10   ], true , []],
+                    ['baz'    , [10   ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
+                    ['qux'    , [10   ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1], false, ['qux'    => ["The Qux may not be greater than 10."]]],
+                    ['quux'   , [10   ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10   ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be integer.",
+                        "The 5th Foobar (3.5) must be integer.",
+                        "The 4th Foobar (123) may not be greater than 10.",
+                    ]]],
+                    ['foobar' , [10, 1], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
+                        "The 4th Foobar (123) may not be greater than 10.",
+                    ]]],
+                ]
+            ]],
             
-//             // --------------------------------------------
-//             // Valid::MIN_LENGTH
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_LENGTH, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_LENGTH, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'ab'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_LENGTH, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must be at least 3 characters."]]
-//             ],
-//             [
-//                 ['foo' => ['1234', '1', '123']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_LENGTH, 3]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (1) must be at least 3 characters.",
-//                 ]]
-//             ],
-            
-//             // --------------------------------------------
-//             // Valid::LENGTH
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::LENGTH, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::LENGTH, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'ab'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::LENGTH, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must be 3 characters."]]
-//             ],
-//             [
-//                 ['foo' => ['12', '1', '123']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::LENGTH, 3]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (12) must be 3 characters.",
-//                     "The 2nd Foo (1) must be 3 characters.",
-//                 ]]
-//             ],
-            
-//             // --------------------------------------------
-//             // Valid::NUMBER
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NUMBER]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NUMBER]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NUMBER]
-//                 ]]],
-//                 ['foo' => ["The Foo must be number."]]
-//             ],
-//             [
-//                 ['foo' => ['+123.4', '-1234', '1.234', '123']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NUMBER]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['+123.4', '-1,234', '1.234']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NUMBER]
-//                 ]]],
-//                 ['foo' => ["The 2nd Foo (-1,234) must be number."]]
-//             ],
-            
-//             // --------------------------------------------
-//             // Valid::INTEGER
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::INTEGER]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::INTEGER]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::INTEGER]
-//                 ]]],
-//                 ['foo' => ["The Foo must be integer."]]
-//             ],
-//             [
-//                 ['foo' => ['+123', '-1234', '+1234']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::INTEGER]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['+123.4', '123', 'abc']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::INTEGER]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (+123.4) must be integer.",
-//                     "The 3rd Foo (abc) must be integer.",
-//                 ]]
-//             ],
-            
-//             // --------------------------------------------
-//             // Valid::FLOAT
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123.12'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123.123'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 ['foo' => ["The Foo must be real number (up to 2 decimal places)."]]
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 ['foo' => ["The Foo must be real number (up to 2 decimal places)."]]
-//             ],
-//             [
-//                 ['foo' => ['+123', '-123.4', '+12.34']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['+123.4', '123.230', 'abc']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FLOAT, 2]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (123.230) must be real number (up to 2 decimal places).",
-//                     "The 3rd Foo (abc) must be real number (up to 2 decimal places).",
-//                 ]]
-//             ],
-            
-//             // --------------------------------------------
-//             // Valid::MAX_NUMBER
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '10'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '-11'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '11'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => ["The Foo may not be greater than 10."]]
-//             ],
-//             [
-//                 ['foo' => '10.1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => ["The Foo must be integer."]]
-//             ],
-//             [
-//                 ['foo' => '10.1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo may not be greater than 10."]]
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => ["The Foo must be integer."]]
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo must be real number (up to 1 decimal places)."]]
-//             ],
-//             [
-//                 ['foo' => ['abc', '10', '2', 123, '3.5']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (abc) must be integer.",
-//                     "The 5th Foo (3.5) must be integer.",
-//                     "The 4th Foo (123) may not be greater than 10.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => ['abc', '10', '2', 123, '3.5']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_NUMBER, 10, 1]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (abc) must be real number (up to 1 decimal places).",
-//                     "The 4th Foo (123) may not be greater than 10.",
-//                 ]]
-//             ],
-            
-//             // --------------------------------------------
-//             // Valid::MIN_NUMBER
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '10'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '-11'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => ["The Foo must be at least 10."]]
-//             ],
-//             [
-//                 ['foo' => '11'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '10.1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => ["The Foo must be integer."]]
-//             ],
-//             [
-//                 ['foo' => '10.1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10, 1]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => ["The Foo must be integer."]]
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo must be real number (up to 1 decimal places)."]]
-//             ],
-//             [
-//                 ['foo' => ['abc', '10', '2', 123, '3.5']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (abc) must be integer.",
-//                     "The 5th Foo (3.5) must be integer.",
-//                     "The 3rd Foo (2) must be at least 10.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => ['abc', '10', '2', 123, '3.5']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_NUMBER, 10, 1]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (abc) must be real number (up to 1 decimal places).",
-//                     "The 3rd Foo (2) must be at least 10.",
-//                     "The 5th Foo (3.5) must be at least 10.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::MIN_NUMBER
+            // --------------------------------------------
+            [[
+                'name'  => 'MinNumber',
+                'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
+                'tests' => [
+                    ['nothing', [10   ], true , []],
+                    ['null'   , [10   ], true , []],
+                    ['foo'    , [10   ], true , []],
+                    ['bar'    , [10   ], false, ['bar'    => ["The Bar must be at least 10."]]],
+                    ['baz'    , [10   ], true , []],
+                    ['qux'    , [10   ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1], true , []],
+                    ['quux'   , [10   ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10   ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be integer.",
+                        "The 5th Foobar (3.5) must be integer.",
+                        "The 3rd Foobar (2) must be at least 10.",
+                    ]]],
+                    ['foobar' , [10, 1], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
+                        "The 3rd Foobar (2) must be at least 10.",
+                        "The 5th Foobar (3.5) must be at least 10.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::EMAIL
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::EMAIL]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'foo@rebet.com'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::EMAIL]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '.foo@rebet.com'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::EMAIL]
-//                 ]]],
-//                 ['foo' => ["The Foo must be a valid email address."]]
-//             ],
-//             [
-//                 ['foo' => '.foo@rebet.com'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::EMAIL, false]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::EMAIL]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (.bar@rebet.com) must be a valid email address.",
-//                     "The 3rd Foo (abc) must be a valid email address.",
-//                     "The 5th Foo (foo..baz@rebet.com) must be a valid email address.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::EMAIL, false]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 3rd Foo (abc) must be a valid email address.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::EMAIL
+            // --------------------------------------------
+            [[
+                'name'  => 'Email',
+                'data'  => ['null' => null, 'foo' => 'foo@rebet.com', 'bar' => '.bar@rebet.com', 'baz' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
+                'tests' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], false, ['bar' => ["The Bar must be a valid email address."]]],
+                    ['bar'    , [false], true , []],
+                    ['baz'    , [     ], false, ['baz' => [
+                        "The 2nd Baz (.bar@rebet.com) must be a valid email address.",
+                        "The 3rd Baz (abc) must be a valid email address.",
+                        "The 5th Baz (foo..baz@rebet.com) must be a valid email address.",
+                    ]]],
+                    ['baz'    , [false], false, ['baz' => [
+                        "The 3rd Baz (abc) must be a valid email address.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::URL
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'https://github.com/rebet/rebet'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'https://github.com/rebet/rebet'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL, true]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'https://invalid[foo]/rebet'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL]
-//                 ]]],
-//                 ['foo' => ["The Foo format is invalid."]]
-//             ],
-//             [
-//                 ['foo' => 'https://invalid.local/rebet'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL, true]
-//                 ]]],
-//                 ['foo' => ["The Foo is not a valid URL."]]
-//             ],
-//             [
-//                 ['foo' => ['https://github.com/rebet/rebet', 'https://invalid[foo]/rebet']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL]
-//                 ]]],
-//                 ['foo' => ["The 2nd Foo (https://invalid[foo]/rebet) format is invalid."]]
-//             ],
-//             [
-//                 ['foo' => ['https://github.com/rebet/rebet', 'https://invalid.local/rebet']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::URL, true]
-//                 ]]],
-//                 ['foo' => ["The 2nd Foo (https://invalid.local/rebet) is not a valid URL."]]
-//             ],
+            // --------------------------------------------
+            // Valid::URL
+            // --------------------------------------------
+            [[
+                'name'  => 'Url',
+                'data'  => ['null' => null, 'foo' => 'https://github.com/rebet/rebet', 'bar' => 'https://invalid[bar]/rebet', 'baz' => 'https://invalid.local/rebet', 'qux' => ['https://github.com/rebet/rebet', 'https://invalid[bar]/rebet', 'https://invalid.local/rebet']],
+                'tests' => [
+                    ['nothing', [    ], true , []],
+                    ['null'   , [    ], true , []],
+                    ['foo'    , [    ], true , []],
+                    ['foo'    , [true], true , []],
+                    ['bar'    , [    ], false, ['bar' => ["The Bar format is invalid."]]],
+                    ['bar'    , [true], false, ['bar' => ["The Bar format is invalid."]]],
+                    ['baz'    , [    ], true , []],
+                    ['baz'    , [true], false, ['baz' => ["The Baz is not a valid URL."]]],
+                    ['qux'    , [    ], false, ['qux' => [
+                        "The 2nd Qux (https://invalid[bar]/rebet) format is invalid.",
+                    ]]],
+                    ['qux'    , [true], false, ['qux' => [
+                        "The 2nd Qux (https://invalid[bar]/rebet) format is invalid.",
+                        "The 3rd Qux (https://invalid.local/rebet) is not a valid URL.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::IPV4
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '192.168.1.1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '192.168.1.0/24'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '192.168.1.256'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 ['foo' => ["The Foo must be a valid IPv4(CIDR) address."]]
-//             ],
-//             [
-//                 ['foo' => '192.168.1.0/33'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 ['foo' => ["The Foo must be a valid IPv4(CIDR) address."]]
-//             ],
-//             [
-//                 ['foo' => ['192.168.1.1', '192.168.1.3', '192.168.2.0/24']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => <<<EOS
-// 192.168.1.1
-// 192.168.1.3
+            // --------------------------------------------
+            // Valid::IPV4
+            // --------------------------------------------
+            [[
+                'name'  => 'Ipv4',
+                'data'  => [
+                    'null'   => null, 
+                    'foo'    => '192.168.1.1', 
+                    'bar'    => '192.168.1.0/24', 
+                    'baz'    => '192.168.1.256', 
+                    'qux'    => '192.168.1.0/33', 
+                    'quux'   => ['192.168.1.1', '192.168.1.3', '192.168.2.0/24'],
+                    'foobar' => <<<EOS
+192.168.1.1
+192.168.1.3
 
-// 192.168.2.0/24
-// EOS
-//                 ],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4, "\n"]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['192.168.1.1', 'abc', '192.168.2.0/24','192.168.2.0/34']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (abc) must be a valid IPv4(CIDR) address.",
-//                     "The 4th Foo (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => <<<EOS
-// 192.168.1.1
-// abc
+192.168.2.0/24
+EOS
+                    ,
+                    'foobaz' => ['192.168.1.1', 'abc', '192.168.2.0/24','192.168.2.0/34'],
+                    'fooqux' => <<<EOS
+192.168.1.1
+abc
 
-// 192.168.2.0/24
-// 192.168.2.0/34
-// EOS
-//                 ],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::IPV4, "\n"]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (abc) must be a valid IPv4(CIDR) address.",
-//                     "The 4th Foo (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
-//                 ]]
-//             ],
+192.168.2.0/24
+192.168.2.0/34
+EOS
+                    ,
+                ],
+                'tests' => [
+                    ['nothing', [    ], true , []],
+                    ['null'   , [    ], true , []],
+                    ['foo'    , [    ], true , []],
+                    ['bar'    , [    ], true , []],
+                    ['baz'    , [    ], false, ['baz' => ["The Baz must be a valid IPv4(CIDR) address."]]],
+                    ['qux'    , [    ], false, ['qux' => ["The Qux must be a valid IPv4(CIDR) address."]]],
+                    ['quux'   , [    ], true , []],
+                    ['foobar' , ["\n"], true , []],
+                    ['foobaz' , [    ], false, ['foobaz' => [
+                        "The 2nd Foobaz (abc) must be a valid IPv4(CIDR) address.",
+                        "The 4th Foobaz (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
+                    ]]],
+                    ['fooqux' , ["\n"], false, ['fooqux' => [
+                        "The 2nd Fooqux (abc) must be a valid IPv4(CIDR) address.",
+                        "The 4th Fooqux (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::DIGIT
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DIGIT]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123456'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DIGIT]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DIGIT]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain digits."]]
-//             ],
-//             [
-//                 ['foo' => '１２３'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DIGIT]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain digits."]]
-//             ],
-//             [
-//                 ['foo' => ['１２３', '123', 'abc', 987]],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DIGIT]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (１２３) may only contain digits.",
-//                     "The 3rd Foo (abc) may only contain digits.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::DIGIT
+            // --------------------------------------------
+            [[
+                'name'  => 'Digit',
+                'data'  => ['null' => null, 'foo' => '123456', 'bar' => '123abc', 'baz' => '１２３', 'qux' => ['１２３', '123', 'abc', 987]],
+                'tests' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar may only contain digits."]]],
+                    ['baz'    , [], false, ['baz' => ["The Baz may only contain digits."]]],
+                    ['qux'    , [], false, ['qux' => [
+                        "The 1st Qux (１２３) may only contain digits.",
+                        "The 3rd Qux (abc) may only contain digits.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::ALPHA
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abcDEF'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain letters."]]
-//             ],
-//             [
-//                 ['foo' => 'ＡＢＣ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain letters."]]
-//             ],
-//             [
-//                 ['foo' => ['ABC', '123', 'abc', 987]],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (123) may only contain letters.",
-//                     "The 4th Foo (987) may only contain letters.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::ALPHA
+            // --------------------------------------------
+            [[
+                'name'  => 'Alpha',
+                'data'  => ['null' => null, 'foo' => 'abcDEF', 'bar' => '123abc', 'baz' => 'ＡＢＣ', 'qux' => ['ABC', '123', 'abc', 987]],
+                'tests' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar may only contain letters."]]],
+                    ['baz'    , [], false, ['baz' => ["The Baz may only contain letters."]]],
+                    ['qux'    , [], false, ['qux' => [
+                        "The 2nd Qux (123) may only contain letters.",
+                        "The 4th Qux (987) may only contain letters.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::ALPHA_DIGIT
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123abcDEF'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '123-abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain letters or digits."]]
-//             ],
-//             [
-//                 ['foo' => 'ＡＢＣ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain letters or digits."]]
-//             ],
-//             [
-//                 ['foo' => ['ABC', '123', 'あいう', 'abc', 987]],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 3rd Foo (あいう) may only contain letters or digits.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::ALPHA_DIGIT
+            // --------------------------------------------
+            [[
+                'name'  => 'AlphaDigit',
+                'data'  => ['null' => null, 'foo' => '123abcDEF', 'bar' => '123-abc', 'baz' => 'ＡＢＣ', 'qux' => ['ABC', '123', 'あいう', 'abc', 987]],
+                'tests' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar may only contain letters or digits."]]],
+                    ['baz'    , [], false, ['baz' => ["The Baz may only contain letters or digits."]]],
+                    ['qux'    , [], false, ['qux' => [
+                        "The 3rd Qux (あいう) may only contain letters or digits.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::ALPHA_DIGIT_MARK
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abcDEF'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '[123-abc]'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'ＡＢＣ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain letters, digits or marks (include !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ )."]]
-//             ],
-//             [
-//                 ['foo' => '[123-abc]'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK, "-_"]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain letters, digits or marks (include -_)."]]
-//             ],
-//             [
-//                 ['foo' => '[123-abc]'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK, "[-]"]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['123-abc', '1,234', 'FOO_BAR', 123, 'foo@rebet.com']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::ALPHA_DIGIT_MARK, "-_"]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (1,234) may only contain letters, digits or marks (include -_).",
-//                     "The 5th Foo (foo@rebet.com) may only contain letters, digits or marks (include -_).",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::ALPHA_DIGIT_MARK
+            // --------------------------------------------
+            [[
+                'name'  => 'AlphaDigitMark',
+                'data'  => ['null' => null, 'foo' => '123abcDEF', 'bar' => '[123-abc]', 'baz' => 'ＡＢＣ', 'qux' => ['123-abc', '1,234', 'FOO_BAR', 123, 'foo@rebet.com']],
+                'tests' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], true , []],
+                    ['bar'    , ["-_" ], false, ['bar' => ["The Bar may only contain letters, digits or marks (include -_)."]]],
+                    ['bar'    , ["-[]"], true , []],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz may only contain letters, digits or marks (include !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ )."]]],
+                    ['qux'    , ["-_" ], false, ['qux' => [
+                        "The 2nd Qux (1,234) may only contain letters, digits or marks (include -_).",
+                        "The 5th Qux (foo@rebet.com) may only contain letters, digits or marks (include -_).",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::HIRAGANA
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::HIRAGANA]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'あいうえお'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::HIRAGANA]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::HIRAGANA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain Hiragana in Japanese."]]
-//             ],
-//             [
-//                 ['foo' => 'あいう　えお'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::HIRAGANA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain Hiragana in Japanese."]]
-//             ],
-//             [
-//                 ['foo' => 'あいう　えお'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::HIRAGANA, '　 ']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['a', 'ア', 'あ','1']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::HIRAGANA]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (a) may only contain Hiragana in Japanese.",
-//                     "The 2nd Foo (ア) may only contain Hiragana in Japanese.",
-//                     "The 4th Foo (1) may only contain Hiragana in Japanese.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::HIRAGANA
+            // --------------------------------------------
+            [[
+                'name'  => 'Hiragana',
+                'data'  => ['null' => null, 'foo' => 'あいうえお', 'bar' => 'abc', 'baz' => 'あいう　えお', 'qux' => ['a', 'ア', 'あ', '1']],
+                'tests' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], false, ['bar' => ["The Bar may only contain Hiragana in Japanese."]]],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz may only contain Hiragana in Japanese."]]],
+                    ['baz'    , ['　 '], true , []],
+                    ['qux'    , [     ], false, ['qux' => [
+                        "The 1st Qux (a) may only contain Hiragana in Japanese.",
+                        "The 2nd Qux (ア) may only contain Hiragana in Japanese.",
+                        "The 4th Qux (1) may only contain Hiragana in Japanese.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::KANA
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'アイウエオ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'ｱｲｳｴｵ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain full width Kana in Japanese."]]
-//             ],
-//             [
-//                 ['foo' => 'abc'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain full width Kana in Japanese."]]
-//             ],
-//             [
-//                 ['foo' => 'アイウ　エオ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA]
-//                 ]]],
-//                 ['foo' => ["The Foo may only contain full width Kana in Japanese."]]
-//             ],
-//             [
-//                 ['foo' => 'アイウ　エオ'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA, '　 ']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['a', 'ア', 'あ','1']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::KANA]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 1st Foo (a) may only contain full width Kana in Japanese.",
-//                     "The 3rd Foo (あ) may only contain full width Kana in Japanese.",
-//                     "The 4th Foo (1) may only contain full width Kana in Japanese.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::KANA
+            // --------------------------------------------
+            [[
+                'name'  => 'Kana',
+                'data'  => ['null' => null, 'foo' => 'アイウエオ', 'bar' => 'ｱｲｳｴｵ', 'baz' => 'abc', 'qux' => 'アイウ　エオ', 'quux' => ['a', 'ア', 'あ', '1']],
+                'tests' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], false, ['bar' => ["The Bar may only contain full width Kana in Japanese."]]],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz may only contain full width Kana in Japanese."]]],
+                    ['qux'    , [     ], false, ['qux' => ["The Qux may only contain full width Kana in Japanese."]]],
+                    ['qux'    , ['　 '], true , []],
+                    ['quux'   , [     ], false, ['quux' => [
+                        "The 1st Quux (a) may only contain full width Kana in Japanese.",
+                        "The 3rd Quux (あ) may only contain full width Kana in Japanese.",
+                        "The 4th Quux (1) may only contain full width Kana in Japanese.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::DEPENDENCE_CHAR
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DEPENDENCE_CHAR]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'aA1$Ａアあ漢字髙①'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DEPENDENCE_CHAR]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'aA1$Ａア♬あ漢字髙①'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DEPENDENCE_CHAR]
-//                 ]]],
-//                 ['foo' => ['The Foo must not contain platform dependent character [♬].']]
-//             ],
-//             [
-//                 ['foo' => 'aA1$Ａア♬あ漢字髙①'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DEPENDENCE_CHAR, 'iso-2022-jp']
-//                 ]]],
-//                 ['foo' => ['The Foo must not contain platform dependent character [♬, 髙, ①].']]
-//             ],
-//             [
-//                 ['foo' => ['aA1','$Ａア','♬あ','漢字','髙','①②']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DEPENDENCE_CHAR, 'iso-2022-jp']
-//                 ]]],
-//                 ['foo' => [
-//                     'The 3rd Foo (♬あ) must not contain platform dependent character [♬].',
-//                     'The 5th Foo (髙) must not contain platform dependent character [髙].',
-//                     'The 6th Foo (①②) must not contain platform dependent character [①, ②].',
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::DEPENDENCE_CHAR
+            // --------------------------------------------
+            [[
+                'name'  => 'DependenceChar',
+                'data'  => ['null' => null, 'foo' => 'aA1$Ａアあ漢字髙①', 'bar' => 'aA1$Ａア♬あ漢字髙①', 'baz' => ['aA1','$Ａア','♬あ','漢字','髙','①②']],
+                'tests' => [
+                    ['nothing', [             ], true , []],
+                    ['null'   , [             ], true , []],
+                    ['foo'    , [             ], true , []],
+                    ['bar'    , [             ], false, ['bar' => ['The Bar must not contain platform dependent character [♬].']]],
+                    ['bar'    , ['iso-2022-jp'], false, ['bar' => ['The Bar must not contain platform dependent character [♬, 髙, ①].']]],
+                    ['baz'    , ['iso-2022-jp'], false, ['baz' => [
+                        'The 3rd Baz (♬あ) must not contain platform dependent character [♬].',
+                        'The 5th Baz (髙) must not contain platform dependent character [髙].',
+                        'The 6th Baz (①②) must not contain platform dependent character [①, ②].',
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::NG_WORD
-//             // --------------------------------------------
-//             // @todo implements more test cases.
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'foo bar'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'foo bar'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, App::path('/resources/ng_word.txt')]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'foo bar baz qux'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 ['foo' => ["The Foo must not contain the word 'baz'."]]
-//             ],
-//             [
-//                 ['foo' => 'foo bar b.a.z qux'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 ['foo' => ["The Foo must not contain the word 'b.a.z'."]]
-//             ],
-//             [
-//                 ['foo' => 'foo bar.b*z qux'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 ['foo' => ["The Foo must not contain the word 'b*z'."]]
-//             ],
-//             [
-//                 ['foo' => 'foo bar.b** qux'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 'foo bar Ḏ*ṃɱɏ qux'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy']]
-//                 ]]],
-//                 ['foo' => ["The Foo must not contain the word 'Ḏ*ṃɱɏ'."]]
-//             ],
-//             [
-//                 ['foo' => 'てすと'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, App::path('/resources/ng_word.txt')]
-//                 ]]],
-//                 ['foo' => ["The Foo must not contain the word 'てすと'."]]
-//             ],
-//             [
-//                 ['foo' => ['foo bar', 'bar.b@z', 'ḎU**Ⓨ qux', 'はこだてストリート']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy', 'テスト']]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (bar.b@z) must not contain the word 'b@z'.",
-//                     "The 3rd Foo (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
-//                 ]]
-//             ],
-//             [
-//                 ['foo' => ['foo bar', 'bar.b@z', 'ḎU**Ⓨ qux', 'はこだてストリート']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::NG_WORD, ['baz', 'dummy', 'テスト'], '[\p{Z}\p{P}]?']
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (bar.b@z) must not contain the word 'b@z'.",
-//                     "The 3rd Foo (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
-//                     "The 4th Foo (はこだてストリート) must not contain the word 'てスト'.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::NG_WORD
+            // --------------------------------------------
+            // @todo implements more test cases.
+            [[
+                'name'  => 'NgWord',
+                'data'  => [
+                    'null' => null,
+                    'aaa'  => 'foo bar', 
+                    'bbb'  => 'foo bar baz qux', 
+                    'ccc'  => 'foo bar b.a.z qux',
+                    'ddd'  => 'foo bar.b*z qux',
+                    'eee'  => 'foo bar.b** qux',
+                    'fff'  => 'foo bar Ḏ*ṃɱɏ qux',
+                    'ggg'  => 'てすと',
+                    'hhh'  => ['foo bar', 'bar.b@z', 'ḎU**Ⓨ qux', 'はこだてストリート'],
+                ],
+                'tests' => [
+                    ['nothing', [['baz', 'dummy']], true , []],
+                    ['null'   , [['baz', 'dummy']], true , []],
+                    ['aaa'    , [['baz', 'dummy']], true , []],
+                    ['aaa'    , [$ng_word_file   ], true , []],
+                    ['bbb'    , [['baz', 'dummy']], false, ['bbb' => ["The Bbb must not contain the word 'baz'."]]],
+                    ['ccc'    , [['baz', 'dummy']], false, ['ccc' => ["The Ccc must not contain the word 'b.a.z'."]]],
+                    ['ddd'    , [['baz', 'dummy']], false, ['ddd' => ["The Ddd must not contain the word 'b*z'."]]],
+                    ['eee'    , [['baz', 'dummy']], true , []],
+                    ['fff'    , [['baz', 'dummy']], false, ['fff' => ["The Fff must not contain the word 'Ḏ*ṃɱɏ'."]]],
+                    ['ggg'    , [$ng_word_file   ], false, ['ggg' => ["The Ggg must not contain the word 'てすと'."]]],
+                    ['hhh'    , [['baz', 'dummy', 'テスト']], false, ['hhh' => [
+                        "The 2nd Hhh (bar.b@z) must not contain the word 'b@z'.",
+                        "The 3rd Hhh (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
+                    ]]],
+                    ['hhh'    , [['baz', 'dummy', 'テスト'], '[\p{Z}\p{P}]?'], false, ['hhh' => [
+                        "The 2nd Hhh (bar.b@z) must not contain the word 'b@z'.",
+                        "The 3rd Hhh (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
+                        "The 4th Hhh (はこだてストリート) must not contain the word 'てスト'.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::CONTAINS
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::CONTAINS, Gender::values()]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::CONTAINS, Gender::values()]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '3'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::CONTAINS, Gender::values()]
-//                 ]]],
-//                 ['foo' => ["The Foo must be selected from the specified list."]]
-//             ],
-//             [
-//                 ['foo' => [1, 'a', '2', 3]],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::CONTAINS, Gender::values()]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo must be selected from the specified list.",
-//                     "The 4th Foo must be selected from the specified list.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::CONTAINS
+            // --------------------------------------------
+            [[
+                'name'  => 'Contains',
+                'data'  => ['null' => null, 'foo' => '1', 'bar' => '3', 'baz' => [1, 'a', '2', 3]],
+                'tests' => [
+                    ['nothing', [Gender::values()], true , []],
+                    ['null'   , [Gender::values()], true , []],
+                    ['foo'    , [Gender::values()], true , []],
+                    ['bar'    , [Gender::values()], false, ['bar' => ['The Bar must be selected from the specified list.']]],
+                    ['baz'    , [Gender::values()], false, ['baz' => [
+                        "The 2nd Baz must be selected from the specified list.",
+                        "The 4th Baz must be selected from the specified list.",
+                    ]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::MIN_COUNT
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have at least 3 items."]]
-//             ],
-//             [
-//                 ['foo' => []],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_COUNT, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo must have at least 1 item."]]
-//             ],
-//             [
-//                 ['foo' => '1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have at least 3 items."]]
-//             ],
-//             [
-//                 ['foo' => ['1', '2']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have at least 3 items."]]
-//             ],
-//             [
-//                 ['foo' => ['1', '2', '3']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['1', '2', '3', '4']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MIN_COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
+            // --------------------------------------------
+            // Valid::MIN_COUNT
+            // --------------------------------------------
+            [[
+                'name'  => 'MinCount',
+                'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
+                'tests' => [
+                    ['nothing', [3], false, ['nothing' => ["The Nothing must have at least 3 items."]]],
+                    ['null'   , [3], false, ['null'    => ["The Null must have at least 3 items."]]],
+                    ['foo'    , [1], false, ['foo'     => ["The Foo must have at least 1 item."]]],
+                    ['bar'    , [3], false, ['bar'     => ["The Bar must have at least 3 items."]]],
+                    ['bar'    , [1], true , []],
+                    ['baz'    , [4], false, ['baz'     => ["The Baz must have at least 4 items."]]],
+                    ['baz'    , [3], true , []],
+                    ['baz'    , [2], true , []],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::MAX_COUNT
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => []],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 1]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['1', '2']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['1', '2']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo may not have more than 1 item."]]
-//             ],
-//             [
-//                 ['foo' => ['1', '2', '3']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['1', '2', '3', '4']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::MAX_COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo may not have more than 3 items."]]
-//             ],
+            // --------------------------------------------
+            // Valid::MAX_COUNT
+            // --------------------------------------------
+            [[
+                'name'  => 'MaxCount',
+                'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
+                'tests' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [1], true , []],
+                    ['bar'    , [3], true , []],
+                    ['bar'    , [1], true , []],
+                    ['baz'    , [4], true , []],
+                    ['baz'    , [3], true , []],
+                    ['baz'    , [2], false, ['baz' => ["The Baz may not have more than 2 items."]]],
+                    ['baz'    , [1], false, ['baz' => ["The Baz may not have more than 1 item."]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::COUNT
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have 3 items."]]
-//             ],
-//             [
-//                 ['foo' => []],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::COUNT, 1]
-//                 ]]],
-//                 ['foo' => ["The Foo must have 1 item."]]
-//             ],
-//             [
-//                 ['foo' => '1'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have 3 items."]]
-//             ],
-//             [
-//                 ['foo' => ['1', '2']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have 3 items."]]
-//             ],
-//             [
-//                 ['foo' => ['1', '2', '3']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::COUNT, 3]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['1', '2', '3', '4']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::COUNT, 3]
-//                 ]]],
-//                 ['foo' => ["The Foo must have 3 items."]]
-//             ],
+            // --------------------------------------------
+            // Valid::COUNT
+            // --------------------------------------------
+            [[
+                'name'  => 'Count',
+                'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
+                'tests' => [
+                    ['nothing', [3], false, ['nothing' => ["The Nothing must have 3 items."]]],
+                    ['null'   , [3], false, ['null'    => ["The Null must have 3 items."]]],
+                    ['foo'    , [3], false, ['foo'     => ["The Foo must have 3 items."]]],
+                    ['bar'    , [3], false, ['bar'     => ["The Bar must have 3 items."]]],
+                    ['bar'    , [1], true , []],
+                    ['baz'    , [4], false, ['baz'     => ["The Baz must have 4 items."]]],
+                    ['baz'    , [3], true , []],
+                    ['baz'    , [2], false, ['baz'     => ["The Baz must have 2 items."]]],
+                    ['baz'    , [1], false, ['baz'     => ["The Baz must have 1 item."]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::UNIQUE
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::UNIQUE]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => 1],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::UNIQUE]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => [1, 2, 3, 'a']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::UNIQUE]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => [1, 2, 1, 'a']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::UNIQUE]
-//                 ]]],
-//                 ['foo' => ["The Foo must be entered a different value. [1] was duplicated."]]
-//             ],
-//             [
-//                 ['foo' => [1, 2, 1, 'a', 'b', 'a']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::UNIQUE]
-//                 ]]],
-//                 ['foo' => [
-//                     "The Foo must be entered a different value. [1, a] were duplicated."
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::UNIQUE
+            // --------------------------------------------
+            [[
+                'name'  => 'Unique',
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => [1, 2, 3, 'a'], 'baz' => [1, 2, 1, 'a'], 'qux' => [1, 2, 1, 'a', 'b', 'a']],
+                'tests' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], true , []],
+                    ['baz'    , [], false, ['baz' => ["The Baz must be entered a different value. [1] was duplicated."]]],
+                    ['qux'    , [], false, ['qux' => ["The Qux must be entered a different value. [1, a] were duplicated."]]],
+                ]
+            ]],
 
-//             // --------------------------------------------
-//             // Valid::DATETIME
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => null],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ''],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '2010-01-23'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '2010-02-31'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 ['foo' => ["The Foo is not a valid date time."]]
-//             ],
-//             [
-//                 ['foo' => '2010-01-23 12:34:56'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '2010|01|23'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 ['foo' => ["The Foo is not a valid date time."]]
-//             ],
-//             [
-//                 ['foo' => '2010|01|23'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME, 'Y\|m\|d']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => ['2010-01-23', 'abc','2010|01|23']],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::DATETIME]
-//                 ]]],
-//                 ['foo' => [
-//                     "The 2nd Foo (abc) is not a valid date time.",
-//                     "The 3rd Foo (2010|01|23) is not a valid date time.",
-//                 ]]
-//             ],
+            // --------------------------------------------
+            // Valid::DATETIME
+            // --------------------------------------------
+            [[
+                'name'  => 'Datetime',
+                'data'  => ['null' => null, 'empty' => '', 'foo' => '2010-01-23', 'bar' => '2010-02-31', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010|01|23', 'quux' => ['2010-01-23', 'abc','2010|01|23']],
+                'tests' => [
+                    ['nothing', [         ], true , []],
+                    ['null'   , [         ], true , []],
+                    ['empty'  , [         ], true , []],
+                    ['foo'    , [         ], true , []],
+                    ['bar'    , [         ], false, ['bar' => ["The Bar is not a valid date time."]]],
+                    ['baz'    , [         ], true , []],
+                    ['qux'    , [         ], false, ['qux' => ["The Qux is not a valid date time."]]],
+                    ['qux'    , ['Y\|m\|d'], true , []],
+                    ['quux'   , [         ], false, ['quux' => [
+                        "The 2nd Quux (abc) is not a valid date time.",
+                        "The 3rd Quux (2010|01|23) is not a valid date time.",
+                    ]]],
+                ]
+            ]],
 
-
-//             // --------------------------------------------
-//             // Valid::FUTURE_THAN
-//             // --------------------------------------------
-//             [
-//                 [],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FUTURE_THAN, 'now']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '2100-01-01'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FUTURE_THAN, 'now']
-//                 ]]],
-//                 []
-//             ],
-//             [
-//                 ['foo' => '1999-01-01'],
-//                 ['foo' => ['rule' => [
-//                     ['C', Valid::FUTURE_THAN, 'now']
-//                 ]]],
-//                 ['foo' => ["The Foo must be a date future than now."]]
-//             ],
+            // --------------------------------------------
+            // Valid::FUTURE_THAN
+            // --------------------------------------------
+            [[
+                'name'  => 'FutureThan',
+                'data'  => ['null' => null, 'foo' => '2100-01-01', 'bar' => '1999-01-01', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010-01-23 12:34:57', 'quux' => ['2100-01-01', '1999-01-01']],
+                'tests' => [
+                    ['nothing', ['now'              ], true , []],
+                    ['null'   , ['now'              ], true , []],
+                    ['foo'    , ['now'              ], true , []],
+                    ['bar'    , ['now'              ], false, ['bar' => ["The Bar must be a date future than now."]]],
+                    ['bar'    , ['10 September 2000'], false, ['bar' => ["The Bar must be a date future than 10 September 2000."]]],
+                    ['bar'    , ['2000/01/01'       ], false, ['bar' => ["The Bar must be a date future than 2000/01/01."]]],
+                    ['bar'    , [DateTime::now()    ], false, ['bar' => ["The Bar must be a date future than 2010-01-23 12:34:56."]]],
+                    ['baz'    , ['now'              ], false, ['baz' => ["The Baz must be a date future than now."]]],
+                    ['baz'    , [':qux'             ], false, ['baz' => ["The Baz must be a date future than Qux."]]],
+                    ['qux'    , ['now'              ], true , []],
+                    ['qux'    , [':baz'             ], true , []],
+                    ['quux'   , ['now'              ], false, ['quux' => [
+                        "The 2nd Quux (1999-01-01) must be a date future than now."
+                    ]]],
+                    ['quux'   , [':baz'             ], false, ['quux' => [
+                        "The 2nd Quux (1999-01-01) must be a date future than Baz."
+                    ]]],
+                ]
+            ]],
         ];
     }
 }

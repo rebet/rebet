@@ -1,0 +1,27 @@
+<?php
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@PSR2'                               => true,
+        'array_indentation'                   => true,
+        'array_syntax'                        => ['syntax' => 'short'],
+        'combine_consecutive_unsets'          => true,
+        'binary_operator_spaces'              => [
+            'align_double_arrow' => true,
+            'align_equals'       => true,
+        ],
+        'function_typehint_space'             => true,
+        'method_separation'                   => true,
+        'braces'                              => ['allow_single_line_closure' => true],
+        'no_unused_imports'                   => true,
+        'ordered_imports'                     => true,
+        'return_type_declaration'             => ['space_before' => 'one'],
+        'no_whitespace_before_comma_in_array' => true,
+        'whitespace_after_comma_in_array'     => true,
+    ])
+    ->setLineEnding("\n")
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->exclude('vendor')
+            ->in(__DIR__)
+    )
+;

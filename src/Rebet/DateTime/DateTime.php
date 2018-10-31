@@ -249,7 +249,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                         break;
                     }
                 }
-                if ($parsed_test_now === null) {
+                if (!$parsed_test_now) {
                     throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
                 }
                 $adopt_time = $parsed_test_now->modify($time)->format('Y-m-d H:i:s.u');

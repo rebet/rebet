@@ -65,9 +65,6 @@ abstract class Validations
     public function validate(string $name, Context $c, ...$args) : bool
     {
         $custom = static::config("customs.{$name}", false, null);
-        if ($custom) {
-            return $custom($c, ...$args);
-        }
-        return Reflector::invoke($this, "validation{$name}", array_merge([$c], $args));
+        return $custom ? $custom($c, ...$args) : Reflector::invoke($this, "validation{$name}", array_merge([$c], $args));
     }
 }
