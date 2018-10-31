@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Enum;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\RebetTestCase;
 
 class EnumTest extends RebetTestCase
 {
@@ -416,8 +416,8 @@ class EnumTest extends RebetTestCase
 class EnumTest_AcceptStatus extends Enum
 {
     const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
-    const ACCEPTED = ['A', '受理'  , 'green' , 'fas fa-check-circle'];
-    const REJECTED = ['R', '却下'  , 'red'   , 'fas fa-times-circle'];
+    const ACCEPTED = ['A', '受理', 'green', 'fas fa-check-circle'];
+    const REJECTED = ['R', '却下', 'red', 'fas fa-times-circle'];
     
     public $color;
     public $icon;
@@ -449,8 +449,8 @@ class EnumTest_AcceptStatus extends Enum
 }
 class EnumTest_Ratio extends Enum
 {
-    const FULL    = [1.0 , '100%'];
-    const HARF    = [0.5 , '50%'];
+    const FULL    = [1.0, '100%'];
+    const HARF    = [0.5, '50%'];
     const QUARTER = [0.25, '25%'];
 }
 class EnumTest_Code extends Enum

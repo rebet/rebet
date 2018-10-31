@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Pipeline;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Pipeline\Pipeline;
+use Rebet\Tests\RebetTestCase;
 
 class PipelineTest extends RebetTestCase
 {
@@ -105,32 +105,39 @@ class PipelineTest_Wrapper
 {
     private $open;
     private $close;
+
     public function __construct($open = '(', $close = ')')
     {
         $this->open  = $open;
         $this->close = $close;
     }
+
     public function handle($input, $next)
     {
         return $this->after($input, $next);
     }
+
     public function after($input, $next)
     {
         return $this->open.$next($input).$this->close;
     }
+
     public function before($input, $next)
     {
         return $next($this->open.$input.$this->close);
     }
+
     public function both($input, $next)
     {
         $output = $next($this->open.$input.$this->close);
         return $this->open.$output.$this->close;
     }
+
     public function terminate()
     {
         echo $this->open.'terminate'.$this->close;
     }
+
     public function set($open, $close)
     {
         $this->open  = $open;

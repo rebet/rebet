@@ -230,8 +230,8 @@ abstract class Enum implements \JsonSerializable, Convertible
         if (!defined("static::{$name}")) {
             throw new \LogicException("Invalid enum const. {$clazz}::{$name} is not defined.");
         }
-        $args = $rc->getConstant($name);
-        $enum = new static(...$args);
+        $args                                 = $rc->getConstant($name);
+        $enum                                 = new static(...$args);
         self::$enum_data_cache[$clazz][$name] = $enum;
         return $enum;
     }

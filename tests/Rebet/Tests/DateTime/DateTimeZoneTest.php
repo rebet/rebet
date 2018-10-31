@@ -1,9 +1,8 @@
 <?php
 namespace Rebet\Tests\DateTime;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\DateTime\DateTimeZone;
-use Rebet\Config\App;
+use Rebet\Tests\RebetTestCase;
 
 class DateTimeZoneTest extends RebetTestCase
 {

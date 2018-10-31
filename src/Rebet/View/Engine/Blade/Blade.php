@@ -1,16 +1,16 @@
 <?php
 namespace Rebet\View\Engine\Blade;
 
-use Rebet\Config\Configurable;
-use Rebet\View\Engine\Engine;
-use Illuminate\View\Factory;
-use Illuminate\View\Engines\EngineResolver;
-use Illuminate\View\FileViewFinder;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Blade as LaravelBlade;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
-use Illuminate\Support\Facades\Blade as LaravelBlade;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
+use Rebet\Config\Configurable;
+use Rebet\View\Engine\Engine;
 
 /**
  * Blade Templeate Engine Class
@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Blade as LaravelBlade;
 class Blade extends Factory implements Engine
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -47,8 +48,8 @@ class Blade extends Factory implements Engine
      */
     public function __construct(array $config = [])
     {
-        $view_path   = $config['view_path']   ?? static::config('view_path') ;
-        $cache_path  = $config['cache_path']  ?? static::config('cache_path', false) ;
+        $view_path   = $config['view_path'] ?? static::config('view_path') ;
+        $cache_path  = $config['cache_path'] ?? static::config('cache_path', false) ;
         $customizers = array_merge($config['customizers'] ?? [], static::config('customizers', false, [])) ;
 
         $resolver   = new EngineResolver();
@@ -64,7 +65,7 @@ class Blade extends Factory implements Engine
         });
 
         parent::__construct($resolver, $finder, $dispatcher);
-        $app = LaravelBlade::getFacadeApplication();
+        $app         = LaravelBlade::getFacadeApplication();
         $app['view'] = $this;
         LaravelBlade::setFacadeApplication($app);
 

@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Common\Mock;
 
-use Rebet\Common\Popuratable;
 use Rebet\Common\Annotation\Nest;
+use Rebet\Common\Popuratable;
 
 class User
 {

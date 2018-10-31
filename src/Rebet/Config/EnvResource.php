@@ -38,10 +38,10 @@ class EnvResource
     public static function load(string $dir_path, string $base_name, string $env, string $suffix = 'php', array $option = []) : array
     {
         $base_resource_path = "{$dir_path}/{$base_name}.{$suffix}";
-        $base_resource = Resource::load($suffix, $base_resource_path, $option);
+        $base_resource      = Resource::load($suffix, $base_resource_path, $option);
 
         $env_resource_path = "{$dir_path}/{$base_name}_{$env}.{$suffix}";
-        $env_resource = Resource::load($suffix, $env_resource_path, $option);
+        $env_resource      = Resource::load($suffix, $env_resource_path, $option);
 
         if ($base_resource === null && $env_resource === null) {
             throw new \LogicException("Resource {$base_name} {$suffix} not found in {$dir_path}.");

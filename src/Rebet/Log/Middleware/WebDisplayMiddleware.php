@@ -85,7 +85,7 @@ EOS;
                     break;
                 }
             }
-            if ($content_type === null || $content_type  === 'text/html') {
+            if ($content_type === null || $content_type === 'text/html') {
                 echo($this->buffer);
                 $this->buffer = null;
             }

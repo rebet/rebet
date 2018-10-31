@@ -3,7 +3,6 @@ namespace Rebet\View\Engine\Smarty;
 
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
-use Rebet\File\Files;
 
 /**
  * Smarty templeate engine Class
@@ -19,6 +18,7 @@ use Rebet\File\Files;
 class Smarty extends \Smarty implements Engine
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -56,7 +56,7 @@ class Smarty extends \Smarty implements Engine
         $this->setCacheDir($config['cache_dir'] ?? static::config('cache_dir', false));
         $this->setPluginsDir($config['plugins_dir'] ?? static::config('plugins_dir'));
         $this->escape_html = $config['escape_html'] ?? static::config('escape_html');
-        $customizers = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
+        $customizers       = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
 
         foreach (array_reverse($customizers) as $customizer) {
             $invoker = \Closure::fromCallable($customizer);
@@ -107,11 +107,11 @@ class Smarty extends \Smarty implements Engine
             }
         }
         // normalize '/'
-        $path = str_replace('\\', '/', $path);
+        $path            = str_replace('\\', '/', $path);
         $parts[ 'root' ] = str_replace('\\', '/', $parts[ 'root' ]);
         do {
             $path = preg_replace(
-                array('#[\\\\/]{2}#', '#[\\\\/][.][\\\\/]#', '#[\\\\/]([^\\\\/.]+)[\\\\/][.][.][\\\\/]#'),
+                ['#[\\\\/]{2}#', '#[\\\\/][.][\\\\/]#', '#[\\\\/]([^\\\\/.]+)[\\\\/][.][.][\\\\/]#'],
                 '/',
                 $path,
                 -1,

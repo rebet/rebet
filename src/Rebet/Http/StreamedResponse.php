@@ -22,7 +22,7 @@ class StreamedResponse extends SymfonyStreamedResponse implements Response
      * @param integer $status
      * @param array $headers
      */
-    public function __construct(callable $callback = null, int $status = 200, array $headers = array())
+    public function __construct(callable $callback = null, int $status = 200, array $headers = [])
     {
         parent::__construct($callback, $status, $headers);
     }

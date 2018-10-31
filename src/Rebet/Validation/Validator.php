@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Config\Configurable;
-use Rebet\Translation\Translator;
 use Rebet\Common\Collection;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
+use Rebet\Config\Configurable;
+use Rebet\Translation\Translator;
 
 /**
  * Validator Class
@@ -18,6 +18,7 @@ use Rebet\Common\Strings;
 class Validator
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -64,7 +65,7 @@ class Validator
     {
         $this->data        = $data;
         $this->validations = $validations ?? static::configInstantiate('validations');
-        $this->translator  = $translator  ?? $this->validations->translator() ;
+        $this->translator  = $translator ?? $this->validations->translator() ;
     }
 
     /**
@@ -112,7 +113,7 @@ class Validator
             // Handle validation rules
             $this->validateRules($context, $config['rule'] ?? [], $spot_validations);
             $data  = null;
-            $nest  = $config['nest']  ?? [] ;
+            $nest  = $config['nest'] ?? [] ;
             $nests = $config['nests'] ?? [] ;
             if ($nest) {
                 $data = $this->_validate($context->nest(), $nest, $spot_validations);

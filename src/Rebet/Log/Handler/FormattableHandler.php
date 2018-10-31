@@ -2,8 +2,8 @@
 namespace Rebet\Log\Handler;
 
 use Rebet\Config\Configurable;
-use Rebet\Log\LogContext;
 use Rebet\Log\Formatter\LogFormatter;
+use Rebet\Log\LogContext;
 
 /**
  * フォーマット可能ログハンドラ 基底クラス

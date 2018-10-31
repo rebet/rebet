@@ -4,7 +4,6 @@ namespace Rebet\Config;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 
 /**
@@ -121,8 +120,7 @@ class Config
             static::$compiled = [];
         } else {
             foreach ([Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
-                unset(static::$config[$layer][$section]);
-                unset(static::$option[$layer][$section]);
+                unset(static::$config[$layer][$section], static::$option[$layer][$section]);
             }
             unset(static::$compiled[$section]);
         }
@@ -167,7 +165,7 @@ class Config
      */
     protected static function put(string $layer, array $config) : void
     {
-        $config = self::analyze($config, static::$option[$layer]);
+        $config                 = self::analyze($config, static::$option[$layer]);
         static::$config[$layer] = Arrays::override(static::$config[$layer], $config, static::$option[$layer], OverrideOption::PREPEND);
         foreach (\array_keys($config) as $section) {
             static::loadLibraryConfig($section);
@@ -192,7 +190,7 @@ class Config
         foreach ($config as $section => $value) {
             if (\is_array($value) && !Arrays::isSequential($value)) {
                 $option[$section] = $option[$section] ?? [] ;
-                $value = static::analyzeSection($value, $option[$section]);
+                $value            = static::analyzeSection($value, $option[$section]);
             }
             
             $analyzed[$section] = $value;
@@ -222,7 +220,7 @@ class Config
             
             if (\is_array($value) && !Arrays::isSequential($value)) {
                 $nested_option = [];
-                $value = static::analyzeSection($value, $nested_option);
+                $value         = static::analyzeSection($value, $nested_option);
                 if ($apply_option === null && !empty($nested_option)) {
                     $option[$key] = $nested_option ;
                 }

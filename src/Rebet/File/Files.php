@@ -30,16 +30,16 @@ class Files
         $is_relatable = true;
         if (Strings::contains($convert_path, '://')) {
             [$protocol, $convert_path] = \explode('://', $convert_path);
-            $protocol     = $protocol.'://';
-            $is_relatable = false;
+            $protocol                  = $protocol.'://';
+            $is_relatable              = false;
         }
         if (Strings::contains($convert_path, ':/')) {
             [$drive, $convert_path] = \explode(':/', $convert_path);
-            $drive        = $drive.':/';
-            $is_relatable = false;
+            $drive                  = $drive.':/';
+            $is_relatable           = false;
         }
 
-        $parts = explode('/', $convert_path);
+        $parts     = explode('/', $convert_path);
         $absolutes = [];
         foreach ($parts as $part) {
             if ('.' === $part || '' === $part) {
@@ -156,7 +156,7 @@ class Files
             case \ZipArchive::ER_INCONS:      $message = "{$message} (Zip archive inconsistent)"; break;
             case \ZipArchive::ER_REMOVE:      $message = "{$message} (Can't remove file)"; break;
             case \ZipArchive::ER_DELETED:     $message = "{$message} (Entry has been delete)"; break;
-            default: $message = "{$message} (Unknown reason)"; break;
+            default: $message                          = "{$message} (Unknown reason)"; break;
         }
 
         throw new ZipArchiveException($message, $code);
@@ -183,9 +183,9 @@ class Files
             };
         }
         
-        $pathInfo = pathInfo($sourcePath);
+        $pathInfo   = pathInfo($sourcePath);
         $parentPath = $pathInfo['dirname'];
-        $dirName = $pathInfo['basename'];
+        $dirName    = $pathInfo['basename'];
         
         $destDir = dirname($outZipPath);
         if (!file_exists($destDir)) {

@@ -1,16 +1,11 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Validation\Validator;
-use Rebet\Foundation\App;
-use Rebet\Validation\Valid;
-use Rebet\Validation\Context;
 use Rebet\Config\Config;
-use org\bovigo\vfs\vfsStream;
-use Rebet\Tests\Mock\Gender;
-use Rebet\Validation\Validations;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
+use Rebet\Validation\Context;
+use Rebet\Validation\Validator;
 
 class ValidatorTest extends RebetTestCase
 {
@@ -41,5 +36,4 @@ class ValidatorTest extends RebetTestCase
         $validator = new Validator([]);
         $this->assertInstanceOf(Validator::class, $validator);
     }
-
 }

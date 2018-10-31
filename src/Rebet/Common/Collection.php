@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Common;
 
-use stdClass;
-use Countable;
-use Exception;
 use ArrayAccess;
-use Traversable;
 use ArrayIterator;
 use CachingIterator;
-use JsonSerializable;
+use Countable;
+use Exception;
 use IteratorAggregate;
+use JsonSerializable;
+use stdClass;
+use Traversable;
 
 /**
  * Collection Class
@@ -136,7 +136,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     public function avg($callback = null)
     {
         $callback = $this->valueRetriever($callback);
-        $items = $this->map(function ($value) use ($callback) {
+        $items    = $this->map(function ($value) use ($callback) {
             return $callback($value);
         })->filter(function ($value) {
             return ! is_null($value);
@@ -194,11 +194,11 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
             return;
         }
         $collection = isset($key) ? $this->pluck($key) : $this;
-        $counts = new self;
+        $counts     = new self;
         $collection->each(function ($value) use ($counts) {
             $counts[$value] = isset($counts[$value]) ? $counts[$value] + 1 : 1;
         });
-        $sorted = $counts->sort();
+        $sorted       = $counts->sort();
         $highestValue = $sorted->last();
         return $sorted->filter(function ($value) use ($highestValue) {
             return $value == $highestValue;
@@ -475,16 +475,16 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     protected function operatorForWhere($key, $operator = null, $value = null)
     {
         if (func_num_args() === 1) {
-            $value = true;
+            $value    = true;
             $operator = '=';
         }
         if (func_num_args() === 2) {
-            $value = $operator;
+            $value    = $operator;
             $operator = '=';
         }
         return function ($item) use ($key, $operator, $value) {
             $retrieved = data_get($item, $key);
-            $strings = array_filter([$retrieved, $value], function ($value) {
+            $strings   = array_filter([$retrieved, $value], function ($value) {
                 return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
             });
             if (count($strings) < 2 && count(array_filter([$retrieved, $value], 'is_object')) == 1) {
@@ -673,7 +673,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         if (is_array($groupBy)) {
             $nextGroups = $groupBy;
-            $groupBy = array_shift($nextGroups);
+            $groupBy    = array_shift($nextGroups);
         }
         $groupBy = $this->valueRetriever($groupBy);
         $results = [];
@@ -705,7 +705,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      */
     public function keyBy($keyBy)
     {
-        $keyBy = $this->valueRetriever($keyBy);
+        $keyBy   = $this->valueRetriever($keyBy);
         $results = [];
         foreach ($this->items as $key => $item) {
             $resolvedKey = $keyBy($item, $key);
@@ -848,7 +848,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      */
     public function map(callable $callback)
     {
-        $keys = array_keys($this->items);
+        $keys  = array_keys($this->items);
         $items = array_map($callback, $this->items, $keys);
         return new static(array_combine($keys, $items));
     }
@@ -879,8 +879,8 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     {
         $dictionary = [];
         foreach ($this->items as $key => $item) {
-            $pair = $callback($item, $key);
-            $key = key($pair);
+            $pair  = $callback($item, $key);
+            $key   = key($pair);
             $value = reset($pair);
             if (! isset($dictionary[$key])) {
                 $dictionary[$key] = [];
@@ -1025,7 +1025,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      */
     public function nth($step, $offset = 0)
     {
-        $new = [];
+        $new      = [];
         $position = 0;
         foreach ($this->items as $item) {
             if ($position % $step === $offset) {
@@ -1078,7 +1078,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     public function partition($key, $operator = null, $value = null)
     {
         $partitions = [new static, new static];
-        $callback = func_num_args() === 1
+        $callback   = func_num_args() === 1
                 ? $this->valueRetriever($key)
                 : $this->operatorForWhere(...func_get_args());
         foreach ($this->items as $key => $item) {
@@ -1291,10 +1291,10 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
         if ($this->isEmpty()) {
             return new static;
         }
-        $groups = new static;
+        $groups    = new static;
         $groupSize = floor($this->count() / $numberOfGroups);
-        $remain = $this->count() % $numberOfGroups;
-        $start = 0;
+        $remain    = $this->count() % $numberOfGroups;
+        $start     = 0;
         for ($i = 0; $i < $numberOfGroups; $i++) {
             $size = $groupSize;
             if ($i < $remain) {
@@ -1351,7 +1351,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
      */
     public function sortBy($callback, $options = SORT_REGULAR, $descending = false)
     {
-        $results = [];
+        $results  = [];
         $callback = $this->valueRetriever($callback);
         // First we will loop through the items and get the comparator from a callback
         // function which we were given. Then, we will sort the returned values and
@@ -1488,7 +1488,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     public function unique($key = null, $strict = false)
     {
         $callback = $this->valueRetriever($key);
-        $exists = [];
+        $exists   = [];
         return $this->reject(function ($item, $key) use ($callback, $strict, &$exists) {
             if (in_array($id = $callback($item, $key), $exists, $strict)) {
                 return true;

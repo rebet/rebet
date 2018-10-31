@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Inflection;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Inflection\Inflector;
 use Rebet\Config\Config;
+use Rebet\Inflection\Inflector;
+use Rebet\Tests\RebetTestCase;
 
 /**
  * Tests for the fonction pluralize and singularize are borrowed from doctrine/inflector ver 1.3.x with some modifications.

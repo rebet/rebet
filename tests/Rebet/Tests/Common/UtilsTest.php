@@ -1,9 +1,8 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Utils;
-use Rebet\Common\DotAccessDelegator;
+use Rebet\Tests\RebetTestCase;
 
 class UtilsTest extends RebetTestCase
 {
@@ -80,7 +79,7 @@ class UtilsTest extends RebetTestCase
 
     public function test_heredocImplanter()
     {
-        $_ = Utils::heredocImplanter();
+        $_        = Utils::heredocImplanter();
         $expected = <<<EOS
 START
 UtilsTest::TEST_VALUE

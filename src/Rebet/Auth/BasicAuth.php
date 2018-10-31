@@ -3,7 +3,6 @@ namespace Rebet\Auth;
 
 use Rebet\Common\Reflector;
 use Rebet\Common\System;
-use Rebet\Common\Utils;
 
 /**
  * 認証関連 ユーティリティ クラス

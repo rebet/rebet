@@ -3,9 +3,7 @@ namespace Rebet\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use Rebet\Tests\StderrCapture;
 
-use Rebet\Common\Arrays;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;

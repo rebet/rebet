@@ -3,9 +3,9 @@ namespace Rebet\Tests\Validation;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\Validation\Mock\UserValidation;
+use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
-use Rebet\Validation\BuiltinValidations;
 
 class RuleTest extends RebetTestCase
 {

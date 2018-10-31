@@ -1,14 +1,12 @@
 <?php
 namespace Rebet\Tests\Annotation;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Routing\Annotation\Surface;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Annotation\AnnotatedProperty;
 use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Where;
+use Rebet\Tests\RebetTestCase;
 
 class AnnotatedMethodTest extends RebetTestCase
 {
@@ -29,13 +27,13 @@ class AnnotatedMethodTest extends RebetTestCase
         $this->assertInstanceOf(AnnotatedMethod::class, $am);
         
         $mock = new AnnotatedMethodTest_Mock();
-        $am = AnnotatedMethod::of('foo', $mock);
+        $am   = AnnotatedMethod::of('foo', $mock);
         $this->assertInstanceOf(AnnotatedMethod::class, $am);
     }
     
     public function test_annotaion()
     {
-        $am = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
+        $am      = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
         $surface = $am->annotation(Surface::class, false);
         $this->assertNull($surface);
         
@@ -47,7 +45,7 @@ class AnnotatedMethodTest extends RebetTestCase
         $this->assertInstanceOf(Where::class, $where);
         $this->assertSame(['id' => '[0-9]+'], $where->wheres);
 
-        $am = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
+        $am      = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
         $surface = $am->annotation(Surface::class);
         $this->assertInstanceOf(Surface::class, $surface);
         $this->assertSame(['api'], $surface->allows);
@@ -65,7 +63,7 @@ class AnnotatedMethodTest extends RebetTestCase
     
     public function test_annotaions()
     {
-        $am = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
+        $am          = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
         $annotations = $am->annotations();
 
         $surface = $annotations[0];

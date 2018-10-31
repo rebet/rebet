@@ -3,8 +3,6 @@ namespace Rebet\View\Engine\Twig;
 
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
-use Rebet\File\Files;
-use Rebet\Common\Reflector;
 
 /**
  * Twig templeate engine Class
@@ -20,6 +18,7 @@ use Rebet\Common\Reflector;
 class Twig implements Engine
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -51,12 +50,12 @@ class Twig implements Engine
      */
     public function __construct(array $config = [])
     {
-        $this->file_suffix = $config['file_suffix']  ?? static::config('file_suffix') ;
+        $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
         $template_dir      = $config['template_dir'] ?? static::config('template_dir') ;
-        $options           = $config['options']      ?? static::config('options', false, []) ;
+        $options           = $config['options'] ?? static::config('options', false, []) ;
         $customizers       = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
 
-        $loader = new \Twig_Loader_Filesystem($template_dir);
+        $loader     = new \Twig_Loader_Filesystem($template_dir);
         $this->twig = new \Twig_Environment($loader, $options);
         
         foreach (array_reverse($customizers) as $customizer) {

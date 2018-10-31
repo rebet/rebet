@@ -1,14 +1,13 @@
 <?php
 namespace Rebet\Tests\Annotation;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Routing\Annotation\Surface;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Annotation\AnnotatedProperty;
 use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Where;
+use Rebet\Tests\RebetTestCase;
 
 class AnnotatedClassTest extends RebetTestCase
 {
@@ -18,7 +17,7 @@ class AnnotatedClassTest extends RebetTestCase
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
         
         $mock = new AnnotatedClassTest_Mock();
-        $ac = new AnnotatedClass($mock);
+        $ac   = new AnnotatedClass($mock);
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
     }
     
@@ -28,13 +27,13 @@ class AnnotatedClassTest extends RebetTestCase
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
         
         $mock = new AnnotatedClassTest_Mock();
-        $ac = AnnotatedClass::of($mock);
+        $ac   = AnnotatedClass::of($mock);
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
     }
     
     public function test_annotaion()
     {
-        $ac = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
+        $ac      = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
         $surface = $ac->annotation(Surface::class);
         $this->assertInstanceOf(Surface::class, $surface);
         $this->assertSame(['web'], $surface->allows);
@@ -52,7 +51,7 @@ class AnnotatedClassTest extends RebetTestCase
     
     public function test_annotaions()
     {
-        $ac = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
+        $ac          = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
         $annotations = $ac->annotations();
 
         $surface = $annotations[0];

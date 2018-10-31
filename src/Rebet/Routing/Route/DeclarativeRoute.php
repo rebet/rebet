@@ -1,13 +1,8 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Http\Request;
-use Rebet\Http\Response;
-use Rebet\Http\BasicResponse;
-use Rebet\Http\JsonResponse;
-use Rebet\Http\StreamedResponse;
-use Rebet\Common\Strings;
 use Rebet\Common\Utils;
+use Rebet\Http\Request;
 use Rebet\Routing\RouteNotFoundException;
 
 /**

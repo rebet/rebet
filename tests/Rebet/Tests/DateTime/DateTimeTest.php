@@ -1,12 +1,11 @@
 <?php
 namespace Rebet\Tests\DateTime;
 
-use Rebet\Tests\RebetTestCase;
+use Rebet\Common\Strings;
+use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
-use Rebet\Config\Config;
-use Rebet\Common\Strings;
-use Rebet\Foundation\App;
+use Rebet\Tests\RebetTestCase;
 
 class DateTimeTest extends RebetTestCase
 {
@@ -111,7 +110,7 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-20 19:20:30', $date->format('Y-m-d H:i:s'));
 
         $org_date = \DateTime::createFromFormat('Y-m-d H:i:s', '2010-10-20 10:20:30', new \DateTimeZone('Asia/Tokyo'));
-        $date = new DateTime($org_date);
+        $date     = new DateTime($org_date);
         $this->assertSame('2010-10-20 10:20:30', $date->format('Y-m-d H:i:s'));
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
 
@@ -181,7 +180,7 @@ class DateTimeTest extends RebetTestCase
     {
         DateTime::setTestNow('2010-10-20 01:02:03.456789');
         
-        $input = '2010-10-20 12:34:56';
+        $input                 = '2010-10-20 12:34:56';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
@@ -189,7 +188,7 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '2010/10/20 12:34';
+        $input                 = '2010/10/20 12:34';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
@@ -197,7 +196,7 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-20 12:34:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '20101020';
+        $input                 = '20101020';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
@@ -213,25 +212,25 @@ class DateTimeTest extends RebetTestCase
         $this->assertNull($date);
         $this->assertNull($apply_format);
         
-        $input = new DateTime();
+        $input                 = new DateTime();
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertEquals($input, $date);
         $this->assertSame(DateTime::config('default_format'), $apply_format);
         
-        $input = new \DateTime('2010-10-20 01:02:03.456789');
+        $input                 = new \DateTime('2010-10-20 01:02:03.456789');
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame($input->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
         $this->assertSame(DateTime::config('default_format'), $apply_format);
         
-        $input = new \DateTimeImmutable('2010-10-20 01:02:03.456789');
+        $input                 = new \DateTimeImmutable('2010-10-20 01:02:03.456789');
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame($input->format('Y-m-d H:i:s.u'), $date->format('Y-m-d H:i:s.u'));
         $this->assertSame(DateTime::config('default_format'), $apply_format);
         
-        $input = '2010.10.20';
+        $input                 = '2010.10.20';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertNull($date);
         $this->assertNull($apply_format);
@@ -243,7 +242,7 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '10/01, 2010';
+        $input                 = '10/01, 2010';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertNull($date);
         $this->assertNull($apply_format);
@@ -255,7 +254,7 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-01 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
         
-        $input = '2010-10-20 12:34:56';
+        $input                 = '2010-10-20 12:34:56';
         [$date, $apply_format] = DateTime::analyzeDateTime($input, [], 'Asia/Tokyo');
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('Asia/Tokyo', $date->getTimezone()->getName());
@@ -277,7 +276,7 @@ class DateTimeTest extends RebetTestCase
             ]
         ]);
         
-        $input = '2010 01 02';
+        $input                 = '2010 01 02';
         [$date, $apply_format] = DateTime::analyzeDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
@@ -291,7 +290,7 @@ class DateTimeTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 01:02:03.456789');
         
         $input = '2010-10-20 12:34:56';
-        $date = DateTime::createDateTime($input);
+        $date  = DateTime::createDateTime($input);
         $this->assertInstanceOf(DateTime::class, $date);
         $this->assertSame('UTC', $date->getTimezone()->getName());
         $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
@@ -300,59 +299,59 @@ class DateTimeTest extends RebetTestCase
     public function test_add()
     {
         $date = new DateTime();
-        $new = $date->add(new \DateInterval('P1D'));
+        $new  = $date->add(new \DateInterval('P1D'));
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
     public function test_modify()
     {
         $date = new DateTime();
-        $new = $date->modify('+1 day');
+        $new  = $date->modify('+1 day');
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
     public function test_setDate()
     {
         $date = new DateTime();
-        $new = $date->setDate(2011, 11, 12);
+        $new  = $date->setDate(2011, 11, 12);
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
     public function test_setISODate()
     {
         $date = new DateTime();
-        $new = $date->setISODate(2010, 1);
+        $new  = $date->setISODate(2010, 1);
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
     public function test_setTime()
     {
         $date = new DateTime();
-        $new = $date->setTime(10, 11);
+        $new  = $date->setTime(10, 11);
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
     public function test_setTimestamp()
     {
         $date = new DateTime();
-        $new = $date->setTimestamp(time());
+        $new  = $date->setTimestamp(time());
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
     public function test_setTimezone()
     {
         $date = new DateTime();
-        $new = $date->setTimezone('Asia/Tokyo');
+        $new  = $date->setTimezone('Asia/Tokyo');
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
         
         $date = new DateTime();
-        $new = $date->setTimezone(new DateTimeZone('Asia/Tokyo'));
+        $new  = $date->setTimezone(new DateTimeZone('Asia/Tokyo'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
         
         $date = new DateTime();
-        $new = $date->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+        $new  = $date->setTimezone(new \DateTimeZone('Asia/Tokyo'));
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
     }
@@ -360,7 +359,7 @@ class DateTimeTest extends RebetTestCase
     public function test_sub()
     {
         $date = new DateTime();
-        $new = $date->sub(new \DateInterval('P1D'));
+        $new  = $date->sub(new \DateInterval('P1D'));
         $this->assertInstanceOf(DateTime::class, $new);
     }
     
@@ -480,7 +479,7 @@ class DateTimeTest extends RebetTestCase
     
     public function test_getMonth()
     {
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $month = $date->getMonth();
         $this->assertInternalType(\int::class, $month);
         $this->assertSame(10, $month);
@@ -521,7 +520,7 @@ class DateTimeTest extends RebetTestCase
     public function test_getDay()
     {
         $date = DateTime::now();
-        $day = $date->getDay();
+        $day  = $date->getDay();
         $this->assertInternalType(\int::class, $day);
         $this->assertSame(20, $day);
     }
@@ -600,7 +599,7 @@ class DateTimeTest extends RebetTestCase
     
     public function test_getMinute()
     {
-        $date = DateTime::now();
+        $date   = DateTime::now();
         $minute = $date->getMinute();
         $this->assertInternalType(\int::class, $minute);
         $this->assertSame(20, $minute);
@@ -640,7 +639,7 @@ class DateTimeTest extends RebetTestCase
     
     public function test_getSecond()
     {
-        $date = DateTime::now();
+        $date   = DateTime::now();
         $second = $date->getSecond();
         $this->assertInternalType(\int::class, $second);
         $this->assertSame(30, $second);
@@ -700,7 +699,7 @@ class DateTimeTest extends RebetTestCase
     {
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
 
-        $date = DateTime::now();
+        $date        = DateTime::now();
         $milli_micro = $date->getMilliMicro();
         $this->assertInternalType(\int::class, $milli_micro);
         $this->assertSame(123456, $milli_micro);
@@ -708,7 +707,7 @@ class DateTimeTest extends RebetTestCase
 
         DateTime::setTestNow('2010-10-20 10:20:30.123');
 
-        $date = DateTime::now();
+        $date        = DateTime::now();
         $milli_micro = $date->getMilliMicro();
         $this->assertInternalType(\int::class, $milli_micro);
         $this->assertSame(123000, $milli_micro);
@@ -768,7 +767,7 @@ class DateTimeTest extends RebetTestCase
     {
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
 
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $milli = $date->getMilli();
         $this->assertInternalType(\int::class, $milli);
         $this->assertSame(123, $milli);
@@ -776,7 +775,7 @@ class DateTimeTest extends RebetTestCase
         
         DateTime::setTestNow('2010-10-20 10:20:30.1');
 
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $milli = $date->getMilli();
         $this->assertInternalType(\int::class, $milli);
         $this->assertSame(100, $milli);
@@ -836,28 +835,28 @@ class DateTimeTest extends RebetTestCase
     {
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
 
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $micro = $date->getMicro();
         $this->assertInternalType(\int::class, $micro);
         $this->assertSame(456, $micro);
 
 
         DateTime::setTestNow('2010-10-20 10:20:30.1234');
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $micro = $date->getMicro();
         $this->assertInternalType(\int::class, $micro);
         $this->assertSame(400, $micro);
 
 
         DateTime::setTestNow('2010-10-20 10:20:30.123');
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $micro = $date->getMicro();
         $this->assertInternalType(\int::class, $micro);
         $this->assertSame(0, $micro);
 
 
         DateTime::setTestNow('2010-10-20 10:20:30.12301');
-        $date = DateTime::now();
+        $date  = DateTime::now();
         $micro = $date->getMicro();
         $this->assertInternalType(\int::class, $micro);
         $this->assertSame(10, $micro);

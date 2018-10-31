@@ -13,7 +13,6 @@ namespace Rebet\Common;
  */
 class Nets
 {
-    
     /**
      * No instantiation
      */
@@ -107,8 +106,8 @@ class Nets
     {
         return file_get_contents($url, false, stream_context_create([
             'http' => ['ignore_errors' => true],
-            'ssl'=> [
-                'verify_peer' => false,
+            'ssl'  => [
+                'verify_peer'      => false,
                 'verify_peer_name' => false
             ],
         ]));

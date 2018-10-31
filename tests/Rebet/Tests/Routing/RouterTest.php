@@ -1,32 +1,26 @@
 <?php
 namespace Rebet\Tests\Routing;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Tests\StderrCapture;
-use Rebet\Routing\Router;
-
+use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Enum;
-use Rebet\Common\NamespaceParser;
-use Rebet\Common\System;
+
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
-use Rebet\Http\BasicResponse;
-use Rebet\Routing\Controller;
-use Rebet\Routing\Route\ControllerRoute;
-use Rebet\Routing\Route\ConventionalRoute;
-use Rebet\Routing\Annotation\Surface;
-use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\Where;
-use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\AliasOnly;
-use Rebet\Tests\Different\DifferentController;
+use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Annotation\NotRouting;
+use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Controller;
+use Rebet\Routing\Route\ConventionalRoute;
+use Rebet\Routing\Router;
 use Rebet\Tests\Mock\DifferentNamespaceController;
 use Rebet\Tests\Mock\Gender;
-use Rebet\View\View;
+use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
-use org\bovigo\vfs\vfsStream;
+use Rebet\View\View;
 
 class RouterTest extends RebetTestCase
 {

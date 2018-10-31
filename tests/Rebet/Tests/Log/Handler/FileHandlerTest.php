@@ -1,16 +1,15 @@
 <?php
 namespace Rebet\Tests\Log\Handler;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Log\Handler\FileHandler;
-
+use org\bovigo\vfs\vfsStream;
 use Rebet\Config\Config;
+
 use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
+use Rebet\Log\Handler\FileHandler;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 
-use org\bovigo\vfs\vfsStream;
+use Rebet\Tests\RebetTestCase;
 
 class FileHandlerTest extends RebetTestCase
 {
@@ -56,8 +55,8 @@ class FileHandlerTest extends RebetTestCase
     {
         $this->context->level   = LogLevel::TRACE();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
-        $reported_log  = \file_get_contents($this->file_path);
+        $formatted_log          = $this->handler->handle($this->context);
+        $reported_log           = \file_get_contents($this->file_path);
         $this->assertNull($formatted_log);
         $this->assertEmpty($reported_log);
     }
@@ -66,8 +65,8 @@ class FileHandlerTest extends RebetTestCase
     {
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
-        $reported_log  = \file_get_contents($this->file_path);
+        $formatted_log          = $this->handler->handle($this->context);
+        $reported_log           = \file_get_contents($this->file_path);
         $this->assertSame($formatted_log."\n", $reported_log);
     }
 }

@@ -1,15 +1,13 @@
 <?php
 namespace Rebet\Tests\Log\Middleware;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Log\Middleware\WebDisplayMiddleware;
-
 use Rebet\Common\System;
-use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
-use Rebet\Log\LogLevel;
+
 use Rebet\Log\LogContext;
+use Rebet\Log\LogLevel;
+use Rebet\Log\Middleware\WebDisplayMiddleware;
+use Rebet\Tests\RebetTestCase;
 
 class WebDisplayMiddlewareTest extends RebetTestCase
 {

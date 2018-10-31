@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Auth;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Auth\BasicAuth;
-
 use Rebet\Common\System;
+
+use Rebet\Tests\RebetTestCase;
 
 class BasicAuthTest extends RebetTestCase
 {
@@ -34,7 +34,7 @@ class BasicAuthTest extends RebetTestCase
     {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
-        $id = BasicAuth::authenticate(['id' => 'password']);
+        $id                       = BasicAuth::authenticate(['id' => 'password']);
         $this->assertSame('id', $id);
     }
 
@@ -47,7 +47,7 @@ class BasicAuthTest extends RebetTestCase
         try {
             $_SERVER['PHP_AUTH_USER'] = 'id';
             $_SERVER['PHP_AUTH_PW']   = 'invalid';
-            $id = BasicAuth::authenticate(['id' => 'password']);
+            $id                       = BasicAuth::authenticate(['id' => 'password']);
             $this->fail('No Exception');
         } finally {
             $headers = System::headers_list();
@@ -61,7 +61,7 @@ class BasicAuthTest extends RebetTestCase
     {
         $_SERVER['PHP_AUTH_USER'] = 'id';
         $_SERVER['PHP_AUTH_PW']   = 'password';
-        $id = BasicAuth::authenticate(
+        $id                       = BasicAuth::authenticate(
             ['id' => '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'],
             function ($password) {
                 return sha1($password);

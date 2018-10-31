@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Annotation;
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\AnnotationReader as DoctrineAnnotationReader;
 
 /**

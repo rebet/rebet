@@ -1,13 +1,12 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Common\Arrays;
+use Rebet\Common\Enum;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Inflection\Inflector;
 use Rebet\Translation\Translator;
-use Rebet\Common\Enum;
 
 /**
  * Validate Context Class
@@ -180,7 +179,7 @@ class Context
 
     /**
      * Append validation error message using translator.
-     * This method always return false, this behavior may be useful when implementing validations. 
+     * This method always return false, this behavior may be useful when implementing validations.
      *
      * If the key starts with "@", it uses the key name without the "@" as the message.
      * This is useful when implementing extended validation with a service where the locale can be fixed.
@@ -193,10 +192,10 @@ class Context
      */
     public function appendError(string $key, array $replace = [], $selector = null) : bool
     {
-        $replace['attribute'] = $this->label;
-        $replace['self']      = $this->value;
-        $replace['selector']  = $selector;
-        $prefix               = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
+        $replace['attribute']                                                = $this->label;
+        $replace['self']                                                     = $this->value;
+        $replace['selector']                                                 = $selector;
+        $prefix                                                              = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
         $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get($key, $replace, $selector) ;
         return false;
     }
@@ -331,7 +330,7 @@ class Context
      */
     public function nest($key = null) : self
     {
-        $nested = clone $this;
+        $nested         = clone $this;
         $nested->prefix = "{$this->prefix}{$this->field}.";
         $nested->data   = !is_null($key) ? $this->data[$this->field][$key] : $this->data[$this->field] ;
         $nested->key    = $key;

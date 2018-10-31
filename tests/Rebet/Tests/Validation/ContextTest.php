@@ -2,10 +2,9 @@
 namespace Rebet\Tests\Validation;
 
 use Rebet\Tests\RebetTestCase;
-use Rebet\Validation\Context;
-use Rebet\Validation\Validator;
-use Rebet\Validation\Valid;
 use Rebet\Validation\BuiltinValidations;
+use Rebet\Validation\Context;
+use Rebet\Validation\Valid;
 
 class ContextTest extends RebetTestCase
 {
@@ -21,13 +20,13 @@ class ContextTest extends RebetTestCase
         $this->rule_set   = [
             'name' => [
                 'label' => '氏名',
-                'rule' => [
+                'rule'  => [
                     ['CU', Valid::REQUIRED.'!'],
                 ]
             ],
             'birthday' => [
                 'label' => '生年月日',
-                'rule' => [
+                'rule'  => [
                     ['C', Valid::REQUIRED.'!'],
                 ],
             ],
@@ -41,13 +40,13 @@ class ContextTest extends RebetTestCase
                 'nest' => [
                     'bank_name' => [
                         'label' => '銀行名',
-                        'rule' => [
+                        'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                         ],
                     ],
                     'branch' => [
                         'label' => ':parent：支店',
-                        'nest' => [
+                        'nest'  => [
                             'code' => [
                                 'label' => ':parentコード',
                             ],
@@ -66,13 +65,13 @@ class ContextTest extends RebetTestCase
                 'nests' => [
                     'zip' => [
                         'label' => ':parent郵便番号',
-                        'rule' => [
+                        'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                         ],
                     ],
                     'address' => [
                         'label' => ':parent住所',
-                        'rule' => [
+                        'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                         ],
                     ],

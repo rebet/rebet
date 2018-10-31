@@ -233,7 +233,7 @@ class Arrays
 
         foreach ($diff as $key => $value) {
             [$key, $apply_option] = OverrideOption::split($key);
-            $apply_option = $apply_option ?? $option[$key] ?? null ;
+            $apply_option         = $apply_option ?? $option[$key] ?? null ;
             if (isset($base[$key])) {
                 $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_override_option);
             } else {
@@ -325,7 +325,7 @@ class Arrays
             foreach ($results as $product) {
                 foreach ($array as $item) {
                     $product[$index] = $item;
-                    $append[] = $product;
+                    $append[]        = $product;
                 }
             }
             $results = $append;
@@ -392,7 +392,7 @@ class Arrays
         }
 
         $original = &$array;
-        $keys = (array) $keys;
+        $keys     = (array) $keys;
         if (count($keys) === 0) {
             return;
         }

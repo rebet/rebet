@@ -1,13 +1,11 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
+use org\bovigo\vfs\vfsStream;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
-use Rebet\Common\Utils;
-use Rebet\Common\Enum;
-use org\bovigo\vfs\vfsStream;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\RebetTestCase;
 
 class ReflectorTest extends RebetTestCase
 {
@@ -20,23 +18,23 @@ class ReflectorTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->array  = ['a','b','c', null];
+        $this->array  = ['a', 'b', 'c', null];
         $this->map    = [
-            'name' => 'John Smith',
-            'gender' => 'male',
+            'name'    => 'John Smith',
+            'gender'  => 'male',
             'hobbies' => ['game', 'outdoor'],
             'partner' => [
-                'name' => 'Jane Smith',
+                'name'   => 'Jane Smith',
                 'gender' => 'female'
             ],
             'children' => null
         ];
         $this->object = (object) [
-            'name' => 'John Smith',
-            'gender' => 'male',
+            'name'    => 'John Smith',
+            'gender'  => 'male',
             'hobbies' => ['game', 'outdoor'],
             'partner' => (object)[
-                'name' => 'Jane Smith',
+                'name'   => 'Jane Smith',
                 'gender' => 'female'
             ],
             'children' => null
@@ -69,7 +67,7 @@ class ReflectorTest extends RebetTestCase
             }
         ];
 
-        $this->accessible = new ReflectorTest_Accessible();
+        $this->accessible                = new ReflectorTest_Accessible();
         $this->accessible->public_parent = new ReflectorTest_Accessible();
         $this->accessible->setPrivateParent(new ReflectorTest_Accessible());
 
@@ -208,7 +206,7 @@ class ReflectorTest extends RebetTestCase
 
         Reflector::set($this->map, 'hobbies.0', 'cycling');
         $this->assertSame('cycling', $this->map['hobbies'][0]);
-        $this->assertSame(['cycling','outdoor'], $this->map['hobbies']);
+        $this->assertSame(['cycling', 'outdoor'], $this->map['hobbies']);
 
         Reflector::set($this->map, 'hobbies', ['game']);
         $this->assertSame('game', $this->map['hobbies'][0]);
@@ -223,7 +221,7 @@ class ReflectorTest extends RebetTestCase
 
         Reflector::set($this->object, 'hobbies.0', 'cycling');
         $this->assertSame('cycling', $this->object->hobbies[0]);
-        $this->assertSame(['cycling','outdoor'], $this->object->hobbies);
+        $this->assertSame(['cycling', 'outdoor'], $this->object->hobbies);
 
         Reflector::set($this->object, 'hobbies', ['game']);
         $this->assertSame('game', $this->object->hobbies[0]);
@@ -408,7 +406,7 @@ class ReflectorTest extends RebetTestCase
 
         $this->assertSame([''], Reflector::convert('', $type));
         $this->assertSame(['a'], Reflector::convert('a', $type));
-        $this->assertSame(['a','b','c'], Reflector::convert('a,b,c', $type));
+        $this->assertSame(['a', 'b', 'c'], Reflector::convert('a,b,c', $type));
 
         $to_array = new ReflectorTest_ToArray([1, 2, 'a' => 'A']);
         $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($to_array, $type));
@@ -636,7 +634,7 @@ class ReflectorTest extends RebetTestCase
     {
         $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {
         };
-        $rf = new \ReflectionFunction($closure);
+        $rf     = new \ReflectionFunction($closure);
         $params = $rf->getParameters();
         $this->assertSame(null, Reflector::getTypeHint($params[0]));
         $this->assertSame('int', Reflector::getTypeHint($params[1]));
@@ -650,18 +648,22 @@ class ReflectorTest extends RebetTestCase
 class ReflectorTest_Mock
 {
     public $value = null;
+
     public function __construct($value = 'default')
     {
         $this->value = $value;
     }
+
     public static function getInstance()
     {
         return new static('via getInstance()');
     }
+
     public static function build($value)
     {
         return new static($value.' via build()');
     }
+
     public function __toString()
     {
         return (string)$this->value;
@@ -671,10 +673,12 @@ class ReflectorTest_Mock
 class ReflectorTest_ToArray
 {
     private $array;
+
     public function __construct(array $array)
     {
         $this->array = $array;
     }
+
     public function toArray() : array
     {
         return $this->array;
@@ -683,14 +687,17 @@ class ReflectorTest_ToArray
 class ReflectorTest_Json implements \JsonSerializable
 {
     private $value;
+
     public function __construct($value)
     {
         $this->value = $value;
     }
+
     public function jsonSerialize()
     {
         return $this->value;
     }
+
     public function __toString()
     {
         return "value: ".join(',', (array)$this->value);
@@ -699,10 +706,12 @@ class ReflectorTest_Json implements \JsonSerializable
 class ReflectorTest_ValueOf
 {
     private $value;
+
     public function __construct($value)
     {
         $this->value = $value;
     }
+
     public static function valueOf($value)
     {
         return new static($value);
@@ -731,18 +740,22 @@ class ReflectorTest_ToType
     {
         return 123;
     }
+
     public function toFloat()
     {
         return 1.23;
     }
+
     public function toBool()
     {
         return true;
     }
+
     public function toReflectorTest_ConvertTo()
     {
         return new ReflectorTest_ConvertTo();
     }
+
     public function toGender()
     {
         return 'Other Type';
@@ -762,7 +775,7 @@ class ReflectorTest_Accessible
     public $public       = 'public';
 
     private $private_parent = null;
-    public $public_parent = null;
+    public $public_parent   = null;
 
     public function __construct()
     {

@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Securities;
+use Rebet\Tests\RebetTestCase;
 
 class SecuritiesTest extends RebetTestCase
 {

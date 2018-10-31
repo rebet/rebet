@@ -1,25 +1,22 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Inflection\Inflector;
+use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Common\Reflector;
-use Rebet\Config\Configurable;
+use Rebet\Common\Strings;
 use Rebet\Config\Config;
+use Rebet\Config\Configurable;
 use Rebet\Foundation\App;
-use Rebet\Http\BasicResponse;
-use Rebet\Http\JsonResponse;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\Http\StreamedResponse;
+use Rebet\Inflection\Inflector;
+use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\Surface;
 use Rebet\Routing\Annotation\Where;
-use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Common\Strings;
-use Rebet\Routing\Annotation\AliasOnly;
-use Rebet\Routing\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
+use Rebet\Routing\RouteNotFoundException;
 
 /**
  * Conventional Route class
@@ -50,6 +47,7 @@ use Rebet\Routing\RouteAction;
 class ConventionalRoute extends Route
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -164,14 +162,14 @@ class ConventionalRoute extends Route
      */
     public function __construct(array $option = [])
     {
-        $this->namespace                  = $option['amespace']                   ?? static::config('namespace');
+        $this->namespace                  = $option['amespace'] ?? static::config('namespace');
         $this->default_part_of_controller = $option['default_part_of_controller'] ?? static::config('default_part_of_controller');
-        $this->default_part_of_action     = $option['default_part_of_action']     ?? static::config('default_part_of_action');
-        $this->uri_snake_separator        = $option['uri_snake_separator']        ?? static::config('uri_snake_separator');
-        $this->controller_suffix          = $option['controller_suffix']          ?? static::config('controller_suffix', false, '');
-        $this->action_suffix              = $option['action_suffix']              ?? static::config('action_suffix', false, '');
-        $this->aliases                    = $option['aliases']                    ?? static::config('aliases', false, []);
-        $this->accessible                 = $option['accessible']                 ?? static::config('accessible');
+        $this->default_part_of_action     = $option['default_part_of_action'] ?? static::config('default_part_of_action');
+        $this->uri_snake_separator        = $option['uri_snake_separator'] ?? static::config('uri_snake_separator');
+        $this->controller_suffix          = $option['controller_suffix'] ?? static::config('controller_suffix', false, '');
+        $this->action_suffix              = $option['action_suffix'] ?? static::config('action_suffix', false, '');
+        $this->aliases                    = $option['aliases'] ?? static::config('aliases', false, []);
+        $this->accessible                 = $option['accessible'] ?? static::config('accessible');
     }
 
     /**
@@ -182,7 +180,7 @@ class ConventionalRoute extends Route
      */
     protected function resolveRequestUri(string $request_uri) : array
     {
-        $requests = explode('/', trim($request_uri, '/')) ;
+        $requests           = explode('/', trim($request_uri, '/')) ;
         $part_of_controller = array_shift($requests) ?: $this->default_part_of_controller;
         $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
         $args               = $requests;
@@ -214,7 +212,7 @@ class ConventionalRoute extends Route
 
         $controller = $this->getControllerName();
         try {
-            $this->controller = new $controller();
+            $this->controller          = new $controller();
             $this->controller->request = $request;
             $this->controller->route   = $this;
         } catch (\Throwable $e) {

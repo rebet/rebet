@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Log\Formatter;
 
-use Rebet\DateTime\DateTime;
 use Rebet\Log\LogContext;
 
 /**
