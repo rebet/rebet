@@ -3,10 +3,9 @@ namespace Rebet\Tests\Validation;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
-use Rebet\Translation\Translator;
-use Rebet\Translation\FileLoader;
 use Rebet\Validation\Validator;
 use Rebet\Validation\Valid;
+use Rebet\Validation\BuiltinValidations;
 
 class ContextTest extends RebetTestCase
 {
@@ -18,7 +17,7 @@ class ContextTest extends RebetTestCase
     {
         parent::setUp();
         $this->errors     = [];
-        $this->translator = new Translator(new FileLoader(Validator::config('resources_dir')));
+        $this->translator = (new BuiltinValidations)->translator();
         $this->rule_set   = [
             'name' => [
                 'label' => '氏名',

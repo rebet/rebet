@@ -5,21 +5,17 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\Validation\Mock\UserValidation;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
-use Rebet\Translation\Translator;
-use Rebet\Translation\FileLoader;
-use Rebet\Validation\Validator;
+use Rebet\Validation\BuiltinValidations;
 
 class RuleTest extends RebetTestCase
 {
     private $errors;
     private $rule;
-    private $translator;
 
     public function setup()
     {
         parent::setUp();
         $this->rule       = new UserValidation();
-        $this->translator = new Translator(new FileLoader(Validator::config('resources_dir')));
         $this->errors     = [];
     }
 
@@ -41,7 +37,7 @@ class RuleTest extends RebetTestCase
             ['mail_address' => 'john@rebet.local'],
             $this->errors,
             ['dummy' => []],
-            $this->translator
+            (new BuiltinValidations)->translator()
         );
         $c->initBy('mail_address');
         $this->assertTrue($this->rule->validate('MailAddressExists', $c));

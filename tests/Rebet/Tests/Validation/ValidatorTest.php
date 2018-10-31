@@ -9,6 +9,8 @@ use Rebet\Validation\Context;
 use Rebet\Config\Config;
 use org\bovigo\vfs\vfsStream;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Validation\Validations;
+use Rebet\Validation\BuiltinValidations;
 
 class ValidatorTest extends RebetTestCase
 {
@@ -45,9 +47,9 @@ EOS
             $this->root
         );
         Config::application([
-            Validator::class => [
+            BuiltinValidations::class => [
                 'resources_dir' => ['vfs://root/resources'],
-                'validations'   => [
+                'customs'       => [
                     'Ok' => function (Context $c) {
                         return true;
                     },
