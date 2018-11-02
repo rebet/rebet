@@ -8,6 +8,7 @@ use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
 use Rebet\Foundation\App;
+use Rebet\Enum\Enum;
 
 /**
  * Rebet用の基底テストケースクラス。
@@ -24,8 +25,16 @@ abstract class RebetTestCase extends TestCase
         Config::clear();
         App::initFrameworkConfig();
         App::setRoot(__DIR__.'/../../');
-        App::setTimezone('UTC');
-        App::setLocale('ja');
+        Config::application([
+            App::class => [
+                'timezone'  => 'UTC',
+                'locale'    => 'ja',
+                'resources' => [
+                    'i18n' => App::path('/resources/i18n'),
+                ],
+            ],
+        ]);
+        Enum::clear();
         StderrCapture::clear();
     }
     

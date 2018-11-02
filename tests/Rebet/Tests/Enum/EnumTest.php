@@ -21,7 +21,7 @@ class EnumTest extends RebetTestCase
     {
         $this->assertInstanceOf(Gender::class, $this->male);
         $this->assertSame(1, $this->male->value);
-        $this->assertSame('男性', $this->male->label);
+        $this->assertSame('Male', $this->male->label);
 
         $male2 = Gender::MALE();
         $this->assertSame($this->male, $male2);
@@ -108,10 +108,18 @@ class EnumTest extends RebetTestCase
 
         $this->assertSame(
             [
+                'Male'   => Gender::MALE(),
+                'Female' => Gender::FEMALE(),
+            ],
+            Gender::maps('label')
+        );
+
+        $this->assertSame(
+            [
                 '男性' => Gender::MALE(),
                 '女性' => Gender::FEMALE(),
             ],
-            Gender::maps('label')
+            Gender::maps('label', true)
         );
 
         $this->assertSame(
@@ -137,8 +145,10 @@ class EnumTest extends RebetTestCase
     public function test_fieldOf()
     {
         $this->assertSame(Gender::MALE(), Gender::fieldOf('value', 1));
-        $this->assertSame(Gender::MALE(), Gender::fieldOf('label', '男性'));
-        $this->assertSame(Gender::FEMALE(), Gender::fieldOf('label', '女性'));
+        $this->assertSame(Gender::MALE(), Gender::fieldOf('label', 'Male'));
+        $this->assertSame(Gender::FEMALE(), Gender::fieldOf('label', 'Female'));
+        $this->assertSame(Gender::MALE(), Gender::fieldOf('label', '男性', true));
+        $this->assertSame(Gender::FEMALE(), Gender::fieldOf('label', '女性', true));
         $this->assertNull(Gender::fieldOf('value', 3));
         
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::fieldOf('value', 'R'));
@@ -196,7 +206,8 @@ class EnumTest extends RebetTestCase
 
     public function test_labelOf()
     {
-        $this->assertSame(Gender::MALE(), Gender::labelOf('男性'));
+        $this->assertSame(Gender::MALE(), Gender::labelOf('Male'));
+        $this->assertSame(Gender::MALE(), Gender::labelOf('男性', true));
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::labelOf('却下'));
     }
 
@@ -210,13 +221,18 @@ class EnumTest extends RebetTestCase
         $this->assertSame(
             [2],
             Gender::listOf('value', function ($enum) {
-                return $enum->label === '女性';
+                return $enum->label === 'Female';
             })
         );
 
         $this->assertSame(
-            ['男性', '女性'],
+            ['Male', 'Female'],
             Gender::listOf('label')
+        );
+
+        $this->assertSame(
+            ['男性', '女性'],
+            Gender::listOf('label', null, true)
         );
 
         $this->assertSame(
@@ -250,7 +266,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame(
             [2],
             Gender::values(function ($enum) {
-                return $enum->label === '女性';
+                return $enum->label === 'Female';
             })
         );
 
@@ -263,12 +279,17 @@ class EnumTest extends RebetTestCase
     public function test_labels()
     {
         $this->assertSame(
-            ['男性', '女性'],
+            ['Male', 'Female'],
             Gender::labels()
         );
 
         $this->assertSame(
-            ['男性'],
+            ['男性', '女性'],
+            Gender::labels(null, true)
+        );
+
+        $this->assertSame(
+            ['Male'],
             Gender::labels(function ($enum) {
                 return $enum->value === 1;
             })

@@ -13,6 +13,8 @@ use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Smarty\Smarty;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\View;
+use Rebet\Validation\BuiltinValidations;
+use Rebet\Enum\Enum;
 
 /**
  * Application Config Class
@@ -43,7 +45,10 @@ class App
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'namespace'       => [
-                'controller'  => null,
+                'controller' => null,
+            ],
+            'resources'       => [
+                'i18n' => null,
             ],
         ];
     }
@@ -102,7 +107,25 @@ class App
             Translator::class => [
                 'default_locale'  => Config::refer(App::class, 'locale'),
                 'fallback_locale' => Config::refer(App::class, 'fallback_locale', false, 'en'),
-            ]
+            ],
+
+            //---------------------------------------------
+            // BuiltinValidations Configure
+            //---------------------------------------------
+            BuiltinValidations::class => [
+                'resources' => [
+                    'i18n' => [Config::refer(App::class, 'resources.i18n')]
+                ],
+            ],
+
+            //---------------------------------------------
+            // Enum Configure
+            //---------------------------------------------
+            Enum::class => [
+                'resources' => [
+                    'i18n' => [Config::refer(App::class, 'resources.i18n')]
+                ],
+            ],
         ]);
     }
     

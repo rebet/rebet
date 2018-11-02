@@ -16,4 +16,14 @@ class Kind extends Enum
     const TYPE_CONSISTENCY_CHECK = [1, 'TYPE_CONSISTENCY_CHECK'];
     const TYPE_DEPENDENT_CHECK   = [2, 'TYPE_DEPENDENT_CHECK'];
     const OTHER                  = [3, 'OTHER'];
+
+    /**
+     * This enum do not need to translate.
+     *
+     * @return boolean
+     */
+    protected function translatable() : bool
+    {
+        return false;
+    }
 }

@@ -122,14 +122,15 @@ class Translator
 
     /**
      * Get the translation for the given key.
+     * If can not translate the given key then return the key without group.
      *
      * @param string $key
      * @param array $replace
      * @param int|string|null $selector (default: null)
      * @param string $locale
-     * @return string|null
+     * @return string
      */
-    public function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : ?string
+    public function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : string
     {
         [$group, $key] = explode('.', $key, 2);
         $locales       = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
@@ -142,12 +143,14 @@ class Translator
                 break;
             }
         }
-
         if ($line === null) {
-            return null;
+            return $key;
         }
 
         $line = $this->choose($line, $selector);
+        if ($line === null) {
+            return $key;
+        }
 
         if (empty($replace)) {
             return $line;
@@ -231,7 +234,7 @@ class Translator
             }
         }
         if (is_null($line)) {
-            throw new \LogicException("Can not select message for '{$selector}' from '{$line}'.");
+            return null;
         }
         return trim($line) ;
     }
@@ -269,5 +272,25 @@ class Translator
             return null;
         }
         return $condition === '*' || in_array($selector, explode(',', $condition)) ? $value : null;
+    }
+
+    /**
+     * Get the locale.
+     *
+     * @return string
+     */
+    public function getLocale() : string 
+    {
+        return $this->locale;
+    }
+
+    /**
+     * Get the fallback locale.
+     *
+     * @return string
+     */
+    public function getFallbackLocale() : string 
+    {
+        return $this->fallback_locale;
     }
 }

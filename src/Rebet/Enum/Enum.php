@@ -3,16 +3,20 @@ namespace Rebet\Enum;
 
 use Rebet\Common\Convertible;
 use Rebet\Common\Reflector;
-
+use Rebet\Config\Config;
+use Rebet\Config\Configurable;
+use Rebet\Translation\FileLoader;
+use Rebet\Translation\Translator;
 
 /**
- * 列挙 クラス
+ * Enum Class
  *
- * 【使い方】
- * // 基本系
+ * === HOW TO USE ===
+ * // Basic Usage (when fallback locale is 'en')
+ * // You should define the label by fallback locale language.
  * class Gender extends Enum {
- *     const MALE   = [1, '男性'];
- *     const FEMALE = [2, '女性'];
+ *     const MALE   = [1, 'Male'];
+ *     const FEMALE = [2, 'Female'];
  * }
  *
  * => Gender::MALE() // Access Enum Object
@@ -21,16 +25,16 @@ use Rebet\Common\Reflector;
  * class Gender extends Enum {
  *     protected static function generate() {
  *         return [
- *             new static('M', '男性'),
- *             new static('F', '女性'),
+ *             new static('M', 'Male'),
+ *             new static('F', 'Female'),
  *         ];
  *     }
  * }
  *
  * // メソッド拡張系
  * class Gender extends Enum {
- *     const MALE   = [1, '男性'];
- *     const FEMALE = [2, '女性'];
+ *     const MALE   = [1, 'Male'];
+ *     const FEMALE = [2, 'Female'];
  *
  *     public function isMale()   { return $this->value === 1; }
  *     public function isFemale() { return $this->value === 2; }
@@ -98,8 +102,33 @@ use Rebet\Common\Reflector;
  */
 abstract class Enum implements \JsonSerializable, Convertible
 {
+    use Configurable;
+
+    public static function defaultConfig()
+    {
+        return [
+            'resources' => [
+                'i18n' => [],
+            ],
+        ];
+    }
+
     /**
-     * 列挙データキャッシュ
+     * Get the translator for enums.
+     *
+     * @return Translator
+     */
+    public static function translator() : Translator
+    {
+        if (static::$translator) {
+            return static::$translator;
+        }
+        static::$translator = new Translator(new FileLoader(Enum::config('resources.i18n', false, [])));
+        return static::$translator;
+    }
+
+    /**
+     * Enum Data Cache
      *
      * self::$enum_data_cache = [
      *     EnumClassName => [
@@ -110,7 +139,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     private static $enum_data_cache = [];
     
     /**
-     * 列挙リストキャッシュ
+     * Enum List Data Cache
      *
      * self::$enum_list_cache = [
      *     EnumClassName => [EnumObject, ... ],
@@ -119,7 +148,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     private static $enum_list_cache = [];
     
     /**
-     * 列挙マップキャッシュ
+     * Enum Map Data Cache
      *
      * self::$enum_map_cache = [
      *     EnumClassName@FieldName => [
@@ -130,22 +159,54 @@ abstract class Enum implements \JsonSerializable, Convertible
     private static $enum_map_cache  = [];
 
     /**
-     * 値
+     * Translator for label
+     *
+     * @var Translator
+     */
+    protected static $translator = null;
+
+    /**
+     * Value of enum.
      * @var mixed
      */
     public $value;
     
     /**
-     * ラベル
+     * Label of enum.
+     * This label is not translated.
+     * If you want to get translated label, you must be use translate() method.
+     *
      * @var string
      */
     public $label;
     
     /**
-     * 列挙生成
+     * Clear the cache of given class or all enums.
      *
-     * @param mixed 値
-     * @param string $label ラベル
+     * @param string|null $class
+     * @return void
+     */
+    public static function clear(?string $class = null) : void
+    {
+        if ($class) {
+            unset(
+                static::$enum_data_cache[$class],
+                static::$enum_list_cache[$class],
+                static::$enum_map_cache[$class]
+            );
+        } else {
+            static::$enum_data_cache = [];
+            static::$enum_list_cache = [];
+            static::$enum_map_cache  = [];
+        }
+        static::$translator = null;
+    }
+
+    /**
+     * Create an enum object
+     *
+     * @param mixed $value
+     * @param string $label
      * @throws \LogicException
      */
     protected function __construct($value, string $label)
@@ -158,9 +219,41 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
 
     /**
-     * 列挙の値を検証します。
-     * @param mixed 比較値
-     * @return bool true: 一致 / false: 不一致
+     * Get translatable status of this enum.
+     * This method always returns true.
+     * Please override this method with false in enumeration which does not require translation.
+     *
+     * @return boolean
+     */
+    protected function translatable() : bool
+    {
+        return true;
+    }
+
+    /**
+     * Get translated value of given field.
+     * If this enum is not translatable then return value of given field as it is.
+     *
+     * @param string $field (default: label)
+     * @param string|null $locale (default: depend on configure)
+     * @return string
+     */
+    public function translate(string $field = 'label', ?string $locale = null) : string
+    {
+        if (!$this->translatable()) {
+            return $this->$field;
+        }
+        $class      = get_called_class();
+        $key        = "{$class}.{$field}.{$this->value}";
+        $translated = static::translator()->get("enum.{$key}", [], null, $locale);
+        return $translated === $key ? $this->$field : $translated ;
+    }
+
+    /**
+     * Check this enum equals given value.
+     *
+     * @param mixed $value
+     * @return bool
      */
     public function equals($value) : bool
     {
@@ -168,9 +261,10 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 列挙が指定の配列内に含まれるか検証します。
+     * Verify that the enumeration is included in the given array.
+     *
      * @param mixed ...$values
-     * @return boolean true: 含まれる / false: 含まれない
+     * @return boolean
      */
     public function in(...$values) : bool
     {
@@ -183,16 +277,17 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 列挙を文字列します。
+     * Get the translated label.
+     *
      * @return string
      */
     public function __toString() : string
     {
-        return $this->label;
+        return $this->translate();
     }
     
     /**
-     * 列挙を JSON Serialize します。
+     * Get JSON Serialize objects.
      */
     public function jsonSerialize()
     {
@@ -200,7 +295,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
 
     /**
-     * 型変を行います。
+     * Convert type to given type.
      *
      * @param string $type
      * @return void
@@ -221,36 +316,45 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
 
     /**
-     * 列挙型の const 定義から列挙オブジェクトを生成します。
+     * Creates an enum object from const definition of enum type.
      *
-     * @param string $name const 定数名
+     * @param \ReflectionClass $rc
+     * @param string $name
+     * @return self|null
      */
-    private static function constToEnum(\ReflectionClass $rc, $name) : ?self
+    private static function constToEnum(\ReflectionClass $rc, string $name) : ?self
     {
-        $clazz = $rc->getName();
-        if (isset(self::$enum_data_cache[$clazz][$name])) {
-            return self::$enum_data_cache[$clazz][$name];
+        $class = $rc->getName();
+        if (isset(self::$enum_data_cache[$class][$name])) {
+            return self::$enum_data_cache[$class][$name];
         }
         if (!defined("static::{$name}")) {
-            throw new \LogicException("Invalid enum const. {$clazz}::{$name} is not defined.");
+            throw new \LogicException("Invalid enum const. {$class}::{$name} is not defined.");
         }
-        $args                                 = $rc->getConstant($name);
-        $enum                                 = new static(...$args);
-        self::$enum_data_cache[$clazz][$name] = $enum;
+
+        $args = $rc->getConstant($name);
+        $enum = new static(...$args);
+
+        self::$enum_data_cache[$class][$name] = $enum;
         return $enum;
     }
 
     /**
-     * 静的メソッド呼び出しによる列挙オブジェクトアクセスを提供します。
+     * Provides enumerated object access via static method call.
+     *
+     * @param string $name
+     * @param array $args
+     * @return void
      */
-    public static function __callStatic($name, array $args)
+    public static function __callStatic(string $name, array $args)
     {
         return self::constToEnum(new \ReflectionClass(get_called_class()), $name);
     }
 
     /**
-     * 列挙の一覧を生成します。
-     * @return array 列挙の一覧
+     * Generate a list of enums.
+     *
+     * @return array
      */
     protected static function generate() : array
     {
@@ -263,40 +367,47 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 列挙定数の一覧 array(Enum) を取得します。
-     * ※列挙クラス名単位で generate された列挙一覧をキャッシュし、再利用します。
+     * Get a list of enum.
+     * # Cache and reuse the enum list generated by enum class name unit.
+     *
+     * @return array
      */
     public static function lists() : array
     {
-        $clazz = get_called_class();
-        if (isset(self::$enum_list_cache[$clazz])) {
-            return self::$enum_list_cache[$clazz];
+        $class = get_called_class();
+        if (isset(self::$enum_list_cache[$class])) {
+            return self::$enum_list_cache[$class];
         }
-        self::$enum_list_cache[$clazz] = static::generate();
-        return self::$enum_list_cache[$clazz];
+        self::$enum_list_cache[$class] = static::generate();
+        return self::$enum_list_cache[$class];
     }
     
     /**
-     * $enum->$field ⇒ $enum の連想配列を取得します。
-     * ※同じ値を持つ列挙が存在する場合、 enum::lists() の順序で後勝ちとなります
+     * Get map of [$enum->$field ⇒ $enum].
+     * If there is an enum with the same filed value, it wins after enum::lists().
      *
+     * @param string $field (default: 'value')
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return array
      * @throws \LogicException
      */
-    public static function maps($field = 'value') : array
+    public static function maps(string $field = 'value', bool $translate = false, ?string $locale = null) : array
     {
-        $clazz = get_called_class();
-        if (!\property_exists($clazz, $field)) {
-            throw new \LogicException("Invalid property access. Property {$clazz}->{$field} is not exists.");
+        $class = get_called_class();
+        if (!\property_exists($class, $field)) {
+            throw new \LogicException("Invalid property access. Property {$class}->{$field} is not exists.");
         }
 
-        $key = "{$clazz}@{$field}";
+        $locale = $locale ?? static::translator()->getLocale();
+        $key    = $translate ? "{$class}@{$field}:{$locale}" : "{$class}@{$field}";
         if (isset(self::$enum_map_cache[$key])) {
             return self::$enum_map_cache[$key];
         }
         
         $maps = [];
         foreach (self::lists() as $enum) {
-            $maps[$enum->$field] = $enum;
+            $maps[$translate ? $enum->translate($field) : $enum->$field] = $enum;
         }
         self::$enum_map_cache[$key] = $maps;
         
@@ -304,10 +415,17 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 指定フィールドの値を持つ列挙を取得します。
-     * ※同じ値を持つ列挙が存在する場合、 Enum::lists() の順序で後勝ちとなります
+     * Get an enum with the value of the given field.
+     * If there is an enum with the same filed value, it wins after enum::lists().
+     *
+     * @param string $field
+     * @param mixed $value
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return self|null
+     * @throws \LogicException
      */
-    public static function fieldOf(string $field, $value) : ?self
+    public static function fieldOf(string $field, $value, bool $translate = false, ?string $locale = null) : ?self
     {
         if ($value instanceof static) {
             return $value;
@@ -315,13 +433,16 @@ abstract class Enum implements \JsonSerializable, Convertible
         if (is_object($value)) {
             return null;
         }
-        $maps = self::maps($field);
+        $maps = self::maps($field, $translate, $locale);
         return isset($maps[$value]) ? $maps[$value] : null ;
     }
     
     /**
-     * 対象の値を持つ列挙を取得します。
-     * ※同じ値を持つ列挙が存在する場合、 Enum::lists() の順序で後勝ちとなります
+     * Get an enum with the target value.
+     * If there is an enum with the same filed value, it wins after enum::lists().
+     *
+     * @param mixed $value
+     * @return self|null
      */
     public static function valueOf($value) : ?self
     {
@@ -329,57 +450,78 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 対象のラベルを持つ列挙を取得します。
-     * ※同じ値を持つ列挙が存在する場合、 Enum::lists() の順序で後勝ちとなります
+     * Get an enum with the target label.
+     * If there is an enum with the same filed value, it wins after enum::lists().
+     *
+     * @param string $label
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return self|null
      */
-    public static function labelOf(string $label) : ?self
+    public static function labelOf(string $label, bool $translate = false, ?string $locale = null) : ?self
     {
-        return self::fieldOf('label', $label);
+        return self::fieldOf('label', $label, $translate, $locale);
     }
     
     /**
-     * 指定フィールドの一覧を配列で取得します。
+     * Get a list of given field as an array.
+     *
      * @param string $name
+     * @param \Closure $matcher (default: null)
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return array
      */
-    public static function listOf(string $name, \Closure $matcher = null) : array
+    public static function listOf(string $name, \Closure $matcher = null, bool $translate = false, ?string $locale = null) : array
     {
-        $clazz = get_called_class();
-        if (!\property_exists($clazz, $name)) {
-            throw new \LogicException("Invalid property access. Property {$clazz}->{$name} is not exists.");
+        $class = get_called_class();
+        if (!\property_exists($class, $name)) {
+            throw new \LogicException("Invalid property access. Property {$class}->{$name} is not exists.");
         }
 
         $values = [];
         foreach (self::lists() as $enum) {
             if ($matcher == null || $matcher($enum)) {
-                $values[] = $enum->$name;
+                $values[] = $translate ? $enum->translate($name, $locale) : $enum->$name ;
             }
         }
         return $values;
     }
     
     /**
-     * 値の一覧を配列で取得します。
+     *  Get a list of value as an array.
+     *
+     * @param \Closure $matcher (default: null)
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return array
      */
-    public static function values(\Closure $matcher = null) : array
+    public static function values(\Closure $matcher = null, bool $translate = false, ?string $locale = null) : array
     {
-        return self::listOf('value', $matcher);
+        return self::listOf('value', $matcher, $translate, $locale);
     }
     
     /**
-     * ラベルの一覧を配列で取得します。
+     *  Get a list of label as an array.
+     *
+     * @param \Closure $matcher (default: null)
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return array
      */
-    public static function labels(\Closure $matcher = null) : array
+    public static function labels(\Closure $matcher = null, bool $translate = false, ?string $locale = null) : array
     {
-        return self::listOf('label', $matcher);
+        return self::listOf('label', $matcher, $translate, $locale);
     }
     
     /**
-     * 簡易ワークフロー
-     * 指定の状況(context)に応じたある列挙値(current)から遷移可能な次の列挙一覧を取得します。
-     * 必要に応じてサブクラスでオーバーライドして下さい。
+     * Simple Workflow.
+     * Get the next enumeration list that can transition from an enumerated value(current) according to the given situation(context).
+     * Override with subclass if necessary.
      *
      * @param type $current
-     * @param array|null $context
+     * @param array|null $context (default: null)
+     * @return array
      */
     public static function nexts($current, ?array $context = null) : array
     {
@@ -387,28 +529,37 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 簡易ワークフロー
-     * 指定フィールドの一覧を配列で取得します。
+     * Simple Workflow.
+     * Get the next enumeration list of given fields as an array.
      *
      * @param string $name
+     * @param mixed $current
+     * @param array|null $context (default: null)
+     * @param boolean $translate (default: false)
+     * @param string|null $locale (default: depend on configure)
+     * @return array
      */
-    public static function nextOf(string $name, $current, ?array $context = null) : array
+    public static function nextOf(string $name, $current, ?array $context = null, bool $translate = false, ?string $locale = null) : array
     {
-        $clazz = get_called_class();
-        if (!\property_exists($clazz, $name)) {
-            throw new \LogicException("Invalid property access. Property {$clazz}->{$name} is not exists.");
+        $class = get_called_class();
+        if (!\property_exists($class, $name)) {
+            throw new \LogicException("Invalid property access. Property {$class}->{$name} is not exists.");
         }
 
         $values = [];
         foreach (static::nexts($current, $context) as $enum) {
-            $values[] = $enum->$name;
+            $values[] = $translate ? $enum->translate($name, $locale) : $enum->$name ;
         }
         return $values;
     }
     
     /**
-     * 簡易ワークフロー
-     * 値の一覧を配列で取得します。
+     * Simple Workflow.
+     * Get the next enumeration values as an array.
+     *
+     * @param mixed $current
+     * @param array|null $context (default: null)
+     * @return array
      */
     public static function nextValues($current, ?array $context = null) : array
     {
@@ -416,8 +567,12 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
     
     /**
-     * 簡易ワークフロー
-     * ラベルの一覧を配列で取得します。
+     * Simple Workflow.
+     * Get the next enumeration labels as an array.
+     *
+     * @param mixed $current
+     * @param array|null $context (default: null)
+     * @return array
      */
     public static function nextLabels($current, ?array $context = null) : array
     {

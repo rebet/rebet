@@ -11,49 +11,18 @@ use Rebet\Translation\Translator;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
+use Rebet\Enum\Enum;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
-    private $root;
     private $validations;
 
     public function setup()
     {
         parent::setUp();
+        App::setLocale('en');
+        App::setTimezone('UTC');
         DateTime::setTestNow('2010-01-23 12:34:56');
-
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'resources' => [
-                    'en' => [
-                        'validation.php' => <<<'EOS'
-<?php
-return [
-    'Regex' => [
-        "{digits} The :attribute must be digits.",
-    ],
-    'Regex@List' => [
-        "{digits} The :nth :attribute (:value) must be digits.",
-    ],
-    'NotRegex' => [
-        "{digits} The :attribute must contain non-digits characters.",
-    ],
-    'NotRegex@List' => [
-        "{digits} The :nth :attribute (:value) must contain non-digits characters.",
-    ],
-];
-EOS
-                    ],
-                ],
-            ],
-            $this->root
-        );
-        Config::application([
-            BuiltinValidations::class => [
-                'resources_dir' => ['vfs://root/resources'],
-            ]
-        ]);
         $this->validations = new BuiltinValidations();
     }
 
@@ -73,8 +42,6 @@ EOS
      */
     public function test_validationMethods(array $record) : void
     {
-        App::setLocale('en');
-        App::setTimezone('UTC');
         extract($record);
         $errors     = [];
         $translator = $this->validations->translator();
@@ -313,7 +280,7 @@ EOS
                     ['qux'    , [1               ], true , []],
                     ['foo'    , [1               ], true , []],
                     ['foo'    , [2               ], false, ['foo' => ["The Foo and 2 must match."]]],
-                    ['foo'    , [Gender::FEMALE()], false, ['foo' => ["The Foo and 女性 must match."]]], //@todo i18n
+                    ['foo'    , [Gender::FEMALE()], false, ['foo' => ["The Foo and Female must match."]]],
                     ['foo'    , [':bar'          ], true , []],
                     ['foo'    , [':baz'          ], false, ['foo' => ["The Foo and Baz must match."]]],
                 ]

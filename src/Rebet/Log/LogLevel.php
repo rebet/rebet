@@ -4,7 +4,7 @@ namespace Rebet\Log;
 use Rebet\Enum\Enum;
 
 /**
- * ログレベル
+ * Log Level Enum Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -21,10 +21,10 @@ class LogLevel extends Enum
     const TRACE = [5, 'TRACE'];
     
     /**
-     * E_* 形式のエラータイプを LogLevel に変換します。
+     * Convert error type of E_* format to LogLevel.
      *
-     * @param int エラータイプ
-     * @return LogLevel ログレベル
+     * @param int $type
+     * @return LogLevel
      */
     public static function errorTypeOf(int $type) : LogLevel
     {
@@ -53,7 +53,17 @@ class LogLevel extends Enum
     }
     
     /**
-     * 指定のログレベル以上かチェックします。
+     * This enum do not need to translate.
+     *
+     * @return boolean
+     */
+    protected function translatable() : bool
+    {
+        return false;
+    }
+
+    /**
+     * It checks whether it is above the given log level.
      *
      * @param LogLevel $level
      */
@@ -63,7 +73,7 @@ class LogLevel extends Enum
     }
     
     /**
-     * 指定のログレベル未満かチェックします。
+     * It checks whether it is less than the given log level.
      *
      * @param LogLevel $level
      */

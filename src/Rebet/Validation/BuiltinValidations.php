@@ -27,8 +27,10 @@ class BuiltinValidations extends Validations
     public static function defaultConfig()
     {
         return static::parentConfigOverride([
-            'resources_dir' => [Files::normalizePath(__DIR__ . '/i18n')],
-            'default'       => [
+            'resources' => [
+                'i18n' => [Files::normalizePath(__DIR__ . '/i18n')],
+            ],
+            'default'   => [
                 'DependenceChar' => [
                     'encode' => 'sjis-win'
                 ],
@@ -178,7 +180,7 @@ class BuiltinValidations extends Validations
      */
     public function translator() : Translator
     {
-        return new Translator(new FileLoader(static::config('resources_dir')));
+        return new Translator(new FileLoader(static::config('resources.i18n')));
     }
 
     // ====================================================

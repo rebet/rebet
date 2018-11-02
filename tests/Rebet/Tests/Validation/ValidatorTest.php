@@ -22,8 +22,7 @@ class ValidatorTest extends RebetTestCase
 
         Config::application([
             BuiltinValidations::class => [
-                'resources_dir' => ['vfs://root/resources'],
-                'customs'       => [
+                'customs'   => [
                     'Ok' => function (Context $c) {
                         return true;
                     },
