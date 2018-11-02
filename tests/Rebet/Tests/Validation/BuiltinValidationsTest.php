@@ -3,6 +3,7 @@ namespace Rebet\Tests\Validation;
 
 use org\bovigo\vfs\vfsStream;
 use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
@@ -10,7 +11,6 @@ use Rebet\Translation\Translator;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
-use Rebet\DateTime\DateTime;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
@@ -340,7 +340,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'Regex',
-                'data'  => ['null' => null, 'foo' => 1, 'bar' => '123', 'baz' => 'abc', 'qux' => ['123','456','789'], 'quux' => ['123','abc','def']],
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => '123', 'baz' => 'abc', 'qux' => ['123', '456', '789'], 'quux' => ['123', 'abc', 'def']],
                 'tests' => [
                     ['nothing', ['/^[0-9]+$/'          ], true , []],
                     ['null'   , ['/^[0-9]+$/'          ], true , []],
@@ -365,7 +365,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'NotRegex',
-                'data'  => ['null' => null, 'foo' => 1, 'bar' => 'abc', 'baz' => '123', 'qux' => ['abc','def','ghi'], 'quux' => ['abc','123','456']],
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => 'abc', 'baz' => '123', 'qux' => ['abc', 'def', 'ghi'], 'quux' => ['abc', '123', '456']],
                 'tests' => [
                     ['nothing', ['/^[0-9]+$/'          ], true , []],
                     ['null'   , ['/^[0-9]+$/'          ], true , []],
@@ -390,7 +390,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'MaxLength',
-                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'abcd', 'baz' => ['1234','1','123','12345']],
+                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'abcd', 'baz' => ['1234', '1', '123', '12345']],
                 'tests' => [
                     ['nothing', [3], true , []],
                     ['null'   , [3], true , []],
@@ -608,11 +608,11 @@ EOS
             [[
                 'name'  => 'Ipv4',
                 'data'  => [
-                    'null'   => null, 
-                    'foo'    => '192.168.1.1', 
-                    'bar'    => '192.168.1.0/24', 
-                    'baz'    => '192.168.1.256', 
-                    'qux'    => '192.168.1.0/33', 
+                    'null'   => null,
+                    'foo'    => '192.168.1.1',
+                    'bar'    => '192.168.1.0/24',
+                    'baz'    => '192.168.1.256',
+                    'qux'    => '192.168.1.0/33',
                     'quux'   => ['192.168.1.1', '192.168.1.3', '192.168.2.0/24'],
                     'foobar' => <<<EOS
 192.168.1.1
@@ -621,7 +621,7 @@ EOS
 192.168.2.0/24
 EOS
                     ,
-                    'foobaz' => ['192.168.1.1', 'abc', '192.168.2.0/24','192.168.2.0/34'],
+                    'foobaz' => ['192.168.1.1', 'abc', '192.168.2.0/24', '192.168.2.0/34'],
                     'fooqux' => <<<EOS
 192.168.1.1
 abc
@@ -776,7 +776,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'DependenceChar',
-                'data'  => ['null' => null, 'foo' => 'aA1$Ａアあ漢字髙①', 'bar' => 'aA1$Ａア♬あ漢字髙①', 'baz' => ['aA1','$Ａア','♬あ','漢字','髙','①②']],
+                'data'  => ['null' => null, 'foo' => 'aA1$Ａアあ漢字髙①', 'bar' => 'aA1$Ａア♬あ漢字髙①', 'baz' => ['aA1', '$Ａア', '♬あ', '漢字', '髙', '①②']],
                 'tests' => [
                     ['nothing', [             ], true , []],
                     ['null'   , [             ], true , []],
@@ -799,8 +799,8 @@ EOS
                 'name'  => 'NgWord',
                 'data'  => [
                     'null' => null,
-                    'aaa'  => 'foo bar', 
-                    'bbb'  => 'foo bar baz qux', 
+                    'aaa'  => 'foo bar',
+                    'bbb'  => 'foo bar baz qux',
                     'ccc'  => 'foo bar b.a.z qux',
                     'ddd'  => 'foo bar.b*z qux',
                     'eee'  => 'foo bar.b** qux',
@@ -926,7 +926,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'Datetime',
-                'data'  => ['null' => null, 'empty' => '', 'foo' => '2010-01-23', 'bar' => '2010-02-31', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010|01|23', 'quux' => ['2010-01-23', 'abc','2010|01|23']],
+                'data'  => ['null' => null, 'empty' => '', 'foo' => '2010-01-23', 'bar' => '2010-02-31', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010|01|23', 'quux' => ['2010-01-23', 'abc', '2010|01|23']],
                 'tests' => [
                     ['nothing', [         ], true , []],
                     ['null'   , [         ], true , []],
