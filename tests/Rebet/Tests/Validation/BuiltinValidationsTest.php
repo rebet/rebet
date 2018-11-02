@@ -3,7 +3,6 @@ namespace Rebet\Tests\Validation;
 
 use org\bovigo\vfs\vfsStream;
 use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
@@ -11,6 +10,7 @@ use Rebet\Translation\Translator;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
+use Rebet\DateTime\DateTime;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
@@ -102,11 +102,11 @@ EOS
                 'name'  => 'If',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
                 'tests' => [
-                    ['foo', ['bar', 1        ], true, []],
+                    ['foo', ['bar', 1        ], true , []],
                     ['foo', ['bar', 2        ], false, []],
-                    ['foo', ['bar', ':foo'   ], true, []],
+                    ['foo', ['bar', ':foo'   ], true , []],
                     ['foo', ['bar', ':baz'   ], false, []],
-                    ['foo', ['bar', [1, 3, 5]], true, []],
+                    ['foo', ['bar', [1, 3, 5]], true , []],
                     ['foo', ['bar', [2, 4, 6]], false, []],
                 ]
             ]],
@@ -119,11 +119,11 @@ EOS
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2],
                 'tests' => [
                     ['foo', ['bar', 1        ], false, []],
-                    ['foo', ['bar', 2        ], true, []],
+                    ['foo', ['bar', 2        ], true , []],
                     ['foo', ['bar', ':foo'   ], false, []],
-                    ['foo', ['bar', ':baz'   ], true, []],
+                    ['foo', ['bar', ':baz'   ], true , []],
                     ['foo', ['bar', [1, 3, 5]], false, []],
-                    ['foo', ['bar', [2, 4, 6]], true, []],
+                    ['foo', ['bar', [2, 4, 6]], true , []],
                 ]
             ]],
             
@@ -134,9 +134,9 @@ EOS
                 'name'  => 'Satisfy',
                 'data'  => ['foo' => 1, 'bar' => 2, 'baz' => 2],
                 'tests' => [
-                    ['foo', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], true, []],
+                    ['foo', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], true , []],
                     ['bar', [function (Context $c) { return $c->value == 1 ? true : $c->appendError("@The {$c->label} is not 1.") ; }], false, ['bar' => ["The Bar is not 1."]]],
-                    ['foo', [function (Context $c) { return $c->value == 1; }                                                        ], true, []],
+                    ['foo', [function (Context $c) { return $c->value == 1; }                                                        ], true , []],
                     ['bar', [function (Context $c) { return $c->value == 1; }                                                        ], false, []],
                 ]
             ]],
@@ -149,14 +149,14 @@ EOS
                 'name'  => 'Required',
                 'data'  => ['null' => null, 'empty_string' => '', 'empty_array' => [], 'zero' => 0, 'zero_string' => '0', 'false' => false, 'array' => [1]],
                 'tests' => [
-                    ['nothing', [], false, ['nothing'      => ["The Nothing field is required."]]],
-                    ['null', [], false, ['null'         => ["The Null field is required."]]],
+                    ['nothing'     , [], false, ['nothing'      => ["The Nothing field is required."]]],
+                    ['null'        , [], false, ['null'         => ["The Null field is required."]]],
                     ['empty_string', [], false, ['empty_string' => ["The Empty String field is required."]]],
-                    ['empty_array', [], false, ['empty_array'  => ["The Empty Array field is required."]]],
-                    ['zero', [], true, []],
-                    ['zero_string', [], true, []],
-                    ['false', [], true, []],
-                    ['array', [], true, []],
+                    ['empty_array' , [], false, ['empty_array'  => ["The Empty Array field is required."]]],
+                    ['zero'        , [], true , []],
+                    ['zero_string' , [], true , []],
+                    ['false'       , [], true , []],
+                    ['array'       , [], true , []],
                 ]
             ]],
 
@@ -167,14 +167,14 @@ EOS
                 'name'  => 'RequiredIf',
                 'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 2],
                 'tests' => [
-                    ['foo', ['nothing', 1        ], true, []],
-                    ['foo', ['baz', 1        ], true, []],
-                    ['foo', ['baz', 2        ], false, ['foo' => ["The Foo field is required when Baz is 2."]]],
-                    ['bar', ['baz', 2        ], true, []],
-                    ['foo', ['baz', [2, 4, 6]], false, ['foo' => ["The Foo field is required when Baz is in 2, 4, 6."]]],
-                    ['foo', ['baz', [1, 3, 5]], true, []],
-                    ['foo', ['baz', ':bar'   ], true, []],
-                    ['foo', ['baz', ':qux'   ], false, ['foo' => ["The Foo field is required when Baz is Qux."]]],
+                    ['foo', ['nothing', 1        ], true , []],
+                    ['foo', ['baz'    , 1        ], true , []],
+                    ['foo', ['baz'    , 2        ], false, ['foo' => ["The Foo field is required when Baz is 2."]]],
+                    ['bar', ['baz'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], false, ['foo' => ["The Foo field is required when Baz is in 2, 4, 6."]]],
+                    ['foo', ['baz'    , [1, 3, 5]], true , []],
+                    ['foo', ['baz'    , ':bar'   ], true , []],
+                    ['foo', ['baz'    , ':qux'   ], false, ['foo' => ["The Foo field is required when Baz is Qux."]]],
                 ]
             ]],
 
@@ -186,13 +186,13 @@ EOS
                 'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => 2],
                 'tests' => [
                     ['foo', ['nothing', 1        ], false, ['foo' => ["The Foo field is required when Nothing is not 1."]]],
-                    ['foo', ['baz', 1        ], false, ['foo' => ["The Foo field is required when Baz is not 1."]]],
-                    ['bar', ['baz', 1        ], true, []],
-                    ['foo', ['baz', 2        ], true, []],
-                    ['foo', ['baz', [2, 4, 6]], true, []],
-                    ['foo', ['baz', [1, 3, 5]], false, ['foo' => ["The Foo field is required when Baz is not in 1, 3, 5."]]],
-                    ['foo', ['baz', ':bar'   ], false, ['foo' => ["The Foo field is required when Baz is not Bar."]]],
-                    ['foo', ['baz', ':qux'   ], true, []],
+                    ['foo', ['baz'    , 1        ], false, ['foo' => ["The Foo field is required when Baz is not 1."]]],
+                    ['bar', ['baz'    , 1        ], true , []],
+                    ['foo', ['baz'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], true , []],
+                    ['foo', ['baz'    , [1, 3, 5]], false, ['foo' => ["The Foo field is required when Baz is not in 1, 3, 5."]]],
+                    ['foo', ['baz'    , ':bar'   ], false, ['foo' => ["The Foo field is required when Baz is not Bar."]]],
+                    ['foo', ['baz'    , ':qux'   ], true , []],
                 ]
             ]],
 
@@ -203,13 +203,13 @@ EOS
                 'name'  => 'RequiredWith',
                 'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 'tests' => [
-                    ['foo', ['nothing'               ], true, []],
+                    ['foo', ['nothing'               ], true , []],
                     ['foo', ['bar'                   ], false, ['foo' => ["The Foo field is required when Bar is present."]]],
-                    ['baz', ['bar'                   ], true, []],
+                    ['baz', ['bar'                   ], true , []],
                     ['foo', [['bar', 'baz']          ], false, ['foo' => ["The Foo field is required when Bar, Baz are present."]]],
-                    ['foo', [['bar', 'baz', 'qux']   ], true, []],
+                    ['foo', [['bar', 'baz', 'qux']   ], true , []],
                     ['foo', [['bar', 'baz', 'qux'], 2], false, ['foo' => ["The Foo field is required when Bar, Baz, Qux are present at least 2."]]],
-                    ['foo', [['qux', 'quxx'], 1], true, []],
+                    ['foo', [['qux', 'quxx']      , 1], true , []],
                 ]
             ]],
 
@@ -222,11 +222,11 @@ EOS
                 'tests' => [
                     ['foo', ['nothing'                ], false, ['foo' => ["The Foo field is required when Nothing is not present."]]],
                     ['foo', ['qux'                    ], false, ['foo' => ["The Foo field is required when Qux is not present."]]],
-                    ['baz', ['qux'                    ], true, []],
+                    ['baz', ['qux'                    ], true , []],
                     ['foo', [['qux', 'quux']          ], false, ['foo' => ["The Foo field is required when Qux, Quux are not present."]]],
-                    ['foo', [['qux', 'quux', 'bar']   ], true, []],
+                    ['foo', [['qux', 'quux', 'bar']   ], true , []],
                     ['foo', [['qux', 'quux', 'bar'], 2], false, ['foo' => ["The Foo field is required when Qux, Quux, Bar are not present at least 2."]]],
-                    ['foo', [['qux', 'bar', 'baz'], 2], true, []],
+                    ['foo', [['qux', 'bar', 'baz'] , 2], true , []],
                 ]
             ]],
 
@@ -237,15 +237,15 @@ EOS
                 'name'  => 'BlankIf',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 'tests' => [
-                    ['foo', ['nothing', 2        ], true, []],
-                    ['foo', ['bar', 2        ], true, []],
-                    ['foo', ['baz', 2        ], false, ['foo' => ["The Foo field must be blank when Baz is 2."]]],
-                    ['qux', ['baz', 2        ], true, []],
-                    ['foo', ['baz', [2, 4, 6]], false, ['foo' => ["The Foo field must be blank when Baz is in 2, 4, 6."]]],
-                    ['foo', ['baz', [1, 3, 5]], true, []],
-                    ['foo', ['bar', ':baz'   ], true, []],
-                    ['foo', ['foo', ':bar'   ], false, ['foo' => ["The Foo field must be blank when Foo is Bar."]]],
-                    ['foo', ['qux', ':quux'  ], false, ['foo' => ["The Foo field must be blank when Qux is Quux."]]],
+                    ['foo', ['nothing', 2        ], true , []],
+                    ['foo', ['bar'    , 2        ], true , []],
+                    ['foo', ['baz'    , 2        ], false, ['foo' => ["The Foo field must be blank when Baz is 2."]]],
+                    ['qux', ['baz'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], false, ['foo' => ["The Foo field must be blank when Baz is in 2, 4, 6."]]],
+                    ['foo', ['baz'    , [1, 3, 5]], true , []],
+                    ['foo', ['bar'    , ':baz'   ], true , []],
+                    ['foo', ['foo'    , ':bar'   ], false, ['foo' => ["The Foo field must be blank when Foo is Bar."]]],
+                    ['foo', ['qux'    , ':quux'  ], false, ['foo' => ["The Foo field must be blank when Qux is Quux."]]],
                 ]
             ]],
 
@@ -257,14 +257,14 @@ EOS
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 'tests' => [
                     ['foo', ['nothing', 2        ], false, ['foo' => ["The Foo field must be blank when Nothing is not 2."]]],
-                    ['foo', ['bar', 2        ], false, ['foo' => ["The Foo field must be blank when Bar is not 2."]]],
-                    ['foo', ['baz', 2        ], true, []],
-                    ['qux', ['bar', 2        ], true, []],
-                    ['foo', ['baz', [2, 4, 6]], true, []],
-                    ['foo', ['baz', [1, 3, 5]], false, ['foo' => ["The Foo field must be blank when Baz is not in 1, 3, 5."]]],
-                    ['foo', ['bar', ':baz'   ], false, ['foo' => ["The Foo field must be blank when Bar is not Baz."]]],
-                    ['foo', ['foo', ':bar'   ], true, []],
-                    ['foo', ['qux', ':quux'  ], true, []],
+                    ['foo', ['bar'    , 2        ], false, ['foo' => ["The Foo field must be blank when Bar is not 2."]]],
+                    ['foo', ['baz'    , 2        ], true , []],
+                    ['qux', ['bar'    , 2        ], true , []],
+                    ['foo', ['baz'    , [2, 4, 6]], true , []],
+                    ['foo', ['baz'    , [1, 3, 5]], false, ['foo' => ["The Foo field must be blank when Baz is not in 1, 3, 5."]]],
+                    ['foo', ['bar'    , ':baz'   ], false, ['foo' => ["The Foo field must be blank when Bar is not Baz."]]],
+                    ['foo', ['foo'    , ':bar'   ], true , []],
+                    ['foo', ['qux'    , ':quux'  ], true , []],
                 ]
             ]],
 
@@ -275,13 +275,13 @@ EOS
                 'name'  => 'BlankWith',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null, 'quux' => null],
                 'tests' => [
-                    ['foo', ['nothing'               ], true, []],
+                    ['foo', ['nothing'               ], true , []],
                     ['foo', ['bar'                   ], false, ['foo' => ["The Foo field must be blank when Bar is present."]]],
-                    ['qux', ['bar'                   ], true, []],
+                    ['qux', ['bar'                   ], true , []],
                     ['foo', [['bar', 'baz']          ], false, ['foo' => ["The Foo field must be blank when Bar, Baz are present."]]],
-                    ['foo', [['bar', 'baz', 'qux']   ], true, []],
+                    ['foo', [['bar', 'baz', 'qux']   ], true , []],
                     ['foo', [['bar', 'baz', 'qux'], 2], false, ['foo' => ["The Foo field must be blank when Bar, Baz, Qux are present at least 2."]]],
-                    ['foo', [['qux', 'quxx'], 1], true, []],
+                    ['foo', [['qux', 'quxx']      , 1], true , []],
                 ]
             ]],
 
@@ -294,11 +294,11 @@ EOS
                 'tests' => [
                     ['foo', ['nothing'                ], false, ['foo' => ["The Foo field must be blank when Nothing is not present."]]],
                     ['foo', ['qux'                    ], false, ['foo' => ["The Foo field must be blank when Qux is not present."]]],
-                    ['qux', ['qux'                    ], true, []],
+                    ['qux', ['qux'                    ], true , []],
                     ['foo', [['qux', 'quux']          ], false, ['foo' => ["The Foo field must be blank when Qux, Quux are not present."]]],
-                    ['foo', [['qux', 'quux', 'bar']   ], true, []],
+                    ['foo', [['qux', 'quux', 'bar']   ], true , []],
                     ['foo', [['qux', 'quux', 'bar'], 2], false, ['foo' => ["The Foo field must be blank when Qux, Quux, Bar are not present at least 2."]]],
-                    ['foo', [['qux', 'bar', 'baz'], 2], true, []],
+                    ['foo', [['qux', 'bar', 'baz'] , 2], true , []],
                 ]
             ]],
 
@@ -309,13 +309,13 @@ EOS
                 'name'  => 'SameAs',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null],
                 'tests' => [
-                    ['nothing', [1               ], true, []],
-                    ['qux', [1               ], true, []],
-                    ['foo', [1               ], true, []],
-                    ['foo', [2               ], false, ['foo' => ["The Foo and 2 must match."]]],
-                    ['foo', [Gender::FEMALE()], false, ['foo' => ["The Foo and 女性 must match."]]], //@todo i18n
-                    ['foo', [':bar'          ], true, []],
-                    ['foo', [':baz'          ], false, ['foo' => ["The Foo and Baz must match."]]],
+                    ['nothing', [1               ], true , []],
+                    ['qux'    , [1               ], true , []],
+                    ['foo'    , [1               ], true , []],
+                    ['foo'    , [2               ], false, ['foo' => ["The Foo and 2 must match."]]],
+                    ['foo'    , [Gender::FEMALE()], false, ['foo' => ["The Foo and 女性 must match."]]], //@todo i18n
+                    ['foo'    , [':bar'          ], true , []],
+                    ['foo'    , [':baz'          ], false, ['foo' => ["The Foo and Baz must match."]]],
                 ]
             ]],
 
@@ -326,12 +326,12 @@ EOS
                 'name'  => 'NotSameAs',
                 'data'  => ['foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => null],
                 'tests' => [
-                    ['nothing', [1     ], true, []],
-                    ['qux', [1     ], true, []],
-                    ['foo', [1     ], false, ['foo' => ["The Foo and 1 must not match."]]],
-                    ['foo', [2     ], true, []],
-                    ['foo', [':bar'], false, ['foo' => ["The Foo and Bar must not match."]]],
-                    ['foo', [':baz'], true, []],
+                    ['nothing', [1     ], true , []],
+                    ['qux'    , [1     ], true , []],
+                    ['foo'    , [1     ], false, ['foo' => ["The Foo and 1 must not match."]]],
+                    ['foo'    , [2     ], true , []],
+                    ['foo'    , [':bar'], false, ['foo' => ["The Foo and Bar must not match."]]],
+                    ['foo'    , [':baz'], true , []],
                 ]
             ]],
 
@@ -340,7 +340,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'Regex',
-                'data'  => ['null' => null, 'foo' => 1, 'bar' => '123', 'baz' => 'abc', 'qux' => ['123', '456', '789'], 'quux' => ['123', 'abc', 'def']],
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => '123', 'baz' => 'abc', 'qux' => ['123','456','789'], 'quux' => ['123','abc','def']],
                 'tests' => [
                     ['nothing', ['/^[0-9]+$/'          ], true , []],
                     ['null'   , ['/^[0-9]+$/'          ], true , []],
@@ -353,7 +353,7 @@ EOS
                         "The 2nd Quux (abc) format is invalid.",
                         "The 3rd Quux (def) format is invalid.",
                     ]]],
-                    ['quux', ['/^[0-9]+$/', 'digits'], false, ['quux' => [
+                    ['quux'   , ['/^[0-9]+$/', 'digits'], false, ['quux' => [
                         "The 2nd Quux (abc) must be digits.",
                         "The 3rd Quux (def) must be digits.",
                     ]]],
@@ -365,7 +365,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'NotRegex',
-                'data'  => ['null' => null, 'foo' => 1, 'bar' => 'abc', 'baz' => '123', 'qux' => ['abc', 'def', 'ghi'], 'quux' => ['abc', '123', '456']],
+                'data'  => ['null' => null, 'foo' => 1, 'bar' => 'abc', 'baz' => '123', 'qux' => ['abc','def','ghi'], 'quux' => ['abc','123','456']],
                 'tests' => [
                     ['nothing', ['/^[0-9]+$/'          ], true , []],
                     ['null'   , ['/^[0-9]+$/'          ], true , []],
@@ -378,7 +378,7 @@ EOS
                         "The 2nd Quux (123) format is invalid.",
                         "The 3rd Quux (456) format is invalid.",
                     ]]],
-                    ['quux', ['/^[0-9]+$/', 'digits'], false, ['quux' => [
+                    ['quux'   , ['/^[0-9]+$/', 'digits'], false, ['quux' => [
                         "The 2nd Quux (123) must contain non-digits characters.",
                         "The 3rd Quux (456) must contain non-digits characters.",
                     ]]],
@@ -390,13 +390,13 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'MaxLength',
-                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'abcd', 'baz' => ['1234', '1', '123', '12345']],
+                'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'abcd', 'baz' => ['1234','1','123','12345']],
                 'tests' => [
-                    ['nothing', [3], true, []],
-                    ['null', [3], true, []],
-                    ['foo', [3], true, []],
-                    ['bar', [3], false, ['bar' => ["The Bar may not be greater than 3 characters."]]],
-                    ['baz', [3], false, ['baz' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [3], true , []],
+                    ['bar'    , [3], false, ['bar' => ["The Bar may not be greater than 3 characters."]]],
+                    ['baz'    , [3], false, ['baz' => [
                         "The 1st Baz (1234) may not be greater than 3 characters.",
                         "The 4th Baz (12345) may not be greater than 3 characters.",
                     ]]],
@@ -410,11 +410,11 @@ EOS
                 'name'  => 'MinLength',
                 'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'ab', 'baz' => ['1234', '1', '123']],
                 'tests' => [
-                    ['nothing', [3], true, []],
-                    ['null', [3], true, []],
-                    ['foo', [3], true, []],
-                    ['bar', [3], false, ['bar' => ["The Bar must be at least 3 characters."]]],
-                    ['baz', [3], false, ['baz' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [3], true , []],
+                    ['bar'    , [3], false, ['bar' => ["The Bar must be at least 3 characters."]]],
+                    ['baz'    , [3], false, ['baz' => [
                         "The 2nd Baz (1) must be at least 3 characters.",
                     ]]],
                 ]
@@ -427,12 +427,12 @@ EOS
                 'name'  => 'Length',
                 'data'  => ['null' => null, 'foo' => 'abc', 'bar' => 'ab', 'baz' => 'abcd', 'qux' => ['1234', '1', '123']],
                 'tests' => [
-                    ['nothing', [3], true, []],
-                    ['null', [3], true, []],
-                    ['foo', [3], true, []],
-                    ['bar', [3], false, ['bar' => ["The Bar must be 3 characters."]]],
-                    ['baz', [3], false, ['baz' => ["The Baz must be 3 characters."]]],
-                    ['qux', [3], false, ['qux' => [
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [3], true , []],
+                    ['bar'    , [3], false, ['bar' => ["The Bar must be 3 characters."]]],
+                    ['baz'    , [3], false, ['baz' => ["The Baz must be 3 characters."]]],
+                    ['qux'    , [3], false, ['qux' => [
                         "The 1st Qux (1234) must be 3 characters.",
                         "The 2nd Qux (1) must be 3 characters.",
                     ]]],
@@ -446,12 +446,12 @@ EOS
                 'name'  => 'Number',
                 'data'  => ['null' => null, 'foo' => '123', 'bar' => 'abc', 'baz' => ['+123.4', '-1234', '1.234', '123'], 'qux' => ['+123.4', '-1,234', '1.234']],
                 'tests' => [
-                    ['nothing', [], true, []],
-                    ['null', [], true, []],
-                    ['foo', [], true, []],
-                    ['bar', [], false, ['bar' => ["The Bar must be number."]]],
-                    ['baz', [], true, []],
-                    ['qux', [], false, ['qux' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar must be number."]]],
+                    ['baz'    , [], true , []],
+                    ['qux'    , [], false, ['qux' => [
                         "The 2nd Qux (-1,234) must be number.",
                     ]]],
                 ]
@@ -464,12 +464,12 @@ EOS
                 'name'  => 'Integer',
                 'data'  => ['null' => null, 'foo' => '123', 'bar' => 'abc', 'baz' => ['+123', '-1234', '+1234'], 'qux' => ['+123.4', '123', 'abc']],
                 'tests' => [
-                    ['nothing', [], true, []],
-                    ['null', [], true, []],
-                    ['foo', [], true, []],
-                    ['bar', [], false, ['bar' => ["The Bar must be integer."]]],
-                    ['baz', [], true, []],
-                    ['qux', [], false, ['qux' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar must be integer."]]],
+                    ['baz'    , [], true , []],
+                    ['qux'    , [], false, ['qux' => [
                         "The 1st Qux (+123.4) must be integer.",
                         "The 3rd Qux (abc) must be integer.",
                     ]]],
@@ -483,14 +483,14 @@ EOS
                 'name'  => 'Float',
                 'data'  => ['null' => null, 'foo' => '123', 'bar' => '123.12', 'baz' => '123.123', 'qux' => 'abc', 'quux' => ['+123', '-123.4', '+12.34'], 'foobar' => ['+123.4', '123.230', 'abc']],
                 'tests' => [
-                    ['nothing', [2], true, []],
-                    ['null', [2], true, []],
-                    ['foo', [2], true, []],
-                    ['bar', [2], true, []],
-                    ['baz', [2], false, ['baz'    => ["The Baz must be real number (up to 2 decimal places)."]]],
-                    ['qux', [2], false, ['qux'    => ["The Qux must be real number (up to 2 decimal places)."]]],
-                    ['quux', [2], true, []],
-                    ['foobar', [2], false, ['foobar' => [
+                    ['nothing', [2], true , []],
+                    ['null'   , [2], true , []],
+                    ['foo'    , [2], true , []],
+                    ['bar'    , [2], true , []],
+                    ['baz'    , [2], false, ['baz'    => ["The Baz must be real number (up to 2 decimal places)."]]],
+                    ['qux'    , [2], false, ['qux'    => ["The Qux must be real number (up to 2 decimal places)."]]],
+                    ['quux'   , [2], true , []],
+                    ['foobar' , [2], false, ['foobar' => [
                         "The 2nd Foobar (123.230) must be real number (up to 2 decimal places).",
                         "The 3rd Foobar (abc) must be real number (up to 2 decimal places).",
                     ]]],
@@ -504,21 +504,21 @@ EOS
                 'name'  => 'MaxNumber',
                 'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
                 'tests' => [
-                    ['nothing', [10   ], true, []],
-                    ['null', [10   ], true, []],
-                    ['foo', [10   ], true, []],
-                    ['bar', [10   ], true, []],
-                    ['baz', [10   ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
-                    ['qux', [10   ], false, ['qux'    => ["The Qux must be integer."]]],
-                    ['qux', [10, 1], false, ['qux'    => ["The Qux may not be greater than 10."]]],
-                    ['quux', [10   ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux', [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
-                    ['foobar', [10   ], false, ['foobar' => [
+                    ['nothing', [10   ], true , []],
+                    ['null'   , [10   ], true , []],
+                    ['foo'    , [10   ], true , []],
+                    ['bar'    , [10   ], true , []],
+                    ['baz'    , [10   ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
+                    ['qux'    , [10   ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1], false, ['qux'    => ["The Qux may not be greater than 10."]]],
+                    ['quux'   , [10   ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10   ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be integer.",
                         "The 5th Foobar (3.5) must be integer.",
                         "The 4th Foobar (123) may not be greater than 10.",
                     ]]],
-                    ['foobar', [10, 1], false, ['foobar' => [
+                    ['foobar' , [10, 1], false, ['foobar' => [
                         "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
                         "The 4th Foobar (123) may not be greater than 10.",
                     ]]],
@@ -532,21 +532,21 @@ EOS
                 'name'  => 'MinNumber',
                 'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
                 'tests' => [
-                    ['nothing', [10   ], true, []],
-                    ['null', [10   ], true, []],
-                    ['foo', [10   ], true, []],
-                    ['bar', [10   ], false, ['bar'    => ["The Bar must be at least 10."]]],
-                    ['baz', [10   ], true, []],
-                    ['qux', [10   ], false, ['qux'    => ["The Qux must be integer."]]],
-                    ['qux', [10, 1], true, []],
-                    ['quux', [10   ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux', [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
-                    ['foobar', [10   ], false, ['foobar' => [
+                    ['nothing', [10   ], true , []],
+                    ['null'   , [10   ], true , []],
+                    ['foo'    , [10   ], true , []],
+                    ['bar'    , [10   ], false, ['bar'    => ["The Bar must be at least 10."]]],
+                    ['baz'    , [10   ], true , []],
+                    ['qux'    , [10   ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1], true , []],
+                    ['quux'   , [10   ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10   ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be integer.",
                         "The 5th Foobar (3.5) must be integer.",
                         "The 3rd Foobar (2) must be at least 10.",
                     ]]],
-                    ['foobar', [10, 1], false, ['foobar' => [
+                    ['foobar' , [10, 1], false, ['foobar' => [
                         "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
                         "The 3rd Foobar (2) must be at least 10.",
                         "The 5th Foobar (3.5) must be at least 10.",
@@ -561,17 +561,17 @@ EOS
                 'name'  => 'Email',
                 'data'  => ['null' => null, 'foo' => 'foo@rebet.com', 'bar' => '.bar@rebet.com', 'baz' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
                 'tests' => [
-                    ['nothing', [     ], true, []],
-                    ['null', [     ], true, []],
-                    ['foo', [     ], true, []],
-                    ['bar', [     ], false, ['bar' => ["The Bar must be a valid email address."]]],
-                    ['bar', [false], true, []],
-                    ['baz', [     ], false, ['baz' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], false, ['bar' => ["The Bar must be a valid email address."]]],
+                    ['bar'    , [false], true , []],
+                    ['baz'    , [     ], false, ['baz' => [
                         "The 2nd Baz (.bar@rebet.com) must be a valid email address.",
                         "The 3rd Baz (abc) must be a valid email address.",
                         "The 5th Baz (foo..baz@rebet.com) must be a valid email address.",
                     ]]],
-                    ['baz', [false], false, ['baz' => [
+                    ['baz'    , [false], false, ['baz' => [
                         "The 3rd Baz (abc) must be a valid email address.",
                     ]]],
                 ]
@@ -584,18 +584,18 @@ EOS
                 'name'  => 'Url',
                 'data'  => ['null' => null, 'foo' => 'https://github.com/rebet/rebet', 'bar' => 'https://invalid[bar]/rebet', 'baz' => 'https://invalid.local/rebet', 'qux' => ['https://github.com/rebet/rebet', 'https://invalid[bar]/rebet', 'https://invalid.local/rebet']],
                 'tests' => [
-                    ['nothing', [    ], true, []],
-                    ['null', [    ], true, []],
-                    ['foo', [    ], true, []],
-                    ['foo', [true], true, []],
-                    ['bar', [    ], false, ['bar' => ["The Bar format is invalid."]]],
-                    ['bar', [true], false, ['bar' => ["The Bar format is invalid."]]],
-                    ['baz', [    ], true, []],
-                    ['baz', [true], false, ['baz' => ["The Baz is not a valid URL."]]],
-                    ['qux', [    ], false, ['qux' => [
+                    ['nothing', [    ], true , []],
+                    ['null'   , [    ], true , []],
+                    ['foo'    , [    ], true , []],
+                    ['foo'    , [true], true , []],
+                    ['bar'    , [    ], false, ['bar' => ["The Bar format is invalid."]]],
+                    ['bar'    , [true], false, ['bar' => ["The Bar format is invalid."]]],
+                    ['baz'    , [    ], true , []],
+                    ['baz'    , [true], false, ['baz' => ["The Baz is not a valid URL."]]],
+                    ['qux'    , [    ], false, ['qux' => [
                         "The 2nd Qux (https://invalid[bar]/rebet) format is invalid.",
                     ]]],
-                    ['qux', [true], false, ['qux' => [
+                    ['qux'    , [true], false, ['qux' => [
                         "The 2nd Qux (https://invalid[bar]/rebet) format is invalid.",
                         "The 3rd Qux (https://invalid.local/rebet) is not a valid URL.",
                     ]]],
@@ -608,11 +608,11 @@ EOS
             [[
                 'name'  => 'Ipv4',
                 'data'  => [
-                    'null'   => null,
-                    'foo'    => '192.168.1.1',
-                    'bar'    => '192.168.1.0/24',
-                    'baz'    => '192.168.1.256',
-                    'qux'    => '192.168.1.0/33',
+                    'null'   => null, 
+                    'foo'    => '192.168.1.1', 
+                    'bar'    => '192.168.1.0/24', 
+                    'baz'    => '192.168.1.256', 
+                    'qux'    => '192.168.1.0/33', 
                     'quux'   => ['192.168.1.1', '192.168.1.3', '192.168.2.0/24'],
                     'foobar' => <<<EOS
 192.168.1.1
@@ -621,7 +621,7 @@ EOS
 192.168.2.0/24
 EOS
                     ,
-                    'foobaz' => ['192.168.1.1', 'abc', '192.168.2.0/24', '192.168.2.0/34'],
+                    'foobaz' => ['192.168.1.1', 'abc', '192.168.2.0/24','192.168.2.0/34'],
                     'fooqux' => <<<EOS
 192.168.1.1
 abc
@@ -632,19 +632,19 @@ EOS
                     ,
                 ],
                 'tests' => [
-                    ['nothing', [    ], true, []],
-                    ['null', [    ], true, []],
-                    ['foo', [    ], true, []],
-                    ['bar', [    ], true, []],
-                    ['baz', [    ], false, ['baz' => ["The Baz must be a valid IPv4(CIDR) address."]]],
-                    ['qux', [    ], false, ['qux' => ["The Qux must be a valid IPv4(CIDR) address."]]],
-                    ['quux', [    ], true, []],
-                    ['foobar', ["\n"], true, []],
-                    ['foobaz', [    ], false, ['foobaz' => [
+                    ['nothing', [    ], true , []],
+                    ['null'   , [    ], true , []],
+                    ['foo'    , [    ], true , []],
+                    ['bar'    , [    ], true , []],
+                    ['baz'    , [    ], false, ['baz' => ["The Baz must be a valid IPv4(CIDR) address."]]],
+                    ['qux'    , [    ], false, ['qux' => ["The Qux must be a valid IPv4(CIDR) address."]]],
+                    ['quux'   , [    ], true , []],
+                    ['foobar' , ["\n"], true , []],
+                    ['foobaz' , [    ], false, ['foobaz' => [
                         "The 2nd Foobaz (abc) must be a valid IPv4(CIDR) address.",
                         "The 4th Foobaz (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
                     ]]],
-                    ['fooqux', ["\n"], false, ['fooqux' => [
+                    ['fooqux' , ["\n"], false, ['fooqux' => [
                         "The 2nd Fooqux (abc) must be a valid IPv4(CIDR) address.",
                         "The 4th Fooqux (192.168.2.0/34) must be a valid IPv4(CIDR) address.",
                     ]]],
@@ -658,12 +658,12 @@ EOS
                 'name'  => 'Digit',
                 'data'  => ['null' => null, 'foo' => '123456', 'bar' => '123abc', 'baz' => '１２３', 'qux' => ['１２３', '123', 'abc', 987]],
                 'tests' => [
-                    ['nothing', [], true, []],
-                    ['null', [], true, []],
-                    ['foo', [], true, []],
-                    ['bar', [], false, ['bar' => ["The Bar may only contain digits."]]],
-                    ['baz', [], false, ['baz' => ["The Baz may only contain digits."]]],
-                    ['qux', [], false, ['qux' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar may only contain digits."]]],
+                    ['baz'    , [], false, ['baz' => ["The Baz may only contain digits."]]],
+                    ['qux'    , [], false, ['qux' => [
                         "The 1st Qux (１２３) may only contain digits.",
                         "The 3rd Qux (abc) may only contain digits.",
                     ]]],
@@ -677,12 +677,12 @@ EOS
                 'name'  => 'Alpha',
                 'data'  => ['null' => null, 'foo' => 'abcDEF', 'bar' => '123abc', 'baz' => 'ＡＢＣ', 'qux' => ['ABC', '123', 'abc', 987]],
                 'tests' => [
-                    ['nothing', [], true, []],
-                    ['null', [], true, []],
-                    ['foo', [], true, []],
-                    ['bar', [], false, ['bar' => ["The Bar may only contain letters."]]],
-                    ['baz', [], false, ['baz' => ["The Baz may only contain letters."]]],
-                    ['qux', [], false, ['qux' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar may only contain letters."]]],
+                    ['baz'    , [], false, ['baz' => ["The Baz may only contain letters."]]],
+                    ['qux'    , [], false, ['qux' => [
                         "The 2nd Qux (123) may only contain letters.",
                         "The 4th Qux (987) may only contain letters.",
                     ]]],
@@ -696,12 +696,12 @@ EOS
                 'name'  => 'AlphaDigit',
                 'data'  => ['null' => null, 'foo' => '123abcDEF', 'bar' => '123-abc', 'baz' => 'ＡＢＣ', 'qux' => ['ABC', '123', 'あいう', 'abc', 987]],
                 'tests' => [
-                    ['nothing', [], true, []],
-                    ['null', [], true, []],
-                    ['foo', [], true, []],
-                    ['bar', [], false, ['bar' => ["The Bar may only contain letters or digits."]]],
-                    ['baz', [], false, ['baz' => ["The Baz may only contain letters or digits."]]],
-                    ['qux', [], false, ['qux' => [
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], false, ['bar' => ["The Bar may only contain letters or digits."]]],
+                    ['baz'    , [], false, ['baz' => ["The Baz may only contain letters or digits."]]],
+                    ['qux'    , [], false, ['qux' => [
                         "The 3rd Qux (あいう) may only contain letters or digits.",
                     ]]],
                 ]
@@ -714,14 +714,14 @@ EOS
                 'name'  => 'AlphaDigitMark',
                 'data'  => ['null' => null, 'foo' => '123abcDEF', 'bar' => '[123-abc]', 'baz' => 'ＡＢＣ', 'qux' => ['123-abc', '1,234', 'FOO_BAR', 123, 'foo@rebet.com']],
                 'tests' => [
-                    ['nothing', [     ], true, []],
-                    ['null', [     ], true, []],
-                    ['foo', [     ], true, []],
-                    ['bar', [     ], true, []],
-                    ['bar', ["-_" ], false, ['bar' => ["The Bar may only contain letters, digits or marks (include -_)."]]],
-                    ['bar', ["-[]"], true, []],
-                    ['baz', [     ], false, ['baz' => ["The Baz may only contain letters, digits or marks (include !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ )."]]],
-                    ['qux', ["-_" ], false, ['qux' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], true , []],
+                    ['bar'    , ["-_" ], false, ['bar' => ["The Bar may only contain letters, digits or marks (include -_)."]]],
+                    ['bar'    , ["-[]"], true , []],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz may only contain letters, digits or marks (include !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ )."]]],
+                    ['qux'    , ["-_" ], false, ['qux' => [
                         "The 2nd Qux (1,234) may only contain letters, digits or marks (include -_).",
                         "The 5th Qux (foo@rebet.com) may only contain letters, digits or marks (include -_).",
                     ]]],
@@ -735,13 +735,13 @@ EOS
                 'name'  => 'Hiragana',
                 'data'  => ['null' => null, 'foo' => 'あいうえお', 'bar' => 'abc', 'baz' => 'あいう　えお', 'qux' => ['a', 'ア', 'あ', '1']],
                 'tests' => [
-                    ['nothing', [     ], true, []],
-                    ['null', [     ], true, []],
-                    ['foo', [     ], true, []],
-                    ['bar', [     ], false, ['bar' => ["The Bar may only contain Hiragana in Japanese."]]],
-                    ['baz', [     ], false, ['baz' => ["The Baz may only contain Hiragana in Japanese."]]],
-                    ['baz', ['　 '], true, []],
-                    ['qux', [     ], false, ['qux' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], false, ['bar' => ["The Bar may only contain Hiragana in Japanese."]]],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz may only contain Hiragana in Japanese."]]],
+                    ['baz'    , ['　 '], true , []],
+                    ['qux'    , [     ], false, ['qux' => [
                         "The 1st Qux (a) may only contain Hiragana in Japanese.",
                         "The 2nd Qux (ア) may only contain Hiragana in Japanese.",
                         "The 4th Qux (1) may only contain Hiragana in Japanese.",
@@ -756,14 +756,14 @@ EOS
                 'name'  => 'Kana',
                 'data'  => ['null' => null, 'foo' => 'アイウエオ', 'bar' => 'ｱｲｳｴｵ', 'baz' => 'abc', 'qux' => 'アイウ　エオ', 'quux' => ['a', 'ア', 'あ', '1']],
                 'tests' => [
-                    ['nothing', [     ], true, []],
-                    ['null', [     ], true, []],
-                    ['foo', [     ], true, []],
-                    ['bar', [     ], false, ['bar' => ["The Bar may only contain full width Kana in Japanese."]]],
-                    ['baz', [     ], false, ['baz' => ["The Baz may only contain full width Kana in Japanese."]]],
-                    ['qux', [     ], false, ['qux' => ["The Qux may only contain full width Kana in Japanese."]]],
-                    ['qux', ['　 '], true, []],
-                    ['quux', [     ], false, ['quux' => [
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], false, ['bar' => ["The Bar may only contain full width Kana in Japanese."]]],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz may only contain full width Kana in Japanese."]]],
+                    ['qux'    , [     ], false, ['qux' => ["The Qux may only contain full width Kana in Japanese."]]],
+                    ['qux'    , ['　 '], true , []],
+                    ['quux'   , [     ], false, ['quux' => [
                         "The 1st Quux (a) may only contain full width Kana in Japanese.",
                         "The 3rd Quux (あ) may only contain full width Kana in Japanese.",
                         "The 4th Quux (1) may only contain full width Kana in Japanese.",
@@ -776,7 +776,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'DependenceChar',
-                'data'  => ['null' => null, 'foo' => 'aA1$Ａアあ漢字髙①', 'bar' => 'aA1$Ａア♬あ漢字髙①', 'baz' => ['aA1', '$Ａア', '♬あ', '漢字', '髙', '①②']],
+                'data'  => ['null' => null, 'foo' => 'aA1$Ａアあ漢字髙①', 'bar' => 'aA1$Ａア♬あ漢字髙①', 'baz' => ['aA1','$Ａア','♬あ','漢字','髙','①②']],
                 'tests' => [
                     ['nothing', [             ], true , []],
                     ['null'   , [             ], true , []],
@@ -799,8 +799,8 @@ EOS
                 'name'  => 'NgWord',
                 'data'  => [
                     'null' => null,
-                    'aaa'  => 'foo bar',
-                    'bbb'  => 'foo bar baz qux',
+                    'aaa'  => 'foo bar', 
+                    'bbb'  => 'foo bar baz qux', 
                     'ccc'  => 'foo bar b.a.z qux',
                     'ddd'  => 'foo bar.b*z qux',
                     'eee'  => 'foo bar.b** qux',
@@ -809,21 +809,21 @@ EOS
                     'hhh'  => ['foo bar', 'bar.b@z', 'ḎU**Ⓨ qux', 'はこだてストリート'],
                 ],
                 'tests' => [
-                    ['nothing', [['baz', 'dummy']], true, []],
-                    ['null', [['baz', 'dummy']], true, []],
-                    ['aaa', [['baz', 'dummy']], true, []],
-                    ['aaa', [$ng_word_file   ], true, []],
-                    ['bbb', [['baz', 'dummy']], false, ['bbb' => ["The Bbb must not contain the word 'baz'."]]],
-                    ['ccc', [['baz', 'dummy']], false, ['ccc' => ["The Ccc must not contain the word 'b.a.z'."]]],
-                    ['ddd', [['baz', 'dummy']], false, ['ddd' => ["The Ddd must not contain the word 'b*z'."]]],
-                    ['eee', [['baz', 'dummy']], true, []],
-                    ['fff', [['baz', 'dummy']], false, ['fff' => ["The Fff must not contain the word 'Ḏ*ṃɱɏ'."]]],
-                    ['ggg', [$ng_word_file   ], false, ['ggg' => ["The Ggg must not contain the word 'てすと'."]]],
-                    ['hhh', [['baz', 'dummy', 'テスト']], false, ['hhh' => [
+                    ['nothing', [['baz', 'dummy']], true , []],
+                    ['null'   , [['baz', 'dummy']], true , []],
+                    ['aaa'    , [['baz', 'dummy']], true , []],
+                    ['aaa'    , [$ng_word_file   ], true , []],
+                    ['bbb'    , [['baz', 'dummy']], false, ['bbb' => ["The Bbb must not contain the word 'baz'."]]],
+                    ['ccc'    , [['baz', 'dummy']], false, ['ccc' => ["The Ccc must not contain the word 'b.a.z'."]]],
+                    ['ddd'    , [['baz', 'dummy']], false, ['ddd' => ["The Ddd must not contain the word 'b*z'."]]],
+                    ['eee'    , [['baz', 'dummy']], true , []],
+                    ['fff'    , [['baz', 'dummy']], false, ['fff' => ["The Fff must not contain the word 'Ḏ*ṃɱɏ'."]]],
+                    ['ggg'    , [$ng_word_file   ], false, ['ggg' => ["The Ggg must not contain the word 'てすと'."]]],
+                    ['hhh'    , [['baz', 'dummy', 'テスト']], false, ['hhh' => [
                         "The 2nd Hhh (bar.b@z) must not contain the word 'b@z'.",
                         "The 3rd Hhh (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
                     ]]],
-                    ['hhh', [['baz', 'dummy', 'テスト'], '[\p{Z}\p{P}]?'], false, ['hhh' => [
+                    ['hhh'    , [['baz', 'dummy', 'テスト'], '[\p{Z}\p{P}]?'], false, ['hhh' => [
                         "The 2nd Hhh (bar.b@z) must not contain the word 'b@z'.",
                         "The 3rd Hhh (ḎU**Ⓨ qux) must not contain the word 'ḎU**Ⓨ'.",
                         "The 4th Hhh (はこだてストリート) must not contain the word 'てスト'.",
@@ -838,11 +838,11 @@ EOS
                 'name'  => 'Contains',
                 'data'  => ['null' => null, 'foo' => '1', 'bar' => '3', 'baz' => [1, 'a', '2', 3]],
                 'tests' => [
-                    ['nothing', [Gender::values()], true, []],
-                    ['null', [Gender::values()], true, []],
-                    ['foo', [Gender::values()], true, []],
-                    ['bar', [Gender::values()], false, ['bar' => ['The Bar must be selected from the specified list.']]],
-                    ['baz', [Gender::values()], false, ['baz' => [
+                    ['nothing', [Gender::values()], true , []],
+                    ['null'   , [Gender::values()], true , []],
+                    ['foo'    , [Gender::values()], true , []],
+                    ['bar'    , [Gender::values()], false, ['bar' => ['The Bar must be selected from the specified list.']]],
+                    ['baz'    , [Gender::values()], false, ['baz' => [
                         "The 2nd Baz must be selected from the specified list.",
                         "The 4th Baz must be selected from the specified list.",
                     ]]],
@@ -857,13 +857,13 @@ EOS
                 'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
                 'tests' => [
                     ['nothing', [3], false, ['nothing' => ["The Nothing must have at least 3 items."]]],
-                    ['null', [3], false, ['null'    => ["The Null must have at least 3 items."]]],
-                    ['foo', [1], false, ['foo'     => ["The Foo must have at least 1 item."]]],
-                    ['bar', [3], false, ['bar'     => ["The Bar must have at least 3 items."]]],
-                    ['bar', [1], true, []],
-                    ['baz', [4], false, ['baz'     => ["The Baz must have at least 4 items."]]],
-                    ['baz', [3], true, []],
-                    ['baz', [2], true, []],
+                    ['null'   , [3], false, ['null'    => ["The Null must have at least 3 items."]]],
+                    ['foo'    , [1], false, ['foo'     => ["The Foo must have at least 1 item."]]],
+                    ['bar'    , [3], false, ['bar'     => ["The Bar must have at least 3 items."]]],
+                    ['bar'    , [1], true , []],
+                    ['baz'    , [4], false, ['baz'     => ["The Baz must have at least 4 items."]]],
+                    ['baz'    , [3], true , []],
+                    ['baz'    , [2], true , []],
                 ]
             ]],
 
@@ -874,15 +874,15 @@ EOS
                 'name'  => 'MaxCount',
                 'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
                 'tests' => [
-                    ['nothing', [3], true, []],
-                    ['null', [3], true, []],
-                    ['foo', [1], true, []],
-                    ['bar', [3], true, []],
-                    ['bar', [1], true, []],
-                    ['baz', [4], true, []],
-                    ['baz', [3], true, []],
-                    ['baz', [2], false, ['baz' => ["The Baz may not have more than 2 items."]]],
-                    ['baz', [1], false, ['baz' => ["The Baz may not have more than 1 item."]]],
+                    ['nothing', [3], true , []],
+                    ['null'   , [3], true , []],
+                    ['foo'    , [1], true , []],
+                    ['bar'    , [3], true , []],
+                    ['bar'    , [1], true , []],
+                    ['baz'    , [4], true , []],
+                    ['baz'    , [3], true , []],
+                    ['baz'    , [2], false, ['baz' => ["The Baz may not have more than 2 items."]]],
+                    ['baz'    , [1], false, ['baz' => ["The Baz may not have more than 1 item."]]],
                 ]
             ]],
 
@@ -894,14 +894,14 @@ EOS
                 'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
                 'tests' => [
                     ['nothing', [3], false, ['nothing' => ["The Nothing must have 3 items."]]],
-                    ['null', [3], false, ['null'    => ["The Null must have 3 items."]]],
-                    ['foo', [3], false, ['foo'     => ["The Foo must have 3 items."]]],
-                    ['bar', [3], false, ['bar'     => ["The Bar must have 3 items."]]],
-                    ['bar', [1], true, []],
-                    ['baz', [4], false, ['baz'     => ["The Baz must have 4 items."]]],
-                    ['baz', [3], true, []],
-                    ['baz', [2], false, ['baz'     => ["The Baz must have 2 items."]]],
-                    ['baz', [1], false, ['baz'     => ["The Baz must have 1 item."]]],
+                    ['null'   , [3], false, ['null'    => ["The Null must have 3 items."]]],
+                    ['foo'    , [3], false, ['foo'     => ["The Foo must have 3 items."]]],
+                    ['bar'    , [3], false, ['bar'     => ["The Bar must have 3 items."]]],
+                    ['bar'    , [1], true , []],
+                    ['baz'    , [4], false, ['baz'     => ["The Baz must have 4 items."]]],
+                    ['baz'    , [3], true , []],
+                    ['baz'    , [2], false, ['baz'     => ["The Baz must have 2 items."]]],
+                    ['baz'    , [1], false, ['baz'     => ["The Baz must have 1 item."]]],
                 ]
             ]],
 
@@ -912,12 +912,12 @@ EOS
                 'name'  => 'Unique',
                 'data'  => ['null' => null, 'foo' => 1, 'bar' => [1, 2, 3, 'a'], 'baz' => [1, 2, 1, 'a'], 'qux' => [1, 2, 1, 'a', 'b', 'a']],
                 'tests' => [
-                    ['nothing', [], true, []],
-                    ['null', [], true, []],
-                    ['foo', [], true, []],
-                    ['bar', [], true, []],
-                    ['baz', [], false, ['baz' => ["The Baz must be entered a different value. [1] was duplicated."]]],
-                    ['qux', [], false, ['qux' => ["The Qux must be entered a different value. [1, a] were duplicated."]]],
+                    ['nothing', [], true , []],
+                    ['null'   , [], true , []],
+                    ['foo'    , [], true , []],
+                    ['bar'    , [], true , []],
+                    ['baz'    , [], false, ['baz' => ["The Baz must be entered a different value. [1] was duplicated."]]],
+                    ['qux'    , [], false, ['qux' => ["The Qux must be entered a different value. [1, a] were duplicated."]]],
                 ]
             ]],
 
@@ -926,7 +926,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'Datetime',
-                'data'  => ['null' => null, 'empty' => '', 'foo' => '2010-01-23', 'bar' => '2010-02-31', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010|01|23', 'quux' => ['2010-01-23', 'abc', '2010|01|23']],
+                'data'  => ['null' => null, 'empty' => '', 'foo' => '2010-01-23', 'bar' => '2010-02-31', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010|01|23', 'quux' => ['2010-01-23', 'abc','2010|01|23']],
                 'tests' => [
                     ['nothing', [         ], true , []],
                     ['null'   , [         ], true , []],
@@ -950,21 +950,21 @@ EOS
                 'name'  => 'FutureThan',
                 'data'  => ['null' => null, 'foo' => '2100-01-01', 'bar' => '1999-01-01', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010-01-23 12:34:57', 'quux' => ['2100-01-01', '1999-01-01']],
                 'tests' => [
-                    ['nothing', ['now'              ], true, []],
-                    ['null', ['now'              ], true, []],
-                    ['foo', ['now'              ], true, []],
-                    ['bar', ['now'              ], false, ['bar' => ["The Bar must be a date future than now."]]],
-                    ['bar', ['10 September 2000'], false, ['bar' => ["The Bar must be a date future than 10 September 2000."]]],
-                    ['bar', ['2000/01/01'       ], false, ['bar' => ["The Bar must be a date future than 2000/01/01."]]],
-                    ['bar', [DateTime::now()    ], false, ['bar' => ["The Bar must be a date future than 2010-01-23 12:34:56."]]],
-                    ['baz', ['now'              ], false, ['baz' => ["The Baz must be a date future than now."]]],
-                    ['baz', [':qux'             ], false, ['baz' => ["The Baz must be a date future than Qux."]]],
-                    ['qux', ['now'              ], true, []],
-                    ['qux', [':baz'             ], true, []],
-                    ['quux', ['now'              ], false, ['quux' => [
+                    ['nothing', ['now'              ], true , []],
+                    ['null'   , ['now'              ], true , []],
+                    ['foo'    , ['now'              ], true , []],
+                    ['bar'    , ['now'              ], false, ['bar' => ["The Bar must be a date future than now."]]],
+                    ['bar'    , ['10 September 2000'], false, ['bar' => ["The Bar must be a date future than 10 September 2000."]]],
+                    ['bar'    , ['2000/01/01'       ], false, ['bar' => ["The Bar must be a date future than 2000/01/01."]]],
+                    ['bar'    , [DateTime::now()    ], false, ['bar' => ["The Bar must be a date future than 2010-01-23 12:34:56."]]],
+                    ['baz'    , ['now'              ], false, ['baz' => ["The Baz must be a date future than now."]]],
+                    ['baz'    , [':qux'             ], false, ['baz' => ["The Baz must be a date future than Qux."]]],
+                    ['qux'    , ['now'              ], true , []],
+                    ['qux'    , [':baz'             ], true , []],
+                    ['quux'   , ['now'              ], false, ['quux' => [
                         "The 2nd Quux (1999-01-01) must be a date future than now."
                     ]]],
-                    ['quux', [':baz'             ], false, ['quux' => [
+                    ['quux'   , [':baz'             ], false, ['quux' => [
                         "The 2nd Quux (1999-01-01) must be a date future than Baz."
                     ]]],
                 ]
