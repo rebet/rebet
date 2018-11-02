@@ -21,7 +21,7 @@ use Rebet\Translation\Translator;
  *
  * => Gender::MALE() // Access Enum Object
  *
- * // 定数不要系
+ * // Without Const
  * class Gender extends Enum {
  *     protected static function generate() {
  *         return [
@@ -31,7 +31,7 @@ use Rebet\Translation\Translator;
  *     }
  * }
  *
- * // メソッド拡張系
+ * // Method extension
  * class Gender extends Enum {
  *     const MALE   = [1, 'Male'];
  *     const FEMALE = [2, 'Female'];
@@ -40,7 +40,7 @@ use Rebet\Translation\Translator;
  *     public function isFemale() { return $this->value === 2; }
  * }
  *
- * // フィールド拡張系
+ * // Field extension
  * class AcceptStatus extends Enum {
  *     const WAITING  = [1, '待機中', 'orange', 'far fa-clock'];
  *     const ACCEPTED = [2, '受理'  , 'green' , 'fas fa-check-circle'];
@@ -56,13 +56,13 @@ use Rebet\Translation\Translator;
  *     }
  * }
  *
- * // 匿名クラス拡張系
+ * // Anonymous  class extension
  * abstract class JobOfferCsvFormat extends Enum {
  *     public abstract function convert(array $row) : UserForm ;
  *
  *     protected static function generate() {
  *         return [
- *              new class(1, '求人サイトA') extends JobOfferCsvFormat {
+ *              new class(1, 'Job Site A') extends JobOfferCsvFormat {
  *                  public function convert(array $row) : UserForm {
  *                      $form = new UserForm();
  *                      (snip)
@@ -71,7 +71,7 @@ use Rebet\Translation\Translator;
  *                      return $form;
  *                  }
  *              },
- *              new class(2, '求人サイトB') extends JobOfferCsvFormat {
+ *              new class(2, 'Job Site B') extends JobOfferCsvFormat {
  *                  public function convert(array $row) : UserForm {
  *                      $form = new UserForm();
  *                      (snip)
@@ -84,7 +84,7 @@ use Rebet\Translation\Translator;
  *     }
  * }
  *
- * // DBマスタ参照系
+ * // Database master reference
  * class Prefecture extends Enum {
  *     public function __construct() {
  *         parent::__construct(null, null);
