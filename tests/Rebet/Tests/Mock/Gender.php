@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock;
 
-use Rebet\Common\Enum;
+use Rebet\Enum\Enum;
 
 class Gender extends Enum
 {

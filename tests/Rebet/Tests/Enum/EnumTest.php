@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Common\Enum;
+use Rebet\Enum\Enum;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
 

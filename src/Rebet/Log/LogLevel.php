@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Log;
 
-use Rebet\Common\Enum;
+use Rebet\Enum\Enum;
 
 /**
  * ログレベル

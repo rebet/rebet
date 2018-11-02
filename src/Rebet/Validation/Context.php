@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Common\Enum;
+use Rebet\Enum\Enum;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;

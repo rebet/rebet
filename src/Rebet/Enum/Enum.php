@@ -1,5 +1,9 @@
 <?php
-namespace Rebet\Common;
+namespace Rebet\Enum;
+
+use Rebet\Common\Convertible;
+use Rebet\Common\Reflector;
+
 
 /**
  * 列挙 クラス

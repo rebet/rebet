@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Routing;
 
 use org\bovigo\vfs\vfsStream;
-use Rebet\Common\Enum;
+use Rebet\Enum\Enum;
 
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
