@@ -114,20 +114,6 @@ abstract class Enum implements \JsonSerializable, Convertible
     }
 
     /**
-     * Get the translator for enums.
-     *
-     * @return Translator
-     */
-    public static function translator() : Translator
-    {
-        if (static::$translator) {
-            return static::$translator;
-        }
-        static::$translator = new Translator(new FileLoader(Enum::config('resources.i18n', false, [])));
-        return static::$translator;
-    }
-
-    /**
      * Enum Data Cache
      *
      * self::$enum_data_cache = [
@@ -200,6 +186,21 @@ abstract class Enum implements \JsonSerializable, Convertible
             static::$enum_map_cache  = [];
         }
         static::$translator = null;
+    }
+
+    /**
+     * Get the translator for enums.
+     *
+     * @return Translator
+     */
+    protected static function translator() : Translator
+    {
+        if (static::$translator) {
+            return static::$translator;
+        }
+        static::$translator = new Translator(new FileLoader(Enum::config('resources.i18n', false, [])));
+
+        return static::$translator;
     }
 
     /**
@@ -407,7 +408,7 @@ abstract class Enum implements \JsonSerializable, Convertible
         
         $maps = [];
         foreach (self::lists() as $enum) {
-            $maps[$translate ? $enum->translate($field) : $enum->$field] = $enum;
+            $maps[$translate ? $enum->translate($field, $locale) : $enum->$field] = $enum;
         }
         self::$enum_map_cache[$key] = $maps;
         
