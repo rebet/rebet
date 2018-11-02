@@ -1,10 +1,8 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
 use Rebet\Config\ConfigPromise;
+use Rebet\Tests\RebetTestCase;
 
 class ConfigPromiseTest extends RebetTestCase
 {

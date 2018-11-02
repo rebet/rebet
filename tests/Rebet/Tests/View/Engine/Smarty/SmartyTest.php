@@ -1,13 +1,11 @@
 <?php
 namespace Rebet\Tests\View\Engine\Smarty;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\View\Engine\Smarty\Smarty;
-
 use org\bovigo\vfs\vfsStream;
 use Rebet\Foundation\App;
-use Rebet\View\View;
-use Rebet\Config\Config;
+
+use Rebet\Tests\RebetTestCase;
+use Rebet\View\Engine\Smarty\Smarty;
 
 class SmartyTest extends RebetTestCase
 {

@@ -1,20 +1,16 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Config\Configurable;
-use Rebet\File\Files;
-use Rebet\Config\Config;
-use Rebet\Config\LocaleResource;
-use Rebet\Translation\Translator;
-use Rebet\Translation\FileLoader;
-use Rebet\Common\Collection;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
 use Rebet\Common\Arrays;
-use Rebet\Common\Utils;
+use Rebet\Common\Strings;
 use Rebet\Common\System;
-use Rebet\Config\Resource;
+use Rebet\Common\Utils;
+use Rebet\Config\Config;
+use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\File\Files;
+use Rebet\Translation\FileLoader;
+use Rebet\Translation\Translator;
 
 /**
  * BuiltinValidations Class
@@ -27,6 +23,7 @@ use Rebet\DateTime\DateTime;
 class BuiltinValidations extends Validations
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return static::parentConfigOverride([
@@ -187,6 +184,7 @@ class BuiltinValidations extends Validations
     // ====================================================
     // Built-in Validation Methods
     // ====================================================
+
     /**
      * Satisfy validation/condition
      *
@@ -439,7 +437,7 @@ class BuiltinValidations extends Validations
      */
     public function validationSameAs(Context $c, $value) : bool
     {
-        if ($c->blank()) { 
+        if ($c->blank()) {
             return true;
         }
         [$value, $label] = $c->resolve($value);
@@ -501,7 +499,7 @@ class BuiltinValidations extends Validations
             if (!$test($value)) {
                 $replacement['nth']   = $c->ordinalize($i + 1);
                 $replacement['value'] = $value;
-                $valid = $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
+                $valid                = $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
                 if ($kind->equals(Kind::TYPE_CONSISTENCY_CHECK())) {
                     $error_indices[$i] = true;
                 }
@@ -944,10 +942,10 @@ class BuiltinValidations extends Validations
     public function validationNgWord(Context $c, $ng_words, ?string $word_split_pattern = null, ?string $delimiter_pattern = null, ?string $omission_pattern = null, ?int $omission_length = null, ?float $omission_ratio = null) : bool
     {
         $word_split_pattern = $word_split_pattern ?? static::config('default.NgWord.word_split_pattern') ;
-        $delimiter_pattern  = $delimiter_pattern  ?? static::config('default.NgWord.delimiter_pattern') ;
-        $omission_pattern   = $omission_pattern   ?? static::config('default.NgWord.omission_pattern') ;
-        $omission_length    = $omission_length    ?? static::config('default.NgWord.omission_length') ;
-        $omission_ratio     = $omission_ratio     ?? static::config('default.NgWord.omission_ratio') ;
+        $delimiter_pattern  = $delimiter_pattern ?? static::config('default.NgWord.delimiter_pattern') ;
+        $omission_pattern   = $omission_pattern ?? static::config('default.NgWord.omission_pattern') ;
+        $omission_length    = $omission_length ?? static::config('default.NgWord.omission_length') ;
+        $omission_ratio     = $omission_ratio ?? static::config('default.NgWord.omission_ratio') ;
         $ambiguous_patterns = static::config('default.NgWord.ambiguous_patterns') ;
 
         if (!is_array($ng_words)) {
@@ -1153,7 +1151,7 @@ class BuiltinValidations extends Validations
     {
         [$at_time, $at_time_label] = $c->resolve($at_time);
         $replacement['at_time']    = $at_time_label;
-        $valid  = $this->validationDatetime($c, $format);
+        $valid                     = $this->validationDatetime($c, $format);
         $valid &= $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
@@ -1172,17 +1170,10 @@ class BuiltinValidations extends Validations
         return $valid;
     }
 
-
-
-
-
-
-
-
-
     // ====================================================
     // Built-in Condition Methods
     // ====================================================
+
     /**
      * If condition
      *

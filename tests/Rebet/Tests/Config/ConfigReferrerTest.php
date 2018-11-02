@@ -1,28 +1,30 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
-use Rebet\Config\Configurable;
 use Rebet\Config\ConfigReferrer;
+use Rebet\Config\Configurable;
+use Rebet\Tests\RebetTestCase;
 
 class ConfigReferrerTest_Mock
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'port' => 3306,
+            'driver'   => 'mysql',
+            'host'     => 'localhost',
+            'port'     => 3306,
             'database' => null,
-            'user' => Config::refer(ConfigReferrerTest_MockOrigin::class, 'user'),
+            'user'     => Config::refer(ConfigReferrerTest_MockOrigin::class, 'user'),
         ];
     }
 }
 class ConfigReferrerTest_MockOrigin
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -55,7 +57,7 @@ class ConfigReferrerTest extends RebetTestCase
 
         Config::framework([
             ConfigReferrerTest_Mock::class => [
-                'driver' => 'sqlite',
+                'driver'   => 'sqlite',
                 'database' => 'test_db',
             ],
             ConfigReferrerTest_MockOrigin::class => [

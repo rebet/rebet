@@ -22,7 +22,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      * @param integer $status
      * @param array $headers
      */
-    public function __construct(string $url, int $status = 302, array $headers = array())
+    public function __construct(string $url, int $status = 302, array $headers = [])
     {
         parent::__construct($url, $status, $headers);
     }

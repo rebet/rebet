@@ -1,14 +1,11 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Config\App;
+use Rebet\Config\Config;
+use Rebet\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\Http\BasicResponse;
-use Rebet\Http\JsonResponse;
-use Rebet\Http\StreamedResponse;
-use Rebet\Config\Configurable;
-use Rebet\Config\Config;
-use Rebet\Config\App;
 use Rebet\Routing\RouteAction;
 
 /**
@@ -22,6 +19,7 @@ use Rebet\Routing\RouteAction;
 class MethodRoute extends DeclarativeRoute
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -69,7 +67,7 @@ class MethodRoute extends DeclarativeRoute
     public function __construct(array $methods, string $uri, string $action, string $namespace = null)
     {
         parent::__construct($methods, $uri);
-        $action = str_replace('@', '::', $action);
+        $action          = str_replace('@', '::', $action);
         $this->namespace = $namespace ?? static::config('namespace', false, '') ;
         try {
             $this->action    = new \ReflectionMethod($action);

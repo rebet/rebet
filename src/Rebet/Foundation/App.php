@@ -1,20 +1,18 @@
 <?php
 namespace Rebet\Foundation;
 
-use Rebet\Config\Configurable;
 use Rebet\Config\Config;
-use Rebet\File\Files;
+use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
-use Rebet\Routing\Route\MethodRoute;
-use Rebet\Routing\Route\ConventionalRoute;
+use Rebet\File\Files;
 use Rebet\Routing\Route\ControllerRoute;
-use Rebet\View\View;
+use Rebet\Routing\Route\ConventionalRoute;
+use Rebet\Routing\Route\MethodRoute;
+use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
-use Rebet\Foundation\View\Engine\Blade\Directive\BladeCustom;
 use Rebet\View\Engine\Smarty\Smarty;
 use Rebet\View\Engine\Twig\Twig;
-use Rebet\Validation\Validator;
-use Rebet\Translation\Translator;
+use Rebet\View\View;
 
 /**
  * Application Config Class
@@ -31,6 +29,7 @@ use Rebet\Translation\Translator;
 class App
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [

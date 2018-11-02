@@ -1,18 +1,16 @@
 <?php
 namespace Rebet\Tests\Log\Handler;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Tests\StderrCapture;
+use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
 
 use Rebet\Log\Handler\StderrHandler;
 
-use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
+use Rebet\Tests\RebetTestCase;
+use Rebet\Tests\StderrCapture;
 
-use org\bovigo\vfs\vfsStream;
 
 class StderrHandlerTest extends RebetTestCase
 {
@@ -44,7 +42,7 @@ class StderrHandlerTest extends RebetTestCase
     {
         $this->context->level   = LogLevel::TRACE();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNull($formatted_log);
     }
 
@@ -54,7 +52,7 @@ class StderrHandlerTest extends RebetTestCase
         $this->context->message = "This is test.";
         StderrCapture::clearStart();
         $formatted_log = $this->handler->handle($this->context);
-        $actual = StderrCapture::stopGetClear();
+        $actual        = StderrCapture::stopGetClear();
         $this->assertSame($formatted_log."\n", $actual);
     }
 }

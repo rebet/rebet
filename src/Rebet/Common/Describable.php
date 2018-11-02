@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Common;
 
-use Rebet\Common\Reflector;
-
 /**
  * Describable Trait
  *

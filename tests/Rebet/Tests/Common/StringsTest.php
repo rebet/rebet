@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Strings;
+use Rebet\Tests\RebetTestCase;
 
 class StringsTest extends RebetTestCase
 {
@@ -108,8 +108,8 @@ class StringsTest extends RebetTestCase
     {
         $this->assertSame([], Strings::toCharArray(null));
         $this->assertSame([], Strings::toCharArray(''));
-        $this->assertSame(['a','b','c'], Strings::toCharArray('abc'));
-        $this->assertSame(['あ','い','う'], Strings::toCharArray('あいう'));
+        $this->assertSame(['a', 'b', 'c'], Strings::toCharArray('abc'));
+        $this->assertSame(['あ', 'い', 'う'], Strings::toCharArray('あいう'));
     }
 
     public function test_indent()

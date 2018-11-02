@@ -1,14 +1,12 @@
 <?php
 namespace Rebet\Tests\View\Engine\Blade;
 
+use Illuminate\View\Compilers\BladeCompiler;
+use org\bovigo\vfs\vfsStream;
+
+use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
-
-use org\bovigo\vfs\vfsStream;
-use Illuminate\View\Compilers\BladeCompiler;
-use Rebet\Foundation\App;
-use Rebet\View\View;
-use Rebet\Config\Config;
 
 class BladeTest extends RebetTestCase
 {

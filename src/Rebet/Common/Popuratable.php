@@ -2,7 +2,6 @@
 namespace Rebet\Common;
 
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Common\Reflector;
 use Rebet\Common\Annotation\Nest;
 
 /**
@@ -56,7 +55,7 @@ trait Popuratable
                 $default  = $defaults[$field] ?? null;
                 if (is_array($default)) {
                     $this->$field = [];
-                    $items = Reflector::get($src, $field);
+                    $items        = Reflector::get($src, $field);
                     if (empty($items)) {
                         continue;
                     }

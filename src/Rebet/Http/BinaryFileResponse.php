@@ -26,7 +26,7 @@ class BinaryFileResponse extends SymfonyBinaryFileResponse implements Response
      * @param boolean $autoEtag
      * @param boolean $autoLastModified
      */
-    public function __construct($file, int $status = 200, array $headers = array(), bool $public = true, string $contentDisposition = null, bool $autoEtag = false, bool $autoLastModified = true)
+    public function __construct($file, int $status = 200, array $headers = [], bool $public = true, string $contentDisposition = null, bool $autoEtag = false, bool $autoLastModified = true)
     {
         parent::__construct($file, $status, $headers, $public, $contentDisposition, $autoEtag, $autoLastModified);
     }

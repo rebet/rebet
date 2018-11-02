@@ -1,12 +1,10 @@
 <?php
 namespace Rebet\Tests\Annotation;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Annotation\AnnotatedClass;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Rebet\Routing\Annotation\Where;
 use Rebet\Annotation\AnnotatedProperty;
 use Rebet\Routing\Annotation\Surface;
+use Rebet\Tests\RebetTestCase;
 
 class AnnotatedPropertyTest extends RebetTestCase
 {
@@ -27,13 +25,13 @@ class AnnotatedPropertyTest extends RebetTestCase
         $this->assertInstanceOf(AnnotatedProperty::class, $ap);
         
         $mock = new AnnotatedPropertyTest_Mock();
-        $ap = AnnotatedProperty::of('foo', $mock);
+        $ap   = AnnotatedProperty::of('foo', $mock);
         $this->assertInstanceOf(AnnotatedProperty::class, $ap);
     }
     
     public function test_annotaion()
     {
-        $ap = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
+        $ap    = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
         $annot = $ap->annotation(PropertyAnnot::class, false);
         $this->assertNull($annot);
         
@@ -41,7 +39,7 @@ class AnnotatedPropertyTest extends RebetTestCase
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('prop', $annot->value);
 
-        $ap = AnnotatedProperty::of('bar', AnnotatedPropertyTest_Mock::class);
+        $ap    = AnnotatedProperty::of('bar', AnnotatedPropertyTest_Mock::class);
         $annot = $ap->annotation(PropertyAnnot::class);
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('bar-prop', $annot->value);
@@ -56,7 +54,7 @@ class AnnotatedPropertyTest extends RebetTestCase
     
     public function test_annotaions()
     {
-        $ap = AnnotatedProperty::of('bar', AnnotatedPropertyTest_Mock::class);
+        $ap          = AnnotatedProperty::of('bar', AnnotatedPropertyTest_Mock::class);
         $annotations = $ap->annotations();
 
         $annot = $annotations[0];

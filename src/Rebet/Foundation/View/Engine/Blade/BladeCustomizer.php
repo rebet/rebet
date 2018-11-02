@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Foundation\View\Engine\Blade;
 
-use Rebet\Foundation\App;
 use Illuminate\View\Compilers\BladeCompiler;
+use Rebet\Foundation\App;
 
 /**
  * Blade custom directives for Rebet

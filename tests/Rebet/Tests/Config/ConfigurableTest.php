@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\Tests\RebetTestCase;
 
 class ConfigurableTest extends RebetTestCase
 {
@@ -22,11 +22,11 @@ class ConfigurableTest extends RebetTestCase
     {
         $this->assertSame(
             [
-                'driver' => 'mysql',
-                'host' => 'localhost',
-                'port' => 3306,
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => 3306,
                 'database' => null,
-                'user' => null,
+                'user'     => null,
             ],
             ConfigurableTest_Mock::config()
         );
@@ -46,11 +46,11 @@ class ConfigurableTest extends RebetTestCase
 
         $this->assertSame(
             [
-                'driver' => 'pgsql',
-                'host' => 'localhost',
-                'port' => 3306,
+                'driver'   => 'pgsql',
+                'host'     => 'localhost',
+                'port'     => 3306,
                 'database' => null,
-                'user' => null,
+                'user'     => null,
             ],
             ConfigurableTest_Mock::config()
         );
@@ -105,13 +105,13 @@ class ConfigurableTest extends RebetTestCase
         
         $this->assertSame(
             [
-                'driver' => 'sqlite',
-                'host' => 'localhost',
-                'port' => 3306,
+                'driver'   => 'sqlite',
+                'host'     => 'localhost',
+                'port'     => 3306,
                 'database' => null,
-                'user' => null,
-                'encode' => 'utf8',
-                'new_key' => 'new_value',
+                'user'     => null,
+                'encode'   => 'utf8',
+                'new_key'  => 'new_value',
             ],
             ConfigurableTest_MockGrandChildA::defaultConfig()
         );
@@ -178,14 +178,15 @@ class ConfigurableTest extends RebetTestCase
 class ConfigurableTest_Mock
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'port' => 3306,
+            'driver'   => 'mysql',
+            'host'     => 'localhost',
+            'port'     => 3306,
             'database' => null,
-            'user' => null,
+            'user'     => null,
         ];
     }
 
@@ -242,7 +243,7 @@ class ConfigurableTest_MockGrandChildA extends ConfigurableTest_MockChildB
     public static function defaultConfig()
     {
         return self::parentConfigOverride([
-            'encode' => 'utf8',
+            'encode'  => 'utf8',
             'new_key' => 'new_value',
         ]);
     }

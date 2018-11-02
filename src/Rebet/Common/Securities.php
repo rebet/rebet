@@ -13,7 +13,6 @@ namespace Rebet\Common;
  */
 class Securities
 {
-    
     /**
      * No instantiation
      */

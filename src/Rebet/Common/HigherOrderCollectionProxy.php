@@ -29,7 +29,7 @@ class HigherOrderCollectionProxy
      */
     public function __construct(Collection $collection, $method)
     {
-        $this->method = $method;
+        $this->method     = $method;
         $this->collection = $collection;
     }
 

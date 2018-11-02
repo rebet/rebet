@@ -221,7 +221,7 @@ class Strings
      */
     public static function indent(?string $string, int $depth = 1, string $char = "\t") : ?string
     {
-        $indent = str_repeat($char, $depth);
+        $indent  = str_repeat($char, $depth);
         $indened = (self::startsWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
         return self::endsWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
     }

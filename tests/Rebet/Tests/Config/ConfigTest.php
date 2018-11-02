@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Tests\RebetTestCase;
 
 class ConfigTest extends RebetTestCase
 {
@@ -54,11 +54,11 @@ class ConfigTest extends RebetTestCase
     {
         $this->assertSame(
             [
-                'driver' => 'mysql',
-                'host' => 'localhost',
-                'port' => 3306,
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => 3306,
                 'database' => null,
-                'user' => null,
+                'user'     => null,
             ],
             Config::get(ConfigTest_Mock::class)
         );
@@ -73,8 +73,8 @@ class ConfigTest extends RebetTestCase
 
         Config::framework([
             ConfigTest_Mock::class => [
-                'host' => '192.168.1.1',
-                'port' => 3307,
+                'host'     => '192.168.1.1',
+                'port'     => 3307,
                 'database' => 'rebet_db',
             ],
             'global' => [
@@ -84,11 +84,11 @@ class ConfigTest extends RebetTestCase
 
         $this->assertSame(
             [
-                'driver' => 'mysql',
-                'host' => '192.168.1.1',
-                'port' => 3307,
+                'driver'   => 'mysql',
+                'host'     => '192.168.1.1',
+                'port'     => 3307,
                 'database' => 'rebet_db',
-                'user' => null,
+                'user'     => null,
             ],
             Config::get(ConfigTest_Mock::class)
         );
@@ -104,9 +104,9 @@ class ConfigTest extends RebetTestCase
 
         Config::application([
             ConfigTest_Mock::class => [
-                'port' => 3308,
+                'port'     => 3308,
                 'database' => 'rebet_sample',
-                'user' => 'rebet_user',
+                'user'     => 'rebet_user',
             ],
             'global' => [
                 'lang' => 'ja_JP'
@@ -115,11 +115,11 @@ class ConfigTest extends RebetTestCase
 
         $this->assertSame(
             [
-                'driver' => 'mysql',
-                'host' => '192.168.1.1',
-                'port' => 3308,
+                'driver'   => 'mysql',
+                'host'     => '192.168.1.1',
+                'port'     => 3308,
                 'database' => 'rebet_sample',
-                'user' => 'rebet_user',
+                'user'     => 'rebet_user',
             ],
             Config::get(ConfigTest_Mock::class)
         );
@@ -143,11 +143,11 @@ class ConfigTest extends RebetTestCase
         ]);
         $this->assertSame(
             [
-                'driver' => 'mysql',
-                'host' => '192.168.1.1',
-                'port' => 3308,
+                'driver'   => 'mysql',
+                'host'     => '192.168.1.1',
+                'port'     => 3308,
                 'database' => null,
-                'user' => 'rebet_user',
+                'user'     => 'rebet_user',
             ],
             Config::get(ConfigTest_Mock::class)
         );
@@ -437,8 +437,8 @@ class ConfigTest extends RebetTestCase
 
         Config::framework([
             ConfigTest_MockOption::class => [
-                'map'   => ['a' => 'A', 'c' => 'C'],
-                'array' => ['c'],
+                'map'     => ['a' => 'A', 'c' => 'C'],
+                'array'   => ['c'],
                 'parent!' => [
                     'map'   => ['a' => 'aa', 'c' => 'cc'],
                     'array' => ['cc'],
@@ -567,7 +567,7 @@ class ConfigTest extends RebetTestCase
             ConfigTest_MockOption::class => [
                 'map!'    => ['a' => 'A', 'c' => 'C'],
                 'array'   => ['c'],
-                'parent' => [
+                'parent'  => [
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
                     'array>' => ['cc'],
                 ],
@@ -715,6 +715,7 @@ class ConfigTest extends RebetTestCase
     {
         $a = new class {
             use Configurable;
+
             public static function defaultConfig()
             {
                 return [ 'key' => 'a' ];
@@ -722,6 +723,7 @@ class ConfigTest extends RebetTestCase
         };
         $b = new class {
             use Configurable;
+
             public static function defaultConfig()
             {
                 return [ 'key' => 'b' ];
@@ -784,20 +786,22 @@ class ConfigTest extends RebetTestCase
 class ConfigTest_Mock
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'port' => 3306,
+            'driver'   => 'mysql',
+            'host'     => 'localhost',
+            'port'     => 3306,
             'database' => null,
-            'user' => null,
+            'user'     => null,
         ];
     }
 }
 class ConfigTest_MockOption
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -813,6 +817,7 @@ class ConfigTest_MockOption
 class ConfigTest_MockRefer
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -823,6 +828,7 @@ class ConfigTest_MockRefer
 class ConfigTest_MockPromise
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -839,6 +845,7 @@ class ConfigTest_MockPromise
 class ConfigTest_MockPromiseReferrer
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -851,23 +858,27 @@ class ConfigTest_MockPromiseReferrer
 class ConfigTest_MockInstantiate
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
-            'mock_instantiate'     =>  ConfigTest_MockInstantiate::class,
+            'mock_instantiate'     => ConfigTest_MockInstantiate::class,
             'mock_instantiate_arg' => [ConfigTest_MockInstantiate::class, 'arg'],
         ];
     }
 
     public $value = null;
+
     public function __construct($value = 'default')
     {
         $this->value = $value;
     }
+
     public static function getInstance()
     {
         return new static('via getInstance()');
     }
+
     public static function build($value)
     {
         return new static($value.' via build()');

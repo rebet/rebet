@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Routing;
 
+use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
@@ -8,11 +9,9 @@ use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
-use Rebet\Routing\RouteNotFoundException;
-use Rebet\Common\Reflector;
 use Rebet\Routing\Route\ClosureRoute;
-use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Route\ControllerRoute;
+use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Route\Route;
 
 /**
@@ -26,6 +25,7 @@ use Rebet\Routing\Route\Route;
 class Router
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -345,7 +345,7 @@ class Router
     {
         $route = null;
         try {
-            $route = static::findRoute($request);
+            $route            = static::findRoute($request);
             static::$current  = $route;
             static::$pipeline = (new Pipeline())->through(static::config('middlewares', false, []))->then($route);
             return static::$pipeline->send($request);

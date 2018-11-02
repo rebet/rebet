@@ -36,7 +36,6 @@ use Rebet\Common\Arrays;
  */
 trait Configurable
 {
-    
     /**
      * デフォルトコンフィグ設定。
      * 各トレイト導入クラスにてライブラリのデフォルト設定を定義して下さい。

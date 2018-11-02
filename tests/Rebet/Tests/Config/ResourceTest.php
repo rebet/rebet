@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Tests\RebetTestCase;
+use org\bovigo\vfs\vfsStream;
 use Rebet\Config\Resource;
 
-use org\bovigo\vfs\vfsStream;
+use Rebet\Tests\RebetTestCase;
 
 class ResourceTest extends RebetTestCase
 {
@@ -69,13 +69,13 @@ EOS
     {
         $this->assertSame(
             [
-                'int' => 1,
+                'int'    => 1,
                 'string' => 'a',
-                'array' => [1 ,2 , 3],
-                'map' => [
-                    'int' => 1,
+                'array'  => [1 , 2 , 3],
+                'map'    => [
+                    'int'    => 1,
                     'string' => 'a',
-                    'array' => [1 ,2 , 3],
+                    'array'  => [1 , 2 , 3],
                 ],
             ],
             Resource::load('php', 'vfs://root/resource/test.php')
@@ -84,11 +84,11 @@ EOS
         $this->assertSame(
             [
                 'a' => [
-                    'int' => 1,
+                    'int'    => 1,
                     'string' => 'a',
                 ],
                 'b' => [
-                    'bool' => true,
+                    'bool'   => true,
                     'string' => 'b',
                 ],
             ],
@@ -97,22 +97,22 @@ EOS
         
         $this->assertSame(
             [
-                'int' => 1,
+                'int'    => 1,
                 'string' => 'b',
-                'bool' => true,
+                'bool'   => true,
             ],
             Resource::load('ini', 'vfs://root/resource/test.ini', ['process_sections' => false])
         );
         
         $this->assertSame(
             [
-                'int' => 1,
+                'int'    => 1,
                 'string' => 'a',
-                'array' => [1 ,2 , 3],
-                'map' => [
-                    'int' => 1,
+                'array'  => [1 , 2 , 3],
+                'map'    => [
+                    'int'    => 1,
                     'string' => 'a',
-                    'array' => [1 ,2 , 3],
+                    'array'  => [1 , 2 , 3],
                 ],
             ],
             Resource::load('json', 'vfs://root/resource/test.json')

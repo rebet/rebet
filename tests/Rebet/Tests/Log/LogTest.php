@@ -1,16 +1,13 @@
 <?php
 namespace Rebet\Tests\Log;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Tests\StderrCapture;
+use Rebet\Config\Config;
+
+use Rebet\DateTime\DateTime;
 
 use Rebet\Log\Log;
-
-use Rebet\Common\System;
-use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
 use Rebet\Log\LogLevel;
+use Rebet\Tests\RebetTestCase;
 
 class LogTest extends RebetTestCase
 {

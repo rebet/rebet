@@ -1,11 +1,10 @@
 <?php
 namespace Rebet\Tests\Validation\Mock;
 
-use Rebet\Validation\Rule;
-use Rebet\Validation\Type;
-use Rebet\Validation\Context;
 use Rebet\Common\Strings;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Validation\Context;
+use Rebet\Validation\Rule;
 
 class UserValidation extends Rule
 {
@@ -16,13 +15,13 @@ class UserValidation extends Rule
         return [
             'user_id' => [
                 'label' => '会員ID',
-                'rule' => [
+                'rule'  => [
                     ['RUD', Valid::REQUIRED.'!']
                 ]
             ],
             'name' => [
                 'label' => '氏名',
-                'rule' => [
+                'rule'  => [
                     ['CU', Valid::REQUIRED.'!'],
                     ['CU', Valid::MAX_LENGTH, 20],
                     ['CU', Valid::DEPENDENCE_CHAR]
@@ -30,7 +29,7 @@ class UserValidation extends Rule
             ],
             'mail_address' => [
                 'label' => 'メールアドレス',
-                'rule' => [
+                'rule'  => [
                     ['CU', Valid::REQUIRED.'!'],
                     ['CU', Valid::MAIL_ADDRESS],
                     ['CU', Valid::IF_STIL_NO_ERROR, 'then' => [
@@ -40,39 +39,39 @@ class UserValidation extends Rule
             ],
             'password' => [
                 'label' => 'パスワード',
-                'rule' => [
+                'rule'  => [
                     ['C' , Valid::REQUIRED.'!'],
                     ['CU', Valid::MIN_LENGTH, 8]
                 ],
             ],
             'password_confirm' => [
                 'label' => 'パスワード(確認)',
-                'rule' => [
+                'rule'  => [
                     ['CU', Valid::IF, function ($context) {
                         return !Auth::isAdmin();
                     }, 'then' => [
-                        ['C' , Valid::REQUIRED.'!'],
-                        ['CU', Valid::SAME_AS_INPUTTED, 'password']
-                    ]],
+                            ['C' , Valid::REQUIRED.'!'],
+                            ['CU', Valid::SAME_AS_INPUTTED, 'password']
+                        ]],
                 ],
             ],
             'avatar' => [
                 'label' => 'アバター画像',
-                'rule' => [
+                'rule'  => [
                     ['CU', Valid::FILE_SIZE, '2M'],
                     ['CU', Valid::FILE_WEB_IMAGE_SUFFIX]
                 ],
             ],
             'gender' => [
                 'label' => '性別',
-                'rule' => [
+                'rule'  => [
                     ['C', Valid::REQUIRED.'!'],
                     ['C', Valid::CONTAINS, Gender::values()]
                 ],
                 'convert' => Gender::class
             ],
             'birthday' => [
-                'label' => '生年月日',
+                'label'  => '生年月日',
                 'before' => function ($value) {
                     return mb_convert_kana($value, 'a');
                 },
@@ -99,20 +98,20 @@ class UserValidation extends Rule
                 'nests' => [
                     'zip' => [
                         'label' => ':parent郵便番号',
-                        'rule' => [
+                        'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                         ],
                     ],
                     'prefecture_id' => [
                         'label' => ':parent都道府県',
-                        'rule' => [
+                        'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                             ['CU', Valid::CONTAINS, range(1, 47)],
                         ],
                     ],
                     'addess' => [
                         'label' => ':parent住所',
-                        'rule' => [
+                        'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                             ['CU', Valid::MAX_LENGTH, 127],
                             ['CU', Valid::DEPENDENCE_CHAR],

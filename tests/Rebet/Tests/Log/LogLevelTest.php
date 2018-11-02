@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Log;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Log\LogLevel;
+use Rebet\Tests\RebetTestCase;
 
 class LogLevelTest extends RebetTestCase
 {

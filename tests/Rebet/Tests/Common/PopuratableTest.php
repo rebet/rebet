@@ -1,12 +1,11 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Common\Popuratable;
 use Rebet\Http\Request;
-use Rebet\Tests\Common\Mock\User;
-use Rebet\Tests\Common\Mock\Bank;
 use Rebet\Tests\Common\Mock\Address;
+use Rebet\Tests\Common\Mock\Bank;
+use Rebet\Tests\Common\Mock\User;
+use Rebet\Tests\RebetTestCase;
 
 class PopuratableTest extends RebetTestCase
 {

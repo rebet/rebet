@@ -1,18 +1,18 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Arrays;
-use Rebet\Common\OverrideOption;
 use Rebet\Common\Collection;
+use Rebet\Common\OverrideOption;
 use Rebet\Tests\Mock\CountableStub;
 use Rebet\Tests\Mock\IteratorAggregateStub;
+use Rebet\Tests\RebetTestCase;
 
 class ArraysTest extends RebetTestCase
 {
     public function test_random()
     {
-        $list = ['a','b','c','d','e','f'];
+        $list = ['a', 'b', 'c', 'd', 'e', 'f'];
         sort($list);
         $size = count($list);
         for ($i=0; $i <= $size; $i++) {
@@ -31,7 +31,7 @@ class ArraysTest extends RebetTestCase
 
         $this->assertTrue(Arrays::isSequential([]));
         $this->assertTrue(Arrays::isSequential([1]));
-        $this->assertTrue(Arrays::isSequential([1,2,3]));
+        $this->assertTrue(Arrays::isSequential([1, 2, 3]));
         $this->assertTrue(Arrays::isSequential([0 => 'a', 1 => 'b', 2 => 'c']));
         $this->assertTrue(Arrays::isSequential([0 => 'a', '1' => 'b']));
 
@@ -197,7 +197,7 @@ class ArraysTest extends RebetTestCase
                     'array' => ['a', 'b'],
                 ],
                 [
-                    'map'   => ['a!' => ['B' => 'B'], 'c' => 'C'],
+                    'map'    => ['a!' => ['B' => 'B'], 'c' => 'C'],
                     'array!' => ['c'],
                 ]
             )
@@ -314,22 +314,22 @@ class ArraysTest extends RebetTestCase
     public function test_pull()
     {
         $array = ['name' => 'Desk', 'price' => 100];
-        $name = Arrays::pull($array, 'name');
+        $name  = Arrays::pull($array, 'name');
         $this->assertEquals('Desk', $name);
         $this->assertEquals(['price' => 100], $array);
         // Works on first level keys with out nest
         $array = ['joe@example.com' => 'Joe', 'jane@localhost' => 'Jane'];
-        $name = Arrays::pull($array, 'joe@example.com');
+        $name  = Arrays::pull($array, 'joe@example.com');
         $this->assertEquals('Joe', $name);
         $this->assertEquals(['jane@localhost' => 'Jane'], $array);
         // Works on nested last level keys
         $array = ['emails' => ['joe@example.com' => 'Joe', 'jane@localhost' => 'Jane']];
-        $name = Arrays::pull($array, 'emails.joe@example.com');
+        $name  = Arrays::pull($array, 'emails.joe@example.com');
         $this->assertEquals('Joe', $name);
         $this->assertEquals(['emails' => ['joe@example.com' => 'Joe', 'jane@localhost' => 'Jane']], $array);
         // Does not work for nested middle keys
         $array = ['joe@example.com' => ['name' => 'Joe']];
-        $name = Arrays::pull($array, 'joe@example.com.name');
+        $name  = Arrays::pull($array, 'joe@example.com.name');
         $this->assertNull($name);
         $this->assertEquals(['joe@example.com' => ['name' => 'Joe']], $array);
     }
@@ -352,7 +352,7 @@ class ArraysTest extends RebetTestCase
     public function test_last()
     {
         $array = [100, 200, 300];
-        $last = Arrays::last($array, function ($value) {
+        $last  = Arrays::last($array, function ($value) {
             return $value < 250;
         });
         $this->assertEquals(200, $last);

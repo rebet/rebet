@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Tests\RebetTestCase;
+use org\bovigo\vfs\vfsStream;
 use Rebet\Config\EnvResource;
 
-use org\bovigo\vfs\vfsStream;
+use Rebet\Tests\RebetTestCase;
 
 class EnvResourceTest extends RebetTestCase
 {
@@ -75,14 +75,14 @@ EOS
     {
         $this->assertSame(
             [
-                'int' => 2,
+                'int'    => 2,
                 'string' => 'a',
-                'array' => [1 ,2 , 3, 1 ,2 , 3, 4],
-                'map' => [
-                    'int' => 1,
+                'array'  => [1 , 2 , 3, 1 , 2 , 3, 4],
+                'map'    => [
+                    'int'    => 1,
                     'string' => 'A',
-                    'array' => [1 ,2 , 3, 4],
-                    'new' => 'NEW',
+                    'array'  => [1 , 2 , 3, 4],
+                    'new'    => 'NEW',
                 ],
                 'new' => 'NEW',
             ],
@@ -92,7 +92,7 @@ EOS
         $this->assertSame(
             [
                 'a' => [
-                    'int' => 2,
+                    'int'    => 2,
                     'string' => 'a',
                 ],
                 'b' => [
@@ -104,13 +104,13 @@ EOS
         
         $this->assertSame(
             [
-                'int' => 1,
+                'int'    => 1,
                 'string' => 'a',
-                'array' => [1 ,2 , 3],
-                'map' => [
-                    'int' => 1,
+                'array'  => [1 , 2 , 3],
+                'map'    => [
+                    'int'    => 1,
                     'string' => 'a',
-                    'array' => [1 ,2 , 3],
+                    'array'  => [1 , 2 , 3],
                 ],
             ],
             EnvResource::load('vfs://root/resource', 'test', 'unittest', 'json')

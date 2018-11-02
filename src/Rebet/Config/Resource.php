@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Arrays;
-use Rebet\Config\Configurable;
-
 /**
  * リソースローダー クラス
  *
@@ -54,6 +51,7 @@ use Rebet\Config\Configurable;
 class Resource
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [

@@ -2,19 +2,19 @@
 
 namespace Rebet\Tests\Common;
 
-use stdClass;
-use Exception;
 use ArrayAccess;
-use ArrayObject;
 use ArrayIterator;
+use ArrayObject;
 use CachingIterator;
-use ReflectionClass;
-use JsonSerializable;
-use Illuminate\Support\HtmlString;
-use Illuminate\Contracts\Support\Jsonable;
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
-use Rebet\Tests\RebetTestCase;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\HtmlString;
+use JsonSerializable;
 use Rebet\Common\Collection;
+use Rebet\Tests\RebetTestCase;
+use ReflectionClass;
+use stdClass;
 
 class CollectionTest extends RebetTestCase
 {
@@ -26,7 +26,7 @@ class CollectionTest extends RebetTestCase
 
     public function testFirstWithCallback()
     {
-        $data = new Collection(['foo', 'bar', 'baz']);
+        $data   = new Collection(['foo', 'bar', 'baz']);
         $result = $data->first(function ($value) {
             return $value === 'bar';
         });
@@ -35,7 +35,7 @@ class CollectionTest extends RebetTestCase
 
     public function testFirstWithCallbackAndDefault()
     {
-        $data = new Collection(['foo', 'bar']);
+        $data   = new Collection(['foo', 'bar']);
         $result = $data->first(function ($value) {
             return $value === 'baz';
         }, 'default');
@@ -44,7 +44,7 @@ class CollectionTest extends RebetTestCase
 
     public function testFirstWithDefaultAndWithoutCallback()
     {
-        $data = new Collection;
+        $data   = new Collection;
         $result = $data->first(null, 'default');
         $this->assertEquals('default', $result);
     }
@@ -70,7 +70,7 @@ class CollectionTest extends RebetTestCase
 
     public function testLastWithCallback()
     {
-        $data = new Collection([100, 200, 300]);
+        $data   = new Collection([100, 200, 300]);
         $result = $data->last(function ($value) {
             return $value < 250;
         });
@@ -83,7 +83,7 @@ class CollectionTest extends RebetTestCase
 
     public function testLastWithCallbackAndDefault()
     {
-        $data = new Collection(['foo', 'bar']);
+        $data   = new Collection(['foo', 'bar']);
         $result = $data->last(function ($value) {
             return $value === 'baz';
         }, 'default');
@@ -92,7 +92,7 @@ class CollectionTest extends RebetTestCase
 
     public function testLastWithDefaultAndWithoutCallback()
     {
-        $data = new Collection;
+        $data   = new Collection;
         $result = $data->last(null, 'default');
         $this->assertEquals('default', $result);
     }
@@ -150,7 +150,7 @@ class CollectionTest extends RebetTestCase
     {
         $collection = new Collection(range(0, 100, 10));
 
-        $firstRandom = $collection->shuffle(1234);
+        $firstRandom  = $collection->shuffle(1234);
         $secondRandom = $collection->shuffle(1234);
 
         $this->assertEquals($firstRandom, $secondRandom);
@@ -160,7 +160,7 @@ class CollectionTest extends RebetTestCase
     {
         $collection = new Collection;
 
-        $class = new ReflectionClass($collection);
+        $class  = new ReflectionClass($collection);
         $method = $class->getMethod('getArrayableItems');
         $method->setAccessible(true);
 
@@ -187,21 +187,20 @@ class CollectionTest extends RebetTestCase
 
     public function testToArrayCallsToArrayOnEachItemInCollection()
     {
-        $item1 = new class() implements Arrayable 
-        {
-            public function toArray(){
+        $item1 = new class() implements Arrayable {
+            public function toArray()
+            {
                 return 'foo.array';
             }
-        }; 
-        $item2 = new class() implements Arrayable
-        {
+        };
+        $item2 = new class() implements Arrayable {
             public function toArray()
             {
                 return 'bar.array';
             }
-        }; 
+        };
         
-        $c = new Collection([$item1, $item2]);
+        $c       = new Collection([$item1, $item2]);
         $results = $c->toArray();
 
         $this->assertEquals(['foo.array', 'bar.array'], $results);
@@ -210,19 +209,19 @@ class CollectionTest extends RebetTestCase
     public function testJsonSerializeCallsToArrayOrJsonSerializeOnEachItemInCollection()
     {
         $item1 = new class() implements JsonSerializable {
-            public function jsonSerialize(){
+            public function jsonSerialize()
+            {
                 return 'foo.json';
             }
         };
-        $item2 = new class() implements Arrayable
-        {
+        $item2 = new class() implements Arrayable {
             public function toArray()
             {
                 return 'bar.array';
             }
         };
         
-        $c = new Collection([$item1, $item2]);
+        $c       = new Collection([$item1, $item2]);
         $results = $c->jsonSerialize();
 
         $this->assertEquals(['foo.json', 'bar.array'], $results);
@@ -762,7 +761,7 @@ class CollectionTest extends RebetTestCase
         });
         $this->assertEquals([[1, 'a', 0], [2, 'b', 1]], $result);
 
-        $c = new Collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
+        $c      = new Collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
         $result = [];
         $c->eachSpread(function ($number, $character, $key) use (&$result) {
             $result[] = [$number, $character, $key];
@@ -839,26 +838,26 @@ class CollectionTest extends RebetTestCase
     {
         $c = new Collection([
             [
-                'id' => '0',
+                'id'   => '0',
                 'name' => 'zero',
             ],
             [
-                'id' => '00',
+                'id'   => '00',
                 'name' => 'double zero',
             ],
             [
-                'id' => '0',
+                'id'   => '0',
                 'name' => 'again zero',
             ],
         ]);
 
         $this->assertEquals([
             [
-                'id' => '0',
+                'id'   => '0',
                 'name' => 'zero',
             ],
             [
-                'id' => '00',
+                'id'   => '00',
                 'name' => 'double zero',
             ],
         ], $c->uniqueStrict('id')->all());
@@ -993,12 +992,12 @@ class CollectionTest extends RebetTestCase
 
     public function testReverse()
     {
-        $data = new Collection(['zaeed', 'alan']);
+        $data     = new Collection(['zaeed', 'alan']);
         $reversed = $data->reverse();
 
         $this->assertSame([1 => 'alan', 0 => 'zaeed'], $reversed->all());
 
-        $data = new Collection(['name' => 'taylor', 'framework' => 'laravel']);
+        $data     = new Collection(['name' => 'taylor', 'framework' => 'laravel']);
         $reversed = $data->reverse();
 
         $this->assertSame(['framework' => 'laravel', 'name' => 'taylor'], $reversed->all());
@@ -1219,7 +1218,7 @@ class CollectionTest extends RebetTestCase
 
     public function testMakeMethodFromCollection()
     {
-        $firstCollection = Collection::make(['foo' => 'bar']);
+        $firstCollection  = Collection::make(['foo' => 'bar']);
         $secondCollection = Collection::make($firstCollection);
         $this->assertEquals(['foo' => 'bar'], $secondCollection->all());
     }
@@ -1301,9 +1300,9 @@ class CollectionTest extends RebetTestCase
 
     public function testConstructMakeFromObject()
     {
-        $object = new stdClass;
+        $object      = new stdClass;
         $object->foo = 'bar';
-        $collection = Collection::make($object);
+        $collection  = Collection::make($object);
         $this->assertEquals(['foo' => 'bar'], $collection->all());
     }
 
@@ -1324,7 +1323,7 @@ class CollectionTest extends RebetTestCase
 
     public function testConstructMethodFromCollection()
     {
-        $firstCollection = new Collection(['foo' => 'bar']);
+        $firstCollection  = new Collection(['foo' => 'bar']);
         $secondCollection = new Collection($firstCollection);
         $this->assertEquals(['foo' => 'bar'], $secondCollection->all());
     }
@@ -1337,9 +1336,9 @@ class CollectionTest extends RebetTestCase
 
     public function testConstructMethodFromObject()
     {
-        $object = new stdClass;
+        $object      = new stdClass;
         $object->foo = 'bar';
-        $collection = new Collection($object);
+        $collection  = new Collection($object);
         $this->assertEquals(['foo' => 'bar'], $collection->all());
     }
 
@@ -1358,7 +1357,7 @@ class CollectionTest extends RebetTestCase
         $this->assertEquals(['foo'], $data->all());
 
         $data = new Collection(['foo', 'baz']);
-        $cut = $data->splice(1, 1, 'bar');
+        $cut  = $data->splice(1, 1, 'bar');
         $this->assertEquals(['foo', 'bar'], $data->all());
         $this->assertEquals(['baz'], $cut->all());
     }
@@ -1386,7 +1385,7 @@ class CollectionTest extends RebetTestCase
         });
         $this->assertEquals(['1-a-0', '2-b-1'], $result->all());
 
-        $c = new Collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
+        $c      = new Collection([new Collection([1, 'a']), new Collection([2, 'b'])]);
         $result = $c->mapSpread(function ($number, $character, $key) {
             return "{$number}-{$character}-{$key}";
         });
@@ -1507,11 +1506,11 @@ class CollectionTest extends RebetTestCase
         });
         $this->assertSame(
             [
-                1 => 'A',
+                1   => 'A',
                 'A' => 1,
-                2 => 'B',
+                2   => 'B',
                 'B' => 2,
-                3 => 'C',
+                3   => 'C',
                 'C' => 3,
             ],
             $data->all()
@@ -1767,7 +1766,7 @@ class CollectionTest extends RebetTestCase
         });
         $this->assertEquals([
             '0-taylorotwell' => ['firstname' => 'Taylor', 'lastname' => 'Otwell', 'locale' => 'US'],
-            '1-lucasmichot' => ['firstname' => 'Lucas', 'lastname' => 'Michot', 'locale' => 'FR'],
+            '1-lucasmichot'  => ['firstname' => 'Lucas', 'lastname' => 'Michot', 'locale' => 'FR'],
         ], $result->all());
     }
 
@@ -1898,7 +1897,7 @@ class CollectionTest extends RebetTestCase
 
     public function testPullReturnsDefault()
     {
-        $c = new Collection([]);
+        $c     = new Collection([]);
         $value = $c->pull(0, 'foo');
         $this->assertEquals('foo', $value);
     }
@@ -2137,7 +2136,7 @@ class CollectionTest extends RebetTestCase
             3 => 6,
         ];
 
-        $c = new Collection(array_keys($expected));
+        $c      = new Collection(array_keys($expected));
         $actual = $c->combine(array_values($expected))->toArray();
 
         $this->assertSame($expected, $actual);
@@ -2151,9 +2150,9 @@ class CollectionTest extends RebetTestCase
             3 => 6,
         ];
 
-        $keyCollection = new Collection(array_keys($expected));
+        $keyCollection   = new Collection(array_keys($expected));
         $valueCollection = new Collection(array_values($expected));
-        $actual = $keyCollection->combine($valueCollection)->toArray();
+        $actual          = $keyCollection->combine($valueCollection)->toArray();
 
         $this->assertSame($expected, $actual);
     }
@@ -2161,16 +2160,16 @@ class CollectionTest extends RebetTestCase
     public function testConcatWithArray()
     {
         $expected = [
-            0 => 4,
-            1 => 5,
-            2 => 6,
-            3 => 'a',
-            4 => 'b',
-            5 => 'c',
-            6 => 'Jonny',
-            7 => 'from',
-            8 => 'Laroe',
-            9 => 'Jonny',
+            0  => 4,
+            1  => 5,
+            2  => 6,
+            3  => 'a',
+            4  => 'b',
+            5  => 'c',
+            6  => 'Jonny',
+            7  => 'from',
+            8  => 'Laroe',
+            9  => 'Jonny',
             10 => 'from',
             11 => 'Laroe',
         ];
@@ -2178,7 +2177,7 @@ class CollectionTest extends RebetTestCase
         $collection = new Collection([4, 5, 6]);
         $collection = $collection->concat(['a', 'b', 'c']);
         $collection = $collection->concat(['who' => 'Jonny', 'preposition' => 'from', 'where' => 'Laroe']);
-        $actual = $collection->concat(['who' => 'Jonny', 'preposition' => 'from', 'where' => 'Laroe'])->toArray();
+        $actual     = $collection->concat(['who' => 'Jonny', 'preposition' => 'from', 'where' => 'Laroe'])->toArray();
 
         $this->assertSame($expected, $actual);
     }
@@ -2186,26 +2185,26 @@ class CollectionTest extends RebetTestCase
     public function testConcatWithCollection()
     {
         $expected = [
-            0 => 4,
-            1 => 5,
-            2 => 6,
-            3 => 'a',
-            4 => 'b',
-            5 => 'c',
-            6 => 'Jonny',
-            7 => 'from',
-            8 => 'Laroe',
-            9 => 'Jonny',
+            0  => 4,
+            1  => 5,
+            2  => 6,
+            3  => 'a',
+            4  => 'b',
+            5  => 'c',
+            6  => 'Jonny',
+            7  => 'from',
+            8  => 'Laroe',
+            9  => 'Jonny',
             10 => 'from',
             11 => 'Laroe',
         ];
 
-        $firstCollection = new Collection([4, 5, 6]);
+        $firstCollection  = new Collection([4, 5, 6]);
         $secondCollection = new Collection(['a', 'b', 'c']);
-        $thirdCollection = new Collection(['who' => 'Jonny', 'preposition' => 'from', 'where' => 'Laroe']);
-        $firstCollection = $firstCollection->concat($secondCollection);
-        $firstCollection = $firstCollection->concat($thirdCollection);
-        $actual = $firstCollection->concat($thirdCollection)->toArray();
+        $thirdCollection  = new Collection(['who' => 'Jonny', 'preposition' => 'from', 'where' => 'Laroe']);
+        $firstCollection  = $firstCollection->concat($secondCollection);
+        $firstCollection  = $firstCollection->concat($thirdCollection);
+        $actual           = $firstCollection->concat($thirdCollection)->toArray();
 
         $this->assertSame($expected, $actual);
     }
@@ -2462,12 +2461,12 @@ class CollectionTest extends RebetTestCase
         $this->assertEquals([
             'taylor' => [$collection[0]],
             'TAYLOR' => [$collection[1]],
-            'foo' => [$collection[2]],
+            'foo'    => [$collection[2]],
         ], $collection->groupBy->name->toArray());
 
         $this->assertEquals([
             'TAYLOR' => [$collection[0], $collection[1]],
-            'FOO' => [$collection[2]],
+            'FOO'    => [$collection[2]],
         ], $collection->groupBy->uppercase()->toArray());
     }
 
@@ -2610,7 +2609,7 @@ class CollectionTest extends RebetTestCase
     {
         $collection = new Collection([1, 2, 3]);
 
-        $fromTap = [];
+        $fromTap    = [];
         $collection = $collection->tap(function ($collection) use (&$fromTap) {
             $fromTap = $collection->slice(0, 1)->toArray();
         });

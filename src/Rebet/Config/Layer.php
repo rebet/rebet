@@ -11,7 +11,6 @@ namespace Rebet\Config;
  */
 final class Layer
 {
-
     /**
      * No instantiation
      */

@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\IO;
 
-use Rebet\Tests\RebetTestCase;
+use org\bovigo\vfs\vfsStream;
 use Rebet\File\Files;
 use Rebet\File\ZipArchiveException;
 
-use org\bovigo\vfs\vfsStream;
+use Rebet\Tests\RebetTestCase;
 
 class FilesTest extends RebetTestCase
 {
@@ -18,7 +18,7 @@ class FilesTest extends RebetTestCase
             [
                 'public' => [
                     'css' => [
-                        'normalize.css' => 'This is normalize.css',
+                        'normalize.css'   => 'This is normalize.css',
                         'application.css' => 'This is application.css',
                     ],
                     'img' => [
@@ -26,12 +26,12 @@ class FilesTest extends RebetTestCase
                     ],
                     'js' => [
                         'application.js' => 'This is application.js',
-                        'underscore' => [
+                        'underscore'     => [
                             'underscore.min.js' => 'This is underscore.min.js'
                         ]
                     ],
                     'index.html' => 'This is index.html',
-                    'robot.txt' => '', // empty file
+                    'robot.txt'  => '', // empty file
                 ],
                 'var' => [],
             ],

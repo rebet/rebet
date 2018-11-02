@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Common;
 
-use Rebet\Common\Strings;
-use Rebet\Common\Utils;
-
 /**
  * Reflector Class
  *
@@ -464,7 +461,7 @@ class Reflector
     protected static function tryConvertByMember($value, string $method, string $type)
     {
         if (method_exists($value, $method)) {
-            $rm = new \ReflectionMethod($value, $method);
+            $rm        = new \ReflectionMethod($value, $method);
             $converted = $rm->getNumberOfParameters() === 0 ? $value->$method() : $value->$method($type);
             if (static::typeOf($converted, $type)) {
                 return $converted;

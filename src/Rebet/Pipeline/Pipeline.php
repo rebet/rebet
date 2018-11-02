@@ -2,7 +2,6 @@
 namespace Rebet\Pipeline;
 
 use Rebet\Common\Reflector;
-use Rebet\Common\Utils;
 
 /**
  * Pipeline Class
@@ -167,7 +166,7 @@ class Pipeline
     protected function carry() : \Closure
     {
         return function ($stack, $pipe) {
-            $pipe = \is_callable($pipe) ? $pipe : Reflector::instantiate($pipe) ;
+            $pipe               = \is_callable($pipe) ? $pipe : Reflector::instantiate($pipe) ;
             $this->real_pipes[] = $pipe;
             
             return function ($passable) use ($stack, $pipe) {

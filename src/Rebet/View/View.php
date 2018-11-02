@@ -16,6 +16,7 @@ use Rebet\View\Engine\Engine;
 class View implements Renderable
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [

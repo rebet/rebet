@@ -32,6 +32,7 @@ use Rebet\Pipeline\Pipeline;
 class Log
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [

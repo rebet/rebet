@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Enum;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\RebetTestCase;
 
 class EnumTest extends RebetTestCase
 {

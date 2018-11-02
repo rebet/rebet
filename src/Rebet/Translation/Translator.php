@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Translation;
 
-use Rebet\Config\Configurable;
-use Rebet\Common\Reflector;
 use Rebet\Common\Collection;
+use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
+use Rebet\Config\Configurable;
 
 /**
  * Translator Class
@@ -17,6 +17,7 @@ use Rebet\Common\Strings;
 class Translator
 {
     use Configurable;
+
     public static function defaultConfig()
     {
         return [
@@ -87,7 +88,7 @@ class Translator
     public function __construct(Loader $loader, ?string $locale = null, ?string $fallback_locale = null)
     {
         $this->loader          = $loader;
-        $this->locale          = $locale          ?? static::config('default_locale') ;
+        $this->locale          = $locale ?? static::config('default_locale') ;
         $this->fallback_locale = $fallback_locale ?? static::config('fallback_locale', false, 'en') ;
     }
 
@@ -131,7 +132,7 @@ class Translator
     public function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : ?string
     {
         [$group, $key] = explode('.', $key, 2);
-        $locales = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
+        $locales       = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
 
         $line = null;
         foreach ($locales as $locale) {
@@ -202,7 +203,7 @@ class Translator
      */
     public function ordinalize(int $num, ?string $locale = null) : string
     {
-        $locale = $locale ?? $this->locale;
+        $locale     = $locale ?? $this->locale;
         $ordinalize = static::config("ordinalize.{$locale}", false, function (int $num) {
             return $num;
         });

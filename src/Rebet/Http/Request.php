@@ -1,9 +1,8 @@
 <?php
 namespace Rebet\Http;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Rebet\Common\Reflector;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
  * Request Class
@@ -61,7 +60,7 @@ class Request extends SymfonyRequest
         foreach ((array)$forms as $form) {
             $form = Reflector::instantiate($form);
             $form->popurate(array_merge($this->query->all(), $this->request->all()), $this->files->all());
-            $errors = array_merge($errors, $form->validate($crud, $role, $option));
+            $errors  = array_merge($errors, $form->validate($crud, $role, $option));
             $valid[] = $form;
         }
 

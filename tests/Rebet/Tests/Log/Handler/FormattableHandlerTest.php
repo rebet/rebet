@@ -1,17 +1,13 @@
 <?php
 namespace Rebet\Tests\Log\Handler;
 
-use Rebet\Tests\RebetTestCase;
+use Rebet\DateTime\DateTime;
 use Rebet\Log\Handler\FormattableHandler;
 
-use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
-use Rebet\Log\Handler\LogHandler;
+use Rebet\Tests\RebetTestCase;
 
-use org\bovigo\vfs\vfsStream;
 
 class FormattableHandlerTest extends RebetTestCase
 {
@@ -36,38 +32,38 @@ class FormattableHandlerTest extends RebetTestCase
     {
         $this->context->level   = LogLevel::TRACE();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNull($formatted_log);
 
         $this->context->level   = LogLevel::DEBUG();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNull($formatted_log);
         
         $this->context->level   = LogLevel::INFO();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
         
         $this->context->level   = LogLevel::WARN();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
         
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
         
         $this->context->level   = LogLevel::FATAL();
         $this->context->message = "This is test.";
-        $formatted_log = $this->handler->handle($this->context);
+        $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
@@ -88,10 +84,12 @@ class FormattableHandlerTest_NullHandler extends FormattableHandler
             'log_formatter' => \Rebet\Log\Formatter\DefaultFormatter::class,
         ];
     }
+
     protected function report(LogContext $log, $formatted_log) : void
     {
         $this->reported_log = $formatted_log;
     }
+
     public function terminate() : void
     {
         $this->reported_log = null;

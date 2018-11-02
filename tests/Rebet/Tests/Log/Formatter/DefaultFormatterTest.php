@@ -1,14 +1,12 @@
 <?php
 namespace Rebet\Tests\Log\Formatter;
 
-use Rebet\Tests\RebetTestCase;
+use Rebet\DateTime\DateTime;
 use Rebet\Log\Formatter\DefaultFormatter;
 
-use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
+use Rebet\Tests\RebetTestCase;
 
 class DefaultFormatterTest extends RebetTestCase
 {
@@ -34,7 +32,7 @@ class DefaultFormatterTest extends RebetTestCase
         $pid = getmypid();
 
         $this->context->level = LogLevel::TRACE();
-        $formatted = $this->formatter->format($this->context);
+        $formatted            = $this->formatter->format($this->context);
         $this->assertSame(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [TRACE] 
@@ -45,7 +43,7 @@ EOS
         
         $this->context->level   = LogLevel::DEBUG();
         $this->context->message = 123;
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertStringStartsWith(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [DEBUG] 123
@@ -63,7 +61,7 @@ EOS
         
         $this->context->level   = LogLevel::INFO();
         $this->context->message = 'This is test message.';
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertSame(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [INFO ] This is test message.
@@ -74,7 +72,7 @@ EOS
         
         $this->context->level   = LogLevel::INFO();
         $this->context->message = "1st line.\n2nd line.";
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertSame(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [INFO ] 1st line.
@@ -86,7 +84,7 @@ EOS
         
         $this->context->level   = LogLevel::WARN();
         $this->context->message = [1, 2, 3];
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertSame(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [WARN ] Array
@@ -103,7 +101,7 @@ EOS
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = 'This is test message.';
         $this->context->var     = ['test' => 123];
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertSame(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [ERROR] This is test message.
@@ -121,7 +119,7 @@ EOS
         $this->context->message = 'This is test message.';
         $this->context->var     = ['test' => 123];
         $this->context->error   = new \LogicException("Test");
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertStringStartsWith(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [FATAL] This is test message.
@@ -149,7 +147,7 @@ EOS
         $this->context->var     = ['test' => 123];
         $this->context->error   = new \LogicException("Test");
         $this->context->extra   = ['etra' => 'abc'];
-        $formatted = $this->formatter->format($this->context);
+        $formatted              = $this->formatter->format($this->context);
         $this->assertStringStartsWith(
             <<<EOS
 2010-10-20 10:20:30.040050 {$pid} [DEBUG] This is test message.

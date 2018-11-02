@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use Rebet\Tests\RebetTestCase;
 use Rebet\Common\Describable;
 use Rebet\Common\Reflector;
+use Rebet\Tests\RebetTestCase;
 
 class DescribableTest extends RebetTestCase
 {
@@ -15,7 +15,7 @@ class DescribableTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->src    = new DescribableTest_MockA();
+        $this->src      = new DescribableTest_MockA();
         $this->src->foo = 'foo';
         $this->src->bar = 'bar';
         Reflector::set($this->src, 'protected', 'protected', true);
@@ -116,7 +116,7 @@ class DescribableTest_MockA
     public $bar = null;
 
     protected $protected = null;
-    private $private = null;
+    private $private     = null;
 }
 
 class DescribableTest_MockB
@@ -125,5 +125,5 @@ class DescribableTest_MockB
     public $baz = null;
 
     protected $protected = null;
-    private $private = null;
+    private $private     = null;
 }

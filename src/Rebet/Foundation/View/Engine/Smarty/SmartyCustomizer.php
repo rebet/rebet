@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Foundation\View\Engine\Smarty;
 
-use Rebet\Foundation\App;
 use Rebet\View\Engine\Smarty\Smarty;
 
 /**
