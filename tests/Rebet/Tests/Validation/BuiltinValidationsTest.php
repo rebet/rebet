@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use org\bovigo\vfs\vfsStream;
-use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Gender;
@@ -11,7 +9,6 @@ use Rebet\Translation\Translator;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
-use Rebet\Enum\Enum;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
@@ -933,6 +930,24 @@ EOS
                     ]]],
                     ['quux'   , [':baz'             ], false, ['quux' => [
                         "The 2nd Quux (1999-01-01) must be a date future than Baz."
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FUTURE_THAN_OR_EQUAL
+            // --------------------------------------------
+            [[
+                'name'  => 'FutureThanOrEqual',
+                'data'  => ['null' => null, 'past' => '2010-01-23 12:34:55', 'now' => '2010-01-23 12:34:56', 'future' => '2010-01-23 12:34:57', 'list' => ['2010-01-23 12:34:55', '2010-01-23 12:34:56', '2010-01-23 12:34:57']],
+                'tests' => [
+                    ['nothing', ['now'], true , []],
+                    ['null'   , ['now'], true , []],
+                    ['past'   , ['now'], false, ['past' => ["The Past must be a date future than or equal now."]]],
+                    ['now'    , ['now'], true , []],
+                    ['future' , ['now'], true , []],
+                    ['list'   , ['now'], false, ['list' => [
+                        "The 1st List (2010-01-23 12:34:55) must be a date future than or equal now."
                     ]]],
                 ]
             ]],

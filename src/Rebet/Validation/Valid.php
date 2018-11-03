@@ -659,6 +659,22 @@ class Valid
      */
     const FUTURE_THAN = 'FutureThan:';
 
+    /**
+     * Future Equal Or Equal Validation.
+     * It checks the value of datetime is future than or equal at_time.
+     *
+     * ex)
+     *   - ['CU', Valid::FUTURE_THAN_OR_EQUAL, 'at_time'] (format: [])
+     *   - ['CU', Valid::FUTURE_THAN_OR_EQUAL, 'at_time', format]
+     *   - ['CU', Valid::FUTURE_THAN_OR_EQUAL, 'at_time', [format1, format2, ...]]
+     *   - ['CU', Valid::FUTURE_THAN_OR_EQUAL, ':field' , (snip)]
+     * message)
+     *   Key         - FutureThanOrEqual, FutureThanOrEqual@List
+     *   Placeholder - :attribute, :self, :at_time, :nth, :value
+     *   Selector    - none
+     */
+    const FUTURE_THAN_OR_EQUAL = 'FutureThanOrEqual:';
+
 
 
 

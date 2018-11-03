@@ -1172,6 +1172,27 @@ class BuiltinValidations extends Validations
         return $valid;
     }
 
+    /**
+     * Future Than Or Equal Validation
+     *
+     * @param Context $c
+     * @param string|\DateTimeInterface $at_time
+     * @param string|array $format
+     * @return boolean
+     */
+    public function validationFutureThanOrEqual(Context $c, $at_time, $format = []) : bool
+    {
+        return $this->handleDatetime(
+            $c,
+            $at_time,
+            $format,
+            function (DateTime $value, DateTime $at_time) {
+                return $value >= $at_time;
+            },
+            'validation.FutureThanOrEqual'
+        );
+    }
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================
