@@ -731,7 +731,7 @@ class Valid
      *   - ['CU', Valid::MAX_AGE, max, 'at_time'] (format: [])
      *   - ['CU', Valid::MAX_AGE, max, 'at_time', format]
      *   - ['CU', Valid::MAX_AGE, max, 'at_time', [format1, format2, ...]]
-     *   - ['CU', Valid::MAX_AGE, max, ':field' , (snip)]
+     *   - ['CU', Valid::MAX_AGE, ':field', ':field' , (snip)]
      * message)
      *   Key         - MaxAge, MaxAge@List
      *   Placeholder - :attribute, :self, :max, :at_time, :nth, :value
@@ -751,7 +751,7 @@ class Valid
      *   - ['CU', Valid::MIN_AGE, min, 'at_time'] (format: [])
      *   - ['CU', Valid::MIN_AGE, min, 'at_time', format]
      *   - ['CU', Valid::MIN_AGE, min, 'at_time', [format1, format2, ...]]
-     *   - ['CU', Valid::MIN_AGE, min, ':field' , (snip)]
+     *   - ['CU', Valid::MIN_AGE, ':field', ':field' , (snip)]
      * message)
      *   Key         - MinAge, MinAge@List
      *   Placeholder - :attribute, :self, :min, :at_time, :nth, :value

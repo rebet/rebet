@@ -1239,13 +1239,14 @@ class BuiltinValidations extends Validations
      * Max Age Validation
      *
      * @param Context $c
-     * @param int $max
+     * @param int|string $max
      * @param string|\DateTimeInterface $at_time (default: 'today')
      * @param string|array $format (default: [])
      * @return boolean
      */
-    public function validationMaxAge(Context $c, int $max, $at_time = 'today', $format = []) : bool
+    public function validationMaxAge(Context $c, $max, $at_time = 'today', $format = []) : bool
     {
+        [$max, $max_label] = $c->resolve($max);
         return $this->handleDatetime(
             $c,
             $at_time,
@@ -1254,7 +1255,7 @@ class BuiltinValidations extends Validations
                 return $value->age($at_time) <= $max;
             },
             'validation.MaxAge',
-            ['max' => $max],
+            ['max' => $max_label],
             function ($value) use ($at_time) { return $at_time === 'today' ? null : 'at_time'; }
         );
     }
@@ -1263,13 +1264,14 @@ class BuiltinValidations extends Validations
      * Min Age Validation
      *
      * @param Context $c
-     * @param int $min
+     * @param int|string $min
      * @param string|\DateTimeInterface $at_time (default: 'today')
      * @param string|array $format (default: [])
      * @return boolean
      */
-    public function validationMinAge(Context $c, int $min, $at_time = 'today', $format = []) : bool
+    public function validationMinAge(Context $c, $min, $at_time = 'today', $format = []) : bool
     {
+        [$min, $min_label] = $c->resolve($min);
         return $this->handleDatetime(
             $c,
             $at_time,
@@ -1278,7 +1280,7 @@ class BuiltinValidations extends Validations
                 return $value->age($at_time) >= $min;
             },
             'validation.MinAge',
-            ['min' => $min],
+            ['min' => $min_label],
             function ($value) use ($at_time) { return $at_time === 'today' ? null : 'at_time'; }
         );
     }
