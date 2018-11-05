@@ -207,7 +207,7 @@ class BuiltinValidations extends Validations
      */
     public function validationRequired(Context $c) : bool
     {
-        return $c->blank() ? $c->appendError('validation.Required') : true ;
+        return $c->blank() ? $c->appendError('Required') : true ;
     }
 
     /**
@@ -221,7 +221,7 @@ class BuiltinValidations extends Validations
     public function validationRequiredIf(Context $c, string $other, $value) : bool
     {
         return !$c->blank() ? true : $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('validation.RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
+            return $c->appendError('RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
     
@@ -236,7 +236,7 @@ class BuiltinValidations extends Validations
     public function validationRequiredUnless(Context $c, string $other, $value) : bool
     {
         return !$c->blank() ? true : $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('validation.RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
+            return $c->appendError('RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
     
@@ -288,7 +288,7 @@ class BuiltinValidations extends Validations
     {
         return !$c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             return $c->appendError(
-                'validation.RequiredWith',
+                'RequiredWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
@@ -307,7 +307,7 @@ class BuiltinValidations extends Validations
     {
         return !$c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             return $c->appendError(
-                'validation.RequiredWithout',
+                'RequiredWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
@@ -373,7 +373,7 @@ class BuiltinValidations extends Validations
     public function validationBlankIf(Context $c, string $other, $value) : bool
     {
         return $c->blank() ? true : $this->handleIf($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('validation.BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
+            return $c->appendError('BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
     
@@ -388,7 +388,7 @@ class BuiltinValidations extends Validations
     public function validationBlankUnless(Context $c, string $other, $value) : bool
     {
         return $c->blank() ? true : $this->handleUnless($c, $other, $value, function ($c, $other, $value, $label) {
-            return $c->appendError('validation.BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
+            return $c->appendError('BlankUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
 
@@ -404,7 +404,7 @@ class BuiltinValidations extends Validations
     {
         return $c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             return $c->appendError(
-                'validation.BlankWith',
+                'BlankWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
@@ -423,7 +423,7 @@ class BuiltinValidations extends Validations
     {
         return $c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             return $c->appendError(
-                'validation.BlankWithout',
+                'BlankWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
                 Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
@@ -443,7 +443,7 @@ class BuiltinValidations extends Validations
             return true;
         }
         [$value, $label] = $c->resolve($value);
-        return $c->value == $value ? true : $c->appendError('validation.SameAs', ['value' => $label]);
+        return $c->value == $value ? true : $c->appendError('SameAs', ['value' => $label]);
     }
 
     /**
@@ -459,7 +459,7 @@ class BuiltinValidations extends Validations
             return true;
         }
         [$value, $label] = $c->resolve($value);
-        return $c->value != $value ? true : $c->appendError('validation.NotSameAs', ['value' => $label]);
+        return $c->value != $value ? true : $c->appendError('NotSameAs', ['value' => $label]);
     }
 
     /**
@@ -472,7 +472,7 @@ class BuiltinValidations extends Validations
      */
     public function validationRegex(Context $c, string $pattern, string $selector = null) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), $pattern, 'validation.Regex', ['pattern' => $pattern], $selector);
+        return $this->handleRegex($c, Kind::OTHER(), $pattern, 'Regex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -547,7 +547,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNotRegex(Context $c, string $pattern, string $selector = null) : bool
     {
-        return $this->handleNotRegex($c, Kind::OTHER(), $pattern, 'validation.NotRegex', ['pattern' => $pattern], $selector);
+        return $this->handleNotRegex($c, Kind::OTHER(), $pattern, 'NotRegex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -591,7 +591,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($max) {
                 return mb_strlen($value) <= $max;
             },
-            'validation.MaxLength',
+            'MaxLength',
             ['max' => $max]
         );
     }
@@ -611,7 +611,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($min) {
                 return mb_strlen($value) >= $min;
             },
-            'validation.MinLength',
+            'MinLength',
             ['min' => $min]
         );
     }
@@ -631,7 +631,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($length) {
                 return mb_strlen($value) === $length;
             },
-            'validation.Length',
+            'Length',
             ['length' => $length]
         );
     }
@@ -644,7 +644,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumber(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'validation.Number');
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]*[\.]?[0-9]+$/u", 'Number');
     }
 
     /**
@@ -655,7 +655,7 @@ class BuiltinValidations extends Validations
      */
     public function validationInteger(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+$/u", 'validation.Integer');
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+$/u", 'Integer');
     }
 
     /**
@@ -667,7 +667,7 @@ class BuiltinValidations extends Validations
      */
     public function validationFloat(Context $c, int $decimal) : bool
     {
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'validation.Float', ['decimal' => $decimal]);
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^[+-]?[0-9]+([\.][0-9]{0,{$decimal}})?$/u", 'Float', ['decimal' => $decimal]);
     }
 
     /**
@@ -687,7 +687,7 @@ class BuiltinValidations extends Validations
             function ($value, $number, int $decimal) {
                 return bccomp((string)$value, (string)$number, $decimal) === -1;
             },
-            'validation.NumberLessThan'
+            'NumberLessThan'
         );
     }
 
@@ -708,7 +708,7 @@ class BuiltinValidations extends Validations
             function ($value, $number, int $decimal) {
                 return bccomp((string)$value, (string)$number, $decimal) !== 1;
             },
-            'validation.NumberLessThanOrEqual'
+            'NumberLessThanOrEqual'
         );
     }
 
@@ -762,7 +762,7 @@ class BuiltinValidations extends Validations
             function ($value, $number, int $decimal) {
                 return bccomp((string)$number, (string)$value, $decimal) === -1;
             },
-            'validation.NumberGreaterThan'
+            'NumberGreaterThan'
         );
     }
 
@@ -783,7 +783,7 @@ class BuiltinValidations extends Validations
             function ($value, $number, int $decimal) {
                 return bccomp((string)$number, (string)$value, $decimal) !== 1;
             },
-            'validation.NumberGreaterThanOrEqual'
+            'NumberGreaterThanOrEqual'
         );
     }
 
@@ -803,11 +803,11 @@ class BuiltinValidations extends Validations
                 function ($value) {
                     return filter_var($value, FILTER_VALIDATE_EMAIL);
                 },
-                'validation.Email'
+                'Email'
             );
         }
 
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'validation.Email');
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}/", 'Email');
     }
 
     /**
@@ -843,7 +843,7 @@ class BuiltinValidations extends Validations
             (:[0-9]+)?                              # a port (optional)
             (/?|/\S+|\?\S*|\#\S*)                   # a /, nothing, a / with something, a query or a fragment
         $~ixu';
-        $valid = $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), $pattern, 'validation.Url');
+        $valid = $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), $pattern, 'Url');
         if ($dns_check) {
             $host_state = [];
             $valid &= $this->handleListableValue(
@@ -858,7 +858,7 @@ class BuiltinValidations extends Validations
                     $host_state[$host] = $active;
                     return $active;
                 },
-                'validation.Url',
+                'Url',
                 [],
                 function ($value) { return 'nonactive'; }
             );
@@ -885,7 +885,7 @@ class BuiltinValidations extends Validations
             }
             $c->value = $splited;
         }
-        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'validation.Ipv4');
+        return $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), "/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([1-9]|[1-2][0-9]|3[0-2]))?$/u", 'Ipv4');
     }
 
     /**
@@ -896,7 +896,7 @@ class BuiltinValidations extends Validations
      */
     public function validationDigit(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[0-9]+$/u", 'validation.Digit');
+        return $this->handleRegex($c, Kind::OTHER(), "/^[0-9]+$/u", 'Digit');
     }
 
     /**
@@ -907,7 +907,7 @@ class BuiltinValidations extends Validations
      */
     public function validationAlpha(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z]+$/u", 'validation.Alpha');
+        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z]+$/u", 'Alpha');
     }
 
     /**
@@ -918,7 +918,7 @@ class BuiltinValidations extends Validations
      */
     public function validationAlphaDigit(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9]+$/u", 'validation.AlphaDigit');
+        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9]+$/u", 'AlphaDigit');
     }
 
     /**
@@ -930,7 +930,7 @@ class BuiltinValidations extends Validations
      */
     public function validationAlphaDigitMark(Context $c, string $mark = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ') : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9".preg_quote($mark, '/')."]+$/u", 'validation.AlphaDigitMark', ['mark' => $mark]);
+        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9".preg_quote($mark, '/')."]+$/u", 'AlphaDigitMark', ['mark' => $mark]);
     }
 
     /**
@@ -942,7 +942,7 @@ class BuiltinValidations extends Validations
      */
     public function validationHiragana(Context $c, string $extra = '') : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[\p{Hiragana}ー".preg_quote($extra, '/')."]+$/u", 'validation.Hiragana', ['extra' => $extra]);
+        return $this->handleRegex($c, Kind::OTHER(), "/^[\p{Hiragana}ー".preg_quote($extra, '/')."]+$/u", 'Hiragana', ['extra' => $extra]);
     }
 
     /**
@@ -954,7 +954,7 @@ class BuiltinValidations extends Validations
      */
     public function validationKana(Context $c, string $extra = '') : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[ァ-ヾ".preg_quote($extra, '/')."]+$/u", 'validation.Kana', ['extra' => $extra]);
+        return $this->handleRegex($c, Kind::OTHER(), "/^[ァ-ヾ".preg_quote($extra, '/')."]+$/u", 'Kana', ['extra' => $extra]);
     }
 
     /**
@@ -981,7 +981,7 @@ class BuiltinValidations extends Validations
                 }
                 return true;
             },
-            'validation.DependenceChar',
+            'DependenceChar',
             ['encode' => $encode, 'dependences' => &$dependences]
         );
     }
@@ -1043,7 +1043,7 @@ class BuiltinValidations extends Validations
                 }
                 return true;
             },
-            'validation.NgWord',
+            'NgWord',
             ['ng_word' => &$hit_ng_word]
         );
     }
@@ -1096,7 +1096,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($list) {
                 return in_array($value, $list);
             },
-            'validation.Contains',
+            'Contains',
             ['list' => $list]
         );
     }
@@ -1111,7 +1111,7 @@ class BuiltinValidations extends Validations
     public function validationMinCount(Context $c, int $min) : bool
     {
         $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        return $item_count < $min ? $c->appendError('validation.MinCount', ['item_count' => $item_count, 'min' => $min], $min) : true;
+        return $item_count < $min ? $c->appendError('MinCount', ['item_count' => $item_count, 'min' => $min], $min) : true;
     }
 
     /**
@@ -1124,7 +1124,7 @@ class BuiltinValidations extends Validations
     public function validationMaxCount(Context $c, int $max) : bool
     {
         $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        return $item_count > $max ? $c->appendError('validation.MaxCount', ['item_count' => $item_count, 'max' => $max], $max) : true;
+        return $item_count > $max ? $c->appendError('MaxCount', ['item_count' => $item_count, 'max' => $max], $max) : true;
     }
 
     /**
@@ -1137,7 +1137,7 @@ class BuiltinValidations extends Validations
     public function validationCount(Context $c, int $count) : bool
     {
         $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
-        return $item_count !== $count ? $c->appendError('validation.Count', ['item_count' => $item_count, 'count' => $count], $count) : true;
+        return $item_count !== $count ? $c->appendError('Count', ['item_count' => $item_count, 'count' => $count], $count) : true;
     }
 
     /**
@@ -1154,7 +1154,7 @@ class BuiltinValidations extends Validations
         }
         [$list, $label] = $c->pluck($nested_field);
         $duplicate      = Arrays::duplicate($list);
-        return empty($duplicate) ? true : $c->appendError('validation.Unique', ['attribute' => $label, 'duplicate' => $duplicate], count($duplicate)) ;
+        return empty($duplicate) ? true : $c->appendError('Unique', ['attribute' => $label, 'duplicate' => $duplicate], count($duplicate)) ;
     }
 
     /**
@@ -1172,7 +1172,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($format) {
                 return !is_null(DateTime::createDateTime($value, $format));
             },
-            'validation.Datetime'
+            'Datetime'
         );
     }
 
@@ -1193,7 +1193,7 @@ class BuiltinValidations extends Validations
             function (DateTime $value, DateTime $at_time) {
                 return $value > $at_time;
             },
-            'validation.FutureThan'
+            'FutureThan'
         );
     }
 
@@ -1260,7 +1260,7 @@ class BuiltinValidations extends Validations
             function (DateTime $value, DateTime $at_time) {
                 return $value >= $at_time;
             },
-            'validation.FutureThanOrEqual'
+            'FutureThanOrEqual'
         );
     }
 
@@ -1281,7 +1281,7 @@ class BuiltinValidations extends Validations
             function (DateTime $value, DateTime $at_time) {
                 return $value < $at_time;
             },
-            'validation.PastThan'
+            'PastThan'
         );
     }
 
@@ -1302,7 +1302,7 @@ class BuiltinValidations extends Validations
             function (DateTime $value, DateTime $at_time) {
                 return $value <= $at_time;
             },
-            'validation.PastThanOrEqual'
+            'PastThanOrEqual'
         );
     }
 
@@ -1325,7 +1325,7 @@ class BuiltinValidations extends Validations
             function (DateTime $value, DateTime $at_time) use ($max) {
                 return $value->age($at_time) <= $max;
             },
-            'validation.MaxAge',
+            'MaxAge',
             ['max' => $max_label],
             function ($value) use ($at_time) { return $at_time; }
         );
@@ -1350,7 +1350,7 @@ class BuiltinValidations extends Validations
             function (DateTime $value, DateTime $at_time) use ($min) {
                 return $value->age($at_time) >= $min;
             },
-            'validation.MinAge',
+            'MinAge',
             ['min' => $min_label],
             function ($value) use ($at_time) { return $at_time; }
         );

@@ -183,12 +183,12 @@ class ContextTest extends RebetTestCase
         );
 
         $this->assertNull($this->errors['global'] ?? null);
-        $c->appendError('validation.Required');
+        $c->appendError('Required');
         $this->assertSame(['を入力して下さい。'], $this->errors['global'] ?? null);
 
         $c->initBy('name');
         $this->assertNull($this->errors['name'] ?? null);
-        $c->appendError('validation.Required');
+        $c->appendError('Required');
         $this->assertSame(['氏名を入力して下さい。'], $this->errors['name'] ?? null);
     }
 
@@ -204,7 +204,7 @@ class ContextTest extends RebetTestCase
 
         $c->initBy('name');
         $this->assertNull($this->errors['name'] ?? null);
-        $c->appendError('validation.MaxLength', ['max' => 12]);
+        $c->appendError('MaxLength', ['max' => 12]);
         $this->assertSame(['氏名は12文字以下で入力して下さい。'], $this->errors['name'] ?? null);
     }
 
