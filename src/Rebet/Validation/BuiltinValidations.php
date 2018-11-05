@@ -533,9 +533,7 @@ class BuiltinValidations extends Validations
             },
             $messsage_key,
             $replacement,
-            function ($value) use ($selector) {
-                return $selector;
-            }
+            function ($value) use ($selector) { return $selector; }
         );
     }
     
@@ -574,9 +572,7 @@ class BuiltinValidations extends Validations
             },
             $messsage_key,
             $replacement,
-            function ($value) use ($selector) {
-                return $selector;
-            }
+            function ($value) use ($selector) { return $selector; }
         );
     }
     
@@ -801,9 +797,7 @@ class BuiltinValidations extends Validations
                 },
                 'validation.Url',
                 [],
-                function ($value) {
-                    return 'nonactive';
-                }
+                function ($value) { return 'nonactive'; }
             );
         }
         return $valid;
@@ -1238,6 +1232,54 @@ class BuiltinValidations extends Validations
                 return $value <= $at_time;
             },
             'validation.PastThanOrEqual'
+        );
+    }
+
+    /**
+     * Max Age Validation
+     *
+     * @param Context $c
+     * @param int $max
+     * @param string|\DateTimeInterface $at_time (default: 'today')
+     * @param string|array $format (default: [])
+     * @return boolean
+     */
+    public function validationMaxAge(Context $c, int $max, $at_time = 'today', $format = []) : bool
+    {
+        return $this->handleDatetime(
+            $c,
+            $at_time,
+            $format,
+            function (DateTime $value, DateTime $at_time) use ($max) {
+                return $value->age($at_time) <= $max;
+            },
+            'validation.MaxAge',
+            ['max' => $max],
+            function ($value) use ($at_time) { return $at_time === 'today' ? null : 'at_time'; }
+        );
+    }
+
+    /**
+     * Min Age Validation
+     *
+     * @param Context $c
+     * @param int $min
+     * @param string|\DateTimeInterface $at_time (default: 'today')
+     * @param string|array $format (default: [])
+     * @return boolean
+     */
+    public function validationMinAge(Context $c, int $min, $at_time = 'today', $format = []) : bool
+    {
+        return $this->handleDatetime(
+            $c,
+            $at_time,
+            $format,
+            function (DateTime $value, DateTime $at_time) use ($min) {
+                return $value->age($at_time) >= $min;
+            },
+            'validation.MinAge',
+            ['min' => $min],
+            function ($value) use ($at_time) { return $at_time === 'today' ? null : 'at_time'; }
         );
     }
 

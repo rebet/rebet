@@ -649,7 +649,6 @@ class Valid
      *
      * Argument of at_time support strtotime() format.
      * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
-     * When you use strtotime() format then you should be given time format together.
      *
      * ex)
      *   - ['CU', Valid::FUTURE_THAN, 'at_time'] (format: [])
@@ -669,7 +668,6 @@ class Valid
      *
      * Argument of at_time support strtotime() format.
      * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
-     * When you use strtotime() format then you should be given time format together.
      *
      * ex)
      *   - ['CU', Valid::FUTURE_THAN_OR_EQUAL, 'at_time'] (format: [])
@@ -689,7 +687,6 @@ class Valid
      *
      * Argument of at_time support strtotime() format.
      * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
-     * When you use strtotime() format then you should be given time format together.
      *
      * ex)
      *   - ['CU', Valid::PAST_THAN, 'at_time'] (format: [])
@@ -709,7 +706,6 @@ class Valid
      *
      * Argument of at_time support strtotime() format.
      * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
-     * When you use strtotime() format then you should be given time format together.
      *
      * ex)
      *   - ['CU', Valid::PAST_THAN_OR_EQUAL, 'at_time'] (format: [])
@@ -723,7 +719,45 @@ class Valid
      */
     const PAST_THAN_OR_EQUAL = 'PastThanOrEqual:';
 
+    /**
+     * Max Age Validation.
+     * It checks the value of datetime less than or equal given max age when at_time.
+     *
+     * Argument of at_time support strtotime() format.
+     * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
+     *
+     * ex)
+     *   - ['CU', Valid::MAX_AGE, max] (at_time: 'today', format: [])
+     *   - ['CU', Valid::MAX_AGE, max, 'at_time'] (format: [])
+     *   - ['CU', Valid::MAX_AGE, max, 'at_time', format]
+     *   - ['CU', Valid::MAX_AGE, max, 'at_time', [format1, format2, ...]]
+     *   - ['CU', Valid::MAX_AGE, max, ':field' , (snip)]
+     * message)
+     *   Key         - MaxAge, MaxAge@List
+     *   Placeholder - :attribute, :self, :max, :at_time, :nth, :value
+     *   Selector    - none or 'at_time'(when at_time is not 'today')
+     */
+    const MAX_AGE = 'MaxAge:';
 
+    /**
+     * Min Age Validation.
+     * It checks the value of datetime greater than or equal given min age when at_time.
+     *
+     * Argument of at_time support strtotime() format.
+     * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
+     *
+     * ex)
+     *   - ['CU', Valid::MIN_AGE, min] (at_time: 'today', format: [])
+     *   - ['CU', Valid::MIN_AGE, min, 'at_time'] (format: [])
+     *   - ['CU', Valid::MIN_AGE, min, 'at_time', format]
+     *   - ['CU', Valid::MIN_AGE, min, 'at_time', [format1, format2, ...]]
+     *   - ['CU', Valid::MIN_AGE, min, ':field' , (snip)]
+     * message)
+     *   Key         - MinAge, MinAge@List
+     *   Placeholder - :attribute, :self, :min, :at_time, :nth, :value
+     *   Selector    - none or 'at_time'(when at_time is not 'today')
+     */
+    const MIN_AGE = 'MinAge:';
 
 
     const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';

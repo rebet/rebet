@@ -191,6 +191,21 @@ class ValidatorTest extends RebetTestCase
             // Valid::FUTURE_THAN
             [['target' => '2100-01-01'], ['C', Valid::FUTURE_THAN, 'now'], true ],
             [['target' => '1900-01-01'], ['C', Valid::FUTURE_THAN, 'now'], false],
+            // Valid::FUTURE_THAN_OR_EQUAL
+            [['target' => '2100-01-01'], ['C', Valid::FUTURE_THAN_OR_EQUAL, 'now'], true ],
+            [['target' => '1900-01-01'], ['C', Valid::FUTURE_THAN_OR_EQUAL, 'now'], false],
+            // Valid::PAST_THAN
+            [['target' => '2100-01-01'], ['C', Valid::PAST_THAN, 'now'], false],
+            [['target' => '1900-01-01'], ['C', Valid::PAST_THAN, 'now'], true ],
+            // Valid::PAST_THAN_OR_EQUAL
+            [['target' => '2100-01-01'], ['C', Valid::PAST_THAN_OR_EQUAL, 'now'], false],
+            [['target' => '1900-01-01'], ['C', Valid::PAST_THAN_OR_EQUAL, 'now'], true ],
+            // Valid::MAX_AGE
+            [['target' => '1980-01-01'], ['C', Valid::MAX_AGE, 20], false],
+            [['target' => '2000-01-01'], ['C', Valid::MAX_AGE, 20], true ],
+            // Valid::MIN_AGE
+            [['target' => '1980-01-01'], ['C', Valid::MIN_AGE, 20], true ],
+            [['target' => '2000-01-01'], ['C', Valid::MIN_AGE, 20], false],
         ];
     }
 }

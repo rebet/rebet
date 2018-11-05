@@ -988,6 +988,54 @@ EOS
                     ]]],
                 ]
             ]],
+
+            // --------------------------------------------
+            // Valid::MAX_AGE
+            // --------------------------------------------
+            [[
+                'name'  => 'MaxAge',
+                'data'  => ['null' => null, 'greater' => '1999-01-23', 'equals' => '2000-01-23', 'less' => '2000-01-24', 'list' => ['1999-01-23', '2000-01-23', '2000-01-24']],
+                'tests' => [
+                    ['nothing', [10              ], true , []],
+                    ['null'   , [10              ], true , []],
+                    ['greater', [10              ], false, ['greater' => ["The age must be 10 years or younger."]]],
+                    ['equals' , [10              ], true , []],
+                    ['greater', [10, '2009-01-23'], true , []],
+                    ['equals' , [10, '2011-01-23'], false, ['equals' => ["The age must be 10 years or younger as of 2011-01-23."]]],
+                    ['less'   , [10              ], true , []],
+                    ['list'   , [10              ], false, ['list'   => [
+                        "The 1st value (1999-01-23) of List must be 10 years or younger.",
+                    ]]],
+                    ['list'   , [10, '2011-01-23'], false, ['list'   => [
+                        "The 1st value (1999-01-23) of List must be 10 years or younger as of 2011-01-23.",
+                        "The 2nd value (2000-01-23) of List must be 10 years or younger as of 2011-01-23.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::MIN_AGE
+            // --------------------------------------------
+            [[
+                'name'  => 'MinAge',
+                'data'  => ['null' => null, 'greater' => '1999-01-23', 'equals' => '2000-01-23', 'less' => '2000-01-24', 'list' => ['1999-01-23', '2000-01-23', '2000-01-24']],
+                'tests' => [
+                    ['nothing', [10              ], true , []],
+                    ['null'   , [10              ], true , []],
+                    ['greater', [10              ], true , []],
+                    ['equals' , [10              ], true , []],
+                    ['equals' , [10, '2009-01-23'], false, ['equals' => ["The age must be 10 years or older as of 2009-01-23."]]],
+                    ['less'   , [10              ], false, ['less'   => ["The age must be 10 years or older."]]],
+                    ['less'   , [10, '2010-01-24'], true , []],
+                    ['list'   , [10              ], false, ['list'   => [
+                        "The 3rd value (2000-01-24) of List must be 10 years or older.",
+                    ]]],
+                    ['list'   , [10, '2009-01-23'], false, ['list'   => [
+                        "The 2nd value (2000-01-23) of List must be 10 years or older as of 2009-01-23.",
+                        "The 3rd value (2000-01-24) of List must be 10 years or older as of 2009-01-23.",
+                    ]]],
+                ]
+            ]],
         ];
     }
 }

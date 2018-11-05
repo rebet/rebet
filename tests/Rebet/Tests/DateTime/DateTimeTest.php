@@ -890,4 +890,27 @@ class DateTimeTest extends RebetTestCase
 
         $this->assertEquals(floatval((string)$micro), $now->convertTo('float'));
     }
+
+    public function test_foramt()
+    {
+        $this->assertSame('2010-10-20 10:20:30', DateTime::now()->format());
+        $this->assertSame('2010/10/20 10:20:30', DateTime::now()->format('Y/m/d H:i:s'));
+    }
+
+    public function test_age()
+    {
+        $this->assertSame(9, DateTime::createDateTime('2000-10-21')->age());
+        $this->assertSame(10, DateTime::createDateTime('2000-10-20')->age());
+        $this->assertSame(10, DateTime::createDateTime('2000-10-19')->age());
+        $this->assertSame(10, DateTime::createDateTime('1999-10-21')->age());
+        $this->assertSame(11, DateTime::createDateTime('1999-10-20')->age());
+        $this->assertSame(11, DateTime::createDateTime('1999-10-19')->age());
+
+        $this->assertSame(19, DateTime::createDateTime('2000-10-21')->age('2020-10-20'));
+        $this->assertSame(20, DateTime::createDateTime('2000-10-20')->age('2020-10-20'));
+        $this->assertSame(20, DateTime::createDateTime('2000-10-19')->age('2020-10-20'));
+        $this->assertSame(20, DateTime::createDateTime('1999-10-21')->age('2020-10-20'));
+        $this->assertSame(21, DateTime::createDateTime('1999-10-20')->age('2020-10-20'));
+        $this->assertSame(21, DateTime::createDateTime('1999-10-19')->age('2020-10-20'));
+    }
 }

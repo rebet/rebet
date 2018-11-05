@@ -103,7 +103,21 @@ return [
     "FutureThanOrEqual@List" => ":nth番目の:attributeは:at_timeよりも未来の日付(指定日時を含む)を入力して下さい。",
     "PastThan"               => ":attributeは:at_timeよりも過去の日付を入力して下さい。",
     "PastThan@List"          => ":nth番目の:attributeは:at_timeよりも過去の日付を入力して下さい。",
-    "PastThanOrEqual"        => ":attributeは:at_timeよりも過去の日付(指定日時を含む)を入力して下さい。",
-    "PastThanOrEqual@List"   => ":nth番目の:attributeは:at_timeよりも過去の日付(指定日時を含む)を入力して下さい。",
+    "MaxAge"                 => [
+        "{at_time} :at_time時点の年齢は:max歳以下でなければなりません。",
+        "{*}       :現在の年齢は:max歳以下でなければなりません。",
+    ],
+    "MaxAge@List"            => [
+        "{at_time} :nth番目の:at_time時点の年齢は:max歳以下でなければなりません。",
+        "{*}       :nth番目の現在の年齢は:max歳以下でなければなりません。",
+    ],
+    "MinAge"                 => [
+        "{at_time} :at_time時点の年齢は:min歳以上でなければなりません。",
+        "{*}       :現在の年齢は:min歳以上でなければなりません。",
+    ],
+    "MinAge@List"            => [
+        "{at_time} :nth番目の:at_time時点の年齢は:min歳以上でなければなりません。",
+        "{*}       :nth番目の現在の年齢は:min歳以上でなければなりません。",
+    ],
 
 ];

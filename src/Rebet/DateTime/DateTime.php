@@ -87,13 +87,18 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @see static::createDateTime()
      * @see static::analyzeDateTime()
+     * @see static::__construct()
      *
      * @param string|\DateTimeInterface|int|null $from
      * @return DateTime|null
      */
     public static function valueOf($from) : ?DateTime
     {
-        return static::createDateTime($from);
+        try {
+            return static::createDateTime($from) ?? new static($from) ;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
     
     /**
@@ -639,5 +644,20 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     public function format($format = null)
     {
         return $format ? parent::format($format) : parent::format(static::config('default_format'));
+    }
+
+    /**
+     * Get age of this date time as of given at time.
+     *
+     * @param string $at_time (default: 'today')
+     * @return integer
+     */
+    public function age($at_time = 'today') : int
+    {
+        $at_time = static::valueOf($at_time);
+        if ($at_time === null) {
+            throw new \LogicException("Invalid datetime format of given at time '{$at_time}'.");
+        }
+        return floor(($at_time->format('Ymd') - $this->format('Ymd')) / 10000);
     }
 }
