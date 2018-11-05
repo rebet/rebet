@@ -1152,17 +1152,23 @@ class BuiltinValidations extends Validations
     public function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         [$at_time, $at_time_label] = $c->resolve($at_time);
-        $replacement['at_time']    = $at_time_label;
-        $valid                     = $this->validationDatetime($c, $format);
+        if ($at_time !== $at_time_label) {
+            $replacement['at_time'] = $at_time_label;
+        }
+
+        try {
+            [$analyzed, $apply_format] = DateTime::analyzeDateTime($at_time, $format);
+            $at_time                   = $analyzed ?? new DateTime($at_time);
+        } catch (\Exception $e) {
+            return true;
+        }
+        $replacement['at_time'] = $replacement['at_time'] ?? ($apply_format ? $at_time->format($apply_format) : $at_time->format());
+
+        $valid  = $this->validationDatetime($c, $format);
         $valid &= $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
             function ($value) use ($at_time, $format, $test) {
-                try {
-                    $at_time = DateTime::createDateTime($at_time, $format) ?? new DateTime($at_time);
-                } catch (\Exception $e) {
-                    return true;
-                }
                 return $test(DateTime::createDateTime($value, $format), $at_time);
             },
             $messsage_key,

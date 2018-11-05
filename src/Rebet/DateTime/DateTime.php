@@ -628,4 +628,16 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         }
         return null;
     }
+
+    /**
+     * Get the formatted datetime.
+     * If null given as format then use default_format to format.
+     *
+     * @param string|null $format (default: null)
+     * @return void
+     */
+    public function format($format = null)
+    {
+        return $format ? parent::format($format) : parent::format(static::config('default_format'));
+    }
 }

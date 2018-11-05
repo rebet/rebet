@@ -914,19 +914,19 @@ EOS
                 'name'  => 'FutureThan',
                 'data'  => ['null' => null, 'foo' => '2100-01-01', 'bar' => '1999-01-01', 'baz' => '2010-01-23 12:34:56', 'qux' => '2010-01-23 12:34:57', 'quux' => ['2100-01-01', '1999-01-01']],
                 'tests' => [
-                    ['nothing', ['now'              ], true , []],
-                    ['null'   , ['now'              ], true , []],
-                    ['foo'    , ['now'              ], true , []],
-                    ['bar'    , ['now'              ], false, ['bar' => ["The Bar must be a date future than now."]]],
-                    ['bar'    , ['10 September 2000'], false, ['bar' => ["The Bar must be a date future than 10 September 2000."]]],
-                    ['bar'    , ['2000/01/01'       ], false, ['bar' => ["The Bar must be a date future than 2000/01/01."]]],
-                    ['bar'    , [DateTime::now()    ], false, ['bar' => ["The Bar must be a date future than 2010-01-23 12:34:56."]]],
-                    ['baz'    , ['now'              ], false, ['baz' => ["The Baz must be a date future than now."]]],
-                    ['baz'    , [':qux'             ], false, ['baz' => ["The Baz must be a date future than Qux."]]],
-                    ['qux'    , ['now'              ], true , []],
-                    ['qux'    , [':baz'             ], true , []],
-                    ['quux'   , ['now'              ], false, ['quux' => [
-                        "The 2nd Quux (1999-01-01) must be a date future than now."
+                    ['nothing', ['now'                       ], true , []],
+                    ['null'   , ['now'                       ], true , []],
+                    ['foo'    , ['now'                       ], true , []],
+                    ['bar'    , ['now'                       ], false, ['bar' => ["The Bar must be a date future than 2010-01-23 12:34:56."]]],
+                    ['bar'    , ['10 September 2000 midnight'], false, ['bar' => ["The Bar must be a date future than 2000-09-10 00:00:00."]]], // When you use strtotime() format then you should be given time format together.
+                    ['bar'    , ['2000/01/01'                ], false, ['bar' => ["The Bar must be a date future than 2000/01/01."]]],
+                    ['bar'    , [DateTime::now()             ], false, ['bar' => ["The Bar must be a date future than 2010-01-23 12:34:56."]]],
+                    ['baz'    , ['now'                       ], false, ['baz' => ["The Baz must be a date future than 2010-01-23 12:34:56."]]],
+                    ['baz'    , [':qux'                      ], false, ['baz' => ["The Baz must be a date future than Qux."]]],
+                    ['qux'    , ['now'                       ], true , []],
+                    ['qux'    , [':baz'                      ], true , []],
+                    ['quux'   , ['now'                       ], false, ['quux' => [
+                        "The 2nd Quux (1999-01-01) must be a date future than 2010-01-23 12:34:56."
                     ]]],
                     ['quux'   , [':baz'             ], false, ['quux' => [
                         "The 2nd Quux (1999-01-01) must be a date future than Baz."
@@ -943,11 +943,11 @@ EOS
                 'tests' => [
                     ['nothing', ['now'], true , []],
                     ['null'   , ['now'], true , []],
-                    ['past'   , ['now'], false, ['past' => ["The Past must be a date future than or equal now."]]],
+                    ['past'   , ['now'], false, ['past' => ["The Past must be a date future than or equal 2010-01-23 12:34:56."]]],
                     ['now'    , ['now'], true , []],
                     ['future' , ['now'], true , []],
                     ['list'   , ['now'], false, ['list' => [
-                        "The 1st List (2010-01-23 12:34:55) must be a date future than or equal now."
+                        "The 1st List (2010-01-23 12:34:55) must be a date future than or equal 2010-01-23 12:34:56."
                     ]]],
                 ]
             ]],

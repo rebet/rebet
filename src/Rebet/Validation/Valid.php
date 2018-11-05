@@ -647,6 +647,10 @@ class Valid
      * Future Than Validation.
      * It checks the value of datetime is future than at_time.
      *
+     * Argument of at_time support strtotime() format.
+     * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
+     * When you use strtotime() format then you should be given time format together.
+     *
      * ex)
      *   - ['CU', Valid::FUTURE_THAN, 'at_time'] (format: [])
      *   - ['CU', Valid::FUTURE_THAN, 'at_time', format]
@@ -662,6 +666,10 @@ class Valid
     /**
      * Future Equal Or Equal Validation.
      * It checks the value of datetime is future than or equal at_time.
+     *
+     * Argument of at_time support strtotime() format.
+     * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
+     * When you use strtotime() format then you should be given time format together.
      *
      * ex)
      *   - ['CU', Valid::FUTURE_THAN_OR_EQUAL, 'at_time'] (format: [])
