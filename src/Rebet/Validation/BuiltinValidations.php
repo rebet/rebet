@@ -1134,14 +1134,7 @@ class BuiltinValidations extends Validations
      */
     public function validationDatetime(Context $c, $format = []) : bool
     {
-        return $this->handleListableValue(
-            $c,
-            Kind::TYPE_CONSISTENCY_CHECK(),
-            function ($value) use ($format) {
-                return !is_null(DateTime::createDateTime($value, $format));
-            },
-            'Datetime'
-        );
+        return $this->handleListableValue($c, Kind::TYPE_CONSISTENCY_CHECK(), function ($value) use ($format) { return !is_null(DateTime::createDateTime($value, $format)); }, 'Datetime');
     }
 
     /**
@@ -1154,15 +1147,7 @@ class BuiltinValidations extends Validations
      */
     public function validationFutureThan(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime(
-            $c,
-            $at_time,
-            $format,
-            function (DateTime $value, DateTime $at_time) {
-                return $value > $at_time;
-            },
-            'FutureThan'
-        );
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value > $at_time; }, 'FutureThan');
     }
 
     /**
@@ -1221,15 +1206,7 @@ class BuiltinValidations extends Validations
      */
     public function validationFutureThanOrEqual(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime(
-            $c,
-            $at_time,
-            $format,
-            function (DateTime $value, DateTime $at_time) {
-                return $value >= $at_time;
-            },
-            'FutureThanOrEqual'
-        );
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value >= $at_time; }, 'FutureThanOrEqual');
     }
 
     /**
@@ -1242,15 +1219,7 @@ class BuiltinValidations extends Validations
      */
     public function validationPastThan(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime(
-            $c,
-            $at_time,
-            $format,
-            function (DateTime $value, DateTime $at_time) {
-                return $value < $at_time;
-            },
-            'PastThan'
-        );
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value < $at_time; }, 'PastThan');
     }
 
     /**
@@ -1263,15 +1232,7 @@ class BuiltinValidations extends Validations
      */
     public function validationPastThanOrEqual(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime(
-            $c,
-            $at_time,
-            $format,
-            function (DateTime $value, DateTime $at_time) {
-                return $value <= $at_time;
-            },
-            'PastThanOrEqual'
-        );
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value <= $at_time; }, 'PastThanOrEqual');
     }
 
     /**
