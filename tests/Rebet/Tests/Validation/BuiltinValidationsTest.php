@@ -462,27 +462,59 @@ class BuiltinValidationsTest extends RebetTestCase
             ]],
 
             // --------------------------------------------
-            // Valid::MAX_NUMBER
+            // Valid::NUMBER_LESS_THAN
             // --------------------------------------------
             [[
-                'name'  => 'MaxNumber',
+                'name'  => 'NumberLessThan',
                 'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
                 'tests' => [
-                    ['nothing', [10   ], true , []],
-                    ['null'   , [10   ], true , []],
-                    ['foo'    , [10   ], true , []],
-                    ['bar'    , [10   ], true , []],
-                    ['baz'    , [10   ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
-                    ['qux'    , [10   ], false, ['qux'    => ["The Qux must be integer."]]],
-                    ['qux'    , [10, 1], false, ['qux'    => ["The Qux may not be greater than 10."]]],
-                    ['quux'   , [10   ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux'   , [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
-                    ['foobar' , [10   ], false, ['foobar' => [
+                    ['nothing', [10    ], true , []],
+                    ['null'   , [10    ], true , []],
+                    ['foo'    , [10    ], false, ['foo'    => ["The Foo must be less than 10."]]],
+                    ['foo'    , [':bar'], false, ['foo'    => ["The Foo must be less than Bar."]]],
+                    ['bar'    , [10    ], true , []],
+                    ['baz'    , [10    ], false, ['baz'    => ["The Baz must be less than 10."]]],
+                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux must be less than 10."]]],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10    ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be integer.",
+                        "The 5th Foobar (3.5) must be integer.",
+                        "The 2nd Foobar (10) must be less than 10.",
+                        "The 4th Foobar (123) must be less than 10.",
+                    ]]],
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
+                        "The 2nd Foobar (10) must be less than 10.",
+                        "The 4th Foobar (123) must be less than 10.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::NUMBER_LESS_THAN_OR_EQUAL
+            // --------------------------------------------
+            [[
+                'name'  => 'NumberLessThanOrEqual',
+                'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
+                'tests' => [
+                    ['nothing', [10    ], true , []],
+                    ['null'   , [10    ], true , []],
+                    ['foo'    , [10    ], true , []],
+                    ['foo'    , [':bar'], false, ['foo'    => ["The Foo may not be greater than Bar."]]],
+                    ['bar'    , [10    ], true , []],
+                    ['baz'    , [10    ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
+                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux may not be greater than 10."]]],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10    ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be integer.",
                         "The 5th Foobar (3.5) must be integer.",
                         "The 4th Foobar (123) may not be greater than 10.",
                     ]]],
-                    ['foobar' , [10, 1], false, ['foobar' => [
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
                         "The 4th Foobar (123) may not be greater than 10.",
                     ]]],
@@ -490,27 +522,60 @@ class BuiltinValidationsTest extends RebetTestCase
             ]],
             
             // --------------------------------------------
-            // Valid::MIN_NUMBER
+            // Valid::NUMBER_GREATER_THAN
             // --------------------------------------------
             [[
-                'name'  => 'MinNumber',
+                'name'  => 'NumberGreaterThan',
                 'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
                 'tests' => [
-                    ['nothing', [10   ], true , []],
-                    ['null'   , [10   ], true , []],
-                    ['foo'    , [10   ], true , []],
-                    ['bar'    , [10   ], false, ['bar'    => ["The Bar must be at least 10."]]],
-                    ['baz'    , [10   ], true , []],
-                    ['qux'    , [10   ], false, ['qux'    => ["The Qux must be integer."]]],
-                    ['qux'    , [10, 1], true , []],
-                    ['quux'   , [10   ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux'   , [10, 1], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
-                    ['foobar' , [10   ], false, ['foobar' => [
+                    ['nothing', [10    ], true , []],
+                    ['null'   , [10    ], true , []],
+                    ['foo'    , [10    ], false, ['foo'    => ["The Foo must be greater than 10."]]],
+                    ['foo'    , [':baz'], false, ['foo'    => ["The Foo must be greater than Baz."]]],
+                    ['bar'    , [10    ], false, ['bar'    => ["The Bar must be greater than 10."]]],
+                    ['baz'    , [10    ], true , []],
+                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1 ], true , []],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10    ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be integer.",
+                        "The 5th Foobar (3.5) must be integer.",
+                        "The 2nd Foobar (10) must be greater than 10.",
+                        "The 3rd Foobar (2) must be greater than 10.",
+                    ]]],
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
+                        "The 2nd Foobar (10) must be greater than 10.",
+                        "The 3rd Foobar (2) must be greater than 10.",
+                        "The 5th Foobar (3.5) must be greater than 10.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::NUMBER_GREATER_THAN_OR_EQUAL
+            // --------------------------------------------
+            [[
+                'name'  => 'NumberGreaterThanOrEqual',
+                'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '11', 'qux' => '10.1', 'quux' => 'abc', 'foobar' => ['abc', '10', '2', 123, '3.5']],
+                'tests' => [
+                    ['nothing', [10    ], true , []],
+                    ['null'   , [10    ], true , []],
+                    ['foo'    , [10    ], true , []],
+                    ['foo'    , [':baz'], false, ['foo'    => ["The Foo must be at least Baz."]]],
+                    ['bar'    , [10    ], false, ['bar'    => ["The Bar must be at least 10."]]],
+                    ['baz'    , [10    ], true , []],
+                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10, 1 ], true , []],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['foobar' , [10    ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be integer.",
                         "The 5th Foobar (3.5) must be integer.",
                         "The 3rd Foobar (2) must be at least 10.",
                     ]]],
-                    ['foobar' , [10, 1], false, ['foobar' => [
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
                         "The 3rd Foobar (2) must be at least 10.",
                         "The 5th Foobar (3.5) must be at least 10.",

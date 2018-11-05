@@ -671,57 +671,120 @@ class BuiltinValidations extends Validations
     }
 
     /**
-     * Max Number Validation
+     * Number Less Than Validation
      *
      * @param Context $c
-     * @param int|float|string $max
+     * @param int|float|string $number
      * @param int $decimal (default: 0)
      * @return boolean
      */
-    public function validationMaxNumber(Context $c, $max, int $decimal = 0) : bool
+    public function validationNumberLessThan(Context $c, $number, int $decimal = 0) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        
+        return $this->handleNumber(
+            $c,
+            $number,
+            $decimal,
+            function ($value, $number, int $decimal) {
+                return bccomp((string)$value, (string)$number, $decimal) === -1;
+            },
+            'validation.NumberLessThan'
+        );
+    }
+
+    /**
+     * Number Less Than Or Equal Validation
+     *
+     * @param Context $c
+     * @param int|float|string $number
+     * @param int $decimal (default: 0)
+     * @return boolean
+     */
+    public function validationNumberLessThanOrEqual(Context $c, $number, int $decimal = 0) : bool
+    {
+        return $this->handleNumber(
+            $c,
+            $number,
+            $decimal,
+            function ($value, $number, int $decimal) {
+                return bccomp((string)$value, (string)$number, $decimal) !== 1;
+            },
+            'validation.NumberLessThanOrEqual'
+        );
+    }
+
+    /**
+     * Handle Number validation.
+     * If you use this handler then you have to define @List message key too.
+     *
+     * @param Context $c
+     * @param int|float|string $number
+     * @param int $decimal (default: 0)
+     * @param callable $test function(string $value, string $number, int $decimal){ ... }
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @param callable $selector function($value) { ... } (default: null)
+     * @return boolean
+     */
+    public function handleNumber(Context $c, $number, int $decimal = 0, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    {
+        [$number, $number_label] = $c->resolve($number);
+        $replacement['number']   = $number_label;
+        $replacement['decimal']  = $decimal;
+
         $valid  = $decimal === 0 ? $this->validationInteger($c) : $this->validationFloat($c, $decimal) ;
         $valid &= $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
-            function ($value) use ($max, $decimal) {
-                return bccomp((string)$value, (string)$max, $decimal) !== 1;
+            function ($value) use ($number, $decimal, $test) {
+                return $test($value, $number, $decimal);
             },
-            'validation.MaxNumber',
-            ['max' => $max, 'decimal' => $decimal]
+            $messsage_key,
+            $replacement,
+            $selector
         );
         return $valid;
     }
 
     /**
-     * Min Number Validation
+     * Number Greater Than Validation
      *
      * @param Context $c
-     * @param int|float|string $min
+     * @param int|float|string $number
      * @param int $decimal (default: 0)
      * @return boolean
      */
-    public function validationMinNumber(Context $c, $min, int $decimal = 0) : bool
+    public function validationNumberGreaterThan(Context $c, $number, int $decimal = 0) : bool
     {
-        if ($c->blank()) {
-            return true;
-        }
-        
-        $valid  = $decimal === 0 ? $this->validationInteger($c) : $this->validationFloat($c, $decimal) ;
-        $valid &= $this->handleListableValue(
+        return $this->handleNumber(
             $c,
-            Kind::TYPE_DEPENDENT_CHECK(),
-            function ($value) use ($min, $decimal) {
-                return bccomp((string)$min, (string)$value, $decimal) !== 1;
+            $number,
+            $decimal,
+            function ($value, $number, int $decimal) {
+                return bccomp((string)$number, (string)$value, $decimal) === -1;
             },
-            'validation.MinNumber',
-            ['min' => $min, 'decimal' => $decimal]
+            'validation.NumberGreaterThan'
         );
-        return $valid;
+    }
+
+    /**
+     * Number Greater Than Or Equal Validation
+     *
+     * @param Context $c
+     * @param int|float|string $number
+     * @param int $decimal (default: 0)
+     * @return boolean
+     */
+    public function validationNumberGreaterThanOrEqual(Context $c, $number, int $decimal = 0) : bool
+    {
+        return $this->handleNumber(
+            $c,
+            $number,
+            $decimal,
+            function ($value, $number, int $decimal) {
+                return bccomp((string)$number, (string)$value, $decimal) !== 1;
+            },
+            'validation.NumberGreaterThanOrEqual'
+        );
     }
 
     /**
@@ -1141,10 +1204,16 @@ class BuiltinValidations extends Validations
      * @param string|array $format
      * @param callable $test function(DateTime $value, DateTime at_time){ ... }
      * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @param callable $selector function($value) { ... } (default: null)
      * @return boolean
      */
     public function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
+        if ($c->blank()) {
+            return true;
+        }
+
         [$at_time, $at_time_label] = $c->resolve($at_time);
         if ($at_time !== $at_time_label) {
             $replacement['at_time'] = $at_time_label;

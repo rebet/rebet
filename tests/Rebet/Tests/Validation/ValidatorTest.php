@@ -131,12 +131,18 @@ class ValidatorTest extends RebetTestCase
             // Valid::FLOAT
             [['target' => '1.2'], ['C', Valid::FLOAT, 1], true ],
             [['target' => 'abc'], ['C', Valid::FLOAT, 1], false],
-            // Valid::MAX_NUMBER
-            [['target' => 1], ['C', Valid::MAX_NUMBER, 2], true ],
-            [['target' => 3], ['C', Valid::MAX_NUMBER, 2], false],
-            // Valid::MIN_NUMBER
-            [['target' => 1], ['C', Valid::MIN_NUMBER, 2], false],
-            [['target' => 3], ['C', Valid::MIN_NUMBER, 2], true ],
+            // Valid::NUMBER_LESS_THAN
+            [['target' => 1], ['C', Valid::NUMBER_LESS_THAN, 2], true ],
+            [['target' => 3], ['C', Valid::NUMBER_LESS_THAN, 2], false],
+            // Valid::NUMBER_LESS_THAN_OR_EQUAL
+            [['target' => 1], ['C', Valid::NUMBER_LESS_THAN_OR_EQUAL, 2], true ],
+            [['target' => 3], ['C', Valid::NUMBER_LESS_THAN_OR_EQUAL, 2], false],
+            // Valid::NUMBER_GREATER_THAN
+            [['target' => 1], ['C', Valid::NUMBER_GREATER_THAN, 2], false],
+            [['target' => 3], ['C', Valid::NUMBER_GREATER_THAN, 2], true ],
+            // Valid::NUMBER_GREATER_THAN_OR_EQUAL
+            [['target' => 1], ['C', Valid::NUMBER_GREATER_THAN_OR_EQUAL, 2], false],
+            [['target' => 3], ['C', Valid::NUMBER_GREATER_THAN_OR_EQUAL, 2], true ],
             // Valid::EMAIL
             [['target' => 'a@b.com'], ['C', Valid::EMAIL], true ],
             [['target' => 'abc'    ], ['C', Valid::EMAIL], false],
