@@ -683,7 +683,45 @@ class Valid
      */
     const FUTURE_THAN_OR_EQUAL = 'FutureThanOrEqual:';
 
+    /**
+     * Past Than Validation.
+     * It checks the value of datetime is future than at_time.
+     *
+     * Argument of at_time support strtotime() format.
+     * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
+     * When you use strtotime() format then you should be given time format together.
+     *
+     * ex)
+     *   - ['CU', Valid::PAST_THAN, 'at_time'] (format: [])
+     *   - ['CU', Valid::PAST_THAN, 'at_time', format]
+     *   - ['CU', Valid::PAST_THAN, 'at_time', [format1, format2, ...]]
+     *   - ['CU', Valid::PAST_THAN, ':field' , (snip)]
+     * message)
+     *   Key         - PastThan, PastThan@List
+     *   Placeholder - :attribute, :self, :at_time, :nth, :value
+     *   Selector    - none
+     */
+    const PAST_THAN = 'PastThan:';
 
+    /**
+     * Past Equal Or Equal Validation.
+     * It checks the value of datetime is future than or equal at_time.
+     *
+     * Argument of at_time support strtotime() format.
+     * If given at_time can not analyze by given format and acceptable_format then it will try to analyze by strtotime() format.
+     * When you use strtotime() format then you should be given time format together.
+     *
+     * ex)
+     *   - ['CU', Valid::PAST_THAN_OR_EQUAL, 'at_time'] (format: [])
+     *   - ['CU', Valid::PAST_THAN_OR_EQUAL, 'at_time', format]
+     *   - ['CU', Valid::PAST_THAN_OR_EQUAL, 'at_time', [format1, format2, ...]]
+     *   - ['CU', Valid::PAST_THAN_OR_EQUAL, ':field' , (snip)]
+     * message)
+     *   Key         - PastThanOrEqual, PastThanOrEqual@List
+     *   Placeholder - :attribute, :self, :at_time, :nth, :value
+     *   Selector    - none
+     */
+    const PAST_THAN_OR_EQUAL = 'PastThanOrEqual:';
 
 
 

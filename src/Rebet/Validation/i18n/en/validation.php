@@ -129,6 +129,10 @@ return [
     "FutureThan@List"        => "The :nth :attribute (:value) must be a date future than :at_time.",
     "FutureThanOrEqual"      => "The :attribute must be a date future than or equal :at_time.",
     "FutureThanOrEqual@List" => "The :nth :attribute (:value) must be a date future than or equal :at_time.",
+    "PastThan"               => "The :attribute must be a date past than :at_time.",
+    "PastThan@List"          => "The :nth :attribute (:value) must be a date past than :at_time.",
+    "PastThanOrEqual"        => "The :attribute must be a date past than or equal :at_time.",
+    "PastThanOrEqual@List"   => "The :nth :attribute (:value) must be a date past than or equal :at_time.",
     
 
 ];

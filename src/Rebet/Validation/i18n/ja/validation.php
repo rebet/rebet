@@ -101,5 +101,9 @@ return [
     "FutureThan@List"        => ":nth番目の:attributeは:at_timeよりも未来の日付を入力して下さい。",
     "FutureThanOrEqual"      => ":attributeは:at_timeよりも未来の日付(指定日時を含む)を入力して下さい。",
     "FutureThanOrEqual@List" => ":nth番目の:attributeは:at_timeよりも未来の日付(指定日時を含む)を入力して下さい。",
+    "PastThan"               => ":attributeは:at_timeよりも過去の日付を入力して下さい。",
+    "PastThan@List"          => ":nth番目の:attributeは:at_timeよりも過去の日付を入力して下さい。",
+    "PastThanOrEqual"        => ":attributeは:at_timeよりも過去の日付(指定日時を含む)を入力して下さい。",
+    "PastThanOrEqual@List"   => ":nth番目の:attributeは:at_timeよりも過去の日付(指定日時を含む)を入力して下さい。",
 
 ];

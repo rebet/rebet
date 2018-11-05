@@ -1199,6 +1199,48 @@ class BuiltinValidations extends Validations
         );
     }
 
+    /**
+     * Past Than Validation
+     *
+     * @param Context $c
+     * @param string|\DateTimeInterface $at_time
+     * @param string|array $format
+     * @return boolean
+     */
+    public function validationPastThan(Context $c, $at_time, $format = []) : bool
+    {
+        return $this->handleDatetime(
+            $c,
+            $at_time,
+            $format,
+            function (DateTime $value, DateTime $at_time) {
+                return $value < $at_time;
+            },
+            'validation.PastThan'
+        );
+    }
+
+    /**
+     * Past Than Or Equal Validation
+     *
+     * @param Context $c
+     * @param string|\DateTimeInterface $at_time
+     * @param string|array $format
+     * @return boolean
+     */
+    public function validationPastThanOrEqual(Context $c, $at_time, $format = []) : bool
+    {
+        return $this->handleDatetime(
+            $c,
+            $at_time,
+            $format,
+            function (DateTime $value, DateTime $at_time) {
+                return $value <= $at_time;
+            },
+            'validation.PastThanOrEqual'
+        );
+    }
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

@@ -951,6 +951,43 @@ EOS
                     ]]],
                 ]
             ]],
+
+            // --------------------------------------------
+            // Valid::PAST_THAN
+            // --------------------------------------------
+            [[
+                'name'  => 'PastThan',
+                'data'  => ['null' => null, 'past' => '2010-01-23 12:34:55', 'now' => '2010-01-23 12:34:56', 'future' => '2010-01-23 12:34:57', 'list' => ['2010-01-23 12:34:55', '2010-01-23 12:34:56', '2010-01-23 12:34:57']],
+                'tests' => [
+                    ['nothing', ['now'], true , []],
+                    ['null'   , ['now'], true , []],
+                    ['past'   , ['now'], true , []],
+                    ['now'    , ['now'], false, ['now'    => ["The Now must be a date past than 2010-01-23 12:34:56."]]],
+                    ['future' , ['now'], false, ['future' => ["The Future must be a date past than 2010-01-23 12:34:56."]]],
+                    ['list'   , ['now'], false, ['list'   => [
+                        "The 2nd List (2010-01-23 12:34:56) must be a date past than 2010-01-23 12:34:56.",
+                        "The 3rd List (2010-01-23 12:34:57) must be a date past than 2010-01-23 12:34:56.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::PAST_THAN_OR_EQUAL
+            // --------------------------------------------
+            [[
+                'name'  => 'PastThanOrEqual',
+                'data'  => ['null' => null, 'past' => '2010-01-23 12:34:55', 'now' => '2010-01-23 12:34:56', 'future' => '2010-01-23 12:34:57', 'list' => ['2010-01-23 12:34:55', '2010-01-23 12:34:56', '2010-01-23 12:34:57']],
+                'tests' => [
+                    ['nothing', ['now'], true , []],
+                    ['null'   , ['now'], true , []],
+                    ['past'   , ['now'], true , []],
+                    ['now'    , ['now'], true , []],
+                    ['future' , ['now'], false, ['future' => ["The Future must be a date past than or equal 2010-01-23 12:34:56."]]],
+                    ['list'   , ['now'], false, ['list'   => [
+                        "The 3rd List (2010-01-23 12:34:57) must be a date past than or equal 2010-01-23 12:34:56.",
+                    ]]],
+                ]
+            ]],
         ];
     }
 }
