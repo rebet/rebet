@@ -2,6 +2,7 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\System;
 use Rebet\Common\Utils;
@@ -1144,15 +1145,31 @@ class BuiltinValidations extends Validations
      * Unique Validation
      *
      * @param Context $c
+     * @param string|null $nested_field (default: null)
      * @return boolean
      */
-    public function validationUnique(Context $c) : bool
+    public function validationUnique(Context $c, ?string $nested_field = null) : bool
     {
         if ($c->blank()) {
             return true;
         }
-        $duplicate = Arrays::duplicate((array)$c->value);
-        return empty($duplicate) ? true : $c->appendError('validation.Unique', ['duplicate' => $duplicate], count($duplicate)) ;
+        $list        = [];
+        $replacement = [];
+        if ($nested_field) {
+            $list             = array_map(function ($v) use ($nested_field) { return Reflector::get($v, $nested_field); }, (array)$c->value);
+            $nested_attribute = $c->label("{$c->field}.{$nested_field}");
+            if (Strings::contains($nested_attribute, $c->label)) {
+                $replacement['attribute'] = $nested_attribute;
+            } else {
+                $nested_attribute_format  = $c->grammar('nested_attribute_format', ':attribute :nested_attribute');
+                $replacement['attribute'] = str_replace([':attribute', ':nested_attribute'], [$c->label, $nested_attribute], $nested_attribute_format);
+            }
+        } else {
+            $list = (array)$c->value;
+        }
+        $duplicate                = Arrays::duplicate($list);
+        $replacement['duplicate'] = $duplicate;
+        return empty($duplicate) ? true : $c->appendError('validation.Unique', $replacement, count($duplicate)) ;
     }
 
     /**

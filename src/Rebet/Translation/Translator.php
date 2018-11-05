@@ -121,6 +121,21 @@ class Translator
     }
 
     /**
+     * Get the grammar of given name.
+     * This method get the value named "@{$name}" from translation resource.
+     *
+     * @param string $group
+     * @param string $name
+     * @param mixed $default (default: null)
+     * @param string|null $locale (default: null)
+     * @return mixed
+     */
+    public function grammar(string $group, string $name, $default = null, string $locale = null)
+    {
+        return Reflector::get($this->resouces[$group][$locale ?? $this->locale], "@{$name}", false, $default);
+    }
+
+    /**
      * Get the translation for the given key.
      * If can not translate the given key then return the key without group.
      *
@@ -160,7 +175,7 @@ class Translator
             return mb_strlen($k) * -1;
         });
 
-        $delimiter = Reflector::get($this->resouces[$group][$locale], '@delimiter', false, ', ');
+        $delimiter = $this->grammar($group, 'delimiter', ', ', $locale);
         foreach ($replace as $key => $value) {
             $value = is_array($value) ? implode($delimiter, $value) : $value ;
             $line  = str_replace(':'.$key, $value, $line);
@@ -279,7 +294,7 @@ class Translator
      *
      * @return string
      */
-    public function getLocale() : string 
+    public function getLocale() : string
     {
         return $this->locale;
     }
@@ -289,7 +304,7 @@ class Translator
      *
      * @return string
      */
-    public function getFallbackLocale() : string 
+    public function getFallbackLocale() : string
     {
         return $this->fallback_locale;
     }

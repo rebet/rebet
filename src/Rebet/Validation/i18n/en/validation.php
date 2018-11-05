@@ -9,6 +9,7 @@
  */
 return [
     "@delimiter"                    => ", ",
+    "@nested_attribute_format"      => ":attribute :nested_attribute",
     
     "Required"                      => "The :attribute field is required.",
     "RequiredIf"                    => [

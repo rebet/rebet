@@ -939,14 +939,24 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'Unique',
-                'data'  => ['null' => null, 'foo' => 1, 'bar' => [1, 2, 3, 'a'], 'baz' => [1, 2, 1, 'a'], 'qux' => [1, 2, 1, 'a', 'b', 'a']],
+                'data'  => [
+                    'null' => null, 'foo' => 1, 'bar' => [1, 2, 3, 'a'], 'baz' => [1, 2, 1, 'a'], 'qux' => [1, 2, 1, 'a', 'b', 'a'],
+                    'quux' => [
+                        ['foo' => 1, 'bar' => 1],
+                        ['foo' => 2, 'bar' => 2],
+                        ['foo' => 3, 'bar' => 1],
+                        ['foo' => 4, 'bar' => 4],
+                    ]
+                ],
                 'tests' => [
-                    ['nothing', [], true , []],
-                    ['null'   , [], true , []],
-                    ['foo'    , [], true , []],
-                    ['bar'    , [], true , []],
-                    ['baz'    , [], false, ['baz' => ["The Baz must be entered a different value. [1] was duplicated."]]],
-                    ['qux'    , [], false, ['qux' => ["The Qux must be entered a different value. [1, a] were duplicated."]]],
+                    ['nothing', [     ], true , []],
+                    ['null'   , [     ], true , []],
+                    ['foo'    , [     ], true , []],
+                    ['bar'    , [     ], true , []],
+                    ['baz'    , [     ], false, ['baz'  => ["The Baz must be entered a different value. [1] was duplicated."]]],
+                    ['qux'    , [     ], false, ['qux'  => ["The Qux must be entered a different value. [1, a] were duplicated."]]],
+                    ['quux'   , ['foo'], true , []],
+                    ['quux'   , ['bar'], false, ['quux' => ["The Quux Bar must be entered a different value. [1] was duplicated."]]],
                 ]
             ]],
 

@@ -9,6 +9,7 @@
  */
 return [
     "@delimiter"                    => "／",
+    "@nested_attribute_format"      => ":attributeの:nested_attribute",
 
     "Required"                      => ":attributeを入力して下さい。",
     "RequiredIf"                    => ":otherが:valueの場合は:attributeを入力して下さい。",

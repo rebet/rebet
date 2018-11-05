@@ -655,7 +655,8 @@ class Valid
      * It checks the value have unique items.
      *
      * ex)
-     *   - ['CU', Valid::UNIQUE]
+     *   - ['CU', Valid::UNIQUE] (nested_field: null)
+     *   - ['CU', Valid::UNIQUE, ':nested_field']
      * message)
      *   Key         - Unique
      *   Placeholder - :attribute, :self, :duplicate
