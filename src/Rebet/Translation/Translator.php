@@ -132,7 +132,9 @@ class Translator
      */
     public function grammar(string $group, string $name, $default = null, string $locale = null)
     {
-        return Reflector::get($this->resouces[$group][$locale ?? $this->locale], "@{$name}", false, $default);
+        $locale = $locale ?? $this->locale;
+        $this->load($group, $locale);
+        return Reflector::get($this->resouces[$group][$locale], "@{$name}", false, $default);
     }
 
     /**

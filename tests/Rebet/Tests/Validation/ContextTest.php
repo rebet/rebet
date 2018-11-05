@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
@@ -70,7 +71,7 @@ class ContextTest extends RebetTestCase
                         ],
                     ],
                     'address' => [
-                        'label' => ':parent住所',
+                        'label' => '住所',
                         'rule'  => [
                             ['CU', Valid::REQUIRED.'!'],
                         ],
@@ -296,7 +297,142 @@ class ContextTest extends RebetTestCase
         $this->assertSame('振込先：支店名', $c->label('bank.branch.name'));
         $this->assertSame('送付先', $c->label('shipping_addresses'));
         $this->assertSame('送付先郵便番号', $c->label('shipping_addresses.zip'));
-        $this->assertSame('送付先住所', $c->label('shipping_addresses.address'));
+        $this->assertSame('住所', $c->label('shipping_addresses.address'));
+    }
+
+    public function test_labels()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'     => 'John Smith',
+                'birthday' => '2010-01-23',
+                'no_label' => null,
+                'bank'     => [
+                    'bank_name' => 'Sample Bank',
+                    'branch'    => [
+                        'code' => '123',
+                        'name' => 'Foo',
+                    ],
+                ],
+            ],
+            $this->errors,
+            [
+                'name'     => $this->rule_set['name'],
+                'birthday' => $this->rule_set['birthday'],
+                'bank'     => $this->rule_set['bank'],
+            ],
+            $this->translator
+        );
+
+        $this->assertSame(
+            '氏名, 生年月日, 振込先：支店',
+            $c->labels(['name', 'birthday', 'bank.branch'])
+        );
+        $this->assertSame(
+            '氏名／生年月日／振込先：支店',
+            $c->labels(['name', 'birthday', 'bank.branch'], '／')
+        );
+    }
+
+    public function test_resolve()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'     => 'John Smith',
+                'no_label' => null,
+                'bank'     => [
+                    'bank_name' => 'Sample Bank',
+                    'branch'    => [
+                        'code' => '123',
+                        'name' => 'Foo',
+                    ],
+                ],
+            ],
+            $this->errors,
+            [
+                'name' => $this->rule_set['name'],
+                'bank' => $this->rule_set['bank'],
+            ],
+            $this->translator
+        );
+
+        $this->assertSame([1, 1], $c->resolve(1));
+        $this->assertSame(['abc', 'abc'], $c->resolve('abc'));
+        $this->assertSame([null, 'No Label'], $c->resolve(':no_label'));
+        $this->assertSame(['John Smith', '氏名'], $c->resolve(':name'));
+        $this->assertSame(['123', '振込先：支店コード'], $c->resolve(':bank.branch.code'));
+        $this->assertSame([1, '男性'], $c->resolve(Gender::MALE()));
+    }
+
+    public function test_pluck()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'               => 'John Smith',
+                'shipping_addresses' => [
+                    [
+                        'zip'     => '1230001',
+                        'address' => '1-2-3, Foo town, Bar city',
+                    ],
+                    [
+                        'zip'     => '3210003',
+                        'address' => '3-2-1, Baz town, Foo city',
+                    ]
+                ],
+            ],
+            $this->errors,
+            [
+                'name'               => $this->rule_set['name'],
+                'shipping_addresses' => $this->rule_set['shipping_addresses'],
+            ],
+            $this->translator
+        );
+        
+        $this->assertSame([[], null], $c->pluck(null));
+
+        $c->initBy('name');
+        $this->assertSame(
+            [
+                ['John Smith'],
+                '氏名'
+            ],
+            $c->pluck(null)
+        );
+
+        $c->initBy('shipping_addresses');
+        $this->assertSame(
+            [
+                [
+                    [
+                        'zip'     => '1230001',
+                        'address' => '1-2-3, Foo town, Bar city',
+                    ],
+                    [
+                        'zip'     => '3210003',
+                        'address' => '3-2-1, Baz town, Foo city',
+                    ]
+                ],
+                '送付先'
+            ],
+            $c->pluck(null)
+        );
+        $this->assertSame(
+            [
+                ['1230001', '3210003'],
+                '送付先郵便番号'
+            ],
+            $c->pluck('zip')
+        );
+        $this->assertSame(
+            [
+                ['1-2-3, Foo town, Bar city', '3-2-1, Baz town, Foo city'],
+                '送付先の住所'
+            ],
+            $c->pluck('address')
+        );
     }
 
     public function test_crud()
@@ -414,11 +550,11 @@ class ContextTest extends RebetTestCase
         $this->assertSame('1230001', $n1->value);
         $this->assertSame('送付先郵便番号', $n1->label);
         $this->assertSame('1-2-3, Foo town, Bar city', $n1->value('address'));
-        $this->assertSame('送付先住所', $n1->label('address'));
+        $this->assertSame('住所', $n1->label('address'));
 
         $n1->initBy('address');
         $this->assertSame('1-2-3, Foo town, Bar city', $n1->value);
-        $this->assertSame('送付先住所', $n1->label);
+        $this->assertSame('住所', $n1->label);
         $this->assertSame('送付先郵便番号', $n1->label('zip'));
 
         $n1 = $c->nest(1);
@@ -428,11 +564,11 @@ class ContextTest extends RebetTestCase
         $this->assertSame('3210003', $n1->value);
         $this->assertSame('送付先郵便番号', $n1->label);
         $this->assertSame('3-2-1, Baz town, Foo city', $n1->value('address'));
-        $this->assertSame('送付先住所', $n1->label('address'));
+        $this->assertSame('住所', $n1->label('address'));
 
         $n1->initBy('address');
         $this->assertSame('3-2-1, Baz town, Foo city', $n1->value);
-        $this->assertSame('送付先住所', $n1->label);
+        $this->assertSame('住所', $n1->label);
         $this->assertSame('送付先郵便番号', $n1->label('zip'));
     }
 }

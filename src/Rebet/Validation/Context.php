@@ -274,11 +274,29 @@ class Context
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
             return [
                 $value instanceof Enum ? $value->value : $value,
-                $value instanceof Enum ? $value->label : $value,
+                $value instanceof Enum ? $value->translate('label', $this->translator->getLocale()) : $value,
             ];
         }
         $field = Strings::ltrim($value, ':');
         return [$this->value($field), $this->label($field)];
+    }
+
+    /**
+     * Pluck the nested field values as array.
+     *
+     * @param string|null $nested_field
+     * @return array [$list, $label]
+     */
+    public function pluck(?string $nested_field) : array
+    {
+        if ($nested_field) {
+            $nested_label = $this->label("{$this->field}.{$nested_field}");
+            $label        = Strings::contains($nested_label, $this->label) ? $nested_label : str_replace([':attribute', ':nested_attribute'], [$this->label, $nested_label], $this->grammar('nested_attribute_format', ':attribute :nested_attribute')) ;
+            $list         = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array)$this->value);
+            return [$list, $label];
+        }
+
+        return [(array)$this->value, $this->label];
     }
 
     /**
