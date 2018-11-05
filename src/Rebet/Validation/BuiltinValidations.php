@@ -1147,7 +1147,7 @@ class BuiltinValidations extends Validations
      */
     public function validationFutureThan(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function ($value, $at_time) { return $value > $at_time; }, 'FutureThan');
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value > $at_time; }, 'FutureThan');
     }
 
     /**
@@ -1206,7 +1206,7 @@ class BuiltinValidations extends Validations
      */
     public function validationFutureThanOrEqual(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function ($value, $at_time) { return $value >= $at_time; }, 'FutureThanOrEqual');
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value >= $at_time; }, 'FutureThanOrEqual');
     }
 
     /**
@@ -1219,7 +1219,7 @@ class BuiltinValidations extends Validations
      */
     public function validationPastThan(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function ($value, $at_time) { return $value < $at_time; }, 'PastThan');
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value < $at_time; }, 'PastThan');
     }
 
     /**
@@ -1232,7 +1232,7 @@ class BuiltinValidations extends Validations
      */
     public function validationPastThanOrEqual(Context $c, $at_time, $format = []) : bool
     {
-        return $this->handleDatetime($c, $at_time, $format, function ($value, $at_time) { return $value <= $at_time; }, 'PastThanOrEqual');
+        return $this->handleDatetime($c, $at_time, $format, function (DateTime $value, DateTime $at_time) { return $value <= $at_time; }, 'PastThanOrEqual');
     }
 
     /**
@@ -1251,7 +1251,7 @@ class BuiltinValidations extends Validations
             $c,
             $at_time,
             $format,
-            function ($value, $at_time) use ($max) {
+            function (DateTime $value, DateTime $at_time) use ($max) {
                 return $value->age($at_time) <= $max;
             },
             'MaxAge',
@@ -1276,7 +1276,7 @@ class BuiltinValidations extends Validations
             $c,
             $at_time,
             $format,
-            function ($value, $at_time) use ($min) {
+            function (DateTime $value, DateTime $at_time) use ($min) {
                 return $value->age($at_time) >= $min;
             },
             'MinAge',
