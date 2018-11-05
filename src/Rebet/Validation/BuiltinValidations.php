@@ -680,15 +680,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberLessThan(Context $c, $number, int $decimal = 0) : bool
     {
-        return $this->handleNumber(
-            $c,
-            $number,
-            $decimal,
-            function ($value, $number, int $decimal) {
-                return bccomp((string)$value, (string)$number, $decimal) === -1;
-            },
-            'NumberLessThan'
-        );
+        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($value, $number, $decimal) === -1; }, 'NumberLessThan');
     }
 
     /**
@@ -701,15 +693,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberLessThanOrEqual(Context $c, $number, int $decimal = 0) : bool
     {
-        return $this->handleNumber(
-            $c,
-            $number,
-            $decimal,
-            function ($value, $number, int $decimal) {
-                return bccomp((string)$value, (string)$number, $decimal) !== 1;
-            },
-            'NumberLessThanOrEqual'
-        );
+        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($value, $number, $decimal) !== 1; }, 'NumberLessThanOrEqual');
     }
 
     /**
@@ -736,7 +720,7 @@ class BuiltinValidations extends Validations
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
             function ($value) use ($number, $decimal, $test) {
-                return $test($value, $number, $decimal);
+                return $test((string)$value, (string)$number, $decimal);
             },
             $messsage_key,
             $replacement,
@@ -755,15 +739,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberGreaterThan(Context $c, $number, int $decimal = 0) : bool
     {
-        return $this->handleNumber(
-            $c,
-            $number,
-            $decimal,
-            function ($value, $number, int $decimal) {
-                return bccomp((string)$number, (string)$value, $decimal) === -1;
-            },
-            'NumberGreaterThan'
-        );
+        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($number, $value, $decimal) === -1; }, 'NumberGreaterThan');
     }
 
     /**
@@ -776,15 +752,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberGreaterThanOrEqual(Context $c, $number, int $decimal = 0) : bool
     {
-        return $this->handleNumber(
-            $c,
-            $number,
-            $decimal,
-            function ($value, $number, int $decimal) {
-                return bccomp((string)$number, (string)$value, $decimal) !== 1;
-            },
-            'NumberGreaterThanOrEqual'
-        );
+        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($number, $value, $decimal) !== 1; }, 'NumberGreaterThanOrEqual');
     }
 
     /**
