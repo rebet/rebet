@@ -772,7 +772,7 @@ class Valid
      * message)
      *   Key         - MaxAge, MaxAge@List
      *   Placeholder - :attribute, :self, :max, :at_time, :nth, :value
-     *   Selector    - none or 'at_time'(when at_time is not 'today')
+     *   Selector    - value of at_time
      */
     const MAX_AGE = 'MaxAge:';
 
@@ -792,7 +792,7 @@ class Valid
      * message)
      *   Key         - MinAge, MinAge@List
      *   Placeholder - :attribute, :self, :min, :at_time, :nth, :value
-     *   Selector    - none or 'at_time'(when at_time is not 'today')
+     *   Selector    - value of at_time
      */
     const MIN_AGE = 'MinAge:';
 

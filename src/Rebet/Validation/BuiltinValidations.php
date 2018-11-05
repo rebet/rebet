@@ -1327,7 +1327,7 @@ class BuiltinValidations extends Validations
             },
             'validation.MaxAge',
             ['max' => $max_label],
-            function ($value) use ($at_time) { return $at_time === 'today' ? null : 'at_time'; }
+            function ($value) use ($at_time) { return $at_time; }
         );
     }
 
@@ -1352,7 +1352,7 @@ class BuiltinValidations extends Validations
             },
             'validation.MinAge',
             ['min' => $min_label],
-            function ($value) use ($at_time) { return $at_time === 'today' ? null : 'at_time'; }
+            function ($value) use ($at_time) { return $at_time; }
         );
     }
 
