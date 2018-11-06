@@ -7,8 +7,8 @@ use PHPUnit\Framework\TestCase;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
 use Rebet\Enum\Enum;
+use Rebet\Foundation\App;
 
 /**
  * Rebet用の基底テストケースクラス。

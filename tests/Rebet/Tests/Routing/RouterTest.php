@@ -2,10 +2,10 @@
 namespace Rebet\Tests\Routing;
 
 use org\bovigo\vfs\vfsStream;
-use Rebet\Enum\Enum;
-
 use Rebet\Config\Config;
+
 use Rebet\DateTime\DateTime;
+use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Routing\Annotation\AliasOnly;
