@@ -1117,6 +1117,31 @@ EOS
                     ]]],
                 ]
             ]],
+
+            // --------------------------------------------
+            // Valid::SEQUENTIAL_NUMBER
+            // --------------------------------------------
+            [[
+                'name'  => 'SequentialNumber',
+                'data'  => [
+                    'null' => null,
+                    'foo'  => [
+                        ['foo' => 1, 'bar' => 1, 'baz' => 3],
+                        ['foo' => 2, 'bar' => 2, 'baz' => 5],
+                        ['foo' => 3, 'bar' => 1, 'baz' => 7],
+                        ['foo' => 4, 'bar' => 4, 'baz' => 9],
+                    ]
+                ],
+                'tests' => [
+                    ['nothing', ['foo'      ], true , []],
+                    ['null'   , ['foo'      ], true , []],
+                    ['foo'    , ['foo'      ], true , []],
+                    ['foo'    , ['bar'      ], false, ['foo' => ["The Foo Bar must be sequential number."]]],
+                    ['foo'    , ['baz'      ], false, ['foo' => ["The Foo Baz must be sequential number."]]],
+                    ['foo'    , ['baz', 3, 2], true , []],
+                ]
+            ]],
+        
         ];
     }
 }

@@ -212,6 +212,9 @@ class ValidatorTest extends RebetTestCase
             // Valid::MIN_AGE
             [['target' => '1980-01-01'], ['C', Valid::MIN_AGE, 20], true ],
             [['target' => '2000-01-01'], ['C', Valid::MIN_AGE, 20], false],
+            // Valid::SEQUENTIAL_NUMBER
+            [['target' => [['foo' => '1'], ['foo' => '2']]], ['C', Valid::SEQUENTIAL_NUMBER, 'foo'], true ],
+            [['target' => [['foo' => '1'], ['foo' => '3']]], ['C', Valid::SEQUENTIAL_NUMBER, 'foo'], false],
         ];
     }
 }

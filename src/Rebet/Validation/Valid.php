@@ -796,6 +796,18 @@ class Valid
      */
     const MIN_AGE = 'MinAge:';
 
-
-    const AGE_GREATER_EQUAL = 'AgeGreaterEqual:';
+    /**
+     * Sequential Number Validation.
+     * It checks the values of given nested field are sequential number.
+     *
+     * ex)
+     *   - ['CU', Valid::SEQUENTIAL_NUMBER, ':nested_field'] (start: 1, step: 1)
+     *   - ['CU', Valid::SEQUENTIAL_NUMBER, ':nested_field', start] (step: 1)
+     *   - ['CU', Valid::SEQUENTIAL_NUMBER, ':nested_field', start, step]
+     * message)
+     *   Key         - SequentialNumber
+     *   Placeholder - :attribute, :self
+     *   Selector    - none
+     */
+    const SEQUENTIAL_NUMBER = 'SequentialNumber:';
 }

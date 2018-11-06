@@ -1285,6 +1285,32 @@ class BuiltinValidations extends Validations
         );
     }
 
+    /**
+     * Sequential Number Validation
+     *
+     * @param Context $c
+     * @param string $nested_field
+     * @param int $start (default: 1)
+     * @param int $step (default: 1)
+     * @return boolean
+     */
+    public function validationSequentialNumber(Context $c, string $nested_field, int $start = 1, int $step = 1) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        [$list, $label] = $c->pluck($nested_field);
+        $seq_no         = $start;
+        foreach ($list as $value) {
+            if ($value != $seq_no) {
+                return $c->appendError('SequentialNumber', ['attribute' => $label]);
+            }
+            $seq_no += $step;
+        }
+
+        return true;
+    }
+    
     // ====================================================
     // Built-in Condition Methods
     // ====================================================
