@@ -1078,7 +1078,7 @@ class BuiltinValidations extends Validations
      */
     public function validationMinCount(Context $c, int $min) : bool
     {
-        $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        $item_count = $c->count();
         return $item_count < $min ? $c->appendError('MinCount', ['item_count' => $item_count, 'min' => $min], $min) : true;
     }
 
@@ -1091,7 +1091,7 @@ class BuiltinValidations extends Validations
      */
     public function validationMaxCount(Context $c, int $max) : bool
     {
-        $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        $item_count = $c->count();
         return $item_count > $max ? $c->appendError('MaxCount', ['item_count' => $item_count, 'max' => $max], $max) : true;
     }
 
@@ -1104,7 +1104,7 @@ class BuiltinValidations extends Validations
      */
     public function validationCount(Context $c, int $count) : bool
     {
-        $item_count = $c->blank() ? 0 : Arrays::count($c->value) ;
+        $item_count = $c->count();
         return $item_count !== $count ? $c->appendError('Count', ['item_count' => $item_count, 'count' => $count], $count) : true;
     }
 

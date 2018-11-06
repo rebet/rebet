@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
@@ -164,7 +165,7 @@ class Context
     }
     
     /**
-     * Check validation target value (or given field) is blank
+     * Check current value (or given field) is blank.
      *
      * @todo When Upload File
      *
@@ -175,6 +176,17 @@ class Context
     {
         $value = $field ? $this->value($field) : $this->value ;
         return Utils::isBlank($value) ;
+    }
+
+    /**
+     * Get count of current value (or given field) items.
+     *
+     * @param string $field
+     * @return integer
+     */
+    public function count(string $field = null) : int
+    {
+        return $this->blank($field) ? 0 : Arrays::count($this->value($field)) ;
     }
 
     /**
@@ -205,27 +217,25 @@ class Context
      * Initialize the context by the given field
      *
      * @param string $field
-     * @param mixed|null $value (default: $this->value($field))
-     * @param string|null $label (default: $this->label($field))
      * @return self
      */
-    public function initBy(string $field, $value = null, string $label = null) : self
+    public function initBy(string $field) : self
     {
         $this->field = $field;
-        $this->value = $value ?? $this->value($field);
-        $this->label = $label ?? $this->label($field);
+        $this->value = $this->value($field);
+        $this->label = $this->label($field);
         return $this;
     }
 
     /**
      * Get the value of given field
      *
-     * @param string $field
+     * @param string|null $field
      * @return mixed
      */
-    public function value(string $field)
+    public function value(?string $field)
     {
-        return Reflector::get($this->data, $field);
+        return $field ? Reflector::get($this->data, $field) : $this->value ;
     }
 
     /**
