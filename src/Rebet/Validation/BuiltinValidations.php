@@ -1311,6 +1311,17 @@ class BuiltinValidations extends Validations
         return true;
     }
     
+    /**
+     * Accepted Validation
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationAccepted(Context $c) : bool
+    {
+        return in_array($c->value, ['yes', 'on', '1', 1, true, 'true'], true) ? true : $c->appendError('Accepted') ;
+    }
+
     // ====================================================
     // Built-in Condition Methods
     // ====================================================

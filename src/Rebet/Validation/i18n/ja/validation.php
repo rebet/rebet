@@ -125,5 +125,6 @@ return [
         "{*}         :nth番目の:at_time時点の年齢は:min歳以上でなければなりません。",
     ],
     "SequentialNumber"              => ":attributeは連番でなければなりません。",
+    "Accepted"                      => ":attributeに同意して下さい。",
 
 ];

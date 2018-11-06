@@ -1142,6 +1142,31 @@ EOS
                 ]
             ]],
         
+            // --------------------------------------------
+            // Valid::ACCEPTED
+            // --------------------------------------------
+            [[
+                'name'  => 'Accepted',
+                'data'  => ['null' => null, 'empty' => '', 'yes' => 'yes', 'on' => 'on', 'one_string' => '1', 'one_int' => 1, 'true_string' => 'true', 'true_bool' => true, 'array_empty' => [], 'array' => [2]],
+                'tests' => [
+                    ['nothing'    , [], false, ['nothing'     => ["The Nothing must be accepted."]]],
+                    ['null'       , [], false, ['null'        => ["The Null must be accepted."]]],
+                    ['empty'      , [], false, ['empty'       => ["The Empty must be accepted."]]],
+                    ['yes'        , [], true , []],
+                    ['on'         , [], true , []],
+                    ['one_string' , [], true , []],
+                    ['one_int'    , [], true , []],
+                    ['true_string', [], true , []],
+                    ['true_bool'  , [], true , []],
+                    ['array_empty', [], false, ['array_empty' => ["The Array Empty must be accepted."]]],
+                    ['array'      , [], false, ['array'       => ["The Array must be accepted."]]],
+                ]
+            ]],
+
+
+
+
+
         ];
     }
 }

@@ -157,6 +157,7 @@ return [
         "{*}         The :nth value (:value) of :attribute must be :min years or older as of :at_time.",
     ],
     "SequentialNumber"              => "The :attribute must be sequential number.",
+    "Accepted"                      => "The :attribute must be accepted.",
     
 
 ];

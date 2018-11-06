@@ -215,6 +215,9 @@ class ValidatorTest extends RebetTestCase
             // Valid::SEQUENTIAL_NUMBER
             [['target' => [['foo' => '1'], ['foo' => '2']]], ['C', Valid::SEQUENTIAL_NUMBER, 'foo'], true ],
             [['target' => [['foo' => '1'], ['foo' => '3']]], ['C', Valid::SEQUENTIAL_NUMBER, 'foo'], false],
+            // Valid::ACCEPTED
+            [['target' => '1'], ['C', Valid::ACCEPTED], true ],
+            [['target' => '' ], ['C', Valid::ACCEPTED], false],
         ];
     }
 }

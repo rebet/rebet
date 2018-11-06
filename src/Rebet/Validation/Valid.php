@@ -810,4 +810,19 @@ class Valid
      *   Selector    - none
      */
     const SEQUENTIAL_NUMBER = 'SequentialNumber:';
+
+    /**
+     * Accepted Validation.
+     * It checks the values can be accepted.
+     * This validation rule implies the attribute is "required".
+     * This validation constant includes '!'(validation stop if failed) option defaultly.
+     *
+     * ex)
+     *   - ['CU', Valid::ACCEPTED]
+     * message)
+     *   Key         - Accepted
+     *   Placeholder - :attribute, :self, :nth, :value
+     *   Selector    - none
+     */
+    const ACCEPTED = "Accepted:!";
 }
