@@ -1120,8 +1120,8 @@ class BuiltinValidations extends Validations
         if ($c->blank()) {
             return true;
         }
-        [$list, $label] = $c->pluck($nested_field);
-        $duplicate      = Arrays::duplicate($list);
+        [$list, $label] = $c->pluckNested($nested_field);
+        $duplicate      = Arrays::duplicate(array_map(function($value){ return Context::isBlank($value) ? '' : $value; }, $list));
         return empty($duplicate) ? true : $c->appendError('Unique', ['attribute' => $label, 'duplicate' => $duplicate], count($duplicate)) ;
     }
 
@@ -1299,7 +1299,7 @@ class BuiltinValidations extends Validations
         if ($c->blank()) {
             return true;
         }
-        [$list, $label] = $c->pluck($nested_field);
+        [$list, $label] = $c->pluckNested($nested_field);
         $seq_no         = $start;
         foreach ($list as $value) {
             if ($value != $seq_no) {
@@ -1320,6 +1320,23 @@ class BuiltinValidations extends Validations
     public function validationAccepted(Context $c) : bool
     {
         return in_array($c->value, ['yes', 'on', '1', 1, true, 'true'], true) ? true : $c->appendError('Accepted') ;
+    }
+
+    /**
+     * Correlation Unique Validation
+     *
+     * @param Context $c
+     * @param array $fields
+     * @return boolean
+     */
+    public function validationCorrelatedUnique(Context $c, array $fields) : bool
+    {
+        $correlations = $c->pluckCorrelated($fields);
+        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function($value){ return Context::isBlank($value) ? '' : $value ; })->all());
+        return empty($duplicate) ? true : $c->appendError('CorrelatedUnique', [
+            'attribute' => $correlations->pluck('label')->all(),
+            'duplicate' => $correlations->filter(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->all(),
+        ]) ;
     }
 
     // ====================================================

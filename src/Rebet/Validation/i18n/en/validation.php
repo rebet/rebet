@@ -125,8 +125,8 @@ return [
         "[2,*] The :attribute must have :count items.",
     ],
     "Unique"                        => [
-        "[1]   The :attribute must be entered a different value. [:duplicate] was duplicated.",
-        "[2,*] The :attribute must be entered a different value. [:duplicate] were duplicated.",
+        "[1]   The :attribute must be entered a different value. The value :duplicate has duplicated.",
+        "[2,*] The :attribute must be entered a different value. The values :duplicate have duplicated.",
     ],
     "Datetime"                      => "The :attribute is not a valid date time.",
     "Datetime@List"                 => "The :nth :attribute (:value) is not a valid date time.",
@@ -158,6 +158,7 @@ return [
     ],
     "SequentialNumber"              => "The :attribute must be sequential number.",
     "Accepted"                      => "The :attribute must be accepted.",
+    "CorrelatedUnique"              => "The :attribute must be entered a different value. The :duplicate have duplicated."
     
 
 ];

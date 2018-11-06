@@ -218,6 +218,9 @@ class ValidatorTest extends RebetTestCase
             // Valid::ACCEPTED
             [['target' => '1'], ['C', Valid::ACCEPTED], true ],
             [['target' => '' ], ['C', Valid::ACCEPTED], false],
+            // Valid::CORRELATED_UNIQUE
+            [['target' => '', 'foo' => 1, 'bar' => 2], ['C', Valid::CORRELATED_UNIQUE, ['foo', 'bar']], true ],
+            [['target' => '', 'foo' => 1, 'bar' => 1], ['C', Valid::CORRELATED_UNIQUE, ['foo', 'bar']], false],
         ];
     }
 }

@@ -7,6 +7,8 @@ namespace Rebet\Validation;
  * This class is constants list of built-in validation names.
  * Some definitions (ex REQUIRED/DATE_TIME) includes '!' (validation stop if failed) option defaultly.
  *
+ * @todo Implements around upload file validations
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -825,4 +827,20 @@ class Valid
      *   Selector    - none
      */
     const ACCEPTED = "Accepted:!";
+
+    /**
+     * Correlated Unique Validation.
+     * It checks the value have unique in given fields.
+     *
+     * This validation (CORRELATED_*) is for correlation checking and is not dependent on a current field.
+     * Therefore, this validation is described as a validation rule targeting field names that do not normally exist.
+     *
+     * ex)
+     *   - ['CU', Valid::CORRELATED_UNIQUE, [':field1', ':field2', ...]]
+     * message)
+     *   Key         - CorrelatedUnique
+     *   Placeholder - :attribute, :duplicate
+     *   Selector    - none
+     */
+    const CORRELATED_UNIQUE = 'CorrelatedUnique:';
 }

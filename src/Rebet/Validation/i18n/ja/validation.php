@@ -99,7 +99,7 @@ return [
     "MinCount"                      => ":attributeは:min個以上選択して下さい。",
     "MaxCount"                      => ":attributeは:max個以下で選択して下さい。",
     "Count"                         => ":attributeは:count個選択して下さい。",
-    "Unique"                        => ":attributeには異なる値を入力して下さい。[:duplicate] が重複しています。",
+    "Unique"                        => ":attributeには異なる値を入力して下さい。:duplicate が重複しています。",
     "Datetime"                      => ":attributeは正しい日付／日時形式で入力して下さい。",
     "Datetime@List"                 => ":nth番目の:attributeは正しい日付／日時形式で入力して下さい。",
     "FutureThan"                    => ":attributeは:at_timeよりも未来の日付を入力して下さい。",
@@ -126,5 +126,6 @@ return [
     ],
     "SequentialNumber"              => ":attributeは連番でなければなりません。",
     "Accepted"                      => ":attributeに同意して下さい。",
+    "CorrelatedUnique"              => ":attributeには異なる値を入力して下さい。:duplicate が重複しています。"
 
 ];

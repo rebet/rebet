@@ -953,10 +953,10 @@ EOS
                     ['null'   , [     ], true , []],
                     ['foo'    , [     ], true , []],
                     ['bar'    , [     ], true , []],
-                    ['baz'    , [     ], false, ['baz'  => ["The Baz must be entered a different value. [1] was duplicated."]]],
-                    ['qux'    , [     ], false, ['qux'  => ["The Qux must be entered a different value. [1, a] were duplicated."]]],
+                    ['baz'    , [     ], false, ['baz'  => ["The Baz must be entered a different value. The value 1 has duplicated."]]],
+                    ['qux'    , [     ], false, ['qux'  => ["The Qux must be entered a different value. The values 1, a have duplicated."]]],
                     ['quux'   , ['foo'], true , []],
-                    ['quux'   , ['bar'], false, ['quux' => ["The Quux Bar must be entered a different value. [1] was duplicated."]]],
+                    ['quux'   , ['bar'], false, ['quux' => ["The Quux Bar must be entered a different value. The value 1 has duplicated."]]],
                 ]
             ]],
 
@@ -1163,7 +1163,20 @@ EOS
                 ]
             ]],
 
-
+            // --------------------------------------------
+            // Valid::CORRELATED_UNIQUE
+            // --------------------------------------------
+            [[
+                'name'  => 'CorrelatedUnique',
+                'data'  => ['null' => null, 'empty' => '', 'zero' => 0, 'foo' => 1, 'bar' => 1, 'baz' => 2, 'qux' => 3, 'quux' => 3],
+                'tests' => [
+                    ['nothing', [['null', 'foo', 'baz', 'qux']], true , []],
+                    ['nothing', [['foo', 'bar', 'qux'        ]], false, ['nothing' => ["The Foo, Bar, Qux must be entered a different value. The Foo, Bar have duplicated."]]],
+                    ['nothing', [['foo', 'bar', 'qux', 'quux']], false, ['nothing' => ["The Foo, Bar, Qux, Quux must be entered a different value. The Foo, Bar, Qux, Quux have duplicated."]]],
+                    ['nothing', [['null', 'empty', 'foo'     ]], false, ['nothing' => ["The Null, Empty, Foo must be entered a different value. The Null, Empty have duplicated."]]],
+                    ['nothing', [['null', 'zero', 'foo'      ]], true,  []],
+                ]
+            ]],
 
 
 

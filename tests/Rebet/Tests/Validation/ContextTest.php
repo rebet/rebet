@@ -391,7 +391,7 @@ class ContextTest extends RebetTestCase
             $this->translator
         );
         
-        $this->assertSame([[], null], $c->pluck(null));
+        $this->assertSame([[], null], $c->pluckNested(null));
 
         $c->initBy('name');
         $this->assertSame(
@@ -399,7 +399,7 @@ class ContextTest extends RebetTestCase
                 ['John Smith'],
                 '氏名'
             ],
-            $c->pluck(null)
+            $c->pluckNested(null)
         );
 
         $c->initBy('shipping_addresses');
@@ -417,21 +417,21 @@ class ContextTest extends RebetTestCase
                 ],
                 '送付先'
             ],
-            $c->pluck(null)
+            $c->pluckNested(null)
         );
         $this->assertSame(
             [
                 ['1230001', '3210003'],
                 '送付先郵便番号'
             ],
-            $c->pluck('zip')
+            $c->pluckNested('zip')
         );
         $this->assertSame(
             [
                 ['1-2-3, Foo town, Bar city', '3-2-1, Baz town, Foo city'],
                 '送付先の住所'
             ],
-            $c->pluck('address')
+            $c->pluckNested('address')
         );
     }
 

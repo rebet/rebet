@@ -2,6 +2,7 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Collection;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
@@ -167,14 +168,24 @@ class Context
     /**
      * Check current value (or given field) is blank.
      *
-     * @todo When Upload File
-     *
      * @param string $field
      * @return boolean
      */
     public function blank(string $field = null) : bool
     {
         $value = $field ? $this->value($field) : $this->value ;
+        return static::isBlank($value);
+    }
+
+    /**
+     * Check the given value is blank.
+     *
+     * @todo When Upload File
+     *
+     * @param mixed $value
+     * @return boolean
+     */
+    public static function isBlank($value) : bool {
         return Utils::isBlank($value) ;
     }
 
@@ -297,7 +308,7 @@ class Context
      * @param string|null $nested_field
      * @return array [$list, $label]
      */
-    public function pluck(?string $nested_field) : array
+    public function pluckNested(?string $nested_field) : array
     {
         if ($nested_field) {
             $nested_label = $this->label("{$this->field}.{$nested_field}");
@@ -307,6 +318,25 @@ class Context
         }
 
         return [(array)$this->value, $this->label];
+    }
+
+    /**
+     * Pluck the correlated fields value and label as Collection.
+     *
+     * @param array $fields
+     * @return Collection [$field => ['field' => $field, 'value' => $value, 'label' => $label], ...]
+     */
+    public function pluckCorrelated(array $fields) : Collection
+    {
+        $list = [];
+        foreach ($fields as $field) {
+            $list[$field] = [
+                'field' => $field,
+                'value' => $this->value($field),
+                'label' => $this->label($field),
+            ];
+        }
+        return new Collection($list);
     }
 
     /**
