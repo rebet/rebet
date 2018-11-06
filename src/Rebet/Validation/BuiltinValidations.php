@@ -1327,6 +1327,24 @@ class BuiltinValidations extends Validations
      *
      * @param Context $c
      * @param array $fields
+     * @param int $at_least
+     * @return boolean
+     */
+    public function validationCorrelatedRequired(Context $c, array $fields, int $at_least) : bool
+    {
+        $correlations = $c->pluckCorrelated($fields);
+        $inputed      = $correlations->filter(function($row){ return !Context::isBlank($row['value']); });
+        return $inputed->count() >= $at_least ? true : $c->appendError('CorrelatedRequired', [
+            'attribute' => $correlations->pluck('label')->all(),
+            'at_least'  => $at_least,
+        ]);
+    }
+
+    /**
+     * Correlation Unique Validation
+     *
+     * @param Context $c
+     * @param array $fields
      * @return boolean
      */
     public function validationCorrelatedUnique(Context $c, array $fields) : bool

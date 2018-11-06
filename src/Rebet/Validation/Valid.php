@@ -829,6 +829,22 @@ class Valid
     const ACCEPTED = "Accepted:!";
 
     /**
+     * Correlated Required Validation.
+     * It checks the value of given fields are not blank at least N.
+     *
+     * This validation (CORRELATED_*) is for correlation checking and is not dependent on a current field.
+     * Therefore, this validation is described as a validation rule targeting field names that do not normally exist.
+     *
+     * ex)
+     *   - ['CU', Valid::CORRELATED_REQUIRED, ['field1', 'field2', ...], at_least]
+     * message)
+     *   Key         - CorrelatedRequired
+     *   Placeholder - :attribute, :at_least
+     *   Selector    - none
+     */
+    const CORRELATED_REQUIRED = 'CorrelatedRequired:';
+
+    /**
      * Correlated Unique Validation.
      * It checks the value have unique in given fields.
      *
@@ -836,7 +852,7 @@ class Valid
      * Therefore, this validation is described as a validation rule targeting field names that do not normally exist.
      *
      * ex)
-     *   - ['CU', Valid::CORRELATED_UNIQUE, [':field1', ':field2', ...]]
+     *   - ['CU', Valid::CORRELATED_UNIQUE, ['field1', 'field2', ...]]
      * message)
      *   Key         - CorrelatedUnique
      *   Placeholder - :attribute, :duplicate

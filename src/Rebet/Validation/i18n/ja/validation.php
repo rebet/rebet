@@ -126,6 +126,7 @@ return [
     ],
     "SequentialNumber"              => ":attributeは連番でなければなりません。",
     "Accepted"                      => ":attributeに同意して下さい。",
-    "CorrelatedUnique"              => ":attributeには異なる値を入力して下さい。:duplicate が重複しています。"
+    "CorrelatedRequired"            => ":attributeの内、少なくとも:at_least項目を入力して下さい。",
+    "CorrelatedUnique"              => ":attributeには異なる値を入力して下さい。:duplicate が重複しています。",
 
 ];

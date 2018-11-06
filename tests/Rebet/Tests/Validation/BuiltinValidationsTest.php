@@ -1164,6 +1164,19 @@ EOS
             ]],
 
             // --------------------------------------------
+            // Valid::CORRELATED_REQUIRED
+            // --------------------------------------------
+            [[
+                'name'  => 'CorrelatedRequired',
+                'data'  => ['null' => null, 'empty' => '', 'zero' => 0, 'foo' => 1, 'bar' => 2, 'baz' => 3],
+                'tests' => [
+                    ['nothing', [['null', 'foo', 'bar', 'baz'], 2], true , []],
+                    ['nothing', [['null', 'empty', 'foo'     ], 2], false, ['nothing' => ["The Null, Empty, Foo are required at least 2."]]],
+                    ['nothing', [['null', 'empty', 'zero'    ], 1], true , []],
+                ]
+            ]],
+
+            // --------------------------------------------
             // Valid::CORRELATED_UNIQUE
             // --------------------------------------------
             [[

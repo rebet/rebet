@@ -158,7 +158,8 @@ return [
     ],
     "SequentialNumber"              => "The :attribute must be sequential number.",
     "Accepted"                      => "The :attribute must be accepted.",
-    "CorrelatedUnique"              => "The :attribute must be entered a different value. The :duplicate have duplicated."
+    "CorrelatedRequired"            => "The :attribute are required at least :at_least.",
+    "CorrelatedUnique"              => "The :attribute must be entered a different value. The :duplicate have duplicated.",
     
 
 ];
