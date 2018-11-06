@@ -256,10 +256,19 @@ class ContextTest extends RebetTestCase
         $c = new Context(
             'C',
             [
-                'name'     => 'John Smith',
-                'birthday' => '2010-01-23',
-                'no_label' => null,
-                'bank'     => [
+                'name'      => 'John Smith',
+                'birthday'  => '2010-01-23',
+                'no_label'  => null,
+                'translate' => null,
+                'nested'    => [
+                    'translate'         => null,
+                    'outer_nest_define' => null,
+                    'inner_nest_define' => null,
+                    'parent' => [
+                        'child' => null,
+                    ]
+                ],
+                'bank'      => [
                     'bank_name' => 'Sample Bank',
                     'branch'    => [
                         'code' => '123',
@@ -290,6 +299,15 @@ class ContextTest extends RebetTestCase
         $this->assertSame('氏名', $c->label('name'));
         $this->assertSame('生年月日', $c->label('birthday'));
         $this->assertSame('No Label', $c->label('no_label'));
+        $this->assertSame('翻訳', $c->label('translate'));
+        $this->assertSame('ネストの外で定義', $c->label('outer_nest_define'));
+        $this->assertSame('Inner Nest Define', $c->label('inner_nest_define'));
+        $this->assertSame('ネスト', $c->label('nested'));
+        $this->assertSame('ネストした翻訳', $c->label('nested.translate'));
+        $this->assertSame('ネストの外で定義', $c->label('nested.outer_nest_define'));
+        $this->assertSame('ネストの中で定義', $c->label('nested.inner_nest_define'));
+        $this->assertSame('ネストされた親', $c->label('nested.parent'));
+        $this->assertSame('ネストされた親の子', $c->label('nested.parent.child'));
         $this->assertSame('振込先', $c->label('bank'));
         $this->assertSame('銀行名', $c->label('bank.bank_name'));
         $this->assertSame('振込先：支店', $c->label('bank.branch'));
@@ -298,6 +316,16 @@ class ContextTest extends RebetTestCase
         $this->assertSame('送付先', $c->label('shipping_addresses'));
         $this->assertSame('送付先郵便番号', $c->label('shipping_addresses.zip'));
         $this->assertSame('住所', $c->label('shipping_addresses.address'));
+
+        $nest = $c->initBy('nested')->nest();
+        $this->assertSame('ネストした翻訳', $nest->label('translate'));
+        $this->assertSame('ネストの外で定義', $nest->label('outer_nest_define'));
+        $this->assertSame('ネストの中で定義', $nest->label('inner_nest_define'));
+        $this->assertSame('ネストされた親', $nest->label('parent'));
+        $this->assertSame('ネストされた親の子', $nest->label('parent.child'));
+
+        $parent = $nest->initBy('parent')->nest();
+        $this->assertSame('ネストされた親の子', $parent->label('child'));
     }
 
     public function test_labels()

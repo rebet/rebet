@@ -134,8 +134,12 @@ class ArraysTest extends RebetTestCase
             Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => ['A' => ['α' => 1], 'C' => 3], 'c' => 3])
         );
         $this->assertSame(
-            ['a' => [], 'b' => 2, 'c' => 3],
+            ['a' => ['A' => 1, 'B' => 2], 'b' => 2, 'c' => 3],
             Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a' => [], 'c' => 3])
+        );
+        $this->assertSame(
+            ['a' => [], 'b' => 2, 'c' => 3],
+            Arrays::override(['a' => ['A' => 1, 'B' => 2], 'b' => 2], ['a!' => [], 'c' => 3])
         );
         $this->assertSame(
             ['a' => [['A' => 1], ['B' => 2], ['A' => 3]], 'b' => 2, 'c' => 3],

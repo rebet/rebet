@@ -257,7 +257,10 @@ class Context
      */
     public function label(string $field) : string
     {
-        $label  = '';
+        $label = $this->translate("{$this->prefix}{$field}");
+        if($label) {
+            return $label;
+        }
         $parent = '';
         $rule   = $this->rules;
         foreach (explode('.', "{$this->prefix}{$field}") as $parts) {
@@ -268,6 +271,27 @@ class Context
         }
 
         return $label;
+    }
+
+    /**
+     * Get the label of given field from attribute translation resource.
+     *
+     * @param string $field
+     * @return string|null
+     */
+    protected function translate(string $field) : ?string {
+        $label = $this->translator->get("attribute.{$field}");
+        if($label !== $field) {
+            if(Strings::contains($label ,':parent') && Strings::contains($field, '.')) {
+                $parent = $this->translate(Strings::ratrim($field, '.'));
+                return str_replace(':parent', $parent, $label);
+            }
+            return $label;
+        }
+        if(Strings::contains($field, '.')) {
+            return $this->translate(Strings::lbtrim($field, '.'));
+        }
+        return null;
     }
 
     /**

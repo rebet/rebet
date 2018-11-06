@@ -228,7 +228,7 @@ class Arrays
         }
 
         if ($is_base_sequential !== $is_diff_sequential) {
-            return $diff;
+            return empty($diff) ? $base : $diff ;
         }
 
         foreach ($diff as $key => $value) {
