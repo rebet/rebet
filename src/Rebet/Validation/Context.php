@@ -264,7 +264,7 @@ class Context
         $parent = '';
         $rule   = $this->rules;
         foreach (explode('.', "{$this->prefix}{$field}") as $parts) {
-            $label  = $rule[$parts]['label'] ?? Inflector::humanize($parts);
+            $label  = $rule[$parts]['label'] ?? Inflector::humanize($parts) ;
             $label  = str_replace(':parent', $parent, $label);
             $parent = $label;
             $rule   = $rule[$parts]['nests'] ?? $rule[$parts]['nest'] ?? [];
@@ -336,7 +336,7 @@ class Context
     {
         if ($nested_field) {
             $nested_label = $this->label("{$this->field}.{$nested_field}");
-            $label        = Strings::contains($nested_label, $this->label) ? $nested_label : str_replace([':attribute', ':nested_attribute'], [$this->label, $nested_label], $this->grammar('nested_attribute_format', ':attribute :nested_attribute')) ;
+            $label        = Strings::contains($nested_label, $this->label) ? $nested_label : str_replace([':attribute', ':nested_attribute'], [$this->label, $nested_label], $this->grammar('nested_attribute_format', ':nested_attribute')) ;
             $list         = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array)$this->value);
             return [$list, $label];
         }
