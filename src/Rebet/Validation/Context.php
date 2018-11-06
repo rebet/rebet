@@ -220,7 +220,7 @@ class Context
         $replace['selector']  = $selector;
         $prefix               = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
 
-        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get("validation.{$key}", $replace, $selector) ;
+        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
         return false;
     }
 
@@ -257,7 +257,7 @@ class Context
      */
     public function label(string $field) : string
     {
-        $label = $this->translate("{$this->prefix}{$field}");
+        $label = $this->labelTranslate("{$this->prefix}{$field}");
         if($label) {
             return $label;
         }
@@ -279,17 +279,17 @@ class Context
      * @param string $field
      * @return string|null
      */
-    protected function translate(string $field) : ?string {
-        $label = $this->translator->get("attribute.{$field}");
+    protected function labelTranslate(string $field) : ?string {
+        $label = $this->translator->get("attribute!.{$field}");
         if($label !== $field) {
             if(Strings::contains($label ,':parent') && Strings::contains($field, '.')) {
-                $parent = $this->translate(Strings::ratrim($field, '.'));
+                $parent = $this->labelTranslate(Strings::ratrim($field, '.'));
                 return str_replace(':parent', $parent, $label);
             }
             return $label;
         }
         if(Strings::contains($field, '.')) {
-            return $this->translate(Strings::lbtrim($field, '.'));
+            return $this->labelTranslate(Strings::lbtrim($field, '.'));
         }
         return null;
     }

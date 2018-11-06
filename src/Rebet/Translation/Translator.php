@@ -141,7 +141,10 @@ class Translator
      * Get the translation for the given key.
      * If can not translate the given key then return the key without group.
      *
-     * @param string $key
+     * This translator normally recursive search for translated text by given nested key.
+     * If this behavior is not desirable, you can suppress recursive search by adding '!' to the end of group name.
+     * 
+     * @param string $key "{$group}.{$key}" or "{$group}!.{$key}"
      * @param array $replace
      * @param int|string|null $selector (default: null)
      * @param string $locale
@@ -149,24 +152,30 @@ class Translator
      */
     public function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : string
     {
-        [$group, $key] = explode('.', $key, 2);
-        $locales       = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
+        [$group, $key]    = explode('.', $key, 2);
+        $recursive_search = true;
+        if(Strings::endsWith($group, '!')) {
+            $recursive_search = false;
+            $group            = Strings::rtrim($group, '!');
+        }
+        $trans_locales = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
 
         $line = null;
-        foreach ($locales as $locale) {
-            $this->load($group, $locale);
-            $line = Reflector::get($this->resouces[$group][$locale], $key);
+        foreach ($trans_locales as $trans_locale) {
+            $this->load($group, $trans_locale);
+            $line = Reflector::get($this->resouces[$group][$trans_locale], $key);
             if ($line) {
                 break;
             }
         }
-        if ($line === null) {
-            return $key;
-        }
-
         $line = $this->choose($line, $selector);
         if ($line === null) {
-            return $key;
+            if($recursive_search && Strings::contains($key, '.')) {
+                $parent_key = Strings::lbtrim($key, '.');
+                $line       = $this->get("{$group}.{$parent_key}", $replace, $selector, $locale);
+                return $line === $parent_key ? $key : $line ;
+            }
+            return $key ;
         }
 
         if (empty($replace)) {
@@ -240,6 +249,9 @@ class Translator
      */
     protected function choose($line, $selector) : ?string
     {
+        if(is_null($line)) {
+            return null;
+        }
         if (is_null($selector) && is_string($line)) {
             return $line;
         }
