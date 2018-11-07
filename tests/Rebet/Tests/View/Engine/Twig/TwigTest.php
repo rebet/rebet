@@ -22,33 +22,13 @@ class TwigTest extends RebetTestCase
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
-                'view' => [
-                    'welcome.twig' => <<<'EOS'
-Hello, {{name}}.
-EOS
-                    ,
-                    'custom.twig' => <<<'EOS'
-{% if 'unittest' is env %}
-unittest
-{% endif %}
-{% if ['unittest','local'] is env %}
-unittest or local
-{% endif %}
-{% if 'production' is env %}
-production
-{% else %}
-Not production.
-{% endif %}
-EOS
-                    ,
-                ],
                 'cache' => [],
             ],
             $this->root
         );
 
         $this->twig = new Twig([
-            'template_dir' => 'vfs://root/view',
+            'template_dir' => App::path('/resources/views/twig'),
             'options'      => [
                 // 'cache' => 'vfs://root/cache',
             ],
@@ -78,7 +58,7 @@ Not production.
 
 EOS
             ,
-            $this->twig->render('custom')
+            $this->twig->render('custom/env')
         );
 
         App::setEnv('local');
@@ -89,7 +69,7 @@ Not production.
 
 EOS
             ,
-            $this->twig->render('custom')
+            $this->twig->render('custom/env')
         );
     }
 }

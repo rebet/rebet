@@ -8,7 +8,6 @@ use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
 
-
 class FormattableHandlerTest extends RebetTestCase
 {
     private $handler;

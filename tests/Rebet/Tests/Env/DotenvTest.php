@@ -4,7 +4,6 @@ namespace Rebet\Tests\Env;
 use Rebet\Env\Dotenv;
 use Rebet\Tests\RebetTestCase;
 
-
 class DotenvTest extends RebetTestCase
 {
     public function setUp()

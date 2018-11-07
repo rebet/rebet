@@ -11,7 +11,6 @@ use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\StderrCapture;
 
-
 class StderrHandlerTest extends RebetTestCase
 {
     private $root;

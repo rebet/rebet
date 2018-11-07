@@ -23,88 +23,13 @@ class BladeTest extends RebetTestCase
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
-                'view' => [
-                    'layout.blade.php' => <<<'EOS'
-Title:
-@yield('title')
-
-Section:
-@section('section')
-    - Main Section
-@show
-Content:
-@yield('content')
-EOS
-                    ,
-                    'child.blade.php' => <<<'EOS'
-@extends('layout')
-@section('title', 'Unit Test')
-@section('section')
-@parent
-    - Sub Section
-@endsection
-@section('content')
-    This is content.
-@endsection
-EOS
-                    ,
-                    'alert.blade.php' => <<<'EOS'
-* {{ $title }} *
------
-{{ $slot }}
-EOS
-                    ,
-                    'component.blade.php' => <<<'EOS'
-Component Test
-@component('alert')
-@slot('title')
-Forbidden
-@endslot
-You are not allowed to access this resource!
-@endcomponent
-EOS
-                    ,
-                    'component-args.blade.php' => <<<'EOS'
-Component Args Test
-@component('alert', ['title' => 'Forbidden'])
-You are not allowed to access this resource!
-@endcomponent
-EOS
-                    ,
-                    'welcome.blade.php' => <<<'EOS'
-Hello, {{ $name }}.
-EOS
-                    ,
-                    'json.blade.php' => <<<'EOS'
-var app = @json($array);
-EOS
-                    ,
-                    'custom.blade.php' => <<<'EOS'
-@env('unittest')
-unittest
-@endenv
-@env(['unittest','local'])
-unittest or local
-@endenv
-@env('production')
-production
-@else
-Not production.
-@endenv
-EOS
-                    ,
-                    'hello.blade.php' => <<<'EOS'
-@hello(World)
-EOS
-                    ,
-                ],
                 'cache' => [],
             ],
             $this->root
         );
 
         $this->blade = new Blade([
-            'view_path'  => 'vfs://root/view',
+            'view_path'  => App::path('/resources/views/blade'),
             'cache_path' => 'vfs://root/cache',
         ]);
     }
@@ -174,7 +99,7 @@ EOS
     public function test_render_directive()
     {
         $this->blade = new Blade([
-            'view_path'   => 'vfs://root/view',
+            'view_path'   => App::path('/resources/views/blade'),
             'cache_path'  => 'vfs://root/cache',
             'customizers' => [function (BladeCompiler $blade) {
                 $blade->directive('hello', function ($word) {
@@ -204,7 +129,7 @@ Not production.
 
 EOS
             ,
-            $this->blade->render('custom')
+            $this->blade->render('custom/env')
         );
 
         App::setEnv('local');
@@ -215,7 +140,7 @@ Not production.
 
 EOS
             ,
-            $this->blade->render('custom')
+            $this->blade->render('custom/env')
         );
     }
 }

@@ -22,39 +22,14 @@ class SmartyTest extends RebetTestCase
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
-                'view' => [
-                    'welcome.tpl' => <<<'EOS'
-Hello, {$name}.
-EOS
-                    ,
-                    'custom' => [
-                        'env.tpl' => <<<'EOS'
-{env in='unittest'}
-unittest
-{/env}
-{env in=['unittest','local']}
-unittest or local
-{/env}
-{env in='production'}
-production
-{/env}
-{env not_in='production'}
-Not production.
-{/env}
-EOS
-                        
-                    ],
-                ],
                 'cache' => [],
             ],
             $this->root
         );
 
         $this->smarty = new Smarty([
-            'template_dir' => 'vfs://root/view',
-            // 'template_dir' => App::path('/resources/views/smarty'),
+            'template_dir' => App::path('/resources/views/smarty'),
             'compile_dir'  => 'vfs://root/cache',
-            // 'compile_dir'  => App::path('/resources/views/smarty/cache'),
         ]);
     }
 
