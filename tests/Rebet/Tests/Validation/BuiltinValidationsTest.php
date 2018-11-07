@@ -56,7 +56,7 @@ class BuiltinValidationsTest extends RebetTestCase
     public function dataValidationMethods() : array
     {
         $this->setUp();
-        $ng_word_file = App::path('/resources/ng_word.txt');
+        $ng_word_file = App::path('/resources/validation/ng_word.txt');
 
         return [
             // --------------------------------------------
