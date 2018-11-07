@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Foundation\View\Engine\Smarty;
 
-use Rebet\View\Engine\Smarty\Smarty;
-
 /**
  * Smarty custom plugins for Rebet
  *
@@ -16,7 +14,7 @@ class SmartyCustomizer
     /**
      * define costom plugins for Rebet.
      */
-    public static function customize(Smarty $smarty) : void
+    public static function customize(\Smarty $smarty) : void
     {
         // ------------------------------------------------
         // Check current environment

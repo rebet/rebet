@@ -27,7 +27,8 @@ class SmartyTest extends RebetTestCase
 Hello, {$name}.
 EOS
                     ,
-                    'custom.tpl' => <<<'EOS'
+                    'custom' => [
+                        'env.tpl' => <<<'EOS'
 {env in='unittest'}
 unittest
 {/env}
@@ -41,7 +42,8 @@ production
 Not production.
 {/env}
 EOS
-                    ,
+                        
+                    ],
                 ],
                 'cache' => [],
             ],
@@ -50,7 +52,9 @@ EOS
 
         $this->smarty = new Smarty([
             'template_dir' => 'vfs://root/view',
+            // 'template_dir' => App::path('/resources/views/smarty'),
             'compile_dir'  => 'vfs://root/cache',
+            // 'compile_dir'  => App::path('/resources/views/smarty/cache'),
         ]);
     }
 
@@ -77,7 +81,7 @@ Not production.
 
 EOS
             ,
-            $this->smarty->render('custom')
+            $this->smarty->render('custom/env')
         );
 
         App::setEnv('local');
@@ -88,7 +92,7 @@ Not production.
 
 EOS
             ,
-            $this->smarty->render('custom')
+            $this->smarty->render('custom/env')
         );
     }
 }

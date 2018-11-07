@@ -23,7 +23,7 @@ use Rebet\View\Engine\Engine;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Blade extends Factory implements Engine
+class Blade implements Engine
 {
     use Configurable;
 
@@ -37,11 +37,11 @@ class Blade extends Factory implements Engine
     }
     
     /**
-     * Allow methods for register custom directives.
+     * The blade template engine factory
      *
-     * @var array
+     * @var Illuminate\View\Factory
      */
-    private const ALLOW_DIRECTIVE_METHODS = ['directive', 'if', 'component', 'include'];
+    protected $factory = null;
 
     /**
      * Create Blade template engine
@@ -64,9 +64,10 @@ class Blade extends Factory implements Engine
             return new CompilerEngine($blade);
         });
 
-        parent::__construct($resolver, $finder, $dispatcher);
+        $this->factory = new Factory($resolver, $finder, $dispatcher);
+
         $app         = LaravelBlade::getFacadeApplication();
-        $app['view'] = $this;
+        $app['view'] = $this->factory;
         LaravelBlade::setFacadeApplication($app);
 
         foreach (array_reverse($customizers) as $customizer) {
@@ -82,7 +83,7 @@ class Blade extends Factory implements Engine
      */
     public function compiler() : BladeCompiler
     {
-        return $this->getEngineResolver()->resolve('blade')->getCompiler();
+        return $this->factory->getEngineResolver()->resolve('blade')->getCompiler();
     }
 
     /**
@@ -94,6 +95,6 @@ class Blade extends Factory implements Engine
      */
     public function render(string $name, array $data = []) : string
     {
-        return $this->make($name, $data)->render();
+        return $this->factory->make($name, $data)->render();
     }
 }
