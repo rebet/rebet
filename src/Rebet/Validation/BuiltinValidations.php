@@ -249,7 +249,7 @@ class BuiltinValidations extends Validations
      * @param callable $callback function(Context $c, string $other, $value, string $label) { ... }
      * @return boolean
      */
-    public function handleIf(Context $c, string $other, $value, callable $callback) : bool
+    protected function handleIf(Context $c, string $other, $value, callable $callback) : bool
     {
         [$value, $label] = $c->resolve($value);
         if (in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
@@ -267,7 +267,7 @@ class BuiltinValidations extends Validations
      * @param callable $callback function(Context $c, string $other, $value, string $label) { ... }
      * @return boolean
      */
-    public function handleUnless(Context $c, string $other, $value, callable $callback) : bool
+    protected function handleUnless(Context $c, string $other, $value, callable $callback) : bool
     {
         [$value, $label] = $c->resolve($value);
         if (!in_array($c->value($other), is_null($value) ? [null] : (array)$value)) {
@@ -323,7 +323,7 @@ class BuiltinValidations extends Validations
      * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $inputed){ ... }
      * @return boolean
      */
-    public function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
+    protected function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
     {
         $other    = (array)$other;
         $max      = count($other);
@@ -347,7 +347,7 @@ class BuiltinValidations extends Validations
      * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $not_inputed){ ... }
      * @return boolean
      */
-    public function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
+    protected function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
     {
         $other       = (array)$other;
         $max         = count($other);
@@ -487,7 +487,7 @@ class BuiltinValidations extends Validations
      * @param callable $selector function($value) { ... } (default: null)
      * @return boolean
      */
-    public function handleListableValue(Context $c, Kind $kind, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    protected function handleListableValue(Context $c, Kind $kind, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         if ($c->blank()) {
             return true;
@@ -523,7 +523,7 @@ class BuiltinValidations extends Validations
      * @param int|string $selector (default: null)
      * @return boolean
      */
-    public function handleRegex(Context $c, Kind $kind, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
+    protected function handleRegex(Context $c, Kind $kind, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
     {
         return $this->handleListableValue(
             $c,
@@ -562,7 +562,7 @@ class BuiltinValidations extends Validations
      * @param int|string $selector (default: null)
      * @return boolean
      */
-    public function handleNotRegex(Context $c, Kind $kind, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
+    protected function handleNotRegex(Context $c, Kind $kind, string $pattern, string $messsage_key, array $replacement = [], $selector = null) : bool
     {
         return $this->handleListableValue(
             $c,
@@ -709,7 +709,7 @@ class BuiltinValidations extends Validations
      * @param callable $selector function($value) { ... } (default: null)
      * @return boolean
      */
-    public function handleNumber(Context $c, $number, int $decimal = 0, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    protected function handleNumber(Context $c, $number, int $decimal = 0, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         [$number, $number_label] = $c->resolve($number);
         $replacement['number']   = $number_label;
@@ -1121,7 +1121,7 @@ class BuiltinValidations extends Validations
             return true;
         }
         [$list, $label] = $c->pluckNested($nested_field);
-        $duplicate      = Arrays::duplicate(array_map(function($value){ return Context::isBlank($value) ? '' : $value; }, $list));
+        $duplicate      = Arrays::duplicate(array_map(function ($value) { return Context::isBlank($value) ? '' : $value; }, $list));
         return empty($duplicate) ? true : $c->appendError('Unique', ['attribute' => $label, 'duplicate' => $duplicate], count($duplicate)) ;
     }
 
@@ -1163,7 +1163,7 @@ class BuiltinValidations extends Validations
      * @param callable $selector function($value) { ... } (default: null)
      * @return boolean
      */
-    public function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    protected function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         if ($c->blank()) {
             return true;
@@ -1333,7 +1333,7 @@ class BuiltinValidations extends Validations
     public function validationCorrelatedRequired(Context $c, array $fields, int $at_least) : bool
     {
         $correlations = $c->pluckCorrelated($fields);
-        $inputed      = $correlations->filter(function($row){ return !Context::isBlank($row['value']); });
+        $inputed      = $correlations->filter(function ($row) { return !Context::isBlank($row['value']); });
         return $inputed->count() >= $at_least ? true : $c->appendError('CorrelatedRequired', [
             'attribute' => $correlations->pluck('label')->all(),
             'at_least'  => $at_least,
@@ -1350,7 +1350,7 @@ class BuiltinValidations extends Validations
     public function validationCorrelatedUnique(Context $c, array $fields) : bool
     {
         $correlations = $c->pluckCorrelated($fields);
-        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function($value){ return Context::isBlank($value) ? '' : $value ; })->all());
+        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function ($value) { return Context::isBlank($value) ? '' : $value ; })->all());
         return empty($duplicate) ? true : $c->appendError('CorrelatedUnique', [
             'attribute' => $correlations->pluck('label')->all(),
             'duplicate' => $correlations->filter(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->all(),
