@@ -185,7 +185,8 @@ class Context
      * @param mixed $value
      * @return boolean
      */
-    public static function isBlank($value) : bool {
+    public static function isBlank($value) : bool
+    {
         return Utils::isBlank($value) ;
     }
 
@@ -220,7 +221,14 @@ class Context
         $replace['selector']  = $selector;
         $prefix               = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
 
-        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = Strings::startsWith($key, '@') ? Strings::ltrim($key, '@') : $this->translator->get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
+        $message = null;
+        if (Strings::startsWith($key, '@')) {
+            $message = Strings::ltrim($key, '@');
+        } else {
+            $message = $this->translator->replace('validation', $this->message($key), $replace) ?? $this->translator->get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
+        }
+
+        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = $message;
         return false;
     }
 
@@ -258,7 +266,7 @@ class Context
     public function label(string $field) : string
     {
         $label = $this->labelTranslate("{$this->prefix}{$field}");
-        if($label) {
+        if ($label) {
             return $label;
         }
         $parent = '';
@@ -274,21 +282,48 @@ class Context
     }
 
     /**
+     * Get the current field custom message of given key in rules.
+     *
+     * @param string $key
+     * @return string|null
+     */
+    protected function message(string $key) : ?string
+    {
+        $rule = $this->rules;
+        if ($this->prefix) {
+            foreach (explode('.', trim($this->prefix, '.')) as $parts) {
+                $rule = $rule[$parts]['nests'] ?? $rule[$parts]['nest'] ?? [];
+            }
+        }
+        if (!isset($rule[$this->field]['messages'])) {
+            return null;
+        }
+        $key = Strings::ratrim($key, ':');
+        foreach ($rule[$this->field]['messages'] as $target => $value) {
+            if ($key === Strings::ratrim($target, ':')) {
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get the label of given field from attribute translation resource.
      *
      * @param string $field
      * @return string|null
      */
-    protected function labelTranslate(string $field) : ?string {
+    protected function labelTranslate(string $field) : ?string
+    {
         $label = $this->translator->get("attribute!.{$field}");
-        if($label !== $field) {
-            if(Strings::contains($label ,':parent') && Strings::contains($field, '.')) {
+        if ($label !== $field) {
+            if (Strings::contains($label, ':parent') && Strings::contains($field, '.')) {
                 $parent = $this->labelTranslate(Strings::ratrim($field, '.'));
                 return str_replace(':parent', $parent, $label);
             }
             return $label;
         }
-        if(Strings::contains($field, '.')) {
+        if (Strings::contains($field, '.')) {
             return $this->labelTranslate(Strings::lbtrim($field, '.'));
         }
         return null;
@@ -298,11 +333,12 @@ class Context
      * Get the labels of given fields
      *
      * @param array $fields
-     * @param string $delimiter (default: ',')
+     * @param string|null $delimiter (default: depend on configure)
      * @return string
      */
-    public function labels(array $fields, string $delimiter = ', ') : string
+    public function labels(array $fields, ?string $delimiter = null) : string
     {
+        $delimiter = $delimiter ?? $this->grammar('delimiter', ', ');
         return implode($delimiter, array_map(function ($field) {
             return $this->label($field);
         }, $fields));
@@ -385,6 +421,20 @@ class Context
     public function grammar(string $name, $default = null)
     {
         return $this->translator->grammar('validation', $name, $default);
+    }
+
+    /**
+     * Set the custom message for the given key and locale.
+     *
+     * @param string $key
+     * @param string $message
+     * @param string $locale (default: null)
+     * @return self
+     */
+    public function setMessage(string $key, string $message, ?string $locale = null) : self
+    {
+        $this->translator->put("validation.{$key}", $message, $locale);
+        return $this;
     }
 
     /**

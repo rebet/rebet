@@ -143,18 +143,18 @@ class Translator
      *
      * This translator normally recursive search for translated text by given nested key.
      * If this behavior is not desirable, you can suppress recursive search by adding '!' to the end of group name.
-     * 
+     *
      * @param string $key "{$group}.{$key}" or "{$group}!.{$key}"
-     * @param array $replace
+     * @param array $replacement (default: [])
      * @param int|string|null $selector (default: null)
      * @param string $locale
      * @return string
      */
-    public function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : string
+    public function get(string $key, array $replacement = [], $selector = null, ?string $locale = null) : string
     {
         [$group, $key]    = explode('.', $key, 2);
         $recursive_search = true;
-        if(Strings::endsWith($group, '!')) {
+        if (Strings::endsWith($group, '!')) {
             $recursive_search = false;
             $group            = Strings::rtrim($group, '!');
         }
@@ -170,24 +170,42 @@ class Translator
         }
         $line = $this->choose($line, $selector);
         if ($line === null) {
-            if($recursive_search && Strings::contains($key, '.')) {
+            if ($recursive_search && Strings::contains($key, '.')) {
                 $parent_key = Strings::lbtrim($key, '.');
-                $line       = $this->get("{$group}.{$parent_key}", $replace, $selector, $locale);
+                $line       = $this->get("{$group}.{$parent_key}", $replacement, $selector, $locale);
                 return $line === $parent_key ? $key : $line ;
             }
             return $key ;
         }
 
-        if (empty($replace)) {
+        return $this->replace($group, $line, $replacement, $locale);
+    }
+
+    /**
+     * Replace the placeholder in translation text by given replacement.
+     *
+     * @param string $group
+     * @param string|null $line
+     * @param array $replacement (default: [])
+     * @param string|null $locale (default: null)
+     * @return string|null
+     */
+    public function replace(string $group, ?string $line, array $replacement = [], ?string $locale = null) : ?string
+    {
+        if ($line === null) {
+            return null;
+        }
+
+        if (empty($replacement)) {
             return $line;
         }
 
-        $replace = Collection::valueOf($replace)->sortBy(function ($v, $k) {
+        $replacement = Collection::valueOf($replacement)->sortBy(function ($v, $k) {
             return mb_strlen($k) * -1;
         });
 
         $delimiter = $this->grammar($group, 'delimiter', ', ', $locale);
-        foreach ($replace as $key => $value) {
+        foreach ($replacement as $key => $value) {
             $value = is_array($value) ? implode($delimiter, $value) : $value ;
             $line  = str_replace(':'.$key, $value, $line);
         }
@@ -199,15 +217,17 @@ class Translator
      * Put the message for the given key and locale.
      *
      * @param string $key
-     * @param string $locale
      * @param string $message
+     * @param string $locale (default: null)
      * @return self
      */
-    public function put(string $key, string $locale, string $message) : self
+    public function put(string $key, string $message, ?string $locale = null) : self
     {
         [$group, $key] = explode('.', $key, 2);
+        $locale        = $locale ?? $this->locale;
         $this->load($group, $locale);
         $this->resouces[$group][$locale][$key] = $message;
+        return $this;
     }
 
     /**
@@ -249,7 +269,7 @@ class Translator
      */
     protected function choose($line, $selector) : ?string
     {
-        if(is_null($line)) {
+        if (is_null($line)) {
             return null;
         }
         if (is_null($selector) && is_string($line)) {

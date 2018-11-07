@@ -22,13 +22,23 @@ class ContextTest extends RebetTestCase
             'name' => [
                 'label' => '氏名',
                 'rule'  => [
-                    ['CU', Valid::REQUIRED.'!'],
+                    ['CU', Valid::REQUIRED],
+                ]
+            ],
+            'name_withMessage' => [
+                'label' => '氏名',
+                'rule'  => [
+                    ['CU', Valid::REQUIRED],
+                    ['CU', Valid::MAX_LENGTH, 12],
+                ],
+                'messages' => [
+                    Valid::MAX_LENGTH => 'カスタムメッセージ[:max]',
                 ]
             ],
             'birthday' => [
                 'label' => '生年月日',
                 'rule'  => [
-                    ['C', Valid::REQUIRED.'!'],
+                    ['C', Valid::REQUIRED],
                 ],
             ],
             'no_label' => [
@@ -36,13 +46,13 @@ class ContextTest extends RebetTestCase
             'bank' => [
                 'label' => '振込先',
                 'rule'  => [
-                    ['CU', Valid::REQUIRED.'!'],
+                    ['CU', Valid::REQUIRED],
                 ],
                 'nest' => [
                     'bank_name' => [
                         'label' => '銀行名',
                         'rule'  => [
-                            ['CU', Valid::REQUIRED.'!'],
+                            ['CU', Valid::REQUIRED],
                         ],
                     ],
                     'branch' => [
@@ -61,19 +71,19 @@ class ContextTest extends RebetTestCase
             'shipping_addresses' => [
                 'label' => '送付先',
                 'rule'  => [
-                    ['CU', Valid::REQUIRED.'!'],
+                    ['CU', Valid::REQUIRED],
                 ],
                 'nests' => [
                     'zip' => [
                         'label' => ':parent郵便番号',
                         'rule'  => [
-                            ['CU', Valid::REQUIRED.'!'],
+                            ['CU', Valid::REQUIRED],
                         ],
                     ],
                     'address' => [
                         'label' => '住所',
                         'rule'  => [
-                            ['CU', Valid::REQUIRED.'!'],
+                            ['CU', Valid::REQUIRED],
                         ],
                     ],
                 ],
@@ -230,6 +240,50 @@ class ContextTest extends RebetTestCase
         $this->assertSame(['Name error 1', 'Name error 2'], $this->errors['name'] ?? null);
     }
 
+    public function test_appendError_customMessage()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'     => 'John Smith',
+                'birthday' => null,
+            ],
+            $this->errors,
+            [
+                'name'     => $this->rule_set['name'],
+                'birthday' => $this->rule_set['birthday'],
+            ],
+            $this->translator
+        );
+        $c->setMessage('birthday.MaxLength', 'カスタムメッセージ[:max]');
+
+        $c->initBy('name');
+        $this->assertNull($this->errors['name'] ?? null);
+        $c->appendError('MaxLength', ['max' => 12]);
+        $this->assertSame(['氏名は12文字以下で入力して下さい。'], $this->errors['name'] ?? null);
+
+        $c->initBy('birthday');
+        $this->assertNull($this->errors['birthday'] ?? null);
+        $c->appendError('MaxLength', ['max' => 12]);
+        $this->assertSame(['カスタムメッセージ[12]'], $this->errors['birthday'] ?? null);
+    }
+
+    public function test_appendError_customMessageInRule()
+    {
+        $c = new Context(
+            'C',
+            ['name' => 'John Smith'],
+            $this->errors,
+            ['name' => $this->rule_set['name_withMessage']],
+            $this->translator
+        );
+
+        $c->initBy('name');
+        $this->assertNull($this->errors['name'] ?? null);
+        $c->appendError('MaxLength', ['max' => 12]);
+        $this->assertSame(['カスタムメッセージ[12]'], $this->errors['name'] ?? null);
+    }
+
     public function test_value()
     {
         $c = new Context(
@@ -264,7 +318,7 @@ class ContextTest extends RebetTestCase
                     'translate'         => null,
                     'outer_nest_define' => null,
                     'inner_nest_define' => null,
-                    'parent' => [
+                    'parent'            => [
                         'child' => null,
                     ]
                 ],
@@ -354,12 +408,12 @@ class ContextTest extends RebetTestCase
         );
 
         $this->assertSame(
-            '氏名, 生年月日, 振込先：支店',
+            '氏名／生年月日／振込先：支店',
             $c->labels(['name', 'birthday', 'bank.branch'])
         );
         $this->assertSame(
-            '氏名／生年月日／振込先：支店',
-            $c->labels(['name', 'birthday', 'bank.branch'], '／')
+            '氏名, 生年月日, 振込先：支店',
+            $c->labels(['name', 'birthday', 'bank.branch'], ', ')
         );
     }
 
