@@ -34,6 +34,13 @@ abstract class Route
     protected $route_action = null;
 
     /**
+     * The prefix path of this route.
+     *
+     * @var string
+     */
+    public $prefix = '';
+
+    /**
      * ルーティングパラメータの正規表現チェックを設定します。
      *
      * @param array|string $name or [$name => $regex, ...]

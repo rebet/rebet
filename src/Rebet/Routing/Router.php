@@ -5,6 +5,7 @@ use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
+use Rebet\File\Files;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -34,13 +35,6 @@ class Router
     }
 
     /**
-     * No instantiation
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * ルート探査木
      *
      * @var array
@@ -48,11 +42,11 @@ class Router
     public static $routing_tree = [];
     
     /**
-     * デフォルトルート
+     * Default Route
      *
-     * @var Route
+     * @var array [prefix => Route]
      */
-    protected static $default_route = null;
+    protected static $default_route = [];
 
     /**
      * フォールバックアクション
@@ -69,11 +63,11 @@ class Router
     protected static $current = null;
     
     /**
-     * ルール定義の最中か否か
+     * Current routing rule builder.
      *
-     * @var boolean
+     * @var Router
      */
-    protected static $in_rules = false;
+    protected static $rules = null;
 
     /**
      * ルートミドルウェアパイプライン
@@ -88,26 +82,12 @@ class Router
      */
     public static function clear() : void
     {
-        static::$routing_tree = [];
-        static::$current      = null;
-        static::$in_rules     = false;
-        static::$pipeline     = null;
-    }
-    
-    /**
-     * Set new routing rules for given surface.
-     *
-     * @param string $surface
-     * @param callable $callback
-     * @return void
-     */
-    public static function rules(string $surface, callable $callback)
-    {
-        if ($surface === App::getSurface()) {
-            static::$in_rules = true;
-            $callback();
-            static::$in_rules = false;
-        }
+        static::$routing_tree  = [];
+        static::$current       = null;
+        static::$rules         = null;
+        static::$pipeline      = null;
+        static::$default_route = [];
+        static::$fallback      = null;
     }
 
     /**
@@ -269,10 +249,11 @@ class Router
      */
     protected static function addRoute(Route $route)
     {
-        if (!static::$in_rules) {
+        if (!static::$rules) {
             throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        static::digging(static::$routing_tree, explode('/', Strings::latrim($route->uri, '{')), $route);
+        $route->prefix = static::$rules->prefix;
+        static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
     }
     
     /**
@@ -305,22 +286,6 @@ class Router
     }
 
     /**
-     * フォールバックアクションを設定します。
-     * ここで登録したアクションは例外発生時に呼び出されます。
-     * 通常、ログ出力やエラーページ表示での利用を想定しています。
-     *
-     * @param callabel $action function(Request $request, ?Route $route, \Throwable $e) { ... }
-     * @return void
-     */
-    public static function fallback(callable $action)
-    {
-        if (!static::$in_rules) {
-            throw new \LogicException("Routing fallback rules are defined without Router::rules(). You should wrap rules by Router::rules().");
-        }
-        static::$fallback = $action;
-    }
-
-    /**
      * デフォルトルートを設定します。
      *
      * @param mixed $route Routeオブジェクト 又は それを生成できる instantiate 設定
@@ -328,11 +293,14 @@ class Router
      */
     public static function default($route) : Route
     {
-        if (!static::$in_rules) {
+        if (!static::$rules) {
             throw new \LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        static::$default_route = Reflector::instantiate($route);
-        return static::$default_route;
+        $route         = Reflector::instantiate($route);
+        $route->prefix = static::$rules->prefix;
+
+        static::$default_route[$route->prefix] = $route;
+        return $route;
     }
 
     /**
@@ -350,8 +318,25 @@ class Router
             static::$pipeline = (new Pipeline())->through(static::config('middlewares', false, []))->then($route);
             return static::$pipeline->send($request);
         } catch (\Throwable $e) {
-            $fallback = static::$fallback;
-            return $fallback($request, $route, $e);
+            if (empty(static::$fallback)) {
+                throw $e;
+            }
+
+            $root_fallback = null;
+            $request_uri   = $request->getRequestUri();
+            foreach (static::$fallback as $prefix => $fallback) {
+                if ($prefix === '') {
+                    $root_fallback = $fallback;
+                }
+                if (Strings::startsWith($request_uri, "{$prefix}/")) {
+                    return $fallback($request, $route, $e);
+                }
+            }
+            if ($root_fallback) {
+                return $root_fallback($request, $route, $e);
+            }
+
+            throw $e;
         }
     }
     
@@ -385,9 +370,24 @@ class Router
             }
         }
 
-        if (static::$default_route !== null && static::$default_route->match($request)) {
-            return static::$default_route;
+        if (static::$default_route) {
+            $default = null;
+            foreach (static::$default_route as $prefix => $route) {
+                if ($prefix === '' && $route->match($request)) {
+                    $default = $route;
+                }
+                if (Strings::startsWith($request_uri, "{$prefix}/") && $route->match($request)) {
+                    return $route;
+                }
+            }
+            if ($default) {
+                return $default;
+            }
         }
+
+        // if (static::$default_route !== null && static::$default_route->match($request)) {
+        //     return static::$default_route;
+        // }
 
         throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
     }
@@ -415,5 +415,95 @@ class Router
     public static function current() : ?Route
     {
         return static::$current;
+    }
+
+    // ====================================================
+    // Router instance for Routing Rules Build
+    // ====================================================
+
+    /**
+     * The surface for current configuring routing rules.
+     *
+     * @var string
+     */
+    protected $surface = null;
+
+    /**
+     * Skip routing rules setting.
+     *
+     * @var boolean
+     */
+    protected $skip = false;
+
+    /**
+     * The prefix path for this rules.
+     *
+     * @var string
+     */
+    public $prefix = '';
+    
+    /**
+     * Create a routing rules builder for Router.
+     */
+    protected function __construct(string $surface)
+    {
+        $this->surface = $surface;
+        $this->skip    = $surface !== App::getSurface();
+    }
+
+    /**
+     * Set new routing rules for given surface.
+     *
+     * @param string $surface
+     * @return void
+     */
+    public static function rules(string $surface) : self
+    {
+        return new static($surface);
+    }
+    
+    /**
+     * Set the prefix path for this rules.
+     *
+     * @param string $prefix
+     * @return self
+     */
+    public function prefix(string $prefix) : self
+    {
+        $this->prefix = Files::normalizePath($prefix);
+        return $this;
+    }
+
+    /**
+     * Set ruting rules by given callback.
+     *
+     * @param callable $callback function(){ ... }
+     * @return self
+     */
+    public function routing(callable $callback) : self
+    {
+        if ($this->skip) {
+            return $this;
+        }
+        static::$rules = $this;
+        $callback();
+        static::$rules = null;
+        return $this;
+    }
+
+    /**
+     * Set fallback action.
+     * The registered action is called when an exception occurs.
+     * Normally, it is assumed to be used in log output or error page display.
+     *
+     * @param callabel $action function(Request $request, ?Route $route, \Throwable $e) { ... }
+     * @return void
+     */
+    public function fallback(callable $action)
+    {
+        if ($this->skip) {
+            return $this;
+        }
+        static::$fallback[$this->prefix] = $action;
     }
 }

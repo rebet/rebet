@@ -6,7 +6,7 @@ use Rebet\Http\Request;
 use Rebet\Inflection\Inflector;
 
 /**
- * ControllerRoute class
+ * Controller Route Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -15,11 +15,6 @@ use Rebet\Inflection\Inflector;
  */
 class ControllerRoute extends ConventionalRoute
 {
-    // public static function defaultConfig()
-    // {
-    //     return parent::defaultConfig();
-    // }
-
     /**
      * ルーティング対象URI
      *
@@ -82,7 +77,7 @@ class ControllerRoute extends ConventionalRoute
      */
     protected function analyze(Request $request) : ?array
     {
-        $request_uri = $request->getRequestUri();
+        $request_uri = Strings::ltrim($request->getRequestUri(), $this->prefix);
         $uri         = rtrim($this->uri, '/');
         if ($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
             return null;

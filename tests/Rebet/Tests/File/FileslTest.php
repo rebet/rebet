@@ -43,8 +43,11 @@ class FilesTest extends RebetTestCase
     {
         $this->assertSame('var/www/app', Files::normalizePath('var/www/app'));
         $this->assertSame('/var/www/app', Files::normalizePath('/var/www/app'));
+        $this->assertSame('/var/www/app', Files::normalizePath('/var/www/app/'));
         $this->assertSame('c:/var/www/app', Files::normalizePath('c:\\var\\www\\app'));
+        $this->assertSame('c:/var/www/app', Files::normalizePath('c:\\var\\www\\app\\'));
         $this->assertSame('vfs://var/www/app', Files::normalizePath('vfs://var/www/app'));
+        $this->assertSame('vfs://var/www/app', Files::normalizePath('vfs://var/www/app/'));
 
         $this->assertSame('var/www/app', Files::normalizePath('./var/www/app'));
         $this->assertSame('../var/www/app', Files::normalizePath('../var/www/app'));

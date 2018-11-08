@@ -107,7 +107,7 @@ abstract class DeclarativeRoute extends Route
      */
     protected function getMatchingRegex() : string
     {
-        $regex = $this->uri;
+        $regex = $this->prefix.$this->uri;
         $regex = preg_replace('/(\/{[^{]+?\?})/', '(?:\1)?/?', $regex);
         $regex = str_replace('?}', '}', $regex);
         $regex = str_replace('{', '(?P<', $regex);

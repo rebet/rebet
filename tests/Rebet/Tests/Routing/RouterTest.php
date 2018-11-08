@@ -7,6 +7,7 @@ use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
+use Rebet\Http\BasicResponse;
 use Rebet\Http\Request;
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Method;
@@ -59,7 +60,7 @@ class RouterTest extends RebetTestCase
         );
 
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::get('/', function () {
                 return 'Content: /';
             });
@@ -164,10 +165,6 @@ class RouterTest extends RebetTestCase
             Router::controller('/controller/namespace/different', DifferentNamespaceController::class);
             Router::controller('/controller/accessble', 'RouterTestController')->accessible(true);
             Router::controller('/controller/where', 'RouterTestController')->where('id', '/^[a-z]*$/');
-
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
     }
     
@@ -179,18 +176,6 @@ class RouterTest extends RebetTestCase
     {
         Router::match('GET', '/get', function () {
             return 'Content: /get';
-        });
-        $this->fail('Never execute.');
-    }
-    
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Routing fallback rules are defined without Router::rules(). You should wrap rules by Router::rules().
-     */
-    public function test_invalidRuleDefine_fallback()
-    {
-        Router::fallback(function ($request, $route, $e) {
-            throw $e;
         });
         $this->fail('Never execute.');
     }
@@ -725,11 +710,8 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRoute()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
 
         $response = Router::handle(Request::create('/router-test/public-call'));
@@ -778,11 +760,8 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRouteWhere()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]+$/');
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
 
         $response = Router::handle(Request::create('/top/with-param/abc'));
@@ -805,11 +784,8 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRouteWhereRejectTop()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
 
         $response = Router::handle(Request::create('/top/with-param/ABC'));
@@ -823,11 +799,8 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
 
         $response = Router::handle(Request::create('/router-test/with-param/ABC'));
@@ -837,18 +810,15 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRouteAccessible()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->accessible(true);
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
-            
-            $response = Router::handle(Request::create('/router-test/private-call'));
-            $this->assertSame('Controller: privateCall', $response->getContent());
-
-            $response = Router::handle(Request::create('/router-test/protected-call'));
-            $this->assertSame('Controller: protectedCall', $response->getContent());
         });
+        
+        $response = Router::handle(Request::create('/router-test/private-call'));
+        $this->assertSame('Controller: privateCall', $response->getContent());
+
+        $response = Router::handle(Request::create('/router-test/protected-call'));
+        $this->assertSame('Controller: protectedCall', $response->getContent());
     }
 
     /**
@@ -858,11 +828,8 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRouteAliasOnly()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
 
         $response = Router::handle(Request::create('/router-test/annotation-alias-only'));
@@ -872,7 +839,7 @@ class RouterTest extends RebetTestCase
     public function test_routing_defaultConventionalRouteAlias()
     {
         Router::clear();
-        Router::rules('web', function () {
+        Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->aliases([
                 '/alias'       => '/router-test/annotation-alias-only',
                 '/param'       => '/router-test/with-param',
@@ -880,9 +847,6 @@ class RouterTest extends RebetTestCase
                 '/annotation/' => '/router-test/annotation-',
                 '/foo/bar'     => '/top',
             ]);
-            Router::fallback(function ($request, $route, $e) {
-                throw $e;
-            });
         });
 
         $response = Router::handle(Request::create('/alias'));
@@ -912,6 +876,49 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/annotation/class-where/123'));
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
         $this->assertSame('/annotation/', Router::current()->getAliasName());
+    }
+
+    public function test_routing_prefix()
+    {
+        Router::clear();
+        Router::rules('web')->prefix('/prefix')->routing(function () {
+            Router::get('/get', function () { return 'Content: /prefix/get'; });
+            Router::get('/method/public-call', 'RouterTestController@publicCall');
+            Router::controller('/controller/namespace/short', 'RouterTestController');
+            Router::default(ConventionalRoute::class);
+        })->fallback(function (Request $request, ?Route $route, \Throwable $e) {
+            return new BasicResponse('fallback prefix');
+        });
+
+        Router::rules('web')->routing(function () {
+            Router::get('/get', function () { return 'Content: /get'; });
+        })->fallback(function (Request $request, ?Route $route, \Throwable $e) {
+            return new BasicResponse('fallback');
+        });
+
+        $response = Router::handle(Request::create('/get-none'));
+        $this->assertSame('fallback', $response->getContent());
+        $response = Router::handle(Request::create('/get'));
+        $this->assertSame('Content: /get', $response->getContent());
+        $response = Router::handle(Request::create('/prefix/get-non'));
+        $this->assertSame('fallback prefix', $response->getContent());
+        $response = Router::handle(Request::create('/prefix/get'));
+        $this->assertSame('Content: /prefix/get', $response->getContent());
+
+        $response = Router::handle(Request::create('/prefix/method/public-call-non'));
+        $this->assertSame('fallback prefix', $response->getContent());
+        $response = Router::handle(Request::create('/prefix/method/public-call'));
+        $this->assertSame('Controller: publicCall', $response->getContent());
+
+        $response = Router::handle(Request::create('/prefix/controller/namespace/short/public-call-non'));
+        $this->assertSame('fallback prefix', $response->getContent());
+        $response = Router::handle(Request::create('/prefix/controller/namespace/short/public-call'));
+        $this->assertSame('Controller: publicCall', $response->getContent());
+
+        $response = Router::handle(Request::create('/prefix/router-test/public-call-non'));
+        $this->assertSame('fallback prefix', $response->getContent());
+        $response = Router::handle(Request::create('/prefix/router-test/public-call'));
+        $this->assertSame('Controller: publicCall', $response->getContent());
     }
 }
 
