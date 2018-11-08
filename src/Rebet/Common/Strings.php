@@ -243,4 +243,22 @@ class Strings
         }
         return strpos($haystack, $search) !== false;
     }
+
+    /**
+     * Cut the string and append to ellipsis that become a given length.
+     *
+     * @param string|null $string
+     * @param integer $length
+     * @param string $ellipsis (default: '')
+     * @return string|null
+     */
+    public static function cut(?string $string, int $length, string $ellipsis = '') : string
+    {
+        $max = $length - mb_strlen($ellipsis);
+        if ($string === null || $max < 1) {
+            return '';
+        }
+        $cut = mb_substr($string, 0, $max);
+        return $string !== $cut ? "{$cut}{$ellipsis}" : $cut ;
+    }
 }
