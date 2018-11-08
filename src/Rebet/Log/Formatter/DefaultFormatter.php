@@ -65,28 +65,28 @@ class DefaultFormatter implements LogFormatter
             );
         }
         
-        if ($log->error) {
-            if ($log->error instanceof \Throwable) {
-                // $body .= Strings::indent(
-                //     "\n*** STACK TRACE ***".
-                //     "\n{$log->error}",
-                //     1,
-                //     "** " //"{$prefix}** "
-                // );
-            } else {
-                $trace = '';
-                if ($log->level->higherEqual(LogLevel::ERROR())) {
-                    $trace = "\n".self::traceToString(debug_backtrace(), true);
-                }
-                $body .= Strings::indent(
-                    "\n*** STACK TRACE ***".
-                    "\n{$log->error['message']} <{$log->error['type']}> ({$log->error['file']}:{$log->error['line']})".
-                    $trace,
-                    1,
-                    "** " //"{$prefix}** "
-               );
-            }
-        }
+        // if ($log->error) {
+        //     if ($log->error instanceof \Throwable) {
+        //         $body .= Strings::indent(
+        //             "\n*** STACK TRACE ***".
+        //             "\n{$log->error}",
+        //             1,
+        //             "** " //"{$prefix}** "
+        //         );
+        //     } else {
+        //         $trace = '';
+        //         if ($log->level->higherEqual(LogLevel::ERROR())) {
+        //             $trace = "\n".self::traceToString(debug_backtrace(), true);
+        //         }
+        //         $body .= Strings::indent(
+        //             "\n*** STACK TRACE ***".
+        //             "\n{$log->error['message']} <{$log->error['type']}> ({$log->error['file']}:{$log->error['line']})".
+        //             $trace,
+        //             1,
+        //             "** " //"{$prefix}** "
+        //        );
+        //     }
+        // }
         
         return $body;
     }
