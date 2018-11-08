@@ -60,7 +60,8 @@ class Resource
                     if (!\file_exists($path)) {
                         return null;
                     }
-                    return require $path;
+                    $resource = require $path;
+                    return is_array($resource) ? $resource : [] ;
                 },
                 'json' => function (string $path, array $option) {
                     if (!\file_exists($path)) {
