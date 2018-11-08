@@ -43,7 +43,7 @@ class RouterTest extends RebetTestCase
                 'engine' => Blade::class,
             ],
             Blade::class => [
-                'view_path'  => 'vfs://root/view',
+                'view_path'  => App::path('/resources/views/blade'),
                 'cache_path' => 'vfs://root/cache',
             ],
         ]);
@@ -51,9 +51,6 @@ class RouterTest extends RebetTestCase
         $this->root = vfsStream::setup();
         vfsStream::create(
             [
-                'view' => [
-                    'welcome.blade.php' => 'Hello, {{ $name }}.',
-                ],
                 'cache' => [],
             ],
             $this->root
