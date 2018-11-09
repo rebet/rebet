@@ -5,6 +5,7 @@ use Rebet\Common\Strings;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
+use Rebet\Validation\Valid;
 
 class UserValidation extends Rule
 {
@@ -16,13 +17,13 @@ class UserValidation extends Rule
             'user_id' => [
                 'label' => '会員ID',
                 'rule'  => [
-                    ['RUD', Valid::REQUIRED.'!']
+                    ['RUD', Valid::REQUIRED]
                 ]
             ],
             'name' => [
                 'label' => '氏名',
                 'rule'  => [
-                    ['CU', Valid::REQUIRED.'!'],
+                    ['CU', Valid::REQUIRED],
                     ['CU', Valid::MAX_LENGTH, 20],
                     ['CU', Valid::DEPENDENCE_CHAR]
                 ]
@@ -30,9 +31,9 @@ class UserValidation extends Rule
             'mail_address' => [
                 'label' => 'メールアドレス',
                 'rule'  => [
-                    ['CU', Valid::REQUIRED.'!'],
-                    ['CU', Valid::MAIL_ADDRESS],
-                    ['CU', Valid::IF_STIL_NO_ERROR, 'then' => [
+                    ['CU', Valid::REQUIRED],
+                    ['CU', Valid::EMAIL],
+                    ['CU', Valid::IF_NOT_ERROR, 'then' => [
                         ['CU', 'MailAddressExists'] // カスタム Validation の実行
                     ]],
                 ]
@@ -40,19 +41,17 @@ class UserValidation extends Rule
             'password' => [
                 'label' => 'パスワード',
                 'rule'  => [
-                    ['C' , Valid::REQUIRED.'!'],
+                    ['C' , Valid::REQUIRED],
                     ['CU', Valid::MIN_LENGTH, 8]
                 ],
             ],
             'password_confirm' => [
                 'label' => 'パスワード(確認)',
                 'rule'  => [
-                    ['CU', Valid::IF, function ($context) {
-                        return !Auth::isAdmin();
-                    }, 'then' => [
-                            ['C' , Valid::REQUIRED.'!'],
-                            ['CU', Valid::SAME_AS_INPUTTED, 'password']
-                        ]],
+                    ['CU', Valid::SATISFY, function (Context $c) { return !Auth::isAdmin(); }, 'then' => [
+                        ['C' , Valid::REQUIRED],
+                        ['CU', Valid::SAME_AS, ':password']
+                    ]],
                 ],
             ],
             'avatar' => [
@@ -65,21 +64,19 @@ class UserValidation extends Rule
             'gender' => [
                 'label' => '性別',
                 'rule'  => [
-                    ['C', Valid::REQUIRED.'!'],
+                    ['C', Valid::REQUIRED],
                     ['C', Valid::CONTAINS, Gender::values()]
                 ],
                 'convert' => Gender::class
             ],
             'birthday' => [
                 'label'  => '生年月日',
-                'before' => function ($value) {
-                    return mb_convert_kana($value, 'a');
-                },
-                'rule' => [
-                    ['C', Valid::REQUIRED.'!'],
-                    ['C', Valid::DATETIME.'!'],
-                    ['C', Valid::AGE_GREATER_EQUAL, 18],
-                    ['C', Valid::AGE_LESS_EQUAL, 100]
+                'before' => function ($value) { return mb_convert_kana($value, 'a'); },
+                'rule'   => [
+                    ['C', Valid::REQUIRED],
+                    ['C', Valid::DATETIME],
+                    ['C', Valid::MIN_AGE, 18],
+                    ['C', Valid::MAX_AGE, 100]
                 ],
                 'convert' => DateTime::class
             ],
@@ -91,28 +88,28 @@ class UserValidation extends Rule
             'shipping_addresses' => [
                 'label' => '送付先',
                 'rule'  => [
-                    ['CU', Valid::REQUIRED.'!'],
-                    ['CU', Valid::MAX_SELECT_COUNT.'!', 5],
-                    ['CU', Valid::SUB_FORM_SERIAL_NO, 'shipping_no'],
+                    ['CU', Valid::REQUIRED],
+                    ['CU', Valid::MAX_COUNT.'!', 5],
+                    ['CU', Valid::SEQUENTIAL_NUMBER, 'shipping_no'],
                 ],
                 'nests' => [
                     'zip' => [
                         'label' => ':parent郵便番号',
                         'rule'  => [
-                            ['CU', Valid::REQUIRED.'!'],
+                            ['CU', Valid::REQUIRED],
                         ],
                     ],
                     'prefecture_id' => [
                         'label' => ':parent都道府県',
                         'rule'  => [
-                            ['CU', Valid::REQUIRED.'!'],
+                            ['CU', Valid::REQUIRED],
                             ['CU', Valid::CONTAINS, range(1, 47)],
                         ],
                     ],
                     'addess' => [
                         'label' => ':parent住所',
                         'rule'  => [
-                            ['CU', Valid::REQUIRED.'!'],
+                            ['CU', Valid::REQUIRED],
                             ['CU', Valid::MAX_LENGTH, 127],
                             ['CU', Valid::DEPENDENCE_CHAR],
                         ],

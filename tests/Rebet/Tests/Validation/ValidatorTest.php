@@ -63,6 +63,12 @@ class ValidatorTest extends RebetTestCase
             // Valid::UNLESS
             [['target' => 1], ['C', Valid::UNLESS, 'target', 1, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
             [['target' => 2], ['C', Valid::UNLESS, 'target', 1, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
+            // Valid::IF_NO_ERROR
+            [['target' => 1], ['C', Valid::IF_NO_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
+            // [['target' => 2], ['C', Valid::IF_NO_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
+            // Valid::IF_AN_ERROR
+            // [['target' => 1], ['C', Valid::IF_AN_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
+            [['target' => 2], ['C', Valid::IF_AN_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
             // Valid::SATISFY
             [['target' => 1], ['C', Valid::SATISFY, function (Context $c) { return $c->value == 1 ? true : $c->appendError("@NG");}], true ],
             [['target' => 2], ['C', Valid::SATISFY, function (Context $c) { return $c->value == 1 ? true : $c->appendError("@NG");}], false],

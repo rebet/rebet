@@ -66,7 +66,7 @@ class Request extends SymfonyRequest
      * Undocumented function
      *
      * @param string $crud
-     * @param array|Rule $rules
+     * @param array|string|Rule $rules
      * @param string $fallback_url
      * @return ValidData
      */

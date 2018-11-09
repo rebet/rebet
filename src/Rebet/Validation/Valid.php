@@ -43,6 +43,30 @@ class Valid
     const UNLESS = 'Unless:';
 
     /**
+     * If No Error Condition.
+     * It checks there is no error in current (or given) field.
+     * This validation does not output an error message even test is failed.
+     * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
+     *
+     * ex)
+     *   - ['CU', Valid::IF_NO_ERROR] (field: null)
+     *   - ['CU', Valid::IF_NO_ERROR, ':field']
+     */
+    const IF_NO_ERROR = 'IfNoError:';
+
+    /**
+     * If An Error Condition.
+     * It checks there is an error in current (or given) field.
+     * This validation does not output an error message even test is failed.
+     * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
+     *
+     * ex)
+     *   - ['CU', Valid::IF_AN_ERROR] (field: null)
+     *   - ['CU', Valid::IF_AN_ERROR, ':field']
+     */
+    const IF_AN_ERROR = 'IfAnError:';
+
+    /**
      * Satisfy Validation/Condition.
      * It checks the value will satisfy given test callback.
      * This validation does not output an error message by own.

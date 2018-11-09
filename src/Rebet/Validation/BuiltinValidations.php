@@ -186,6 +186,63 @@ class BuiltinValidations extends Validations
     }
 
     // ====================================================
+    // Built-in Condition Methods
+    // ====================================================
+
+    /**
+     * If condition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param mixed $value value or array :field_name
+     * @return boolean
+     */
+    public function validationIf(Context $c, string $other, $value) : bool
+    {
+        [$value, ] = $c->resolve($value);
+        return in_array($c->value($other), is_null($value) ? [null] : (array)$value);
+    }
+
+    /**
+     * Unless condition
+     *
+     * @param Context $c
+     * @param string $other
+     * @param mixed $value value or array or @field_name
+     * @return boolean
+     */
+    public function validationUnless(Context $c, string $other, $value) : bool
+    {
+        [$value, ] = $c->resolve($value);
+        return !in_array($c->value($other), is_null($value) ? [null] : (array)$value);
+    }
+
+    /**
+     * If No Error condition
+     *
+     * @param Context $c
+     * @param string|null $field
+     * @return boolean
+     */
+    public function validationIfNoError(Context $c, ?string $field = null) : bool
+    {
+        return !$c->hasError($field);
+    }
+
+    /**
+     * If An Error condition
+     *
+     * @param Context $c
+     * @param string|null $field
+     * @return boolean
+     */
+    public function validationIfAnError(Context $c, ?string $field = null) : bool
+    {
+        return $c->hasError($field);
+    }
+
+
+    // ====================================================
     // Built-in Validation Methods
     // ====================================================
 
@@ -1357,37 +1414,5 @@ class BuiltinValidations extends Validations
             'attribute' => $correlations->pluck('label')->all(),
             'duplicate' => $correlations->filter(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->all(),
         ]) ;
-    }
-
-    // ====================================================
-    // Built-in Condition Methods
-    // ====================================================
-
-    /**
-     * If condition
-     *
-     * @param Context $c
-     * @param string $other
-     * @param mixed $value value or array :field_name
-     * @return boolean
-     */
-    public function validationIf(Context $c, string $other, $value) : bool
-    {
-        [$value, ] = $c->resolve($value);
-        return in_array($c->value($other), is_null($value) ? [null] : (array)$value);
-    }
-
-    /**
-     * Unless condition
-     *
-     * @param Context $c
-     * @param string $other
-     * @param mixed $value value or array or @field_name
-     * @return boolean
-     */
-    public function validationUnless(Context $c, string $other, $value) : bool
-    {
-        [$value, ] = $c->resolve($value);
-        return !in_array($c->value($other), is_null($value) ? [null] : (array)$value);
     }
 }
