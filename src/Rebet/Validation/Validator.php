@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Collection;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
@@ -72,21 +73,36 @@ class Validator
      * Validate the data by given crud type rules.
      *
      * @param string $crud
-     * @param array|Rule $rules
+     * @param array|string|Rule $rules
      * @return ValidData|null
      */
     public function validate(string $crud, $rules) : ?ValidData
     {
-        $rules            = is_string($rules) ? Reflector::instantiate($rules) : $rules ;
-        $spot_validations = null;
-        if ($rules instanceof Rule) {
-            $spot_validations = $rules;
-            $rules            = $rules->rules();
+        $rules = (array)$rules;
+        if (!Arrays::isSequential($rules)) {
+            $rules = [$rules];
         }
-        
-        $context    = new Context($crud, $this->data, $this->errors, $rules, $this->translator);
-        $valid_data = $this->_validate($context, $rules, $spot_validations);
-        return $context->hasError('*') ? null : $valid_data ;
+
+        $valid_data = new ValidData();
+        foreach ($rules as $rule) {
+            $rule = is_string($rule) ? Reflector::instantiate($rule) : $rule ;
+            $spot = null;
+            if ($rule instanceof Rule) {
+                $spot = $rule;
+                $rule = $rule->rules();
+            }
+
+            $errors       = [];
+            $context      = new Context($crud, $this->data, $errors, $rule, $this->translator);
+            $valid_data   = Arrays::override($valid_data, $this->_validate($context, $rule, $spot));
+            $this->errors = array_merge($this->errors, $errors);
+        }
+
+        foreach ($this->errors as &$messages) {
+            $messages = array_values(array_unique($messages));
+        }
+
+        return empty($this->errors) ? $valid_data : null ;
     }
 
     /**

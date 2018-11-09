@@ -88,9 +88,9 @@ class Arrays
      * @param  array|null $array
      * @return bool
      */
-    public static function isSequential(?array $array) : bool
+    public static function isSequential($array) : bool
     {
-        if ($array === null) {
+        if (!static::accessible($array)) {
             return false;
         }
         $i = 0;
@@ -217,12 +217,12 @@ class Arrays
      */
     public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND)
     {
-        if (!is_array($base) || !is_array($diff) || $option === OverrideOption::REPLACE) {
+        if (!static::accessible($base) || !static::accessible($diff) || $option === OverrideOption::REPLACE) {
             return $diff;
         }
 
-        $is_base_sequential = self::isSequential($base);
-        $is_diff_sequential = self::isSequential($diff);
+        $is_base_sequential = static::isSequential($base);
+        $is_diff_sequential = static::isSequential($diff);
         if ($is_base_sequential && $is_diff_sequential) {
             return static::arrayMerge($base, $diff, \is_string($option) ? $option : $default_array_override_option);
         }
@@ -247,18 +247,30 @@ class Arrays
     /**
      * Merge the sequential number array according to the option contents.
      *
-     * @param array $base
-     * @param array $diff
+     * @param array|\ArrayAccess $base
+     * @param array|\ArrayAccess $diff
      * @param string $option
-     * @return array
+     * @return mixed
      */
-    private static function arrayMerge(array $base, array $diff, string $option) : array
+    private static function arrayMerge($base, $diff, string $option)
     {
         switch ($option) {
             case OverrideOption::PREPEND:
-                return \array_merge($diff, $base);
+                // Keep the class of given '$base'.
+                $merged = is_array($base) ? [] : clone $base ;
+                $index  = 0;
+                foreach ($diff as $value) {
+                    $merged[$index++] = $value;
+                }
+                foreach ($base as $value) {
+                    $merged[$index++] = $value;
+                }
+                return $merged;
             case OverrideOption::APEND:
-                return \array_merge($base, $diff);
+                foreach ($diff as $value) {
+                    $base[] = $value;
+                }
+                return $base;
             case OverrideOption::REPLACE:
                 return $diff;
         }

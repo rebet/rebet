@@ -22,7 +22,7 @@ class ValidatorTest extends RebetTestCase
 
         Config::application([
             BuiltinValidations::class => [
-                'customs'   => [
+                'customs' => [
                     'Ok' => function (Context $c) {
                         return true;
                     },

@@ -162,6 +162,35 @@ class ArraysTest extends RebetTestCase
                 ]
             )
         );
+
+        $merged = Arrays::override(new \ArrayObject([1, 2]), [3]);
+        $this->assertFalse(is_array($merged));
+        $this->assertInstanceOf(\ArrayObject::class, $merged);
+        $this->assertEquals(new \ArrayObject([1, 2, 3]), $merged);
+
+        $merged = Arrays::override(new \ArrayObject([1, 2]), new \ArrayObject([3]));
+        $this->assertFalse(is_array($merged));
+        $this->assertInstanceOf(\ArrayObject::class, $merged);
+        $this->assertEquals(new \ArrayObject([1, 2, 3]), $merged);
+
+        $merged = Arrays::override([1, 2], new \ArrayObject([3]));
+        $this->assertTrue(is_array($merged));
+        $this->assertEquals([1, 2, 3], $merged);
+
+
+        $merged = Arrays::override(new \ArrayObject([1, 2]), [3], [], OverrideOption::PREPEND);
+        $this->assertFalse(is_array($merged));
+        $this->assertInstanceOf(\ArrayObject::class, $merged);
+        $this->assertEquals(new \ArrayObject([3, 1, 2]), $merged);
+
+        $merged = Arrays::override(new \ArrayObject([1, 2]), new \ArrayObject([3]), [], OverrideOption::PREPEND);
+        $this->assertFalse(is_array($merged));
+        $this->assertInstanceOf(\ArrayObject::class, $merged);
+        $this->assertEquals(new \ArrayObject([3, 1, 2]), $merged);
+
+        $merged = Arrays::override([1, 2], new \ArrayObject([3]), [], OverrideOption::PREPEND);
+        $this->assertTrue(is_array($merged));
+        $this->assertEquals([3, 1, 2], $merged);
     }
 
     public function test_override_option()
