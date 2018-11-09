@@ -63,10 +63,10 @@ class Request extends SymfonyRequest
     }
 
     /**
-     * Undocumented function
+     * Validate input data by given rules.
      *
      * @param string $crud
-     * @param array|string|Rule $rules
+     * @param string|Rule|array $rules
      * @param string $fallback_url
      * @return ValidData
      */

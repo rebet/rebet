@@ -26,4 +26,17 @@ abstract class Controller
      * @var Route
      */
     public $route = null;
+    
+    /**
+     * Validate input data by given rules.
+     *
+     * @param string $crud
+     * @param string|Rule|array $rules
+     * @param string $fallback_url
+     * @return ValidData
+     */
+    protected function validate(string $crud, $rules, string $fallback_url) : ValidData
+    {
+        return $this->request->validate($crud, $rules, $fallback_url);
+    }
 }
