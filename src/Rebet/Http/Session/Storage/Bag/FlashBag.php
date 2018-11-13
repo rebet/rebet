@@ -43,8 +43,8 @@ class FlashBag implements SessionBagInterface
      */
     public function __construct(string $name, ?string $storage_key = null)
     {
-        parent::__construct($storage_key ?? "_rebet_{$name}");
-        $this->name = $name;
+        $this->name        = $name;
+        $this->storage_key = $storage_key ?? "_rebet_{$name}";
     }
 
     /**
