@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Http\Session\Middleware;
+namespace Rebet\Http\Middleware;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
