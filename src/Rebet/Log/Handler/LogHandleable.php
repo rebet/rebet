@@ -4,7 +4,7 @@ namespace Rebet\Log\Handler;
 use Rebet\Log\LogContext;
 
 /**
- * ログハンドラ トレイト
+ * Log Handleable Trait
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -14,23 +14,25 @@ use Rebet\Log\LogContext;
 trait LogHandleable
 {
     /**
-     * ログを処理します。
+     * Handle the log.
      *
-     * @param LogContext $log ログコンテキスト
-     * @return string|array|null 整形済みログデータ or null（ログ対象外時）
+     * @param LogContext $log
+     * @return string|array|null Formatted log data or null (when not logging)
      */
     abstract public function handle(LogContext $log) ;
 
     /**
-     * ログハンドラをシャットダウンします
+     * Terminate the log handler
+     *
+     * @return void
      */
     abstract public function terminate() : void ;
 
     /**
-     * ログハンドラを Pipeline で処理できるようにします。
+     * Allow log handlers to be processed by Pipeline.
      *
-     * @param LogContext $log ログコンテキスト
-     * @return string|array|null 整形済みログデータ or null（ログ対象外時）
+     * @param LogContext $log
+     * @return string|array|null Formatted log data or null (when not logging)
      */
     public function __invoke($log)
     {
