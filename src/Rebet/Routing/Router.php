@@ -36,7 +36,7 @@ class Router
     }
 
     /**
-     * ルート探査木
+     * Route search tree
      *
      * @var array
      */
@@ -50,14 +50,14 @@ class Router
     protected static $default_route = [];
 
     /**
-     * フォールバックアクション
+     * Fallback action
      *
      * @var \Closure
      */
     protected static $fallback = null;
 
     /**
-     * 現在のルート
+     * Current route
      *
      * @var Route
      */
@@ -71,7 +71,8 @@ class Router
     protected static $rules = null;
 
     /**
-     * ルートミドルウェアパイプライン
+     * Route middleware pipeline
+     *
      * @var Rebet\Pipeline\Pipeline
      */
     protected static $pipeline = null;
@@ -266,8 +267,8 @@ class Router
     }
     
     /**
-     * ルートをルーターに追加します。
-     * 本メソッドはルート解決高速化のための不完全なルート探査木を構築します。
+     * Add given route to the router.
+     * This method constructs an incomplete route search tree for route resolution speeding up.
      *
      * @param Route $route
      * @return void
@@ -284,7 +285,7 @@ class Router
     }
     
     /**
-     * ルート探査木を掘り進めながら ルートオブジェクトを格納します。
+     * Stores the root object while digging the route search tree.
      *
      * @param array $tree
      * @param array $nests
@@ -313,9 +314,9 @@ class Router
     }
 
     /**
-     * デフォルトルートを設定します。
+     * Set the default route.
      *
-     * @param mixed $route Routeオブジェクト 又は それを生成できる instantiate 設定
+     * @param mixed $route Route object or instantiatable setting that can generate route
      * @return void
      */
     public static function default($route) : Route
@@ -333,7 +334,7 @@ class Router
     }
 
     /**
-     * 対象のリクエストをルーティングします。
+     * Route the given request.
      *
      * @param Request $request
      * @return Response
@@ -373,7 +374,7 @@ class Router
     }
     
     /**
-     * リクエストにマッチするルートを検索します。
+     * Search route matching given request.
      *
      * @param Request $request
      * @return Route
@@ -417,15 +418,11 @@ class Router
             }
         }
 
-        // if (static::$default_route !== null && static::$default_route->match($request)) {
-        //     return static::$default_route;
-        // }
-
         throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
     }
     
     /**
-     * ルーターをシャットダウンします。
+     * Terminate the route and middlewares.
      *
      * @param Request $request
      * @param Response $response
@@ -440,7 +437,7 @@ class Router
     }
 
     /**
-     * 現在ルーティングされているルートを取得します。
+     * Get the route that is currently being routed.
      *
      * @return Route|null
      */
