@@ -2,8 +2,10 @@
 namespace Rebet\Http;
 
 use Rebet\Common\Reflector;
+use Rebet\Http\Session\Session;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
@@ -31,13 +33,8 @@ class Request extends SymfonyRequest
     public $route = null;
 
     /**
-     * Undocumented variable
+     * {@inheritdoc}
      *
-     * @var array
-     */
-    protected $converted_files = null;
-
-    /**
      * @param array                $query      The GET parameters
      * @param array                $request    The POST parameters
      * @param array                $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
@@ -116,10 +113,32 @@ class Request extends SymfonyRequest
      */
     public function files(?string $key = null, $default = null)
     {
-        $files = $this->converted_files ?? $this->converted_files = $this->convertUploadedFiles($this->files->all());
-        return Reflector::get($files, $key, $default);
+        return Reflector::get($this->files->all(), $key, $default);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
+    {
+        parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
+        if (!empty($files)) {
+            $this->files = new FileBag($this->convertUploadedFiles($this->files->all()));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null)
+    {
+        $duplicate = parent::duplicate($query, $request, $attributes, $cookies, $files, $server);
+        if ($files !== null) {
+            $duplicate->files = new FileBag($this->convertUploadedFiles($duplicate->files->all()));
+        }
+        return $duplicate;
+    }
+    
     /**
      * Convert the given array of Symfony UploadedFiles to Rebet UploadedFiles.
      *
@@ -131,5 +150,17 @@ class Request extends SymfonyRequest
         return array_map(function ($file) {
             return is_array($file) ? $this->convertUploadedFiles($file) : UploadedFile::valueOf($file);
         }, $files);
+    }
+
+    /**
+     * Set the Rebet Session for the request.
+     *
+     * @param Session $session
+     * @return self
+     */
+    public function setRebetSession(Session $session) : self
+    {
+        $this->session = $session;
+        return $this;
     }
 }

@@ -253,6 +253,8 @@ class Router
             throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         $route->prefix = static::$rules->prefix;
+        $middlewares   = static::$rules->middlewares;
+        $route->middlewares(...$middlewares);
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
     }
     
@@ -298,6 +300,8 @@ class Router
         }
         $route         = Reflector::instantiate($route);
         $route->prefix = static::$rules->prefix;
+        $middlewares   = static::$rules->middlewares;
+        $route->middlewares(...$middlewares);
 
         static::$default_route[$route->prefix] = $route;
         return $route;
@@ -315,7 +319,10 @@ class Router
         try {
             $route            = static::findRoute($request);
             static::$current  = $route;
-            static::$pipeline = (new Pipeline())->through(static::config('middlewares', false, []))->then($route);
+            static::$pipeline = (new Pipeline())->through(array_merge(
+                static::config('middlewares.'.App::getSurface(), false, []),
+                $route->middlewares()
+            ))->then($route);
             return static::$pipeline->send($request);
         } catch (\Throwable $e) {
             if (empty(static::$fallback)) {
@@ -441,6 +448,13 @@ class Router
      * @var string
      */
     public $prefix = '';
+
+    /**
+     * The middlewares for this rules.
+     *
+     * @var array
+     */
+    protected $middlewares = [];
     
     /**
      * Create a routing rules builder for Router.
@@ -471,6 +485,18 @@ class Router
     public function prefix(string $prefix) : self
     {
         $this->prefix = Files::normalizePath($prefix);
+        return $this;
+    }
+
+    /**
+     * Set the middlewares for this rules.
+     *
+     * @param string $prefix
+     * @return self
+     */
+    public function middlewares(...$middlewares) : self
+    {
+        $this->middlewares = $middlewares;
         return $this;
     }
 

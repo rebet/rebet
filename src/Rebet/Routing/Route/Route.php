@@ -41,6 +41,13 @@ abstract class Route
     public $prefix = '';
 
     /**
+     * Middlewares for this route.
+     *
+     * @var array
+     */
+    protected $middlewares = [];
+
+    /**
      * ルーティングパラメータの正規表現チェックを設定します。
      *
      * @param array|string $name or [$name => $regex, ...]
@@ -186,5 +193,20 @@ abstract class Route
     public function annotation(string $annotation)
     {
         return $this->route_action ? $this->route_action->annotation($annotation) : null ;
+    }
+
+    /**
+     *  Get or set the middlewares attached to the route.
+     *
+     * @param mixed ...$middlewares
+     * @return self|array
+     */
+    public function middlewares(...$middlewares)
+    {
+        if (empty($middlewares)) {
+            return $this->middlewares;
+        }
+        $this->middlewares = array_merge($this->middlewares, $middlewares);
+        return $this;
     }
 }

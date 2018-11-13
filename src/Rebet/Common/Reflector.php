@@ -260,6 +260,69 @@ class Reflector
     }
 
     /**
+     * Remove a key/property from an array or object (only public properties).
+     * When applying this method to an object property, the end property of dot notation must be public.
+     *
+     * ex)
+     * Reflector::remove($user, 'name');
+     * Reflector::remove($user, 'bank.name');
+     * Reflector::remove($user, 'shipping_address.0');
+     * Reflector::remove($_REQUEST, 'opt_in');
+     *
+     * @param  array|object $object
+     * @param  int|string $key You can use dot notation
+     * @param  bool $accessible (default: false) ... Valid only for objects
+     * @return mixed removed value
+     * @throws \OutOfBoundsException
+     */
+    public static function remove(&$object, $key, bool $accessible = false)
+    {
+        while ($object instanceof DotAccessDelegator) {
+            $object = $object->get();
+        }
+        if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
+            $ret = $object[$key];
+            unset($object[$key]);
+            return static::resolveDotAccessDelegator($ret);
+        }
+        $current = Strings::latrim($key, '.');
+        if (Arrays::accessible($object)) {
+            if ($current != $key) {
+                if (!\array_key_exists($current, $object)) {
+                    throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
+                }
+                return static::remove($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
+            } else {
+                $ret = $object[$current];
+                unset($object[$current]);
+                return static::resolveDotAccessDelegator($ret);
+            }
+        }
+
+        if (!\property_exists($object, $current)) {
+            throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
+        }
+        if ($current != $key) {
+            $rp = new \ReflectionProperty($object, $current);
+            $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+            $target = $rp->getValue($object);
+            $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
+            $rp->setValue($object, $target);
+            return static::resolveDotAccessDelegator($ret);
+        } else {
+            $rp = new \ReflectionProperty($object, $current);
+            if ($rp->isPublic() || $rp->getModifiers() === 4096) {
+                $ret = $object->$current;
+                unset($object->$current);
+                return static::resolveDotAccessDelegator($ret);
+            } else {
+                throw new \OutOfBoundsException("Nested key '{$current}' can not access.");
+            }
+        }
+        return null;
+    }
+
+    /**
      * Converts the data type of the given object.
      * This method attempts type conversion by the following procedure.
      * If conversion is impossible, null is returned.

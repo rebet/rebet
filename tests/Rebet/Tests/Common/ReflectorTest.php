@@ -240,6 +240,56 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(Reflector::get($this->transparent, 'b'), 'B');
     }
 
+    public function test_remove()
+    {
+        $this->assertTrue(isset($this->array[0]));
+        $this->assertSame('a', Reflector::remove($this->array, 0));
+        $this->assertFalse(isset($this->array[0]));
+
+
+        $this->assertTrue(isset($this->map['name']));
+        $this->assertSame('John Smith', Reflector::remove($this->map, 'name'));
+        $this->assertFalse(isset($this->map['name']));
+
+        $this->assertTrue(isset($this->map['hobbies'][0]));
+        $this->assertSame('game', Reflector::remove($this->map, 'hobbies.0'));
+        $this->assertFalse(isset($this->map['hobbies'][0]));
+
+        $this->assertTrue(isset($this->map['hobbies']));
+        $this->assertSame([1 => 'outdoor'], Reflector::remove($this->map, 'hobbies'));
+        $this->assertFalse(isset($this->map['hobbies']));
+
+        $this->assertTrue(isset($this->map['partner']['name']));
+        $this->assertSame('Jane Smith', Reflector::remove($this->map, 'partner.name'));
+        $this->assertFalse(isset($this->map['partner']['name']));
+
+
+        $this->assertTrue(property_exists($this->object, 'name'));
+        $this->assertSame('John Smith', Reflector::remove($this->object, 'name'));
+        $this->assertFalse(property_exists($this->object, 'name'));
+
+        $this->assertTrue(isset($this->object->hobbies[0]));
+        $this->assertSame('game', Reflector::remove($this->object, 'hobbies.0'));
+        $this->assertFalse(isset($this->object->hobbies[0]));
+
+        $this->assertTrue(property_exists($this->object, 'hobbies'));
+        $this->assertSame([1 => 'outdoor'], Reflector::remove($this->object, 'hobbies'));
+        $this->assertFalse(property_exists($this->object, 'hobbies'));
+
+        $this->assertTrue(property_exists($this->object->partner, 'name'));
+        $this->assertSame('Jane Smith', Reflector::remove($this->object, 'partner.name'));
+        $this->assertFalse(property_exists($this->object->partner, 'name'));
+
+        $this->assertSame('ab', Reflector::remove($this->transparent, 'a.b'));
+        $this->assertSame(null, Reflector::get($this->transparent, 'a.b'));
+
+        $this->assertSame('ac', Reflector::remove($this->transparent, 'a.c'));
+        $this->assertSame(null, Reflector::get($this->transparent, 'a.c'));
+
+        $this->assertSame('b', Reflector::remove($this->transparent, 'b'));
+        $this->assertSame(null, Reflector::get($this->transparent, 'b'));
+    }
+
     public function test_set_undefindKeyArray()
     {
         Reflector::set($this->array, 'undefind_key', 'value');
