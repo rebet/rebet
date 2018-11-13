@@ -5,9 +5,9 @@ use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 
 /**
- * ファイル出力ログハンドラ クラス
+ * File Handler Class
  *
- * error_log() を使用した簡便なファイル出力ログを行います。
+ * Perform a simple file output log using error_log().
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -27,7 +27,7 @@ class FileHandler extends FormattableHandler
     }
 
     /**
-     * ログハンドラを構築します
+     * {@inheritDoc}
      */
     public function __construct(?LogFormatter $formatter = null)
     {
@@ -35,10 +35,7 @@ class FileHandler extends FormattableHandler
     }
 
     /**
-     * フォーマット済みのログデータを処理します。
-     *
-     * @param LogContext $log ログコンテキスト
-     * @param string|array $formatted_log 整形済みログ
+     * {@inheritDoc}
      */
     protected function report(LogContext $log, $formatted_log) : void
     {
@@ -51,7 +48,7 @@ class FileHandler extends FormattableHandler
     }
 
     /**
-     * シャットダウン処理を行います。
+     * {@inheritDoc}
      */
     public function terminate() : void
     {
