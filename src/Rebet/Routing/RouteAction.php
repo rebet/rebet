@@ -7,7 +7,7 @@ use Rebet\Http\Request;
 use Rebet\Routing\Route\Route;
 
 /**
- * Route action class
+ * Route Action Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -17,35 +17,35 @@ use Rebet\Routing\Route\Route;
 class RouteAction
 {
     /**
-     * ルートオブジェクト
+     * Route of this action
      *
      * @var Route
      */
     private $route = null;
     
     /**
-     * 実行対象オブジェクト
+     * Instance to be action executed
      *
      * @var mixed
      */
     private $instance = null;
     
     /**
-     * アクションリフレクター
+     * Action Reflector
      *
      * @var \ReflectionFunction|\ReflectionMethod
      */
     private $reflector = null;
 
     /**
-     * method annotation accessor
+     * Method annotation accessor
      *
      * @var AnnotatedMethod
      */
     private $annotated_method = null;
 
     /**
-     * ルートアクションオブジェクトを構築します
+     * Create a route action object
      *
      * @param Route $route
      * @param \ReflectionFunction|\ReflectionMethod $reflector
@@ -63,7 +63,7 @@ class RouteAction
     }
     
     /**
-     * アクションを実行します。
+     * Invoke this action
      *
      * @param Request $request
      * @return mixed
@@ -73,14 +73,18 @@ class RouteAction
         $vars = $request->attributes;
         $args = [];
         foreach ($this->reflector->getParameters() as $parameter) {
-            $name          = $parameter->name;
+            $name = $parameter->name;
+            $type = Reflector::getTypeHint($parameter);
+            if (Reflector::typeOf($request, $type)) {
+                $args[$name] = $request;
+                continue;
+            }
             $optional      = $parameter->isOptional();
             $default_value = $optional ? $parameter->getDefaultValue() : null ;
             $origin        = $vars->has($name) ? $vars->get($name) : $default_value ;
             if (!$optional && $origin === null) {
                 throw new RouteNotFoundException("{$this->route} not found. Routing parameter '{$name}' is requierd.");
             }
-            $type      = Reflector::getTypeHint($parameter);
             $converted = Reflector::convert($origin, $type);
             if ($origin !== null && $converted === null) {
                 throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
@@ -92,7 +96,7 @@ class RouteAction
     }
 
     /**
-     * リフレクターの種別が ReflectionFunction かチェックします。
+     * It checks the reflector is ReflectionFunction.
      *
      * @return boolean
      */
@@ -102,7 +106,7 @@ class RouteAction
     }
 
     /**
-     * リフレクターの種別が ReflectionMethod かチェックします。
+     * It checks the reflector is ReflectionMethod.
      *
      * @return boolean
      */
@@ -112,7 +116,7 @@ class RouteAction
     }
 
     /**
-     * このルートアクションのアノテーションアクセッサを取得します。
+     * Get method annotation accessor of this route action.
      *
      * @return AnnotatedMethod
      */
@@ -122,7 +126,7 @@ class RouteAction
     }
 
     /**
-     * このルートアクションに紐づいたアノテーションを取得します。
+     * Get given annotation of this route action.
      *
      * @param string $annotation
      * @return void
