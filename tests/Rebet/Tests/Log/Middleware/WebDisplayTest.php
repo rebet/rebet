@@ -6,10 +6,10 @@ use Rebet\DateTime\DateTime;
 
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
-use Rebet\Log\Middleware\WebDisplayMiddleware;
+use Rebet\Log\Middleware\WebDisplay;
 use Rebet\Tests\RebetTestCase;
 
-class WebDisplayMiddlewareTest extends RebetTestCase
+class WebDisplayTest extends RebetTestCase
 {
     private $context;
     private $middleware;
@@ -21,7 +21,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
 
         $this->context    = new LogContext(DateTime::now(), LogLevel::TRACE(), null);
-        $this->middleware = new WebDisplayMiddleware();
+        $this->middleware = new WebDisplay();
         $this->echoback   = function (LogContext $context) {
             return $context->message;
         };
@@ -29,7 +29,7 @@ class WebDisplayMiddlewareTest extends RebetTestCase
 
     public function test_construct()
     {
-        $this->assertInstanceOf(WebDisplayMiddleware::class, new WebDisplayMiddleware());
+        $this->assertInstanceOf(WebDisplay::class, new WebDisplay());
     }
 
     public function test_handle()

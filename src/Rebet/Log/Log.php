@@ -20,7 +20,7 @@ use Rebet\Pipeline\Pipeline;
  *
  * ミドルウェア（ライブラリデフォルト：無指定）
  * --------------------
- * @see \Rebet\Log\Middleware\WebDisplayMiddleware::class
+ * @see \Rebet\Log\Middleware\WebDisplay::class
  *
  * @todo 各種ハンドラ＆ミドルウェア追加
  *

@@ -48,7 +48,7 @@ class LogTest extends RebetTestCase
         Config::application([
             Log::class => [
                 'log_middlewares' => [
-                    \Rebet\Log\Middleware\WebDisplayMiddleware::class,
+                    \Rebet\Log\Middleware\WebDisplay::class,
                 ],
             ],
         ]);

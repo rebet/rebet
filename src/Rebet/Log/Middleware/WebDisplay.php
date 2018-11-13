@@ -6,34 +6,38 @@ use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 
 /**
- * 整形済みログをウェブ画面に追加表示（HTML出力）するミドルウェア
+ * Web Display Middleware Class
  *
- * 本ミドルウェアはレスポンスヘッダに text/html 以外の明示的な Content-Type 指定が
- * 存在しない応答に対して視覚化」されたログ情報を追加します。
- * 主にローカル環境での開発においてログ情報を画面から即座に確認できるようにすること
- * を目的としたミドルウェアとなります。
- * なお、本ミドルウェアが出力する HTML 文書は </html> 閉じタグの後ろに追記されるため、
- * 正しい DOM 構造にならないことに注意してください。
+ * This middleware to add formatted logs to the web screen (HTML output).
+ *
+ * This middleware adds log information visualized to the response
+ * whose response header does not have an explicit Content-Type designation other than text/html.
+ * It is middleware aiming at making it possible to immediately confirm the log information
+ * from the screen in development mainly in the local environment.
+ *
+ * Please be aware that the HTML document output by this middleware will be appended to the back of the </ html> close tag,
+ * so it will not be in the correct DOM structure.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class WebDisplayMiddleware
+class WebDisplay
 {
     /**
-     * ブラウザ画面ログ出力ストック用バッファ
+     * Browser screen log output buffer for stock
+     *
      * @var string
      */
     private $buffer = "";
     
     /**
-     * ログの事後処理をします。
+     * Handle log context.
      *
-     * @param LogContext $log ログコンテキスト
-     * @param Closure $next 次のミドルウェア
-     * @return string|array $formatted_log 整形済みログ
+     * @param LogContext $log
+     * @param Closure $next
+     * @return string|array|null $formatted_log
      */
     public function handle(LogContext $log, \Closure $next)
     {
@@ -75,7 +79,7 @@ EOS;
     }
 
     /**
-     * ミドルウェアのシャットダウン処理を実行します。
+     * Terminate the middleware
      */
     public function terminate() : void
     {
