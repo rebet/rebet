@@ -75,7 +75,7 @@ class RouteAction
         foreach ($this->reflector->getParameters() as $parameter) {
             $name = $parameter->name;
             $type = Reflector::getTypeHint($parameter);
-            if (Reflector::typeOf($request, $type)) {
+            if ($type !== null && Reflector::typeOf($request, $type)) {
                 $args[$name] = $request;
                 continue;
             }
