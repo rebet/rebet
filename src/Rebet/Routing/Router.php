@@ -252,7 +252,7 @@ class Router
     public static function redirect(string $uri, string $destination, array $query = [], int $status = 302) : Route
     {
         return static::any($uri, function (Request $request) use ($destination, $query, $status) {
-            $vars = Request::current()->attributes->all();
+            $vars = $request->attributes->all();
             foreach ($vars as $key => $value) {
                 $replace = "{{$key}}";
                 if (Strings::contains($destination, $replace)) {
