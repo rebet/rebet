@@ -1,11 +1,12 @@
 <?php
 namespace Rebet\Http\Session;
 
+use Rebet\Common\Securities;
 use Rebet\Config\Configurable;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
+use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Rebet\Http\Session\Storage\SessionStorage;
-use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
 
 /**
  * Session Class
@@ -191,5 +192,25 @@ class Session
         if ($this->storage->getId() !== $id) {
             $this->storage->setId($id);
         }
+    }
+
+    /**
+     * Get the CSRF token value.
+     *
+     * @return string
+     */
+    public function token() : string
+    {
+        return $this->attribute()->get('_token');
+    }
+
+    /**
+     * Regenerate the CSRF token value.
+     *
+     * @return void
+     */
+    public function regenerateToken()
+    {
+        $this->attribute()->set('_token', Securities::randomCode(40));
     }
 }

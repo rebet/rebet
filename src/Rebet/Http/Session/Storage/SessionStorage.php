@@ -2,7 +2,7 @@
 namespace Rebet\Http\Session\Storage;
 
 use Rebet\Config\Configurable;
-use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
+use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 /**
