@@ -200,11 +200,8 @@ class Translator
             return $line;
         }
 
-        $replacement = Collection::valueOf($replacement)->sortBy(function ($v, $k) {
-            return mb_strlen($k) * -1;
-        });
-
-        $delimiter = $this->grammar($group, 'delimiter', ', ', $locale);
+        $replacement = Collection::valueOf($replacement)->sortBy(function ($v, $k) { return mb_strlen($k) * -1; });
+        $delimiter   = $this->grammar($group, 'delimiter', ', ', $locale);
         foreach ($replacement as $key => $value) {
             $value = is_array($value) ? implode($delimiter, $value) : $value ;
             $line  = str_replace(':'.$key, $value, $line);

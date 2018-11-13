@@ -1,12 +1,9 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Bridge\Renderable;
-use Rebet\Http\BasicResponse;
-use Rebet\Http\JsonResponse;
 use Rebet\Http\Request;
+use Rebet\Http\Responder;
 use Rebet\Http\Response;
-use Rebet\Http\StreamedResponse;
 use Rebet\Routing\RouteAction;
 
 /**
@@ -121,37 +118,7 @@ abstract class Route
      */
     public function handle(Request $request) : Response
     {
-        $response = $this->toResponse($request, $this->route_action->invoke($request));
-        return $response->prepare($request);
-    }
-
-    /**
-     * ルートアクションの戻り値をレスポンス形式に変換します。
-     *
-     * @todo 実装
-     *
-     * @param Request $request
-     * @param mixed $data
-     * @return Response
-     */
-    protected function toResponse(Request $request, $data) : Response
-    {
-        if ($data instanceof Response) {
-            return $data;
-        }
-        if ($data instanceof Renderable) {
-            return new BasicResponse($data->render());
-        }
-        if (is_callable($data)) {
-            return new StreamedResponse($data);
-        }
-        if (is_array($data)) {
-            return new JsonResponse($data);
-        }
-        if ($data instanceof \JsonSerializable) {
-            return new JsonResponse($data->jsonSerialize());
-        }
-        return new BasicResponse($data);
+        return Responder::toResponse($this->route_action->invoke($request), $request);
     }
 
     /**

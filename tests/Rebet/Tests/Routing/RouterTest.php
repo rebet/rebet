@@ -157,6 +157,16 @@ class RouterTest extends RebetTestCase
             Router::get('/method/namespace/nest', 'Nest\\NestController@foo');
             Router::get('/method/namespace/different', 'Rebet\\Tests\\Mock\\DifferentNamespaceController@foo');
             
+            Router::redirect('/redirect', '/destination');
+            Router::redirect('/redirect/with-param/replace/{id}', '/destination/{id}');
+            Router::redirect('/redirect/with-param/query/{id}', '/destination');
+            Router::redirect('/redirect/with-optional-param/replace/{id?}', '/destination/{id}');
+            Router::redirect('/redirect/with-multi-param/{from?}/{to?}', '/destination/{from}/{to}');
+            Router::redirect('/redirect/with-multi-param/mix/{from}/{to}', '/destination/{from}');
+            Router::redirect('/redirect/query', '/destination', ['page' => 1]);
+            Router::redirect('/redirect/query/with-param/{id}', '/destination', ['page' => 1]);
+            Router::redirect('/redirect/query/inline/with-param/{id}', '/destination?page=1');
+
             Router::controller('/controller/namespace/short', 'RouterTestController');
             Router::controller('/controller/namespace/nest', 'Nest\\NestController');
             Router::controller('/controller/namespace/different', DifferentNamespaceController::class);
@@ -537,6 +547,44 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/method/namespace/different'));
         $this->assertSame('Different: foo', $response->getContent());
+    }
+
+    public function test_routing_redirect()
+    {
+        $response = Router::handle(Request::create('/redirect'));
+        $this->assertSame('/destination', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/with-param/replace/123'));
+        $this->assertSame('/destination/123', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/with-param/query/123'));
+        $this->assertSame('/destination?id=123', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/with-optional-param/replace/123'));
+        $this->assertSame('/destination/123', $response->getTargetUrl());
+        $response = Router::handle(Request::create('/redirect/with-optional-param/replace'));
+        $this->assertSame('/destination', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/with-multi-param/a/z'));
+        $this->assertSame('/destination/a/z', $response->getTargetUrl());
+        $response = Router::handle(Request::create('/redirect/with-multi-param/a'));
+        $this->assertSame('/destination/a', $response->getTargetUrl());
+        $response = Router::handle(Request::create('/redirect/with-multi-param'));
+        $this->assertSame('/destination', $response->getTargetUrl());
+        $response = Router::handle(Request::create('/redirect/with-multi-param//z'));
+        $this->assertSame('/destination/z', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/with-multi-param/mix/a/z'));
+        $this->assertSame('/destination/a?to=z', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/query'));
+        $this->assertSame('/destination?page=1', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/query/with-param/abc'));
+        $this->assertSame('/destination?page=1&id=abc', $response->getTargetUrl());
+
+        $response = Router::handle(Request::create('/redirect/query/inline/with-param/123'));
+        $this->assertSame('/destination?page=1&id=123', $response->getTargetUrl());
     }
 
     public function test_routing_controllerNamespaceShort()

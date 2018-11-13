@@ -8,6 +8,7 @@ use Rebet\Config\Configurable;
 use Rebet\File\Files;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
+use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Routing\Route\ClosureRoute;
@@ -216,11 +217,11 @@ class Router
     }
    
     /**
-     * 指定の URI にマッチするコントローラールートを設定します。
-     * 詳細なアクセス制御には各種ルーティングアノテーションが利用できます。
+     * Sets the controller route that matches the specified URI.
+     * Various routing annotations are available for detailed access control.
      *
-     * また、本ルートに設定される where 条件は コントローラースコープ でグローバルな設定となります。
-     * 個別のアクション単位で where 条件を設定したい場合は @Where ルーティングアノテーションをご利用下さい。
+     * In addition, the where condition set for this route is global setting with controller scope.
+     * Please use the @Where routing annotation if you want to set the where condition on an individual action basis.
      *
      * @see Rebet\Routing\Annotation
      *
@@ -235,10 +236,34 @@ class Router
         return $route;
     }
 
-    // public static function redirect($uri, $destination, $status = 302)
-    // {
-    //     //@todo 実装
-    // }
+    /**
+     * Sets the redirect route that matches the specified URI.
+     *
+     * You can use '{key}' replacement in the given destination when use '{key}' placeholder in given uri.
+     * If you do not use '{key}' replacement in the destination, then '{key}' placeholder become query string.
+     *
+     * @param string $uri
+     * @param string $destination
+     * @param array $query (default: [])
+     * @param integer $status (deafult: 302)
+     * @return Route
+     */
+    public static function redirect(string $uri, string $destination, array $query = [], int $status = 302) : Route
+    {
+        return static::any($uri, function () use ($destination, $query, $status) {
+            $vars = Request::current()->attributes->all();
+            foreach ($vars as $key => $value) {
+                $replace = "{{$key}}";
+                if (Strings::contains($destination, $replace)) {
+                    $destination = str_replace($replace, $value, $destination);
+                } else {
+                    $query[$key] = $value;
+                }
+            }
+            $destination = preg_replace('/\/?{.+?}/u', '', $destination);
+            return Responder::redirect($destination, $query, $status);
+        });
+    }
     
     /**
      * ルートをルーターに追加します。
