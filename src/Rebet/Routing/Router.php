@@ -251,7 +251,7 @@ class Router
      */
     public static function redirect(string $uri, string $destination, array $query = [], int $status = 302) : Route
     {
-        return static::any($uri, function () use ($destination, $query, $status) {
+        return static::any($uri, function (Request $request) use ($destination, $query, $status) {
             $vars = Request::current()->attributes->all();
             foreach ($vars as $key => $value) {
                 $replace = "{{$key}}";
@@ -262,6 +262,7 @@ class Router
                 }
             }
             $destination = preg_replace('/\/?{.+?}/u', '', $destination);
+            $destination = Strings::startsWith($destination, '/') ? $request->route->prefix.$destination : $destination ;
             return Responder::redirect($destination, $query, $status);
         });
     }
