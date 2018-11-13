@@ -6,8 +6,11 @@ use Rebet\Log\Formatter\LogFormatter;
 use Rebet\Log\LogContext;
 
 /**
- * フォーマット可能ログハンドラ 基底クラス
- * サブクラスの defaultConfig() で下記のコンフィグ設定を定義する必要があります。
+ * Abstract Formattable Handler Class
+ *
+ * You need to define the following config setting with defaultConfig() in sub class.
+ * - log_formatter
+ * - log_level
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -19,13 +22,16 @@ abstract class FormattableHandler
     use Configurable, LogHandleable;
 
     /**
-     * ログフォーマッタ
+     * Log Formatter
+     *
      * @var Rebet\Log\Formatter\LogFormatter
      */
     protected $formatter = null;
 
     /**
-     * ログハンドラを構築します
+     * Create a log handler using given fomatter.
+     *
+     * @param LogFormatter|null $formatter
      */
     public function __construct(?LogFormatter $formatter = null)
     {
@@ -33,10 +39,10 @@ abstract class FormattableHandler
     }
 
     /**
-     * ログデータを処理します。
+     * handle log context.
      *
-     * @param LogContext $log ログコンテキスト
-     * @return string|array|null 整形済みログデータ or null（ログ対象外時）
+     * @param LogContext $log
+     * @return string|array|null Formatted log data or null (when not logging)
      */
     public function handle(LogContext $log)
     {
@@ -49,10 +55,10 @@ abstract class FormattableHandler
     }
 
     /**
-     * フォーマット済みのログデータを処理します。
+     * Report formatted log data.
      *
-     * @param LogContext $log ログコンテキスト
-     * @param string|array $formatted_log 整形済みログ
+     * @param LogContext $log
+     * @param string|array $formatted_log
      */
     abstract protected function report(LogContext $log, $formatted_log) : void ;
 }
