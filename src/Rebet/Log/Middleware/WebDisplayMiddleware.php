@@ -38,8 +38,11 @@ class WebDisplayMiddleware
     public function handle(LogContext $log, \Closure $next)
     {
         $formatted_log = $next($log);
-        $display_log   = is_array($formatted_log) ? print_r($formatted_log, true) : $formatted_log ;
-        
+        if ($formatted_log === null) {
+            return null;
+        }
+
+        $display_log = is_array($formatted_log) ? print_r($formatted_log, true) : $formatted_log ;
         switch ($log->level) {
             case LogLevel::TRACE():
                 $fc = '#666666'; $bc = '#f9f9f9';
