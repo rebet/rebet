@@ -163,4 +163,21 @@ class Request extends SymfonyRequest
         $this->session = $session;
         return $this;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSession()
+    {
+        $session = $this->session;
+        if (is_callable($session)) {
+            $this->setSession($session = $session());
+        }
+
+        if (null === $session) {
+            throw new \BadMethodCallException('Session has not been set');
+        }
+
+        return $session;
+    }
 }
