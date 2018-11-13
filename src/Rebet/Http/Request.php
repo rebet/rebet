@@ -165,9 +165,11 @@ class Request extends SymfonyRequest
     }
 
     /**
-     * {@inheritDoc}
+     * Get the session for the request
+     *
+     * @return Session
      */
-    public function getSession()
+    public function getSession() : Session
     {
         $session = $this->session;
         if (is_callable($session)) {
