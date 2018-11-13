@@ -5,7 +5,7 @@ use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 
 /**
- * 標準エラー出力（STDERR）にログを出力するハンドラ クラス
+ * Stderr Handler Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -23,7 +23,7 @@ class StderrHandler extends FormattableHandler
     }
 
     /**
-     * ログハンドラを構築します
+     * Create a log handler
      */
     public function __construct(?LogFormatter $formatter = null)
     {
@@ -31,10 +31,10 @@ class StderrHandler extends FormattableHandler
     }
 
     /**
-     * フォーマット済みのログデータを処理します。
+     * Report formatted log data.
      *
-     * @param LogContext $log ログコンテキスト
-     * @param string|array $formatted_log 整形済みログ
+     * @param LogContext $log
+     * @param string|array $formatted_log
      */
     protected function report(LogContext $log, $formatted_log) : void
     {
@@ -45,7 +45,7 @@ class StderrHandler extends FormattableHandler
     }
 
     /**
-     * シャットダウン処理を行います。
+     * {@inheritDoc}
      */
     public function terminate() : void
     {
