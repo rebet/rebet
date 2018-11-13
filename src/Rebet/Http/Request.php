@@ -168,8 +168,9 @@ class Request extends SymfonyRequest
      * Get the session for the request
      *
      * @return Session
+     * @throws BadMethodCallException
      */
-    public function getSession() : Session
+    public function getSession()
     {
         $session = $this->session;
         if (is_callable($session)) {
