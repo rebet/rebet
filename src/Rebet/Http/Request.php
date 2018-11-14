@@ -33,6 +33,14 @@ class Request extends SymfonyRequest
     public $route = null;
 
     /**
+     * The channel of this request incoming
+     *
+     * @see SetChannel Middleware
+     * @var string
+     */
+    public $channel = null;
+
+    /**
      * {@inheritdoc}
      *
      * @param array                $query      The GET parameters
@@ -182,5 +190,16 @@ class Request extends SymfonyRequest
         }
 
         return $session;
+    }
+
+    /**
+     * Get the session for the request (alias of getSession())
+     *
+     * @return Session
+     * @throws BadMethodCallException
+     */
+    public function session() : Session
+    {
+        return $this->getSession();
     }
 }

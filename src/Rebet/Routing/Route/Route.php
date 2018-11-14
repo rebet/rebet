@@ -5,6 +5,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Routing\RouteAction;
+use Rebet\Auth\Annotation\Role;
 
 /**
  * Route class
@@ -43,6 +44,13 @@ abstract class Route
      * @var array
      */
     protected $middlewares = [];
+
+    /**
+     * Allow roles can be accessed this route
+     *
+     * @var array
+     */
+    protected $roles = ['ALL'];
 
     /**
      * ルーティングパラメータの正規表現チェックを設定します。
@@ -174,6 +182,22 @@ abstract class Route
             return $this->middlewares;
         }
         $this->middlewares = array_merge($this->middlewares, $middlewares);
+        return $this;
+    }
+
+    /**
+     *  Get or set the roles attached to the route.
+     *
+     * @param mixed ...$roles
+     * @return self|array
+     */
+    public function roles(...$roles)
+    {
+        if (empty($roles)) {
+            $role = $this->annotation(Role::class);
+            return $role ? $role->allow : $this->roles ;
+        }
+        $this->roles = $roles;
         return $this;
     }
 }

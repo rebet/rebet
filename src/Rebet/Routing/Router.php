@@ -279,9 +279,7 @@ class Router
         if (!static::$rules) {
             throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        $route->prefix = static::$rules->prefix;
-        $middlewares   = static::$rules->middlewares;
-        $route->middlewares(...$middlewares);
+        static::applyRulesTo($route);
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
     }
     
@@ -325,13 +323,26 @@ class Router
         if (!static::$rules) {
             throw new \LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
-        $route         = Reflector::instantiate($route);
-        $route->prefix = static::$rules->prefix;
-        $middlewares   = static::$rules->middlewares;
-        $route->middlewares(...$middlewares);
-
+        $route = Reflector::instantiate($route);
+        static::applyRulesTo($route);
         static::$default_route[$route->prefix] = $route;
         return $route;
+    }
+
+    /**
+     * Apply roules to given route.
+     *
+     * @param Route $route
+     * @return void
+     */
+    protected static function applyRulesTo(Route &$route) : void {
+        $route->prefix = static::$rules->prefix;
+
+        $middlewares = static::$rules->middlewares;
+        $route->middlewares(...$middlewares);
+
+        $roles = static::$rules->roles;
+        $route->roles(...$roles);
     }
 
     /**
@@ -480,6 +491,13 @@ class Router
     protected $middlewares = [];
     
     /**
+     * The roles for this rules.
+     *
+     * @var array
+     */
+    protected $roles = [];
+
+    /**
      * Create a routing rules builder for Router.
      */
     protected function __construct(string $channel)
@@ -514,12 +532,24 @@ class Router
     /**
      * Set the middlewares for this rules.
      *
-     * @param string $prefix
+     * @param string ...$middlewares
      * @return self
      */
     public function middlewares(...$middlewares) : self
     {
         $this->middlewares = $middlewares;
+        return $this;
+    }
+
+    /**
+     * Set the roles for this rules.
+     *
+     * @param string ...$roles
+     * @return self
+     */
+    public function roles(...$roles) : self
+    {
+        $this->roles = $roles;
         return $this;
     }
 

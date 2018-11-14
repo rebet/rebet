@@ -155,7 +155,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Value of enum.
      * @var mixed
      */
-    public $value;
+    public $value = null;
     
     /**
      * Label of enum.
@@ -164,8 +164,15 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @var string
      */
-    public $label;
+    public $label = null;
     
+    /**
+     * The constant name of enum.
+     *
+     * @var string|null
+     */
+    public $name = null;
+
     /**
      * Clear the cache of given class or all enums.
      *
@@ -335,6 +342,7 @@ abstract class Enum implements \JsonSerializable, Convertible
 
         $args = $rc->getConstant($name);
         $enum = new static(...$args);
+        $enum->name = $name;
 
         self::$enum_data_cache[$class][$name] = $enum;
         return $enum;
@@ -464,6 +472,19 @@ abstract class Enum implements \JsonSerializable, Convertible
         return self::fieldOf('label', $label, $translate, $locale);
     }
     
+    
+    /**
+     * Get an enum with the target name.
+     * If there is an enum with the same filed value, it wins after enum::lists().
+     *
+     * @param string $name
+     * @return self|null
+     */
+    public static function nameOf(string $name) : ?self
+    {
+        return self::fieldOf('name', $name);
+    }
+
     /**
      * Get a list of given field as an array.
      *
@@ -515,6 +536,17 @@ abstract class Enum implements \JsonSerializable, Convertible
         return self::listOf('label', $matcher, $translate, $locale);
     }
     
+    /**
+     *  Get a list of name as an array.
+     *
+     * @param \Closure $matcher (default: null)
+     * @return array
+     */
+    public static function names(\Closure $matcher = null) : array
+    {
+        return self::listOf('name', $matcher);
+    }
+
     /**
      * Simple Workflow.
      * Get the next enumeration list that can transition from an enumerated value(current) according to the given situation(context).
