@@ -75,12 +75,13 @@ class Auth
         $user = $guard->authenticate($request, $provider, $remember);
 
         $roles = $route->roles();
-        if (!in_array($user->role(), $roles) && !in_array('ALL', $roles)) {
-            $fallback = static::config("authenticator.{$auth}.fallback");
-            return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
+        if (in_array($user->role(), $roles) || in_array('ALL', $roles)) {
+            static::$user = $user;
+            return null;
         }
-        static::$user = $user;
-        return null;
+        
+        $fallback = static::config("authenticator.{$auth}.fallback");
+        return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
     }
 
     /**
@@ -99,11 +100,12 @@ class Auth
         $user = $guard->recall($request, $provider);
 
         $roles = $route->roles();
-        if (!in_array($user->role(), $roles) && !in_array('ALL', $roles)) {
-            $fallback = static::config("authenticator.{$auth}.fallback");
-            return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
+        if (in_array($user->role(), $roles) || in_array('ALL', $roles)) {
+            static::$user = $user;
+            return null;
         }
-        static::$user = $user;
-        return null;
+        
+        $fallback = static::config("authenticator.{$auth}.fallback");
+        return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
     }
 }
