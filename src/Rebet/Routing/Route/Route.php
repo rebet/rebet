@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Routing\RouteAction;
-use Rebet\Auth\Annotation\Role;
 
 /**
  * Route class
@@ -51,6 +51,13 @@ abstract class Route
      * @var array
      */
     protected $roles = ['ALL'];
+    
+    /**
+     * Authenticator name for this route.
+     *
+     * @var string
+     */
+    protected $auth = null;
 
     /**
      * ルーティングパラメータの正規表現チェックを設定します。
@@ -198,6 +205,21 @@ abstract class Route
             return $role ? $role->allow : $this->roles ;
         }
         $this->roles = $roles;
+        return $this;
+    }
+    
+    /**
+     *  Get or set the authenticator name attached to the route.
+     *
+     * @param mixed $auth
+     * @return self|array
+     */
+    public function auth(?string $auth = null)
+    {
+        if ($auth === null) {
+            return $this->auth;
+        }
+        $this->auth = $auth;
         return $this;
     }
 }

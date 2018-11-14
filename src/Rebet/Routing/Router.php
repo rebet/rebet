@@ -335,7 +335,8 @@ class Router
      * @param Route $route
      * @return void
      */
-    protected static function applyRulesTo(Route &$route) : void {
+    protected static function applyRulesTo(Route &$route) : void
+    {
         $route->prefix = static::$rules->prefix;
 
         $middlewares = static::$rules->middlewares;
@@ -343,6 +344,8 @@ class Router
 
         $roles = static::$rules->roles;
         $route->roles(...$roles);
+        
+        $route->auth(static::$rules->auth);
     }
 
     /**
@@ -496,6 +499,13 @@ class Router
      * @var array
      */
     protected $roles = [];
+    
+    /**
+     * The authenticator name for this rules
+     *
+     * @var string|null
+     */
+    protected $auth = null;
 
     /**
      * Create a routing rules builder for Router.
@@ -550,6 +560,18 @@ class Router
     public function roles(...$roles) : self
     {
         $this->roles = $roles;
+        return $this;
+    }
+
+    /**
+     * Set the authenticator name for this rules.
+     *
+     * @param string $auth
+     * @return self
+     */
+    public function auth(string $auth) : self
+    {
+        $this->auth = $auth;
         return $this;
     }
 

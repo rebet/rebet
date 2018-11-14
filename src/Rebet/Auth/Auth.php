@@ -2,11 +2,7 @@
 namespace Rebet\Auth;
 
 use Rebet\Auth\Guard\Guard;
-use Rebet\Auth\Guard\NoGuard;
 use Rebet\Config\Configurable;
-use Rebet\Common\Reflector;
-
-
 
 /**
  * Auth Class
@@ -20,7 +16,7 @@ class Auth
 {
     use Configurable;
 
-    public static function defaultConfig() : array 
+    public static function defaultConfig() : array
     {
         return [
             'authenticator' => [
@@ -58,7 +54,7 @@ class Auth
      * @param string $name
      * @return Guard
      */
-    public static function user() : AuthUser 
+    public static function user() : AuthUser
     {
         return static::$user ?? AuthUser::guest() ;
     }
@@ -69,19 +65,18 @@ class Auth
      * @param Request $request
      * @return Response|null response when authenticate failed
      */
-    public static function authenticate(Request $request) : ?Response
+    public static function authenticate(Request $request, bool $remember = false) : ?Response
     {
-        $channel  = $request->channel;
         $route    = $request->route;
-        $prefix   = $route->prefix;
-        $guard    = Reflector::instantiate(static::authenticator('guard', $channel, $prefix));
-        $provider = Reflector::instantiate(static::authenticator('provider', $channel, $prefix));
+        $auth     = $route->auth() ?? $request->channel ;
+        $guard    = static::configInstantiate("authenticator.{$auth}.guard");
+        $provider = static::configInstantiate("authenticator.{$auth}.provider");
 
-        $user = $guard->recall($request, $provider);
+        $user = $guard->authenticate($request, $provider, $remember);
 
         $roles = $route->roles();
-        if(!in_array($user->role(), $roles) && !in_array('ALL', $roles)) {
-            $fallback = static::authenticator('fallback', $channel, $prefix);
+        if (!in_array($user->role(), $roles) && !in_array('ALL', $roles)) {
+            $fallback = static::config("authenticator.{$auth}.fallback");
             return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
         }
         static::$user = $user;
@@ -89,15 +84,26 @@ class Auth
     }
 
     /**
-     * Get authenticator configuration
+     * Authenticate recall an incoming request.
      *
-     * @param string $type
-     * @param string $channel
-     * @param string $prefix
-     * @return mixed
+     * @param Request $request
+     * @return Response|null response when authenticate failed
      */
-    protected static function authenticator(string $type, string $channel, string $prefix)
+    public static function recall(Request $request) : ? Response
     {
-        return static::config("{$channel}{$prefix}.{$type}", false) ?? static::config("{$channel}.{$type}") ;
+        $route    = $request->route;
+        $auth     = $route->auth() ?? $request->channel;
+        $guard    = static::configInstantiate("authenticator.{$auth}.guard");
+        $provider = static::configInstantiate("authenticator.{$auth}.provider");
+
+        $user = $guard->recall($request, $provider);
+
+        $roles = $route->roles();
+        if (!in_array($user->role(), $roles) && !in_array('ALL', $roles)) {
+            $fallback = static::config("authenticator.{$auth}.fallback");
+            return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
+        }
+        static::$user = $user;
+        return null;
     }
 }

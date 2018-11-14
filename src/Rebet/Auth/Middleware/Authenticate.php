@@ -22,6 +22,6 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        return Auth::authenticate($request) ?? $next($request);
+        return Auth::recall($request) ?? $next($request);
     }
 }
