@@ -347,7 +347,7 @@ class Router
             $route            = static::findRoute($request);
             static::$current  = $route;
             static::$pipeline = (new Pipeline())->through(array_merge(
-                static::config('middlewares.'.App::getSurface(), false, []),
+                static::config('middlewares.'.App::getChannel(), false, []),
                 $route->middlewares()
             ))->then($route);
             return static::$pipeline->send($request);
@@ -452,11 +452,11 @@ class Router
     // ====================================================
 
     /**
-     * The surface for current configuring routing rules.
+     * The channel for current configuring routing rules.
      *
      * @var string
      */
-    protected $surface = null;
+    protected $channel = null;
 
     /**
      * Skip routing rules setting.
@@ -482,21 +482,21 @@ class Router
     /**
      * Create a routing rules builder for Router.
      */
-    protected function __construct(string $surface)
+    protected function __construct(string $channel)
     {
-        $this->surface = $surface;
-        $this->skip    = $surface !== App::getSurface();
+        $this->channel = $channel;
+        $this->skip    = $channel !== App::getChannel();
     }
 
     /**
-     * Set new routing rules for given surface.
+     * Set new routing rules for given channel.
      *
-     * @param string $surface
+     * @param string $channel
      * @return void
      */
-    public static function rules(string $surface) : self
+    public static function rules(string $channel) : self
     {
-        return new static($surface);
+        return new static($channel);
     }
     
     /**

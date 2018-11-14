@@ -35,7 +35,7 @@ class App
     public static function defaultConfig()
     {
         return [
-            'surface'         => null,
+            'channel'         => null,
             'env'             => Config::promise(function () {
                 return getenv('APP_ENV') ?: 'development' ;
             }),
@@ -221,41 +221,41 @@ class App
     }
 
     /**
-     * Get the current surface (inflow route/application invoke interface) like web, api, console.
+     * Get the current channel (inflow route/application invoke interface) like web, api, console.
      *
      * @return string
      */
-    public static function getSurface() : string
+    public static function getChannel() : string
     {
-        return self::config('surface');
+        return self::config('channel');
     }
 
     /**
-     * Set the current surface (inflow route/application invoke interface) like web, api, console.
+     * Set the current channel (inflow route/application invoke interface) like web, api, console.
      *
-     * @param string $surface
+     * @param string $channel
      */
-    public static function setSurface(string $surface) : void
+    public static function setChannel(string $channel) : void
     {
-        self::setConfig(['surface' => $surface]);
+        self::setConfig(['channel' => $channel]);
     }
 
     /**
-     * Determine whether it is a specific surface (inflow route/application invoke interface) like web, api, console.
+     * Determine whether it is a specific channel (inflow route/application invoke interface) like web, api, console.
      *
-     * @param string ...$surface
+     * @param string ...$channel
      */
-    public static function surfaceIn(string ...$surface) : bool
+    public static function channelIn(string ...$channel) : bool
     {
-        return \in_array(self::getSurface(), $surface, true);
+        return \in_array(self::getChannel(), $channel, true);
     }
     
     /**
      * It returns the value according to the environment based on the current execution environment.
      * The following can be specified for the key name of $case, and the value is acquired according to the priority of 1 => 4.
      *
-     *  1. surface@env
-     *  2. surface
+     *  1. channel@env
+     *  2. channel
      *  3. env
      *  4. default
      *
@@ -265,11 +265,11 @@ class App
     public static function when(array $case)
     {
         return Config::promise(function () use ($case) {
-            $surface = App::getSurface();
+            $channel = App::getChannel();
             $env     = App::getEnv();
             return
-                $case["{$surface}@{$env}"] ??
-                $case[$surface] ??
+                $case["{$channel}@{$env}"] ??
+                $case[$channel] ??
                 $case[$env] ??
                 $case['default']
             ;

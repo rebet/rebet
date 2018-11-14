@@ -13,7 +13,7 @@ use Rebet\Inflection\Inflector;
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\RouteAction;
 use Rebet\Routing\RouteNotFoundException;
@@ -275,9 +275,9 @@ class ConventionalRoute extends Route
         $method->setAccessible($this->accessible);
         $route_action = new RouteAction($this, $method, $this->controller);
 
-        $surface = $route_action->annotation(Surface::class);
-        if (!$surface || $surface->reject(App::getSurface())) {
-            throw new RouteNotFoundException("{$this} not found. Routing surface '".App::getSurface()."' not allowed or not annotated surface meta info.");
+        $channel = $route_action->annotation(Channel::class);
+        if (!$channel || $channel->reject(App::getChannel())) {
+            throw new RouteNotFoundException("{$this} not found. Routing channel '".App::getChannel()."' not allowed or not annotated channel meta info.");
         }
 
         $method = $route_action->annotation(Method::class);

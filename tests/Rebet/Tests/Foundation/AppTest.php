@@ -119,27 +119,27 @@ class AppTest extends RebetTestCase
         $this->assertFalse(App::envIn('production', 'staging'));
     }
 
-    public function test_getSurface()
+    public function test_getChannel()
     {
         Config::application([
             App::class => [
-                'surface' => 'console',
+                'channel' => 'console',
             ],
         ]);
-        $this->assertSame('console', App::getSurface());
+        $this->assertSame('console', App::getChannel());
     }
 
-    public function test_setSurface()
+    public function test_setChannel()
     {
-        App::setSurface('console');
-        $this->assertSame('console', App::getSurface());
+        App::setChannel('console');
+        $this->assertSame('console', App::getChannel());
     }
 
-    public function test_SurfaceIn()
+    public function test_ChannelIn()
     {
-        App::setSurface('console');
-        $this->assertTrue(App::SurfaceIn('console'));
-        $this->assertFalse(App::SurfaceIn('web', 'api'));
+        App::setChannel('console');
+        $this->assertTrue(App::ChannelIn('console'));
+        $this->assertFalse(App::ChannelIn('web', 'api'));
     }
 
     public function test_getEntryPoint()
@@ -169,23 +169,23 @@ class AppTest extends RebetTestCase
             'default'          => 'default',
         ];
 
-        App::setSurface('console');
+        App::setChannel('console');
         App::setEnv('unittest');
         $this->assertSame('console@unittest', App::when($case)->get());
 
-        App::setSurface('console');
+        App::setChannel('console');
         App::setEnv('development');
         $this->assertSame('console', App::when($case)->get());
 
-        App::setSurface('api');
+        App::setChannel('api');
         App::setEnv('unittest');
         $this->assertSame('unittest', App::when($case)->get());
 
-        App::setSurface('web');
+        App::setChannel('web');
         App::setEnv('local');
         $this->assertSame('web@local', App::when($case)->get());
 
-        App::setSurface('api');
+        App::setChannel('api');
         App::setEnv('development');
         $this->assertSame('default', App::when($case)->get());
     }

@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Mock;
 
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Controller;
 
 /**
- * @Surface("web")
+ * @Channel("web")
  */
 class DifferentNamespaceController extends Controller
 {

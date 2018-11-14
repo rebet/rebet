@@ -5,7 +5,7 @@ use Rebet\Annotation\AnnotatedClass;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Annotation\AnnotatedProperty;
 use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Tests\RebetTestCase;
 
@@ -34,9 +34,9 @@ class AnnotatedClassTest extends RebetTestCase
     public function test_annotaion()
     {
         $ac      = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
-        $surface = $ac->annotation(Surface::class);
-        $this->assertInstanceOf(Surface::class, $surface);
-        $this->assertSame(['web'], $surface->allows);
+        $channel = $ac->annotation(Channel::class);
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertSame(['web'], $channel->allows);
         
         $where = $ac->annotation(Where::class);
         $this->assertInstanceOf(Where::class, $where);
@@ -54,9 +54,9 @@ class AnnotatedClassTest extends RebetTestCase
         $ac          = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
         $annotations = $ac->annotations();
 
-        $surface = $annotations[0];
-        $this->assertInstanceOf(Surface::class, $surface);
-        $this->assertSame(['web'], $surface->allows);
+        $channel = $annotations[0];
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertSame(['web'], $channel->allows);
 
         $where = $annotations[1];
         $this->assertInstanceOf(Where::class, $where);
@@ -83,7 +83,7 @@ class AnnotatedClassTest extends RebetTestCase
 }
 
 /**
- * @Surface("web")
+ * @Channel("web")
  * @Where({"id": "[0-9]+", "code": "[a-zA-Z]+"})
  */
 class AnnotatedClassTest_Mock

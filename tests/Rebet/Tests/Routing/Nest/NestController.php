@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Routing\Nest;
 
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Controller;
 
 /**
- * @Surface("web")
+ * @Channel("web")
  */
 class NestController extends Controller
 {

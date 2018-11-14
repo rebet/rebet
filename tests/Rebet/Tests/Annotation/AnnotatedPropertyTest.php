@@ -3,7 +3,7 @@ namespace Rebet\Tests\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Annotation\AnnotatedProperty;
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Tests\RebetTestCase;
 
 class AnnotatedPropertyTest extends RebetTestCase
@@ -48,8 +48,8 @@ class AnnotatedPropertyTest extends RebetTestCase
     public function test_nonAnnotaion()
     {
         $ap = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
-        $this->assertNull($ap->annotation(Surface::class, false));
-        $this->assertNull($ap->annotation(Surface::class));
+        $this->assertNull($ap->annotation(Channel::class, false));
+        $this->assertNull($ap->annotation(Channel::class));
     }
     
     public function test_annotaions()

@@ -4,7 +4,7 @@ namespace Rebet\Tests\Annotation;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Tests\RebetTestCase;
 
@@ -34,21 +34,21 @@ class AnnotatedMethodTest extends RebetTestCase
     public function test_annotaion()
     {
         $am      = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
-        $surface = $am->annotation(Surface::class, false);
-        $this->assertNull($surface);
+        $channel = $am->annotation(Channel::class, false);
+        $this->assertNull($channel);
         
-        $surface = $am->annotation(Surface::class);
-        $this->assertInstanceOf(Surface::class, $surface);
-        $this->assertSame(['web'], $surface->allows);
+        $channel = $am->annotation(Channel::class);
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertSame(['web'], $channel->allows);
 
         $where = $am->annotation(Where::class);
         $this->assertInstanceOf(Where::class, $where);
         $this->assertSame(['id' => '[0-9]+'], $where->wheres);
 
         $am      = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
-        $surface = $am->annotation(Surface::class);
-        $this->assertInstanceOf(Surface::class, $surface);
-        $this->assertSame(['api'], $surface->allows);
+        $channel = $am->annotation(Channel::class);
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertSame(['api'], $channel->allows);
 
         $where = $am->annotation(Where::class);
         $this->assertNull($where);
@@ -66,9 +66,9 @@ class AnnotatedMethodTest extends RebetTestCase
         $am          = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
         $annotations = $am->annotations();
 
-        $surface = $annotations[0];
-        $this->assertInstanceOf(Surface::class, $surface);
-        $this->assertSame(['api'], $surface->allows);
+        $channel = $annotations[0];
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertSame(['api'], $channel->allows);
     }
     
     public function test_declaringClass()
@@ -76,9 +76,9 @@ class AnnotatedMethodTest extends RebetTestCase
         $ac = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class)->declaringClass();
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
         
-        $surface = $ac->annotation(Surface::class);
-        $this->assertInstanceOf(Surface::class, $surface);
-        $this->assertSame(['web'], $surface->allows);
+        $channel = $ac->annotation(Channel::class);
+        $this->assertInstanceOf(Channel::class, $channel);
+        $this->assertSame(['web'], $channel->allows);
     }
 
     public function test_reflector()
@@ -89,7 +89,7 @@ class AnnotatedMethodTest extends RebetTestCase
 }
 
 /**
- * @Surface("web")
+ * @Channel("web")
  */
 class AnnotatedMethodTest_Mock
 {
@@ -101,7 +101,7 @@ class AnnotatedMethodTest_Mock
     }
 
     /**
-     * @Surface("api")
+     * @Channel("api")
      */
     public function bar()
     {

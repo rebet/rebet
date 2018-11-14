@@ -12,7 +12,7 @@ use Rebet\Http\Request;
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\Surface;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Controller;
 use Rebet\Routing\Route\ConventionalRoute;
@@ -29,7 +29,7 @@ class RouterTest extends RebetTestCase
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
-        App::setSurface('web');
+        App::setChannel('web');
         Config::application([
             App::class => [
                 'namespace' => [
@@ -631,11 +631,11 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationSurfaceApi not found. Routing surface 'web' not allowed or not annotated surface meta info.
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.
      */
-    public function test_routing_controllerAnnotationSurfaceReject()
+    public function test_routing_controllerAnnotationChannelReject()
     {
-        $response = Router::handle(Request::create('/controller/namespace/short/annotation-surface-api'));
+        $response = Router::handle(Request::create('/controller/namespace/short/annotation-channel-api'));
         $this->fail("Never Execute.");
     }
 
@@ -968,7 +968,7 @@ class RouterTest extends RebetTestCase
 }
 
 /**
- * @Surface("web")
+ * @Channel("web")
  * @Where({"user_id": "/^[0-9]+$/"})
  */
 class RouterTestController extends Controller
@@ -1019,11 +1019,11 @@ class RouterTestController extends Controller
     }
     
     /**
-     * @Surface("api")
+     * @Channel("api")
      */
-    public function annotationSurfaceApi()
+    public function annotationChannelApi()
     {
-        return 'Controller: annotationSurfaceApi';
+        return 'Controller: annotationChannelApi';
     }
 
     /**
@@ -1065,7 +1065,7 @@ class RouterTestController extends Controller
 }
 
 /**
- * @Surface("web")
+ * @Channel("web")
  */
 class TopController extends Controller
 {

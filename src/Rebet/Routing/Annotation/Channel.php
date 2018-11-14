@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Annotation;
 
 /**
- * Surface Annotation
+ * Channel Annotation
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -12,7 +12,7 @@ namespace Rebet\Routing\Annotation;
  * @Annotation
  * @Target({"CLASS","METHOD"})
  */
-final class Surface
+final class Channel
 {
     /**
      * @var array
@@ -36,24 +36,24 @@ final class Surface
     }
 
     /**
-     * Check acceptable the given surface.
+     * Check acceptable the given channel.
      *
-     * @param string $surface
+     * @param string $channel
      * @return boolean
      */
-    public function allow(string $surface) : bool
+    public function allow(string $channel) : bool
     {
-        return empty($this->rejects) ? in_array($surface, $this->allows) : !in_array($surface, $this->rejects) ;
+        return empty($this->rejects) ? in_array($channel, $this->allows) : !in_array($channel, $this->rejects) ;
     }
 
     /**
-     * Check acceptable the given surface.
+     * Check acceptable the given channel.
      *
-     * @param string $surface
+     * @param string $channel
      * @return boolean
      */
-    public function reject(string $surface) : bool
+    public function reject(string $channel) : bool
     {
-        return !$this->allow($surface);
+        return !$this->allow($channel);
     }
 }
