@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Auth\Annotation\Authenticator;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
@@ -217,7 +218,8 @@ abstract class Route
     public function auth(?string $auth = null)
     {
         if ($auth === null) {
-            return $this->auth;
+            $authenticator = $this->annotation(Authenticator::class);
+            return $authenticator ? $authenticator->name : $this->auth ;
         }
         $this->auth = $auth;
         return $this;
