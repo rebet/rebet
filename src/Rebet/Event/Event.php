@@ -38,6 +38,16 @@ class Event
     }
 
     /**
+     * Clear the compiled listeners.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$listeners = null;
+    }
+
+    /**
      * Add event listener.
      * An event listener must have handle(EventClass $event) method or function(EventClass $event) with type hinting of event class.
      *
