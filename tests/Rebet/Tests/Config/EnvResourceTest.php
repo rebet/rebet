@@ -1,74 +1,16 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Config\EnvResource;
 
+use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 
 class EnvResourceTest extends RebetTestCase
 {
-    private $root;
-
     public function setUp()
     {
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'resource' => [
-                    'test.php' => <<<EOS
-<?php
-return [
-    'int' => 1,
-    'string' => 'a',
-    'array' => [1 ,2 , 3],
-    'map' => [
-        'int' => 1,
-        'string' => 'a',
-        'array' => [1 ,2 , 3],
-    ],
-];
-EOS
-                    ,
-                    'test_unittest.php' => <<<EOS
-<?php
-return [
-    'int' => 2,
-    'array' => [1 ,2 , 3, 4],
-    'map' => [
-        'string' => 'A',
-        'array' => [4],
-        'new' => 'NEW',
-    ],
-    'new' => 'NEW',
-];
-EOS
-                    ,
-                    'test_unittest.ini' => <<<EOS
-[a]
-int = 2
-string = a
-[b]
-string = b
-EOS
-                    ,
-                    'test.json' => <<<EOS
-{
-    "int": 1,
-    "string": "a",
-    "array": [1 ,2 , 3],
-    "map": {
-        "int": 1,
-        "string": "a",
-        "array": [1 ,2 , 3]
-    }
-}
-EOS
-                    ,
-                ],
-            ],
-            $this->root
-        );
+        parent::setUp();
     }
 
     public function test_load()
@@ -86,7 +28,36 @@ EOS
                 ],
                 'new' => 'NEW',
             ],
-            EnvResource::load('vfs://root/resource', 'test', 'unittest')
+            EnvResource::load(App::path('/resources/config'), 'test', 'unittest')
+        );
+
+        $this->assertSame(
+            [
+                'int'    => 1,
+                'string' => 'a',
+                'array'  => [1, 2, 3],
+                'map'    => [
+                    'int'    => 1,
+                    'string' => 'a',
+                    'array'  => [1, 2, 3],
+                ],
+            ],
+            EnvResource::load(App::path('/resources/config'), 'test', 'production')
+        );
+
+        $this->assertSame(
+            [
+                'int'    => 1,
+                'string' => 'a',
+                'array'  => [1, 2, 3],
+                'map'    => [
+                    'int'    => 1,
+                    'string' => 'a',
+                    'array'  => [1, 2, 3],
+                ],
+                'extra' => 1,
+            ],
+            EnvResource::load(App::path('/resources/config'), ['test', 'extra'], 'production')
         );
         
         $this->assertSame(
@@ -99,7 +70,7 @@ EOS
                     'string' => 'b',
                 ]
             ],
-            EnvResource::load('vfs://root/resource', 'test', 'unittest', 'ini')
+            EnvResource::load(App::path('/resources/config'), 'test', 'unittest', 'ini')
         );
         
         $this->assertSame(
@@ -113,17 +84,16 @@ EOS
                     'array'  => [1 , 2 , 3],
                 ],
             ],
-            EnvResource::load('vfs://root/resource', 'test', 'unittest', 'json')
+            EnvResource::load(App::path('/resources/config'), 'test', 'unittest', 'json')
         );
     }
 
     /**
      * @expectedException \LogicException
-     * @expectedExceptionMessage Resource test txt not found in vfs://root/resource.
      */
     public function test_load_notfound()
     {
-        EnvResource::load('vfs://root/resource', 'test', 'unittest', 'txt');
+        EnvResource::load(App::path('/resources/config'), 'test', 'unittest', 'txt');
         $this->fail("Never execute.");
     }
 }
