@@ -2,6 +2,7 @@
 namespace Rebet\Event;
 
 use Rebet\Common\Reflector;
+use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 
 /**
@@ -44,6 +45,7 @@ class Event
      */
     public static function clear() : void
     {
+        Config::clear(static::class);
         static::$listeners = null;
     }
 
@@ -82,8 +84,8 @@ class Event
             foreach ($listeners as $listener) {
                 if ($listener instanceof \Closure) {
                     $listener($event);
+                    continue;
                 }
-                $listener = Reflector::instantiate($listener);
                 $listener->handle($event);
             }
         }
@@ -99,7 +101,7 @@ class Event
         if (static::$listeners !== null) {
             return;
         }
-
+        
         static::$listeners = [];
         foreach (static::config('listeners', false, []) as $listener) {
             [$event, $listener]          = static::resolve($listener);
@@ -120,8 +122,9 @@ class Event
             $function = new \ReflectionFunction($listener);
             return [Reflector::getTypeHint($function->getParameters()[0]), $listener];
         }
-        if (method_exists($listener, 'handle')) {
-            throw new \LogicException("Event listener must have 'handle' method or callable.");
+        $listener = Reflector::instantiate($listener);
+        if (!method_exists($listener, 'handle')) {
+            throw new \LogicException("Event listener ".get_class($listener)." must have 'handle' method or callable.");
         }
         $method = new \ReflectionMethod($listener, 'handle');
         return [Reflector::getTypeHint($method->getParameters()[0]), $listener];

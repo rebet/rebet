@@ -8,6 +8,7 @@ use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
 use Rebet\Enum\Enum;
+use Rebet\Event\Event;
 use Rebet\Foundation\App;
 
 /**
@@ -35,6 +36,7 @@ abstract class RebetTestCase extends TestCase
             ],
         ]);
         Enum::clear();
+        Event::clear();
         StderrCapture::clear();
     }
     
