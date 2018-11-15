@@ -8,9 +8,12 @@ use Rebet\Tests\RebetTestCase;
 
 class EnvResourceTest extends RebetTestCase
 {
+    private $resources;
+    
     public function setUp()
     {
         parent::setUp();
+        $this->resources = App::path('/resources/Config/EnvResource');
     }
 
     public function test_load()
@@ -28,7 +31,7 @@ class EnvResourceTest extends RebetTestCase
                 ],
                 'new' => 'NEW',
             ],
-            EnvResource::load(App::path('/resources/config'), 'test', 'unittest')
+            EnvResource::load($this->resources, 'test', 'unittest')
         );
 
         $this->assertSame(
@@ -42,7 +45,7 @@ class EnvResourceTest extends RebetTestCase
                     'array'  => [1, 2, 3],
                 ],
             ],
-            EnvResource::load(App::path('/resources/config'), 'test', 'production')
+            EnvResource::load($this->resources, 'test', 'production')
         );
 
         $this->assertSame(
@@ -57,7 +60,7 @@ class EnvResourceTest extends RebetTestCase
                 ],
                 'extra' => 1,
             ],
-            EnvResource::load(App::path('/resources/config'), ['test', 'extra'], 'production')
+            EnvResource::load($this->resources, ['test', 'extra'], 'production')
         );
         
         $this->assertSame(
@@ -70,7 +73,7 @@ class EnvResourceTest extends RebetTestCase
                     'string' => 'b',
                 ]
             ],
-            EnvResource::load(App::path('/resources/config'), 'test', 'unittest', 'ini')
+            EnvResource::load($this->resources, 'test', 'unittest', 'ini')
         );
         
         $this->assertSame(
@@ -84,7 +87,7 @@ class EnvResourceTest extends RebetTestCase
                     'array'  => [1 , 2 , 3],
                 ],
             ],
-            EnvResource::load(App::path('/resources/config'), 'test', 'unittest', 'json')
+            EnvResource::load($this->resources, 'test', 'unittest', 'json')
         );
     }
 
@@ -93,7 +96,7 @@ class EnvResourceTest extends RebetTestCase
      */
     public function test_load_notfound()
     {
-        EnvResource::load(App::path('/resources/config'), 'test', 'unittest', 'txt');
+        EnvResource::load($this->resources, 'test', 'unittest', 'txt');
         $this->fail("Never execute.");
     }
 }

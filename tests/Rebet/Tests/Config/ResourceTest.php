@@ -1,68 +1,19 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Config\Resource;
 
+use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 
 class ResourceTest extends RebetTestCase
 {
-    private $root;
+    private $resources;
 
     public function setUp()
     {
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'resource' => [
-                    'test.php' => <<<EOS
-<?php
-return [
-    'int' => 1,
-    'string' => 'a',
-    'array' => [1 ,2 , 3],
-    'map' => [
-        'int' => 1,
-        'string' => 'a',
-        'array' => [1 ,2 , 3],
-    ],
-];
-EOS
-                    ,
-                    'test.ini' => <<<EOS
-[a]
-int = 1
-string = a
-[b]
-bool = on
-string = b
-EOS
-                    ,
-                    'test.json' => <<<EOS
-{
-    "int": 1,
-    "string": "a",
-    "array": [1 ,2 , 3],
-    "map": {
-        "int": 1,
-        "string": "a",
-        "array": [1 ,2 , 3]
-    }
-}
-EOS
-                    ,
-                    'test.txt' => <<<EOS
-1st
-2nd
-3rd
-4th
-EOS
-                    ,
-                ],
-            ],
-            $this->root
-        );
+        parent::setUp();
+        $this->resources = App::path('/resources/Config/Resource');
     }
 
     public function test_load()
@@ -78,7 +29,7 @@ EOS
                     'array'  => [1 , 2 , 3],
                 ],
             ],
-            Resource::load('php', 'vfs://root/resource/test.php')
+            Resource::load('php', $this->resources.'/test.php')
         );
         
         $this->assertSame(
@@ -92,7 +43,7 @@ EOS
                     'string' => 'b',
                 ],
             ],
-            Resource::load('ini', 'vfs://root/resource/test.ini')
+            Resource::load('ini', $this->resources.'/test.ini')
         );
         
         $this->assertSame(
@@ -101,7 +52,7 @@ EOS
                 'string' => 'b',
                 'bool'   => true,
             ],
-            Resource::load('ini', 'vfs://root/resource/test.ini', ['process_sections' => false])
+            Resource::load('ini', $this->resources.'/test.ini', ['process_sections' => false])
         );
         
         $this->assertSame(
@@ -115,7 +66,7 @@ EOS
                     'array'  => [1 , 2 , 3],
                 ],
             ],
-            Resource::load('json', 'vfs://root/resource/test.json')
+            Resource::load('json', $this->resources.'/test.json')
         );
         
         $this->assertSame(
@@ -125,7 +76,7 @@ EOS
                 '3rd',
                 '4th',
             ],
-            Resource::load('txt', 'vfs://root/resource/test.txt')
+            Resource::load('txt', $this->resources.'/test.txt')
         );
     }
 
@@ -135,11 +86,11 @@ EOS
      */
     public function test_load_unsuported()
     {
-        Resource::load('yaml', 'vfs://root/resource/test.yaml');
+        Resource::load('yaml', $this->resources.'/test.yaml');
     }
 
     public function test_load_notfound()
     {
-        $this->assertNull(Resource::load('php', 'vfs://root/resource/notfound.php'));
+        $this->assertNull(Resource::load('php', $this->resources.'/notfound.php'));
     }
 }
