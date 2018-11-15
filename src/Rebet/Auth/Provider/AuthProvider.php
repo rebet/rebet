@@ -2,7 +2,7 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
-
+use Rebet\Common\Securities;
 
 /**
  * Abstract Auth Provider Class
@@ -14,9 +14,16 @@ use Rebet\Auth\AuthUser;
  */
 abstract class AuthProvider
 {
-    public abstract function findById($id) : ?AuthUser ;
+    abstract public function findById($id, ?callable $checker = null) : ?AuthUser ;
 
-    public abstract function findByToken(string $token, $id = null) : ?AuthUser ;
+    abstract public function findBySigninId($signin_id, ?callable $checker = null) : ?AuthUser ;
 
-    public abstract function updateToken($id, string $token) : void ;
+    abstract public function findByToken(string $token, ?callable $checker = null) : ?AuthUser ;
+
+    abstract public function rememberToken($id, string $token, int $effective_days) : void ;
+
+    public function generateToken(int $length = 40) : string
+    {
+        return Securities::randomCode($length);
+    }
 }

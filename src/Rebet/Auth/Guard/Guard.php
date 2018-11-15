@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Auth\Guard;
 
-use Rebet\Http\Request;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\AuthProvider;
-
+use Rebet\Http\Request;
+use Rebet\Http\Response;
 
 /**
  * Guard Interface
@@ -16,8 +16,36 @@ use Rebet\Auth\Provider\AuthProvider;
  */
 interface Guard
 {
-    public function authenticate(Request $request, AuthProvider $provider, bool $remember = false) : AuthUser;
-
+    /**
+     * Signin an incoming request.
+     * If signin failed then return AuthUser::guest().
+     *
+     * @param Request $request
+     * @param AuthProvider $provider
+     * @param callable $checker function($user):bool
+     * @param boolean $remember
+     * @return AuthUser
+     */
+    public function signin(Request $request, AuthProvider $provider, callable $checker, bool $remember = false) : AuthUser;
     
-    public function recall(Request $request, AuthProvider $provider) : AuthUser;
+    /**
+     * It will sign out the authenticated user.
+     *
+     * @param Request $request
+     * @param AuthProvider $provider
+     * @param AuthUser $user
+     * @param string $redirect_to
+     * @return Response
+     */
+    public function signout(Request $request, AuthProvider $provider, AuthUser $user, string $redirect_to) : Response;
+
+    /**
+     * Recall authenticate user from an incoming request.
+     *
+     * @param Request $request
+     * @param AuthProvider $provider
+     * @param callable $checker function($user):bool
+     * @return AuthUser
+     */
+    public function authenticate(Request $request, AuthProvider $provider, callable $checker) : AuthUser;
 }

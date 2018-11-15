@@ -1,8 +1,13 @@
 <?php
 namespace Rebet\Auth;
 
+use Rebet\Auth\Event\Authenticate;
+use Rebet\Auth\Event\Signin;
+use Rebet\Auth\Event\Signout;
 use Rebet\Auth\Guard\Guard;
+use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
+use Rebet\Http\Responder;
 
 /**
  * Auth Class
@@ -23,14 +28,17 @@ class Auth
                 'web' => [
                     'guard'    => null,
                     'provider' => null,
-                    'fallback' => null, // url or function (Request) : Response { ... }
+                    'checker'  => function ($user) { return true; },
+                    'fallback' => null, // url or function(Request):Response
                 ],
                 'api' => [
                     'guard'    => null,
                     'provider' => null,
-                    'fallback' => null, // url or function (Request) : Response { ... }
+                    'checker'  => function ($user) { return true; },
+                    'fallback' => null, // url or function(Request):Response
                 ],
             ],
+            'listeners' => [],
         ];
     }
 
@@ -60,23 +68,75 @@ class Auth
     }
 
     /**
-     * Authenticate an incoming request.
+     * Signin an incoming request.
+     *
+     * @param Request $request
+     * @param string|null $authenticator (default: depend on routing configure)
+     * @return AuthUser|null response when authenticate failed
+     */
+    public static function signin(Request $request, ?string $authenticator = null, bool $remember = false) : ?AuthUser
+    {
+        $route    = $request->route;
+        $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
+        $guard    = static::configInstantiate("authenticator.{$auth}.guard");
+        $provider = static::configInstantiate("authenticator.{$auth}.provider");
+        $checker  = static::configInstantiate("authenticator.{$auth}.checker");
+
+        $user = $guard->signin($request, $provider, $checker, $remember);
+        if ($user->isGuest()) {
+            return null;
+        }
+
+        $user->authenticator = $auth;
+        static::$user        = $user;
+        static::dispatch(new Signin($request, $user, $remember));
+        return $user;
+    }
+
+    /**
+     * It will sign out the authenticated user.
+     *
+     * @param Request $request
+     * @param string $redirect_to
+     * @return Response
+     */
+    public static function signout(Request $request, string $redirect_to) : Response
+    {
+        if (static::$user === null || static::$user->isGuest()) {
+            Responder::redirect($redirect_to);
+        }
+
+        $user     = static::user();
+        $guard    = $user->guard();
+        $provider = $user->provider();
+        $response = $guard->signout($request, $provider, $user, $redirect_to);
+
+        static::$user = AuthUser::guest();
+        static::dispatch(new Signout($request, $user));
+        return $response;
+    }
+
+    /**
+     * Recall authenticate user from an incoming request then it will check to match the user's role in allowed roles of route.
      *
      * @param Request $request
      * @return Response|null response when authenticate failed
      */
-    public static function authenticate(Request $request, bool $remember = false) : ?Response
+    public static function authenticate(Request $request) : ? Response
     {
         $route    = $request->route;
-        $auth     = $route->auth() ?? $request->channel ;
+        $auth     = $route->auth() ?? $request->channel;
         $guard    = static::configInstantiate("authenticator.{$auth}.guard");
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
+        $checker  = static::configInstantiate("authenticator.{$auth}.checker");
 
-        $user = $guard->authenticate($request, $provider, $remember);
+        $user = $guard->authenticate($request, $provider, $checker);
 
         $roles = $route->roles();
         if (in_array($user->role(), $roles) || in_array('ALL', $roles)) {
-            static::$user = $user;
+            $user->authenticator = $auth;
+            static::$user        = $user;
+            static::dispatch(new Authenticate($request, $user));
             return null;
         }
         
@@ -85,27 +145,35 @@ class Auth
     }
 
     /**
-     * Authenticate recall an incoming request.
+     * Add auth event listener.
+     * An auth event listener must have handle(EventClass $event) method with type hinting of event class.
      *
-     * @param Request $request
-     * @return Response|null response when authenticate failed
+     * @param mixed $listener
+     * @return void
      */
-    public static function recall(Request $request) : ? Response
+    public static function addListener($listener) : void
     {
-        $route    = $request->route;
-        $auth     = $route->auth() ?? $request->channel;
-        $guard    = static::configInstantiate("authenticator.{$auth}.guard");
-        $provider = static::configInstantiate("authenticator.{$auth}.provider");
+        static::setConfig(['listeners' => [$listener]]);
+    }
 
-        $user = $guard->recall($request, $provider);
-
-        $roles = $route->roles();
-        if (in_array($user->role(), $roles) || in_array('ALL', $roles)) {
-            static::$user = $user;
-            return null;
+    /**
+     * Dispatch the given event to auth event listeners.
+     *
+     * @param mixed $event
+     * @return void
+     */
+    public static function dispatch($event) : void
+    {
+        foreach (static::config('listeners', false, []) as $listener) {
+            $listener = Reflector::instantiate($listener);
+            if (method_exists($listener, 'handle')) {
+                throw new \LogicException("Auth event listener must have 'handle(event)' method.");
+            }
+            $method = new \ReflectionMethod($listener, 'handle');
+            $type   = Reflector::getTypeHint($method->getParameters()[0]);
+            if (Reflector::typeOf($event, $type)) {
+                $method->invoke($listener, $event);
+            }
         }
-        
-        $fallback = static::config("authenticator.{$auth}.fallback");
-        return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
     }
 }
