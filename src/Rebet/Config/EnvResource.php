@@ -28,25 +28,30 @@ class EnvResource
      * Load the given resource.
      *
      * @param string $dir_path
-     * @param string $base_name
+     * @param string|array $base_names
      * @param string $env
      * @param string $suffix (default: .php)
      * @param array $option (default: [])
      * @return array
      * @throws \LogicException
      */
-    public static function load(string $dir_path, string $base_name, string $env, string $suffix = 'php', array $option = []) : array
+    public static function load(string $dir_path, $base_names, string $env, string $suffix = 'php', array $option = []) : array
     {
-        $base_resource_path = "{$dir_path}/{$base_name}.{$suffix}";
-        $base_resource      = Resource::load($suffix, $base_resource_path, $option);
+        $resource = [];
+        foreach ((array)$base_names as $base_name) {
+            $base_resource_path = "{$dir_path}/{$base_name}.{$suffix}";
+            $base_resource      = Resource::load($suffix, $base_resource_path, $option);
 
-        $env_resource_path = "{$dir_path}/{$base_name}_{$env}.{$suffix}";
-        $env_resource      = Resource::load($suffix, $env_resource_path, $option);
+            $env_resource_path = "{$dir_path}/{$base_name}_{$env}.{$suffix}";
+            $env_resource      = Resource::load($suffix, $env_resource_path, $option);
 
-        if ($base_resource === null && $env_resource === null) {
-            throw new \LogicException("Resource {$base_name} {$suffix} not found in {$dir_path}.");
+            if ($base_resource === null && $env_resource === null) {
+                throw new \LogicException("Resource {$base_name} {$suffix} not found in {$dir_path}.");
+            }
+
+            $resource = Arrays::override($resource, $base_resource ?? []);
+            $resource = Arrays::override($resource, $env_resource ?? []);
         }
-        
-        return $env_resource === null ? $base_resource : Arrays::override($base_resource, $env_resource);
+        return $resource;
     }
 }
