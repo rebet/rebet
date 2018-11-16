@@ -22,7 +22,7 @@ class Cookie extends SymfonyCookie
      *
      * @var array
      */
-    protected $queued = [];
+    protected static $queued = [];
 
     /**
      * It checks current request has a given name cookie.
@@ -133,6 +133,6 @@ class Cookie extends SymfonyCookie
      */
     public static function queued() : array
     {
-        return static::$queued ?? [];
+        return static::$queued;
     }
 }
