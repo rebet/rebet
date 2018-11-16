@@ -64,6 +64,52 @@ class Session
     }
 
     /**
+     * It checks exists the given name property in attribute session bag.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function has(string $name) : bool
+    {
+        return $this->attribute()->has($name);
+    }
+
+    /**
+     * Get the value from attribute session bag.
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return void
+     */
+    public function get(string $name, $default = null)
+    {
+        return $this->attribute()->get($name, $default);
+    }
+
+    /**
+     * Set the value to attribute session bag.
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function set(string $name, $value)
+    {
+        $this->attribute()->set($name, $value);
+    }
+
+    /**
+     * Remove the value from attribute session bag.
+     *
+     * @param string $name
+     * @return void
+     */
+    public function remove(string $name)
+    {
+        return $this->attribute()->remove($name);
+    }
+
+    /**
      * Get the attributes session bag.
      *
      * @return AttributeBag

@@ -23,37 +23,37 @@ class SecuritiesTest extends RebetTestCase
         $this->assertNotSame(Securities::randomHash(), Securities::randomHash());
     }
 
-    public function test_encript()
+    public function test_encrypt()
     {
         for ($i=0; $i < 100; $i++) {
             $plain     = Securities::randomCode(mt_rand(12, 32));
             $secretKey = Securities::randomCode(mt_rand(3, 8));
-            $encrypted = Securities::encript($plain, $secretKey);
-            $decrypted = Securities::decript($encrypted, $secretKey);
+            $encrypted = Securities::encrypt($plain, $secretKey);
+            $decrypted = Securities::decrypt($encrypted, $secretKey);
             $this->assertSame($plain, $decrypted);
         }
 
         $plain     = 'This is pen';
         $secretKey = 'Test';
-        $encrypted = Securities::encript($plain, $secretKey);
-        $decrypted = Securities::decript($encrypted.'a', $secretKey);
+        $encrypted = Securities::encrypt($plain, $secretKey);
+        $decrypted = Securities::decrypt($encrypted.'a', $secretKey);
         $this->assertNotSame($plain, $decrypted);
     }
 
-    public function test_decript()
+    public function test_decrypt()
     {
         for ($i=0; $i < 100; $i++) {
             $plain     = Securities::randomCode(mt_rand(12, 32));
             $secretKey = Securities::randomCode(mt_rand(3, 8));
-            $encrypted = Securities::encript($plain, $secretKey);
-            $decrypted = Securities::decript($encrypted, $secretKey);
+            $encrypted = Securities::encrypt($plain, $secretKey);
+            $decrypted = Securities::decrypt($encrypted, $secretKey);
             $this->assertSame($plain, $decrypted);
         }
 
         $plain     = 'This is pen';
         $secretKey = 'Test';
-        $encrypted = Securities::encript($plain, $secretKey);
-        $decrypted = Securities::decript($encrypted.'a', $secretKey);
+        $encrypted = Securities::encrypt($plain, $secretKey);
+        $decrypted = Securities::decrypt($encrypted.'a', $secretKey);
         $this->assertNotSame($plain, $decrypted);
     }
 }

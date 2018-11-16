@@ -9,6 +9,8 @@ use Rebet\Auth\Guard\Guard;
 use Rebet\Config\Configurable;
 use Rebet\Event\Event;
 use Rebet\Http\Responder;
+use Rebet\Validation\ValidData;
+use Rebet\Auth\Guard\SessionGuard;
 
 /**
  * Auth Class
@@ -27,16 +29,18 @@ class Auth
         return [
             'authenticator' => [
                 'web' => [
-                    'guard'    => null,
-                    'provider' => null,
-                    'checker'  => function ($user) { return true; },
-                    'fallback' => null, // url or function(Request):Response
+                    'guard'       => SessionGuard::class,
+                    'provider'    => null,
+                    'checker'     => null, // function (AuthUser $user, ?string $password) { return true; },
+                    'fallback'    => null, // url or function(Request):Response
+                    'credentials' => ['signin_id' => 'email', 'password'  => 'password'],
                 ],
                 'api' => [
-                    'guard'    => null,
-                    'provider' => null,
-                    'checker'  => function ($user) { return true; },
-                    'fallback' => null, // url or function(Request):Response
+                    'guard'       => null,
+                    'provider'    => null,
+                    'checker'     => null, // function (AuthUser $user, ?string $password) { return true; },
+                    'fallback'    => null, // url or function(Request):Response
+                    'credentials' => ['signin_id' => 'email', 'password'  => 'password'],
                 ],
             ],
         ];
@@ -71,16 +75,19 @@ class Auth
      * Signin an incoming request.
      *
      * @param Request $request
+     * @param ValidData $credentials
+     * @param bool $remember (default: false)
      * @param string|null $authenticator (default: depend on routing configure)
      * @return AuthUser|null null when authenticate failed
      */
-    public static function signin(Request $request, ?string $authenticator = null, bool $remember = false) : ?AuthUser
+    public static function signin(Request $request, ValidData $credentials, bool $remember = false, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
         $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
         $guard    = static::configInstantiate("authenticator.{$auth}.guard");
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $checker  = static::configInstantiate("authenticator.{$auth}.checker");
+        $checker  = \Closure::fromCallable(static::config("authenticator.{$auth}.checker"));
+        $guard->authenticator($auth);
 
         $user = $guard->signin($request, $provider, $checker, $remember);
         if ($user->isGuest()) {
@@ -129,7 +136,7 @@ class Auth
         $auth     = $route->auth() ?? $request->channel;
         $guard    = static::configInstantiate("authenticator.{$auth}.guard");
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $checker  = static::configInstantiate("authenticator.{$auth}.checker");
+        $checker  = \Closure::fromCallable(static::config("authenticator.{$auth}.checker"));
 
         $user = $guard->authenticate($request, $provider, $checker);
 

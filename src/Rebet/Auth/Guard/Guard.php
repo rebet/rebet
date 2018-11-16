@@ -21,12 +21,13 @@ interface Guard
      * If signin failed then return AuthUser::guest().
      *
      * @param Request $request
+     * @param array $credentials ['signin_id' => id, 'password' => password]
      * @param AuthProvider $provider
-     * @param callable $checker function($user):bool
+     * @param \Closure $checker function($user):bool
      * @param boolean $remember
      * @return AuthUser
      */
-    public function signin(Request $request, AuthProvider $provider, callable $checker, bool $remember = false) : AuthUser;
+    public function signin(Request $request, array $credentials, AuthProvider $provider, \Closure $checker, bool $remember = false) : AuthUser;
     
     /**
      * It will sign out the authenticated user.
@@ -44,8 +45,16 @@ interface Guard
      *
      * @param Request $request
      * @param AuthProvider $provider
-     * @param callable $checker function($user):bool
+     * @param \Closure $checker function($user):bool
      * @return AuthUser
      */
-    public function authenticate(Request $request, AuthProvider $provider, callable $checker) : AuthUser;
+    public function authenticate(Request $request, AuthProvider $provider, \Closure $checker) : AuthUser;
+
+    /**
+     * Get and Set authenticator name of this guard.
+     *
+     * @param string|null $name
+     * @return mixed
+     */
+    public function authenticator(?string $name = null) ;
 }
