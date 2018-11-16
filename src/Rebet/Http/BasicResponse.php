@@ -16,7 +16,7 @@ class BasicResponse extends SymfonyResponse implements Response
     use Respondable;
 
     /**
-     * Undocumented function
+     * Create a Response
      *
      * @param string $content
      * @param integer $status
@@ -25,5 +25,7 @@ class BasicResponse extends SymfonyResponse implements Response
     public function __construct($content = '', int $status = 200, array $headers = [])
     {
         parent::__construct($content, $status, $headers);
+        $this->applyQueuedCookies();
+        Responder::$current = $this;
     }
 }

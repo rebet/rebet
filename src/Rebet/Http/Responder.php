@@ -15,6 +15,13 @@ use Rebet\Common\Strings;
 class Responder
 {
     /**
+     * Current response
+     *
+     * @var Response
+     */
+    public static $current = null;
+
+    /**
      * No instantiation
      */
     private function __construct()
@@ -26,9 +33,9 @@ class Responder
      *
      * @param mixed $data
      * @param Request|null (default: null for Request::current())
-     * @return void
+     * @return Response
      */
-    public static function toResponse($data, ?Request $request = null)
+    public static function toResponse($data, ?Request $request = null) : Response
     {
         return static::prepare(static::createResponseByTypeOf($data), $request);
     }

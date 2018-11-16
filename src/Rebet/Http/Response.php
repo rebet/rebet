@@ -140,5 +140,5 @@ interface Response
      ******************************************************/
     public function getHeader(string $key);
 
-    public function setHeader(string $key, $values, bool $replace = true) : Response;
+    public function setHeader(string $key, $values, bool $replace = true) : self;
 }
