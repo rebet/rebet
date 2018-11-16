@@ -3,7 +3,6 @@ namespace Rebet\Http\Cookie;
 
 use Rebet\Common\Utils;
 use Rebet\Http\Request;
-use Rebet\Http\Responder;
 use Rebet\Routing\Router;
 use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
 
@@ -103,9 +102,6 @@ class Cookie extends SymfonyCookie
     public static function enqueue(Cookie $cookie) : void
     {
         static::$queued[$cookie->getName()] = $cookie;
-        if (Responder::$current) {
-            Responder::$current->headers->setCookie($cookie);
-        }
     }
 
     /**
@@ -116,13 +112,6 @@ class Cookie extends SymfonyCookie
      */
     public static function dequeue(string $name) : void
     {
-        $cookie = static::$queued[$name] ?? null;
-        if ($cookie === null) {
-            return;
-        }
-        if (Responder::$current) {
-            Responder::$current->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
-        }
         unset(static::$queued[$name]);
     }
 

@@ -25,7 +25,5 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
     public function __construct(string $url, int $status = 302, array $headers = [])
     {
         parent::__construct($url, $status, $headers);
-        $this->applyQueuedCookies();
-        Responder::$current = $this;
     }
 }

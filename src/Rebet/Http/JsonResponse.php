@@ -27,7 +27,5 @@ class JsonResponse extends SymfonyJsonResponse implements Response
     {
         $this->encodingOptions = $encodingOptions;
         parent::__construct($data, $status, $headers);
-        $this->applyQueuedCookies();
-        Responder::$current = $this;
     }
 }

@@ -25,7 +25,5 @@ class BasicResponse extends SymfonyResponse implements Response
     public function __construct($content = '', int $status = 200, array $headers = [])
     {
         parent::__construct($content, $status, $headers);
-        $this->applyQueuedCookies();
-        Responder::$current = $this;
     }
 }

@@ -25,7 +25,5 @@ class StreamedResponse extends SymfonyStreamedResponse implements Response
     public function __construct(callable $callback = null, int $status = 200, array $headers = [])
     {
         parent::__construct($callback, $status, $headers);
-        $this->applyQueuedCookies();
-        Responder::$current = $this;
     }
 }

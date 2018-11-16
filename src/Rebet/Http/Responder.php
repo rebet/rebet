@@ -15,13 +15,6 @@ use Rebet\Common\Strings;
 class Responder
 {
     /**
-     * Current response
-     *
-     * @var Response
-     */
-    public static $current = null;
-
-    /**
      * No instantiation
      */
     private function __construct()

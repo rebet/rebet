@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Http\Cookie\Cookie;
-
 /**
  * Respondable trait
  *
@@ -36,17 +34,5 @@ trait Respondable
     {
         $this->headers->set($key, $values, $replace);
         return $this;
-    }
-
-    /**
-     * Apply queued cookie to this response.
-     *
-     * @return void
-     */
-    protected function applyQueuedCookies() : void
-    {
-        foreach (Cookie::queued() as $cookie) {
-            $this->headers->setCookie($cookie);
-        }
     }
 }
