@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\IO;
+namespace Rebet\Tests\File;
 
 use org\bovigo\vfs\vfsStream;
 use Rebet\File\Files;
@@ -37,41 +37,6 @@ class FilesTest extends RebetTestCase
             ],
             $this->root
         );
-    }
-
-    public function test_normalizePath()
-    {
-        $this->assertSame('var/www/app', Files::normalizePath('var/www/app'));
-        $this->assertSame('/var/www/app', Files::normalizePath('/var/www/app'));
-        $this->assertSame('/var/www/app', Files::normalizePath('/var/www/app/'));
-        $this->assertSame('c:/var/www/app', Files::normalizePath('c:\\var\\www\\app'));
-        $this->assertSame('c:/var/www/app', Files::normalizePath('c:\\var\\www\\app\\'));
-        $this->assertSame('vfs://var/www/app', Files::normalizePath('vfs://var/www/app'));
-        $this->assertSame('vfs://var/www/app', Files::normalizePath('vfs://var/www/app/'));
-
-        $this->assertSame('var/www/app', Files::normalizePath('./var/www/app'));
-        $this->assertSame('../var/www/app', Files::normalizePath('../var/www/app'));
-        $this->assertSame('../www/app', Files::normalizePath('var/../../www/app'));
-        $this->assertSame('../www/app', Files::normalizePath('/var/../../www/app'));
-        $this->assertSame('../../www/app', Files::normalizePath('var/../..///.//../www/app'));
-        $this->assertSame('app', Files::normalizePath('var/../www/../app'));
-        $this->assertSame('www', Files::normalizePath('var/../www'));
-        $this->assertSame('/www', Files::normalizePath('/var/../www'));
-        $this->assertSame('.', Files::normalizePath('var/..'));
-        $this->assertSame('/', Files::normalizePath('/var/..'));
-        $this->assertSame('c:/', Files::normalizePath('c:/var/..'));
-        $this->assertSame('file://', Files::normalizePath('file://var/..'));
-        $this->assertSame('file://c:/', Files::normalizePath('file://c:/var/..'));
-    }
-
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
-     */
-    public function test_normalizePath_invalid()
-    {
-        $this->assertSame('app', Files::normalizePath('c:/invalid/../../path'));
-        $this->fail("Never execute.");
     }
 
     public function test_removeDir()

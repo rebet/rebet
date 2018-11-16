@@ -22,7 +22,7 @@ abstract class AuthProvider
 
     abstract public function rememberToken($id, string $token, int $effective_days) : void ;
 
-    public function generateToken(int $length = 40) : string
+    protected function generateToken(int $length = 40) : string
     {
         return Securities::randomCode($length);
     }

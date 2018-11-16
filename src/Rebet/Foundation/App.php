@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Foundation;
 
+use Rebet\Common\Path;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
-use Rebet\File\Files;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Route\MethodRoute;
@@ -146,7 +146,7 @@ class App
      */
     public static function setRoot(string $app_root_path) : void
     {
-        self::setConfig(['root' => Files::normalizePath($app_root_path)]);
+        self::setConfig(['root' => Path::normalize($app_root_path)]);
     }
 
     /**
@@ -157,7 +157,7 @@ class App
      */
     public static function path(string $root_relative_path) : string
     {
-        return Files::normalizePath(self::getRoot().'/'.$root_relative_path);
+        return Path::normalize(self::getRoot().'/'.$root_relative_path);
     }
 
     /**

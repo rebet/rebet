@@ -2,13 +2,13 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Path;
 use Rebet\Common\Strings;
 use Rebet\Common\System;
 use Rebet\Common\Utils;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
-use Rebet\File\Files;
 use Rebet\Translation\FileLoader;
 use Rebet\Translation\Translator;
 
@@ -30,7 +30,7 @@ class BuiltinValidations extends Validations
     {
         return static::parentConfigOverride([
             'resources' => [
-                'i18n' => [Files::normalizePath(__DIR__ . '/i18n')],
+                'i18n' => [Path::normalize(__DIR__ . '/i18n')],
             ],
             'default'   => [
                 'DependenceChar' => [
@@ -240,7 +240,6 @@ class BuiltinValidations extends Validations
     {
         return $c->hasError($field);
     }
-
 
     // ====================================================
     // Built-in Validation Methods

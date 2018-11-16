@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Routing;
 
+use Rebet\Common\Path;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
-use Rebet\File\Files;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
@@ -535,7 +535,7 @@ class Router
      */
     public function prefix(string $prefix) : self
     {
-        $this->prefix = Files::normalizePath($prefix);
+        $this->prefix = Path::normalize($prefix);
         return $this;
     }
 
