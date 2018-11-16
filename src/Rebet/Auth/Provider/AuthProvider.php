@@ -18,29 +18,29 @@ abstract class AuthProvider
      * Find user by id then check the user state by checker.
      *
      * @param mixed $id
-     * @param callable|null $checker function (user) : bool {...}
+     * @param \Closure|null $checker function (user) : bool {...}
      * @return AuthUser|null
      */
-    abstract public function findById($id, ?callable $checker = null) : ?AuthUser ;
+    abstract public function findById($id, ?\Closure $checker = null) : ?AuthUser ;
 
     /**
      * Find user by signin_id then check the user state by checker.
      * The signin_id may be a login ID, a email address or member number, but it must be unique.
      *
      * @param mixed $signin_id
-     * @param callable|null $checker
+     * @param \Closure|null $checker
      * @return AuthUser|null
      */
-    abstract public function findBySigninId($signin_id, ?callable $checker = null) : ?AuthUser ;
+    abstract public function findBySigninId($signin_id, ?\Closure $checker = null) : ?AuthUser ;
 
     /**
      * Find user by remember token then check the user state by checker.
      *
      * @param string $token
-     * @param callable|null $checker
+     * @param \Closure|null $checker
      * @return AuthUser|null
      */
-    abstract public function findByRememberToken(string $token, ?callable $checker = null) : ?AuthUser ;
+    abstract public function findByRememberToken(string $token, ?\Closure $checker = null) : ?AuthUser ;
 
     /**
      * Issuing remember token and return the token.

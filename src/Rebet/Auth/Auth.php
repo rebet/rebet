@@ -75,12 +75,12 @@ class Auth
      * Signin an incoming request.
      *
      * @param Request $request
-     * @param ValidData $credentials
+     * @param array $credentials
      * @param bool $remember (default: false)
      * @param string|null $authenticator (default: depend on routing configure)
      * @return AuthUser|null null when authenticate failed
      */
-    public static function signin(Request $request, ValidData $credentials, bool $remember = false, ?string $authenticator = null) : ?AuthUser
+    public static function signin(Request $request, array $credentials, bool $remember = false, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
         $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
