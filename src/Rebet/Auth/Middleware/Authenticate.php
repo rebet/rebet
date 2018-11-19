@@ -2,6 +2,7 @@
 namespace Rebet\Auth\Middleware;
 
 use Rebet\Auth\Auth;
+use Rebet\Http\Request;
 
 /**
  * Authenticate Middleware Class
