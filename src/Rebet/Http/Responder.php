@@ -85,10 +85,9 @@ class Responder
      */
     public static function redirect(string $url, array $query = [], int $status = 302, array $headers = [], ?Request $request = null) : RedirectResponse
     {
-        $url = empty($query)
-            ? $url
-            : $url.(Strings::contains($url, '?') ? '&' : '?').http_build_query($query)
-            ;
+        $request = $request ?? Request::current() ;
+        $url     = empty($query) ? $url : $url.(Strings::contains($url, '?') ? '&' : '?').http_build_query($query) ;
+        $url     = Strings::startsWith($url, '/') ? $request->route->prefix.$url : $url ;
         return static::prepare(new RedirectResponse($url, $status, $headers), $request);
     }
 }
