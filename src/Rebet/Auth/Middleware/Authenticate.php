@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Auth\Provider;
+namespace Rebet\Auth\Middleware;
 
 use Rebet\Auth\Auth;
 
