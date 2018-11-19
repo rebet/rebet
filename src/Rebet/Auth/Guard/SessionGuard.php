@@ -7,6 +7,7 @@ use Rebet\Config\Configurable;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
+use Rebet\Http\Response;
 use Rebet\Http\Session\Session;
 
 /**
