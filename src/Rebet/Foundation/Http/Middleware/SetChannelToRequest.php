@@ -1,18 +1,18 @@
 <?php
-namespace Rebet\Http\Middleware;
+namespace Rebet\Foundation\Http\Middleware;
 
-use Rebet\Http\Request;
 use Rebet\Foundation\App;
+use Rebet\Http\Request;
 
 /**
- * Set Channel Middleware Class
+ * Set Channel To Request Middleware Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class SetChannel
+class SetChannelToRequest
 {
     /**
      * Handle Set Channel Middleware.
