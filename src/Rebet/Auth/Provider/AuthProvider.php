@@ -15,42 +15,88 @@ use Rebet\Common\Securities;
 abstract class AuthProvider
 {
     /**
-     * Find user by id then check the user state by checker.
+     * Authenticator name of this provider.
+     *
+     * @var string
+     */
+    protected $authenticator = null;
+
+    /**
+     * Find user by id.
      *
      * @param mixed $id
-     * @param \Closure|null $checker function (user) : bool {...}
      * @return AuthUser|null
      */
-    abstract public function findById($id, ?\Closure $checker = null) : ?AuthUser ;
+    abstract public function findById($id) : ?AuthUser ;
 
     /**
-     * Find user by signin_id then check the user state by checker.
+     * Find user by signin_id.
      * The signin_id may be a login ID, a email address or member number, but it must be unique.
      *
-     * @param mixed $signin_id
-     * @param \Closure|null $checker
+     * @param mixed $credentials ['signin_id' => id, 'password' => password]
      * @return AuthUser|null
      */
-    abstract public function findBySigninId($signin_id, ?\Closure $checker = null) : ?AuthUser ;
+    abstract public function findByCredentials(array $credentials) : ?AuthUser ;
 
     /**
-     * Find user by remember token then check the user state by checker.
+     * It checks the provider will support remember token.
+     * If this provider support remember token must be override the method in sub class.
+     *
+     * @return boolean
+     */
+    public function supportRememberToken() : bool
+    {
+        return false;
+    }
+
+    /**
+     * Find user by remember token.
+     * If this provider support remember token must be override the method in sub class.
      *
      * @param string $token
-     * @param \Closure|null $checker
      * @return AuthUser|null
      */
-    abstract public function findByRememberToken(string $token, ?\Closure $checker = null) : ?AuthUser ;
+    public function findByRememberToken(string $token) : ?AuthUser
+    {
+        return null;
+    }
 
     /**
      * Issuing remember token and return the token.
+     * If this provider support remember token must be override the method in sub class.
      *
      * @param mixed $id
      * @param integer $remember_days
-     * @return string
+     * @return string|null token
      */
-    abstract public function issuingRememberToken($id, int $remember_days) : string ;
+    public function issuingRememberToken($id, int $remember_days) : ?string
+    {
+        return null;
+    }
 
+    /**
+     * Remove the given remember token.
+     * If this provider support remember token must be override the method in sub class.
+     *
+     * @param string|null $token
+     * @return void
+     */
+    public function removeRememberToken(?string $token) : void
+    {
+        // Do nothing.
+    }
+
+    /**
+     * Get and Set authenticator name of this provider.
+     *
+     * @param string|null $name
+     * @return mixed
+     */
+    public function authenticator(?string $name = null)
+    {
+        return $name === null ? $this->authenticator : $this->authenticator = $name ;
+    }
+    
     /**
      * Generate token.
      *

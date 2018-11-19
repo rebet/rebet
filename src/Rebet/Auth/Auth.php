@@ -9,8 +9,6 @@ use Rebet\Auth\Guard\Guard;
 use Rebet\Config\Configurable;
 use Rebet\Event\Event;
 use Rebet\Http\Responder;
-use Rebet\Validation\ValidData;
-use Rebet\Auth\Guard\SessionGuard;
 
 /**
  * Auth Class
@@ -29,18 +27,14 @@ class Auth
         return [
             'authenticator' => [
                 'web' => [
-                    'guard'       => SessionGuard::class,
-                    'provider'    => null,
-                    'checker'     => null, // function (AuthUser $user, ?string $password) { return true; },
-                    'fallback'    => null, // url or function(Request):Response
-                    'credentials' => ['signin_id' => 'email', 'password'  => 'password'],
+                    'guard'    => null,
+                    'provider' => null,
+                    'fallback' => null, // url or function(Request):Response
                 ],
                 'api' => [
-                    'guard'       => null,
-                    'provider'    => null,
-                    'checker'     => null, // function (AuthUser $user, ?string $password) { return true; },
-                    'fallback'    => null, // url or function(Request):Response
-                    'credentials' => ['signin_id' => 'email', 'password'  => 'password'],
+                    'guard'    => null,
+                    'provider' => null,
+                    'fallback' => null, // url or function(Request):Response
                 ],
             ],
         ];
@@ -72,33 +66,50 @@ class Auth
     }
 
     /**
-     * Signin an incoming request.
+     * Attempt find user by given credentials.
      *
      * @param Request $request
      * @param array $credentials
-     * @param bool $remember (default: false)
-     * @param string|null $authenticator (default: depend on routing configure)
-     * @return AuthUser|null null when authenticate failed
+     * @param string|null $authenticator (default: auth of the route, if not set then use channel name)
+     * @return AuthUser|null
      */
-    public static function signin(Request $request, array $credentials, bool $remember = false, ?string $authenticator = null) : ?AuthUser
+    public static function attempt(Request $request, array $credentials, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
         $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
-        $guard    = static::configInstantiate("authenticator.{$auth}.guard");
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $checker  = \Closure::fromCallable(static::config("authenticator.{$auth}.checker"));
-        $guard->authenticator($auth);
+        $user     = $provider->findByCredentials($request, $credentials);
+        if ($user) {
+            $provider->authenticator($auth);
+            $user->provider($provider);
 
-        $user = $guard->signin($request, $provider, $checker, $remember);
-        if ($user->isGuest()) {
+            $guard = static::configInstantiate("authenticator.{$auth}.guard");
+            $guard->authenticator($auth);
+            $user->guard($guard);
+        }
+        return $user;
+    }
+
+    /**
+     * Sign in as given user.
+     * If the given user is null or guest, then this method return false and dispatch SigninFailed event.
+     *
+     * @param Request $request
+     * @param AuthUser|null $user
+     * @param bool $remember (default: false)
+     * @return bool
+     */
+    public static function signin(Request $request, ?AuthUser $user, bool $remember = false) : bool
+    {
+        if ($user === null || $user->isGuest()) {
             Event::dispatch(new SigninFailed($request));
-            return null;
+            return false;
         }
 
-        $user->authenticator = $auth;
-        static::$user        = $user;
+        $user->guard()->signin($request, $user, $remember);
+        static::$user = $user;
         Event::dispatch(new Signined($request, $user, $remember));
-        return $user;
+        return true;
     }
 
     /**
@@ -110,15 +121,12 @@ class Auth
      */
     public static function signout(Request $request, string $redirect_to) : Response
     {
-        if (static::$user === null || static::$user->isGuest()) {
-            Responder::redirect($redirect_to);
+        $user = static::user();
+        if ($user === null || $user->isGuest()) {
+            return Responder::redirect($redirect_to);
         }
 
-        $user     = static::user();
-        $guard    = $user->guard();
-        $provider = $user->provider();
-        $response = $guard->signout($request, $provider, $user, $redirect_to);
-
+        $response     = $user->guard()->signout($request, $user, $redirect_to);
         static::$user = AuthUser::guest();
         Event::dispatch(new Signouted($request, $user));
         return $response;
@@ -136,14 +144,16 @@ class Auth
         $auth     = $route->auth() ?? $request->channel;
         $guard    = static::configInstantiate("authenticator.{$auth}.guard");
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $checker  = \Closure::fromCallable(static::config("authenticator.{$auth}.checker"));
+        $guard->authenticator($auth);
+        $provider->authenticator($auth);
 
-        $user = $guard->authenticate($request, $provider, $checker);
+        $user = $guard->authenticate($request, $provider);
+        $user->provider($provider);
+        $user->guard($guard);
+        static::$user = $user;
 
         $roles = $route->roles();
         if (in_array($user->role(), $roles) || in_array('ALL', $roles)) {
-            $user->authenticator = $auth;
-            static::$user        = $user;
             Event::dispatch(new Authenticated($request, $user));
             return null;
         }

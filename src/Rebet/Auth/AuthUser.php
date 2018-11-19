@@ -54,20 +54,16 @@ class AuthUser
     /**
      * Create a authenticated user instance.
      *
-     * @param AuthProvider $provider
      * @param mixed $user
      * @param array $alias [
-     *      'id'        => <$user's id        field or callback function($user){} to return id>,
-     *      'signin_id' => <$user's signin_id field or callback function($user){} to return signin_id>,
-     *      'role'      => <$user's role      field or callback function($user){} to return role or @ROLE_NAME>,
+     *      'id'   => <$user's id   field or callback function($user){} to return id>,
+     *      'role' => <$user's role field or callback function($user){} to return role or @ROLE_NAME>,
      * ] (default" [])
      */
-    public function __construct(?Guard $guard, ?AuthProvider $provider, $user, array $alias = [])
+    public function __construct($user, array $alias = [])
     {
-        $this->guard    = $guard;
-        $this->provider = $provider;
-        $this->user     = $user;
-        $this->alias    = $alias;
+        $this->user  = $user;
+        $this->alias = $alias;
     }
 
     /**
@@ -77,27 +73,27 @@ class AuthUser
      */
     public static function guest() : self
     {
-        return new static(null, null, null, ['role' => '@GUEST']);
+        return new static(null, ['role' => '@GUEST']);
     }
 
     /**
-     * Get the Guard instance of this authenticated user.
+     * Get and Set the Guard instance of this authenticated user.
      *
      * @return Guard|null
      */
-    public function guard() : ?Guard
+    public function guard(?Guard $guard = null) : ?Guard
     {
-        return $this->guard;
+        return $guard === null ? $this->guard : $this->guard = $guard ;
     }
 
     /**
-     * Get the AuthProvider instance of this authenticated user.
+     * Get and Set the AuthProvider instance of this authenticated user.
      *
      * @return AuthProvider|null
      */
-    public function provider() : ?AuthProvider
+    public function provider(?AuthProvider $provider = null) : ?AuthProvider
     {
-        return $this->provider;
+        return $provider === null ? $this->provider : $this->provider = $provider ;
     }
 
     /**
@@ -139,16 +135,6 @@ class AuthUser
     public function id()
     {
         return $this->get('id');
-    }
-
-    /**
-     * Get the signin id of this authenticated.
-     *
-     * @return mixed
-     */
-    public function signinId()
-    {
-        return $this->get('signin_id');
     }
 
     /**

@@ -17,38 +17,33 @@ use Rebet\Http\Response;
 interface Guard
 {
     /**
-     * Signin an incoming request.
-     * If signin failed then return AuthUser::guest().
+     * Signin a given authenticated user.
      *
      * @param Request $request
-     * @param array $credentials ['signin_id' => id, 'password' => password]
-     * @param AuthProvider $provider
-     * @param \Closure $checker function($user):bool
+     * @param AuthUser $user
      * @param boolean $remember
-     * @return AuthUser
+     * @return void
      */
-    public function signin(Request $request, array $credentials, AuthProvider $provider, \Closure $checker, bool $remember = false) : AuthUser;
+    public function signin(Request $request, AuthUser $user, bool $remember = false) : void;
     
     /**
      * It will sign out the authenticated user.
      *
      * @param Request $request
-     * @param AuthProvider $provider
      * @param AuthUser $user
      * @param string $redirect_to
      * @return Response
      */
-    public function signout(Request $request, AuthProvider $provider, AuthUser $user, string $redirect_to) : Response;
+    public function signout(Request $request, AuthUser $user, string $redirect_to) : Response;
 
     /**
      * Recall authenticate user from an incoming request.
      *
      * @param Request $request
      * @param AuthProvider $provider
-     * @param \Closure $checker function($user):bool
      * @return AuthUser
      */
-    public function authenticate(Request $request, AuthProvider $provider, \Closure $checker) : AuthUser;
+    public function authenticate(Request $request, AuthProvider $provider) : AuthUser;
 
     /**
      * Get and Set authenticator name of this guard.
