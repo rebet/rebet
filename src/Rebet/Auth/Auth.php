@@ -8,7 +8,9 @@ use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Config\Configurable;
 use Rebet\Event\Event;
+use Rebet\Http\Request;
 use Rebet\Http\Responder;
+use Rebet\Http\Response;
 
 /**
  * Auth Class
@@ -138,7 +140,7 @@ class Auth
      * @param Request $request
      * @return Response|null response when authenticate failed
      */
-    public static function authenticate(Request $request) : ? Response
+    public static function authenticate(Request $request) : ?Response
     {
         $route    = $request->route;
         $auth     = $route->auth() ?? $request->channel;
