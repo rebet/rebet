@@ -104,6 +104,6 @@ class ArrayProvider extends AuthProvider
             });
         }
 
-        return $users->count() === 1 ? new AuthUser($users->first()) : null ;
+        return $users->count() === 1 ? new AuthUser($users->first(), $this->alias) : null ;
     }
 }

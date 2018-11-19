@@ -2,6 +2,7 @@
 namespace Rebet\Http;
 
 use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
 use Rebet\Http\Session\Session;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
@@ -201,5 +202,18 @@ class Request extends SymfonyRequest
     public function session() : Session
     {
         return $this->getSession();
+    }
+
+    /**
+     * Get the bearer token from the request headers.
+     *
+     * @return string|null
+     */
+    public function bearerToken()
+    {
+        $header = $this->header('Authorization', '');
+        if (Strings::startsWith($header, 'Bearer ')) {
+            return Strings::substr($header, 7);
+        }
     }
 }
