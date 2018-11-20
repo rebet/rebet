@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Auth;
 
-use Rebet\Auth\Gate\Gate;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
+use Rebet\Inflection\Inflector;
 
 /**
  * Auth User Class
@@ -56,15 +56,14 @@ class AuthUser
      * Create a authenticated user instance.
      *
      * @param mixed $user
-     * @param array $alias [
-     *      'id'   => <$user's id   field or callback function($user){} to return id>,
-     *      'role' => <$user's role field or callback function($user){} to return role or @ROLE_NAME>,
-     * ] (default" [])
+     * @param string|callable|null $id alias name or function($user){} to return id (default: create table_name_id from given user class name by Inflector)
      */
-    public function __construct($user, array $alias = [])
+    public function __construct($user, $id = null)
     {
         $this->user  = $user;
-        $this->alias = $alias;
+        $this->alias = [
+            'id' => $id ?? ($user ? Inflector::primarize((new \ReflectionClass($user))->getShortName()) : null),
+        ];
     }
 
     /**
@@ -74,7 +73,7 @@ class AuthUser
      */
     public static function guest() : self
     {
-        return new static(null, ['role' => '@GUEST']);
+        return new static(null);
     }
 
     /**
@@ -118,17 +117,6 @@ class AuthUser
     }
 
     /**
-     * Get the role of this authenticated.
-     * If role is nothing then return 'GUEST'.
-     *
-     * @return string
-     */
-    public function role() : string
-    {
-        return $this->get('role', 'GUEST');
-    }
-
-    /**
      * Get the id of this authenticated.
      *
      * @return mixed
@@ -136,28 +124,6 @@ class AuthUser
     public function id()
     {
         return $this->get('id');
-    }
-
-    /**
-     * Check the authenticated user's role is in given roles.
-     *
-     * @param string ...$roles
-     * @return boolean
-     */
-    public function in(string ...$roles) : bool
-    {
-        return in_array($this->role(), $roles, true);
-    }
-
-    /**
-     * Check the authenticated user's role is not in given roles.
-     *
-     * @param string ...$roles
-     * @return boolean
-     */
-    public function notIn(string ...$roles) : bool
-    {
-        return !static::in(...$roles);
     }
 
     /**
@@ -173,33 +139,13 @@ class AuthUser
     }
 
     /**
-     * It checks the authenticated user role is GUEST.
+     * It checks the authenticated user is GUEST.
      *
      * @return boolean
      */
     public function isGuest() : bool
     {
-        return $this->role() === "GUEST";
-    }
-
-    /**
-     * It checks the authenticated user role is USER.
-     *
-     * @return boolean
-     */
-    public function isUser() : bool
-    {
-        return $this->role() === "USER";
-    }
-
-    /**
-     * It checks the authenticated user role is ADMIN.
-     *
-     * @return boolean
-     */
-    public function isAdmin() : bool
-    {
-        return $this->role() === "ADMIN";
+        return $this->user === null;
     }
 
     /**
@@ -211,7 +157,7 @@ class AuthUser
      */
     public function can(string $action, ...$targets) : bool
     {
-        return Gate::allow($this->user, $action, ...$targets);
+        return Auth::allow($this, $action, ...$targets);
     }
 
     /**
