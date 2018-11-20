@@ -6,6 +6,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Routing\RouteNotFoundException;
 use Rebet\View\View;
+use Rebet\View\ViewRenderFailedException;
 
 /**
  * View Route Class
@@ -53,7 +54,7 @@ class ViewRoute extends ClosureRoute
             {
                 try {
                     return $this->view->render();
-                } catch (\Throwable $e) {
+                } catch (ViewRenderFailedException $e) {
                     throw new RouteNotFoundException("View route [{$this->view->name}] not found. An exception occurred while processing the view.", 404, $e);
                 }
             }

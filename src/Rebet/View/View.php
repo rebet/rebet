@@ -103,9 +103,14 @@ class View implements Renderable
      * Get the string contents of the view.
      *
      * @return string
+     * @throws ViewRenderFailedException
      */
     public function render() : string
     {
-        return $this->engine->render($this->name, $this->data);
+        try {
+            return $this->engine->render($this->name, $this->data);
+        } catch (\Throwable $e) {
+            throw new ViewRenderFailedException("The view {$this->name} render failed because of exception occurred.", null, $e);
+        }
     }
 }

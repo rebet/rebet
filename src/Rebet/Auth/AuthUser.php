@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Auth;
 
+use Rebet\Auth\Gate\Gate;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Common\Reflector;
@@ -199,6 +200,30 @@ class AuthUser
     public function isAdmin() : bool
     {
         return $this->role() === "ADMIN";
+    }
+
+    /**
+     * It checks the user can do given action to targets.
+     *
+     * @param string $action
+     * @param mixed ...$targets
+     * @return boolean
+     */
+    public function can(string $action, ...$targets) : bool
+    {
+        return Gate::allow($this->user, $action, ...$targets);
+    }
+
+    /**
+     * It checks the user can not do given action to targets.
+     *
+     * @param string $action
+     * @param mixed ...$targets
+     * @return boolean
+     */
+    public function cannot(string $action, ...$targets) : bool
+    {
+        return !$this->can($action, ...$targets);
     }
 
     /**
