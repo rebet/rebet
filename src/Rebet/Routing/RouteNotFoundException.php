@@ -2,9 +2,9 @@
 namespace Rebet\Routing;
 
 /**
- * ルート未定義例外 クラス
+ * Route Not Found Exception Class
  *
- * 対象のルートが見つからない場合に throw されます。
+ * It is thrown if the target route can not be found.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -13,6 +13,9 @@ namespace Rebet\Routing;
  */
 class RouteNotFoundException extends \RuntimeException
 {
+    /**
+     * {@inheritDoc}
+     */
     public function __construct($message, $code = null, $previous = null)
     {
         parent::__construct($message, $code, $previous);
