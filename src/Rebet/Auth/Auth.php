@@ -204,7 +204,7 @@ class Auth
      * @param mixed ...$targets
      * @return bool
      */
-    public static function allow($user, string $action, ...$targets) : bool
+    public static function allow(AuthUser $user, string $action, ...$targets) : bool
     {
         $selector = empty($targets) ? null : (is_object($targets[0]) ? get_class($targets[0]) : $targets[0]);
         $allow    = static::checkPolicy($user, $selector, '@before', $targets) ??
@@ -225,7 +225,7 @@ class Auth
      * @param array $targets
      * @return boolean|null
      */
-    protected static function checkPolicy($user, $selector, string $action, array $targets) : ? bool
+    protected static function checkPolicy(AuthUser $user, $selector, string $action, array $targets) : ? bool
     {
         if (!is_string($selector)) {
             return null;
@@ -242,7 +242,7 @@ class Auth
      * @param array $targets
      * @return boolean
      */
-    protected static function checkGate($user, string $action, array $targets = []) : ? bool
+    protected static function checkGate(AuthUser $user, string $action, array $targets = []) : ? bool
     {
         $gate = static::config("gates.{$action}", false);
         return is_callable($gate) ? static::invoke(\Closure::fromCallable($gate), $user, $targets) : null;
