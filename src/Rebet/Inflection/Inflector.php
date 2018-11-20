@@ -2,6 +2,7 @@
 namespace Rebet\Inflection;
 
 use Rebet\Common\Strings;
+use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 
 /**
@@ -304,6 +305,19 @@ class Inflector
         return $word === null ? null : static::pluralize(static::snakize($word, $replacement, $delimiters));
     }
 
+    /**
+     * Converts a word into the format for a Rebet singular promary key name.
+     * Converts 'ClassName' to 'class_name_id' and 'table_names' to 'table_name_id'.
+     *
+     * @param string $word
+     * @param string $delimiter
+     * @return string
+     */
+    public static function primarize(?string $word, string $replacement = '_', string $delimiters = ' _-') : ?string
+    {
+        return Utils::isBlank($word) ? $word : static::singularize(static::snakize($word, $replacement, $delimiters)).'_id';
+    }
+    
     /**
      * Converts a plural word into the format for a Rebet singular class name.
      * Converts 'table_names' to 'TableName'.

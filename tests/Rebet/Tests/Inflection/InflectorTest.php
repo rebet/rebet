@@ -109,6 +109,19 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human_readable_cases', Inflector::tableize('human readable case'));
     }
 
+    public function test_primarize()
+    {
+        $this->assertNull(Inflector::primarize(null));
+        $this->assertSame('', Inflector::primarize(''));
+        $this->assertSame('pascal_case_id', Inflector::primarize('PascalCase'));
+        $this->assertSame('camel_case_id', Inflector::primarize('camelCase'));
+        $this->assertSame('snake_case_id', Inflector::primarize('snake_case'));
+        $this->assertSame('kebab_case_id', Inflector::primarize('kebab-case'));
+        $this->assertSame('human_readable_case_id', Inflector::primarize('Human Readable Case'));
+        $this->assertSame('human_readable_case_id', Inflector::primarize('Human readable case'));
+        $this->assertSame('human_readable_case_id', Inflector::primarize('human readable case'));
+    }
+
     public function test_classify()
     {
         $this->assertNull(Inflector::classify(null));
