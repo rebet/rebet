@@ -39,7 +39,7 @@ class ViewRoute extends ClosureRoute
      * @param View $view
      * @return Renderable
      */
-    protected static function proxy(View $view) : Renderable
+    protected function proxy(View $view) : Renderable
     {
         return new class($view) implements Renderable {
             private $view;
