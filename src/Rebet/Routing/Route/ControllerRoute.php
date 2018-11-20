@@ -16,24 +16,24 @@ use Rebet\Inflection\Inflector;
 class ControllerRoute extends ConventionalRoute
 {
     /**
-     * ルーティング対象URI
+     * Target uri for routing
      *
      * @var string
      */
     public $uri = null;
 
     /**
-     * コントローラアクション
+     * Controller action
      *
      * @var \ReflectionClass
      */
     protected $action = null;
 
     /**
-     * ルートオブジェクトを構築します
+     * Create a controller route.
      *
      * @param string $uri
-     * @param callable $action
+     * @param string $controller
      * @throws ReflectionException
      */
     public function __construct(string $uri, string $controller)
@@ -49,7 +49,7 @@ class ControllerRoute extends ConventionalRoute
     }
 
     /**
-     * リクエストURIを コントローラー名／アクション名／引数 に分解します。
+     * Resolve request URI into controller name / action name / arguments.
      *
      * @param string $request_uri
      * @return array
@@ -65,11 +65,11 @@ class ControllerRoute extends ConventionalRoute
     }
 
     /**
-     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
-     * 解析の過程で取り込んだルーティングパラメータを返します。
+     * It analyzes the given request and analyzes whether it matches this route.
+     * Returns the routing parameters captured during the analysis process.
      *
-     * 解析結果として null を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * If null is returned as an analysis result, subsequent route verification is performed.
+     * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
      * @return array|null
@@ -87,9 +87,9 @@ class ControllerRoute extends ConventionalRoute
     }
 
     /**
-     * コントローラー名を取得します。
+     * Get controller name.
      *
-     * @param bool $with_namespace
+     * @param bool $with_namespace (default: true)
      * @return string
      */
     public function getControllerName(bool $with_namespace = true) : string

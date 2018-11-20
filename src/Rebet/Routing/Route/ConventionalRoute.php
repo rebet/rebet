@@ -11,9 +11,9 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Inflection\Inflector;
 use Rebet\Routing\Annotation\AliasOnly;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\RouteAction;
 use Rebet\Routing\RouteNotFoundException;
@@ -21,23 +21,22 @@ use Rebet\Routing\RouteNotFoundException;
 /**
  * Conventional Route class
  *
- * 規約ベースのルートオブジェクト
- * 以下のパターンでURL解析を行い
+ * Perform URL analysis with the following pattern,
  *
- * 　http://domain.of.yours/{controller}/{action}/{arg1}/{arg2}...
- * 　例1) /user/detail/123456
- * 　例1) /user/register-input
- * 　例3) /term
+ * 　http://domain.of.yours[/{prefix}]/{controller}/{action}/{arg1}/{arg2}...
+ * 　ex1) /user/detail/123456
+ * 　ex1) /user/register-input
+ * 　ex3) /term
  *
- * 以下の処理を実行します。
+ * Perform the following processing.
  *
  * 　{Controller}@{action}({arg1}, {arg2}, ...)
- * 　例1) UserController@detail(123456)
- * 　例2) UserController@registerInput()
- * 　例3) TermController@index()
+ * 　ex1) UserController@detail(123456)
+ * 　ex2) UserController@registerInput()
+ * 　ex3) TermController@index()
  *
- * controller : コントローラー名（デフォルト：Top）
- * action     : アクション名（デフォルト：index）
+ * controller : controller name (default: top)
+ * action     : action name (default: index)
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -63,91 +62,91 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * 名前空間
+     * Namespace of controller.
      *
      * @var string
      */
     protected $namespace = null;
 
     /**
-     * デフォルトコントローラーパート名（=top）
+     * Default URI part of controller (default: top)
      *
      * @var string
      */
     protected $default_part_of_controller = null;
 
     /**
-     * デフォルトアクションパート名（=index）
+     * Default URI part of action (default: index)
      *
      * @var string
      */
     protected $default_part_of_action = null;
 
     /**
-     * URIスネークケース区切り文字（=ハイフン['-']）
+     * URI snake separator (default: '-')
      *
      * @var string
      */
     protected $uri_snake_separator = null;
 
     /**
-     * コントローラークラス名サフィックス（=Controller）
+     * Controller name suffix (default: Controller)
      *
      * @var string
      */
     protected $controller_suffix = null;
 
     /**
-     * アクションメソッド名サフィックス（=空文字['']）
+     * Action name suffix (default: '')
      *
      * @var string
      */
     protected $action_suffix = null;
     
     /**
-     * 非公開メソッドへのアクセス許可
+     * Accessible to non public member action(method).
      *
      * @var boolean
      */
     protected $accessible = false;
 
     /**
-     * ルーティングエイリアス
+     * Routing aliases map.
      *
      * @var array
      */
     protected $aliases = [];
     
     /**
-     * 経由エイリアス名
+     * Name via alias.
      *
      * @var string
      */
     protected $alias = null;
 
     /**
-     * 解析されたコントローラーパート文字列
+     * Analized part of controller.
      *
      * @var string
      */
     protected $part_of_controller = null;
 
     /**
-     * 解析されたアクションパート文字列
+     * Analized part of action.
      *
      * @var string
      */
     protected $part_of_action = null;
 
     /**
-     * コントローラーオブジェクト
+     * Instance of controller.
      *
      * @var Controller
      */
     protected $controller = null;
 
     /**
-     * ルートオブジェクトを構築します
+     * Create a conventional route.
      *
      * @param array  $option [
      *     'namespace'                  => refer App config 'namespace.controller',
@@ -173,7 +172,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * リクエストURIを コントローラー名／アクション名／引数 に分解します。
+     * Resolve request URI into controller name / action name / arguments.
      *
      * @param string $request_uri
      * @return array
@@ -188,11 +187,11 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
-     * 解析の過程で取り込んだルーティングパラメータを返します。
+     * It analyzes the given request and analyzes whether it matches this route.
+     * Returns the routing parameters captured during the analysis process.
      *
-     * 解析結果として null を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * If null is returned as an analysis result, subsequent route verification is performed.
+     * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
      * @return array|null
@@ -260,10 +259,10 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * analyze によってマッチしたリクエストを処理するための ルートアクション を返します。
-     * サブクラスではここで追加のアノテーション検証などを行うことができます。
+     * Returns the route action for processing the request matched.
+     * For subclasses, additional annotation verification etc. can be done here.
      *
-     * 追加検証でルーティング対象外となる場合は RouteNotFoundException を throw して下さい。
+     * If routing is not performed by additional verification, please throw RouteNotFoundException.
      *
      * @param Request $request
      * @return RouteAction
@@ -289,7 +288,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * コントローラー名を取得します。
+     * Get matched controller name
      *
      * @param bool $with_namespace
      * @return string
@@ -301,7 +300,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * アクション名を取得します。
+     * Get matched action name
      *
      * @return string
      */
@@ -311,7 +310,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * 経由エイリアス名を取得します。
+     * Get alias name if the route via alias.
      *
      * @return string|null
      */
@@ -321,7 +320,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * シャットダウン処理を行います。
+     * Terminame the route.
      *
      * @param Request $request
      * @param Response $response
@@ -333,9 +332,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * 文字列化します。
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function __toString()
     {
@@ -343,7 +340,7 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * 非公開メソッドへのアクセス制御を設定します。
+     * Set access control to non public contorller methods.
      *
      * @param boolean $accessible
      * @return self
@@ -355,13 +352,13 @@ class ConventionalRoute extends Route
     }
 
     /**
-     * エイリアスを設定します。
+     * Set aliases.
      *
      * @param array|string $alias or [$alias => $path, ...]
      * @param string|null $path
      * @return self
      */
-    public function aliases($alias, ? string $path = null) : self
+    public function aliases($alias, ?string $path = null) : self
     {
         foreach (is_array($alias) ? $alias : [$alias => $path] as $key => $value) {
             $this->aliases[$key] = $value;

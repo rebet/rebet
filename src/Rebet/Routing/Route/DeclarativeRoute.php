@@ -8,8 +8,6 @@ use Rebet\Routing\RouteNotFoundException;
 /**
  * Declarative Route class
  *
- * 宣言的なルートオブジェクト
- *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -18,28 +16,26 @@ use Rebet\Routing\RouteNotFoundException;
 abstract class DeclarativeRoute extends Route
 {
     /**
-     * ルーティング対象メソッド
+     * Routing target method
      *
      * @var array
      */
     protected $methods = [];
 
     /**
-     * ルーティング対象URI
+     * Routing target URI
      *
-     * ルーティングパラメータプレースホルダーとして以下の記述が利用できます。
+     * The following format can be use as a routing parameter placeholder.
      *
-     *  * {name}
-     *  * {name?}
+     *  * {name}  - Required parameter
+     *  * {name?} - Optional parameter
      *
      * @var string
      */
     public $uri = null;
 
     /**
-     * 文字列化します。
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function __toString()
     {
@@ -47,7 +43,7 @@ abstract class DeclarativeRoute extends Route
     }
 
     /**
-     * ルートオブジェクトを構築します
+     * Create a declarative route.
      *
      * @param array $methods
      * @param string $uri
@@ -59,11 +55,11 @@ abstract class DeclarativeRoute extends Route
     }
 
     /**
-     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
-     * 解析の過程で取り込んだルーティングパラメータを返します。
+     * It analyzes the given request and analyzes whether it matches this route.
+     * Returns the routing parameters captured during the analysis process.
      *
-     * 解析結果として null を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * If null is returned as an analysis result, subsequent route verification is performed.
+     * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
      * @return array|null
@@ -71,8 +67,6 @@ abstract class DeclarativeRoute extends Route
      */
     protected function analyze(Request $request) : ?array
     {
-        // echo "\npreg_match('{$this->getMatchingRegex()}', '". $request->getRequestUri()."');\n";
-        
         $matches  = [];
         $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUri(), $matches);
         if (!$is_match) {
@@ -101,7 +95,7 @@ abstract class DeclarativeRoute extends Route
     }
 
     /**
-     * URI パターンマッチ用の正規表現を返します。
+     * Get the regex pattern for URI match and capture routing parameters.
      *
      * @return string
      */

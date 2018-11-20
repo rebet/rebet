@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Config\App;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
@@ -86,7 +85,9 @@ class MethodRoute extends DeclarativeRoute
      */
     protected function createRouteAction(Request $request) : RouteAction
     {
-        $this->controller = $this->action->getDeclaringClass()->newInstance();
+        $this->controller          = $this->action->getDeclaringClass()->newInstance();
+        $this->controller->request = $request;
+        $this->controller->route   = $this;
         $this->action->setAccessible($this->accessible);
         return new RouteAction($this, $this->action, $this->controller);
     }

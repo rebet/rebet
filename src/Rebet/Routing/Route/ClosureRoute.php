@@ -16,14 +16,14 @@ use Rebet\Routing\RouteAction;
 class ClosureRoute extends DeclarativeRoute
 {
     /**
-     * クロージャ
+     * Closure action
      *
      * @var \Closure
      */
     protected $action = null;
     
     /**
-     * ルートオブジェクトを構築します
+     * Create a closure route
      *
      * @param array $methods
      * @param string $uri
@@ -36,7 +36,7 @@ class ClosureRoute extends DeclarativeRoute
     }
 
     /**
-     * 実行可能な RouteAction を作成します。
+     * Cleate a route action for this route.
      *
      * @param Request $request
      * @return RouteAction
@@ -48,7 +48,7 @@ class ClosureRoute extends DeclarativeRoute
     }
     
     /**
-     * シャットダウン処理を行います。
+     * Terminate the route.
      *
      * @param Request $request
      * @param Response $response

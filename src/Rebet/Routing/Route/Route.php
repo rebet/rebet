@@ -19,14 +19,14 @@ use Rebet\Routing\RouteAction;
 abstract class Route
 {
     /**
-     * ルーティングパラメータ正規表現
+     * Regex patterns for routing parameters.
      *
      * @var array
      */
     protected $wheres = [];
     
     /**
-     * ルートアクション
+     * Route action.
      *
      * @var RouteAction
      */
@@ -61,7 +61,7 @@ abstract class Route
     protected $auth = null;
 
     /**
-     * ルーティングパラメータの正規表現チェックを設定します。
+     * Configure regex check of routing parameters.
      *
      * @param array|string $name or [$name => $regex, ...]
      * @param string|null $regex
@@ -76,12 +76,12 @@ abstract class Route
     }
 
     /**
-     * 対象のリクエストが自身のルート設定にマッチするかチェックします。
+     * It checks whether the target request matches this route setting.
      *
-     * なお、マッチングの過程で取り込まれたルーティングパラメータは $request->attributes に格納されます。
+     * Note that the routing parameters captured during the matching process are stored in $request->attributes.
      *
-     * マッチ結果として false を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * If false is returned as a match result, subsequent route verification is performed.
+     * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
      * @return bool
@@ -100,11 +100,11 @@ abstract class Route
     }
 
     /**
-     * 指定のリクエストを解析し、自身のルートにマッチするか解析します。
-     * 解析の過程で取り込んだルーティングパラメータを返します。
+     * It analyzes the given request and analyzes whether it matches this route.
+     * Returns the routing parameters captured during the analysis process.
      *
-     * 解析結果として null を返すと後続のルート検証が行われます。
-     * 後続のルート検証を行わない場合は RouteNotFoundException を throw して下さい。
+     * If null is returned as an analysis result, subsequent route verification is performed.
+     * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
      * @return array|null
@@ -113,10 +113,10 @@ abstract class Route
     abstract protected function analyze(Request $request) : ?array;
 
     /**
-     * analyze によってマッチしたリクエストを処理するための ルートアクション を返します。
-     * サブクラスではここで追加のアノテーション検証などを行うことができます。
+     * Returns the route action for processing the request matched.
+     * For subclasses, additional annotation verification etc. can be done here.
      *
-     * 追加検証でルーティング対象外となる場合は RouteNotFoundException を throw して下さい。
+     * If routing is not performed by additional verification, please throw RouteNotFoundException.
      *
      * @param Request $request
      * @return RouteAction
@@ -125,8 +125,8 @@ abstract class Route
     abstract protected function createRouteAction(Request $request) : RouteAction ;
 
     /**
-     * ルーティング処理を実行します。
-     * 本メソッドは ルートミドルウェアパイプラインの到達先として実行されます。
+     * Perform routing processing.
+     * This method is executed as the destination of the route middleware pipeline.
      *
      * @param Request $request
      * @return Response
@@ -138,7 +138,7 @@ abstract class Route
     }
 
     /**
-     * シャットダウン処理を行います。
+     * Terminate the route.
      *
      * @param Request $request
      * @param Response $response
@@ -147,10 +147,10 @@ abstract class Route
     abstract public function terminate(Request $request, Response $response) : void ;
 
     /**
-     * ルートを Pipeline で処理できるようにします。
+     * Allow the Pipeline to process the route object.
      *
-     * @param Request $request リクエスト
-     * @param array $vars 解析済みURI組み込みパラメータ
+     * @param Request $request
+     * @param Response
      */
     public function __invoke(Request $request)
     {
@@ -158,7 +158,7 @@ abstract class Route
     }
 
     /**
-     * このルートのアノテーションアクセッサを取得します。
+     * Get the method annotation accessor for this route.
      *
      * @return AnnotatedMethod
      */
@@ -168,7 +168,7 @@ abstract class Route
     }
 
     /**
-     * このルートに紐づいたアノテーションを取得します。
+     * Gets the annotation associated with this route.
      *
      * @param string $annotation
      * @return void
