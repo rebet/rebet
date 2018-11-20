@@ -10,9 +10,9 @@ use Rebet\Foundation\App;
 use Rebet\Http\BasicResponse;
 use Rebet\Http\Request;
 use Rebet\Routing\Annotation\AliasOnly;
+use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Controller;
 use Rebet\Routing\Route\ConventionalRoute;
@@ -166,6 +166,11 @@ class RouterTest extends RebetTestCase
             Router::redirect('/redirect/query', '/destination', ['page' => 1]);
             Router::redirect('/redirect/query/with-param/{id}', '/destination', ['page' => 1]);
             Router::redirect('/redirect/query/inline/with-param/{id}', '/destination?page=1');
+
+            Router::view('/view', 'welcome', ['name' => 'Bob']);
+            Router::view('/view/query', 'welcome');
+            Router::view('/view/with-param/{name}', 'welcome');
+            Router::view('/view/not-found/{name}', 'not-found');
 
             Router::controller('/controller/namespace/short', 'RouterTestController');
             Router::controller('/controller/namespace/nest', 'Nest\\NestController');
@@ -585,6 +590,28 @@ class RouterTest extends RebetTestCase
 
         $response = Router::handle(Request::create('/redirect/query/inline/with-param/123'));
         $this->assertSame('/destination?page=1&id=123', $response->getTargetUrl());
+    }
+
+    public function test_routing_view()
+    {
+        $response = Router::handle(Request::create('/view'));
+        $this->assertSame('Hello, Bob.', $response->getContent());
+
+        $response = Router::handle(Request::create('/view/query', 'GET', ['name' => 'John']));
+        $this->assertSame('Hello, John.', $response->getContent());
+
+        $response = Router::handle(Request::create('/view/with-param/John'));
+        $this->assertSame('Hello, John.', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedExceptionMessage View route [not-found] not found. An exception occurred while processing the view.
+     */
+    public function test_routing_viewNotFound()
+    {
+        $response = Router::handle(Request::create('/view/not-found/John'));
+        $this->fail('Never execute');
     }
 
     public function test_routing_controllerNamespaceShort()

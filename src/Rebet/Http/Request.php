@@ -216,4 +216,14 @@ class Request extends SymfonyRequest
             return Strings::substr($header, 7);
         }
     }
+
+    /**
+     * Get request URI without query.
+     *
+     * @return void
+     */
+    public function getRequestUriWithoutQuery() : string
+    {
+        return Strings::latrim($this->getRequestUri(), '?');
+    }
 }

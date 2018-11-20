@@ -77,7 +77,7 @@ class ControllerRoute extends ConventionalRoute
      */
     protected function analyze(Request $request) : ?array
     {
-        $request_uri = Strings::ltrim($request->getRequestUri(), $this->prefix);
+        $request_uri = Strings::ltrim($request->getRequestUriWithoutQuery(), $this->prefix);
         $uri         = rtrim($this->uri, '/');
         if ($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
             return null;

@@ -8,13 +8,15 @@ use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
-use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Routing\Route\MethodRoute;
+use Rebet\Routing\Route\RedirectRoute;
 use Rebet\Routing\Route\Route;
+use Rebet\Routing\Route\ViewRoute;
+use Rebet\View\View;
 
 /**
  * Router Class
@@ -213,8 +215,7 @@ class Router
             throw new \LogicException("Invalid action type for declarative routing.");
         }
         
-        static::addRoute($route);
-        return $route;
+        return static::addRoute($route);
     }
    
     /**
@@ -232,9 +233,7 @@ class Router
      */
     public static function controller(string $uri, string $controller) : Route
     {
-        $route = new ControllerRoute($uri, $controller);
-        static::addRoute($route);
-        return $route;
+        return static::addRoute(new ControllerRoute($uri, $controller));
     }
 
     /**
@@ -251,20 +250,22 @@ class Router
      */
     public static function redirect(string $uri, string $destination, array $query = [], int $status = 302) : Route
     {
-        return static::any($uri, function (Request $request) use ($destination, $query, $status) {
-            $vars = $request->attributes->all();
-            foreach ($vars as $key => $value) {
-                $replace = "{{$key}}";
-                if (Strings::contains($destination, $replace)) {
-                    $destination = str_replace($replace, $value, $destination);
-                } else {
-                    $query[$key] = $value;
-                }
-            }
-            $destination = preg_replace('/\/?{.+?}/u', '', $destination);
-            $destination = Strings::startsWith($destination, '/') ? $request->route->prefix.$destination : $destination ;
-            return Responder::redirect($destination, $query, $status);
-        });
+        return static::addRoute(new RedirectRoute($uri, $destination, $query, $status));
+    }
+
+    /**
+     * Sets the view route that matches the specified URI.
+     *
+     * You can use '{key}' placeholder in given uri for view arguments.
+     *
+     * @param string $uri
+     * @param string $name
+     * @param array $args (default: [])
+     * @return Route
+     */
+    public static function view(string $uri, string $name, array $args = []) : Route
+    {
+        return static::addRoute(new ViewRoute($uri, $name, $args));
     }
     
     /**
@@ -272,15 +273,16 @@ class Router
      * This method constructs an incomplete route search tree for route resolution speeding up.
      *
      * @param Route $route
-     * @return void
+     * @return Route given route
      */
-    protected static function addRoute(Route $route)
+    protected static function addRoute(Route $route) : Route
     {
         if (!static::$rules) {
             throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         static::applyRulesTo($route);
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
+        return $route;
     }
     
     /**
@@ -371,7 +373,7 @@ class Router
             }
 
             $root_fallback = null;
-            $request_uri   = $request->getRequestUri();
+            $request_uri   = $request->getRequestUriWithoutQuery();
             foreach (static::$fallback as $prefix => $fallback) {
                 if ($prefix === '') {
                     $root_fallback = $fallback;
@@ -396,7 +398,7 @@ class Router
      */
     protected static function findRoute(Request $request) : Route
     {
-        $request_uri  = $request->getRequestUri();
+        $request_uri  = $request->getRequestUriWithoutQuery();
         $paths        = explode('/', $request_uri);
         $routing_tree = static::$routing_tree;
 

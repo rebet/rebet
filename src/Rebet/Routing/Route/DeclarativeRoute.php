@@ -39,7 +39,8 @@ abstract class DeclarativeRoute extends Route
      */
     public function __toString()
     {
-        return "Route: [".join('|', $this->methods)."] {$this->uri} where ".json_encode($this->wheres);
+        $rc = new \ReflectionClass($this);
+        return $rc->getShortName().": [".join('|', $this->methods)."] {$this->uri} where ".json_encode($this->wheres);
     }
 
     /**
@@ -68,7 +69,7 @@ abstract class DeclarativeRoute extends Route
     protected function analyze(Request $request) : ?array
     {
         $matches  = [];
-        $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUri(), $matches);
+        $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUriWithoutQuery(), $matches);
         if (!$is_match) {
             return null;
         }
