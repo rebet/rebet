@@ -39,7 +39,7 @@ class ArrayProvider extends AuthProvider
      *
      * @var array
      */
-    protected $alias = [];
+    protected $aliases = [];
 
     /**
      * Password hasher of this provider.
@@ -60,14 +60,14 @@ class ArrayProvider extends AuthProvider
      * And if you want to add other information, you can add attribute to users record.
      *
      * @param array $users
-     * @param array $alias (default: ['signin_id' => 'email'])
+     * @param array $aliases (default: ['signin_id' => 'email'])
      * @param \Closure|null $hasher (default: depend on configure)
      */
-    public function __construct(?array $users, array $alias = ['signin_id' => 'email'], \Closure $hasher = null)
+    public function __construct(?array $users, array $aliases = ['signin_id' => 'email'], \Closure $hasher = null)
     {
-        $this->users  = Collection::valueOf($users);
-        $this->alias  = $alias;
-        $this->hasher = $hasher ?? static::config('hasher');
+        $this->users   = Collection::valueOf($users);
+        $this->aliases = $aliases;
+        $this->hasher  = $hasher ?? static::config('hasher');
     }
 
     /**
@@ -94,16 +94,16 @@ class ArrayProvider extends AuthProvider
      */
     public function findByCredentials(array $credentials) : ?AuthUser
     {
-        $alias = $this->alias;
-        $users = $this->users;
+        $aliases = $this->aliases;
+        $users   = $this->users;
         foreach ($credentials as $key => $value) {
             $value = $key === 'password' ? $this->hasher($value) : $value ;
-            $users = $users->filter(function ($user) use ($key, $value, $alias) {
-                $key = $alias[$key] ?? $key;
+            $users = $users->filter(function ($user) use ($key, $value, $aliases) {
+                $key = $aliases[$key] ?? $key;
                 return isset($user[$key]) && $user[$key] == $value;
             });
         }
 
-        return $users->count() === 1 ? new AuthUser($users->first(), $this->alias) : null ;
+        return $users->count() === 1 ? new AuthUser($users->first(), $this->aliases) : null ;
     }
 }

@@ -4,7 +4,6 @@ namespace Rebet\Auth;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
 use Rebet\Inflection\Inflector;
 
 /**
@@ -29,7 +28,7 @@ class AuthUser
      *
      * @var array
      */
-    protected $alias = [];
+    protected $aliases = [];
 
     /**
      * The authenticated guard instance.
@@ -54,16 +53,36 @@ class AuthUser
 
     /**
      * Create a authenticated user instance.
+     * If you want to handle multiple user sources uniformly, you can define aliases to make transparent access with common properties possible.
+     * Aliases can be defined in the following format.
+     *
+     *  - string of the source field name.
+     *    ex) 'email' => 'mail_addres'
+     *
+     *  - string starts with '@' for fixed string value.
+     *    ex) 'role' => '@ADMIN' (get 'ADMIN' value when access via $auth_user->role)
+     *
+     *  - callable to get the value from source.
+     *    ex) 'name' => function($user) { return $user ? "{$user->first_name} {$user->last_name}" : null ; }
+     *    Note: Argument $user will be null when the user is guest.
+     *
+     *  - others for fixed value.
+     *    ex) 'role' => 1
+     *
+     * Note that AuthUser must be able to access an identifier that uniquely identifies the user source given the property name "id".
+     * If the "id" alias is not specified, this class generates a primary key alias from the class name of the given user source by Inflector.
+     * (However, if the user source is an array, use "id" as it is defaultly.)
      *
      * @param mixed $user
-     * @param string|callable|null $id alias name or function($user){} to return id (default: create table_name_id from given user class name by Inflector)
+     * @param array $aliases
      */
-    public function __construct($user, $id = null)
+    public function __construct($user, array $aliases = [])
     {
-        $this->user  = $user;
-        $this->alias = [
-            'id' => $id ?? ($user ? Inflector::primarize((new \ReflectionClass($user))->getShortName()) : null),
-        ];
+        $this->user    = $user;
+        $this->aliases = $aliases;
+        if ($user && !isset($this->aliases['id'])) {
+            $this->aliases['id'] = is_array($user) ? 'id' : Inflector::primarize((new \ReflectionClass($user))->getShortName());
+        }
     }
 
     /**
@@ -98,7 +117,6 @@ class AuthUser
 
     /**
      * Get the property of given name from authenticated user using alias map.
-     * If the alias starts with '@' then return alias name without '@'.
      *
      * @param string $name
      * @param mixed $default (default: null)
@@ -113,17 +131,10 @@ class AuthUser
         if ($alias instanceof \Closure) {
             return $alias($this->user);
         }
+        if (!is_string($alias)) {
+            return $alias ?? $default;
+        }
         return Reflector::get($this->user, $alias, $default);
-    }
-
-    /**
-     * Get the id of this authenticated.
-     *
-     * @return mixed
-     */
-    public function id()
-    {
-        return $this->get('id');
     }
 
     /**
@@ -157,7 +168,7 @@ class AuthUser
      */
     public function can(string $action, ...$targets) : bool
     {
-        return Auth::allow($this, $action, ...$targets);
+        return Auth::check($this, $action, ...$targets);
     }
 
     /**
@@ -173,6 +184,16 @@ class AuthUser
     }
 
     /**
+     * Get the raw user data.
+     *
+     * @return mixed
+     */
+    public function raw()
+    {
+        return $this->user;
+    }
+
+    /**
      * Dynamically access the user's attributes.
      *
      * @param  string  $key
@@ -180,6 +201,6 @@ class AuthUser
      */
     public function __get($key)
     {
-        return Reflector::get($this->user, $key);
+        return $this->get($key);
     }
 }

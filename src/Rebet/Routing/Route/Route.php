@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Auth\Annotation\Authenticator;
-use Rebet\Auth\Annotation\Role;
+use Rebet\Auth\Annotation\Gate;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -45,13 +45,6 @@ abstract class Route
      * @var array
      */
     protected $middlewares = [];
-
-    /**
-     * Allow roles can be accessed this route
-     *
-     * @var array
-     */
-    protected $roles = ['ALL'];
     
     /**
      * Authenticator name for this route.
@@ -59,6 +52,13 @@ abstract class Route
      * @var string
      */
     protected $auth = null;
+
+    /**
+     * The gates for this route
+     *
+     * @var array
+     */
+    protected $gates = [];
 
     /**
      * Configure regex check of routing parameters.
@@ -194,18 +194,18 @@ abstract class Route
     }
 
     /**
-     *  Get or set the roles attached to the route.
+     * Get or set the gates attached to the route.
      *
-     * @param mixed ...$roles
+     * @param string|array ...$gates
      * @return self|array
      */
-    public function roles(...$roles)
+    public function gates($gates = null)
     {
-        if (empty($roles)) {
-            $role = $this->annotation(Role::class);
-            return $role ? $role->allow : $this->roles ;
+        if ($gates === null) {
+            $gate = $this->annotation(Gate::class);
+            return $gate ? $gate->value : $this->gates ;
         }
-        $this->roles = $roles;
+        $this->gates = func_get_args();
         return $this;
     }
     

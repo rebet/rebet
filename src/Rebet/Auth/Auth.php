@@ -40,7 +40,9 @@ class Auth
                     'fallback' => null, // url or function(Request):Response
                 ],
             ],
-            'gates'    => [],
+            'gates' => [
+                'guest' => function (AuthUser $user) { return $user->isGuest(); }
+            ],
             'policies' => [],
         ];
     }
@@ -60,7 +62,7 @@ class Auth
     }
 
     /**
-     * Get the authenticated user.
+     * [Authentication] Get the authenticated user.
      *
      * @param string $name
      * @return Guard
@@ -71,7 +73,7 @@ class Auth
     }
 
     /**
-     * Attempt find user by given credentials.
+     * [Authentication] Attempt find user by given credentials.
      *
      * @param Request $request
      * @param array $credentials
@@ -96,7 +98,7 @@ class Auth
     }
 
     /**
-     * Sign in as given user.
+     * [Authentication] Sign in as given user.
      * If the given user is null or guest, then this method return false and dispatch SigninFailed event.
      *
      * @param Request $request
@@ -118,7 +120,7 @@ class Auth
     }
 
     /**
-     * It will sign out the authenticated user.
+     * [Authentication] It will sign out the authenticated user.
      *
      * @param Request $request
      * @param string $redirect_to
@@ -138,7 +140,7 @@ class Auth
     }
 
     /**
-     * Recall authenticate user from an incoming request then it will check to match the user's role in allowed roles of route.
+     * [Authentication] Recall authenticate user from an incoming request then it will check the gate of route.
      *
      * @param Request $request
      * @return Response|null response when authenticate failed
@@ -157,99 +159,114 @@ class Auth
         $user->guard($guard);
         static::$user = $user;
 
-        $roles = $route->roles();
-        if (in_array($user->role(), $roles) || in_array('ALL', $roles)) {
-            Event::dispatch(new Authenticated($request, $user));
-            return null;
+        foreach ($route->gates() as $gate) {
+            $gate    = (array)$gate;
+            $action  = array_shift($gate);
+            $targets = $gate;
+            if (static::gate($user, $action, ...$targets)) {
+                Event::dispatch(new Authenticated($request, $user));
+                return null;
+            }
         }
-        
+
         $fallback = static::config("authenticator.{$auth}.fallback");
         return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
     }
 
     /**
-     * Define the gate for given action.
+     * [Authorization] Define the gate for given action.
      *
      * @param string $action
      * @param callable $gate
      * @return void
      */
-    public static function gate(string $action, callable $gate) : void
+    public static function defineGate(string $action, callable $gate) : void
     {
         static::setConfig(['gates' => [$action => $gate]]);
     }
 
     /**
-     * Define the policy for given action to target.
+     * [Authorization] Define the policy for given action to target.
      *
      * @param string $target
      * @param string $action
      * @param callable $policy
      * @return void
      */
-    public static function policy(string $target, string $action, callable $policy) : void
+    public static function definePolicy(string $target, string $action, callable $policy) : void
     {
         static::setConfig(['policies' => [$target => [$action => $policy]]]);
     }
 
     /**
-     * It checks the user can do given action to targets.
+     * [Authorization] It checks the policy and gate to user can do given action.
      *
-     * 1st: Check the policies of '@before' action for 1st target object or class.
-     * 2nd: Check the policies of given action for 1st target object or class.
-     * 3rd: Check the gates of given action.
+     * 1st: Check the policies.
+     * 2rd: Check the gates.
      *
      * @param mixed $user
      * @param string $action
      * @param mixed ...$targets
      * @return bool
      */
-    public static function allow(AuthUser $user, string $action, ...$targets) : bool
+    public static function check(AuthUser $user, string $action, ...$targets) : bool
     {
-        $selector = empty($targets) ? null : (is_object($targets[0]) ? get_class($targets[0]) : $targets[0]);
-        $allow    = static::checkPolicy($user, $selector, '@before', $targets) ??
-                    static::checkPolicy($user, $selector, $action, $targets) ??
-                    static::checkGate($user, $action, $targets);
-        if ($allow === null) {
-            throw new \LogicException("Undefined gate/policy action {$action}" . ($selector ? " for {$selector}." : "."));
-        }
-        return $allow;
+        return static::policy($user, $action, ...$targets) || static::gate($user, $action, ...$targets);
     }
 
     /**
-     * Check the policy.
+     * [Authorization] Check the policy.
+     *
+     * 1st: Check the policies of '@before' action for 1st target object or class.
+     * 2nd: Check the policies of given action for 1st target object or class.
+     *
+     * @param AuthUser $user
+     * @param string $action
+     * @param mixed ...$targets
+     * @return boolean|null
+     */
+    public static function policy(AuthUser $user, string $action, ...$targets) : bool
+    {
+        return static::_policy($user, '@before', $targets) || static::_policy($user, $action, $targets);
+    }
+
+    /**
+     * [Authorization] Check the policy.
      *
      * @param mixed $user
-     * @param mixed $selector
      * @param string $action
      * @param array $targets
      * @return boolean|null
      */
-    protected static function checkPolicy(AuthUser $user, $selector, string $action, array $targets) : ? bool
+    protected static function _policy(AuthUser $user, string $action, array $targets) : bool
     {
-        if (!is_string($selector)) {
-            return null;
+        if (empty($targets)) {
+            return true;
+        }
+        $selector = is_object($targets[0]) ? get_class($targets[0]) : $targets[0] ;
+        if (!is_string($targets)) {
+            return true;
         }
         $policy = static::config("policies.{$selector}.{$action}", false);
-        return is_callable($policy) ? static::invoke(\Closure::fromCallable($policy), $user, $targets) : null;
+        return is_callable($policy) ? static::invoke(\Closure::fromCallable($policy), $user, $targets) : true;
     }
 
     /**
-     * Check the gate.
+     * [Authorization] Check the gate.
      *
      * @param mixed $user
      * @param string $action
-     * @param array $targets
+     * @param mixed ...$targets
      * @return boolean
      */
-    protected static function checkGate(AuthUser $user, string $action, array $targets = []) : ? bool
+    public static function gate(AuthUser $user, string $action, ...$targets) : ? bool
     {
         $gate = static::config("gates.{$action}", false);
         return is_callable($gate) ? static::invoke(\Closure::fromCallable($gate), $user, $targets) : null;
     }
 
     /**
-     * Invoke check action.
+     * [Authorization] Invoke authorization check action.
      *
      * @param \Closure $action
      * @param mixed $user

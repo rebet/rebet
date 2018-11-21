@@ -344,8 +344,8 @@ class Router
         $middlewares = static::$rules->middlewares;
         $route->middlewares(...$middlewares);
 
-        $roles = static::$rules->roles;
-        $route->roles(...$roles);
+        $gates = static::$rules->gates;
+        $route->gates(...$gates);
         
         $route->auth(static::$rules->auth);
     }
@@ -496,11 +496,11 @@ class Router
     protected $middlewares = [];
     
     /**
-     * The roles for this rules.
+     * The gates for this rules.
      *
      * @var array
      */
-    protected $roles = [];
+    protected $gates = [];
     
     /**
      * The authenticator name for this rules
@@ -554,14 +554,14 @@ class Router
     }
 
     /**
-     * Set the roles for this rules.
+     * Set the gates for this rules.
      *
-     * @param string ...$roles
+     * @param string|array ...$gates
      * @return self
      */
-    public function roles(...$roles) : self
+    public function gates(...$gates) : self
     {
-        $this->roles = $roles;
+        $this->gates = $gates;
         return $this;
     }
 

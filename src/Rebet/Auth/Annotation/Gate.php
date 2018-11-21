@@ -2,7 +2,7 @@
 namespace Rebet\Auth\Annotation;
 
 /**
- * Role Annotation
+ * Gate Annotation
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -12,20 +12,10 @@ namespace Rebet\Auth\Annotation;
  * @Annotation
  * @Target({"CLASS","METHOD"})
  */
-final class Role
+final class Gate
 {
     /**
      * @var array
      */
-    public $allows;
-
-    /**
-     * Constructor.
-     *
-     * @param array $values
-     */
-    public function __construct(array $values)
-    {
-        $this->allows = (array)($values['value']) ;
-    }
+    public $value;
 }
