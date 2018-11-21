@@ -22,7 +22,7 @@ class ViewSelector
     public static function defaultConfig() : array
     {
         return [
-            'default_changer' => null,
+            'changer' => null,
         ];
     }
 
@@ -50,15 +50,15 @@ class ViewSelector
     /**
      * Create a view selector
      *
-     * @param callable|null $changer function($name, $request, $user){...} to return changed view name (default: depend on configure)
-     * @param AuthUser|null $user (default: Auth::user())
      * @param Request|null $request (default: Request::current())
+     * @param AuthUser|null $user (default: Auth::user())
+     * @param callable|null $changer function($name, $request, $user){...} to return changed view name (default: depend on configure)
      */
-    public function __construct(?callable $changer = null, ?AuthUser $user = null, ?Request $request = null)
+    public function __construct(?Request $request = null, ?AuthUser $user = null, ?callable $changer = null)
     {
-        $this->changer = $changer ?? static::config('default_changer', false) ;
-        $this->user    = $user ?? Auth::user();
         $this->request = $request ?? Request::current();
+        $this->user    = $user ?? Auth::user();
+        $this->changer = $changer ?? static::config('changer', false) ;
     }
 
     /**
@@ -81,13 +81,13 @@ class ViewSelector
     /**
      * Get the default (or given name) view.
      *
-     * @param string|null $name (default: request uri without query)
+     * @param string|null $name (default: default view of current route)
      * @param bool $apply_change (default: true)
      * @return View
      */
-    protected function view(?string $name = null, bool $apply_change = true) : View
+    public function view(?string $name = null, bool $apply_change = true) : View
     {
-        $name    = $name ?? $this->request->getRequestPath();
+        $name    = $name ?? $this->request->route->defaultView();
         $changer = $this->changer($apply_change);
         return new View($name, $changer);
     }

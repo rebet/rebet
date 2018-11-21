@@ -4,6 +4,8 @@ namespace Rebet\Routing\Route;
 use Rebet\Common\Utils;
 use Rebet\Http\Request;
 use Rebet\Routing\RouteNotFoundException;
+use Rebet\Common\Strings;
+use Rebet\Common\Path;
 
 /**
  * Declarative Route class
@@ -95,6 +97,14 @@ abstract class DeclarativeRoute extends Route
         return $vars;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function defaultView(): string
+    {
+        return Path::normalize(Strings::latrim($this->uri, '{'));
+    }
+    
     /**
      * Get the regex pattern for URI match and capture routing parameters.
      *

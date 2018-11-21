@@ -288,6 +288,14 @@ class ConventionalRoute extends Route
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function defaultView(): string
+    {
+        return "/{$this->part_of_controller}/{$this->part_of_action}";
+    }
+
+    /**
      * Get matched controller name
      *
      * @param bool $with_namespace

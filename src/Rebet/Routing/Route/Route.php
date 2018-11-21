@@ -125,6 +125,13 @@ abstract class Route
     abstract protected function createRouteAction(Request $request) : RouteAction ;
 
     /**
+     * Return the default view name of this route.
+     *
+     * @return string
+     */
+    abstract public function defaultView() : string ;
+
+    /**
      * Perform routing processing.
      * This method is executed as the destination of the route middleware pipeline.
      *

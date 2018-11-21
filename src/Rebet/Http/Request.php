@@ -241,14 +241,4 @@ class Request extends SymfonyRequest
         }
         return $this->route->prefix ?? '';
     }
-
-    /**
-     * Get request URI without route prefix and query.
-     * 
-     * @return string
-     */
-    public function getRequestPathWithoutRoutePrefix() : string
-    {
-        return Strings::ltrim($this->getRequestPath(), $this->getRoutePrefix(), 1);
-    }
 }
