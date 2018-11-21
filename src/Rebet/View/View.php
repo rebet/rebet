@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View;
 
-use Rebet\Bridge\Renderable;
+use Rebet\Common\Renderable;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
 
@@ -32,6 +32,13 @@ class View implements Renderable
     public $name = null;
 
     /**
+     * View changer
+     *
+     * @var \Closure
+     */
+    protected $changer = null;
+
+    /**
      * View template engine
      *
      * @var Engine
@@ -49,23 +56,26 @@ class View implements Renderable
      * Create a view of given name.
      *
      * @param string $name
+     * @param callable|null $changer function($name){...} to return cahnged name.
      * @return self
      */
-    public static function of(string $name) : self
+    public static function of(string $name, ?callable $changer = null) : self
     {
-        return new static($name);
+        return new static($name, $changer);
     }
 
     /**
      * Create a view
      *
      * @param string $name
+     * @param callable|null $changer function($name){...} to return cahnged view name.
      * @param Engine|null $engine
      */
-    public function __construct(string $name, ?Engine $engine = null)
+    public function __construct(string $name, ?callable $changer = null, ?Engine $engine = null)
     {
-        $this->name   = $name;
-        $this->engine = $engine ?? static::configInstantiate('engine');
+        $this->name    = $name;
+        $this->changer = $changer;
+        $this->engine  = $engine ?? static::configInstantiate('engine');
     }
 
     /**
@@ -107,10 +117,12 @@ class View implements Renderable
      */
     public function render() : string
     {
+        $changer = $this->changer;
+        $name    = $changer ? $changer($this->name) : $this->name;
         try {
-            return $this->engine->render($this->name, $this->data);
+            return $this->engine->render($name, $this->data);
         } catch (\Throwable $e) {
-            throw new ViewRenderFailedException("The view {$this->name} render failed because of exception occurred.", null, $e);
+            throw new ViewRenderFailedException("The view {$name} render failed because of exception occurred.", null, $e);
         }
     }
 }

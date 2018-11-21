@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Bridge;
+namespace Rebet\Common;
 
 /**
  * Renderable Interface

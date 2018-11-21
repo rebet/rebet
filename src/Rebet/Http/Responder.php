@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Bridge\Renderable;
+use Rebet\Common\Renderable;
 use Rebet\Common\Strings;
 
 /**

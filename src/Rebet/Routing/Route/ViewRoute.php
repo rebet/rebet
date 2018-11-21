@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Bridge\Renderable;
+use Rebet\Common\Renderable;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Routing\RouteNotFoundException;
