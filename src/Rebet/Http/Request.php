@@ -241,4 +241,14 @@ class Request extends SymfonyRequest
         }
         return $this->route->prefix ?? '';
     }
+
+    /**
+     * Get user agent.
+     *
+     * @return string|null
+     */
+    public function getUserAgent() : UserAgent
+    {
+        return new UserAgent($this->headers->get('User-Agent'));
+    }
 }
