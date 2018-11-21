@@ -109,39 +109,44 @@ class Strings
     }
     
     /**
-     * 左端の指定文字列の繰り返しをトリムします。
+     * Trim the repetition of the specified character string at the left end.
      *
      * ex)
-     * Strings::ltrim('   abc   ');            //=> 'abc   '
-     * Strings::ltrim('111abc111', '1');       //=> 'abc111'
-     * Strings::ltrim('12121abc21212', '12');  //=> '1abc21212'
-     * Strings::ltrim('　　　全角　　　', '　'); //=> '全角　　　'
+     * Strings::ltrim('   abc   ');               //=> 'abc   '
+     * Strings::ltrim('111abc111', '1');          //=> 'abc111'
+     * Strings::ltrim('12121abc21212', '12');     //=> '1abc21212'
+     * Strings::ltrim('　　　全角　　　', '　');    //=> '全角　　　'
+     * Strings::ltrim('　　　全角　　　', '　', 2); //=> '　全角　　　'
      *
-     * @param string|null $str トリム対象
-     * @param string $prefix トリム文字列
+     * @param string|null $str
+     * @param string $prefix (default: ' ')
+     * @param int|null $max (default: null)
      * @return string|null トリム文字列
      */
-    public static function ltrim(?string  $str, string $prefix = ' ') : ?string
+    public static function ltrim(?string  $str, string $prefix = ' ', ?int $max = null) : ?string
     {
-        return $str === null ? null : preg_replace("/^(".preg_quote($prefix, '/').")*/u", '', $str);
+        $repeat = $max === null ? "*" : "{0,{$max}}" ;
+        return $str === null ? null : preg_replace("/^(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);
     }
     
     /**
-     * 右端の指定文字列の繰り返しをトリムします。
+     * Trim the repetition of the specified character string at the right end.
      *
      * ex)
-     * Strings::rtrim('   abc   ');            //=> '   abc'
-     * Strings::rtrim('111abc111', '1');       //=> '111abc'
-     * Strings::rtrim('12121abc21212', '12');  //=> '12121abc2'
-     * Strings::rtrim('　　　全角　　　', '　'); //=> '　　　全角'
+     * Strings::rtrim('   abc   ');               //=> '   abc'
+     * Strings::rtrim('111abc111', '1');          //=> '111abc'
+     * Strings::rtrim('12121abc21212', '12');     //=> '12121abc2'
+     * Strings::rtrim('　　　全角　　　', '　');    //=> '　　　全角'
+     * Strings::rtrim('　　　全角　　　', '　', 2); //=> '　　　全角　'
      *
      * @param string|null $str トリム対象
      * @param string $suffix トリム文字列
      * @return string|null トリム文字列
      */
-    public static function rtrim(?string $str, string $suffix = ' ') : ?string
+    public static function rtrim(?string $str, string $suffix = ' ', ?int $max = null) : ?string
     {
-        return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/').")*$/u", '', $str);
+        $repeat = $max === null ? "*" : "{0,{$max}}" ;
+        return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/')."){$repeat}$/u", '', $str);
     }
     
     /**

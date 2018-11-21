@@ -373,7 +373,7 @@ class Router
             }
 
             $root_fallback = null;
-            $request_uri   = $request->getRequestUriWithoutQuery();
+            $request_uri   = $request->getRequestPath();
             foreach (static::$fallback as $prefix => $fallback) {
                 if ($prefix === '') {
                     $root_fallback = $fallback;
@@ -398,7 +398,7 @@ class Router
      */
     protected static function findRoute(Request $request) : Route
     {
-        $request_uri  = $request->getRequestUriWithoutQuery();
+        $request_uri  = $request->getRequestPath();
         $paths        = explode('/', $request_uri);
         $routing_tree = static::$routing_tree;
 

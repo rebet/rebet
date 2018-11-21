@@ -69,7 +69,7 @@ abstract class DeclarativeRoute extends Route
     protected function analyze(Request $request) : ?array
     {
         $matches  = [];
-        $is_match = preg_match($this->getMatchingRegex(), $request->getRequestUriWithoutQuery(), $matches);
+        $is_match = preg_match($this->getMatchingRegex(), $request->getRequestPath(), $matches);
         if (!$is_match) {
             return null;
         }

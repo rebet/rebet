@@ -52,6 +52,6 @@ abstract class Controller
         if ($name) {
             return new View($name);
         }
-        return new View($this->request->getRequestUriWithoutQuery());
+        return new View($this->request->getRequestPath());
     }
 }

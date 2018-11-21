@@ -56,9 +56,9 @@ class ControllerRoute extends ConventionalRoute
      */
     protected function resolveRequestUri(string $request_uri) : array
     {
-        $request_uri        = Strings::ltrim($request_uri, $this->uri);
+        $request_uri        = Strings::ltrim($request_uri, $this->uri, 1);
         $requests           = explode('/', trim($request_uri, '/')) ;
-        $part_of_controller = Inflector::snakize(Strings::rtrim($this->action->getShortName(), $this->controller_suffix), $this->uri_snake_separator);
+        $part_of_controller = Inflector::snakize(Strings::rtrim($this->action->getShortName(), $this->controller_suffix, 1), $this->uri_snake_separator);
         $part_of_action     = array_shift($requests) ?: $this->default_part_of_action;
         $args               = $requests;
         return [$part_of_controller, $part_of_action, $args];
@@ -77,7 +77,7 @@ class ControllerRoute extends ConventionalRoute
      */
     protected function analyze(Request $request) : ?array
     {
-        $request_uri = Strings::ltrim($request->getRequestUriWithoutQuery(), $this->prefix);
+        $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
         $uri         = rtrim($this->uri, '/');
         if ($request_uri !== $uri && !Strings::startsWith($request_uri, "{$uri}/")) {
             return null;

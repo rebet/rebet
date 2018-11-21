@@ -67,6 +67,8 @@ class StringsTest extends RebetTestCase
         $this->assertSame('1abc21212', Strings::ltrim('12121abc21212', '12'));
         $this->assertSame('全角　　　', Strings::ltrim('　　　全角　　　', '　'));
         $this->assertSame('path/to/test/', Strings::ltrim('/path/to/test/', '/'));
+        $this->assertSame('121abc21212', Strings::ltrim('12121abc21212', '12', 1));
+        $this->assertSame('　全角　　　', Strings::ltrim('　　　全角　　　', '　', 2));
     }
 
     public function test_rtrim()
@@ -78,6 +80,8 @@ class StringsTest extends RebetTestCase
         $this->assertSame('12121abc2', Strings::rtrim('12121abc21212', '12'));
         $this->assertSame('　　　全角', Strings::rtrim('　　　全角　　　', '　'));
         $this->assertSame('/path/to/test', Strings::rtrim('/path/to/test/', '/'));
+        $this->assertSame('12121abc212', Strings::rtrim('12121abc21212', '12', 1));
+        $this->assertSame('　　　全角　', Strings::rtrim('　　　全角　　　', '　', 2));
     }
 
     public function test_startsWith()

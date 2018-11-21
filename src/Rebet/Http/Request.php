@@ -222,8 +222,33 @@ class Request extends SymfonyRequest
      *
      * @return void
      */
-    public function getRequestUriWithoutQuery() : string
+    public function getRequestPath() : string
     {
         return Strings::latrim($this->getRequestUri(), '?');
+    }
+
+    /**
+     * Get route prefix.
+     * If the route is not set then throw LogicException.
+     *
+     * @return string
+     * @throws LogicException
+     */
+    public function getRoutePrefix() : string
+    {
+        if(!$this->route) {
+            throw new \LogicException("Route is not selected for this request.");
+        }
+        return $this->route->prefix ?? '';
+    }
+
+    /**
+     * Get request URI without route prefix and query.
+     * 
+     * @return string
+     */
+    public function getRequestPathWithoutRoutePrefix() : string
+    {
+        return Strings::ltrim($this->getRequestPath(), $this->getRoutePrefix(), 1);
     }
 }

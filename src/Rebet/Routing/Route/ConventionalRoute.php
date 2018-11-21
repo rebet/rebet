@@ -199,7 +199,7 @@ class ConventionalRoute extends Route
      */
     protected function analyze(Request $request) : ?array
     {
-        $request_uri = Strings::ltrim($request->getRequestUriWithoutQuery(), $this->prefix);
+        $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
         foreach ($this->aliases as $alias => $path) {
             if (Strings::startsWith($request_uri, $alias)) {
                 $request_uri = str_replace($alias, $path, $request_uri);
