@@ -1,7 +1,8 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Response;
 
 use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
+use Rebet\Http\Response;
 
 /**
  * Json Response Class

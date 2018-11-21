@@ -1,7 +1,8 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Response;
 
 use Symfony\Component\HttpFoundation\StreamedResponse as SymfonyStreamedResponse;
+use Rebet\Http\Response;
 
 /**
  * Streamed Response Class

@@ -1,7 +1,8 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Response;
 
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
+use Rebet\Http\Response;
 
 /**
  * Redirect Response Class

@@ -1,7 +1,8 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Response;
 
 use Symfony\Component\HttpFoundation\BinaryFileResponse as SymfonyBinaryFileResponse;
+use Rebet\Http\Response;
 
 /**
  * Binary File Response Class

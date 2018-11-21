@@ -3,6 +3,10 @@ namespace Rebet\Http;
 
 use Rebet\Common\Renderable;
 use Rebet\Common\Strings;
+use Rebet\Http\Response\BasicResponse;
+use Rebet\Http\Response\StreamedResponse;
+use Rebet\Http\Response\JsonResponse;
+use Rebet\Http\Response\RedirectResponse;
 
 /**
  * Responder Class

@@ -1,7 +1,8 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Response;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Rebet\Http\Response;
 
 /**
  * Basic Response Class

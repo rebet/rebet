@@ -1,5 +1,7 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Response;
+
+use Rebet\Http\Response;
 
 /**
  * Respondable trait

@@ -7,7 +7,6 @@ use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
-use Rebet\Http\BasicResponse;
 use Rebet\Http\Request;
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Channel;
@@ -22,6 +21,7 @@ use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
+use Rebet\Http\Responder;
 
 class RouterTest extends RebetTestCase
 {
@@ -959,13 +959,13 @@ class RouterTest extends RebetTestCase
             Router::controller('/controller/namespace/short', 'RouterTestController');
             Router::default(ConventionalRoute::class);
         })->fallback(function (Request $request, ?Route $route, \Throwable $e) {
-            return new BasicResponse('fallback prefix');
+            return Responder::toResponse('fallback prefix');
         });
 
         Router::rules('web')->routing(function () {
             Router::get('/get', function () { return 'Content: /get'; });
         })->fallback(function (Request $request, ?Route $route, \Throwable $e) {
-            return new BasicResponse('fallback');
+            return Responder::toResponse('fallback');
         });
 
         $response = Router::handle(Request::create('/get-none'));
