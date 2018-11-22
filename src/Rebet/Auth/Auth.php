@@ -159,7 +159,12 @@ class Auth
         $user->guard($guard);
         static::$user = $user;
 
-        foreach ($route->gates() as $gate) {
+        $gates = $route->gates();
+        if (empty($gates)) {
+            Event::dispatch(new Authenticated($request, $user));
+            return null;
+        }
+        foreach ($gates as $gate) {
             $gate    = (array)$gate;
             $action  = array_shift($gate);
             $targets = $gate;
