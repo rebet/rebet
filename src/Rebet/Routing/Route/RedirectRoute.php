@@ -50,7 +50,6 @@ class RedirectRoute extends ClosureRoute
                 }
             }
             $destination = preg_replace('/\/?{.+?}/u', '', $destination);
-            $destination = Strings::startsWith($destination, '/') ? $request->route->prefix.$destination : $destination ;
             return Responder::redirect($destination, $query, $status);
         });
         $this->destination = $destination;
