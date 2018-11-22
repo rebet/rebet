@@ -149,5 +149,12 @@ class StringsTest extends RebetTestCase
         $this->assertTrue(Strings::contains('fooabcbar', 'abc'));
         $this->assertTrue(Strings::contains('fooabcbar', 'ooabcb'));
         $this->assertFalse(Strings::contains('fooabcbar', 'ABC'));
+        $this->assertTrue(Strings::contains('123abcABC', ['123', 'ABC']));
+        $this->assertFalse(Strings::contains('123abcABC', ['123', 'DEF']));
+        $this->assertTrue(Strings::contains('123abcABC', ['123', 'DEF'], 1));
+        $this->assertFalse(Strings::contains('123abcABC', ['234', 'DEF'], 1));
+        $this->assertTrue(Strings::contains('123abcABC', ['1', 'd', 'D'], 1));
+        $this->assertFalse(Strings::contains('123abcABC', ['1', 'd', 'D'], 2));
+        $this->assertFalse(Strings::contains('123abcABC', ['234', 'DEF']));
     }
 }

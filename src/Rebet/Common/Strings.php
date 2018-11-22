@@ -232,23 +232,47 @@ class Strings
     }
 
     /**
-     * 指定の文字列が対象の文字列に含まれるかチェックします。
+     * It checks whether the string contains all (or at least N) the given search strings.
      *
-     * @param string|null $haystack 検索対象文字列
-     * @param string $search 検索文字列
-     * @return bool true: 含まれる, false: 含まれない
+     * @param string|null $string
+     * @param string|array $searches
+     * @param int $at_least (default: null)
+     * @return bool
      */
-    public static function contains(?string $haystack, string $search) : bool
+    public static function contains(?string $string, $searches, ?int $at_least = null) : bool
     {
-        if ($haystack === null) {
+        $searches = (array)$searches;
+        if ($string === null || $searches === []) {
             return false;
         }
-        if ($search === '') {
+        if ($at_least === null) {
+            foreach ($searches as $search) {
+                if (!static::_contains($string, $search)) {
+                    return false;
+                }
+            }
             return true;
         }
-        return strpos($haystack, $search) !== false;
+
+        $count = 0;
+        foreach ($searches as $search) {
+            $count += static::_contains($string, $search) ? 1 : 0 ;
+        }
+        return $at_least <= $count;
     }
 
+    /**
+     * It checks whether the specified character string is included in the target character string.
+     *
+     * @param string|null $string
+     * @param string $searches
+     * @return bool
+     */
+    protected static function _contains(?string $string, string $search) : bool
+    {
+        return $search === '' ? true : strpos($string, $search) !== false ;
+    }
+    
     /**
      * Cut the string and append to ellipsis that become a given length.
      *
