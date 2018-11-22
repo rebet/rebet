@@ -2,6 +2,7 @@
 namespace Rebet\Foundation\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler;
+use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
 
 /**
@@ -29,6 +30,20 @@ class BladeCustomizer
         //   @env(['local','testing']) ... @else ... @endenv
         $blade->if('env', function ($env) {
             return in_array(App::getEnv(), (array)$env);
+        });
+
+        // ------------------------------------------------
+        // Check Policy and Gate (Authorization)
+        // ------------------------------------------------
+        // Params:
+        //   $action : string - action
+        //   $target : mixed  - action
+        // Usage:
+        //   @can('admin') ... @else ... @endcan
+        //   @can('update', $post) ... @else ... @endcan
+        //   @can('create', Post::class) ... @else ... @endcan
+        $blade->if('can', function ($action, ...$target) {
+            return Auth::user()->can($action, ...$target);
         });
     }
 }
