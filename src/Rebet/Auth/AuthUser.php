@@ -4,6 +4,7 @@ namespace Rebet\Auth;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
 use Rebet\Inflection\Inflector;
 
 /**
