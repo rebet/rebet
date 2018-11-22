@@ -41,7 +41,8 @@ class Auth
                 ],
             ],
             'gates' => [
-                'guest' => function (AuthUser $user) { return $user->isGuest(); }
+                'all'   => function (AuthUser $user) { return true; },
+                'guest' => function (AuthUser $user) { return $user->isGuest(); },
             ],
             'policies' => [],
         ];
