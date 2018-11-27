@@ -40,11 +40,11 @@ class Auth
                     'fallback' => null, // url or function(Request):Response
                 ],
             ],
-            'roles' => [
+            'roles'       => [
                 'all'   => function (AuthUser $user) { return true; },
                 'guest' => function (AuthUser $user) { return $user->isGuest(); },
             ],
-            'policies' => [],
+            'policies'    => [],
         ];
     }
 

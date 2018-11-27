@@ -53,7 +53,7 @@ class ArrayProvider extends AuthProvider
      * Users information must have the following data,
      *
      *  - 'id'       => id
-     *  - 'role'     => role ('USER', 'ADMIN', etc)
+     *  - 'role'     => role ('user', 'admin', etc)
      *  - 'email'    => email address   (for credentials)
      *  - 'password' => hashed password (for credentials)
      *

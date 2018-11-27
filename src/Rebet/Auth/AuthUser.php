@@ -5,6 +5,7 @@ use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
+use Rebet\Config\Configurable;
 use Rebet\Inflection\Inflector;
 
 /**
@@ -17,6 +18,15 @@ use Rebet\Inflection\Inflector;
  */
 class AuthUser
 {
+    use Configurable;
+
+    public static function defaultConfig() : array
+    {
+        return [
+            'guest_aliases' => [],
+        ];
+    }
+
     /**
      * The authenticated user instance.
      *
@@ -89,11 +99,12 @@ class AuthUser
     /**
      * Get the Guest user instance.
      *
+     * @param array $aliases (default: depend on configure)
      * @return self
      */
-    public static function guest() : self
+    public static function guest(array $aliases = null) : self
     {
-        return new static(null);
+        return new static(null, $aliases ?? static::config('guest_aliases', false, []));
     }
 
     /**
@@ -151,7 +162,7 @@ class AuthUser
     }
 
     /**
-     * It checks the authenticated user is GUEST.
+     * It checks the authenticated user is guest.
      *
      * @return boolean
      */
@@ -161,22 +172,34 @@ class AuthUser
     }
 
     /**
-     * It checks the user satisfies any the given roles.
+     * It checks the user is in the given roles.
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
      * @param string ...$roles
      * @return boolean
      */
-    public function belong(string ...$roles) : bool
+    public function is(string ...$roles) : bool
     {
         return Auth::role($this, ...$roles);
     }
 
     /**
-     * It checks the user can do given action to targets.
+     * It checks the user is not in the given roles.
+     * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
+     *
+     * @param string ...$roles
+     * @return boolean
+     */
+    public function isnot(string ...$roles) : bool
+    {
+        return !$this->is(...$roles);
+    }
+
+    /**
+     * It checks the user can do given action to target.
      *
      * @param string $action
-     * @param string|object ...$target
+     * @param string|object $target
      * @param mixed ...$extras
      * @return boolean
      */
@@ -186,15 +209,16 @@ class AuthUser
     }
 
     /**
-     * It checks the user can not do given action to targets.
+     * It checks the user can not do given action to target.
      *
      * @param string $action
-     * @param mixed ...$targets
+     * @param string|object $target
+     * @param mixed ...$extras
      * @return boolean
      */
-    public function cannot(string $action, ...$targets) : bool
+    public function cannot(string $action, $target, ...$extras) : bool
     {
-        return !$this->can($action, ...$targets);
+        return !$this->can($action, $target, ...$extras);
     }
 
     /**

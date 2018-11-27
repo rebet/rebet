@@ -21,7 +21,7 @@ class BladeCustomizer
     public static function customize(BladeCompiler $blade) : void
     {
         // ------------------------------------------------
-        // Check current environment
+        // [env/envnot] Check current environment
         // ------------------------------------------------
         // Params:
         //   $env : string|array - allow enviroments
@@ -31,22 +31,28 @@ class BladeCustomizer
         $blade->if('env', function ($env) {
             return in_array(App::getEnv(), (array)$env);
         });
+        $blade->if('envnot', function ($env) {
+            return !in_array(App::getEnv(), (array)$env);
+        });
 
         // ------------------------------------------------
-        // Check current users role (Authorization)
+        // [is/isnot] Check current users role (Authorization)
         // ------------------------------------------------
         // Params:
         //   $roles : string - role names
         // Usage:
-        //   @belong('admin') ... @else ... @endbelong
-        //   @belong('user', 'guest') ... @else ... @endbelong
-        //   @belong('user', 'guest:post-editable') ... @else ... @endbelong
-        $blade->if('belong', function (string ...$roles) {
-            return Auth::user()->belong(...$roles);
+        //   @is('admin') ... @else ... @endis
+        //   @is('user', 'guest') ... @else ... @endis
+        //   @is('user', 'guest:post-editable') ... @else ... @endis
+        $blade->if('is', function (string ...$roles) {
+            return Auth::user()->is(...$roles);
+        });
+        $blade->if('isnot', function (string ...$roles) {
+            return Auth::user()->isnot(...$roles);
         });
 
         // ------------------------------------------------
-        // Check policy for target to current user (Authorization)
+        // [can/cannot] Check policy for target to current user (Authorization)
         // ------------------------------------------------
         // Params:
         //   $action : string        - action name
@@ -58,6 +64,9 @@ class BladeCustomizer
         //   @can('update', 'remark', $post) ... @else ... @endcan
         $blade->if('can', function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
+        });
+        $blade->if('cannot', function (string $action, $target, ...$extras) {
+            return Auth::user()->cannot($action, $target, ...$extras);
         });
     }
 }
