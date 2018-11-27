@@ -2,7 +2,7 @@
 namespace Rebet\Auth\Annotation;
 
 /**
- * Gate Annotation
+ * Role Annotation
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -12,7 +12,7 @@ namespace Rebet\Auth\Annotation;
  * @Annotation
  * @Target({"CLASS","METHOD"})
  */
-final class Gate
+final class Role
 {
     /**
      * @var array

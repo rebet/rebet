@@ -161,15 +161,28 @@ class AuthUser
     }
 
     /**
+     * It checks the user satisfies any the given roles.
+     * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
+     *
+     * @param string ...$roles
+     * @return boolean
+     */
+    public function belong(string ...$roles) : bool
+    {
+        return Auth::role($this, ...$roles);
+    }
+
+    /**
      * It checks the user can do given action to targets.
      *
      * @param string $action
-     * @param mixed ...$targets
+     * @param string|object ...$target
+     * @param mixed ...$extras
      * @return boolean
      */
-    public function can(string $action, ...$targets) : bool
+    public function can(string $action, $target, ...$extras) : bool
     {
-        return Auth::check($this, $action, ...$targets);
+        return Auth::policy($this, $action, $target, ...$extras);
     }
 
     /**

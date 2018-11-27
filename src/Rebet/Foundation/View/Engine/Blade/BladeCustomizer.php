@@ -27,23 +27,37 @@ class BladeCustomizer
         //   $env : string|array - allow enviroments
         // Usage:
         //   @env('local') ... @else ... @endenv
-        //   @env(['local','testing']) ... @else ... @endenv
+        //   @env(['local', 'testing']) ... @else ... @endenv
         $blade->if('env', function ($env) {
             return in_array(App::getEnv(), (array)$env);
         });
 
         // ------------------------------------------------
-        // Check Policy and Gate (Authorization)
+        // Check current users role (Authorization)
         // ------------------------------------------------
         // Params:
-        //   $action : string - action
-        //   $target : mixed  - action
+        //   $roles : string - role names
         // Usage:
-        //   @can('admin') ... @else ... @endcan
+        //   @belong('admin') ... @else ... @endbelong
+        //   @belong('user', 'guest') ... @else ... @endbelong
+        //   @belong('user', 'guest:post-editable') ... @else ... @endbelong
+        $blade->if('belong', function (string ...$roles) {
+            return Auth::user()->belong(...$roles);
+        });
+
+        // ------------------------------------------------
+        // Check policy for target to current user (Authorization)
+        // ------------------------------------------------
+        // Params:
+        //   $action : string        - action name
+        //   $target : string|object - target object or class or any name
+        //   $extras : mixed         - extra arguments
+        // Usage:
         //   @can('update', $post) ... @else ... @endcan
         //   @can('create', Post::class) ... @else ... @endcan
-        $blade->if('can', function ($action, ...$target) {
-            return Auth::user()->can($action, ...$target);
+        //   @can('update', 'remark', $post) ... @else ... @endcan
+        $blade->if('can', function (string $action, $target, ...$extras) {
+            return Auth::user()->can($action, $target, ...$extras);
         });
     }
 }

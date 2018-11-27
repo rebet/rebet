@@ -40,7 +40,7 @@ class Auth
                     'fallback' => null, // url or function(Request):Response
                 ],
             ],
-            'gates' => [
+            'roles' => [
                 'all'   => function (AuthUser $user) { return true; },
                 'guest' => function (AuthUser $user) { return $user->isGuest(); },
             ],
@@ -141,7 +141,7 @@ class Auth
     }
 
     /**
-     * [Authentication] Recall authenticate user from an incoming request then it will check the gate of route.
+     * [Authentication] Recall authenticate user from an incoming request then it will check the role of route.
      *
      * @param Request $request
      * @return Response|null response when authenticate failed
@@ -160,19 +160,10 @@ class Auth
         $user->guard($guard);
         static::$user = $user;
 
-        $gates = $route->gates();
-        if (empty($gates)) {
+        $roles = $route->roles();
+        if (empty($roles) || static::role($user, ...$roles)) {
             Event::dispatch(new Authenticated($request, $user));
             return null;
-        }
-        foreach ($gates as $gate) {
-            $gate    = (array)$gate;
-            $action  = array_shift($gate);
-            $targets = $gate;
-            if (static::gate($user, $action, ...$targets)) {
-                Event::dispatch(new Authenticated($request, $user));
-                return null;
-            }
         }
 
         $fallback = static::config("authenticator.{$auth}.fallback");
@@ -180,15 +171,15 @@ class Auth
     }
 
     /**
-     * [Authorization] Define the gate for given action.
+     * [Authorization] Define the role for given name.
      *
-     * @param string $action
-     * @param callable $gate
+     * @param string $name
+     * @param callable $checker
      * @return void
      */
-    public static function defineGate(string $action, callable $gate) : void
+    public static function defineRole(string $name, callable $checker) : void
     {
-        static::setConfig(['gates' => [$action => $gate]]);
+        static::setConfig(['roles' => [$name => $checker]]);
     }
 
     /**
@@ -205,35 +196,20 @@ class Auth
     }
 
     /**
-     * [Authorization] It checks the policy and gate to user can do given action.
-     *
-     * 1st: Check the policies.
-     * 2rd: Check the gates.
-     *
-     * @param mixed $user
-     * @param string $action
-     * @param mixed ...$targets
-     * @return bool
-     */
-    public static function check(AuthUser $user, string $action, ...$targets) : bool
-    {
-        return static::policy($user, $action, ...$targets) || static::gate($user, $action, ...$targets);
-    }
-
-    /**
      * [Authorization] Check the policy.
      *
-     * 1st: Check the policies of '@before' action for 1st target object or class.
-     * 2nd: Check the policies of given action for 1st target object or class.
+     * 1st: Check the policies of '@before' action for target object or class.
+     * 2nd: Check the policies of given action for target object or class.
      *
      * @param AuthUser $user
      * @param string $action
-     * @param mixed ...$targets
+     * @param string|object $target
+     * @param mixed ...$extras
      * @return boolean|null
      */
-    public static function policy(AuthUser $user, string $action, ...$targets) : bool
+    public static function policy(AuthUser $user, string $action, $target, ...$extras) : bool
     {
-        return static::_policy($user, '@before', $targets) || static::_policy($user, $action, $targets);
+        return static::_policy($user, '@before', $target, $extras) || static::_policy($user, $action, $target, $extras);
     }
 
     /**
@@ -241,16 +217,17 @@ class Auth
      *
      * @param mixed $user
      * @param string $action
-     * @param array $targets
+     * @param string|object $target
+     * @param array $extras (default: [])
      * @return boolean|null
      */
-    protected static function _policy(AuthUser $user, string $action, array $targets) : bool
+    protected static function _policy(AuthUser $user, string $action, $target, array $extras = []) : bool
     {
-        if (empty($targets)) {
+        if (empty($target)) {
             return true;
         }
-        $selector = is_object($targets[0]) ? get_class($targets[0]) : $targets[0] ;
-        if (!is_string($targets)) {
+        $selector = is_object($target) ? get_class($target) : $target ;
+        if (!is_string($selector)) {
             return true;
         }
         $policy = static::config("policies.{$selector}.{$action}", false);
@@ -258,17 +235,46 @@ class Auth
     }
 
     /**
-     * [Authorization] Check the gate.
+     * [Authorization] Check the user satisfies any the given role conditions.
+     *
+     * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
      * @param mixed $user
-     * @param string $action
-     * @param mixed ...$targets
+     * @param string ...$names
      * @return boolean
      */
-    public static function gate(AuthUser $user, string $action, ...$targets) : ? bool
+    public static function role(AuthUser $user, string ...$names) : bool
     {
-        $gate = static::config("gates.{$action}", false);
-        return is_callable($gate) ? static::invoke(\Closure::fromCallable($gate), $user, $targets) : null;
+        if (empty($names)) {
+            return true;
+        }
+        foreach ($names as $name) {
+            if (static::_role($user, $name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * [Authorization] Check the role.
+     *
+     * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
+     *
+     * @param mixed $user
+     * @param string $name
+     * @return boolean
+     */
+    protected static function _role(AuthUser $user, string $name) : bool
+    {
+        $names = explode(':', $name);
+        foreach ($names as $name) {
+            $checker = static::config("roles.{$name}", false);
+            if (!is_callable($checker) || !static::invoke(\Closure::fromCallable($checker), $user)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -276,10 +282,10 @@ class Auth
      *
      * @param \Closure $action
      * @param mixed $user
-     * @param array $targets
+     * @param array $targets (default: [])
      * @return boolean|null
      */
-    protected static function invoke(\Closure $action, $user, array $targets) : ? bool
+    protected static function invoke(\Closure $action, $user, array $targets = []) : ? bool
     {
         $function = new \ReflectionFunction($action);
         $request  = Request::current();

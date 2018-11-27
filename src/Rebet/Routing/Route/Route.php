@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Auth\Annotation\Authenticator;
-use Rebet\Auth\Annotation\Gate;
+use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -54,11 +54,11 @@ abstract class Route
     protected $auth = null;
 
     /**
-     * The gates for this route
+     * The roles for this route
      *
      * @var array
      */
-    protected $gates = [];
+    protected $roles = [];
 
     /**
      * Configure regex check of routing parameters.
@@ -201,18 +201,18 @@ abstract class Route
     }
 
     /**
-     * Get or set the gates attached to the route.
+     * Get or set the roles attached to the route.
      *
-     * @param string|array ...$gates
+     * @param string|array ...$roles
      * @return self|array
      */
-    public function gates($gates = null)
+    public function roles($roles = null)
     {
-        if ($gates === null) {
-            $gate = $this->annotation(Gate::class);
-            return $gate ? $gate->value : $this->gates ;
+        if ($roles === null) {
+            $role = $this->annotation(Role::class);
+            return $role ? $role->value : $this->roles ;
         }
-        $this->gates = func_get_args();
+        $this->roles = func_get_args();
         return $this;
     }
     
