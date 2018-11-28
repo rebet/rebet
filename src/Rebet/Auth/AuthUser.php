@@ -136,7 +136,7 @@ class AuthUser
      */
     protected function get(string $name, $default = null)
     {
-        $alias = $this->alias[$name] ?? $name ;
+        $alias = $this->aliases[$name] ?? $name ;
         if (Strings::startsWith($alias, '@')) {
             return Strings::ltrim($alias, '@');
         }
