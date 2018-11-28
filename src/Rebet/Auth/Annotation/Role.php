@@ -17,5 +17,15 @@ final class Role
     /**
      * @var array
      */
-    public $value;
+    public $names;
+
+    /**
+     * Constructor.
+     *
+     * @param array $values
+     */
+    public function __construct(array $values)
+    {
+        $this->names = (array)($values['value']);
+    }
 }

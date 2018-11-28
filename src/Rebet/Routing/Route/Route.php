@@ -210,7 +210,7 @@ abstract class Route
     {
         if ($roles === null) {
             $role = $this->annotation(Role::class);
-            return $role ? $role->value : $this->roles ;
+            return $role ? $role->names : $this->roles ;
         }
         $this->roles = func_get_args();
         return $this;
