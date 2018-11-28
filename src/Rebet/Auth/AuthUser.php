@@ -102,7 +102,7 @@ class AuthUser
      * @param array $aliases (default: depend on configure)
      * @return self
      */
-    public static function guest(array $aliases = null) : self
+    public static function guest(?array $aliases = null) : self
     {
         return new static(null, $aliases ?? static::config('guest_aliases', false, []));
     }
