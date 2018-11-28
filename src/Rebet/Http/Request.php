@@ -276,10 +276,13 @@ class Request extends SymfonyRequest
      */
     public function saveAs(string $name, int $hash_length = 12) : self
     {
-        if ($this->session()) {
-            $this->session()->set("_request:{$name}:hash", Securities::randomCode($hash_length));
-            $this->session()->set("_request:{$name}:uri", $this->getRequestUri());
-            $this->session()->set("_request:{$name}:request", $this->request->all());
+        $session = $this->session();
+        if ($session) {
+            $session->set("_request_{$name}", [
+                'hash' => Securities::randomCode($hash_length),
+                'uri'  => $this->getRequestUri(),
+                'post' => $this->request->all(),
+            ]);
         }
         return $this;
     }
@@ -292,7 +295,7 @@ class Request extends SymfonyRequest
      */
     public function isSaved(string $name) : bool
     {
-        return $this->session() ? $this->session()->has("_request:{$name}:uri") : false;
+        return $this->session() ? $this->session()->has("_request_{$name}") : false;
     }
 
     /**
@@ -307,49 +310,34 @@ class Request extends SymfonyRequest
     public function redirectTo(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?Response
     {
         if ($this->isSaved($name)) {
+            $key   = '_R3'; // Rebet Restorable Request
+            $value = "{$name}:".$this->session()->get("_request_{$name}.hash");
             if ($this->can_use_cookie) {
-                Cookie::set("_{$name}", $this->session()->get("_request:{$name}:hash"));
+                Cookie::set($key, $value);
             } else {
-                $append_query = array_merge($append_query, [
-                    "_{$name}" => $this->session()->get("_request:{$name}:hash")
-                ]);
+                $append_query = array_merge($append_query, [$key => $value]);
             }
-            return Responder::redirect($this->session()->get("_request:{$name}:uri"), $append_query, $status, $headers, $this);
+            return Responder::redirect($this->session()->get("_request_{$name}.uri"), $append_query, $status, $headers, $this);
         }
         return null;
     }
 
     /**
-     * Restore the request from given name saved request data.
+     * Restore the request from saved request data by '_R3' parameter (if exists).
      *
-     * @param string $name
-     * @return self
+     * @return void
      */
-    public function restoreFrom(string $name) : self
+    public function restore() : self
     {
+        [$name, $hash] = explode(':', $this->cookies->get('_R3') ?? $this->query->get('_R3') ?? ':') ;
         if ($this->isSaved($name)) {
-            $hash = $this->cookies->get("_{$name}") ?? $this->query->get("_{$name}");
-            if ($hash === $this->session()->get("_request:{$name}:hash")) {
-                $this->request->replace($this->session()->get("_request:{$name}:request"));
-                $this->remove($name);
+            $session = $this->session();
+            if ($hash === $session->get("_request_{$name}.hash")) {
+                $this->request->replace($session->get("_request_{$name}.post"));
+                $session->remove("_request_{$name}");
+                Cookie::remove('_R3');
             }
         }
         return $this;
-    }
-
-    /**
-     * Remove the given name saved request data.
-     *
-     * @param string $name
-     * @return self
-     */
-    public function remove(string $name) : self
-    {
-        if ($this->isSaved($name)) {
-            $this->session()->remove("_request:{$name}:hash");
-            $this->session()->remove("_request:{$name}:uri");
-            $this->session()->remove("_request:{$name}:request");
-            Cookie::remove("_{$name}");
-        }
     }
 }
