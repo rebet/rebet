@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Http\Middleware;
+namespace Rebet\Routing\Middleware;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -27,6 +27,7 @@ class AddGlobalShareVariableToView
             'request' => $request,
             'route'   => $request->route,
             'prefix'  => $request->route->prefix,
+            'session' => $request->session(),
         ]);
         return $next($request);
     }
