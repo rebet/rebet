@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Routing;
 
-use Rebet\Http\Request;
-use Rebet\View\View;
 use Rebet\Auth\Auth;
+use Rebet\Http\Request;
+use Rebet\Http\Response;
+use Rebet\View\View;
 
 /**
  * Controller class
@@ -29,6 +30,31 @@ abstract class Controller
      */
     public $route = null;
     
+    /**
+     * Perform preprocessing of the controller.
+     * Please override with subclass if necessary.
+     *
+     * @param Request $request
+     * @return Request
+     */
+    public function before(Request $request) : Request
+    {
+        return $request;
+    }
+
+    /**
+     * Perform postprocessing of the controller.
+     * Please override with subclass if necessary.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function after(Request $request, Response $response) : Response
+    {
+        return $response;
+    }
+
     /**
      * Validate input data by given rules.
      *

@@ -25,6 +25,20 @@ class View implements Renderable
     }
 
     /**
+     * The global share valiables.
+     *
+     * @var array
+     */
+    protected static $share = [];
+
+    /**
+     * The view valiable composers.
+     *
+     * @var array
+     */
+    protected static $composer = [];
+
+    /**
      * View name
      *
      * @var string
@@ -76,6 +90,52 @@ class View implements Renderable
         $this->name    = $name;
         $this->changer = $changer;
         $this->engine  = $engine ?? static::configInstantiate('engine');
+
+        $this->with(static::$share);
+        foreach (static::$composer as $regex => $composer) {
+            if (preg_match($regex, $name)) {
+                $composer($this);
+            }
+        }
+    }
+
+    /**
+     * Set the view valiable composer.
+     *
+     * @param string $regex
+     * @param callable $composer
+     * @return void
+     */
+    public static function composer(string $regex, callable $composer) : void
+    {
+        static::$composer[$regex] = \Closure::fromCallable($composer);
+    }
+
+    /**
+     * Set the global share valiables.
+     *
+     * @param string|array $key
+     * @param mixed $value
+     * @return void
+     */
+    public static function share($key, $value = null) : void
+    {
+        if (is_array($key)) {
+            static::$share = array_merge(static::$share, $key);
+        } else {
+            static::$share[$key] = $value;
+        }
+    }
+
+    /**
+     * Get the global shared valiables.
+     *
+     * @param string $key
+     * @return void
+     */
+    public static function shared(string $key)
+    {
+        return static::$share[$key] ?? null;
     }
 
     /**

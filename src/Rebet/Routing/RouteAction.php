@@ -4,6 +4,8 @@ namespace Rebet\Routing;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Common\Reflector;
 use Rebet\Http\Request;
+use Rebet\Http\Responder;
+use Rebet\Http\Response;
 use Rebet\Routing\Route\Route;
 
 /**
@@ -66,10 +68,14 @@ class RouteAction
      * Invoke this action
      *
      * @param Request $request
-     * @return mixed
+     * @return Response
      */
-    public function invoke(Request $request)
+    public function invoke(Request $request) : Response
     {
+        if ($this->instance && method_exists($this->instance, 'before')) {
+            $request = $this->instance->before($request);
+        }
+
         $vars = $request->attributes;
         $args = [];
         foreach ($this->reflector->getParameters() as $parameter) {
@@ -92,7 +98,9 @@ class RouteAction
             $args[$name] = $converted;
         }
 
-        return $this->isFunction() ? $this->reflector->invokeArgs($args) : $this->reflector->invokeArgs($this->instance, $args);
+        $response = $this->isFunction() ? $this->reflector->invokeArgs($args) : $this->reflector->invokeArgs($this->instance, $args);
+        $response = Responder::toResponse($response, $request);
+        return $this->instance && method_exists($this->instance, 'after') ? $this->instance->after($request, $response) : $response;
     }
 
     /**

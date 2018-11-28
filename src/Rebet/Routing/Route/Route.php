@@ -4,7 +4,6 @@ namespace Rebet\Routing\Route;
 use Rebet\Auth\Annotation\Authenticator;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
-use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Routing\RouteAction;
 
@@ -141,7 +140,7 @@ abstract class Route
      */
     public function handle(Request $request) : Response
     {
-        return Responder::toResponse($this->route_action->invoke($request), $request);
+        return $this->route_action->invoke($request);
     }
 
     /**
