@@ -3,6 +3,7 @@ namespace Rebet\Routing\Middleware;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\View\View;
 
 /**
  * Add Global Share Variable To View Middleware Class
