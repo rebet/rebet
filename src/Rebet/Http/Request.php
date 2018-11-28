@@ -2,7 +2,9 @@
 namespace Rebet\Http;
 
 use Rebet\Common\Reflector;
+use Rebet\Common\Securities;
 use Rebet\Common\Strings;
+use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Session\Session;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
@@ -42,6 +44,14 @@ class Request extends SymfonyRequest
     public $channel = null;
 
     /**
+     * Can the client use cookie
+     * Note: This flag does not guarantee the correctness of being unusable because it is always false at first access.
+     *
+     * @var boolean
+     */
+    public $can_use_cookie = false;
+
+    /**
      * {@inheritdoc}
      *
      * @param array                $query      The GET parameters
@@ -56,6 +66,11 @@ class Request extends SymfonyRequest
     {
         parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
         static::$current = $this;
+        if ($this->cookies->has('_beacon')) {
+            $this->can_use_cookie = true;
+        } else {
+            Cookie::set('_beacon', 1);
+        }
     }
 
     /**
@@ -236,7 +251,7 @@ class Request extends SymfonyRequest
      */
     public function getRoutePrefix() : string
     {
-        if(!$this->route) {
+        if (!$this->route) {
             throw new \LogicException("Route is not selected for this request.");
         }
         return $this->route->prefix ?? '';
@@ -250,5 +265,91 @@ class Request extends SymfonyRequest
     public function getUserAgent() : UserAgent
     {
         return new UserAgent($this->headers->get('User-Agent'));
+    }
+
+    /**
+     * Save the request data to session with given name.
+     *
+     * @param string $name
+     * @param int $hash_length (default: 12)
+     * @return self
+     */
+    public function saveAs(string $name, int $hash_length = 12) : self
+    {
+        if ($this->session()) {
+            $this->session()->set("_request:{$name}:hash", Securities::randomCode($hash_length));
+            $this->session()->set("_request:{$name}:uri", $this->getRequestUri());
+            $this->session()->set("_request:{$name}:request", $this->request->all());
+        }
+        return $this;
+    }
+
+    /**
+     * It checks given name request data is saved.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function isSaved(string $name) : bool
+    {
+        return $this->session() ? $this->session()->has("_request:{$name}:uri") : false;
+    }
+
+    /**
+     * Redirect to uri same as saved request of given name.
+     *
+     * @param string $name
+     * @param array $append_query
+     * @param integer $status
+     * @param array $headers
+     * @return Response|null
+     */
+    public function redirectTo(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?Response
+    {
+        if ($this->isSaved($name)) {
+            if ($this->can_use_cookie) {
+                Cookie::set("_{$name}", $this->session()->get("_request:{$name}:hash"));
+            } else {
+                $append_query = array_merge($append_query, [
+                    "_{$name}" => $this->session()->get("_request:{$name}:hash")
+                ]);
+            }
+            return Responder::redirect($this->session()->get("_request:{$name}:uri"), $append_query, $status, $headers, $this);
+        }
+        return null;
+    }
+
+    /**
+     * Restore the request from given name saved request data.
+     *
+     * @param string $name
+     * @return self
+     */
+    public function restoreFrom(string $name) : self
+    {
+        if ($this->isSaved($name)) {
+            $hash = $this->cookies->get("_{$name}") ?? $this->query->get("_{$name}");
+            if ($hash === $this->session()->get("_request:{$name}:hash")) {
+                $this->request->replace($this->session()->get("_request:{$name}:request"));
+                $this->remove($name);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Remove the given name saved request data.
+     *
+     * @param string $name
+     * @return self
+     */
+    public function remove(string $name) : self
+    {
+        if ($this->isSaved($name)) {
+            $this->session()->remove("_request:{$name}:hash");
+            $this->session()->remove("_request:{$name}:uri");
+            $this->session()->remove("_request:{$name}:request");
+            Cookie::remove("_{$name}");
+        }
     }
 }
