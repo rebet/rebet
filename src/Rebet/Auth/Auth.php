@@ -116,7 +116,7 @@ class Auth
             Event::dispatch(new SigninFailed($request));
             return Responder::redirect($fallback)
                     ->with($request->input())
-                    ->errors(['global' => [[Trans::get('message.signin_failed')]]])
+                    ->errors(['signin' => [Trans::get('message.signin_failed')]])
                     ;
         }
 
