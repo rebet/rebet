@@ -97,7 +97,7 @@ class ArrayProvider extends AuthProvider
         $aliases = $this->aliases;
         $users   = $this->users;
         foreach ($credentials as $key => $value) {
-            $value = $key === 'password' ? $this->hasher($value) : $value ;
+            $value = $key === 'password' ? ($this->hasher)($value) : $value ;
             $users = $users->filter(function ($user) use ($key, $value, $aliases) {
                 $key = $aliases[$key] ?? $key;
                 return isset($user[$key]) && $user[$key] == $value;
