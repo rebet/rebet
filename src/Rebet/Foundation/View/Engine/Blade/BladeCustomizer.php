@@ -93,9 +93,10 @@ class BladeCustomizer
         //   $outer : string - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
         //   $inner : string - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
         // Usage:
+        //   @error
         //   @error('name')
         //   @error('name', '<div class="error">:messages</div>', "* :message<br>")
-        $blade->directive('error', function ($expression) {
+        $blade->directive('error', function ($expression = null) {
             [$name, $outer, $inner] = array_pad(explode(',', $expression), 3, null);
             $name  = Strings::trim($name);
             $outer = Strings::trim($outer) ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
@@ -104,12 +105,12 @@ class BladeCustomizer
 <?php
 (function () use (\$errors) {
     \$messages = '';
-    if (isset(\$errors[{$name}])) {
-        foreach (\$errors[{$name}] as \$message) {
+    if ({$name})) {
+        foreach (\$errors[{$name}] ?? [] as \$message) {
             \$messages .= str_replace(':message', \$message, '{$inner}');
         }
     } else {
-        foreach (\$errors as \$messages) {
+        foreach (\$errors ?? [] as \$messages) {
             foreach (\$messages as \$message) {
                 \$messages .= str_replace(':message', \$message, '{$inner}');
             }
