@@ -72,7 +72,7 @@ class SessionGuard implements Guard
         }
 
         $session = $request->getSession();
-        $session->set($this->toSessionKey('id'), $user->id());
+        $session->set($this->toSessionKey('id'), $user->id);
         $provider = $user->provider();
         if ($remember && $provider->supportRememberToken()) {
             $token = $provider->issuingRememberToken($id, $this->remember_days);

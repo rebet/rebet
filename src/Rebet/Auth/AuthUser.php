@@ -157,7 +157,7 @@ class AuthUser
     public function reload() : void
     {
         if ($this->provider) {
-            $this->user = $this->provider->findById($this->id());
+            $this->user = $this->provider->findById($this->id);
         }
     }
 
