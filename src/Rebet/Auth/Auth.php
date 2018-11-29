@@ -87,7 +87,7 @@ class Auth
         $route    = $request->route;
         $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $user     = $provider->findByCredentials($request, $credentials);
+        $user     = $provider->findByCredentials($credentials);
         if ($user) {
             $provider->authenticator($auth);
             $user->provider($provider);
