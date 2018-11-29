@@ -30,22 +30,6 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
     }
 
     /**
-     * Set the input data to the redirect.
-     *
-     * @param array $input
-     * @return self
-     */
-    public function with(array $input) : self
-    {
-        $flash = Session::current()->flash();
-        $flash->set('_redirect_input', array_merge(
-            $flash->peek('_redirect_input', []),
-            $input
-        ));
-        return $this;
-    }
-
-    /**
      * Set the errors data to the redirect.
      *
      * @todo MessageBag
@@ -56,8 +40,8 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
     public function errors(array $errors) : self
     {
         $flash = Session::current()->flash();
-        $flash->set('_redirect_errors', array_merge(
-            $flash->peek('_redirect_errors', []),
+        $flash->set('_inherit_errors', array_merge(
+            $flash->peek('_inherit_errors', []),
             $errors
         ));
         return $this;

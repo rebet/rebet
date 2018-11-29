@@ -5,17 +5,17 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 
 /**
- * [Routing Middleware] Restore Redirect Data Class
+ * [Routing Middleware] Restore Inherit Data Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class RestoreRedirectData
+class RestoreInheritData
 {
     /**
-     * Handle Replay Request Middleware.
+     * Handle Restore Inherit Data Middleware.
      *
      * @param Request $request
      * @param \Closure $next
@@ -23,6 +23,6 @@ class RestoreRedirectData
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        return $next($request->restoreRedirectData());
+        return $next($request->restoreInheritData());
     }
 }

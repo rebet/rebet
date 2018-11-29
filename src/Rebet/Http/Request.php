@@ -311,15 +311,15 @@ class Request extends SymfonyRequest
     }
 
     /**
-     * Restore the input data from sesssion saved redirect input (if exists).
+     * Restore the inherit data from sesssion saved data (if exists).
      *
      * @see RestoreRedirectInput middleware
      * @return self
      */
-    public function restoreRedirectData() : self
+    public function restoreInheritData() : self
     {
-        $this->request->add($this->session()->flash()->get('_redirect_input', []));
-        $errors = $this->session()->flash()->get('_redirect_errors');
+        $this->request->add($this->session()->flash()->get('_inherit_input', []));
+        $errors = $this->session()->flash()->get('_inherit_errors');
         if ($errors) {
             View::share('errors', $errors);
         }

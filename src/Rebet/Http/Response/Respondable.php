@@ -30,11 +30,27 @@ trait Respondable
      * @param string $key
      * @param array|string $values
      * @param boolean $replace
-     * @return Response
+     * @return self
      */
-    public function setHeader(string $key, $values, bool $replace = true) : Response
+    public function setHeader(string $key, $values, bool $replace = true) : self
     {
         $this->headers->set($key, $values, $replace);
+        return $this;
+    }
+
+    /**
+     * Set the input data to the redirect.
+     *
+     * @param array $input
+     * @return self
+     */
+    public function with(array $input) : self
+    {
+        $flash = Session::current()->flash();
+        $flash->set('_inherit_input', array_merge(
+            $flash->peek('_inherit_input', []),
+            $input
+        ));
         return $this;
     }
 }
