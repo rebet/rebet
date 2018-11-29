@@ -89,23 +89,24 @@ class BladeCustomizer
         // [error] Output error message
         // ------------------------------------------------
         // Params:
-        //   $name  : string - attribute name
+        //   $name  : string - attribute name (default: '*')
         //   $outer : string - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
         //   $inner : string - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
         // Usage:
         //   @error
         //   @error('name')
-        //   @error('name', '<div class="error">:messages</div>', "* :message<br>")
+        //   @error('name', <div class="errors"><ul class="error">:messages</ul></div>)
+        //   @error('*', <div class="error">:messages</div>, * :message<br>)
         $blade->directive('error', function ($expression = null) {
             [$name, $outer, $inner] = array_pad($expression ? explode(',', $expression) : [], 3, null);
-            $name  = Strings::trim($name);
+            $name  = Strings::trim($name) ?? "'*'";
             $outer = Strings::trim($outer) ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
             $inner = Strings::trim($inner) ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
             return <<<EOS
 <?php
 (function () use (\$errors) {
     \$messages = '';
-    if ($name) {
+    if ($name !== '*') {
         foreach (\$errors[$name] ?? [] as \$message) {
             \$messages .= str_replace(':message', \$message, '$inner');
         }
@@ -116,7 +117,7 @@ class BladeCustomizer
             }
         }
     }
-    echo str_replace(':messages', \$messages, '$outer');
+    echo empty(\$messages) ? '' : str_replace(':messages', \$messages, '$outer') ;
 })();
 ?>
 EOS;
