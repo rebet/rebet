@@ -325,4 +325,20 @@ class Request extends SymfonyRequest
         }
         return $this;
     }
+
+    /**
+     * Inherit input data to next request.
+     *
+     * @param array $input
+     * @return self
+     */
+    public function inheritInputToNext() : self
+    {
+        $flash = $this->session()->flash();
+        $flash->set('_inherit_input', array_merge(
+            $flash->peek('_inherit_input', []),
+            $this->input()
+        ));
+        return $this;
+    }
 }
