@@ -155,7 +155,7 @@ class Translator
     {
         $locale = $locale ?? $this->locale;
         $this->load($group, $locale);
-        return Reflector::get($this->resouces[$group][$locale], "@{$name}", false, $default);
+        return Reflector::get($this->resouces[$group][$locale], "@{$name}", $default);
     }
 
     /**
