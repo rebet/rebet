@@ -105,19 +105,19 @@ class BladeCustomizer
             return <<<EOS
 <?php
 (function () use (\$errors) {
-    \$messages = '';
+    \$output = '';
     if ($name !== '*') {
         foreach (\$errors[$name] ?? [] as \$message) {
-            \$messages .= str_replace(':message', \$message, '$inner');
+            \$output .= str_replace(':message', \$message, '$inner');
         }
     } else {
         foreach (\$errors ?? [] as \$messages) {
             foreach (\$messages as \$message) {
-                \$messages .= str_replace(':message', \$message, '$inner');
+                \$output .= str_replace(':message', \$message, '$inner');
             }
         }
     }
-    echo empty(\$messages) ? '' : str_replace(':messages', \$messages, '$outer') ;
+    echo empty(\$output) ? '' : str_replace(':messages', \$output, '$outer') ;
 })();
 ?>
 EOS;
