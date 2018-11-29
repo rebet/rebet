@@ -150,6 +150,25 @@ class Strings
     }
     
     /**
+     * Trim the repetition of the given character string at the both end.
+     *
+     * ex)
+     * Strings::rtrim('   abc   ');               //=> 'abc'
+     * Strings::rtrim('111abc111', '1');          //=> 'abc'
+     * Strings::rtrim('12121abc21212', '12');     //=> '1abc2'
+     * Strings::rtrim('　　　全角　　　', '　');    //=> '全角'
+     * Strings::rtrim('　　　全角　　　', '　', 2); //=> '　全角　'
+     *
+     * @param string|null $str
+     * @param string $deletion
+     * @return string|null
+     */
+    public static function trim(?string $str, string $deletion = ' ', ?int $max = null) : ?string
+    {
+        return static::ltrim(static::rtrim($str, $deletion, $max), $deletion, $max);
+    }
+
+    /**
      * 指定の文字列 [$haystack] が指定の文字列 [$needle] で始まるか検査します。
      *
      * ex)

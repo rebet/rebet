@@ -3,7 +3,9 @@ namespace Rebet\Foundation\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler;
 use Rebet\Auth\Auth;
+use Rebet\Common\Strings;
 use Rebet\Foundation\App;
+use Rebet\Translation\Trans;
 
 /**
  * Blade custom directives for Rebet
@@ -67,6 +69,56 @@ class BladeCustomizer
         });
         $blade->if('cannot', function (string $action, $target, ...$extras) {
             return Auth::user()->cannot($action, $target, ...$extras);
+        });
+
+        // ------------------------------------------------
+        // [errors] Check error is exists
+        // ------------------------------------------------
+        // Params:
+        //   (none)
+        // Usage:
+        //   @errors ... @else ... @enderrors
+        $blade->directive('errors', function () {
+            return '<?php if($errors): ?>';
+        });
+        $blade->directive('enderrors', function () {
+            return '<?php endif; ?>';
+        });
+
+        // ------------------------------------------------
+        // [error] Output error message
+        // ------------------------------------------------
+        // Params:
+        //   $name  : string - attribute name
+        //   $outer : string - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
+        //   $inner : string - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
+        // Usage:
+        //   @error('name')
+        //   @error('name', '<div class="error">:messages</div>', "* :message<br>")
+        $blade->directive('error', function ($expression) {
+            [$name, $outer, $inner] = array_pad(explode(',', $expression), 3, null);
+            $name  = Strings::trim($name);
+            $outer = Strings::trim($outer) ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
+            $inner = Strings::trim($inner) ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
+            return <<<EOS
+<?php
+(function () use (\$errors) {
+    \$messages = '';
+    if (isset(\$errors[{$name}])) {
+        foreach (\$errors[{$name}] as \$message) {
+            \$messages .= str_replace(':message', \$message, '{$inner}');
+        }
+    } else {
+        foreach (\$errors as \$messages) {
+            foreach (\$messages as \$message) {
+                \$messages .= str_replace(':message', \$message, '{$inner}');
+            }
+        }
+    }
+    echo str_replace(':messages', \$messages, '{$outer}');
+})();
+?>
+EOS;
         });
     }
 }
