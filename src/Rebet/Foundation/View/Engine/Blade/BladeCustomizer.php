@@ -75,11 +75,11 @@ class BladeCustomizer
         // [errors] Check error is exists
         // ------------------------------------------------
         // Params:
-        //   (none)
+        //   $name  : string - attribute name
         // Usage:
         //   @errors ... @else ... @enderrors
-        $blade->directive('errors', function () {
-            return '<?php if($errors): ?>';
+        $blade->directive('errors', function ($expression = null) {
+            return "<?php if($expression ? isset(\$errors[$expression]) : \$errors): ?>";
         });
         $blade->directive('enderrors', function () {
             return '<?php endif; ?>';
@@ -97,7 +97,7 @@ class BladeCustomizer
         //   @error('name')
         //   @error('name', '<div class="error">:messages</div>', "* :message<br>")
         $blade->directive('error', function ($expression = null) {
-            [$name, $outer, $inner] = array_pad(explode(',', $expression), 3, null);
+            [$name, $outer, $inner] = array_pad($expression ? explode(',', $expression) : [], 3, null);
             $name  = Strings::trim($name);
             $outer = Strings::trim($outer) ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
             $inner = Strings::trim($inner) ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
@@ -105,18 +105,18 @@ class BladeCustomizer
 <?php
 (function () use (\$errors) {
     \$messages = '';
-    if ({$name})) {
-        foreach (\$errors[{$name}] ?? [] as \$message) {
-            \$messages .= str_replace(':message', \$message, '{$inner}');
+    if ($name)) {
+        foreach (\$errors[$name] ?? [] as \$message) {
+            \$messages .= str_replace(':message', \$message, '$inner');
         }
     } else {
         foreach (\$errors ?? [] as \$messages) {
             foreach (\$messages as \$message) {
-                \$messages .= str_replace(':message', \$message, '{$inner}');
+                \$messages .= str_replace(':message', \$message, '$inner');
             }
         }
     }
-    echo str_replace(':messages', \$messages, '{$outer}');
+    echo str_replace(':messages', \$messages, '$outer');
 })();
 ?>
 EOS;
