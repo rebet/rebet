@@ -42,6 +42,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
             $flash->peek('_redirect_input', []),
             $input
         ));
+        return $this;
     }
 
     /**
@@ -59,5 +60,6 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
             $flash->peek('_redirect_errors', []),
             $errors
         ));
+        return $this;
     }
 }
