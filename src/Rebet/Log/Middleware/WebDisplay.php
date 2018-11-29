@@ -6,7 +6,7 @@ use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 
 /**
- * Web Display Middleware Class
+ * [Logging Middleware] Web Display Class
  *
  * This middleware to add formatted logs to the web screen (HTML output).
  *

@@ -6,7 +6,7 @@ use Rebet\Http\Response;
 use Rebet\Http\Session\Session;
 
 /**
- * Start Session Middleware Class
+ * [Routing Middleware] Start Session Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

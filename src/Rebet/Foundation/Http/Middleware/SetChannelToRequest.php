@@ -5,7 +5,7 @@ use Rebet\Foundation\App;
 use Rebet\Http\Request;
 
 /**
- * Set Channel To Request Middleware Class
+ * [Routing Middleware] Set Channel To Request Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

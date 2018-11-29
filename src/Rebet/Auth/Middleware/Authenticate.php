@@ -5,7 +5,7 @@ use Rebet\Auth\Auth;
 use Rebet\Http\Request;
 
 /**
- * Authenticate Middleware Class
+ * [Routing Middleware] Authenticate Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

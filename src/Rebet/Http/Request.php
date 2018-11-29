@@ -38,7 +38,7 @@ class Request extends SymfonyRequest
     /**
      * The channel of this request incoming
      *
-     * @see SetChannel Middleware
+     * @see SetChannelToRequest Middleware
      * @var string
      */
     public $channel = null;

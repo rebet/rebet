@@ -6,7 +6,7 @@ use Rebet\Http\Response;
 use Rebet\View\View;
 
 /**
- * Add Global Share Variable To View Middleware Class
+ * [Routing Middleware] Add Global Share Variable To View Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

@@ -5,7 +5,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 
 /**
- * Restore Redirect Data Middleware Class
+ * [Routing Middleware] Restore Redirect Data Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

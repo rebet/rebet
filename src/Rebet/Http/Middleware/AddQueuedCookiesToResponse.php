@@ -6,7 +6,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 
 /**
- * Add Queued Cookies To Response Middleware Class
+ * [Routing Middleware] Add Queued Cookies To Response Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
