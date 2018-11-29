@@ -5,17 +5,17 @@ use Rebet\Http\Request;
 use Rebet\Http\Response;
 
 /**
- * Restore Request Middleware Class
+ * Replay Request Middleware Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class RestoreRequest
+class RestoreRedirectInput
 {
     /**
-     * Handle Restore Request Middleware.
+     * Handle Replay Request Middleware.
      *
      * @param Request $request
      * @param \Closure $next
@@ -23,6 +23,6 @@ class RestoreRequest
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        return $next($request->restore());
+        return $next($request->restoreRedirectInput());
     }
 }

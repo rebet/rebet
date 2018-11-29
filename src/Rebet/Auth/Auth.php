@@ -100,24 +100,26 @@ class Auth
 
     /**
      * [Authentication] Sign in as given user.
-     * If the given user is null or guest, then this method return false and dispatch SigninFailed event.
+     * If the user who was guarded and redirected to sign in page will success sign in then replay the guarded request, otherwise go to given url.
      *
      * @param Request $request
      * @param AuthUser|null $user
+     * @param string $fallback url when signin failed
+     * @param string $goto url when signined (default: '/')
      * @param bool $remember (default: false)
-     * @return bool
+     * @return Response
      */
-    public static function signin(Request $request, ?AuthUser $user, bool $remember = false) : bool
+    public static function signin(Request $request, ?AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
     {
         if ($user === null || $user->isGuest()) {
             Event::dispatch(new SigninFailed($request));
-            return false;
+            return Responder::redirect($fallback)->with($request->input());
         }
 
         $user->guard()->signin($request, $user, $remember);
         static::$user = $user;
         Event::dispatch(new Signined($request, $user, $remember));
-        return true;
+        return $request->replay('guarded_by_auth') ?? Responder::redirect($goto);
     }
 
     /**
@@ -165,6 +167,8 @@ class Auth
             Event::dispatch(new Authenticated($request, $user));
             return null;
         }
+
+        $request->saveAs('guarded_by_auth');
 
         $fallback = static::config("authenticator.{$auth}.fallback");
         return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);

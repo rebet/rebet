@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 use Rebet\Http\Response;
+use Rebet\Http\Session\Session;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 /**
  * Redirect Response Class
@@ -26,5 +27,37 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
     public function __construct(string $url, int $status = 302, array $headers = [])
     {
         parent::__construct($url, $status, $headers);
+    }
+
+    /**
+     * Set the input data to the redirect.
+     *
+     * @param array $input
+     * @return self
+     */
+    public function with(array $input) : self
+    {
+        $flash = Session::current()->flash();
+        $flash->set('_redirect_input', array_merge(
+            $flash->peek('_redirect_input', []),
+            $input
+        ));
+    }
+
+    /**
+     * Set the errors data to the redirect.
+     *
+     * @todo MessageBag
+     *
+     * @param array $errors
+     * @return self
+     */
+    public function errors(array $errors) : self
+    {
+        $flash = Session::current()->flash();
+        $flash->set('_redirect_errors', array_merge(
+            $flash->peek('_redirect_errors', []),
+            $errors
+        ));
     }
 }

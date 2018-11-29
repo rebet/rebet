@@ -51,7 +51,6 @@ class Session
         $this->storage = $storage ?? static::configInstantiate('storage');
         $this->storage->registerBag(new AttributeBag('attributes'));
         $this->storage->registerBag(new FlashBag('flashes'));
-        $this->storage->registerBag(new FlashBag('fallbacks'));
         static::$current = $this;
     }
 
@@ -127,16 +126,6 @@ class Session
     public function flash() : FlashBag
     {
         return $this->storage->getBag('flashes');
-    }
-
-    /**
-     * Get the fallbacks session bag.
-     *
-     * @return FlashBag
-     */
-    public function fallback() : FlashBag
-    {
-        return $this->storage->getBag('fallbacks');
     }
 
     /**

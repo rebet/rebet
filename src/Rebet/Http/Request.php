@@ -2,7 +2,6 @@
 namespace Rebet\Http;
 
 use Rebet\Common\Reflector;
-use Rebet\Common\Securities;
 use Rebet\Common\Strings;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Session\Session;
@@ -124,8 +123,7 @@ class Request extends SymfonyRequest
      */
     public function input(?string $key = null, $default = null)
     {
-        $input = in_array($this->getMethod(), ['GET', 'HEAD']) ? $this->query->all() : $this->request->all() + $this->query->all();
-        return Reflector::get($input, $key, $default);
+        return Reflector::get($this->request->all() + $this->query->all(), $key, $default);
     }
 
     /**
@@ -271,19 +269,14 @@ class Request extends SymfonyRequest
      * Save the request data to session with given name.
      *
      * @param string $name
-     * @param int $hash_length (default: 12)
      * @return self
      */
-    public function saveAs(string $name, int $hash_length = 12) : self
+    public function saveAs(string $name) : self
     {
-        $session = $this->session();
-        if ($session) {
-            $session->set("_request_{$name}", [
-                'hash' => Securities::randomCode($hash_length),
-                'uri'  => $this->getRequestUri(),
-                'post' => $this->request->all(),
-            ]);
-        }
+        $this->session()->flash()->set("_request_{$name}", [
+            'uri'  => $this->getRequestUri(),
+            'post' => $this->request->all(),
+        ]);
         return $this;
     }
 
@@ -295,11 +288,11 @@ class Request extends SymfonyRequest
      */
     public function isSaved(string $name) : bool
     {
-        return $this->session() ? $this->session()->has("_request_{$name}") : false;
+        return $this->session()->flash()->has("_request_{$name}") ;
     }
 
     /**
-     * Redirect to uri same as saved request of given name.
+     * Replay the saved request of given name using redirect.
      *
      * @param string $name
      * @param array $append_query
@@ -307,37 +300,24 @@ class Request extends SymfonyRequest
      * @param array $headers
      * @return Response|null
      */
-    public function redirectTo(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?Response
+    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?Response
     {
         if ($this->isSaved($name)) {
-            $key   = '_R3'; // Rebet Restorable Request
-            $value = "{$name}:".$this->session()->get("_request_{$name}.hash");
-            if ($this->can_use_cookie) {
-                Cookie::set($key, $value);
-            } else {
-                $append_query = array_merge($append_query, [$key => $value]);
-            }
-            return Responder::redirect($this->session()->get("_request_{$name}.uri"), $append_query, $status, $headers, $this);
+            $saved = $this->session()->flash()->get("_request_{$name}");
+            return Responder::redirect($saved['uri'], $append_query, $status, $headers, $this)->with($saved['post'] ?? []);
         }
         return null;
     }
 
     /**
-     * Restore the request from saved request data by '_R3' parameter (if exists).
+     * Restore the input data from sesssion saved redirect input (if exists).
      *
-     * @return void
+     * @see RestoreRedirectInput middleware
+     * @return self
      */
-    public function restore() : self
+    public function restoreRedirectInput() : self
     {
-        [$name, $hash] = explode(':', $this->cookies->get('_R3') ?? $this->query->get('_R3') ?? ':') ;
-        if ($this->isSaved($name)) {
-            $session = $this->session();
-            if ($hash === $session->get("_request_{$name}.hash")) {
-                $this->request->replace($session->get("_request_{$name}.post"));
-                $session->remove("_request_{$name}");
-                Cookie::remove('_R3');
-            }
-        }
+        $this->request->add($this->session()->flash()->get('_redirect_input', []));
         return $this;
     }
 }
