@@ -105,7 +105,7 @@ class BladeCustomizer
 <?php
 (function () use (\$errors) {
     \$messages = '';
-    if ($name)) {
+    if ($name) {
         foreach (\$errors[$name] ?? [] as \$message) {
             \$messages .= str_replace(':message', \$message, '$inner');
         }
