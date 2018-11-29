@@ -26,7 +26,7 @@ class BuiltinValidations extends Validations
 {
     use Configurable;
 
-    public static function defaultConfig()
+    public static function defaultConfig() : array
     {
         return static::parentConfigOverride([
             'resources' => [

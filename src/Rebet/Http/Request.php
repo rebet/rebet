@@ -7,6 +7,7 @@ use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Session\Session;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
+use Rebet\View\View;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -98,7 +99,7 @@ class Request extends SymfonyRequest
             return $valid_data;
         }
 
-        throw new FallbackException($this, $validator->errors(), $fallback_url);
+        throw FallbackException::to($fallback_url)->with($this->input())->errors($validator->errors());
     }
 
     /**
@@ -315,9 +316,13 @@ class Request extends SymfonyRequest
      * @see RestoreRedirectInput middleware
      * @return self
      */
-    public function restoreRedirectInput() : self
+    public function restoreRedirectData() : self
     {
         $this->request->add($this->session()->flash()->get('_redirect_input', []));
+        $errors = $this->session()->flash()->get('_redirect_errors');
+        if ($errors) {
+            View::share('errors', $errors);
+        }
         return $this;
     }
 }

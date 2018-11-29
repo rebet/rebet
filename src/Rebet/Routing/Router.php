@@ -7,6 +7,7 @@ use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Foundation\App;
+use Rebet\Http\FallbackException;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
@@ -367,6 +368,8 @@ class Router
                 $route->middlewares()
             ))->then($route);
             return static::$pipeline->send($request);
+        } catch (FallbackException $e) {
+            return $e->redirect();
         } catch (\Throwable $e) {
             if (empty(static::$fallback)) {
                 throw $e;

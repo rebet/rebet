@@ -93,6 +93,27 @@ class Translator
     }
 
     /**
+     * Clear the given language group resouces.
+     *
+     * @param string|null $group (default: null)
+     * @param string|null $locale (default: null)
+     * @return self
+     */
+    public function clear(?string $group = null, ?string $locale = null) : self
+    {
+        if ($group !== null && $locale !== null) {
+            unset($this->resouces[$group][$locale]);
+            return $this;
+        }
+        if ($group !== null) {
+            unset($this->resouces[$group]);
+            return $this;
+        }
+        $this->resouces = [];
+        return $this;
+    }
+
+    /**
      * Load the specified language group.
      *
      * @param string $group

@@ -9,6 +9,7 @@ use Rebet\Enum\Enum;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Route\MethodRoute;
+use Rebet\Translation\Trans;
 use Rebet\Translation\Translator;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\View\Engine\Blade\Blade;
@@ -107,6 +108,12 @@ class App
             Translator::class => [
                 'default_locale'  => Config::refer(App::class, 'locale'),
                 'fallback_locale' => Config::refer(App::class, 'fallback_locale', false, Config::promise(function () { return App::config('locale'); })),
+            ],
+
+            Trans::class => [
+                'resources' => [
+                    'i18n' => [Config::refer(App::class, 'resources.i18n')]
+                ],
             ],
 
             //---------------------------------------------

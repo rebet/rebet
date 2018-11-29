@@ -12,71 +12,80 @@ namespace Rebet\Http;
 class FallbackException extends \RuntimeException
 {
     /**
-     * Errors cause of fallback.
-     *
-     * @var array
-     */
-    private $errors = null;
-
-    /**
      * Fallback url when some error occurred.
      *
      * @var string
      */
-    private $fallback_url = null;
+    protected $fallback = null;
 
     /**
-     * Request when error occured.
+     * Input data for fallback.
      *
-     * @var Request
+     * @var array
      */
-    private $request = null;
+    protected $input = [];
+
+    /**
+     * Errors cause of fallback.
+     *
+     * @var array
+     */
+    protected $errors = [];
 
     /**
      * Create Fallback Exception.
      *
-     * @param Request $request
-     * @param array $errors
-     * @param string $fallback_url
+     * @param string $fallback
      * @param string $message
      * @param int $code
      * @param \Throwable $previous
      */
-    public function __construct(Request $request, array $errors, string $fallback_url, $message = 'Validation error occurred', $code = null, $previous = null)
+    public function __construct(string $fallback, $message = 'Fallback error occurred', $code = null, $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        $this->request      = $request;
-        $this->errors       = $errors;
-        $this->fallback_url = $fallback_url;
+        $this->fallback = $fallback;
     }
 
     /**
-     * Get errors.
+     * Create Fallback Exception.
+     *
+     * @param string $fallback
+     * @return self
+     */
+    public static function to(string $fallback) : self
+    {
+        return new static($fallback);
+    }
+
+    /**
+     * Set input.
      *
      * @return array
      */
-    public function getErrors() : array
+    public function with(array $input) : self
     {
-        return $this->errors;
+        $this->input = $input;
+        return $this;
     }
 
     /**
-     * Get fallback url.
+     * Set errors.
      *
-     * @return string
+     * @return array
      */
-    public function getFallbackUrl() : string
+    public function errors(array $errors) : self
     {
-        return $this->fallback_url;
+        $this->errors = $errors;
+        return $this;
     }
 
     /**
-     * Get request when error occured.
+     * Get redirect response for this fallback
      *
-     * @return Request
+     * @return Response
      */
-    public function getRequest() : Request
+    public function redirect() : Response
     {
-        return $this->request;
+        return Responder::redirect($this->fallback)->with($this->input)->errors($this->errors);
     }
 }

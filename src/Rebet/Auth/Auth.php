@@ -12,6 +12,7 @@ use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
+use Rebet\Translation\Trans;
 
 /**
  * Auth Class
@@ -113,7 +114,10 @@ class Auth
     {
         if ($user === null || $user->isGuest()) {
             Event::dispatch(new SigninFailed($request));
-            return Responder::redirect($fallback)->with($request->input());
+            return Responder::redirect($fallback)
+                    ->with($request->input())
+                    ->errors(['global' => [[Trans::get('message.signin_failed')]]])
+                    ;
         }
 
         $user->guard()->signin($request, $user, $remember);

@@ -156,20 +156,6 @@ class View implements Renderable
     }
 
     /**
-     * Add validation errors to the view.
-     *
-     * @param array|null $errors
-     * @return self
-     */
-    public function errors(?array $errors) : self
-    {
-        if ($errors) {
-            $this->with('errors', $errors);
-        }
-        return $this;
-    }
-
-    /**
      * Get the string contents of the view.
      *
      * @return string
