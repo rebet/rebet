@@ -62,15 +62,35 @@ class BladeCustomizer
         });
 
         // ------------------------------------------------
+        // [with] Bind attribute name to withable @xxx
+        // ------------------------------------------------
+        // Params:
+        //   $names : string - attribute name
+        // Usage:
+        //   @with('email') ... @endwith
+        // Note:
+        //   It does not correspond to nesting.
+        $blade->code('error', '$_with = ', function ($errors, $name) {
+            return $name;
+        }, ';');
+        $blade->directive('endwith', function () {
+            return '<?php $_with = null; ?>';
+        });
+
+        // ------------------------------------------------
         // [errors] Check error is exists
         // ------------------------------------------------
         // Params:
         //   $name : string - attribute name (default: null)
         // Usage:
         //   @errors ... @else ... @enderrors
-        $blade->code('errors', 'if(', function ($errors, $name = null) {
+        //   @errors('email') ... @else ... @enderrors
+        // Under @with:
+        //   @errors ... @else ... @enderrors
+        $blade->code('errors', 'if(', function ($errors, $_with, $name = null) {
+            $name = $name ?? $_with ;
             return $name ? isset($errors[$name]) : !empty($errors) ;
-        }, '):', '$errors');
+        }, '):', '$errors, $_with');
         $blade->directive('enderrors', function () {
             return '<?php endif; ?>';
         });
@@ -79,7 +99,7 @@ class BladeCustomizer
         // [error] Output error message of given attributes
         // ------------------------------------------------
         // Params:
-        //   $names : string|array - attribute names (default: '*')
+        //   $names : string|array - attribute names (default: @with if exists, otherwise '*')
         //   $outer : string       - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
         //   $inner : string       - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
         // Usage:
@@ -87,28 +107,36 @@ class BladeCustomizer
         //   @error('email')
         //   @error(['first_name', 'last_name'])
         //   @error('*')
-        //   @error('email', <div class="errors"><ul class="error">:messages</ul></div>)
-        //   @error('email', <div class="error">:messages</div>, * :message<br>)
-        $blade->code('error', 'echo(', function ($errors, $names = '*', $outer = null, $inner = null) {
-            $outer  = $outer ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
-            $inner  = $inner ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
+        //   @error('email', '<div class="errors"><ul class="error">:messages</ul></div>')
+        //   @error('email', '<div class="error">:messages</div>', '* :message<br>')
+        // Under @with:
+        //   @error
+        //   @error('<div class="errors"><ul class="error">:messages</ul></div>')
+        //   @error('<div class="error">:messages</div>', '* :message<br>')
+        $blade->code('error', 'echo(', function ($errors, $_with, ...$args) {
+            [$names, $outer, $inner] = array_pad($_with ? array_merge([$_with], $args) : $args, 3, null);
+
+            $names = $names ?? '*' ;
+            $outer = $outer ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
+            $inner = $inner ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
+        
             $output = '';
             if ($names === '*') {
                 foreach ($errors ?? [] as $messages) {
                     foreach ($messages as $message) {
-                        $output .= str_replace(':message', $message, $inner);
+                        $output .= str_replace(':message', htmlspecialchars($message, ENT_QUOTES, 'UTF-8'), $inner);
                     }
                 }
             } else {
                 $names = (array)$names;
                 foreach ($names as $name) {
                     foreach ($errors[$name] ?? [] as $message) {
-                        $output .= str_replace(':message', $message, $inner);
+                        $output .= str_replace(':message', htmlspecialchars($message, ENT_QUOTES, 'UTF-8'), $inner);
                     }
                 }
             }
             return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
-        }, ');', '$errors');
+        }, ');', '$errors, $_with');
 
         // ------------------------------------------------
         // [iferror] Output given value if error
@@ -120,22 +148,47 @@ class BladeCustomizer
         // Usage:
         //   @iferror('email', 'color: red;')
         //   @iferror('email', 'color: red;', 'color: gleen;')
-        $blade->code('iferror', 'echo(', function ($errors, $name, $iferror, $else = '') {
-            return isset($errors[$name]) ? $iferror : $else ;
-        }, ');', '$errors');
+        // Under @with:
+        //   @iferror('color: red;')
+        //   @iferror('color: red;', 'color: gleen;')
+        $blade->code('iferror', 'echo(', function ($errors, $_with, ...$args) {
+            [$name, $iferror, $else] = array_pad($_with ? array_merge([$_with], $args) : $args, 3, null);
+            return isset($errors[$name]) ? $iferror : $else ?? '' ;
+        }, ');', '$errors, $_with');
 
         // ------------------------------------------------
         // [e] Output error grammers if error
         // ------------------------------------------------
         // Params:
-        //   $name    : string - attribute name
-        //   $grammer : string - glammer name of @errors in /i18n/message.php. (default: 'class')
+        //   $name    : string - attribute name (default: @with if exists)
+        //   $grammer : string - glammer name of @errors in /i18n/message.php.
         // Usage:
-        //   @e('email')
+        //   @e('email', 'class')
         //   @e('email', 'icon')
-        $blade->code('e', 'echo(', function ($errors, $name, $grammer = 'class') {
-            [$value, $else] = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
+        // Under @with:
+        //   @e('class')
+        //   @e('icon')
+        $blade->code('e', 'echo(', function ($errors, $_with, ...$args) {
+            [$name, $grammer] = array_pad($_with ? array_merge([$_with], $args) : $args, 2, null);
+            [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
             return isset($errors[$name]) ? $value : $else ;
-        }, ');', '$errors');
+        }, ');', '$errors, $_with');
+
+        // ------------------------------------------------
+        // [input] Output input data
+        // ------------------------------------------------
+        // Params:
+        //   $name    : string - attribute name
+        //   $default : mixed  - default valule (default: '')
+        // Usage:
+        //   @input('email')
+        //   @input('email', $user->email)
+        // Under @with:
+        //   @input
+        //   @input($user->email)
+        $blade->code('input', 'echo(', function ($input, $_with, ...$args) {
+            [$name, $default] = array_pad($_with ? array_merge([$_with], $args) : $args, 2, null);
+            return htmlspecialchars($input->get($name, $default ?? ''), ENT_QUOTES, 'UTF-8');
+        }, ');', '$input, $_with');
     }
 }
