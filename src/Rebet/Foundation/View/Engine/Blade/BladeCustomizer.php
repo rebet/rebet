@@ -2,7 +2,6 @@
 namespace Rebet\Foundation\View\Engine\Blade;
 
 use Rebet\Auth\Auth;
-use Rebet\Common\Strings;
 use Rebet\Foundation\App;
 use Rebet\Translation\Trans;
 use Rebet\View\Engine\Blade\BladeCompiler;
@@ -130,21 +129,13 @@ class BladeCustomizer
         // ------------------------------------------------
         // Params:
         //   $name    : string - attribute name
-        //   $grammer : string - glammer name of @errors in /i18n/message.php or '@value'. (default: 'class')
-        //   $else    : mixed  - return value if error is not exists (default: '')
+        //   $grammer : string - glammer name of @errors in /i18n/message.php. (default: 'class')
         // Usage:
         //   @e('email')
         //   @e('email', 'icon')
-        //   @e('email', '@color: red;')
-        //   @e('email', 'class', 'valid_class')
-        $blade->code('e', 'echo(', function ($errors, $name, $grammer = 'class', $else = '') {
-            if (!isset($errors[$name])) {
-                return $else;
-            }
-            if (Strings::startsWith($grammer, '@')) {
-                return Strings::ltrim($grammer, '@', 1);
-            }
-            return Trans::grammar('message', "errors.{$grammer}") ?? $else;
+        $blade->code('e', 'echo(', function ($errors, $name, $grammer = 'class') {
+            [$value, $else] = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
+            return isset($errors[$name]) ? $value : $else ;
         }, ');', '$errors');
     }
 }
