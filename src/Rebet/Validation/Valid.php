@@ -43,6 +43,32 @@ class Valid
     const UNLESS = 'Unless:';
 
     /**
+     * With Condition.
+     * It checks the value of other field is set all or at least N.
+     * This validation does not output an error message even test is failed.
+     * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
+     *
+     * ex)
+     *   - ['CU', Valid::WITH, 'other', 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::WITH, '[other1, other2, ...], 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::WITH, '[other1, other2, ...], at_least, 'then' => [...], 'else' => [...]]
+     */
+    const WITH = 'With:';
+
+    /**
+     * Without Condition.
+     * It checks the value of other field is not set all or at least N.
+     * This validation does not output an error message even test is failed.
+     * This behavior is useful for describing validation execution conditions using 'then' or/and 'else'.
+     *
+     * ex)
+     *   - ['CU', Valid::WITHOUT, 'other', 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::WITHOUT, '[other1, other2, ...], 'then' => [...], 'else' => [...]]
+     *   - ['CU', Valid::WITHOUT, '[other1, other2, ...], at_least, 'then' => [...], 'else' => [...]]
+     */
+    const WITHOUT = 'Without:';
+
+    /**
      * If No Error Condition.
      * It checks there is no error in current (or given) field.
      * This validation does not output an error message even test is failed.

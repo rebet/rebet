@@ -218,6 +218,36 @@ class BuiltinValidations extends Validations
     }
 
     /**
+     * With condition
+     *
+     * @param Context $c
+     * @param string|array $other
+     * @param int|null $at_least
+     * @return boolean
+     */
+    public function validationWith(Context $c, $other, ?int $at_least = null) : bool
+    {
+        return !$this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
+            return false;
+        });
+    }
+
+    /**
+     * Without condition
+     *
+     * @param Context $c
+     * @param string|array $other
+     * @param int|null $at_least
+     * @return boolean
+     */
+    public function validationWithout(Context $c, $other, ?int $at_least = null) : bool
+    {
+        return !$this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
+            return false;
+        });
+    }
+    
+    /**
      * If No Error condition
      *
      * @param Context $c

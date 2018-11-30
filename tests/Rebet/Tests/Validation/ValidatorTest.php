@@ -63,6 +63,12 @@ class ValidatorTest extends RebetTestCase
             // Valid::UNLESS
             [['target' => 1], ['C', Valid::UNLESS, 'target', 1, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
             [['target' => 2], ['C', Valid::UNLESS, 'target', 1, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
+            // Valid::WITH
+            [['target' => 1   ], ['C', Valid::WITH, 'target', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
+            [['target' => null], ['C', Valid::WITH, 'target', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
+            // Valid::WITHOUT
+            [['target' => 1   ], ['C', Valid::WITHOUT, 'target', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],
+            [['target' => null], ['C', Valid::WITHOUT, 'target', 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
             // Valid::IF_NO_ERROR
             [['target' => 1], ['C', Valid::IF_NO_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
             // [['target' => 2], ['C', Valid::IF_NO_ERROR, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], false],

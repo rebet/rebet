@@ -90,6 +90,36 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar', [2, 4, 6]], true , []],
                 ]
             ]],
+
+            // --------------------------------------------
+            // Valid::WITH
+            // --------------------------------------------
+            [[
+                'name'  => 'With',
+                'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2],
+                'tests' => [
+                    ['foo', ['foo'           ], false, []],
+                    ['foo', ['bar'           ], true , []],
+                    ['foo', [['foo','bar']   ], false, []],
+                    ['foo', [['bar','baz']   ], true , []],
+                    ['foo', [['foo','bar'], 1], true, []],
+                ]
+            ]],
+            
+            // --------------------------------------------
+            // Valid::WITHOUT
+            // --------------------------------------------
+            [[
+                'name'  => 'Without',
+                'data'  => ['foo' => 1, 'bar' => null, 'baz' => null],
+                'tests' => [
+                    ['foo', ['foo'           ], false, []],
+                    ['foo', ['bar'           ], true , []],
+                    ['foo', [['foo','bar']   ], false, []],
+                    ['foo', [['bar','baz']   ], true , []],
+                    ['foo', [['foo','bar'], 1], true, []],
+                ]
+            ]],
             
             // --------------------------------------------
             // Valid::IF_NO_ERROR
