@@ -4,9 +4,9 @@ namespace Rebet\Http;
 use Rebet\Common\Renderable;
 use Rebet\Common\Strings;
 use Rebet\Http\Response\BasicResponse;
-use Rebet\Http\Response\StreamedResponse;
 use Rebet\Http\Response\JsonResponse;
 use Rebet\Http\Response\RedirectResponse;
+use Rebet\Http\Response\StreamedResponse;
 
 /**
  * Responder Class
@@ -79,6 +79,8 @@ class Responder
 
     /**
      * Create a RedirectResponse from given url and queries.
+     * If the given url starts with '/' then append prefix when the route has it.
+     * If you do not want this behavior you can use starts with 'http(s)//...' or '@/path/to/page'.
      *
      * @param string $url
      * @param array $query (default: [])
@@ -91,7 +93,11 @@ class Responder
     {
         $request = $request ?? Request::current() ;
         $url     = empty($query) ? $url : $url.(Strings::contains($url, '?') ? '&' : '?').http_build_query($query) ;
-        $url     = Strings::startsWith($url, '/') ? $request->route->prefix.$url : $url ;
+        if (Strings::startsWith($url, '@')) {
+            $url = Strings::ltrim($url, '@', 1);
+        } else {
+            $url = Strings::startsWith($url, '/') ? $request->route->prefix.$url : $url ;
+        }
         return static::prepare(new RedirectResponse($url, $status, $headers), $request);
     }
 }

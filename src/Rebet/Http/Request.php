@@ -305,7 +305,7 @@ class Request extends SymfonyRequest
     {
         if ($this->isSaved($name)) {
             $saved = $this->session()->flash()->get("_request_{$name}");
-            return Responder::redirect($saved['uri'], $append_query, $status, $headers, $this)->with($saved['post'] ?? []);
+            return Responder::redirect('@'.$saved['uri'], $append_query, $status, $headers, $this)->with($saved['post'] ?? []);
         }
         return null;
     }
