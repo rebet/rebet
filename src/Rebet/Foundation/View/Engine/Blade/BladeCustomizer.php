@@ -1,11 +1,10 @@
 <?php
 namespace Rebet\Foundation\View\Engine\Blade;
 
-use Illuminate\View\Compilers\BladeCompiler;
 use Rebet\Auth\Auth;
-use Rebet\Common\Strings;
 use Rebet\Foundation\App;
 use Rebet\Translation\Trans;
+use Rebet\View\Engine\Blade\BladeCompiler;
 
 /**
  * Blade custom directives for Rebet
@@ -33,9 +32,6 @@ class BladeCustomizer
         $blade->if('env', function ($env) {
             return in_array(App::getEnv(), (array)$env);
         });
-        $blade->if('envnot', function ($env) {
-            return !in_array(App::getEnv(), (array)$env);
-        });
 
         // ------------------------------------------------
         // [is/isnot] Check current users role (Authorization)
@@ -48,9 +44,6 @@ class BladeCustomizer
         //   @is('user', 'guest:post-editable') ... @else ... @endis
         $blade->if('is', function (string ...$roles) {
             return Auth::user()->is(...$roles);
-        });
-        $blade->if('isnot', function (string ...$roles) {
-            return Auth::user()->isnot(...$roles);
         });
 
         // ------------------------------------------------
@@ -67,60 +60,82 @@ class BladeCustomizer
         $blade->if('can', function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
         });
-        $blade->if('cannot', function (string $action, $target, ...$extras) {
-            return Auth::user()->cannot($action, $target, ...$extras);
-        });
 
         // ------------------------------------------------
         // [errors] Check error is exists
         // ------------------------------------------------
         // Params:
-        //   $name  : string - attribute name
+        //   $name : string - attribute name (default: null)
         // Usage:
         //   @errors ... @else ... @enderrors
-        $blade->directive('errors', function ($expression = null) {
-            return "<?php if($expression ? isset(\$errors[$expression]) : \$errors): ?>";
-        });
+        $blade->code('errors', 'if(', function ($errors, $name = null) {
+            return $name ? isset($errors[$name]) : !empty($errors) ;
+        }, '):', '$errors');
         $blade->directive('enderrors', function () {
             return '<?php endif; ?>';
         });
 
         // ------------------------------------------------
-        // [error] Output error message
+        // [error] Output error message of given attributes
         // ------------------------------------------------
         // Params:
-        //   $name  : string - attribute name (default: '*')
-        //   $outer : string - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
-        //   $inner : string - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
+        //   $names : string|array - attribute names (default: '*')
+        //   $outer : string       - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
+        //   $inner : string       - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
         // Usage:
         //   @error
         //   @error('name')
+        //   @error(['first_name', 'last_name'])
+        //   @error('*')
         //   @error('name', <div class="errors"><ul class="error">:messages</ul></div>)
-        //   @error('*', <div class="error">:messages</div>, * :message<br>)
-        $blade->directive('error', function ($expression = null) {
-            [$name, $outer, $inner] = array_pad($expression ? explode(',', $expression) : [], 3, null);
-            $name  = Strings::trim($name) ?? "'*'";
-            $outer = Strings::trim($outer) ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
-            $inner = Strings::trim($inner) ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
-            return <<<EOS
-<?php
-(function () use (\$errors) {
-    \$output = '';
-    if ($name !== '*') {
-        foreach (\$errors[$name] ?? [] as \$message) {
-            \$output .= str_replace(':message', \$message, '$inner');
-        }
-    } else {
-        foreach (\$errors ?? [] as \$messages) {
-            foreach (\$messages as \$message) {
-                \$output .= str_replace(':message', \$message, '$inner');
+        //   @error('name', <div class="error">:messages</div>, * :message<br>)
+        $blade->code('error', 'echo(', function ($errors, $names = '*', $outer = null, $inner = null) {
+            $outer  = $outer ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
+            $inner  = $inner ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
+            $output = '';
+            if ($names === '*') {
+                foreach ($errors ?? [] as $messages) {
+                    foreach ($messages as $message) {
+                        $output .= str_replace(':message', $message, $inner);
+                    }
+                }
+            } else {
+                $names = (array)$names;
+                foreach ($names as $name) {
+                    foreach ($errors[$name] ?? [] as $message) {
+                        $output .= str_replace(':message', $message, $inner);
+                    }
+                }
             }
-        }
-    }
-    echo empty(\$output) ? '' : str_replace(':messages', \$output, '$outer') ;
-})();
-?>
-EOS;
-        });
+            return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
+        }, ');', '$errors');
+
+        // ------------------------------------------------
+        // [iferror] Output given value if error
+        // ------------------------------------------------
+        // Params:
+        //   $name    : string - attribute names
+        //   $iferror : mixed  - return value if error is exists
+        //   $else    : mixed  - return value if error is not exists (default: '')
+        // Usage:
+        //   @iferror('name', 'color: red;')
+        //   @iferror('name', 'color: red;', 'color: gleen;')
+        $blade->code('iferror', 'echo(', function ($errors, $name, $iferror, $else = '') {
+            return isset($errors[$name]) ? $iferror : $else ;
+        }, ');', '$errors');
+
+        // ------------------------------------------------
+        // [errorclass] Output css error class if error
+        // ------------------------------------------------
+        // Params:
+        //   $name  : string - attribute names
+        //   $class : string - class name (default: @errors.class in /i18n/message.php)
+        // Usage:
+        //   @errorclass('name')
+        //   @errorclass('name', 'class_name')
+        $blade->code('errorclass', 'echo(', function ($errors, $name, $class = null) {
+            $class = $class ?? Trans::grammar('message', "errors.class") ?? 'error';
+            return isset($errors[$name]) ? $class : '' ;
+        }, ');', '$errors');
     }
 }
