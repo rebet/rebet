@@ -35,9 +35,10 @@ class BladeCompiler extends LaravelBladeCompiler
     {
         $this->codes[$name] = $callback;
         $this->directive($name, function ($expression) use ($name, $open, $close, $bind) {
+            $expression = empty($expression) ? '' : ", {$expression}" ;
             return $bind
-                ? "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}', {$bind}, {$expression}) {$close} ?>"
-                : "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}', {$expression}) {$close} ?>"
+                ? "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}', {$bind}{$expression}) {$close} ?>"
+                : "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}'{$expression}) {$close} ?>"
                 ;
         });
     }
