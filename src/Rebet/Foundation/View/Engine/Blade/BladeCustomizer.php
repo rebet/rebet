@@ -70,7 +70,7 @@ class BladeCustomizer
         //   @with('email') ... @endwith
         // Note:
         //   It does not correspond to nesting.
-        $blade->code('error', '$_with = ', function ($errors, $name) {
+        $blade->code('with', '$_with = ', function ($errors, $name) {
             return $name;
         }, ';');
         $blade->directive('endwith', function () {
