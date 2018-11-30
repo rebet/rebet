@@ -2,6 +2,7 @@
 namespace Rebet\Foundation\View\Engine\Blade;
 
 use Rebet\Auth\Auth;
+use Rebet\Common\Strings;
 use Rebet\Foundation\App;
 use Rebet\Translation\Trans;
 use Rebet\View\Engine\Blade\BladeCompiler;
@@ -84,11 +85,11 @@ class BladeCustomizer
         //   $inner : string       - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
         // Usage:
         //   @error
-        //   @error('name')
+        //   @error('email')
         //   @error(['first_name', 'last_name'])
         //   @error('*')
-        //   @error('name', <div class="errors"><ul class="error">:messages</ul></div>)
-        //   @error('name', <div class="error">:messages</div>, * :message<br>)
+        //   @error('email', <div class="errors"><ul class="error">:messages</ul></div>)
+        //   @error('email', <div class="error">:messages</div>, * :message<br>)
         $blade->code('error', 'echo(', function ($errors, $names = '*', $outer = null, $inner = null) {
             $outer  = $outer ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
             $inner  = $inner ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
@@ -118,24 +119,32 @@ class BladeCustomizer
         //   $iferror : mixed  - return value if error is exists
         //   $else    : mixed  - return value if error is not exists (default: '')
         // Usage:
-        //   @iferror('name', 'color: red;')
-        //   @iferror('name', 'color: red;', 'color: gleen;')
+        //   @iferror('email', 'color: red;')
+        //   @iferror('email', 'color: red;', 'color: gleen;')
         $blade->code('iferror', 'echo(', function ($errors, $name, $iferror, $else = '') {
             return isset($errors[$name]) ? $iferror : $else ;
         }, ');', '$errors');
 
         // ------------------------------------------------
-        // [errorclass] Output css error class if error
+        // [e] Output error grammers if error
         // ------------------------------------------------
         // Params:
-        //   $name  : string - attribute names
-        //   $class : string - class name (default: @errors.class in /i18n/message.php)
+        //   $name    : string - attribute name
+        //   $grammer : string - glammer name of @errors in /i18n/message.php or '@value'. (default: 'class')
+        //   $else    : mixed  - return value if error is not exists (default: '')
         // Usage:
-        //   @errorclass('name')
-        //   @errorclass('name', 'class_name')
-        $blade->code('errorclass', 'echo(', function ($errors, $name, $class = null) {
-            $class = $class ?? Trans::grammar('message', "errors.class") ?? 'error';
-            return isset($errors[$name]) ? $class : '' ;
+        //   @e('email')
+        //   @e('email', 'icon')
+        //   @e('email', '@color: red;')
+        //   @e('email', 'class', 'valid_class')
+        $blade->code('e', 'echo(', function ($errors, $name, $grammer = 'class', $else = '') {
+            if (!isset($errors[$name])) {
+                return $else;
+            }
+            if (Strings::startsWith($grammer, '@')) {
+                return Strings::ltrim($grammer, '@', 1);
+            }
+            return Trans::grammar('message', "errors.{$grammer}") ?? $else;
         }, ');', '$errors');
     }
 }
