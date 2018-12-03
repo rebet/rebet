@@ -54,13 +54,13 @@ abstract class InputDataTransform
     }
 
     /**
-     * Transform the value of given value or array.
+     * Transform the value of given value.
      *
      * @param string $key
-     * @param array|mixed $value
+     * @param mixed $value
      * @return void
      */
-    protected function transformValue($key, $value) : array
+    protected function transformValue($key, $value)
     {
         return is_array($value)
             ? array_map(function ($v, $k) use ($key) { return $this->transformValue(is_string($key) ? "{$key}.{$k}" : $k, $v); }, $value, array_keys($value))
