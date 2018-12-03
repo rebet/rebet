@@ -63,7 +63,7 @@ abstract class InputDataTransform
     protected function transformValue($key, $value) : array
     {
         return is_array($value)
-            ? array_map(function ($v, $k) use ($key) { return $this->transformValue(is_string($key) ? "{$key}.{$k}" : $k, $v); }, $value)
+            ? array_map(function ($v, $k) use ($key) { return $this->transformValue(is_string($key) ? "{$key}.{$k}" : $k, $v); }, $value, array_keys($value))
             : in_array($key, $this->except, true) ? $value : $this->transform($key, $value)
             ;
     }
