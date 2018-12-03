@@ -51,7 +51,21 @@ abstract class InputDataTransform
      */
     protected function transformBag(ParameterBag $bag)
     {
-        $bag->replace($this->transformValue(null, $bag->all()));
+        $bag->replace($this->transformArray($bag->all()));
+    }
+
+    /**
+     * Transform the value of given value.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    protected function transformArray(array $array, string $prefix = null) : array
+    {
+        return Arrays::map(function ($value, $key) use ($prefix) {
+            return $this->transformValue(is_string($prefix) ? "{$prefix}.{$key}" : $key, $value);
+        }, $array);
     }
 
     /**
@@ -63,10 +77,10 @@ abstract class InputDataTransform
      */
     protected function transformValue($key, $value)
     {
-        return is_array($value)
-            ? Arrays::map(function ($v, $k) use ($key) { return $this->transformValue(is_string($key) ? "{$key}.{$k}" : $k, $v); }, $value)
-            : in_array($key, $this->except, true) ? $value : $this->transform($key, $value)
-            ;
+        if (in_array($key, $this->except, true)) {
+            return $value;
+        }
+        return is_array($value) ? $this->transformArray($value, $key) : $this->transform($key, $value) ;
     }
 
     /**
