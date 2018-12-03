@@ -61,10 +61,11 @@ abstract class InputDataTransform
      * @param mixed $value
      * @return void
      */
-    protected function transformArray(array $array, string $prefix = null) : array
+    protected function transformArray(array $array, string $prefix = '') : array
     {
         return Arrays::map(function ($value, $key) use ($prefix) {
-            return $this->transformValue(is_string($prefix) ? "{$prefix}.{$key}" : $key, $value);
+            $key = is_int($key) ? $prefix : ($prefix === '' ? $key : "{$prefix}.{$key}") ;
+            return $this->transformValue($key, $value);
         }, $array);
     }
 
