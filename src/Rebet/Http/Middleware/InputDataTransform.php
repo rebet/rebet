@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http\Middleware;
 
+use Rebet\Common\Arrays;
 use Rebet\Http\Input;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -63,7 +64,7 @@ abstract class InputDataTransform
     protected function transformValue($key, $value)
     {
         return is_array($value)
-            ? array_map(function ($v, $k) use ($key) { return $this->transformValue(is_string($key) ? "{$key}.{$k}" : $k, $v); }, $value, array_keys($value))
+            ? Arrays::map(function ($v, $k) use ($key) { return $this->transformValue(is_string($key) ? "{$key}.{$k}" : $k, $v); }, $value)
             : in_array($key, $this->except, true) ? $value : $this->transform($key, $value)
             ;
     }

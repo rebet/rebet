@@ -647,4 +647,16 @@ class Arrays
         }
         return (array) $items;
     }
+
+    /**
+     * Run a map over each of the items.
+     *
+     * @param  callable  $callback function($value, $key) { ... }
+     * @return array
+     */
+    public function map(callable $callback, array $array) : array
+    {
+        $keys = array_keys($array);
+        return array_combine($keys, array_map($callback, $array, $keys));
+    }
 }
