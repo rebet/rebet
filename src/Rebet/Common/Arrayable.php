@@ -74,10 +74,54 @@ trait Arrayable
     }
 
     /**
+     * Get the collection of items as a collection.
+     *
+     * @return array
+     */
+    public function toCollection() : Collection
+    {
+        return new Collection(array_map(function ($value) {
+            return method_exists($value, 'toCollection') ? $value->toCollection() : $value;
+        }, $this->container()));
+    }
+
+    /**
+     * Get the collection of items as a plain array.
+     *
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return array_map(function ($value) {
+            return method_exists($value, 'toArray') ? $value->toArray() : $value;
+        }, $this->container());
+    }
+
+    /**
+     * Get the collection of items as JSON.
+     *
+     * @param  int  $options
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function jsonSerialize()
     {
-        return $this->container();
+        return array_map(function ($value) {
+            if ($value instanceof \JsonSerializable) {
+                return $value->jsonSerialize();
+            } elseif (method_exists($value, 'toJson')) {
+                return json_decode($value->toJson(), true);
+            } elseif (method_exists($value, 'toArray')) {
+                return $value->toArray();
+            }
+            return $value;
+        }, $this->container());
     }
 }

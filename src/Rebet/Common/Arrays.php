@@ -623,4 +623,28 @@ class Arrays
         }
         return 1;
     }
+
+    /**
+     * Convert to array from Collection or Arrayable.
+     *
+     * @param  mixed  $items
+     * @return array
+     */
+    public function toArray($items)
+    {
+        if (is_array($items)) {
+            return $items;
+        } elseif ($items instanceof Collection) {
+            return $items->all();
+        } elseif (method_exists($items, 'toArray')) {
+            return $items->toArray();
+        } elseif (method_exists($items, 'toJson')) {
+            return json_decode($items->toJson(), true);
+        } elseif ($items instanceof \JsonSerializable) {
+            return $items->jsonSerialize();
+        } elseif ($items instanceof \Traversable) {
+            return iterator_to_array($items);
+        }
+        return (array) $items;
+    }
 }
