@@ -89,10 +89,10 @@ class ArrayProvider extends AuthProvider
      * Find user by signin_id.
      * The signin_id may be a login ID, a email address or member number, but it must be unique.
      *
-     * @param mixed $credentials ['signin_id' => id, 'password' => password]
+     * @param array|Arrayable $credentials ['signin_id' => id, 'password' => password]
      * @return AuthUser|null
      */
-    public function findByCredentials(array $credentials) : ?AuthUser
+    public function findByCredentials($credentials) : ?AuthUser
     {
         $aliases = $this->aliases;
         $users   = $this->users;

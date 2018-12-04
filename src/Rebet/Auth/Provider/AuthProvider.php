@@ -33,10 +33,10 @@ abstract class AuthProvider
      * Find user by signin_id.
      * The signin_id may be a login ID, a email address or member number, but it must be unique.
      *
-     * @param mixed $credentials ['signin_id' => id, 'password' => password]
+     * @param array|Arrayable $credentials ['signin_id' => id, 'password' => password]
      * @return AuthUser|null
      */
-    abstract public function findByCredentials(array $credentials) : ?AuthUser ;
+    abstract public function findByCredentials($credentials) : ?AuthUser ;
 
     /**
      * It checks the provider will support remember token.

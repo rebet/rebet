@@ -78,11 +78,11 @@ class Auth
      * [Authentication] Attempt find user by given credentials.
      *
      * @param Request $request
-     * @param array $credentials
+     * @param array|Arrayable $credentials
      * @param string|null $authenticator (default: auth of the route, if not set then use channel name)
      * @return AuthUser|null
      */
-    public static function attempt(Request $request, array $credentials, ?string $authenticator = null) : ?AuthUser
+    public static function attempt(Request $request, $credentials, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
         $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
