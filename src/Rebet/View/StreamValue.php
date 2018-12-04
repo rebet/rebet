@@ -8,14 +8,14 @@ use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 
 /**
- * Filterable Value Class
+ * Stream Value Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
+class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     use Configurable;
 
@@ -42,6 +42,7 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
                 'cut'       => function (string $value, int $length, string $ellipsis = '...') { return Strings::cut($value, $length, $ellipsis); },
                 'lowercase' => function (string $value) { return strtolower($value); },
                 'uppercase' => function (string $value) { return strtoupper($value); },
+                'dump'      => function (string $value) { return print_r($value, true); },
             ],
         ];
     }
@@ -88,7 +89,7 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public static function of($origin) : self
     {
-        return new static($origin);
+        return $origin instanceof self ? $origin : new static($origin) ;
     }
 
     /**
@@ -128,7 +129,8 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($origin === null) {
             return static::$null;
         }
-        return is_bool($origin) ? $origin : new static(Reflector::get($origin, $key)) ;
+        $result = Reflector::get($origin, $key);
+        return is_bool($result) ? $result : new static($result) ;
     }
 
     /**

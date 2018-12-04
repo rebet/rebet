@@ -5,6 +5,7 @@ use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
 use Rebet\Translation\Trans;
 use Rebet\View\Engine\Blade\BladeCompiler;
+use Rebet\View\StreamValue;
 
 /**
  * Blade custom directives for Rebet
@@ -97,7 +98,8 @@ class BladeCustomizer
         // Under @field:
         //   @errors ... @else ... @enderrors
         $blade->code('errors', 'if(', function ($errors, $name = null) use (&$field) {
-            $name = $name ?? $field ;
+            $errors = StreamValue::of($errors);
+            $name   = $name ?? $field ;
             return $name ? $errors[$name]->isset() : !$errors->empty() ;
         }, '):', '$errors');
         $blade->directive('enderrors', function () {
@@ -123,6 +125,7 @@ class BladeCustomizer
         //   @error('<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('<div class="error">:messages</div>', '* :message<br>')
         $blade->code('error', 'echo(', function ($errors, ...$args) use (&$field) {
+            $errors                  = StreamValue::of($errors);
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
             $names = $names ?? '*' ;
@@ -131,7 +134,7 @@ class BladeCustomizer
         
             $output = '';
             if ($names === '*') {
-                foreach ($errors ?? [] as $messages) {
+                foreach ($errors as $messages) {
                     foreach ($messages as $message) {
                         $output .= str_replace(':message', htmlspecialchars($message, ENT_QUOTES, 'UTF-8'), $inner);
                     }
@@ -139,7 +142,7 @@ class BladeCustomizer
             } else {
                 $names = (array)$names;
                 foreach ($names as $name) {
-                    foreach ($errors[$name] ?? [] as $message) {
+                    foreach ($errors[$name] as $message) {
                         $output .= str_replace(':message', htmlspecialchars($message, ENT_QUOTES, 'UTF-8'), $inner);
                     }
                 }
@@ -161,6 +164,7 @@ class BladeCustomizer
         //   @iferror('color: red;')
         //   @iferror('color: red;', 'color: gleen;')
         $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
+            $errors                  = StreamValue::of($errors);
             [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isset() ? $iferror : $else ?? '' ;
         }, ');', '$errors');
@@ -178,6 +182,7 @@ class BladeCustomizer
         //   @e('class')
         //   @e('icon')
         $blade->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
+            $errors           = StreamValue::of($errors);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isset() ? $value : $else ;
@@ -196,6 +201,7 @@ class BladeCustomizer
         //   @input
         //   @input($user->email)
         $blade->code('input', 'echo(', function ($input, ...$args) use (&$field) {
+            $input            = StreamValue::of($input);
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
         }, ');', '$input');

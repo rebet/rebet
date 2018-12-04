@@ -373,6 +373,7 @@ class Reflector
      *
      *   8. When $type is object:
      *      -> If $type has valueOf($value) static method then invoke that and check return value type
+     *      -> If $type has of($value) static method then invoke that and check return value type
      *      -> If $value has convertTo($type) method then invoke that and check return value type
      *      -> If $value has to{$type<without namespace>}() method then invoke that and check return value type
      *      -> Otherwise return null
@@ -492,6 +493,7 @@ class Reflector
                 $rc = new \ReflectionClass($type);
                 return
                     static::tryConvertByStatic($type, 'valueOf', $value) ??
+                    static::tryConvertByStatic($type, 'of', $value) ??
                     static::tryConvertByMember($value, 'convertTo', $type) ??
                     static::tryConvertByMember($value, "to".$rc->getShortName(), $type)
                 ;
