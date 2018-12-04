@@ -17,6 +17,13 @@ use Rebet\View\Engine\Blade\BladeCompiler;
 class BladeCustomizer
 {
     /**
+     * field name
+     *
+     * @var string
+     */
+    protected static $field = null;
+
+    /**
      * define costom directives for Rebet.
      */
     public static function customize(BladeCompiler $blade) : void
@@ -62,19 +69,21 @@ class BladeCustomizer
         });
 
         // ------------------------------------------------
-        // [with] Bind attribute name to withable @xxx
+        // [field] Bind field attribute name
         // ------------------------------------------------
         // Params:
         //   $names : string - attribute name
         // Usage:
-        //   @with('email') ... @endwith
+        //   @field('email') ... @endfield
         // Note:
         //   It does not correspond to nesting.
-        $blade->code('with', '$_with = ', function ($name) {
-            return $name;
+        $field = &static::$field;
+        $blade->code('field', '', function ($name) use (&$field) {
+            $field = $name;
         }, ';');
-        $blade->directive('endwith', function () {
-            return '<?php $_with = null; ?>';
+        $blade->directive('endfield', function () use (&$field) {
+            $field = null;
+            return '';
         });
 
         // ------------------------------------------------
@@ -85,12 +94,12 @@ class BladeCustomizer
         // Usage:
         //   @errors ... @else ... @enderrors
         //   @errors('email') ... @else ... @enderrors
-        // Under @with:
+        // Under @field:
         //   @errors ... @else ... @enderrors
-        $blade->code('errors', 'if(', function ($errors, $_with, $name = null) {
-            $name = $name ?? $_with ;
+        $blade->code('errors', 'if(', function ($errors, $name = null) use (&$field) {
+            $name = $name ?? $field ;
             return $name ? isset($errors[$name]) : !empty($errors) ;
-        }, '):', '$errors, $_with');
+        }, '):', '$errors');
         $blade->directive('enderrors', function () {
             return '<?php endif; ?>';
         });
@@ -99,7 +108,7 @@ class BladeCustomizer
         // [error] Output error message of given attributes
         // ------------------------------------------------
         // Params:
-        //   $names : string|array - attribute names (default: @with if exists, otherwise '*')
+        //   $names : string|array - attribute names (default: @field if exists, otherwise '*')
         //   $outer : string       - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
         //   $inner : string       - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
         // Usage:
@@ -109,12 +118,12 @@ class BladeCustomizer
         //   @error('*')
         //   @error('email', '<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('email', '<div class="error">:messages</div>', '* :message<br>')
-        // Under @with:
+        // Under @field:
         //   @error
         //   @error('<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('<div class="error">:messages</div>', '* :message<br>')
-        $blade->code('error', 'echo(', function ($errors, $_with, ...$args) {
-            [$names, $outer, $inner] = array_pad($_with ? array_merge([$_with], $args) : $args, 3, null);
+        $blade->code('error', 'echo(', function ($errors, ...$args) use (&$field) {
+            [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
             $names = $names ?? '*' ;
             $outer = $outer ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
@@ -136,7 +145,7 @@ class BladeCustomizer
                 }
             }
             return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
-        }, ');', '$errors, $_with');
+        }, ');', '$errors');
 
         // ------------------------------------------------
         // [iferror] Output given value if error
@@ -148,31 +157,31 @@ class BladeCustomizer
         // Usage:
         //   @iferror('email', 'color: red;')
         //   @iferror('email', 'color: red;', 'color: gleen;')
-        // Under @with:
+        // Under @field:
         //   @iferror('color: red;')
         //   @iferror('color: red;', 'color: gleen;')
-        $blade->code('iferror', 'echo(', function ($errors, $_with, ...$args) {
-            [$name, $iferror, $else] = array_pad($_with ? array_merge([$_with], $args) : $args, 3, null);
+        $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
+            [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return isset($errors[$name]) ? $iferror : $else ?? '' ;
-        }, ');', '$errors, $_with');
+        }, ');', '$errors');
 
         // ------------------------------------------------
         // [e] Output error grammers if error
         // ------------------------------------------------
         // Params:
-        //   $name    : string - attribute name (default: @with if exists)
+        //   $name    : string - attribute name (default: @field if exists)
         //   $grammer : string - glammer name of @errors in /i18n/message.php.
         // Usage:
         //   @e('email', 'class')
         //   @e('email', 'icon')
-        // Under @with:
+        // Under @field:
         //   @e('class')
         //   @e('icon')
-        $blade->code('e', 'echo(', function ($errors, $_with, ...$args) {
-            [$name, $grammer] = array_pad($_with ? array_merge([$_with], $args) : $args, 2, null);
+        $blade->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
+            [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
             return isset($errors[$name]) ? $value : $else ;
-        }, ');', '$errors, $_with');
+        }, ');', '$errors');
 
         // ------------------------------------------------
         // [input] Output input data
@@ -183,12 +192,12 @@ class BladeCustomizer
         // Usage:
         //   @input('email')
         //   @input('email', $user->email)
-        // Under @with:
+        // Under @field:
         //   @input
         //   @input($user->email)
-        $blade->code('input', 'echo(', function ($input, $_with, ...$args) {
-            [$name, $default] = array_pad($_with ? array_merge([$_with], $args) : $args, 2, null);
+        $blade->code('input', 'echo(', function ($input, ...$args) use (&$field) {
+            [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return htmlspecialchars($input->get($name, $default ?? ''), ENT_QUOTES, 'UTF-8');
-        }, ');', '$input, $_with');
+        }, ');', '$input');
     }
 }
