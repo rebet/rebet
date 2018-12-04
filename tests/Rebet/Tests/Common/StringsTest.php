@@ -97,6 +97,15 @@ class StringsTest extends RebetTestCase
         $this->assertSame('　全角　', Strings::trim('　　　全角　　　', '　', 2));
     }
 
+    public function test_mbtrim()
+    {
+        $this->assertNull(Strings::mbtrim(null));
+        $this->assertSame('', Strings::mbtrim(''));
+        $this->assertSame('a b　c', Strings::mbtrim('   a b　c   '));
+        $this->assertSame('a b　c', Strings::mbtrim(' 　 a b　c 　 '));
+        $this->assertSame('a b　c', Strings::mbtrim('     　 a b　c 　    '));
+    }
+
     public function test_startsWith()
     {
         $this->assertFalse(Strings::startsWith(null, 'abc'));

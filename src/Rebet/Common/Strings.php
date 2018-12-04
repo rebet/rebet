@@ -126,7 +126,7 @@ class Strings
     public static function ltrim(?string  $str, string $prefix = ' ', ?int $max = null) : ?string
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
-        return $str === null ? null : preg_replace("/^(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);
+        return $str === null ? null : preg_replace("/\A(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);
     }
     
     /**
@@ -146,7 +146,7 @@ class Strings
     public static function rtrim(?string $str, string $suffix = ' ', ?int $max = null) : ?string
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
-        return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/')."){$repeat}$/u", '', $str);
+        return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/')."){$repeat}\z/u", '', $str);
     }
     
     /**
@@ -166,6 +166,17 @@ class Strings
     public static function trim(?string $str, string $deletion = ' ', ?int $max = null) : ?string
     {
         return static::ltrim(static::rtrim($str, $deletion, $max), $deletion, $max);
+    }
+
+    /**
+     * Trim the space letters including multi byte space letters from given string.
+     *
+     * @param string|null $str
+     * @return string|null
+     */
+    public static function mbtrim(?string $str) : ?string
+    {
+        return $str === null ? null : preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $str);
     }
 
     /**

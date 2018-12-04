@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Http\Middleware;
 
+use Rebet\Common\Strings;
+
 /**
  * [Routing Middleware] Trim Strings Middleware Class
  *
@@ -16,6 +18,6 @@ class TrimStrings extends InputDataTransform
      */
     protected function transform($key, $value)
     {
-        return is_string($value) ? trim($value, ' 　') : $value ;
+        return is_string($value) ? Strings::mbtrim($value) : $value ;
     }
 }
