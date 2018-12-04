@@ -4,7 +4,7 @@ namespace Rebet\Http\Middleware;
 use Rebet\Http\Input;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\View\StreamValue;
+use Rebet\View\StreamAccessor;
 use Rebet\View\View;
 
 /**
@@ -26,7 +26,7 @@ class SetRequestInputDataToView
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        View::share('input', StreamValue::promise(function () use ($request) { return $request->input(); }));
+        View::share('input', StreamAccessor::promise(function () use ($request) { return $request->input(); }));
         return $next($request);
     }
 }

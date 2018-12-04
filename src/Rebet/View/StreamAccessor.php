@@ -6,16 +6,17 @@ use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Common\Json;
 
 /**
- * Stream Value Class
+ * Stream Accessor Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
+class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
     use Configurable;
 
@@ -87,7 +88,7 @@ class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param mixed $origin
      * @return self
      */
-    public static function of($origin) : self
+    public static function valueOf($origin) : self
     {
         return $origin instanceof self ? $origin : new static($origin) ;
     }
@@ -254,5 +255,13 @@ class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
     public function __toString()
     {
         return Reflector::convert($this->origin(), 'string') ?? '' ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function jsonSerialize()
+    {
+        return Json::serialize($this->origin());
     }
 }

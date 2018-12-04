@@ -145,15 +145,6 @@ trait Arrayable
      */
     public function jsonSerialize()
     {
-        return array_map(function ($value) {
-            if ($value instanceof \JsonSerializable) {
-                return $value->jsonSerialize();
-            } elseif (method_exists($value, 'toJson')) {
-                return json_decode($value->toJson(), true);
-            } elseif (method_exists($value, 'toArray')) {
-                return $value->toArray();
-            }
-            return $value;
-        }, $this->container());
+        return Json::serialize($this->container());
     }
 }
