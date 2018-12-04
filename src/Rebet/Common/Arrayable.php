@@ -21,6 +21,38 @@ trait Arrayable
     abstract protected function &container() : array ;
 
     /**
+     * Get the all items.
+     *
+     * @return array
+     */
+    public function all() : array
+    {
+        return $this->container();
+    }
+
+    /**
+     * Get the sub array contains given keys.
+     *
+     * @param mixed ...$keys
+     * @return array
+     */
+    public function only(...$keys) : array
+    {
+        return Arrays::only($this->container(), $keys);
+    }
+
+    /**
+     * Get the sub array except given keys.
+     *
+     * @param mixed ...$keys
+     * @return array
+     */
+    public function except(...$keys) : array
+    {
+        return Arrays::except($this->container(), $keys);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function count()
