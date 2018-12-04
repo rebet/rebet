@@ -194,6 +194,9 @@ class ReflectorTest extends RebetTestCase
 
     public function test_set()
     {
+        Reflector::set($this->array, null, 'd');
+        $this->assertSame('d', $this->array[4]);
+
         Reflector::set($this->array, 0, 'A');
         $this->assertSame('A', $this->array[0]);
 
@@ -686,6 +689,7 @@ class ReflectorTest extends RebetTestCase
         };
         $rf     = new \ReflectionFunction($closure);
         $params = $rf->getParameters();
+        $this->assertSame(null, Reflector::getTypeHint(null));
         $this->assertSame(null, Reflector::getTypeHint($params[0]));
         $this->assertSame('int', Reflector::getTypeHint($params[1]));
         $this->assertSame('string', Reflector::getTypeHint($params[2]));

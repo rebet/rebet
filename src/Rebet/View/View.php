@@ -148,9 +148,11 @@ class View implements Renderable
     public function with($key, $value = null) : self
     {
         if (is_array($key)) {
-            $this->data = array_merge($this->data, $key);
+            $this->data = array_merge($this->data, array_map(function ($value) {
+                return $value instanceof FilterableValue ? $value : FilterableValue::of($value) ;
+            }, $key));
         } else {
-            $this->data[$key] = $value;
+            $this->data[$key] = $value instanceof FilterableValue ? $value : FilterableValue::of($value);
         }
         return $this;
     }

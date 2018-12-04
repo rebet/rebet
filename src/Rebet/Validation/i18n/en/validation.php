@@ -13,11 +13,11 @@ return [
     
     "Required"                      => "The :attribute field is required.",
     "RequiredIf"                    => [
-        "[1]   The :attribute field is required when :other is :value.",
+        "[0,1] The :attribute field is required when :other is :value.",
         "[2,*] The :attribute field is required when :other is in :value.",
     ],
     "RequiredUnless"                => [
-        "[1]   The :attribute field is required when :other is not :value.",
+        "[0,1] The :attribute field is required when :other is not :value.",
         "[2,*] The :attribute field is required when :other is not in :value.",
     ],
     "RequiredWith"                  => [
@@ -31,11 +31,11 @@ return [
         "{all}  The :attribute field is required when :other are not present.",
     ],
     "BlankIf"                       => [
-        "[1]   The :attribute field must be blank when :other is :value.",
+        "[0,1] The :attribute field must be blank when :other is :value.",
         "[2,*] The :attribute field must be blank when :other is in :value.",
     ],
     "BlankUnless"                   => [
-        "[1]   The :attribute field must be blank when :other is not :value.",
+        "[0,1] The :attribute field must be blank when :other is not :value.",
         "[2,*] The :attribute field must be blank when :other is not in :value.",
     ],
     "BlankWith"                     => [

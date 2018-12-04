@@ -521,7 +521,7 @@ class ArraysTest extends RebetTestCase
 
     public function test_count()
     {
-        $this->assertSame(1, Arrays::count(null));
+        $this->assertSame(0, Arrays::count(null));
         $this->assertSame(1, Arrays::count(''));
         $this->assertSame(1, Arrays::count(0));
         $this->assertSame(0, Arrays::count([]));

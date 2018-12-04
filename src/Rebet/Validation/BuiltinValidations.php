@@ -378,7 +378,7 @@ class BuiltinValidations extends Validations
             return $c->appendError(
                 'RequiredWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
+                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
         });
     }
@@ -397,7 +397,7 @@ class BuiltinValidations extends Validations
             return $c->appendError(
                 'RequiredWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
+                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
         });
     }
@@ -494,7 +494,7 @@ class BuiltinValidations extends Validations
             return $c->appendError(
                 'BlankWith',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
+                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
         });
     }
@@ -513,7 +513,7 @@ class BuiltinValidations extends Validations
             return $c->appendError(
                 'BlankWithout',
                 ['other' => $c->labels($other), 'at_least' => $at_least],
-                Arrays::count($other) === 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
+                Arrays::count($other) <= 1 ? 'one' : ($at_least < $max ? 'some' : 'all')
             );
         });
     }

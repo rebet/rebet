@@ -621,7 +621,7 @@ class Arrays
             }
             return $count;
         }
-        return 1;
+        return $value === null ? 0 : 1 ;
     }
 
     /**

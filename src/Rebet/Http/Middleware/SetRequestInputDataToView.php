@@ -4,6 +4,7 @@ namespace Rebet\Http\Middleware;
 use Rebet\Http\Input;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\View\FilterableValue;
 use Rebet\View\View;
 
 /**
@@ -25,7 +26,7 @@ class SetRequestInputDataToView
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        View::share('input', new Input($request));
+        View::share('input', FilterableValue::promise(function () use ($request) { return $request->input(); }));
         return $next($request);
     }
 }

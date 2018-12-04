@@ -176,8 +176,12 @@ class Reflector
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
         }
-        if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
-            $object[$key] = $value;
+        if (Arrays::accessible($object) && ($key === null || Arrays::exists($object, $key))) {
+            if ($key === null) {
+                $object[] = $value;
+            } else {
+                $object[$key] = $value;
+            }
             return;
         }
         $current = Strings::latrim($key, '.');
@@ -565,11 +569,14 @@ class Reflector
      * Get type or class name which is a type hint as a character string.
      * # If type hint is nothing then return null.
      *
-     * @param \ReflectionParameter $param
+     * @param \ReflectionParameter|null $param
      * @return string|null
      */
-    public static function getTypeHint(\ReflectionParameter $param) : ?string
+    public static function getTypeHint(?\ReflectionParameter $param) : ?string
     {
+        if($param === null) {
+            return null;
+        }
         $type = $param->getType();
         if (!empty($type)) {
             return (string)$type;
