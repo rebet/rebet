@@ -120,7 +120,7 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
      * Property accessor.
      *
      * @param string $key
-     * @return void
+     * @return self|bool
      */
     public function __get($key)
     {
@@ -128,7 +128,7 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($origin === null) {
             return static::$null;
         }
-        return new static(Reflector::get($origin, $key)) ;
+        return is_bool($origin) ? $origin : new static(Reflector::get($origin, $key)) ;
     }
 
     /**
@@ -140,9 +140,9 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @param string $filter
      * @param mixed ...$args
-     * @return self
+     * @return self|bool
      */
-    public function _(string $name, ...$args) : self
+    public function _(string $name, ...$args)
     {
         if ($this->origin() === null) {
             return static::$null;
@@ -157,9 +157,9 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @param Closure|null $filter
      * @param self ...$args
-     * @return void
+     * @return self|bool
      */
-    protected function _filter(?Closure $filter, ...$args) : self
+    protected function _filter(?Closure $filter, ...$args)
     {
         if ($filter === null) {
             return $this;
@@ -168,7 +168,8 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
         $parameter = $function->getParameters()[0] ?? null;
         $converted = Reflector::convert($this->origin(), Reflector::getTypeHint($parameter));
         try {
-            return new static($filter($converted, ...$args));
+            $result = $filter($converted, ...$args);
+            return is_bool($result) ? $result : new static($result);
         } catch (\Exception $e) {
             if ($converted === null) {
                 return static::$null;
@@ -187,7 +188,7 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
      *
      * @param string $name
      * @param array $args
-     * @return void
+     * @return self|bool
      */
     public function __call($name, $args)
     {
@@ -195,7 +196,8 @@ class FilterableValue implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($origin === null) {
             return static::$null;
         }
-        return new static(Reflector::invoke($origin, $name, $args));
+        $result = Reflector::invoke($origin, $name, $args);
+        return is_bool($result) ? $result : new static($result) ;
     }
 
     /**

@@ -98,7 +98,7 @@ class BladeCustomizer
         //   @errors ... @else ... @enderrors
         $blade->code('errors', 'if(', function ($errors, $name = null) use (&$field) {
             $name = $name ?? $field ;
-            return $name ? isset($errors[$name]) : !empty($errors) ;
+            return $name ? $errors[$name]->isset() : !$errors->empty() ;
         }, '):', '$errors');
         $blade->directive('enderrors', function () {
             return '<?php endif; ?>';
@@ -162,7 +162,7 @@ class BladeCustomizer
         //   @iferror('color: red;', 'color: gleen;')
         $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
             [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
-            return isset($errors[$name]) ? $iferror : $else ?? '' ;
+            return $errors[$name]->isset() ? $iferror : $else ?? '' ;
         }, ');', '$errors');
 
         // ------------------------------------------------
@@ -180,7 +180,7 @@ class BladeCustomizer
         $blade->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
-            return isset($errors[$name]) ? $value : $else ;
+            return $errors[$name]->isset() ? $value : $else ;
         }, ');', '$errors');
 
         // ------------------------------------------------
@@ -197,7 +197,7 @@ class BladeCustomizer
         //   @input($user->email)
         $blade->code('input', 'echo(', function ($input, ...$args) use (&$field) {
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
-            return htmlspecialchars($input->get($name, $default ?? ''), ENT_QUOTES, 'UTF-8');
+            return $input[$name]->default($default)->escape();
         }, ');', '$input');
     }
 }
