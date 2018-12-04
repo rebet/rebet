@@ -41,9 +41,9 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
                 'join'      => function (string $value, string $delimiter) { return implode($delimiter, $value); },
                 'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
                 'cut'       => function (string $value, int $length, string $ellipsis = '...') { return Strings::cut($value, $length, $ellipsis); },
-                'lowercase' => function (string $value) { return strtolower($value); },
-                'uppercase' => function (string $value) { return strtoupper($value); },
-                'dump'      => function (string $value) { return print_r($value, true); },
+                'lower'     => function (string $value) { return strtolower($value); },
+                'upper'     => function (string $value) { return strtoupper($value); },
+                'dump'      => function ($value) { return print_r($value, true); },
             ],
         ];
     }
