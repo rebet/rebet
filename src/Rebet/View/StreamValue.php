@@ -150,7 +150,7 @@ class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
             return static::$null;
         }
         $filter = static::config("filters.{$name}", false);
-        $filter = $filter ?? is_callable($name) ? $name : null ;
+        $filter = $filter ?? (is_callable($name) ? $name : null) ;
         return $this->_filter($filter ? \Closure::fromCallable($filter) : null, ...$args);
     }
 
@@ -161,7 +161,7 @@ class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param self ...$args
      * @return self|bool
      */
-    protected function _filter(?Closure $filter, ...$args)
+    protected function _filter(?\Closure $filter, ...$args)
     {
         if ($filter === null) {
             return $this;
@@ -195,10 +195,7 @@ class StreamValue implements \ArrayAccess, \Countable, \IteratorAggregate
     public function __call($name, $args)
     {
         $origin = $this->origin();
-        if ($origin === null) {
-            return static::$null;
-        }
-        $result = Reflector::invoke($origin, $name, $args);
+        $result = $this->_($name, $args) ?? call_user_func([$origin, $name], ...$args);
         return is_bool($result) ? $result : new static($result) ;
     }
 
