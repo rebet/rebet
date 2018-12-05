@@ -340,15 +340,7 @@ class Reflector
      *      -> return null
      *
      * 　3. When $type is 'array':
-     *      -> If $value is is_array() then return $value (no convert)
-     *      -> If $value is is_string() then return expload(',', $value)
-     *      -> If $value has toArray() method then invoke that
-     *      -> If $value instanceof Traversable then create array using foreach
-     *      -> If $value is object and instanceof JsonSerializable then call jsonSerialize()
-     *         -> And then if the $serialize is array then return $serialize
-     *         -> And then if the serialize is not array then return [$value]
-     *      -> If $value is object then return get_object_vars($value)
-     *      -> Otherwise return (array)$value (array casted value)
+     *      -> @see Rebet\Common\Arrays::toArray()
      *
      * 　4. When $type is 'string':
      *      -> If $value is string then return $value (no convert)
@@ -398,30 +390,7 @@ class Reflector
             // To Array
             //---------------------------------------------
             case 'array':
-                if (is_array($value)) {
-                    return $value;
-                }
-                if (is_string($value)) {
-                    return explode(',', $value);
-                }
-                if (method_exists($value, 'toArray')) {
-                    return $value->toArray();
-                }
-                if ($value instanceof \Traversable) {
-                    $array = [];
-                    foreach ($value as $key => $value) {
-                        $array[$key] = $value;
-                    }
-                    return $array;
-                }
-                if (is_object($value)) {
-                    if ($value instanceof \JsonSerializable) {
-                        $json = $value->jsonSerialize();
-                        return is_array($json) ? $json : [$value] ;
-                    }
-                    return get_object_vars($value);
-                }
-                return (array)$value;
+                return Arrays::toArray($value);
 
             //---------------------------------------------
             // To String
@@ -576,7 +545,7 @@ class Reflector
      */
     public static function getTypeHint(?\ReflectionParameter $param) : ?string
     {
-        if($param === null) {
+        if ($param === null) {
             return null;
         }
         $type = $param->getType();

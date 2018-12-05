@@ -1,15 +1,32 @@
 <?php
 namespace Rebet\Tests\Common;
 
+use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Arrays;
 use Rebet\Common\Collection;
 use Rebet\Common\OverrideOption;
 use Rebet\Tests\Mock\CountableStub;
+use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\Mock\IteratorAggregateStub;
+use Rebet\Tests\Mock\JsonSerializableStub;
+use Rebet\Tests\Mock\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 
 class ArraysTest extends RebetTestCase
 {
+    private $root = null;
+
+    public function setUp()
+    {
+        $this->root = vfsStream::setup();
+        vfsStream::create(
+            [
+                'dummy.txt' => 'dummy'
+            ],
+            $this->root
+        );
+    }
+
     public function test_random()
     {
         $list = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -528,5 +545,40 @@ class ArraysTest extends RebetTestCase
         $this->assertSame(3, Arrays::count([1, 2, 3]));
         $this->assertSame(4, Arrays::count(new CountableStub(4)));
         $this->assertSame(5, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5])));
+    }
+
+    public function test_toArray()
+    {
+        $this->assertNull(Arrays::toArray(null));
+
+        $this->assertSame([], Arrays::toArray([]));
+        $this->assertSame([1, 2], Arrays::toArray([1, 2]));
+        $this->assertSame(['a' => 'A'], Arrays::toArray(['a' => 'A']));
+
+        $this->assertSame([''], Arrays::toArray(''));
+        $this->assertSame(['a'], Arrays::toArray('a'));
+        $this->assertSame(['a,b,c'], Arrays::toArray('a,b,c'));
+
+        $to_array = new ToArrayStub([1, 2, 'a' => 'A']);
+        $this->assertSame([1, 2, 'a' => 'A'], Arrays::toArray($to_array));
+
+        $travers = new \ArrayObject([1, 2, 'a' => 'A']);
+        $this->assertSame([1, 2, 'a' => 'A'], Arrays::toArray($travers));
+
+        $jsonValue = Gender::MALE();
+        $this->assertSame([$jsonValue], Arrays::toArray($jsonValue));
+        $jsonValue = new JsonSerializableStub('abc');
+        $this->assertSame([$jsonValue], Arrays::toArray($jsonValue));
+
+        $jsonArray = new JsonSerializableStub([1, 2, 'a' => 'A']);
+        $this->assertSame([1, 2, 'a' => 'A'], Arrays::toArray($jsonArray));
+
+        $this->assertSame([1], Arrays::toArray(1));
+        $this->assertSame([1.2], Arrays::toArray(1.2));
+        $this->assertSame([true], Arrays::toArray(true));
+
+        $resource = fopen('vfs://root/dummy.txt', 'r');
+        $this->assertSame([$resource], Arrays::toArray($resource));
+        fclose($resource);
     }
 }

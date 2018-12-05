@@ -5,10 +5,13 @@ use org\bovigo\vfs\vfsStream;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
 use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\JsonSerializableStub;
+use Rebet\Tests\Mock\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 
 class ReflectorTest extends RebetTestCase
 {
+    private $root        = null;
     private $array       = null;
     private $map         = null;
     private $objectect   = null;
@@ -459,9 +462,9 @@ class ReflectorTest extends RebetTestCase
 
         $this->assertSame([''], Reflector::convert('', $type));
         $this->assertSame(['a'], Reflector::convert('a', $type));
-        $this->assertSame(['a', 'b', 'c'], Reflector::convert('a,b,c', $type));
+        $this->assertSame(['a,b,c'], Reflector::convert('a,b,c', $type));
 
-        $to_array = new ReflectorTest_ToArray([1, 2, 'a' => 'A']);
+        $to_array = new ToArrayStub([1, 2, 'a' => 'A']);
         $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($to_array, $type));
 
         $travers = new \ArrayObject([1, 2, 'a' => 'A']);
@@ -469,14 +472,11 @@ class ReflectorTest extends RebetTestCase
 
         $jsonValue = Gender::MALE();
         $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
-        $jsonValue = new ReflectorTest_Json('abc');
+        $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame([$jsonValue], Reflector::convert($jsonValue, $type));
 
-        $jsonArray = new ReflectorTest_Json([1, 2, 'a' => 'A']);
+        $jsonArray = new JsonSerializableStub([1, 2, 'a' => 'A']);
         $this->assertSame([1, 2, 'a' => 'A'], Reflector::convert($jsonArray, $type));
-
-        $object = new ReflectorTest_Mock();
-        $this->assertSame(['value' => 'default'], Reflector::convert($object, $type));
 
         $this->assertSame([1], Reflector::convert(1, $type));
         $this->assertSame([1.2], Reflector::convert(1.2, $type));
@@ -509,17 +509,17 @@ class ReflectorTest extends RebetTestCase
 
         $jsonValue = Gender::MALE();
         $this->assertSame('1', Reflector::convert($jsonValue, $type));
-        $jsonValue = new ReflectorTest_Json('abc');
+        $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame('abc', Reflector::convert($jsonValue, $type));
 
-        $jsonArray = new ReflectorTest_Json([1, 2]);
+        $jsonArray = new JsonSerializableStub([1, 2]);
         $this->assertSame('value: 1,2', Reflector::convert($jsonArray, $type));
         $toString  = new ReflectorTest_Mock();
         $this->assertSame('default', Reflector::convert($toString, $type));
 
         $unconvertable = [1, 2];
         $this->assertSame(null, Reflector::convert($unconvertable, $type));
-        $unconvertable = new ReflectorTest_ToArray([1, 2]);
+        $unconvertable = new ToArrayStub([1, 2]);
         $this->assertSame(null, Reflector::convert($unconvertable, $type));
     }
 
@@ -721,40 +721,6 @@ class ReflectorTest_Mock
     public function __toString()
     {
         return (string)$this->value;
-    }
-}
-
-class ReflectorTest_ToArray
-{
-    private $array;
-
-    public function __construct(array $array)
-    {
-        $this->array = $array;
-    }
-
-    public function toArray() : array
-    {
-        return $this->array;
-    }
-}
-class ReflectorTest_Json implements \JsonSerializable
-{
-    private $value;
-
-    public function __construct($value)
-    {
-        $this->value = $value;
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->value;
-    }
-
-    public function __toString()
-    {
-        return "value: ".join(',', (array)$this->value);
     }
 }
 class ReflectorTest_ValueOf

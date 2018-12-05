@@ -628,24 +628,37 @@ class Arrays
      * Convert to array from Collection or Arrayable.
      *
      * @param  mixed  $items
-     * @return array
+     * @return array|null
      */
-    public function toArray($items)
+    public static function toArray($items) : ?array
     {
+        if ($items === null) {
+            return null;
+        }
         if (is_array($items)) {
             return $items;
-        } elseif ($items instanceof Collection) {
+        }
+        if ($items instanceof Collection) {
             return $items->all();
-        } elseif (method_exists($items, 'toArray')) {
+        }
+        if (method_exists($items, 'toArray')) {
             return $items->toArray();
-        } elseif (method_exists($items, 'toJson')) {
-            return json_decode($items->toJson(), true);
-        } elseif ($items instanceof \JsonSerializable) {
-            return $items->jsonSerialize();
-        } elseif ($items instanceof \Traversable) {
+        }
+        if ($items instanceof \JsonSerializable) {
+            if (is_array($json = $items->jsonSerialize())) {
+                return $json;
+            }
+        }
+        if ($items instanceof \Traversable) {
             return iterator_to_array($items);
         }
-        return (array) $items;
+        if (is_string($items)) {
+            if (is_array($json = json_decode($items))) {
+                return $json;
+            }
+        }
+
+        return [$items];
     }
 
     /**

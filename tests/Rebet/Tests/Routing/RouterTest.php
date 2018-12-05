@@ -8,6 +8,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
+use Rebet\Http\Responder;
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
@@ -21,7 +22,6 @@ use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
-use Rebet\Http\Responder;
 
 class RouterTest extends RebetTestCase
 {
@@ -389,7 +389,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/parameter/convert/array/123'));
         $this->assertSame('Content: /parameter/convert/array/{value} - 123', $response->getContent());
 
-        $response = Router::handle(Request::create('/parameter/convert/array/1,2,3'));
+        $response = Router::handle(Request::create('/parameter/convert/array/[1,2,3]'));
         $this->assertSame('Content: /parameter/convert/array/{value} - 1/2/3', $response->getContent());
 
         $response = Router::handle(Request::create('/parameter/convert/date-time/20100123123456'));
