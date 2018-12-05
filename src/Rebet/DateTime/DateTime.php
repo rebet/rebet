@@ -258,11 +258,27 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 if (!$parsed_test_now) {
                     throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
                 }
-                $adopt_time = $parsed_test_now->modify($time)->format('Y-m-d H:i:s.u');
+                $parsed_test_now = $parsed_test_now->modify($time);
+                if (!$parsed_test_now) {
+                    throw new DateTimeFormatException("Invalid date time format [{$time}] given for modify.");
+                }
+                $adopt_time = $parsed_test_now->format('Y-m-d H:i:s.u');
             }
         }
 
         parent::__construct($adopt_time, $adopt_timezone);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function modify($modify)
+    {
+        $modified = parent::modify($modify);
+        if (!$modified) {
+            throw new DateTimeFormatException("Invalid date time format [{$modify}] given for modify.");
+        }
+        return $modified;
     }
 
     /**

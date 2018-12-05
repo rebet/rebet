@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\DateTime;
 
 /**
  * 日付フォーマットに関連した例外 クラス

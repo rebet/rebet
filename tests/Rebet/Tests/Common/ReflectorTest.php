@@ -508,19 +508,21 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('abc', Reflector::convert('abc', $type));
 
         $jsonValue = Gender::MALE();
-        $this->assertSame('1', Reflector::convert($jsonValue, $type));
+        $this->assertSame('男性', Reflector::convert($jsonValue, $type));
         $jsonValue = new JsonSerializableStub('abc');
         $this->assertSame('abc', Reflector::convert($jsonValue, $type));
 
+        $this->assertSame('[1,2]', Reflector::convert([1, 2], $type));
+        $this->assertSame('{"a":"A"}', Reflector::convert(['a' => 'A'], $type));
+        $this->assertSame('[1,2]', Reflector::convert(new \ArrayObject([1, 2]), $type));
+        $this->assertSame('{"a":"A"}', Reflector::convert(new \ArrayObject(['a' => 'A']), $type));
+
         $jsonArray = new JsonSerializableStub([1, 2]);
-        $this->assertSame('value: 1,2', Reflector::convert($jsonArray, $type));
+        $this->assertSame('[1,2]', Reflector::convert($jsonArray, $type));
         $toString  = new ReflectorTest_Mock();
         $this->assertSame('default', Reflector::convert($toString, $type));
 
-        $unconvertable = [1, 2];
-        $this->assertSame(null, Reflector::convert($unconvertable, $type));
-        $unconvertable = new ToArrayStub([1, 2]);
-        $this->assertSame(null, Reflector::convert($unconvertable, $type));
+        $this->assertSame(null, Reflector::convert(new ToArrayStub([1, 2]), $type));
     }
 
     public function test_convert_callable()

@@ -26,17 +26,17 @@ class Json
      */
     public static function serialize($value)
     {
-        switch ($true) {
+        switch (true) {
             case $value === null:
                 return null;
             case $value instanceof \JsonSerializable:
-                return $origin->jsonSerialize();
+                return $value->jsonSerialize();
             case Arrays::accessible($value):
-                return array_map(function($v){ return Json::serialize($v); }, $value);
+                return array_map(function ($v) { return Json::serialize($v); }, $value);
             case $value instanceof \Traversable:
-                return array_map(function($v){ return Json::serialize($v); }, iterator_to_array($value));
+                return array_map(function ($v) { return Json::serialize($v); }, iterator_to_array($value));
             case method_exists($value, 'toArray'):
-                return array_map(function($v){ return Json::serialize($v); }, $value->toArray());
+                return array_map(function ($v) { return Json::serialize($v); }, $value->toArray());
             default:
                 return $value;
         }

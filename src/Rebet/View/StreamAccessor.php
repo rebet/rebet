@@ -2,11 +2,12 @@
 namespace Rebet\View;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Json;
+use Rebet\Common\Math;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
-use Rebet\Common\Json;
 
 /**
  * Stream Accessor Class
@@ -24,6 +25,7 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     {
         return[
             'filters' => [
+                // You can use php built-in functions as filters when the 1st argument is for value.
                 'convert'   => function ($value, string $type) { return Reflector::convert($value, $type); },
                 'escape'    => function (string $value, string $type = 'html') {
                     switch ($type) {
@@ -38,11 +40,14 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
                 'text'      => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
                 'default'   => function ($value, $default) { return $value ?? $default; },
                 'split'     => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                'join'      => function (string $value, string $delimiter) { return implode($delimiter, $value); },
+                'join'      => function (array $value, string $delimiter) { return implode($delimiter, $value); },
                 'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
                 'cut'       => function (string $value, int $length, string $ellipsis = '...') { return Strings::cut($value, $length, $ellipsis); },
                 'lower'     => function (string $value) { return strtolower($value); },
                 'upper'     => function (string $value) { return strtoupper($value); },
+                'floor'     => function (string $value, int $scale = 0) { return Math::floor($value, $scale); },
+                'round'     => function (string $value, int $scale = 0) { return Math::round($value, $scale); },
+                'ceil'      => function (string $value, int $scale = 0) { return Math::ceil($value, $scale); },
                 'dump'      => function ($value) { return print_r($value, true); },
             ],
         ];
@@ -109,7 +114,7 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return mixed
      */
-    public function origin()
+    public function &origin()
     {
         if ($this->promise !== null && $this->origin === null) {
             $this->origin  = ($this->promise)();
@@ -119,7 +124,23 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * Property accessor.
+     * Property set accessor.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        $origin = &$this->origin();
+        if ($origin === null) {
+            return;
+        }
+        Reflector::set($origin, $key, $value);
+    }
+
+    /**
+     * Property get accessor.
      *
      * @param string $key
      * @return self|bool
@@ -147,12 +168,9 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function _(string $name, ...$args)
     {
-        if ($this->origin() === null) {
-            return static::$null;
-        }
         $filter = static::config("filters.{$name}", false);
         $filter = $filter ?? (is_callable($name) ? $name : null) ;
-        return $this->_filter($filter ? \Closure::fromCallable($filter) : null, ...$args);
+        return $this->_filter($name, $filter ? \Closure::fromCallable($filter) : null, ...$args);
     }
 
     /**
@@ -162,20 +180,25 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      * @param self ...$args
      * @return self|bool
      */
-    protected function _filter(?\Closure $filter, ...$args)
+    protected function _filter(string $name, ?\Closure $filter, ...$args)
     {
         if ($filter === null) {
             return $this;
         }
+        $origin    = $this->origin();
         $function  = new \ReflectionFunction($filter);
         $parameter = $function->getParameters()[0] ?? null;
-        $converted = Reflector::convert($this->origin(), Reflector::getTypeHint($parameter));
+        $type      = Reflector::getTypeHint($parameter);
+        $converted = Reflector::convert($origin, $type);
         try {
             $result = $filter($converted, ...$args);
             return is_bool($result) ? $result : new static($result);
-        } catch (\Exception $e) {
-            if ($converted === null) {
+        } catch (\Throwable $e) {
+            if ($origin === null) {
                 return static::$null;
+            }
+            if ($converted === null) {
+                throw new \LogicException("Apply {$name} filter failed. The origin value '{$origin}' can not convert to {$type}.", 0, $e);
             }
             throw $e;
         }
@@ -196,7 +219,24 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     public function __call($name, $args)
     {
         $origin = $this->origin();
-        $result = $this->_($name, $args) ?? call_user_func([$origin, $name], ...$args);
+        if (is_object($origin) && method_exists($origin, $name)) {
+            $method      = new \ReflectionMethod($origin, $name);
+            $type        = $method->getReturnType();
+            $fingerprint = $type === null || $type == 'bool' || $type == 'boolean' ? md5(serialize($origin)) : null ;
+            $result      = $method->invoke($origin, ...$args);
+            if (
+                $type == 'void'
+                || (
+                    $fingerprint !== null
+                    && ($result === null || is_bool($result))
+                    && $fingerprint !== md5(serialize($origin))
+                )
+            ) {
+                $result = $origin;
+            }
+        } else {
+            $result = $this->_($name, ...$args)->origin();
+        }
         return is_bool($result) ? $result : new static($result) ;
     }
 
@@ -205,7 +245,10 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function offsetSet($offset, $value)
     {
-        Reflector::set($this->object, $offset, $value);
+        $origin = &$this->origin();
+        if (is_array($origin) || is_object($origin)) {
+            Reflector::set($origin, $offset, $value);
+        }
     }
 
     /**
@@ -221,7 +264,10 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function offsetUnset($offset)
     {
-        Reflector::remove($this->origin(), $offset);
+        $origin = $this->origin();
+        if (is_array($origin) || is_object($origin)) {
+            Reflector::remove($this->origin(), $offset);
+        }
     }
 
     /**
@@ -246,7 +292,12 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     public function getIterator()
     {
         $origin = $this->origin();
-        return new \ArrayIterator(is_object($origin) ? get_object_vars($origin) : (array)$origin) ;
+        return new \ArrayIterator(array_map(
+            function ($value) {
+                return static::valueOf($value);
+            },
+            is_object($origin) ? get_object_vars($origin) : (array)$origin
+        ));
     }
     
     /**

@@ -346,9 +346,11 @@ class Reflector
      *      -> If $value is string then return $value (no convert)
      *      -> If $value is resource then return null
      *      -> If $value is scalar then return type casted value
+     *      -> If $value has __toSring() method then invoke that
+     *      -> If $value is array or ArrayAccess then return json encoded value
      *      -> If $value is object and instanceof JsonSerializable then call jsonSerialize()
      *         -> $And then if $serialize is scalar then return (string)$value
-     *      -> If $value has __toSring() method then invoke that
+     *         -> $And then if $serialize is array or ArrayAccess then return json encoded value
      *      -> Otherwise return null
      *
      * 　6. When $type is \Closure:
@@ -405,14 +407,20 @@ class Reflector
                 if (is_scalar($value)) {
                     return (string)$value;
                 }
+                if (method_exists($value, '__toString')) {
+                    return $value->__toString();
+                }
+                if (Arrays::accessible($value)) {
+                    return json_encode(Arrays::toArray($value));
+                }
                 if (is_object($value) && $value instanceof \JsonSerializable) {
                     $json = $value->jsonSerialize();
                     if (is_scalar($json)) {
                         return (string)$json;
                     }
-                }
-                if (method_exists($value, '__toString')) {
-                    return $value->__toString();
+                    if (Arrays::accessible($json)) {
+                        return json_encode(Arrays::toArray($json));
+                    }
                 }
                 return null;
 

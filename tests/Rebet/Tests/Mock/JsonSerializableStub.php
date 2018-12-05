@@ -14,9 +14,4 @@ class JsonSerializableStub implements \JsonSerializable
     {
         return $this->value;
     }
-
-    public function __toString()
-    {
-        return "value: ".join(',', (array)$this->value);
-    }
 }
