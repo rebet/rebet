@@ -430,13 +430,55 @@ class StreamAccessorTest extends RebetTestCase
         $this->assertSame('HELLO REBET', $this->string->upper()->origin());
 
         // floor
-        // $this->assertNull($this->null->_('floor')->origin());
-        // $this->assertSame('1234', $this->float->_('floor')->origin());
-        // $this->assertSame('1234.56', $this->float->_('floor', 2)->origin());
-        // $this->assertSame('1200', $this->float->_('floor', -2)->origin());
+        $this->assertNull($this->null->_('floor')->origin());
+        $this->assertSame('1234', $this->float->_('floor')->origin());
+        $this->assertSame('1234.56', $this->float->_('floor', 2)->origin());
+        $this->assertSame('1200', $this->float->_('floor', -2)->origin());
 
-        // $this->assertSame('1234', $this->string->floor()->origin());
-        // $this->assertSame('1234.56', $this->string->floor(2)->origin());
+        $this->assertSame('1234', $this->float->floor()->origin());
+        $this->assertSame('1234.56', $this->float->floor(2)->origin());
+
+        // round
+        $this->assertNull($this->null->_('round')->origin());
+        $this->assertSame('1235', $this->float->_('round')->origin());
+        $this->assertSame('1234.57', $this->float->_('round', 2)->origin());
+        $this->assertSame('1200', $this->float->_('round', -2)->origin());
+
+        $this->assertSame('1235', $this->float->round()->origin());
+        $this->assertSame('1234.57', $this->float->round(2)->origin());
+
+        // ceil
+        $this->assertNull($this->null->_('ceil')->origin());
+        $this->assertSame('1235', $this->float->_('ceil')->origin());
+        $this->assertSame('1234.57', $this->float->_('ceil', 2)->origin());
+        $this->assertSame('1300', $this->float->_('ceil', -2)->origin());
+
+        $this->assertSame('1235', $this->float->ceil()->origin());
+        $this->assertSame('1234.57', $this->float->ceil(2)->origin());
+
+        // dump
+        $this->assertSame('', $this->null->_('dump')->origin());
+        $this->assertSame(<<<EOS
+Array
+(
+    [0] => 1
+    [1] => 2
+    [2] => 3
+)
+
+EOS
+        , $this->array->_('dump')->origin());
+
+        $this->assertSame(<<<EOS
+Array
+(
+    [0] => 1
+    [1] => 2
+    [2] => 3
+)
+
+EOS
+        , $this->array->dump()->origin());
     }
 }
 
