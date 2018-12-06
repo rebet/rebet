@@ -64,11 +64,10 @@ class Math
     public static function floor(string $value, int $scale = 0) : string
     {
         return static::shiftingCalc($value, $scale, function ($shifted) use ($value, $scale) {
-            $negative = static::isNegative($value);
             $decimal  = static::decimalOf($shifted);
-            $delta    = bccomp($decimal, '0', mb_strlen($decimal)) === 1 ? -1 : 0 ;
-            $delta    = $negative ? $delta : '0' ;
-            return bcadd(Strings::ratrim($shifted, '.'), $delta) ;
+            $delta    = bccomp($decimal, '0') === 1 ? '-1' : '0' ;
+            $delta    = static::isNegative($value) ? $delta : '0' ;
+            return bcadd(Strings::ratrim($shifted, '.'), $delta, $scale > 0 ? $scale : 0) ;
         });
     }
 
@@ -98,9 +97,11 @@ class Math
      */
     public static function ceil(string $value, int $scale = 0) : string
     {
-        return static::shiftingCalc($value, $scale, function ($shifted) use ($scale) {
-            $delta = bccomp(static::decimalOf($shifted), '0') === 1 ? '1' : '0' ;
-            return bcadd($shifted, $delta, $scale > 0 ? $scale : 0);
+        return static::shiftingCalc($value, $scale, function ($shifted) use ($value, $scale) {
+            $decimal  = static::decimalOf($shifted);
+            $delta    = bccomp($decimal, '0') === 1 ? '1' : '0' ;
+            $delta    = static::isNegative($value) ? '0' : $delta ;
+            return bcadd(Strings::ratrim($shifted, '.'), $delta, $scale > 0 ? $scale : 0) ;
         });
     }
 }

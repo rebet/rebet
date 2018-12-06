@@ -108,30 +108,32 @@ class MathTest extends RebetTestCase
         $this->assertSame('124', Math::ceil('123.555555555'));
         $this->assertSame('124', Math::ceil('123.000000001'));
         $this->assertSame('-123', Math::ceil('-123'));
-        // $this->assertSame('-123', Math::ceil('-123.1'));
+        $this->assertSame('-123', Math::ceil('-123.1'));
 
-        // $this->assertSame('123.0', Math::ceil('123', 1));
-        // $this->assertSame('123.5', Math::ceil('123.444444444', 1));
-        // $this->assertSame('123.6', Math::ceil('123.555555555', 1));
-        // $this->assertSame('123.0', Math::ceil('123.000000001', 1));
-        // $this->assertSame('-123.3', Math::ceil('-123.444444444', 1));
+        $this->assertSame('123.0', Math::ceil('123', 1));
+        $this->assertSame('123.5', Math::ceil('123.444444444', 1));
+        $this->assertSame('123.6', Math::ceil('123.555555555', 1));
+        $this->assertSame('123.1', Math::ceil('123.000000001', 1));
+        $this->assertSame('-123.4', Math::ceil('-123.444444444', 1));
 
-        // $this->assertSame('123.00', Math::ceil('123', 2));
-        // $this->assertSame('123.44', Math::ceil('123.444444444', 2));
-        // $this->assertSame('123.55', Math::ceil('123.555555555', 2));
-        // $this->assertSame('123.00', Math::ceil('123.000000001', 2));
-        // $this->assertSame('-123.44', Math::ceil('-123.444444444', 2));
+        $this->assertSame('123.00', Math::ceil('123', 2));
+        $this->assertSame('123.45', Math::ceil('123.444444444', 2));
+        $this->assertSame('123.56', Math::ceil('123.555555555', 2));
+        $this->assertSame('123.01', Math::ceil('123.000000001', 2));
+        $this->assertSame('-123.44', Math::ceil('-123.444444444', 2));
 
-        // $this->assertSame('120', Math::ceil('123', -1));
-        // $this->assertSame('120', Math::ceil('123.444444444', -1));
-        // $this->assertSame('120', Math::ceil('123.555555555', -1));
-        // $this->assertSame('120', Math::ceil('123.000000001', -1));
-        // $this->assertSame('-120', Math::ceil('-123.444444444', -1));
+        $this->assertSame('130', Math::ceil('123', -1));
+        $this->assertSame('130', Math::ceil('123.444444444', -1));
+        $this->assertSame('130', Math::ceil('123.555555555', -1));
+        $this->assertSame('130', Math::ceil('123.000000001', -1));
+        $this->assertSame('-120', Math::ceil('-123.444444444', -1));
 
-        // $this->assertSame('100', Math::ceil('123', -2));
-        // $this->assertSame('0', Math::ceil('123', -3));
-        // $this->assertSame('0', Math::ceil('123', -4));
-        // $this->assertSame('-100', Math::ceil('-123', -2));
-        // $this->assertSame('0', Math::ceil('-123', -3));
+        $this->assertSame('200', Math::ceil('123', -2));
+        $this->assertSame('1000', Math::ceil('123', -3));
+        $this->assertSame('10000', Math::ceil('123', -4));
+        $this->assertSame('-100', Math::ceil('-123', -2));
+        $this->assertSame('0', Math::ceil('-123', -3));
+        $this->assertSame('0', Math::ceil('-123', -4));
+        $this->assertSame('0', Math::ceil('-123', -3));
     }
 }
