@@ -4,6 +4,7 @@ namespace Rebet\View;
 use Rebet\Common\Renderable;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
+use Rebet\Stream\Stream;
 
 /**
  * View Class
@@ -149,10 +150,10 @@ class View implements Renderable
     {
         if (is_array($key)) {
             $this->data = array_merge($this->data, array_map(function ($value) {
-                return StreamAccessor::valueOf($value) ;
+                return Stream::valueOf($value) ;
             }, $key));
         } else {
-            $this->data[$key] = StreamAccessor::valueOf($value);
+            $this->data[$key] = Stream::valueOf($value);
         }
         return $this;
     }

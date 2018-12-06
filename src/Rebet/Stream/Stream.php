@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\View;
+namespace Rebet\Stream;
 
 use Rebet\Common\Arrays;
 use Rebet\Common\Json;
@@ -12,14 +12,14 @@ use Rebet\DateTime\DateTime;
 use Rebet\Inflection\Inflector;
 
 /**
- * Stream Accessor Class
+ * Stream Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
+class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
     use Configurable;
 

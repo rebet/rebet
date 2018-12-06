@@ -1,12 +1,12 @@
 <?php
-namespace Rebet\Tests\View;
+namespace Rebet\Tests\Stream;
 
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
-use Rebet\View\StreamAccessor;
+use Rebet\Stream\Stream;
 
-class StreamAccessorTest extends RebetTestCase
+class StreamTest extends RebetTestCase
 {
     private $null;
     private $int;
@@ -23,18 +23,18 @@ class StreamAccessorTest extends RebetTestCase
     {
         parent::setUp();
         DateTime::setTestNow('2001/02/03 04:05:06');
-        $this->null       = StreamAccessor::valueOf(null);
-        $this->int        = StreamAccessor::valueOf(123);
-        $this->float      = StreamAccessor::valueOf(1234.5678);
-        $this->string     = StreamAccessor::valueOf("Hello Rebet");
-        $this->text       = StreamAccessor::valueOf("Hello\nRebet");
-        $this->html       = StreamAccessor::valueOf("<h1>Hello Rebet</h1>");
-        $this->json       = StreamAccessor::valueOf("[1 ,2, 3]");
-        $this->object     = StreamAccessor::valueOf(Gender::MALE());
-        $this->datetime_o = StreamAccessor::valueOf(DateTime::now());
-        $this->datetime_s = StreamAccessor::valueOf('2001/02/03 04:05:06');
-        $this->array      = StreamAccessor::valueOf([1, 2, 3]);
-        $this->map        = StreamAccessor::valueOf([
+        $this->null       = Stream::valueOf(null);
+        $this->int        = Stream::valueOf(123);
+        $this->float      = Stream::valueOf(1234.5678);
+        $this->string     = Stream::valueOf("Hello Rebet");
+        $this->text       = Stream::valueOf("Hello\nRebet");
+        $this->html       = Stream::valueOf("<h1>Hello Rebet</h1>");
+        $this->json       = Stream::valueOf("[1 ,2, 3]");
+        $this->object     = Stream::valueOf(Gender::MALE());
+        $this->datetime_o = Stream::valueOf(DateTime::now());
+        $this->datetime_s = Stream::valueOf('2001/02/03 04:05:06');
+        $this->array      = Stream::valueOf([1, 2, 3]);
+        $this->map        = Stream::valueOf([
             'foo'    => 'FOO',
             'parent' => [
                 'child' => [
@@ -44,19 +44,19 @@ class StreamAccessorTest extends RebetTestCase
             'number' => 123,
             'gender' => Gender::MALE(),
         ]);
-        $this->destructive = StreamAccessor::valueOf(new StreamAccessorTest_DestructiveMock());
+        $this->destructive = Stream::valueOf(new StreamTest_DestructiveMock());
     }
 
     public function test_valueOf()
     {
-        $this->assertInstanceOf(StreamAccessor::class, StreamAccessor::valueOf(123));
+        $this->assertInstanceOf(Stream::class, Stream::valueOf(123));
     }
 
     public function test_promise()
     {
         $source = null;
-        $value  = StreamAccessor::promise(function () use (&$source) { return $source; });
-        $this->assertInstanceOf(StreamAccessor::class, $value);
+        $value  = Stream::promise(function () use (&$source) { return $source; });
+        $this->assertInstanceOf(Stream::class, $value);
 
         $source = 1;
         $this->assertSame(1, $value->origin());
@@ -257,7 +257,7 @@ class StreamAccessorTest extends RebetTestCase
         $expects = [123];
         $count   = 0;
         foreach ($this->int as $key => $value) {
-            $this->assertInstanceOf(StreamAccessor::class, $value);
+            $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
         }
@@ -266,7 +266,7 @@ class StreamAccessorTest extends RebetTestCase
         $expects = ['Hello Rebet'];
         $count   = 0;
         foreach ($this->string as $key => $value) {
-            $this->assertInstanceOf(StreamAccessor::class, $value);
+            $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
         }
@@ -275,7 +275,7 @@ class StreamAccessorTest extends RebetTestCase
         $expects = ['Hello', 'Rebet'];
         $count   = 0;
         foreach ($this->string->split(' ') as $key => $value) {
-            $this->assertInstanceOf(StreamAccessor::class, $value);
+            $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
         }
@@ -284,7 +284,7 @@ class StreamAccessorTest extends RebetTestCase
         $expects = [1, 2, 3];
         $count   = 0;
         foreach ($this->array as $key => $value) {
-            $this->assertInstanceOf(StreamAccessor::class, $value);
+            $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
         }
@@ -293,7 +293,7 @@ class StreamAccessorTest extends RebetTestCase
         $expects = ['value' => 1, 'label' => 'Male', 'name' => 'MALE'];
         $count   = 0;
         foreach ($this->object as $key => $value) {
-            $this->assertInstanceOf(StreamAccessor::class, $value);
+            $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
         }
@@ -526,7 +526,7 @@ EOS
     }
 }
 
-class StreamAccessorTest_DestructiveMock
+class StreamTest_DestructiveMock
 {
     public $count = 0;
 
