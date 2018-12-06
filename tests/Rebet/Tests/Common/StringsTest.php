@@ -140,7 +140,7 @@ class StringsTest extends RebetTestCase
 
     public function test_indent()
     {
-        $this->assertSame("\t", Strings::indent(null));
+        $this->assertNull(Strings::indent(null));
         $this->assertSame("\t", Strings::indent(''));
 
         $this->assertSame("\t1st", Strings::indent("1st"));
@@ -178,5 +178,24 @@ class StringsTest extends RebetTestCase
         $this->assertTrue(Strings::contains('123abcABC', ['1', 'd', 'D'], 1));
         $this->assertFalse(Strings::contains('123abcABC', ['1', 'd', 'D'], 2));
         $this->assertFalse(Strings::contains('123abcABC', ['234', 'DEF']));
+    }
+
+    public function test_cut()
+    {
+        $this->assertNull(Strings::cut(null, 10));
+        $this->assertSame('', Strings::cut('', 10));
+        $this->assertSame('12345', Strings::cut('12345', 10));
+        $this->assertSame('1234567890', Strings::cut('1234567890', 10));
+        $this->assertSame('1234567...', Strings::cut('1234567890+', 10));
+        $this->assertSame('123456789*', Strings::cut('1234567890+', 10, '*'));
+    }
+
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Invalid cut length and ellipsis. The length must be longer than ellipsis.
+     */
+    public function test_cut_exception()
+    {
+        $this->assertSame('', Strings::cut('1234567890', 2));
     }
 }

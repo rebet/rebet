@@ -256,6 +256,9 @@ class Strings
      */
     public static function indent(?string $string, int $depth = 1, string $char = "\t") : ?string
     {
+        if ($string === null) {
+            return null;
+        }
         $indent  = str_repeat($char, $depth);
         $indened = (self::startsWith($string, "\n") ? '' : $indent).str_replace("\n", "\n{$indent}", $string);
         return self::endsWith($indened, "\n{$indent}") ? mb_substr($indened, 0, \mb_strlen($indened) - \mb_strlen($indent)) : $indened ;
@@ -308,16 +311,21 @@ class Strings
      *
      * @param string|null $string
      * @param integer $length
-     * @param string $ellipsis (default: '')
+     * @param string $ellipsis (default: '...')
      * @return string|null
      */
-    public static function cut(?string $string, int $length, string $ellipsis = '') : string
+    public static function cut(?string $string, int $length, string $ellipsis = '...') : ?string
     {
-        $max = $length - mb_strlen($ellipsis);
-        if ($string === null || $max < 1) {
-            return '';
+        if ($string === null) {
+            return null;
         }
-        $cut = mb_substr($string, 0, $max);
-        return $string !== $cut ? "{$cut}{$ellipsis}" : $cut ;
+        if (mb_strlen($string) <= $length) {
+            return $string;
+        }
+        $max = $length - mb_strlen($ellipsis);
+        if ($max < 1) {
+            throw new \LogicException("Invalid cut length and ellipsis. The length must be longer than ellipsis.");
+        }
+        return mb_substr($string, 0, $max).$ellipsis;
     }
 }

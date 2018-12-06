@@ -324,11 +324,88 @@ class StreamAccessorTest extends RebetTestCase
 
     public function test_filters()
     {
-        // convert
+        // Reflector::convert
         $this->assertNull($this->null->_('convert', 'string')->origin());
         $this->assertSame('123', $this->int->_('convert', 'string')->origin());
 
         $this->assertSame('123', $this->int->convert('string')->origin());
+
+        // Math::format => number
+        $this->assertNull($this->null->_('number')->origin());
+        $this->assertSame('123', $this->int->_('number')->origin());
+        $this->assertSame('1,235', $this->float->_('number')->origin());
+        $this->assertSame('1,234.6', $this->float->_('number', 1)->origin());
+        $this->assertSame('1,234.57', $this->float->_('number', 2)->origin());
+        $this->assertSame('1,234.568', $this->float->_('number', 3)->origin());
+        $this->assertSame('1,234.5678', $this->float->_('number', 4)->origin());
+        $this->assertSame('1,234.56780', $this->float->_('number', 5)->origin());
+        $this->assertSame('1234.57', $this->float->_('number', 2, '.', '')->origin());
+        $this->assertSame('1 234,57', $this->float->_('number', 2, ',', ' ')->origin());
+
+        // Math::floor
+        $this->assertNull($this->null->_('floor')->origin());
+        $this->assertSame('1234', $this->float->_('floor')->origin());
+        $this->assertSame('1234.56', $this->float->_('floor', 2)->origin());
+        $this->assertSame('1200', $this->float->_('floor', -2)->origin());
+
+        $this->assertSame('1234', $this->float->floor()->origin());
+        $this->assertSame('1234.56', $this->float->floor(2)->origin());
+
+        // Math::round
+        $this->assertNull($this->null->_('round')->origin());
+        $this->assertSame('1235', $this->float->_('round')->origin());
+        $this->assertSame('1234.57', $this->float->_('round', 2)->origin());
+        $this->assertSame('1200', $this->float->_('round', -2)->origin());
+
+        $this->assertSame('1235', $this->float->round()->origin());
+        $this->assertSame('1234.57', $this->float->round(2)->origin());
+
+        // Math::ceil
+        $this->assertNull($this->null->_('ceil')->origin());
+        $this->assertSame('1235', $this->float->_('ceil')->origin());
+        $this->assertSame('1234.57', $this->float->_('ceil', 2)->origin());
+        $this->assertSame('1300', $this->float->_('ceil', -2)->origin());
+
+        $this->assertSame('1235', $this->float->ceil()->origin());
+        $this->assertSame('1234.57', $this->float->ceil(2)->origin());
+
+        // Utils::isBlank => blank
+        $this->assertTrue($this->null->blank());
+        $this->assertFalse($this->int->blank());
+
+        // Utils::bvl
+        $this->assertSame('(blank)', $this->null->bvl('(blank)')->origin());
+        $this->assertSame(123, $this->int->bvl('(blank)')->origin());
+
+        // Utils::isEmpty => empty
+        $this->assertTrue($this->null->empty());
+        $this->assertFalse($this->int->empty());
+
+        // Utils::evl
+        $this->assertSame('(empty)', $this->null->evl('(empty)')->origin());
+        $this->assertSame(123, $this->int->evl('(empty)')->origin());
+
+        // Strings::cut
+        $this->assertNull($this->null->cut(10)->origin());
+        $this->assertSame('Hello R...', $this->string->cut(10)->origin());
+
+        // Strings::indent
+        $this->assertNull($this->null->indent(1, '> ')->origin());
+        $this->assertSame("> Hello\n> Rebet", $this->text->indent(1, '> ')->origin());
+
+        // default
+        $this->assertSame('(null)', $this->null->_('default', '(null)')->origin());
+        $this->assertSame(123, $this->int->_('default', '(null)')->origin());
+        $this->assertSame('(null)', $this->int->nothing->_('default', '(null)')->origin());
+
+        $this->assertSame('(null)', $this->null->default('(null)')->origin());
+
+        // nvl
+        $this->assertSame('(null)', $this->null->_('nvl', '(null)')->origin());
+        $this->assertSame(123, $this->int->_('nvl', '(null)')->origin());
+        $this->assertSame('(null)', $this->int->nothing->_('nvl', '(null)')->origin());
+
+        $this->assertSame('(null)', $this->null->nvl('(null)')->origin());
 
         // escape:html
         $this->assertNull($this->null->_('escape')->origin());
@@ -360,18 +437,6 @@ class StreamAccessorTest extends RebetTestCase
 
         $this->assertSame('20010203', $this->datetime_s->datetime('Ymd')->origin());
 
-        // number
-        $this->assertNull($this->null->_('number')->origin());
-        $this->assertSame('123', $this->int->_('number')->origin());
-        $this->assertSame('1,235', $this->float->_('number')->origin());
-        $this->assertSame('1,234.6', $this->float->_('number', 1)->origin());
-        $this->assertSame('1,234.57', $this->float->_('number', 2)->origin());
-        $this->assertSame('1,234.568', $this->float->_('number', 3)->origin());
-        $this->assertSame('1,234.5678', $this->float->_('number', 4)->origin());
-        $this->assertSame('1,234.56780', $this->float->_('number', 5)->origin());
-        $this->assertSame('1234.57', $this->float->_('number', 2, '.', '')->origin());
-        $this->assertSame('1 234,57', $this->float->_('number', 2, ',', ' ')->origin());
-
         // text
         $this->assertNull($this->null->_('text', '%s')->origin());
         $this->assertNull($this->null->_('text', '[%s]')->origin());
@@ -382,13 +447,6 @@ class StreamAccessorTest extends RebetTestCase
         $this->assertSame('[1234.57]', $this->float->_('text', '[%01.2f]')->origin());
 
         $this->assertSame('[1234.57]', $this->float->text('[%01.2f]')->origin());
-
-        // default
-        $this->assertSame('(null)', $this->null->_('default', '(null)')->origin());
-        $this->assertSame(123, $this->int->_('default', '(null)')->origin());
-        $this->assertSame('(null)', $this->int->nothing->_('default', '(null)')->origin());
-
-        $this->assertSame('(null)', $this->null->default('(null)')->origin());
 
         // split
         $this->assertNull($this->null->_('split', ' ')->origin());
@@ -429,33 +487,6 @@ class StreamAccessorTest extends RebetTestCase
 
         $this->assertSame('HELLO REBET', $this->string->upper()->origin());
 
-        // floor
-        $this->assertNull($this->null->_('floor')->origin());
-        $this->assertSame('1234', $this->float->_('floor')->origin());
-        $this->assertSame('1234.56', $this->float->_('floor', 2)->origin());
-        $this->assertSame('1200', $this->float->_('floor', -2)->origin());
-
-        $this->assertSame('1234', $this->float->floor()->origin());
-        $this->assertSame('1234.56', $this->float->floor(2)->origin());
-
-        // round
-        $this->assertNull($this->null->_('round')->origin());
-        $this->assertSame('1235', $this->float->_('round')->origin());
-        $this->assertSame('1234.57', $this->float->_('round', 2)->origin());
-        $this->assertSame('1200', $this->float->_('round', -2)->origin());
-
-        $this->assertSame('1235', $this->float->round()->origin());
-        $this->assertSame('1234.57', $this->float->round(2)->origin());
-
-        // ceil
-        $this->assertNull($this->null->_('ceil')->origin());
-        $this->assertSame('1235', $this->float->_('ceil')->origin());
-        $this->assertSame('1234.57', $this->float->_('ceil', 2)->origin());
-        $this->assertSame('1300', $this->float->_('ceil', -2)->origin());
-
-        $this->assertSame('1235', $this->float->ceil()->origin());
-        $this->assertSame('1234.57', $this->float->ceil(2)->origin());
-
         // dump
         $this->assertSame('', $this->null->_('dump')->origin());
         $this->assertSame(<<<EOS
@@ -479,6 +510,19 @@ Array
 
 EOS
         , $this->array->dump()->origin());
+    }
+
+    public function test_filters_php()
+    {
+        $this->assertTrue($this->null->isNull());
+        $this->assertTrue($this->null->is_null());
+        $this->assertFalse($this->int->isNull());
+        $this->assertFalse($this->int->is_null());
+
+        $this->assertSame('[1,2,3]', $this->array->jsonEncode()->origin());
+        $this->assertSame([1, 2, 3], $this->json->jsonDecode()->origin());
+
+        $this->assertSame([1, 2, 3, 0, 0], $this->array->arrayPad(5, 0)->origin());
     }
 }
 

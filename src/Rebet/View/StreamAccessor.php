@@ -6,8 +6,10 @@ use Rebet\Common\Json;
 use Rebet\Common\Math;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
+use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Inflection\Inflector;
 
 /**
  * Stream Accessor Class
@@ -28,9 +30,13 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
                 'delegaters' => [
                     Reflector::class => ['convert'],
                     Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
+                    Utils::class     => ['isBlank' => 'blank', 'bvl', 'isEmpty' => 'empty', 'evl'],
+                    Strings::class   => ['cut', 'indent'],
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
+                    'default'   => function ($value, $default) { return $value ?? $default; },
+                    'nvl'       => function ($value, $default) { return $value ?? $default; },
                     'escape'    => function (string $value, string $type = 'html') {
                         switch ($type) {
                             case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
@@ -41,11 +47,9 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
                     'nl2br'     => function (string $value) { return nl2br($value); },
                     'datetime'  => function (DateTime $value, string $format) { return $value->format($format); },
                     'text'      => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
-                    'default'   => function ($value, $default) { return $value ?? $default; },
                     'split'     => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
                     'join'      => function (array $value, string $delimiter) { return implode($delimiter, $value); },
                     'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
-                    'cut'       => function (string $value, int $length, string $ellipsis = '...') { return Strings::cut($value, $length, $ellipsis); },
                     'lower'     => function (string $value) { return strtolower($value); },
                     'upper'     => function (string $value) { return strtoupper($value); },
                     'dump'      => function ($value) { return print_r($value, true); },
@@ -185,7 +189,8 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     public function _(string $name, ...$args)
     {
         $filter = static::config("filter.customs.{$name}", false) ?? static::$delegate_filters[$name] ?? null ;
-        $filter = $filter ?? (is_callable($name) ? $name : null) ;
+        $alias  = Inflector::snakize($name);
+        $filter = $filter ?? (is_callable($alias) ? $alias : null) ?? (is_callable($name) ? $name : null) ;
         return $this->_filter($name, $filter ? \Closure::fromCallable($filter) : null, ...$args);
     }
 
@@ -251,7 +256,8 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
                 $result = $origin;
             }
         } else {
-            $result = $this->_($name, ...$args)->origin();
+            $result = $this->_($name, ...$args);
+            $result = $result instanceof self ? $result->origin() : $result ;
         }
         return is_bool($result) ? $result : new static($result) ;
     }
