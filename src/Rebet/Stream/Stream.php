@@ -32,6 +32,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
                     Utils::class     => ['isBlank' => 'blank', 'bvl', 'isEmpty' => 'empty', 'evl'],
                     Strings::class   => ['cut', 'indent'],
+                    Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where' ,'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
@@ -47,8 +48,8 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'nl2br'     => function (string $value) { return nl2br($value); },
                     'datetime'  => function (DateTime $value, string $format) { return $value->format($format); },
                     'text'      => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
-                    'split'     => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                    'join'      => function (array $value, string $delimiter) { return implode($delimiter, $value); },
+                    'explode'   => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
+                    'implode'   => function (array $value, string $delimiter) { return implode($delimiter, $value); },
                     'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
                     'lower'     => function (string $value) { return strtolower($value); },
                     'upper'     => function (string $value) { return strtoupper($value); },

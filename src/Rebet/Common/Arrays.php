@@ -667,7 +667,7 @@ class Arrays
      * @param  callable  $callback function($value, $key) { ... }
      * @return array
      */
-    public function map(callable $callback, array $array) : array
+    public function map(array $array, callable $callback) : array
     {
         $keys = array_keys($array);
         return array_combine($keys, array_map($callback, $array, $keys));

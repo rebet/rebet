@@ -12,11 +12,16 @@ class StreamTest extends RebetTestCase
     private $int;
     private $float;
     private $string;
-    private $object;
+    private $text;
+    private $html;
+    private $json;
+    private $enum;
+    private $enums;
     private $datetime_o;
     private $datetime_s;
     private $array;
     private $map;
+    private $rs;
     private $destructive;
 
     public function setUp()
@@ -30,7 +35,8 @@ class StreamTest extends RebetTestCase
         $this->text       = Stream::valueOf("Hello\nRebet");
         $this->html       = Stream::valueOf("<h1>Hello Rebet</h1>");
         $this->json       = Stream::valueOf("[1 ,2, 3]");
-        $this->object     = Stream::valueOf(Gender::MALE());
+        $this->enum       = Stream::valueOf(Gender::MALE());
+        $this->enums      = Stream::valueOf(Gender::lists());
         $this->datetime_o = Stream::valueOf(DateTime::now());
         $this->datetime_s = Stream::valueOf('2001/02/03 04:05:06');
         $this->array      = Stream::valueOf([1, 2, 3]);
@@ -43,6 +49,13 @@ class StreamTest extends RebetTestCase
             ],
             'number' => 123,
             'gender' => Gender::MALE(),
+        ]);
+        $this->rs          = Stream::valueOf([
+            new StreamTest_User(1, 'Foo', 'First', 'foo@hoge.com', Gender::MALE(), new DateTime('1976-08-12')),
+            new StreamTest_User(2, 'Bar', 'Second', 'bar@moge.net', Gender::FEMALE(), new DateTime('1993-11-27')),
+            new StreamTest_User(3, 'Baz', 'Third', 'baz@piyo.co.jp', Gender::MALE(), new DateTime('2000-02-05')),
+            new StreamTest_User(4, 'Qux', 'Fourth', 'qux@hoge.com', Gender::FEMALE(), new DateTime('1968-07-18')),
+            new StreamTest_User(5, 'Quxx', 'Fifth', 'quxx@moge.net', Gender::FEMALE(), new DateTime('1983-04-21')),
         ]);
         $this->destructive = Stream::valueOf(new StreamTest_DestructiveMock());
     }
@@ -69,7 +82,7 @@ class StreamTest extends RebetTestCase
     {
         $this->assertSame(123, $this->int->origin());
         $this->assertSame("Hello Rebet", $this->string->origin());
-        $this->assertSame(Gender::MALE(), $this->object->origin());
+        $this->assertSame(Gender::MALE(), $this->enum->origin());
     }
 
     public function test___get()
@@ -77,9 +90,9 @@ class StreamTest extends RebetTestCase
         $this->assertNull($this->null->nothing->origin());
         $this->assertNull($this->int->nothing->origin());
 
-        $this->assertNull($this->object->nothing->origin());
-        $this->assertSame(1, $this->object->value->origin());
-        $this->assertSame('Male', $this->object->label->origin());
+        $this->assertNull($this->enum->nothing->origin());
+        $this->assertSame(1, $this->enum->value->origin());
+        $this->assertSame('Male', $this->enum->label->origin());
 
         $this->assertNull($this->map->nothing->origin());
         $this->assertSame('FOO', $this->map->foo->origin());
@@ -97,7 +110,7 @@ class StreamTest extends RebetTestCase
         $this->assertNull($this->null->nothing()->origin());
         $this->assertSame(123, $this->int->nothing()->origin());
 
-        $this->assertSame(Gender::MALE(), $this->object->nothing()->origin());
+        $this->assertSame(Gender::MALE(), $this->enum->nothing()->origin());
         $this->assertEquals(
             DateTime::valueOf('2002/02/03 04:05:06'),
             $this->datetime_o->addYear(1)->origin()
@@ -245,7 +258,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame(0, count($this->null));
         $this->assertSame(1, count($this->int));
         $this->assertSame(3, count($this->array));
-        $this->assertSame(1, count($this->object));
+        $this->assertSame(1, count($this->enum));
     }
 
     public function test_getIterator()
@@ -274,7 +287,7 @@ class StreamTest extends RebetTestCase
 
         $expects = ['Hello', 'Rebet'];
         $count   = 0;
-        foreach ($this->string->split(' ') as $key => $value) {
+        foreach ($this->string->explode(' ') as $key => $value) {
             $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
@@ -292,7 +305,7 @@ class StreamTest extends RebetTestCase
 
         $expects = ['value' => 1, 'label' => 'Male', 'name' => 'MALE'];
         $count   = 0;
-        foreach ($this->object as $key => $value) {
+        foreach ($this->enum as $key => $value) {
             $this->assertInstanceOf(Stream::class, $value);
             $this->assertSame($expects[$key], $value->origin());
             $count++;
@@ -306,7 +319,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame('123', "{$this->int}");
         $this->assertSame('Hello Rebet', "{$this->string}");
         $this->assertSame('[1,2,3]', "{$this->array}");
-        $this->assertSame('男性', "{$this->object}");
+        $this->assertSame('男性', "{$this->enum}");
         $this->assertSame('2001-02-03 04:05:06', "{$this->datetime_o}");
         $this->assertSame('{"foo":"FOO","parent":{"child":{"bar":"BAR"}},"number":123,"gender":1}', "{$this->map}");
     }
@@ -317,7 +330,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame(123, $this->int->jsonSerialize());
         $this->assertSame('Hello Rebet', $this->string->jsonSerialize());
         $this->assertSame([1, 2, 3], $this->array->jsonSerialize());
-        $this->assertSame(1, $this->object->jsonSerialize());
+        $this->assertSame(1, $this->enum->jsonSerialize());
         $this->assertSame('2001-02-03 04:05:06', $this->datetime_o->jsonSerialize());
         $this->assertSame(['foo' => 'FOO', 'parent' => ['child' => ['bar' => 'BAR']], 'number' => 123, 'gender' => 1], $this->map->jsonSerialize());
     }
@@ -412,7 +425,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame('123', $this->int->_('escape')->origin());
         $this->assertSame('Hello Rebet', $this->string->_('escape')->origin());
         $this->assertSame('&lt;h1&gt;Hello Rebet&lt;/h1&gt;', $this->html->_('escape')->origin());
-        $this->assertSame('男性', $this->object->_('escape')->origin());
+        $this->assertSame('男性', $this->enum->_('escape')->origin());
 
         $this->assertSame('&lt;h1&gt;Hello Rebet&lt;/h1&gt;', $this->html->escape()->origin());
 
@@ -448,18 +461,18 @@ class StreamTest extends RebetTestCase
 
         $this->assertSame('[1234.57]', $this->float->text('[%01.2f]')->origin());
 
-        // split
-        $this->assertNull($this->null->_('split', ' ')->origin());
-        $this->assertSame(['Hello', 'Rebet'], $this->string->_('split', ' ')->origin());
+        // explode
+        $this->assertNull($this->null->_('explode', ' ')->origin());
+        $this->assertSame(['Hello', 'Rebet'], $this->string->_('explode', ' ')->origin());
 
-        $this->assertSame(['Hello', 'Rebet'], $this->string->split(' ')->origin());
+        $this->assertSame(['Hello', 'Rebet'], $this->string->explode(' ')->origin());
 
-        // join
-        $this->assertNull($this->null->_('join', ',')->origin());
-        $this->assertSame('1, 2, 3', $this->array->_('join', ', ')->origin());
+        // implode
+        $this->assertNull($this->null->_('implode', ',')->origin());
+        $this->assertSame('1, 2, 3', $this->array->_('implode', ', ')->origin());
 
-        $this->assertSame('1, 2, 3', $this->array->join(', ')->origin());
-        $this->assertSame('[1, 2, 3]', $this->array->join(', ')->text('[%s]')->origin());
+        $this->assertSame('1, 2, 3', $this->array->implode(', ')->origin());
+        $this->assertSame('[1, 2, 3]', $this->array->implode(', ')->text('[%s]')->origin());
 
         // replace
         $this->assertNull($this->null->_('replace', '/Hello/', 'Good by')->origin());
@@ -556,5 +569,34 @@ class StreamTest_DestructiveMock
     {
         $this->count += $i;
         return $this;
+    }
+}
+
+class StreamTest_User
+{
+    public $user_id;
+    public $first_name;
+    public $last_name;
+    public $email;
+    public $gender;
+    public $birthday;
+
+    public function __construct($user_id, $first_name, $last_name, $email, $gender, $birthday)
+    {
+        $this->user_id    = $user_id;
+        $this->first_name = $first_name;
+        $this->last_name  = $last_name;
+        $this->email      = $email;
+        $this->gender     = $gender;
+        $this->birthday   = $birthday;
+    }
+
+    public function fullName() : string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function age($at = 'today') : int {
+        return $this->birthday->age($at);
     }
 }

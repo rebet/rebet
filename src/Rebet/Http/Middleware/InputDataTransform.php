@@ -63,10 +63,10 @@ abstract class InputDataTransform
      */
     protected function transformArray(array $array, string $prefix = '') : array
     {
-        return Arrays::map(function ($value, $key) use ($prefix) {
+        return Arrays::map($array, function ($value, $key) use ($prefix) {
             $key = is_int($key) ? $prefix : ($prefix === '' ? $key : "{$prefix}.{$key}") ;
             return $this->transformValue($key, $value);
-        }, $array);
+        });
     }
 
     /**
