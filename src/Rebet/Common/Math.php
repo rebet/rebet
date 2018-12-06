@@ -237,4 +237,19 @@ class Math
             return bcadd(Strings::ratrim($shifted, '.'), $delta, $scale) ;
         });
     }
+
+    /**
+     * Add a thousand separator to the given number.
+     *
+     * @param string $value
+     * @param int $scale (default: 0)
+     * @param string $decimal_point (default: '.')
+     * @param string $thousands_separator (default: ',')
+     */
+    public static function format(string $value, int $scale = 0, string $decimal_point = ".", string $thousands_separator = ",") : string
+    {
+        [$integer, $decimal] = array_pad(explode('.', static::round($value, $scale)), 2, '');
+        $integer             = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1'.$thousands_separator, $integer);
+        return empty($decimal) ? $integer : "{$integer}{$decimal_point}{$decimal}" ;
+    }
 }

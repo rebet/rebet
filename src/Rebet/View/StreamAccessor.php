@@ -24,31 +24,32 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     public static function defaultConfig() : array
     {
         return[
-            'filters' => [
-                // You can use php built-in functions as filters when the 1st argument is for value.
-                'convert'   => function ($value, string $type) { return Reflector::convert($value, $type); },
-                'escape'    => function (string $value, string $type = 'html') {
-                    switch ($type) {
-                        case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-                        case 'url': return urlencode($value);
-                        default: throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url");
-                    }
-                },
-                'nl2br'     => function (string $value) { return nl2br($value); },
-                'datetime'  => function (DateTime $value, string $format) { return $value->format($format); },
-                'number'    => function (float $value, ...$args) { return number_format($value, ...$args); },
-                'text'      => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
-                'default'   => function ($value, $default) { return $value ?? $default; },
-                'split'     => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                'join'      => function (array $value, string $delimiter) { return implode($delimiter, $value); },
-                'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
-                'cut'       => function (string $value, int $length, string $ellipsis = '...') { return Strings::cut($value, $length, $ellipsis); },
-                'lower'     => function (string $value) { return strtolower($value); },
-                'upper'     => function (string $value) { return strtoupper($value); },
-                'floor'     => function (string $value, int $scale = 0) { return Math::floor($value, $scale); },
-                'round'     => function (string $value, int $scale = 0) { return Math::round($value, $scale); },
-                'ceil'      => function (string $value, int $scale = 0) { return Math::ceil($value, $scale); },
-                'dump'      => function ($value) { return print_r($value, true); },
+            'filter' => [
+                'delegaters' => [
+                    Reflector::class => ['convert'],
+                    Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
+                ],
+                'customs' => [
+                    // You can use php built-in functions as filters when the 1st argument is for value.
+                    'escape'    => function (string $value, string $type = 'html') {
+                        switch ($type) {
+                            case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                            case 'url': return urlencode($value);
+                            default: throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url");
+                        }
+                    },
+                    'nl2br'     => function (string $value) { return nl2br($value); },
+                    'datetime'  => function (DateTime $value, string $format) { return $value->format($format); },
+                    'text'      => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
+                    'default'   => function ($value, $default) { return $value ?? $default; },
+                    'split'     => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
+                    'join'      => function (array $value, string $delimiter) { return implode($delimiter, $value); },
+                    'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
+                    'cut'       => function (string $value, int $length, string $ellipsis = '...') { return Strings::cut($value, $length, $ellipsis); },
+                    'lower'     => function (string $value) { return strtolower($value); },
+                    'upper'     => function (string $value) { return strtoupper($value); },
+                    'dump'      => function ($value) { return print_r($value, true); },
+                ],
             ],
         ];
     }
@@ -75,6 +76,13 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     protected $promise = null;
 
     /**
+     * Delegate filters
+     *
+     * @var array
+     */
+    public static $delegate_filters = null;
+
+    /**
      * Create a Null Contagion instance
      */
     protected function __construct($origin, $promise = null)
@@ -84,6 +92,14 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
         if (static::$null === null) {
             static::$null = 'not null';
             static::$null = new static(null);
+        }
+        if (static::$delegate_filters === null) {
+            static::$delegate_filters = [];
+            foreach (static::config('filter.delegaters', false, []) as $class => $methods) {
+                foreach ($methods as $method_name => $filter_name) {
+                    static::$delegate_filters[$filter_name] = "{$class}::".(is_int($method_name) ? $filter_name : $method_name);
+                }
+            }
         }
     }
 
@@ -168,7 +184,7 @@ class StreamAccessor implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function _(string $name, ...$args)
     {
-        $filter = static::config("filters.{$name}", false);
+        $filter = static::config("filter.customs.{$name}", false) ?? static::$delegate_filters[$name] ?? null ;
         $filter = $filter ?? (is_callable($name) ? $name : null) ;
         return $this->_filter($name, $filter ? \Closure::fromCallable($filter) : null, ...$args);
     }

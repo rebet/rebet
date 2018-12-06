@@ -136,4 +136,17 @@ class MathTest extends RebetTestCase
         $this->assertSame('0', Math::ceil('-123', -4));
         $this->assertSame('0', Math::ceil('-123', -3));
     }
+
+    public function test_format()
+    {
+        $this->assertSame('123', Math::format('123'));
+        $this->assertSame('-123', Math::format('-123'));
+        $this->assertSame('1,234', Math::format('1234'));
+        $this->assertSame('-1,234', Math::format('-1234'));
+        $this->assertSame('1,234.123', Math::format('1234.123', 3));
+        $this->assertSame('1,234,567.00', Math::format('1234567.00', 2));
+        $this->assertSame('1,234,567.46', Math::format('1234567.456', 2));
+        $this->assertSame('-1,234,567.46', Math::format('-1234567.456', 2));
+        $this->assertSame('-1,234,567.123457', Math::format('-1234567.1234567', 6));
+    }
 }
