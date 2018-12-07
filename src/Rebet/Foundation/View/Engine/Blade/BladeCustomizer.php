@@ -101,7 +101,7 @@ class BladeCustomizer
             $errors = Stream::valueOf($errors);
             $name   = $name ?? $field ;
             return $name ? $errors[$name]->isset() : !$errors->empty() ;
-        }, '):', '$errors');
+        }, '):', '$errors ?? null');
         $blade->directive('enderrors', function () {
             return '<?php endif; ?>';
         });
@@ -148,7 +148,7 @@ class BladeCustomizer
                 }
             }
             return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
-        }, ');', '$errors');
+        }, ');', '$errors ?? null');
 
         // ------------------------------------------------
         // [iferror] Output given value if error
@@ -167,7 +167,7 @@ class BladeCustomizer
             $errors                  = Stream::valueOf($errors);
             [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $iferror ?? '' ;
-        }, ');', '$errors');
+        }, ');', '$errors ?? null');
 
         // ------------------------------------------------
         // [e] Output error grammers if error
@@ -186,7 +186,7 @@ class BladeCustomizer
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
-        }, ');', '$errors');
+        }, ');', '$errors ?? null');
 
         // ------------------------------------------------
         // [input] Output input data
@@ -204,6 +204,6 @@ class BladeCustomizer
             $input            = Stream::valueOf($input);
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
-        }, ');', '$input');
+        }, ');', '$input ?? null');
     }
 }

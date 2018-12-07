@@ -68,7 +68,7 @@ class FlashBag implements SessionBagInterface
      */
     public function getStorageKey()
     {
-        return $this->storageKey;
+        return $this->storage_key;
     }
 
     /**

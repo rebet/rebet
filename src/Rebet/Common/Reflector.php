@@ -297,7 +297,7 @@ class Reflector
                 }
                 return static::remove($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
             } else {
-                $ret = $object[$current];
+                $ret = $object[$current] ?? null;
                 unset($object[$current]);
                 return static::resolveDotAccessDelegator($ret);
             }

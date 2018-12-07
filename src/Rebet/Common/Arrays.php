@@ -664,10 +664,11 @@ class Arrays
     /**
      * Run a map over each of the items.
      *
+     * @param array $array
      * @param  callable  $callback function($value, $key) { ... }
      * @return array
      */
-    public function map(array $array, callable $callback) : array
+    public static function map(array $array, callable $callback) : array
     {
         $keys = array_keys($array);
         return array_combine($keys, array_map($callback, $array, $keys));

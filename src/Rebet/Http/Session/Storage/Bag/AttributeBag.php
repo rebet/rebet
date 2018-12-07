@@ -68,7 +68,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      */
     public function getStorageKey()
     {
-        return $this->storageKey;
+        return $this->storage_key;
     }
 
     /**
