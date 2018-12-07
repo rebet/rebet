@@ -31,29 +31,29 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Reflector::class => ['convert'],
                     Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
-                    Strings::class   => ['cut', 'indent'],
+                    Strings::class   => ['cut', 'indent', 'ltrim', 'rtrim', 'mbtrim' => 'trim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch'],
                     Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where' , 'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
-                    'nvl'       => function ($value, $default) { return $value ?? $default; },
-                    'default'   => function ($value, $default) { return $value ?? $default; },
-                    'escape'    => function (string $value, string $type = 'html') {
+                    'nvl'      => function ($value, $default) { return $value ?? $default; },
+                    'default'  => function ($value, $default) { return $value ?? $default; },
+                    'escape'   => function (string $value, string $type = 'html') {
                         switch ($type) {
                             case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                             case 'url': return urlencode($value);
                             default: throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url");
                         }
                     },
-                    'nl2br'     => function (string $value) { return nl2br($value); },
-                    'datetime'  => function (DateTime $value, string $format) { return $value->format($format); },
-                    'text'      => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
-                    'explode'   => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                    'implode'   => function (array $value, string $delimiter) { return implode($delimiter, $value); },
-                    'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
-                    'lower'     => function (string $value) { return strtolower($value); },
-                    'upper'     => function (string $value) { return strtoupper($value); },
-                    'dump'      => function ($value) { return print_r($value, true); },
+                    'nl2br'    => function (string $value) { return nl2br($value); },
+                    'datetime' => function (DateTime $value, string $format) { return $value->format($format); },
+                    'text'     => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
+                    'explode'  => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
+                    'implode'  => function (array $value, string $delimiter) { return implode($delimiter, $value); },
+                    'replace'  => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
+                    'lower'    => function (string $value) { return strtolower($value); },
+                    'upper'    => function (string $value) { return strtoupper($value); },
+                    'dump'     => function ($value) { return print_r($value, true); },
                 ],
             ],
         ];
@@ -92,12 +92,24 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     protected function __construct($origin, $promise = null)
     {
-        $this->origin  = $origin;
+        $this->origin  = $origin instanceof self ? $origin->origin() : $origin ;
         $this->promise = $promise;
+
         if (static::$null === null) {
             static::$null = 'not null';
             static::$null = new static(null);
         }
+
+        static::initDelegateFilters();
+    }
+
+    /**
+     * Initialize the deligate filters.
+     *
+     * @return void
+     */
+    protected static function initDelegateFilters() : void
+    {
         if (static::$delegate_filters === null) {
             static::$delegate_filters = [];
             foreach (static::config('filter.delegaters', false, []) as $class => $methods) {

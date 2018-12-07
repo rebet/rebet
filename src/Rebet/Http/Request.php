@@ -234,11 +234,13 @@ class Request extends SymfonyRequest
     /**
      * Get request URI without query.
      *
+     * @param bool $withoutPrefix (default: false)
      * @return void
      */
-    public function getRequestPath() : string
+    public function getRequestPath(bool $withoutPrefix = false) : string
     {
-        return Strings::latrim($this->getRequestUri(), '?');
+        $request_path = Strings::latrim($this->getRequestUri(), '?');
+        return $withoutPrefix ? Strings::ltrim($request_path, $this->getRoutePrefix(), 1) : $request_path ;
     }
 
     /**
@@ -318,8 +320,16 @@ class Request extends SymfonyRequest
      */
     public function restoreInheritData() : self
     {
-        $this->request->add($this->session()->flash()->get('_inherit_input', []));
-        $errors = $this->session()->flash()->get('_inherit_errors');
+        $request_path = $this->getRequestPath(true);
+        $flash        = $this->session()->flash();
+        foreach ($flash->peek('_inherit_input', []) as $key => [$wildcard, $data]) {
+            if (Strings::wildmatch($request_path, $wildcard)) {
+                $this->request->add($data);
+                $flash->remove($key);
+            }
+        }
+        
+        $errors = $flash->get('_inherit_errors');
         if ($errors) {
             View::share('errors', $errors);
         }
@@ -329,15 +339,15 @@ class Request extends SymfonyRequest
     /**
      * Inherit input data to next request.
      *
-     * @param array $input
+     * @param string|array $wildcard of request path (default: '*')
      * @return self
      */
-    public function inheritInputToNext() : self
+    public function inheritInputTo($wildcard = '*') : self
     {
         $flash = $this->session()->flash();
         $flash->set('_inherit_input', array_merge(
             $flash->peek('_inherit_input', []),
-            $this->input()
+            [(array)$wildcard, $this->input()]
         ));
         return $this;
     }

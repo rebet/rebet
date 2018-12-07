@@ -198,4 +198,31 @@ class StringsTest extends RebetTestCase
     {
         $this->assertSame('', Strings::cut('1234567890', 2));
     }
+
+    public function test_match()
+    {
+        $this->assertFalse(Strings::match(null, '/[0-9]{3}/'));
+        $this->assertFalse(Strings::match('', '/[0-9]{3}/'));
+        $this->assertTrue(Strings::match('', '/.*/'));
+        $this->assertFalse(Strings::match('12', '/[0-9]{3}/'));
+        $this->assertTrue(Strings::match('123', '/[0-9]{3}/'));
+        $this->assertFalse(Strings::match('12ab', '/[0-9]{3}/'));
+        $this->assertTrue(Strings::match('12ab', ['/[0-9]{3}/', '/ab/']));
+    }
+
+    public function test_wildmatch()
+    {
+        $this->assertFalse(Strings::wildmatch(null, '*'));
+        $this->assertTrue(Strings::wildmatch('', '*'));
+        $this->assertFalse(Strings::wildmatch('', '/user'));
+        $this->assertFalse(Strings::wildmatch('/user/profile', '/user'));
+        $this->assertTrue(Strings::wildmatch('/user/', '/user?'));
+        $this->assertFalse(Strings::wildmatch('/user/profile', 'user/profile'));
+        $this->assertTrue(Strings::wildmatch('/user/profile', '*/profile'));
+        $this->assertTrue(Strings::wildmatch('/user/profile', '/user/profile'));
+        $this->assertTrue(Strings::wildmatch('/user/profile', '/user*'));
+        $this->assertTrue(Strings::wildmatch('/user/profile', '/user/*'));
+        $this->assertFalse(Strings::wildmatch('/user/profile-confirm', '/user/profile'));
+        $this->assertTrue(Strings::wildmatch('/user/profile-confirm', ['/user/profile', '/user/profile-*']));
+    }
 }

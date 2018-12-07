@@ -328,4 +328,46 @@ class Strings
         }
         return mb_substr($string, 0, $max).$ellipsis;
     }
+
+    /**
+     * It checks the given string will match regex patterns at least one.
+     *
+     * @param string|null $string
+     * @param string|array $patterns
+     * @return boolean
+     */
+    public static function match(?string $string, $patterns) : bool
+    {
+        if ($string === null) {
+            return false;
+        }
+        $patterns = (array)$patterns;
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * It checks the given string will match shell's wildcard patterns at least one.
+     *
+     * @param string|null $string
+     * @param string|array $patterns
+     * @return boolean
+     */
+    public static function wildmatch(?string $string, $patterns) : bool
+    {
+        if ($string === null) {
+            return false;
+        }
+        $patterns = (array)$patterns;
+        foreach ($patterns as $pattern) {
+            if (fnmatch($pattern, $string)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
