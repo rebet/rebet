@@ -3,9 +3,9 @@ namespace Rebet\Foundation\View\Engine\Blade;
 
 use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
+use Rebet\Stream\Stream;
 use Rebet\Translation\Trans;
 use Rebet\View\Engine\Blade\BladeCompiler;
-use Rebet\Stream\Stream;
 
 /**
  * Blade custom directives for Rebet
@@ -136,14 +136,14 @@ class BladeCustomizer
             if ($names === '*') {
                 foreach ($errors as $messages) {
                     foreach ($messages as $message) {
-                        $output .= str_replace(':message', htmlspecialchars($message, ENT_QUOTES, 'UTF-8'), $inner);
+                        $output .= str_replace(':message', $message->escape(), $inner);
                     }
                 }
             } else {
                 $names = (array)$names;
                 foreach ($names as $name) {
                     foreach ($errors[$name] as $message) {
-                        $output .= str_replace(':message', htmlspecialchars($message, ENT_QUOTES, 'UTF-8'), $inner);
+                        $output .= str_replace(':message', $message->escape(), $inner);
                     }
                 }
             }
@@ -166,7 +166,7 @@ class BladeCustomizer
         $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
             $errors                  = Stream::valueOf($errors);
             [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
-            return $errors[$name]->isset() ? $iferror : $else ?? '' ;
+            return $errors[$name]->isBlank() ? $else : $iferror ?? '' ;
         }, ');', '$errors');
 
         // ------------------------------------------------
@@ -185,7 +185,7 @@ class BladeCustomizer
             $errors           = Stream::valueOf($errors);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
-            return $errors[$name]->isset() ? $value : $else ;
+            return $errors[$name]->isBlank() ? $else : $value ;
         }, ');', '$errors');
 
         // ------------------------------------------------

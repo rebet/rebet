@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Stream;
 
 use Rebet\DateTime\DateTime;
+use Rebet\Stream\Stream;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Stream\Stream;
 
 class StreamTest extends RebetTestCase
 {
@@ -382,17 +382,17 @@ class StreamTest extends RebetTestCase
         $this->assertSame('1235', $this->float->ceil()->origin());
         $this->assertSame('1234.57', $this->float->ceil(2)->origin());
 
-        // Utils::isBlank => blank
-        $this->assertTrue($this->null->blank());
-        $this->assertFalse($this->int->blank());
+        // Utils::isBlank
+        $this->assertTrue($this->null->isBlank());
+        $this->assertFalse($this->int->isBlank());
 
         // Utils::bvl
         $this->assertSame('(blank)', $this->null->bvl('(blank)')->origin());
         $this->assertSame(123, $this->int->bvl('(blank)')->origin());
 
-        // Utils::isEmpty => empty
-        $this->assertTrue($this->null->empty());
-        $this->assertFalse($this->int->empty());
+        // Utils::isEmpty
+        $this->assertTrue($this->null->isEmpty());
+        $this->assertFalse($this->int->isEmpty());
 
         // Utils::evl
         $this->assertSame('(empty)', $this->null->evl('(empty)')->origin());
@@ -596,7 +596,8 @@ class StreamTest_User
         return "{$this->first_name} {$this->last_name}";
     }
 
-    public function age($at = 'today') : int {
+    public function age($at = 'today') : int
+    {
         return $this->birthday->age($at);
     }
 }

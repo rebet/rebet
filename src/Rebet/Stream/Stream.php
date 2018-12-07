@@ -30,14 +30,14 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 'delegaters' => [
                     Reflector::class => ['convert'],
                     Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
-                    Utils::class     => ['isBlank' => 'blank', 'bvl', 'isEmpty' => 'empty', 'evl'],
+                    Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
                     Strings::class   => ['cut', 'indent'],
-                    Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where' ,'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
+                    Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where' , 'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
-                    'default'   => function ($value, $default) { return $value ?? $default; },
                     'nvl'       => function ($value, $default) { return $value ?? $default; },
+                    'default'   => function ($value, $default) { return $value ?? $default; },
                     'escape'    => function (string $value, string $type = 'html') {
                         switch ($type) {
                             case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
