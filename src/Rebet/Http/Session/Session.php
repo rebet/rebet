@@ -260,7 +260,8 @@ class Session
      */
     public function saveInheritData(string $name, $data, $wildcard = '*') : self
     {
-        $this->flash->set("_inherit_{$name}", array_merge(
+        $flash = $this->flash();
+        $flash->set("_inherit_{$name}", array_merge(
             $flash->peek("_inherit_{$name}", []),
             [[(array)$wildcard, $data]]
         ));
@@ -278,7 +279,8 @@ class Session
      */
     public function loadInheritData(string $name, string $request_path, $default = null) : array
     {
-        foreach ($this->flash->get("_inherit_{$name}", []) as $key => [$wildcard, $data]) {
+        $flash = $this->flash();
+        foreach ($flash->get("_inherit_{$name}", []) as $key => [$wildcard, $data]) {
             if (Strings::wildmatch($request_path, $wildcard)) {
                 return $data;
             }
