@@ -325,7 +325,7 @@ class Request extends SymfonyRequest
         foreach ($flash->peek('_inherit_input', []) as $key => [$wildcard, $data]) {
             if (Strings::wildmatch($request_path, $wildcard)) {
                 $this->request->add($data);
-                $flash->remove($key);
+                $flash->remove("_inherit_input.{$key}");
             }
         }
         
@@ -347,7 +347,7 @@ class Request extends SymfonyRequest
         $flash = $this->session()->flash();
         $flash->set('_inherit_input', array_merge(
             $flash->peek('_inherit_input', []),
-            [(array)$wildcard, $this->input()]
+            [[(array)$wildcard, $this->input()]]
         ));
         return $this;
     }
