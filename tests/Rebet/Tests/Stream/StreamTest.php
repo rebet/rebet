@@ -48,8 +48,9 @@ class StreamTest extends RebetTestCase
                     'bar' => 'BAR',
                 ],
             ],
-            'number' => 123,
-            'gender' => Gender::MALE(),
+            'number'  => 123,
+            'gender'  => Gender::MALE(),
+            'boolean' => true,
         ]);
         $this->rs          = Stream::valueOf([
             new StreamTest_User(1, 'Foo', 'First', 'foo@hoge.com', Gender::MALE(), new DateTime('1976-08-12')),
@@ -105,6 +106,8 @@ class StreamTest extends RebetTestCase
         ], $this->map->parent->origin());
         $this->assertSame('BAR', $this->map->parent->child->bar->origin());
         $this->assertNull($this->map->parent->nothing->bar->origin());
+
+        $this->assertTrue($this->map->boolean);
     }
 
     public function test___call()
@@ -253,6 +256,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame('BAR', $this->map['parent']['child']['bar']->origin());
         $this->assertSame(null, $this->map['parent']['nothing']['bar']->origin());
         $this->assertSame(null, $this->map['parent.nothing.bar']->origin());
+        $this->assertSame(true, $this->map['boolean']);
     }
 
     public function test_count()
@@ -323,7 +327,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame('[1,2,3]', "{$this->array}");
         $this->assertSame('男性', "{$this->enum}");
         $this->assertSame('2001-02-03 04:05:06', "{$this->datetime_o}");
-        $this->assertSame('{"foo":"FOO","parent":{"child":{"bar":"BAR"}},"number":123,"gender":1}', "{$this->map}");
+        $this->assertSame('{"foo":"FOO","parent":{"child":{"bar":"BAR"}},"number":123,"gender":1,"boolean":true}', "{$this->map}");
     }
 
     public function test___jsonSerialize()
@@ -334,7 +338,7 @@ class StreamTest extends RebetTestCase
         $this->assertSame([1, 2, 3], $this->array->jsonSerialize());
         $this->assertSame(1, $this->enum->jsonSerialize());
         $this->assertSame('2001-02-03 04:05:06', $this->datetime_o->jsonSerialize());
-        $this->assertSame(['foo' => 'FOO', 'parent' => ['child' => ['bar' => 'BAR']], 'number' => 123, 'gender' => 1], $this->map->jsonSerialize());
+        $this->assertSame(['foo' => 'FOO', 'parent' => ['child' => ['bar' => 'BAR']], 'number' => 123, 'gender' => 1, 'boolean' => true], $this->map->jsonSerialize());
     }
 
     public function test_filters()
