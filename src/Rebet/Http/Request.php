@@ -321,18 +321,9 @@ class Request extends SymfonyRequest
     public function restoreInheritData() : self
     {
         $request_path = $this->getRequestPath(true);
-        $flash        = $this->session()->flash();
-        foreach ($flash->peek('_inherit_input', []) as $key => [$wildcard, $data]) {
-            if (Strings::wildmatch($request_path, $wildcard)) {
-                $this->request->add($data);
-                $flash->remove("_inherit_input.{$key}");
-            }
-        }
-        
-        $errors = $flash->get('_inherit_errors');
-        if ($errors) {
-            View::share('errors', $errors);
-        }
+        $session      = $this->session();
+        $this->request->add($session->loadInheritData('input', $request_path, []));
+        View::share('errors', $session->loadInheritData('errors', $request_path, []));
         return $this;
     }
 
@@ -344,11 +335,7 @@ class Request extends SymfonyRequest
      */
     public function inheritInputTo($wildcard = '*') : self
     {
-        $flash = $this->session()->flash();
-        $flash->set('_inherit_input', array_merge(
-            $flash->peek('_inherit_input', []),
-            [[(array)$wildcard, $this->input()]]
-        ));
+        $this->session()->saveInheritData('input', $this->input(), $wildcard);
         return $this;
     }
 }

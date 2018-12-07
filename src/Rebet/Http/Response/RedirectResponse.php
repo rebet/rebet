@@ -37,11 +37,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     public function with(array $input) : self
     {
-        $flash = Session::current()->flash();
-        $flash->set('_inherit_input', array_merge(
-            $flash->peek('_inherit_input', []),
-            $input
-        ));
+        Session::current()->saveInheritData('input', $input);
         return $this;
     }
     
@@ -55,11 +51,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     public function errors(array $errors) : self
     {
-        $flash = Session::current()->flash();
-        $flash->set('_inherit_errors', array_merge(
-            $flash->peek('_inherit_errors', []),
-            $errors
-        ));
+        Session::current()->saveInheritData('errors', $errors);
         return $this;
     }
 }

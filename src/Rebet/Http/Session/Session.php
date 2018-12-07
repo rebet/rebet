@@ -7,6 +7,7 @@ use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Rebet\Http\Session\Storage\SessionStorage;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Session Class
@@ -247,5 +248,41 @@ class Session
     public function regenerateToken()
     {
         $this->attribute()->set('_token', Securities::randomCode(40));
+    }
+
+    /**
+     * Save inherit-data for next request.
+     *
+     * @param string $name
+     * @param mixed $data
+     * @param string|array $wildcard of request path without route prefix (default: '*')
+     * @return self
+     */
+    public function saveInheritData(string $name, $data, $wildcard = '*') : self
+    {
+        $this->flash->set("_inherit_{$name}", array_merge(
+            $flash->peek("_inherit_{$name}", []),
+            [[(array)$wildcard, $data]]
+        ));
+        return $this;
+    }
+
+    /**
+     * Load inherit-data of given request path if exists.
+     * Note: This method remove all of inherit-data of given name.
+     *
+     * @param string $name
+     * @param string $request_path without route prefix
+     * @param mixed $default (default: null)
+     * @return array
+     */
+    public function loadInheritData(string $name, string $request_path, $default = null) : array
+    {
+        foreach ($this->flash->get("_inherit_{$name}", []) as $key => [$wildcard, $data]) {
+            if (Strings::wildmatch($request_path, $wildcard)) {
+                return $data;
+            }
+        }
+        return $default;
     }
 }
