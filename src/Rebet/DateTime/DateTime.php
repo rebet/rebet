@@ -41,6 +41,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
+     * Default format of this DateTime.
+     *
+     * @var string
+     */
+    protected $default_format;
+
+    /**
      * テスト用の現在日時を設定し、本クラスをモック化します。
      *
      * @param string $now テスト用の現在時刻
@@ -267,6 +274,20 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         }
 
         parent::__construct($adopt_time, $adopt_timezone);
+
+        $this->default_format = static::config('default_format');
+    }
+
+    /**
+     * Set the default format of this DateTime.
+     *
+     * @param string $default_format
+     * @return self
+     */
+    public function setDefaultFormat(string $default_format) : self
+    {
+        $this->default_format = $default_format;
+        return $this;
     }
 
     /**
@@ -298,7 +319,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function __toString() : string
     {
-        return $this->format(self::config('default_format'));
+        return $this->format($this->default_format);
     }
     
     /**
@@ -307,7 +328,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function jsonSerialize() : string
     {
-        return $this->format(self::config('default_format'));
+        return $this->format($this->default_format);
     }
 
     /**
@@ -659,7 +680,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function format($format = null)
     {
-        return $format ? parent::format($format) : parent::format(static::config('default_format'));
+        return $format ? parent::format($format) : parent::format($this->default_format);
     }
 
     /**
