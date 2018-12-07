@@ -583,7 +583,7 @@ class BuiltinValidations extends Validations
         $valid         = true;
         $error_indices = $c->extra('error_indices') ?? [];
         foreach ((array)$c->value as $i => $value) {
-            if (!$c->isQuiet() && !$kind->equals(Kind::OTHER()) && $error_indices[$i] ?? false) {
+            if (!$c->isQuiet() && !$kind->equals(Kind::OTHER()) && ($error_indices[$i] ?? false)) {
                 continue;
             }
             if (!$test($value)) {
