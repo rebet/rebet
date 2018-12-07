@@ -22,6 +22,7 @@ class StreamTest extends RebetTestCase
     private $array;
     private $map;
     private $rs;
+    private $callable;
     private $destructive;
 
     public function setUp()
@@ -57,6 +58,7 @@ class StreamTest extends RebetTestCase
             new StreamTest_User(4, 'Qux', 'Fourth', 'qux@hoge.com', Gender::FEMALE(), new DateTime('1968-07-18')),
             new StreamTest_User(5, 'Quxx', 'Fifth', 'quxx@moge.net', Gender::FEMALE(), new DateTime('1983-04-21')),
         ]);
+        $this->callable    = Stream::valueOf(function (string $value) { return "Hello {$value}"; });
         $this->destructive = Stream::valueOf(new StreamTest_DestructiveMock());
     }
 
@@ -523,6 +525,12 @@ Array
 
 EOS
         , $this->array->dump()->origin());
+
+        // run
+        $this->assertNull($this->null->_('invoke', 'Test')->origin());
+        $this->assertSame('Hello Test', $this->callable->_('invoke', 'Test')->origin());
+
+        $this->assertSame('Hello Test', $this->callable->invoke('Test')->origin());
     }
 
     public function test_filters_php()

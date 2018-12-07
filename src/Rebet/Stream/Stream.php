@@ -54,6 +54,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'lower'    => function (string $value) { return strtolower($value); },
                     'upper'    => function (string $value) { return strtoupper($value); },
                     'dump'     => function ($value) { return print_r($value, true); },
+                    'invoke'   => function ($value, ...$args) { return call_user_func($value, ...$args); },
                 ],
             ],
         ];
