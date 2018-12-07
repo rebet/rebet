@@ -2,6 +2,7 @@
 namespace Rebet\Http\Session;
 
 use Rebet\Common\Securities;
+use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
