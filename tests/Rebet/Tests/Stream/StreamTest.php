@@ -61,6 +61,7 @@ class StreamTest extends RebetTestCase
         ]);
         $this->callable    = Stream::valueOf(function (string $value) { return "Hello {$value}"; });
         $this->destructive = Stream::valueOf(new StreamTest_DestructiveMock());
+        $this->safty       = Stream::valueOf("Hello Rebet", true);
     }
 
     public function test_valueOf()
@@ -79,6 +80,21 @@ class StreamTest extends RebetTestCase
 
         $source = 2;
         $this->assertSame(1, $value->origin());
+    }
+
+    public function test_addFilter()
+    {
+        $this->assertSame("Hello Rebet", $this->string->wrap()->origin());
+        $this->assertSame("Hello Rebet", $this->safty->wrap()->origin());
+        Stream::addFilter('wrap', function ($value) { return "({$value})"; });
+        $this->assertSame("(Hello Rebet)", $this->string->wrap()->origin());
+        $this->assertSame("Hello Rebet", $this->safty->wrap()->origin());
+
+        $this->assertSame("HELLO REBET", $this->string->upper()->origin());
+        $this->assertSame("HELLO REBET", $this->safty->upper()->origin());
+        Stream::addFilter('upper', function ($value) { return "Upper: $value"; });
+        $this->assertSame("Upper: Hello Rebet", $this->string->upper()->origin());
+        $this->assertSame("HELLO REBET", $this->safty->upper()->origin());
     }
 
     public function test_origin()

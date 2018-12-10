@@ -163,6 +163,18 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     }
 
     /**
+     * Add the given filter to Stream.
+     *
+     * @param string $name
+     * @param callable $filter
+     * @return void
+     */
+    public static function addFilter(string $name, callable $filter) : void
+    {
+        static::setConfig(['filter' => ['customs' => [$name => $filter]]]);
+    }
+
+    /**
      * Create a value instance
      *
      * @param mixed $origin
