@@ -61,6 +61,7 @@ class Securities
 
     /**
      * Hash the given text.
+     * Note: If you want to hash the password, usually it is better to use password_hash() and password_verify() php functions.
      *
      * ex)
      * $hash = Securities::hash('password');
