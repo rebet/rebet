@@ -55,8 +55,8 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'upper'    => function (string $value) { return strtoupper($value); },
                     'dump'     => function ($value) { return print_r($value, true); },
                     'invoke'   => function ($value, ...$args) { return call_user_func($value, ...$args); },
-                    'equals'   => function ($value, $other) { return $value == ($other instanceof self ? $other->origin() : $other) ; },
-                    'isSame'   => function ($value, $other) { return $value === ($other instanceof self ? $other->origin() : $other) ; },
+                    'equals'   => function ($value, $other) { return $value == $other; },
+                    'sameAs'   => function ($value, $other) { return $value === $other; },
                 ],
             ],
         ];
@@ -91,11 +91,22 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     public static $delegate_filters = null;
 
     /**
+     * Peel the stream wrapper of given value if wrapped
+     *
+     * @param mixed $value
+     * @return void
+     */
+    protected static function peel($value)
+    {
+        return $value instanceof self ? $value->origin() : $value ;
+    }
+
+    /**
      * Create a Null Contagion instance
      */
     protected function __construct($origin, $promise = null)
     {
-        $this->origin  = $origin instanceof self ? $origin->origin() : $origin ;
+        $this->origin  = static::peel($origin) ;
         $this->promise = $promise;
 
         if (static::$null === null) {
@@ -227,6 +238,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $parameter = $function->getParameters()[0] ?? null;
         $type      = Reflector::getTypeHint($parameter);
         $converted = Reflector::convert($origin, $type);
+        $args      = array_map(function ($value) { return static::peel($value); }, $args);
         try {
             $result = $filter($converted, ...$args);
             return is_bool($result) ? $result : new static($result);
@@ -260,6 +272,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             $method      = new \ReflectionMethod($origin, $name);
             $type        = $method->getReturnType();
             $fingerprint = $type === null || $type == 'bool' || $type == 'boolean' ? md5(serialize($origin)) : null ;
+            $args        = array_map(function ($value) { return static::peel($value); }, $args);
             $result      = $method->invoke($origin, ...$args);
             if (
                 $type == 'void'
@@ -273,7 +286,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             }
         } else {
             $result = $this->_($name, ...$args);
-            $result = $result instanceof self ? $result->origin() : $result ;
+            $result = static::peel($result);
         }
         return is_bool($result) ? $result : new static($result) ;
     }
