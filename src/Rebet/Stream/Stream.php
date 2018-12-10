@@ -88,7 +88,21 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @var array
      */
-    public static $delegate_filters = null;
+    protected static $delegate_filters = null;
+
+    /**
+     * Safety delegate filters that contains only library layer configure.
+     *
+     * @var array
+     */
+    protected static $safety_delegate_filters = null;
+
+    /**
+     * Safety mode (only use library filters)
+     *
+     * @var boolean
+     */
+    protected $safety = false;
 
     /**
      * Peel the stream wrapper of given value if wrapped
@@ -103,11 +117,16 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
 
     /**
      * Create a Null Contagion instance
+     *
+     * @param mixed $origin
+     * @param callable|null $promise
+     * @param boolean $safety (default: false)
      */
-    protected function __construct($origin, $promise = null)
+    protected function __construct($origin, ?callable $promise = null, bool $safety = false)
     {
         $this->origin  = static::peel($origin) ;
         $this->promise = $promise;
+        $this->safety  = $safety;
 
         if (static::$null === null) {
             static::$null = 'not null';
@@ -132,28 +151,39 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 }
             }
         }
+
+        if (static::$safety_delegate_filters === null) {
+            static::$safety_delegate_filters = [];
+            foreach (Reflector::get(static::defaultConfig(), 'filter.delegaters', []) as $class => $methods) {
+                foreach ($methods as $method_name => $filter_name) {
+                    static::$safety_delegate_filters[$filter_name] = "{$class}::".(is_int($method_name) ? $filter_name : $method_name);
+                }
+            }
+        }
     }
 
     /**
      * Create a value instance
      *
      * @param mixed $origin
+     * @param boolean $safety (default: false)
      * @return self
      */
-    public static function valueOf($origin) : self
+    public static function valueOf($origin, bool $safety = false) : self
     {
-        return $origin instanceof self ? $origin : new static($origin) ;
+        return new static(static::peel($origin), null, $safety) ;
     }
 
     /**
      * Create a value instance
      *
      * @param \Closure $promise
+     * @param boolean $safety (default: false)
      * @return self
      */
-    public static function promise(\Closure $promise) : self
+    public static function promise(\Closure $promise, bool $safety = false) : self
     {
-        return new static(null, $promise);
+        return new static(null, $promise, $safety);
     }
     
     /**
@@ -215,7 +245,11 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     public function _(string $name, ...$args)
     {
-        $filter = static::config("filter.customs.{$name}", false) ?? static::$delegate_filters[$name] ?? null ;
+        if ($this->safety) {
+            $filter = Reflector::get(static::defaultConfig(), "filter.customs.{$name}") ?? static::$safety_delegate_filters[$name] ?? null ;
+        } else {
+            $filter = static::config("filter.customs.{$name}", false) ?? static::$delegate_filters[$name] ?? null ;
+        }
         $alias  = Inflector::snakize($name);
         $filter = $filter ?? (is_callable($alias) ? $alias : null) ?? (is_callable($name) ? $name : null) ;
         return $this->_filter($name, $filter ? \Closure::fromCallable($filter) : null, ...$args);
