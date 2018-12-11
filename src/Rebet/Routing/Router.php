@@ -34,7 +34,8 @@ class Router
     public static function defaultConfig()
     {
         return [
-            'middlewares' => [],
+            'middlewares'              => [],
+            'default_fallback_handler' => null,
         ];
     }
 
@@ -352,7 +353,7 @@ class Router
     }
 
     /**
-     * Route the given request.
+     * Handle the given request.
      *
      * @param Request $request
      * @return Response
@@ -371,28 +372,59 @@ class Router
         } catch (FallbackException $e) {
             return $e->redirect();
         } catch (\Throwable $e) {
-            if (empty(static::$fallback)) {
-                throw $e;
-            }
-
-            $root_fallback = null;
-            $request_uri   = $request->getRequestPath();
-            foreach (static::$fallback as $prefix => $fallback) {
-                if ($prefix === '') {
-                    $root_fallback = $fallback;
-                }
-                if (Strings::startsWith($request_uri, "{$prefix}/")) {
-                    return $fallback($request, $route, $e);
-                }
-            }
-            if ($root_fallback) {
-                return $root_fallback($request, $route, $e);
-            }
-
-            throw $e;
+            return static::handleFallback($request, $route, $e);
         }
     }
     
+    /**
+     * Handle fallback.
+     *
+     * @param Request $request
+     * @param Route $route
+     * @param \Throwable $e
+     * @return Response
+     */
+    protected static function handleFallback(Request $request, ?Route $route, \Throwable $e) : Response
+    {
+        if (empty(static::$fallback)) {
+            return static::handleDefaultFallback($request, $route, $e);
+        }
+
+        $root_fallback = null;
+        $request_uri   = $request->getRequestPath();
+        foreach (static::$fallback as $prefix => $fallback) {
+            if ($prefix === '') {
+                $root_fallback = $fallback;
+            }
+            if (Strings::startsWith($request_uri, "{$prefix}/")) {
+                return $fallback($request, $route, $e);
+            }
+        }
+        if ($root_fallback) {
+            return $root_fallback($request, $route, $e);
+        }
+
+        return static::handleDefaultFallback($request, $route, $e);
+    }
+
+    /**
+     * Handle default fallback.
+     *
+     * @param Request $request
+     * @param Route|null $route
+     * @param \Throwable $e
+     * @return Response
+     */
+    protected static function handleDefaultFallback(Request $request, ?Route $route, \Throwable $e) : Response
+    {
+        $fallback = static::config('default_fallback_handler', false);
+        if ($fallback) {
+            $fallback = \Closure::fromCallable($fallback);
+            return $fallback($request, $route, $e);
+        }
+        throw $e;
+    }
+
     /**
      * Search route matching given request.
      *
