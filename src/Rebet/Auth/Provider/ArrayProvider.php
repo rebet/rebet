@@ -2,9 +2,8 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
-use Rebet\Common\Collection;
-use Rebet\Common\Securities;
 use Rebet\Config\Configurable;
+use Rebet\Stream\Stream;
 
 /**
  * Array Auth Provider Class
@@ -23,30 +22,31 @@ class ArrayProvider extends AuthProvider
     public static function defaultConfig() : array
     {
         return [
-            'hasher' => function ($password) { return Securities::hash($password); },
+            'signin_id_name' => 'email',
+            'precondition'   => function ($user) { return true; },
         ];
     }
 
     /**
      * Users map data.
      *
-     * @var array
+     * @var Stream
      */
     protected $users = [];
 
     /**
-     * Alias map data.
+     * Sign in id attribute name
      *
-     * @var array
+     * @var string
      */
-    protected $aliases = [];
+    protected $signin_id_name = null;
 
     /**
-     * Password hasher of this provider.
+     * Preconditions for signin id authenticate.
      *
-     * @var \Closure
+     * @var callable
      */
-    protected $hasher = null;
+    protected $precondition = null;
 
     /**
      * Create a readonly array provider.
@@ -60,14 +60,14 @@ class ArrayProvider extends AuthProvider
      * And if you want to add other information, you can add attribute to users record.
      *
      * @param array $users
-     * @param array $aliases (default: ['signin_id' => 'email'])
-     * @param \Closure|null $hasher (default: depend on configure)
+     * @param string|null $signin_id_name (default: depend on configure)
+     * @param callable|null $precondition (default: depend on configure)
      */
-    public function __construct(?array $users, array $aliases = ['signin_id' => 'email'], \Closure $hasher = null)
+    public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
     {
-        $this->users   = Collection::valueOf($users);
-        $this->aliases = $aliases;
-        $this->hasher  = $hasher ?? static::config('hasher');
+        $this->users          = Stream::valueOf($users, true);
+        $this->signin_id_name = $signin_id_name ?? static::config('signin_id_name') ;
+        $this->precondition   = $precondition ?? static::config('precondition');
     }
 
     /**
@@ -78,32 +78,28 @@ class ArrayProvider extends AuthProvider
      */
     public function findById($id) : ?AuthUser
     {
-        $user = $this->users->first(function ($user) use ($id) { return $user['id'] == $id; });
-        if ($user) {
-            return new AuthUser($user);
-        }
-        return null;
+        return $this->users
+            ->first(function ($user) use ($id) { return $user['id'] == $id; })
+            ->return(function ($user) { return new AuthUser($user); });
     }
 
     /**
-     * Find user by signin_id.
-     * The signin_id may be a login ID, a email address or member number, but it must be unique.
-     *
-     * @param array|Arrayable $credentials ['signin_id' => id, 'password' => password]
-     * @return AuthUser|null
+     * {@inheritDoc}
      */
-    public function findByCredentials($credentials) : ?AuthUser
+    protected function findBySigninId($signin_id, $precondition = null) : ?AuthUser
     {
-        $aliases = $this->aliases;
-        $users   = $this->users;
-        foreach ($credentials as $key => $value) {
-            $value = $key === 'password' ? ($this->hasher)($value) : $value ;
-            $users = $users->filter(function ($user) use ($key, $value, $aliases) {
-                $key = $aliases[$key] ?? $key;
-                return isset($user[$key]) && $user[$key] == $value;
-            });
-        }
+        return $this->users
+            ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })
+            ->where($precondition)
+            ->first()
+            ->return(function ($user) { return new AuthUser($user); });
+    }
 
-        return $users->count() === 1 ? new AuthUser($users->first(), $this->aliases) : null ;
+    /**
+     * {@inheritDoc}
+     */
+    public function rehashPassword($id, string $new_hash) : void
+    {
+        // Nothing to do (Password rehash not supported)
     }
 }

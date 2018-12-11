@@ -32,7 +32,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
                     Strings::class   => ['cut', 'indent', 'ltrim', 'rtrim', 'mbtrim' => 'trim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch'],
-                    Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where' , 'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
+                    Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
@@ -199,17 +199,35 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     }
     
     /**
-     * Get the origin value
+     * Get and initialize the origin value
      *
      * @return mixed
      */
-    public function &origin()
+    protected function &origin()
     {
         if ($this->promise !== null && $this->origin === null) {
             $this->origin  = ($this->promise)();
             $this->promise = null;
         }
         return $this->origin;
+    }
+
+    /**
+     * Return the origin value.
+     * If the origin is null then return default.
+     * That means the returner's origin argument never becomes null.
+     *
+     * @param \Closure|null $returner function($origin) { ... } the origin will not be null (default: null)
+     * @param mixed $default (default: null)
+     * @return mixed
+     */
+    public function return(?\Closure $returner = null, $default = null)
+    {
+        $origin = $this->origin();
+        if ($origin === null) {
+            return $default ;
+        }
+        return $returner ? $returner($origin) : $origin ;
     }
 
     /**

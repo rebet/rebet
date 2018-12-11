@@ -2,6 +2,7 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
+use Rebet\Auth\Password;
 use Rebet\Common\Securities;
 
 /**
@@ -30,13 +31,51 @@ abstract class AuthProvider
     abstract public function findById($id) : ?AuthUser ;
 
     /**
-     * Find user by signin_id.
-     * The signin_id may be a login ID, a email address or member number, but it must be unique.
+     * Find user by signin_id and password.
+     * The signin_id may be named 'login_id', 'email', etc.
      *
-     * @param array|Arrayable $credentials ['signin_id' => id, 'password' => password]
+     * @param mixed $signin_id
+     * @param string $password
+     * @param mixed $precondition (default: null)
      * @return AuthUser|null
      */
-    abstract public function findByCredentials($credentials) : ?AuthUser ;
+    public function findByCredentials($signin_id, string $password, $precondition = null) : ?AuthUser
+    {
+        $user = $this->findBySigninId($signin_id, $precondition);
+        if ($user === null) {
+            return null;
+        }
+
+        if (!Password::verify($password, $user->password)) {
+            return null;
+        }
+
+        if (Password::needsRehash($user->password)) {
+            $this->rehashPassword($user->id, Password::hash($password));
+        }
+
+        return $user;
+    }
+
+    /**
+     * Find user by signin_id.
+     * The signin_id may be named 'login_id', 'email', etc.
+     *
+     * @param mixed $value
+     * @param mixed $precondition (default: null)
+     * @return AuthUser|null
+     */
+    abstract protected function findBySigninId($signin_id, $precondition = null) : ?AuthUser ;
+
+    /**
+     * Save rehash password.
+     * If sub class not support password rehash then override by empty implements.
+     *
+     * @param mixed $id
+     * @param string $new_hash
+     * @return void
+     */
+    abstract public function rehashPassword($id, string $new_hash) : void ;
 
     /**
      * It checks the provider will support remember token.

@@ -433,15 +433,30 @@ class Arrays
      * Filter the array using the given callback.
      *
      * @param  array|null  $array
-     * @param  callable  $callback
+     * @param  callable|null $callback of function($value [, $key]):bool or null that return given array as it is.
      * @return array
      */
-    public static function where(?array $array, callable $callback)
+    public static function where(?array $array, ?callable $callback)
     {
         if ($array === null) {
             return null;
         }
-        return array_filter($array, $callback, ARRAY_FILTER_USE_BOTH);
+        return $callback === null ? $array : array_filter($array, $callback, ARRAY_FILTER_USE_BOTH) ;
+    }
+
+    /**
+     * Remove blank values from given array.
+     *
+     * @see Utils::isBlank()
+     * @param array|null $array
+     * @return array|null
+     */
+    public static function compact(?array $array) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+        return array_filter($array, function ($value) { return !Utils::isBlank($value); });
     }
     
     /**

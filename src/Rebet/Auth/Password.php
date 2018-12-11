@@ -48,13 +48,13 @@ class Password
     /**
      * Verify the given password and password hash.
      *
-     * @param string $password
-     * @param string $hash
+     * @param string|null $password
+     * @param string|null $hash
      * @return boolean
      */
-    public static function verify(string $password, string $hash) : bool
+    public static function verify(?string $password, ?string $hash) : bool
     {
-        return password_verify($password, $hash);
+        return $password === null || $hash === null ? false : password_verify($password, $hash) ;
     }
 
     /**
@@ -65,7 +65,7 @@ class Password
      * @param array|null $options (default: depend on configure)
      * @return string
      */
-    public static function needsRehash(string $hash, ? int $algorithm = null, ? array $options = null) : string
+    public static function needsRehash(string $hash, ?int $algorithm = null, ?array $options = null) : string
     {
         $algorithm = $algorithm ?? static::config('algorithm');
         $options   = $options ?? static::config('options', false, []);

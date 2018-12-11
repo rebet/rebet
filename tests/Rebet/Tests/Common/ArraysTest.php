@@ -426,10 +426,21 @@ class ArraysTest extends RebetTestCase
     public function test_where()
     {
         $array = [100, '200', 300, '400', 500];
+        $array = Arrays::where($array, null);
+        $this->assertEquals([100, '200', 300, '400', 500], $array);
+
+        $array = [100, '200', 300, '400', 500];
         $array = Arrays::where($array, function ($value, $key) {
             return is_string($value);
         });
         $this->assertEquals([1 => 200, 3 => 400], $array);
+    }
+
+    public function test_compact()
+    {
+        $array = [0, null, [], '', false, 500];
+        $array = Arrays::compact($array);
+        $this->assertEquals([0 => 0, 4 => false, 5=> 500], $array);
     }
 
     public function test_forget()
