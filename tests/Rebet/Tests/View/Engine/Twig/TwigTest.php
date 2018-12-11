@@ -35,6 +35,13 @@ class TwigTest extends RebetTestCase
         ]);
     }
 
+    public function test_exists()
+    {
+        $this->assertTrue($this->twig->exists('welcome'));
+        $this->assertTrue($this->twig->exists('custom/env'));
+        $this->assertFalse($this->twig->exists('nothing'));
+    }
+
     public function test_render()
     {
         $this->assertSame(

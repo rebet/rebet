@@ -39,6 +39,13 @@ class BladeTest extends RebetTestCase
         $this->assertInstanceOf(BladeCompiler::class, $this->blade->compiler());
     }
 
+    public function test_exists()
+    {
+        $this->assertTrue($this->blade->exists('welcome'));
+        $this->assertTrue($this->blade->exists('custom/env'));
+        $this->assertFalse($this->blade->exists('nothing'));
+    }
+
     public function test_render()
     {
         $this->assertSame(

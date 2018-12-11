@@ -19,4 +19,12 @@ interface Engine
      * @return string
      */
     public function render(string $name, array $data = []) : string;
+
+    /**
+     * It checks the given name view template exists.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function exists(string $name) : bool;
 }

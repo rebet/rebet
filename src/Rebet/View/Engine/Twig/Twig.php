@@ -65,14 +65,18 @@ class Twig implements Engine
     }
 
     /**
-     * Get the string contents of the view.
-     *
-     * @param string $name Template name without base template dir and template file suffix
-     * @param array $data
-     * @return string
+     * {@inheritDoc}
      */
     public function render(string $name, array $data = []) : string
     {
         return $this->twig->render($name.$this->file_suffix, $data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function exists(string $name) : bool
+    {
+        return $this->twig->getLoader()->exists($name.$this->file_suffix);
     }
 }

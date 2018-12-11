@@ -72,16 +72,20 @@ class Smarty implements Engine
     }
 
     /**
-     * Get the string contents of the view.
-     *
-     * @param string $name Template name without base template dir and template file suffix
-     * @param array $data
-     * @return string
+     * {@inheritDoc}
      */
     public function render(string $name, array $data = []) : string
     {
         $this->smarty->source->exists = true;
         $this->smarty->assign($data);
         return $this->smarty->fetch($name.$this->file_suffix);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function exists(string $name) : bool
+    {
+        return $this->smarty->templateExists($name.$this->file_suffix);
     }
 }

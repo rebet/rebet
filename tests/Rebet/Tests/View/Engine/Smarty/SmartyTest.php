@@ -33,6 +33,13 @@ class SmartyTest extends RebetTestCase
         ]);
     }
 
+    public function test_exists()
+    {
+        $this->assertTrue($this->smarty->exists('welcome'));
+        $this->assertTrue($this->smarty->exists('custom/env'));
+        $this->assertFalse($this->smarty->exists('nothing'));
+    }
+
     public function test_render()
     {
         $this->assertSame(
