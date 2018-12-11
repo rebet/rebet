@@ -3,8 +3,8 @@ namespace Rebet\View;
 
 use Rebet\Common\Renderable;
 use Rebet\Config\Configurable;
-use Rebet\View\Engine\Engine;
 use Rebet\Stream\Stream;
+use Rebet\View\Engine\Engine;
 
 /**
  * View Class
@@ -173,5 +173,15 @@ class View implements Renderable
         } catch (\Throwable $e) {
             throw new ViewRenderFailedException("The view {$name} render failed because of exception occurred.", null, $e);
         }
+    }
+
+    /**
+     * It checks the view template exists.
+     *
+     * @return boolean
+     */
+    public function exists() : bool
+    {
+        return $this->engine->exists($this->name);
     }
 }
