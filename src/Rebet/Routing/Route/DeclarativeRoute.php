@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Common\Path;
+use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Http\Request;
 use Rebet\Routing\RouteNotFoundException;
-use Rebet\Common\Strings;
-use Rebet\Common\Path;
 
 /**
  * Declarative Route class
@@ -86,7 +86,7 @@ abstract class DeclarativeRoute extends Route
                 if (Utils::isBlank($value)) {
                     continue;
                 }
-                $regex = $this->wheres[$key] ?: null ;
+                $regex = $this->wheres[$key] ?? null ;
                 if ($regex && !preg_match($regex, $value)) {
                     throw new RouteNotFoundException("{$this} not found. Routing parameter '{$key}' value '{$value}' not match {$regex}.");
                 }
@@ -100,7 +100,7 @@ abstract class DeclarativeRoute extends Route
     /**
      * {@inheritDoc}
      */
-    public function defaultView(): string
+    public function defaultView() : string
     {
         return Path::normalize(Strings::latrim($this->uri, '{'));
     }
