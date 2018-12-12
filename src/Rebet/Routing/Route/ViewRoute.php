@@ -1,12 +1,10 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Common\Renderable;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Routing\RouteNotFoundException;
 use Rebet\View\View;
-use Rebet\View\ViewRenderFailedException;
 
 /**
  * View Route Class
@@ -29,35 +27,11 @@ class ViewRoute extends ClosureRoute
     {
         $self = $this;
         parent::__construct([], $uri, function (Request $request) use ($self, $name, $args) {
-            $args = array_merge($request->input(), $request->attributes->all(), $args);
-            return Responder::toResponse($self->proxy(View::of($name)->with($args)));
+            $view = View::of($name);
+            if (!$view->exists()) {
+                throw new RouteNotFoundException("View route [{$name}] not found. An exception occurred while processing the view.", 404, $e);
+            }
+            return Responder::toResponse($view->with(array_merge($request->input(), $request->attributes->all(), $args)));
         });
-    }
-
-    /**
-     * Create a view proxy delegated given view
-     *
-     * @param View $view
-     * @return Renderable
-     */
-    protected function proxy(View $view) : Renderable
-    {
-        return new class($view) implements Renderable {
-            private $view;
-
-            public function __construct($view)
-            {
-                $this->view = $view;
-            }
-
-            public function render() : string
-            {
-                try {
-                    return $this->view->render();
-                } catch (ViewRenderFailedException $e) {
-                    throw new RouteNotFoundException("View route [{$this->view->name}] not found. An exception occurred while processing the view.", 404, $e);
-                }
-            }
-        };
     }
 }
