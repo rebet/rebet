@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 use Rebet\Http\Response;
+use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 
 /**
  * Json Response Class
@@ -17,16 +17,16 @@ class JsonResponse extends SymfonyJsonResponse implements Response
     use Respondable;
 
     /**
-     * JSON レスポンスを構築します。
+     * Create Json Response
      *
      * @param mixed $data
      * @param integer $status
      * @param array $headers
-     * @param integer $encodingOptions
+     * @param integer $encoding_options
      */
-    public function __construct($data = null, int $status = 200, array $headers = [], int $encodingOptions = 0)
+    public function __construct($data = null, int $status = 200, array $headers = [], int $encoding_options = 0)
     {
-        $this->encodingOptions = $encodingOptions;
+        $this->encodingOptions = $encoding_options;
         parent::__construct($data, $status, $headers);
     }
 }

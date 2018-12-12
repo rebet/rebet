@@ -5,6 +5,7 @@ use Rebet\Common\Renderable;
 use Rebet\Common\Strings;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\JsonResponse;
+use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Response\StreamedResponse;
 
@@ -99,5 +100,21 @@ class Responder
             $url = Strings::startsWith($url, '/') ? $request->route->prefix.$url : $url ;
         }
         return static::prepare(new RedirectResponse($url, $status, $headers), $request);
+    }
+
+    /**
+     * Create Problem Details (RFC7807 Problem Details for HTTP APIs) Response
+     * Note: 'detail' and 'additional' can be set by method chain.
+     * Note: You must be set the 'type' of URI reference that identifies the problem type when you want to contain the additional data.
+     *
+     * @param int $status of HTTP response
+     * @param string|null $type of problem (default: 'about:blank')
+     * @param string|null $title of problem (default: HTTP status label)
+     * @param array $headers of HTTP response (default: [])
+     * @param int $encoding_options of JSON encode (default: 0)
+     */
+    public static function problem(int $status, ?string $type = null, ?string $title = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
+    {
+        return new ProblemResponse($status, $type, $title, $headers, $encoding_options);
     }
 }

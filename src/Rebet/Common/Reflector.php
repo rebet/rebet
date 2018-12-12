@@ -584,4 +584,22 @@ class Reflector
         $method->setAccessible($accessible);
         return $method->invoke(is_object($object) ? $object : null, ...$args);
     }
+
+    /**
+     * It checks the class or object uses given trait.
+     *
+     * @param object|string $class
+     * @param string $trait
+     * @return boolean
+     */
+    public static function uses($target, string $trait) : bool
+    {
+        $classes = array_merge([$target], class_parents($target));
+        foreach ($classes as $class) {
+            if (in_array($trait, class_uses($class), true)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

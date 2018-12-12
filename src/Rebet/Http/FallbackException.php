@@ -1,6 +1,9 @@
 <?php
 namespace Rebet\Http;
 
+use Rebet\Http\Response\ProblemResponse;
+use Rebet\Http\Response\RedirectResponse;
+
 /**
  * Fallback Exception Class
  *
@@ -9,7 +12,7 @@ namespace Rebet\Http;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FallbackException extends \RuntimeException
+class FallbackException extends \RuntimeException implements ProblemRespondable
 {
     /**
      * Fallback url when some error occurred.
@@ -82,10 +85,29 @@ class FallbackException extends \RuntimeException
     /**
      * Get redirect response for this fallback
      *
-     * @return Response
+     * @return RedirectResponse
      */
-    public function redirect() : Response
+    public function redirect() : RedirectResponse
     {
         return Responder::redirect($this->fallback)->with($this->input)->errors($this->errors);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @todo Fix version of URI on official release or move the spec document to new repository.
+     */
+    public function problem() : ProblemResponse
+    {
+        return Responder::problem(
+            400,
+            'https://github.com/rebet/rebet/blob/master/spec/problem-details/fallback-errors.md',
+            'A retryable error occurred. Please check error details and try again.'
+        )
+        ->detail($this->getMessage())
+        ->additional([
+            'errors' => $this->errors,
+            'input'  => $this->input,
+        ]);
     }
 }

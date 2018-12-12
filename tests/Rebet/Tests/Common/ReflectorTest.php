@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Common;
 
 use org\bovigo\vfs\vfsStream;
+use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
 use Rebet\Tests\Mock\Gender;
@@ -699,6 +700,21 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(\Closure::class, Reflector::getTypeHint($params[4]));
         $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHint($params[5]));
     }
+
+    public function test_uses()
+    {
+        $parent = new ReflectorTest_TraitParent();
+        $child  = new ReflectorTest_TraitChild();
+        $this->assertTrue(Reflector::uses($parent, Describable::class));
+        $this->assertTrue(Reflector::uses($child, Describable::class));
+        $this->assertTrue(Reflector::uses(ReflectorTest_TraitParent::class, Describable::class));
+        $this->assertTrue(Reflector::uses(ReflectorTest_TraitChild::class, Describable::class));
+
+        $this->assertFalse(Reflector::uses($parent, Configurable::class));
+        $this->assertFalse(Reflector::uses($child, Configurable::class));
+        $this->assertFalse(Reflector::uses(ReflectorTest_TraitParent::class, Configurable::class));
+        $this->assertFalse(Reflector::uses(ReflectorTest_TraitChild::class, Configurable::class));
+    }
 }
 
 class ReflectorTest_Mock
@@ -843,4 +859,11 @@ class ReflectorTest_Accessible
     {
         return 'public - '.$arg;
     }
+}
+class ReflectorTest_TraitParent
+{
+    use Describable;
+}
+class ReflectorTest_TraitChild extends ReflectorTest_TraitParent
+{
 }
