@@ -370,4 +370,91 @@ class Strings
         }
         return false;
     }
+
+    /**
+     * Convert debug_backtrace to string.
+     *
+     * @param array $trace
+     * @param boolean $withArgs (default: false)
+     * @return string
+     */
+    public static function traceToString(array $trace, bool $withArgs = false) : string
+    {
+        $trace = array_reverse($trace);
+        array_pop($trace); // Remove self method stack
+        array_walk($trace, function (&$value, $key) use ($withArgs) {
+            $value = "#{$key} ".
+            (empty($value['file']) ? "" : " ".$value['file']."(".$value['line']."): ").
+            (empty($value['class']) ? "" : $value['class']."::").
+            $value['function'].
+            ($withArgs && !empty($value['args']) ? '('.static::argsToString($value['args']).')' : "()")
+            ;
+        });
+        
+        return empty($trace) ? "" : join("\n", $trace) ;
+    }
+
+    /**
+     * Convert args to string.
+     *
+     * @param mixed $args
+     * @param integer $length (default: 20)
+     * @param string $ellipsis (default: '...')
+     * @return string
+     */
+    public static function argsToString($args, int $length = 20, string $ellipsis = '...') : string
+    {
+        $args      = (array)$args;
+        $describes = '';
+        foreach ($args as $key => $arg) {
+            $describes .= static::argToString($arg, $length, $ellipsis).", ";
+        }
+        return Strings::rtrim($describes, ', ');
+    }
+    
+    /**
+     * Convert arg to string.
+     *
+     * @param mixed $arg
+     * @param integer $length (default: 20)
+     * @param string $ellipsis (default: '...')
+     * @return string
+     */
+    protected static function argToString($arg, int $length = 20, string $ellipsis = '...', $array_scanning = true) : string
+    {
+        if ($arg === null) {
+            return 'null';
+        }
+        if (is_string($arg)) {
+            return Strings::cut($arg, $length, $ellipsis);
+        }
+        if (is_scalar($arg)) {
+            return Strings::cut((string)$arg, $length, $ellipsis);
+        }
+        if (is_resource($arg)) {
+            return Strings::cut('*'.get_resource_type($arg).'*', $length, $ellipsis);
+        }
+        if (method_exists($arg, '__toString')) {
+            return Strings::cut($arg->__toString(), $length, $ellipsis);
+        }
+        if (is_object($arg) && $arg instanceof \JsonSerializable) {
+            $json = $arg->jsonSerialize();
+            if (is_scalar($json)) {
+                return Strings::cut((string)$json, $length, $ellipsis);
+            }
+        }
+        if (is_array($arg) && $array_scanning) {
+            $describes = '';
+            foreach ($arg as $key => $value) {
+                $describes .= "{$key} => ".Strings::cut(static::argToString($value, $length, false), $length, $ellipsis).", ";
+            }
+            return '['.Strings::rtrim($describes, ', ').']';
+        }
+        
+        $class         = new \ReflectionClass($arg);
+        $namespace     = $class->getNamespaceName();
+        $namespace_cut = Strings::rbtrim($namespace, '\\');
+        $namespace     = $namespace === $namespace_cut ? $namespace : "..\\{$namespace_cut}" ;
+        return $namespace.'\\'.$class->getShortName();
+    }
 }

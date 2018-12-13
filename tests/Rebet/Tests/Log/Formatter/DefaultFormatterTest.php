@@ -51,13 +51,6 @@ EOS
             ,
             $formatted
         );
-        $this->assertContains(
-            <<<EOS
-*** DEBUG TRACE ***
-EOS
-            ,
-            $formatted
-        );
         
         $this->context->level   = LogLevel::INFO();
         $this->context->message = 'This is test message.';
@@ -151,13 +144,6 @@ EOS
         $this->assertContains(
             <<<EOS
 *** VAR ***
-EOS
-            ,
-            $formatted
-        );
-        $this->assertContains(
-            <<<EOS
-*** DEBUG TRACE ***
 EOS
             ,
             $formatted
