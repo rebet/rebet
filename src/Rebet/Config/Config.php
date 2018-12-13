@@ -5,6 +5,7 @@ use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\Reflector;
 use Rebet\Common\Utils;
+use Rebet\Config\Exception\ConfigNotDefineException;
 
 /**
  * コンフィグ クラス
@@ -366,7 +367,7 @@ class Config
         
         $value = Reflector::get(static::$compiled[$section], $key);
         if ($required && Utils::isBlank($value)) {
-            throw new ConfigNotDefineException("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
+            throw ConfigNotDefineException::by("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
         }
         return $value ?? $default;
     }
