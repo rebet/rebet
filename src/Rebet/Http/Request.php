@@ -339,4 +339,57 @@ class Request extends SymfonyRequest
         $this->session()->saveInheritData('input', $this->input(), $wildcard);
         return $this;
     }
+
+    /**
+     * Determine if the current request probably expects a JSON response.
+     *
+     * @return bool
+     */
+    public function expectsJson() : bool
+    {
+        return ($this->isAjax() && ! $this->isPjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
+    }
+    
+    /**
+     * Determine if the current request is asking for JSON.
+     *
+     * @return bool
+     */
+    public function wantsJson()
+    {
+        $acceptable = $this->getAcceptableContentTypes();
+        return Strings::contains($acceptable[0] ?? null, ['/json', '+json']);
+    }
+
+    /**
+     * Determine if the request is the result of an AJAX call.
+     *
+     * @return bool
+     */
+    public function isAjax()
+    {
+        return $this->isXmlHttpRequest();
+    }
+
+    /**
+     * Determine if the request is the result of an PJAX call.
+     *
+     * @return bool
+     */
+    public function isPjax()
+    {
+        return $this->headers->get('X-PJAX') == true;
+    }
+
+    /**
+     * Determine if the current request accepts any content type.
+     *
+     * @return bool
+     */
+    public function acceptsAnyContentType()
+    {
+        $acceptable = $this->getAcceptableContentTypes();
+        $wants      = $acceptable[0] ?? null;
+        return count($acceptable) === 0 || ($wants === '*/*' || $wants === '*');
+    }
 }
