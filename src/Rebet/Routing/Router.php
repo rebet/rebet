@@ -7,7 +7,7 @@ use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Foundation\App;
-use Rebet\Http\FallbackException;
+use Rebet\Http\Exception\FallbackException;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;

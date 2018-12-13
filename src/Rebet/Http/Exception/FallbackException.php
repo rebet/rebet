@@ -1,6 +1,7 @@
 <?php
-namespace Rebet\Http;
+namespace Rebet\Http\Exception;
 
+use Rebet\Common\Exception\RuntimeException;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 
@@ -12,7 +13,7 @@ use Rebet\Http\Response\RedirectResponse;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FallbackException extends \RuntimeException implements ProblemRespondable
+class FallbackException extends RuntimeException implements ProblemRespondable
 {
     /**
      * Fallback url when some error occurred.
@@ -38,26 +39,25 @@ class FallbackException extends \RuntimeException implements ProblemRespondable
     /**
      * Create Fallback Exception.
      *
-     * @param string $fallback
      * @param string $message
-     * @param int $code
-     * @param \Throwable $previous
+     * @param \Throwable $previous (default: null)
+     * @param int $code (default: 302)
      */
-    public function __construct(string $fallback, $message = 'Fallback error occurred', $code = null, $previous = null)
+    public function __construct(string $message, ?\Throwable $previous = null, int $code = 302)
     {
-        parent::__construct($message, $code, $previous);
-        $this->fallback = $fallback;
+        parent::__construct($message, $previous, $code);
     }
 
     /**
-     * Create Fallback Exception.
+     * Set the fallback URL.
      *
      * @param string $fallback
      * @return self
      */
-    public static function to(string $fallback) : self
+    public function to(string $fallback) : self
     {
-        return new static($fallback);
+        $this->fallback = $fallback;
+        return $this;
     }
 
     /**
