@@ -5,6 +5,7 @@ use Rebet\Common\Renderable;
 use Rebet\Config\Configurable;
 use Rebet\Stream\Stream;
 use Rebet\View\Engine\Engine;
+use Rebet\View\Exception\ViewRenderFailedException;
 
 /**
  * View Class
@@ -171,7 +172,7 @@ class View implements Renderable
         try {
             return $this->engine->render($name, $this->data);
         } catch (\Throwable $e) {
-            throw new ViewRenderFailedException("The view {$name} render failed because of exception occurred.", null, $e);
+            throw ViewRenderFailedException::by("The view {$name} render failed because of exception occurred.")->caused($e);
         }
     }
 
