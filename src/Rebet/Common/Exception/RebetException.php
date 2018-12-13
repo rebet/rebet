@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Common;
+namespace Rebet\Common\Exception;
 
 /**
  * Rebet Exception Interface
@@ -16,4 +16,6 @@ interface RebetException
     public function caused(\Throwable $previous) : self ;
     
     public function code(int $code) : self ;
+
+    public function appendix($appendix) : self ;
 }
