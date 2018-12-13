@@ -14,7 +14,7 @@ class BasicAuthTest extends RebetTestCase
     }
 
     /**
-     * @expectedException Rebet\Auth\AuthenticateException
+     * @expectedException Rebet\Auth\Exception\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
      */
     public function test_authenticate()
@@ -39,7 +39,7 @@ class BasicAuthTest extends RebetTestCase
     }
 
     /**
-     * @expectedException Rebet\Auth\AuthenticateException
+     * @expectedException Rebet\Auth\Exception\AuthenticateException
      * @expectedExceptionMessage Authenticate Failed.
      */
     public function test_authenticate_faled()

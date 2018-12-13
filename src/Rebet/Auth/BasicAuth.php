@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Auth;
 
+use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Common\Reflector;
 use Rebet\Common\System;
 
@@ -52,6 +53,6 @@ class BasicAuth
         System::header('WWW-Authenticate: Basic realm="'.$realm.'"');
         System::header('Content-type: text/html; charset='.$charset);
 
-        throw new AuthenticateException($failed_text, 403);
+        throw AuthenticateException::by($failed_text);
     }
 }
