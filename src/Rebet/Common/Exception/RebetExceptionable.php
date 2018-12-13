@@ -31,7 +31,10 @@ trait RebetExceptionable
      */
     public function caused(\Throwable $previous) : RebetException
     {
-        Reflector::set($this, 'previous', $previous, true);
+        $rc = new \ReflectionClass(\Exception::class);
+        $rp = $rc->getProperty('previous');
+        $rp->setAccessible(true);
+        $rp->setValue($this, $previous);
         return $this;
     }
 

@@ -15,8 +15,8 @@ use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
-use Rebet\Routing\RouteNotFoundException;
 
 /**
  * Conventional Route class
@@ -215,7 +215,7 @@ class ConventionalRoute extends Route
             $this->controller->request = $request;
             $this->controller->route   = $this;
         } catch (\Throwable $e) {
-            throw new RouteNotFoundException("Route not found : Controller [ {$controller} ] can not instantiate.", null, $e);
+            throw RouteNotFoundException::by("Route not found : Controller [ {$controller} ] can not instantiate.")->caused($e);
         }
 
         $action = $this->getActionName();
@@ -224,25 +224,25 @@ class ConventionalRoute extends Route
             $method = new \ReflectionMethod($controller, $action);
             $method->setAccessible($this->accessible);
         } catch (\Throwable $e) {
-            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not exists.", null, $e);
+            throw RouteNotFoundException::by("Route not found : Action [ {$controller}::{$action} ] not exists.")->caused($e);
         }
         if (!$this->accessible && !$method->isPublic()) {
-            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not accessible.", null, $e);
+            throw RouteNotFoundException::by("Route not found : Action [ {$controller}::{$action} ] not accessible.");
         }
 
         $am   = AnnotatedMethod::of($method);
         if ($am->annotation(NotRouting::class)) {
-            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.", null, $e);
+            throw RouteNotFoundException::by("Route not found : Action [ {$controller}::{$action} ] is not routing.");
         }
         if ($am->annotation(AliasOnly::class) && !$this->alias) {
-            throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] accespt only alias access.", null, $e);
+            throw RouteNotFoundException::by("Route not found : Action [ {$controller}::{$action} ] accespt only alias access.");
         }
         $wheres = Reflector::get($am->annotation(Where::class), 'wheres', []);
         $vars   = [];
         foreach ($method->getParameters() as $parameter) {
             $name = $parameter->getName();
             if (!$parameter->isOptional() && empty($args)) {
-                throw new RouteNotFoundException("Route not found : Requierd parameter '{$name}' on [ {$controller}::{$action} ] not supplied.", null, $e);
+                throw RouteNotFoundException::by("Route not found : Requierd parameter '{$name}' on [ {$controller}::{$action} ] not supplied.");
             }
             if (empty($args)) {
                 break;
@@ -250,7 +250,7 @@ class ConventionalRoute extends Route
             $value = array_shift($args);
             $regex = $wheres[$name] ?: $this->wheres[$name] ?: null ;
             if ($regex && !preg_match($regex, $value)) {
-                throw new RouteNotFoundException("{$this} not found. Routing parameter '{$name}' value '{$value}' not match {$regex}.");
+                throw RouteNotFoundException::by("{$this} not found. Routing parameter '{$name}' value '{$value}' not match {$regex}.");
             }
             $vars[$name] = $value;
         }
@@ -276,12 +276,12 @@ class ConventionalRoute extends Route
 
         $channel = $route_action->annotation(Channel::class);
         if (!$channel || $channel->reject(App::getChannel())) {
-            throw new RouteNotFoundException("{$this} not found. Routing channel '".App::getChannel()."' not allowed or not annotated channel meta info.");
+            throw RouteNotFoundException::by("{$this} not found. Routing channel '".App::getChannel()."' not allowed or not annotated channel meta info.");
         }
 
         $method = $route_action->annotation(Method::class);
         if ($method && $method->reject($request->getMethod())) {
-            throw new RouteNotFoundException("{$this} not found. Routing method '{$request->getMethod()}' not allowed.");
+            throw RouteNotFoundException::by("{$this} not found. Routing method '{$request->getMethod()}' not allowed.");
         }
 
         return $route_action;
@@ -290,7 +290,7 @@ class ConventionalRoute extends Route
     /**
      * {@inheritDoc}
      */
-    public function defaultView(): string
+    public function defaultView() : string
     {
         return "/{$this->part_of_controller}/{$this->part_of_action}";
     }

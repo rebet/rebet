@@ -226,7 +226,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: [GET|HEAD] /get where [] not found. Invalid method POST given.
      */
     public function test_routing_get_invalidMethod()
@@ -341,7 +341,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route GET /parameter/requierd not found.
      */
     public function test_routing_parameterRequierdNothing()
@@ -351,7 +351,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route GET /parameter/requierd/ not found.
      */
     public function test_routing_parameterRequierdNothing2()
@@ -400,7 +400,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: [GET|HEAD] /parameter/where/{id} where {"id":"\/^[0-9]+$\/"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.
      */
     public function test_routing_parameterOptionInvalidWhere()
@@ -410,7 +410,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} where [] not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Gender.
      */
     public function test_routing_parameterOptionInvalidConvert()
@@ -474,7 +474,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route GET /method/with-param/ not found.
      */
     public function test_routing_methodWithParam()
@@ -487,7 +487,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/where/{id} where {"id":"\/^[0-9]+$\/"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.
      */
     public function test_routing_methodWithParamWhere()
@@ -500,7 +500,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} where [] not found. Routing parameter 'id' is requierd.
      */
     public function test_routing_methodWithMissmatchParam()
@@ -605,7 +605,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage View route [not-found] not found. An exception occurred while processing the view.
      */
     public function test_routing_viewNotFound()
@@ -657,7 +657,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.
      */
     public function test_routing_controllerAnnotationChannelReject()
@@ -667,7 +667,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationMethodGet not found. Routing method 'POST' not allowed.
      */
     public function test_routing_controllerAnnotationMethodReject()
@@ -677,7 +677,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.
      */
     public function test_routing_controllerAnnotationWhereReject()
@@ -687,7 +687,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.
      */
     public function test_routing_controllerAnnotationClassWhereReject()
@@ -697,7 +697,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::annotationNotRouting ] is not routing.
      */
     public function test_routing_controllerAnnotationNotRouting()
@@ -707,7 +707,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::undefinedAction ] not exists.
      */
     public function test_routing_controllerUndefinedAction()
@@ -717,7 +717,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::privateCall ] not accessible.
      */
     public function test_routing_controllerPrivateCall()
@@ -727,7 +727,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::protectedCall ] not accessible.
      */
     public function test_routing_controllerProtectedCall()
@@ -770,7 +770,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_controllerWhereReject()
@@ -850,7 +850,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: \Rebet\Tests\Routing\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_defaultConventionalRouteWhereRejectTop()
@@ -865,7 +865,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route: \Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
@@ -894,7 +894,7 @@ class RouterTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \Rebet\Routing\RouteNotFoundException
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
      * @expectedExceptionMessage Route not found : Action [ \Rebet\Tests\Routing\RouterTestController::annotationAliasOnly ] accespt only alias access.
      */
     public function test_routing_defaultConventionalRouteAliasOnly()

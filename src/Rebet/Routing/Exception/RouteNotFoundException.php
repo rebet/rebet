@@ -1,6 +1,7 @@
 <?php
-namespace Rebet\Routing;
+namespace Rebet\Routing\Exception;
 
+use Rebet\Common\Exception\RuntimeException;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
@@ -15,14 +16,14 @@ use Rebet\Http\Response\ProblemResponse;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class RouteNotFoundException extends \RuntimeException implements ProblemRespondable
+class RouteNotFoundException extends RuntimeException implements ProblemRespondable
 {
     /**
      * {@inheritDoc}
      */
-    public function __construct($message, $code = null, $previous = null)
+    public function __construct(string $message, ?\Throwable $previous = null, int $code = 404)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $previous, $code);
     }
 
     /**

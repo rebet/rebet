@@ -3,7 +3,7 @@ namespace Rebet\Routing\Route;
 
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
-use Rebet\Routing\RouteNotFoundException;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\View\View;
 
 /**
@@ -29,7 +29,7 @@ class ViewRoute extends ClosureRoute
         parent::__construct([], $uri, function (Request $request) use ($self, $name, $args) {
             $view = View::of($name);
             if (!$view->exists()) {
-                throw new RouteNotFoundException("View route [{$name}] not found. An exception occurred while processing the view.", 404, $e);
+                throw RouteNotFoundException::by("View route [{$name}] not found. An exception occurred while processing the view.");
             }
             return Responder::toResponse($view->with(array_merge($request->input(), $request->attributes->all(), $args)));
         });

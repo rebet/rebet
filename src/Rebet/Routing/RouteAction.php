@@ -6,6 +6,7 @@ use Rebet\Common\Reflector;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\Route;
 
 /**
@@ -89,11 +90,11 @@ class RouteAction
             $default_value = $optional ? $parameter->getDefaultValue() : null ;
             $origin        = $vars->has($name) ? $vars->get($name) : $default_value ;
             if (!$optional && $origin === null) {
-                throw new RouteNotFoundException("{$this->route} not found. Routing parameter '{$name}' is requierd.");
+                throw RouteNotFoundException::by("{$this->route} not found. Routing parameter '{$name}' is requierd.");
             }
             $converted = Reflector::convert($origin, $type);
             if ($origin !== null && $converted === null) {
-                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
+                throw RouteNotFoundException::by("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
             }
             $args[$name] = $converted;
         }

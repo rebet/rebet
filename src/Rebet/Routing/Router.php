@@ -11,6 +11,7 @@ use Rebet\Http\FallbackException;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Routing\Route\MethodRoute;
@@ -470,7 +471,7 @@ class Router
             }
         }
 
-        throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
+        throw RouteNotFoundException::by("Route {$request->getMethod()} {$request_uri} not found.");
     }
     
     /**
