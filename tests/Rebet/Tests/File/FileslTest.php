@@ -2,9 +2,8 @@
 namespace Rebet\Tests\File;
 
 use org\bovigo\vfs\vfsStream;
+use Rebet\File\Exception\ZipArchiveException;
 use Rebet\File\Files;
-use Rebet\File\ZipArchiveException;
-
 use Rebet\Tests\RebetTestCase;
 
 class FilesTest extends RebetTestCase

@@ -1,19 +1,17 @@
 <?php
-namespace Rebet\Config\Exception;
+namespace Rebet\File\Exception;
 
 use Rebet\Common\Exception\RuntimeException;
 
 /**
- * Config Not Define Exception Class
- *
- * Required It is thrown if the specified setting value is blank.
+ * Zip Archive Exception
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class ConfigNotDefineException extends RuntimeException
+class ZipArchiveException extends RuntimeException
 {
     public function __construct(string $message, ?\Throwable $previous = null, int $code = 500)
     {

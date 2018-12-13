@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\File;
 
+use Rebet\File\Exception\ZipArchiveException;
+
 /**
  * ファイル関連 ユーティリティ クラス
  *
@@ -52,7 +54,7 @@ class Files
      * @param  string $zipPath ZIPファイルパス
      * @param  string $destDir 展開先ディレクトリパス
      * @return void
-     * @throws Rebet\File\ZipArchiveException
+     * @throws Rebet\File\Exception\ZipArchiveException
      */
     public static function unzip(string $zipPath, string $destDir) : void
     {
@@ -67,7 +69,7 @@ class Files
      *
      * @param int|bool $code 成否及びエラーコード
      * @param ?string $messsage エラー発生時のメッセージ（デフォルト： 'ZipArchive error.'）
-     * @throws Rebet\File\ZipArchiveException
+     * @throws Rebet\File\Exception\ZipArchiveException
      */
     private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
     {
@@ -75,7 +77,7 @@ class Files
             return;
         }
         if ($code === false) {
-            throw new ZipArchiveException($message);
+            throw ZipArchiveException::by($message);
         }
         switch ($code) {
             case \ZipArchive::ER_OK:          return;
@@ -105,7 +107,7 @@ class Files
             default: $message                          = "{$message} (Unknown reason)"; break;
         }
 
-        throw new ZipArchiveException($message, $code);
+        throw ZipArchiveException::by($message)->code($code);
     }
 
     /**
@@ -119,7 +121,7 @@ class Files
      *                                    　 （デフォルト：null = function($path) { return true; }; = 全データ格納）
      * @param  number   $outDirPermission ZIP格納ディレクトリ自動生成時のパーミッション（デフォルト：0775）
      * @return void
-     * @throws Rebet\File\ZipArchiveException
+     * @throws Rebet\File\Exception\ZipArchiveException
      */
     public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?\Closure $filter = null, int $outDirPermission = 0775) : void
     {

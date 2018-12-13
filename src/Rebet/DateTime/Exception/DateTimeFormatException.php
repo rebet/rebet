@@ -13,7 +13,7 @@ use Rebet\Common\Exception\RuntimeException;
  */
 class DateTimeFormatException extends RuntimeException
 {
-    public function __construct($message, $previous = null, $code = 500)
+    public function __construct(string $message, ?\Throwable $previous = null, int $code = 500)
     {
         parent::__construct($message, $previous, $code);
     }
