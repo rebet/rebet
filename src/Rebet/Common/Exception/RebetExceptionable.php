@@ -4,6 +4,8 @@ namespace Rebet\Common\Exception;
 /**
  * Rebet Exceptionable Trait
  *
+ * @see RebetException
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -71,10 +73,10 @@ trait RebetExceptionable
             try {
                 $appendix = json_encode($this->appendix);
                 $appendix = json_last_error() === JSON_ERROR_NONE ? $appendix : '(Can not stringize)' ;
-                $string   = preg_replace('/^Stack trace:$/mu', "Appendix:\n{$appendix}\nStack trace:", $string, 1);
             } catch (\Exception $e) {
-                $string   = preg_replace('/^Stack trace:$/mu', "Appendix:\n(Can not stringize)\nStack trace:", $string, 1);
+                $appendix = '(Can not stringize)';
             }
+            $string = preg_replace('/^Stack trace:$/mu', "Appendix:\n{$appendix}\nStack trace:", $string, 1);
         }
         return $string;
     }
