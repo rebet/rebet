@@ -958,13 +958,13 @@ class RouterTest extends RebetTestCase
             Router::get('/method/public-call', 'RouterTestController@publicCall');
             Router::controller('/controller/namespace/short', 'RouterTestController');
             Router::default(ConventionalRoute::class);
-        })->fallback(function (Request $request, ?Route $route, \Throwable $e) {
+        })->fallback(function (Request $request, \Throwable $e) {
             return Responder::toResponse('fallback prefix');
         });
 
         Router::rules('web')->routing(function () {
             Router::get('/get', function () { return 'Content: /get'; });
-        })->fallback(function (Request $request, ?Route $route, \Throwable $e) {
+        })->fallback(function (Request $request, \Throwable $e) {
             return Responder::toResponse('fallback');
         });
 

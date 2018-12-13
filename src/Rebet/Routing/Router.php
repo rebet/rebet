@@ -373,7 +373,7 @@ class Router
         } catch (FallbackException $e) {
             return $e->redirect();
         } catch (\Throwable $e) {
-            return static::handleFallback($request, $route, $e);
+            return static::handleFallback($request, $e);
         }
     }
     
@@ -381,14 +381,13 @@ class Router
      * Handle fallback.
      *
      * @param Request $request
-     * @param Route $route
      * @param \Throwable $e
      * @return Response
      */
-    protected static function handleFallback(Request $request, ?Route $route, \Throwable $e) : Response
+    protected static function handleFallback(Request $request, \Throwable $e) : Response
     {
         if (empty(static::$fallback)) {
-            return static::handleDefaultFallback($request, $route, $e);
+            return static::handleDefaultFallback($request, $e);
         }
 
         $root_fallback = null;
@@ -398,14 +397,14 @@ class Router
                 $root_fallback = $fallback;
             }
             if (Strings::startsWith($request_uri, "{$prefix}/")) {
-                return $fallback($request, $route, $e);
+                return $fallback($request, $e);
             }
         }
         if ($root_fallback) {
-            return $root_fallback($request, $route, $e);
+            return $root_fallback($request, $e);
         }
 
-        return static::handleDefaultFallback($request, $route, $e);
+        return static::handleDefaultFallback($request, $e);
     }
 
     /**
@@ -416,12 +415,12 @@ class Router
      * @param \Throwable $e
      * @return Response
      */
-    protected static function handleDefaultFallback(Request $request, ?Route $route, \Throwable $e) : Response
+    protected static function handleDefaultFallback(Request $request, \Throwable $e) : Response
     {
         $fallback = static::config('default_fallback_handler', false);
         if ($fallback) {
             $fallback = \Closure::fromCallable($fallback);
-            return $fallback($request, $route, $e);
+            return $fallback($request, $e);
         }
         throw $e;
     }
