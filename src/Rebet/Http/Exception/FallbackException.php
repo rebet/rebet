@@ -2,6 +2,7 @@
 namespace Rebet\Http\Exception;
 
 use Rebet\Common\Exception\RuntimeException;
+use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 
