@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http\Response;
 
+use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Http\Response;
 
@@ -159,10 +160,10 @@ class ProblemResponse extends JsonResponse
      * Get the problem details data of given key.
      *
      * @param string $key
-     * @return void
+     * @return mixed
      */
-    public function getProblem(string $key)
+    public function getProblem(?string $key = null)
     {
-        return $this->problem[$key] ?? null;
+        return Reflector::get($this->problem, $key);
     }
 }

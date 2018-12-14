@@ -25,7 +25,7 @@ abstract class FallbackHandler
     {
         switch (true) {
             case $e instanceof ProblemRespondable:
-                return $this->report($request, $e->problem(), $e);
+                return $this->report($request, $response = $e->problem(), $e) ?? $response ;
             default:
                 break;
         }
@@ -35,14 +35,11 @@ abstract class FallbackHandler
     {
         switch (true) {
             case $e instanceof FallbackException:
-                return $this->report($request, $e->redirect(), $e);
+                return $this->report($request, $response = $e->redirect(), $e) ?? $response ;
             default:
                 break;
         }
     }
 
-    protected function report(Request $request, Response $response, \Throwable $e) : Response
-    {
-        return $response;
-    }
+    abstract protected function report(Request $request, Response $response, \Throwable $e) : void ;
 }
