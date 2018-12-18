@@ -42,11 +42,10 @@ class FallbackException extends RuntimeException implements ProblemRespondable
      *
      * @param string $message
      * @param \Throwable $previous (default: null)
-     * @param int $code (default: 302)
      */
-    public function __construct(string $message, ?\Throwable $previous = null, int $code = 302)
+    public function __construct(string $message, ?\Throwable $previous = null)
     {
-        parent::__construct($message, $previous, $code);
+        parent::__construct($message, $previous);
     }
 
     /**

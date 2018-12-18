@@ -16,9 +16,9 @@ use Rebet\Http\Response\ProblemResponse;
  */
 class AuthenticateException extends RuntimeException implements ProblemRespondable
 {
-    public function __construct(string $message, ?\Throwable $previous = null, int $code = 403)
+    public function __construct(string $message, ?\Throwable $previous = null)
     {
-        parent::__construct($message, $previous, $code);
+        parent::__construct($message, $previous);
     }
     
     /**

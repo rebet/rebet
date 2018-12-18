@@ -100,7 +100,7 @@ class RouteAction
         }
 
         $response = $this->isFunction() ? $this->reflector->invokeArgs($args) : $this->reflector->invokeArgs($this->instance, $args);
-        $response = Responder::toResponse($response, $request);
+        $response = Responder::toResponse($response, 200, [], $request);
         return $this->instance && method_exists($this->instance, 'after') ? $this->instance->after($request, $response) : $response;
     }
 

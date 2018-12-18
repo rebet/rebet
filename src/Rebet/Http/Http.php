@@ -2,6 +2,7 @@
 namespace Rebet\Http;
 
 use Rebet\Config\Configurable;
+use Rebet\Http\Exception\HttpException;
 
 /**
  * Http Status Class
@@ -13,14 +14,14 @@ use Rebet\Config\Configurable;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class HttpStatus
+class Http
 {
     use Configurable;
 
     public static function defaultConfig() : array
     {
         return [
-            'http_status' => [
+            'statuses' => [
                 100 => 'Continue',
                 101 => 'Switching Protocols',
                 102 => 'Processing',
@@ -97,9 +98,9 @@ class HttpStatus
      * @param integer $status
      * @return string|null
      */
-    public static function label(int $status) : ?string
+    public static function labelOf(int $status) : ?string
     {
-        return static::config("http_status.{$status}", false);
+        return static::config("statuses.{$status}", false);
     }
 
     /**
@@ -111,5 +112,20 @@ class HttpStatus
     public static function exists(int $status) : bool
     {
         return static::label($status) !== null ;
+    }
+
+    /**
+     * Immediately abort HTTP request handling by throws HttpException.
+     *
+     * @param int $status code of HTTP
+     * @param string|null $detail (default: null)
+     * @param string|null $title (default: Basic HTTP status label)
+     * @param \Throwable $previous (default: null)
+     * @return void
+     * @throws HttpException of given HTTP status code.
+     */
+    public static function abort(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null) : void
+    {
+        throw new HttpException($status, $message, $title, $previous);
     }
 }

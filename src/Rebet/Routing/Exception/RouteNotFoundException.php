@@ -21,9 +21,9 @@ class RouteNotFoundException extends RuntimeException implements ProblemResponda
     /**
      * {@inheritDoc}
      */
-    public function __construct(string $message, ?\Throwable $previous = null, int $code = 404)
+    public function __construct(string $message, ?\Throwable $previous = null)
     {
-        parent::__construct($message, $previous, $code);
+        parent::__construct($message, $previous);
     }
 
     /**

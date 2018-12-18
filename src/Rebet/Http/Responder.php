@@ -30,12 +30,14 @@ class Responder
      * Create a response for given data.
      *
      * @param mixed $data
+     * @param int $status code of HTTP (default: 200)
+     * @param array $headers (default: [])
      * @param Request|null (default: null for Request::current())
      * @return Response
      */
-    public static function toResponse($data, ?Request $request = null) : Response
+    public static function toResponse($data, int $status = 200, array $headers = [], ?Request $request = null) : Response
     {
-        return static::prepare(static::createResponseByTypeOf($data), $request);
+        return static::prepare(static::createResponseByTypeOf($data, $status, $headers), $request);
     }
 
     /**
@@ -54,28 +56,30 @@ class Responder
     /**
      * Create a response for given data type.
      *
-     * @param Request $request
      * @param mixed $data
+     * @param int $status code of HTTP (default: 200)
+     * @param array $headers (default: [])
+     * @param Request $request
      * @return Response
      */
-    protected static function createResponseByTypeOf($data) : Response
+    protected static function createResponseByTypeOf($data, int $status = 200, array $headers = []) : Response
     {
         if ($data instanceof Response) {
             return $data;
         }
         if ($data instanceof Renderable) {
-            return new BasicResponse($data->render());
+            return new BasicResponse($data->render(), $status, $headers);
         }
         if (is_callable($data)) {
-            return new StreamedResponse($data);
+            return new StreamedResponse($data, $status, $headers);
         }
         if (is_array($data)) {
-            return new JsonResponse($data);
+            return new JsonResponse($data, $status, $headers);
         }
         if ($data instanceof \JsonSerializable) {
-            return new JsonResponse($data->jsonSerialize());
+            return new JsonResponse($data->jsonSerialize(), $status, $headers);
         }
-        return new BasicResponse($data);
+        return new BasicResponse($data, $status, $headers);
     }
 
     /**

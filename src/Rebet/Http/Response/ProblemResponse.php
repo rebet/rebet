@@ -2,7 +2,7 @@
 namespace Rebet\Http\Response;
 
 use Rebet\Common\Reflector;
-use Rebet\Http\HttpStatus;
+use Rebet\Http\Http;
 use Rebet\Http\Response;
 
 /**
@@ -37,7 +37,7 @@ class ProblemResponse extends JsonResponse
      */
     public function __construct(int $status, ?string $type = null, ?string $title = null, array $headers = [], int $encoding_options = 0)
     {
-        $status_label = HttpStatus::label($status);
+        $status_label = Http::labelOf($status);
         if ($status_label === null) {
             throw new \LogicException("Invalid http status code [{$status}]");
         }
