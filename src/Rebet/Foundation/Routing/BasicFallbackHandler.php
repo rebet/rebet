@@ -79,17 +79,17 @@ EOS
 
             case HttpStatus::CLIENT_ERROR:
                 $reason = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Client Error' ;
-                Log::trace("HTTP {$status} {$reason} occurred.", [], $e);
+                Log::trace("HTTP {$status} {$reason} occurred.", ['request' => "{$request}"], $e);
                 return;
 
             case HttpStatus::SERVER_ERROR:
                 $reason = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Server Error' ;
-                Log::error("HTTP {$status} {$reason} occurred.", [], $e);
+                Log::error("HTTP {$status} {$reason} occurred.", ['request' => "{$request}"], $e);
                 return;
 
             default:
                 $reason = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Status Code' ;
-                Log::error("HTTP {$status} {$reason} occurred.", [], $e);
+                Log::error("HTTP {$status} {$reason} occurred.", ['request' => "{$request}"], $e);
                 return;
         }
     }
