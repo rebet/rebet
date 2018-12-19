@@ -166,7 +166,7 @@ namespace Rebet\Common {
         public static function dns_get_record(string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false) : array
         {
             if (isset(static::EMULATED_DNS[$hostname])) {
-                $c = Stream::of(static::EMULATED_DNS[$hostname]);
+                $c = Stream::of(static::EMULATED_DNS[$hostname], true);
                 return array_values($c->where(function ($v) use ($type) {
                     $vt = Reflector::get($v, 'type');
                     switch (true) {
