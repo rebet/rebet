@@ -24,12 +24,26 @@ use Rebet\View\View;
  */
 abstract class FallbackHandler
 {
+    /**
+     * Handle exception
+     *
+     * @param Request $request
+     * @param \Throwable $e
+     * @return Response
+     */
     public function handle(Request $request, \Throwable $e) : Response
     {
         return $request->expectsJson() ? $this->handleJson($request, $e) : $this->handleView($request, $e) ;
     }
 
-    protected function handleJson(Request $request, \Throwable $e) : ProblemResponse
+    /**
+     * Handle exception when client expects Json.
+     *
+     * @param Request $request
+     * @param \Throwable $e
+     * @return ProblemResponse
+     */
+    protected function handleJson(Request $request, \Throwable $e) : Response
     {
         $response = null;
         switch (true) {
@@ -37,18 +51,34 @@ abstract class FallbackHandler
                 $response = $e->problem();
                 break;
             default:
-                $response = $this->errorJson(500, $request, $e);
+                $response = $this->makeProblem(500, $request, $e);
                 break;
         }
         $this->report($request, $response, $e);
         return $response;
     }
 
-    protected function errorJson(int $status, Request $request, \Throwable $e) : ProblemResponse
+    /**
+     * Create a ProblemResponse from given HTTP status code.
+     * This method return the Problem Response (RFC7807 Problem Details for HTTP APIs).
+     *
+     * @param integer $status code of HTTP
+     * @param Request $request
+     * @param \Throwable $e
+     * @return ProblemResponse
+     */
+    protected function makeProblem(int $status, Request $request, \Throwable $e) : ProblemResponse
     {
         return Responder::problem($status)->detail($e->getMessage());
     }
 
+    /**
+     * Handle exception when client do not expects Json.
+     *
+     * @param Request $request
+     * @param \Throwable $e
+     * @return Response
+     */
     protected function handleView(Request $request, \Throwable $e) : Response
     {
         $response = null;
@@ -57,25 +87,35 @@ abstract class FallbackHandler
                 $response = $e->redirect();
                 break;
             case $e instanceof HttpException:
-                $response = $this->errorView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
+                $response = $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
                 break;
             case $e instanceof AuthenticateException:
-                $response = $this->errorView(403, null, $e->getMessage(), $request, $e);
+                $response = $this->makeView(403, null, $e->getMessage(), $request, $e);
                 break;
             case $e instanceof RouteNotFoundException:
-                $response = $this->errorView(404, null, $e->getMessage(), $request, $e);
+                $response = $this->makeView(404, null, $e->getMessage(), $request, $e);
                 break;
             default:
-                $response = $this->errorView(500, null, $e->getMessage(), $request, $e);
+                $response = $this->makeView(500, null, $e->getMessage(), $request, $e);
                 break;
         }
         $this->report($request, $response, $e);
         return $response;
     }
 
-    protected function errorView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
+    /**
+     * Create a error page view response for given HTTP status code.
+     *
+     * @param integer $status
+     * @param string|null $title
+     * @param string|null $detail
+     * @param Request $request
+     * @param \Throwable $e
+     * @return Response
+     */
+    protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Trans::get("message.error_views.{$status}.title") ?? $title ?? Http::labelOf($status) ?? 'Unknown Error' ;
+        $title  = Trans::get("message.error_views.{$status}.title") ?? $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error' ;
         $detail = Trans::get("message.error_views.{$status}.detail") ?? $detail ;
         $param  = [
             'status'    => $status,
@@ -89,17 +129,29 @@ abstract class FallbackHandler
             return Responder::toResponse($view->with($param), $status);
         }
 
-        $view = View::of("/errors/default");
-        if ($view->exists()) {
-            return Responder::toResponse($view->with($param), $status);
-        }
-
-        $html = <<<EOS
-EOS
-        ;
-        return Responder::toResponse($html, $status);
+        return $this->makeDefaultView($status, $title, $detail, $request, $e);
     }
 
+    /**
+     * Create a default error page view response using given HTTP status code.
+     *
+     * @param integer $status
+     * @param string $title
+     * @param string|null $detail
+     * @param Request $request
+     * @param \Throwable $e
+     * @return Response
+     */
+    abstract protected function makeDefaultView(int $status, string $title, ?string $detail, Request $request, \Throwable $e) : Response ;
+
+    /**
+     * Report an exception to destination where you want to.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param \Throwable $e
+     * @return void
+     */
     abstract protected function report(Request $request, Response $response, \Throwable $e) : void ;
 
     /**

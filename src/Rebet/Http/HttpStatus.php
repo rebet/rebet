@@ -14,14 +14,14 @@ use Rebet\Http\Exception\HttpException;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Http
+class HttpStatus
 {
     use Configurable;
 
     public static function defaultConfig() : array
     {
         return [
-            'statuses' => [
+            'reason_phrases' => [
                 100 => 'Continue',
                 101 => 'Switching Protocols',
                 102 => 'Processing',
@@ -86,6 +86,31 @@ class Http
     }
 
     /**
+     * 1xx (Informational) class
+     */
+    const INFORMATIONAL = 1;
+
+    /**
+     * 2xx (Successful) class
+     */
+    const SUCCESSFUL    = 2;
+
+    /**
+     * 3xx (Redirection) class
+     */
+    const REDIRECTION   = 3;
+
+    /**
+     * 4xx (Client Error) class
+     */
+    const CLIENT_ERROR  = 4;
+
+    /**
+     * 5xx (Server Error) class
+     */
+    const SERVER_ERROR  = 5;
+
+    /**
      * No instantiation
      */
     private function __construct()
@@ -93,14 +118,14 @@ class Http
     }
 
     /**
-     * Get the basic label of given status code.
+     * Get the Reason-Phrase of given status code.
      *
      * @param integer $status
      * @return string|null
      */
-    public static function labelOf(int $status) : ?string
+    public static function reasonPhraseOf(int $status) : ?string
     {
-        return static::config("statuses.{$status}", false);
+        return static::config("reason_phrases.{$status}", false);
     }
 
     /**
@@ -111,7 +136,73 @@ class Http
      */
     public static function exists(int $status) : bool
     {
-        return static::label($status) !== null ;
+        return static::reasonPhraseOf($status) !== null ;
+    }
+
+    /**
+     * Get the HTTP status code class.
+     *
+     * @param integer $status
+     * @return integer
+     */
+    public static function classOf(int $status) : int 
+    {
+        return (int)($status / 100);
+    }
+
+    /**
+     * It checks the given status is informational (1xx).
+     *
+     * @param integer $status
+     * @return boolean
+     */
+    public static function isInformational(int $status) : bool
+    {
+        return static::classOf($status) === static::INFORMATIONAL;
+    }
+
+    /**
+     * It checks the given status is Successful (2xx).
+     *
+     * @param integer $status
+     * @return boolean
+     */
+    public static function isSuccessful(int $status) : bool
+    {
+        return static::classOf($status) === static::SUCCESSFUL;
+    }
+
+    /**
+     * It checks the given status is Redirection (3xx).
+     *
+     * @param integer $status
+     * @return boolean
+     */
+    public static function isRedirection(int $status) : bool
+    {
+        return static::classOf($status) === static::REDIRECTION;
+    }
+
+    /**
+     * It checks the given status is Client Error (4xx).
+     *
+     * @param integer $status
+     * @return boolean
+     */
+    public static function isClientError(int $status) : bool
+    {
+        return static::classOf($status) === static::CLIENT_ERROR;
+    }
+
+    /**
+     * It checks the given status is Server Error (5xx).
+     *
+     * @param integer $status
+     * @return boolean
+     */
+    public static function isServerError(int $status) : bool
+    {
+        return static::classOf($status) === static::SERVER_ERROR;
     }
 
     /**

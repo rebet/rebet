@@ -37,7 +37,7 @@ class ProblemResponse extends JsonResponse
      */
     public function __construct(int $status, ?string $type = null, ?string $title = null, array $headers = [], int $encoding_options = 0)
     {
-        $status_label = Http::labelOf($status);
+        $status_label = HttpStatus::reasonPhraseOf($status);
         if ($status_label === null) {
             throw new \LogicException("Invalid http status code [{$status}]");
         }

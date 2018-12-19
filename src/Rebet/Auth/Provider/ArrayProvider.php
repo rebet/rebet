@@ -65,7 +65,7 @@ class ArrayProvider extends AuthProvider
      */
     public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
     {
-        $this->users          = Stream::valueOf($users, true);
+        $this->users          = Stream::of($users, true);
         $this->signin_id_name = $signin_id_name ?? static::config('signin_id_name') ;
         $this->precondition   = $precondition ?? static::config('precondition');
     }

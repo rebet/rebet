@@ -151,10 +151,10 @@ class View implements Renderable
     {
         if (is_array($key)) {
             $this->data = array_merge($this->data, array_map(function ($value) {
-                return Stream::valueOf($value) ;
+                return Stream::of($value) ;
             }, $key));
         } else {
-            $this->data[$key] = Stream::valueOf($value);
+            $this->data[$key] = Stream::of($value);
         }
         return $this;
     }

@@ -181,7 +181,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param boolean $safety (default: false)
      * @return self
      */
-    public static function valueOf($origin, bool $safety = false) : self
+    public static function of($origin, bool $safety = false) : self
     {
         return new static(static::peel($origin), null, $safety) ;
     }
@@ -409,7 +409,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $origin = $this->origin();
         return new \ArrayIterator(array_map(
             function ($value) {
-                return static::valueOf($value);
+                return static::of($value);
             },
             is_object($origin) ? get_object_vars($origin) : (array)$origin
         ));

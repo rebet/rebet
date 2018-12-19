@@ -44,7 +44,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
     {
         $this->status = $status;
         $this->detail = $detail;
-        $this->title  = $title ?? Http::labelOf($status) ?? 'Unknown Error';
+        $this->title  = $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
         $message      = $detail ? "{$this->status} {$this->title}: {$detail}" : "{$this->status} {$this->title}" ;
         parent::__construct($message, $previous);
     }

@@ -419,7 +419,7 @@ class Router
     {
         $fallback = static::config('default_fallback_handler', false);
         if ($fallback) {
-            $fallback = \Closure::fromCallable($fallback);
+            $fallback = is_callable($fallback) ? \Closure::fromCallable($fallback) : Reflector::instantiate($fallback) ;
             return $fallback($request, $e);
         }
         throw $e;

@@ -29,19 +29,19 @@ class StreamTest extends RebetTestCase
     {
         parent::setUp();
         DateTime::setTestNow('2001/02/03 04:05:06');
-        $this->null       = Stream::valueOf(null);
-        $this->int        = Stream::valueOf(123);
-        $this->float      = Stream::valueOf(1234.5678);
-        $this->string     = Stream::valueOf("Hello Rebet");
-        $this->text       = Stream::valueOf("Hello\nRebet");
-        $this->html       = Stream::valueOf("<h1>Hello Rebet</h1>");
-        $this->json       = Stream::valueOf("[1 ,2, 3]");
-        $this->enum       = Stream::valueOf(Gender::MALE());
-        $this->enums      = Stream::valueOf(Gender::lists());
-        $this->datetime_o = Stream::valueOf(DateTime::now());
-        $this->datetime_s = Stream::valueOf('2001/02/03 04:05:06');
-        $this->array      = Stream::valueOf([1, 2, 3]);
-        $this->map        = Stream::valueOf([
+        $this->null       = Stream::of(null);
+        $this->int        = Stream::of(123);
+        $this->float      = Stream::of(1234.5678);
+        $this->string     = Stream::of("Hello Rebet");
+        $this->text       = Stream::of("Hello\nRebet");
+        $this->html       = Stream::of("<h1>Hello Rebet</h1>");
+        $this->json       = Stream::of("[1 ,2, 3]");
+        $this->enum       = Stream::of(Gender::MALE());
+        $this->enums      = Stream::of(Gender::lists());
+        $this->datetime_o = Stream::of(DateTime::now());
+        $this->datetime_s = Stream::of('2001/02/03 04:05:06');
+        $this->array      = Stream::of([1, 2, 3]);
+        $this->map        = Stream::of([
             'foo'    => 'FOO',
             'parent' => [
                 'child' => [
@@ -52,21 +52,21 @@ class StreamTest extends RebetTestCase
             'gender'  => Gender::MALE(),
             'boolean' => true,
         ]);
-        $this->rs          = Stream::valueOf([
+        $this->rs          = Stream::of([
             new StreamTest_User(1, 'Foo', 'First', 'foo@hoge.com', Gender::MALE(), new DateTime('1976-08-12')),
             new StreamTest_User(2, 'Bar', 'Second', 'bar@moge.net', Gender::FEMALE(), new DateTime('1993-11-27')),
             new StreamTest_User(3, 'Baz', 'Third', 'baz@piyo.co.jp', Gender::MALE(), new DateTime('2000-02-05')),
             new StreamTest_User(4, 'Qux', 'Fourth', 'qux@hoge.com', Gender::FEMALE(), new DateTime('1968-07-18')),
             new StreamTest_User(5, 'Quxx', 'Fifth', 'quxx@moge.net', Gender::FEMALE(), new DateTime('1983-04-21')),
         ]);
-        $this->callable    = Stream::valueOf(function (string $value) { return "Hello {$value}"; });
-        $this->destructive = Stream::valueOf(new StreamTest_DestructiveMock());
-        $this->safty       = Stream::valueOf("Hello Rebet", true);
+        $this->callable    = Stream::of(function (string $value) { return "Hello {$value}"; });
+        $this->destructive = Stream::of(new StreamTest_DestructiveMock());
+        $this->safty       = Stream::of("Hello Rebet", true);
     }
 
-    public function test_valueOf()
+    public function test_of()
     {
-        $this->assertInstanceOf(Stream::class, Stream::valueOf(123));
+        $this->assertInstanceOf(Stream::class, Stream::of(123));
     }
 
     public function test_promise()

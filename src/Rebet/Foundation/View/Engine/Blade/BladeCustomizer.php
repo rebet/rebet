@@ -98,7 +98,7 @@ class BladeCustomizer
         // Under @field:
         //   @errors ... @else ... @enderrors
         $blade->code('errors', 'if(', function ($errors, $name = null) use (&$field) {
-            $errors = Stream::valueOf($errors);
+            $errors = Stream::of($errors);
             $name   = $name ?? $field ;
             return $name ? $errors[$name]->isset() : !$errors->empty() ;
         }, '):', '$errors ?? null');
@@ -125,7 +125,7 @@ class BladeCustomizer
         //   @error('<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('<div class="error">:messages</div>', '* :message<br>')
         $blade->code('error', 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors                  = Stream::valueOf($errors);
+            $errors                  = Stream::of($errors);
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
             $names = $names ?? '*' ;
@@ -164,7 +164,7 @@ class BladeCustomizer
         //   @iferror('color: red;')
         //   @iferror('color: red;', 'color: gleen;')
         $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors                  = Stream::valueOf($errors);
+            $errors                  = Stream::of($errors);
             [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $iferror ?? '' ;
         }, ');', '$errors ?? null');
@@ -182,7 +182,7 @@ class BladeCustomizer
         //   @e('class')
         //   @e('icon')
         $blade->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors           = Stream::valueOf($errors);
+            $errors           = Stream::of($errors);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
@@ -201,7 +201,7 @@ class BladeCustomizer
         //   @input
         //   @input($user->email)
         $blade->code('input', 'echo(', function ($input, ...$args) use (&$field) {
-            $input            = Stream::valueOf($input);
+            $input            = Stream::of($input);
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
         }, ');', '$input ?? null');
