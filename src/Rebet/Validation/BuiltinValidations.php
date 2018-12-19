@@ -9,6 +9,7 @@ use Rebet\Common\Utils;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Stream\Stream;
 use Rebet\Translation\FileLoader;
 use Rebet\Translation\Translator;
 
@@ -1420,10 +1421,10 @@ class BuiltinValidations extends Validations
      */
     public function validationCorrelatedRequired(Context $c, array $fields, int $at_least) : bool
     {
-        $correlations = $c->pluckCorrelated($fields);
-        $inputed      = $correlations->filter(function ($row) { return !Context::isBlank($row['value']); });
+        $correlations = Stream::of($c->pluckCorrelated($fields), true);
+        $inputed      = $correlations->where(function ($row) { return !Context::isBlank($row['value']); });
         return $inputed->count() >= $at_least ? true : $c->appendError('CorrelatedRequired', [
-            'attribute' => $correlations->pluck('label')->all(),
+            'attribute' => $correlations->pluck('label')->return(),
             'at_least'  => $at_least,
         ]);
     }
@@ -1437,11 +1438,11 @@ class BuiltinValidations extends Validations
      */
     public function validationCorrelatedUnique(Context $c, array $fields) : bool
     {
-        $correlations = $c->pluckCorrelated($fields);
-        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function ($value) { return Context::isBlank($value) ? '' : $value ; })->all());
+        $correlations = Stream::of($c->pluckCorrelated($fields), true);
+        $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function ($value) { return Context::isBlank($value) ? '' : $value ; })->return());
         return empty($duplicate) ? true : $c->appendError('CorrelatedUnique', [
-            'attribute' => $correlations->pluck('label')->all(),
-            'duplicate' => $correlations->filter(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->all(),
+            'attribute' => $correlations->pluck('label')->return(),
+            'duplicate' => $correlations->where(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->return(),
         ]) ;
     }
 }

@@ -2,7 +2,6 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
-use Rebet\Common\Collection;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
@@ -111,7 +110,7 @@ class Validator
      * @param Context $context
      * @param array $rules
      * @param Rule|null $spot_validations
-     * @return Collection|null
+     * @return ValidData
      */
     protected function _validate(Context $context, $rules, ?Rule $spot_validations) : ValidData
     {
@@ -138,7 +137,7 @@ class Validator
                 foreach (array_keys($context->value) as $key) {
                     $data[$key] = $this->_validate($context->nest($key), $nests, $spot_validations);
                 }
-                $data = new Collection($data);
+                $data = new ValidData($data);
             } else {
                 $data = $context->value;
             }

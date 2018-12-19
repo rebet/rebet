@@ -4,6 +4,7 @@
  * テスト用モッククラスを定義
  */
 namespace Rebet\Common {
+    use Rebet\Stream\Stream;
     use Rebet\Tests\DieException;
     use Rebet\Tests\ExitException;
 
@@ -165,8 +166,8 @@ namespace Rebet\Common {
         public static function dns_get_record(string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false) : array
         {
             if (isset(static::EMULATED_DNS[$hostname])) {
-                $c = new Collection(static::EMULATED_DNS[$hostname]);
-                return array_values($c->filter(function ($v) use ($type) {
+                $c = Stream::of(static::EMULATED_DNS[$hostname]);
+                return array_values($c->where(function ($v) use ($type) {
                     $vt = Reflector::get($v, 'type');
                     switch (true) {
                         case DNS_ANY === $type: return true;
@@ -187,7 +188,7 @@ namespace Rebet\Common {
                         case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
                     }
                     return false;
-                })->toArray());
+                })->return());
             }
             return [];
         }

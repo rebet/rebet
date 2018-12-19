@@ -3,7 +3,6 @@ namespace Rebet\Validation;
 
 use Rebet\Common\Arrayable;
 use Rebet\Common\Arrays;
-use Rebet\Common\Collection;
 use Rebet\Common\Convertible;
 use Rebet\Common\Describable;
 use Rebet\Common\Reflector;
@@ -100,8 +99,6 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
             return $this;
         }
         switch ($type) {
-            case Collection::class:
-                return $this->toCollection();
             case 'array':
                 return $this->toArray();
         }

@@ -106,18 +106,6 @@ trait Arrayable
     }
 
     /**
-     * Get the collection of items as a collection.
-     *
-     * @return array
-     */
-    public function toCollection() : Collection
-    {
-        return new Collection(array_map(function ($value) {
-            return method_exists($value, 'toCollection') ? $value->toCollection() : $value;
-        }, $this->container()));
-    }
-
-    /**
      * Get the collection of items as a plain array.
      *
      * @return array

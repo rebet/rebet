@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Stream\Stream;
+
 /**
  * Array Utility Class
  *
@@ -313,9 +315,7 @@ class Arrays
 
         $results = [];
         foreach ($array as $values) {
-            if ($values instanceof Collection) {
-                $values = $values->all();
-            } elseif (! is_array($values)) {
+            if (! is_array($values)) {
                 continue;
             }
             $results = array_merge($results, $values);
@@ -513,7 +513,7 @@ class Arrays
         }
         $result = [];
         foreach ($array as $item) {
-            $item = $item instanceof Collection ? $item->all() : $item;
+            $item = $item instanceof Stream ? $item->return() : $item;
             if (! is_array($item)) {
                 $result[] = $item;
             } elseif ($depth === 1) {
@@ -640,7 +640,7 @@ class Arrays
     }
 
     /**
-     * Convert to array from Collection or Arrayable.
+     * Convert to array from Arrayable.
      *
      * @param  mixed  $items
      * @return array|null
@@ -652,9 +652,6 @@ class Arrays
         }
         if (is_array($items)) {
             return $items;
-        }
-        if ($items instanceof Collection) {
-            return $items->all();
         }
         if (method_exists($items, 'toArray')) {
             return $items->toArray();

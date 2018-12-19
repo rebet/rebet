@@ -2,7 +2,6 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
-use Rebet\Common\Collection;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
@@ -381,12 +380,12 @@ class Context
     }
 
     /**
-     * Pluck the correlated fields value and label as Collection.
+     * Pluck the correlated fields value and label.
      *
      * @param array $fields
-     * @return Collection [$field => ['field' => $field, 'value' => $value, 'label' => $label], ...]
+     * @return array [$field => ['field' => $field, 'value' => $value, 'label' => $label], ...]
      */
-    public function pluckCorrelated(array $fields) : Collection
+    public function pluckCorrelated(array $fields) : array
     {
         $list = [];
         foreach ($fields as $field) {
@@ -396,7 +395,7 @@ class Context
                 'label' => $this->label($field),
             ];
         }
-        return new Collection($list);
+        return $list;
     }
 
     /**
