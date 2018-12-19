@@ -125,7 +125,7 @@ class HttpStatus
      */
     public static function reasonPhraseOf(int $status) : ?string
     {
-        return static::config("reason_phrases.{$status}", false);
+        return static::config("reason_phrases")[$status] ?? null ;
     }
 
     /**
