@@ -11,6 +11,7 @@ use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;
+use Rebet\Stream\Stream;
 use Rebet\Translation\Trans;
 use Rebet\View\View;
 
@@ -115,18 +116,17 @@ abstract class FallbackHandler
      */
     protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Trans::get("message.errors.{$status}.title") ?? $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error' ;
+        $title  = Trans::get("message.errors.{$status}.title") ?? $title ;
         $detail = Trans::get("message.errors.{$status}.detail") ?? $detail ;
-        $param  = [
-            'status'    => $status,
-            'title'     => $title,
-            'detail'    => $detail,
-            'exception' => $e
-        ];
 
         $view = View::of("/errors/{$status}");
         if ($view->exists()) {
-            return Responder::toResponse($view->with($param), $status);
+            return Responder::toResponse($view->with([
+                'status'    => $status,
+                'title'     => $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error',
+                'detail'    => $detail,
+                'exception' => $e
+            ]), $status);
         }
 
         return $this->makeDefaultView($status, $title, $detail, $request, $e);
@@ -136,14 +136,19 @@ abstract class FallbackHandler
      * Create a default error page view response using given HTTP status code.
      *
      * @param integer $status
-     * @param string $title
+     * @param string|null $title
      * @param string|null $detail
      * @param Request $request
      * @param \Throwable $e
      * @return Response
      */
-    protected function makeDefaultView(int $status, string $title, ?string $detail, Request $request, \Throwable $e) : Response
+    protected function makeDefaultView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
+        $custom_title = true;
+        if ($title === null) {
+            $title        = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
+            $custom_title = false;
+        }
         $view = View::of("/errors/default");
         if ($view->exists()) {
             return Responder::toResponse($view->with([
@@ -155,7 +160,10 @@ abstract class FallbackHandler
         }
 
         $home   = $request->getRoutePrefix().'/' ;
-        $title  = Stream::of($title, true)->escape();
+        $title  = Stream::of($title, true)->escape()->nl2br();
+        if (!$custom_title) {
+            $title = $title->text('<span class="status">'.$status.'</span>%s');
+        }
         $detail = Stream::of($detail, true)->escape()->nl2br()->text('<div class="detail">%s</div>')->default('');
         $html   = <<<EOS
 <!DOCTYPE html>
@@ -252,7 +260,7 @@ abstract class FallbackHandler
 <body>
     <div class="container">
         <div class="contents">
-            <h2 class="title"><span class="status">{$status}</span>{$title}</h2>
+            <h2 class="title">{$title}</h2>
             {$detail}
             <div class="action">
                 <a class="home outline-outward" href="{$home}"><i class="fas fa-arrow-alt-circle-left"></i></a>
