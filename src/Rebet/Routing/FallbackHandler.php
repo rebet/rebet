@@ -142,7 +142,130 @@ abstract class FallbackHandler
      * @param \Throwable $e
      * @return Response
      */
-    abstract protected function makeDefaultView(int $status, string $title, ?string $detail, Request $request, \Throwable $e) : Response ;
+    protected function makeDefaultView(int $status, string $title, ?string $detail, Request $request, \Throwable $e) : Response
+    {
+        $view = View::of("/errors/default");
+        if ($view->exists()) {
+            return Responder::toResponse($view->with([
+                'status'    => $status,
+                'title'     => $title,
+                'detail'    => $detail,
+                'exception' => $e
+            ]), $status);
+        }
+
+        $home   = $request->getRoutePrefix().'/' ;
+        $title  = Stream::of($title, true)->escape();
+        $detail = Stream::of($detail, true)->escape()->nl2br()->text('<div class="detail">%s</div>')->default('');
+        $html   = <<<EOS
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css"> 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <style type="text/css">
+    <!--
+    html {
+        font-family: sans-serif;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .contents {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .title {
+        font-weight: normal;
+        text-align: center;
+        color: #999;
+        font-size: 3rem;
+        margin: 10px;
+        line-height: 1em;
+    }
+    .title .status {
+        margin-right: 1rem;
+    }
+    .detail {
+        color: #bbb;
+        margin: 10px 20px 20px;
+    }
+    .action {
+        text-align: center;
+        margin: 10px;
+        line-height: 1em;
+    }
+    .home {
+        color: #999;
+        font-size: 2.5rem;
+    }
+    .outline-outward {
+        display: inline-block;
+        position: relative;
+
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        transform: translateZ(0);
+        box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+        transition-duration: .3s;
+    }
+    .outline-outward:before {
+        content: '';
+        z-index: -1;
+        position: absolute;
+        border: #999 solid 3px;
+        border-radius: 100%;
+        top: -5px;
+        right: -5px;
+        bottom: -5px;
+        left: -5px;
+        transition-duration: .3s;
+        transition-property: top right bottom left;
+    }
+    .outline-outward:hover {
+        color: #666;
+    }
+    .outline-outward:hover:before {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+    @media screen and (max-width: 768px) {
+        .title {
+            font-size: 2.3rem;
+        }
+        .title .status {
+            margin-right: 0px;
+            display: block;
+        }
+    }
+    -->
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="contents">
+            <h2 class="title"><span class="status">{$status}</span>{$title}</h2>
+            {$detail}
+            <div class="action">
+                <a class="home outline-outward" href="{$home}"><i class="fas fa-arrow-alt-circle-left"></i></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+EOS
+        ;
+
+        return Responder::toResponse($html, $status, [], $request);
+    }
 
     /**
      * Report an exception to destination where you want to.

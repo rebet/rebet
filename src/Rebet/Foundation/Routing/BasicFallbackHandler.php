@@ -1,14 +1,11 @@
 <?php
 namespace Rebet\Foundation\Routing;
 
-use Rebet\Foundation\App;
-use Rebet\Http\Request;
-use Rebet\Http\Responder;
-use Rebet\Http\Response;
-use Rebet\Routing\FallbackHandler;
-use Rebet\Stream\Stream;
 use Rebet\Http\HttpStatus;
+use Rebet\Http\Request;
+use Rebet\Http\Response;
 use Rebet\Log\Log;
+use Rebet\Routing\FallbackHandler;
 
 /**
  * Basic Fallback Handler Class
@@ -20,50 +17,6 @@ use Rebet\Log\Log;
  */
 class BasicFallbackHandler extends FallbackHandler
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function makeDefaultView(int $status, string $title, ?string $detail, Request $request, \Throwable $e) : Response
-    {
-        $view = View::of("/errors/default");
-        if ($view->exists()) {
-            return Responder::toResponse($view->with([
-                'status'    => $status,
-                'title'     => $title,
-                'detail'    => $detail,
-                'exception' => $e
-            ]), $status);
-        }
-
-        $home   = $request->getRoutePrefix().'/' ;
-        $title  = Stream::of($title, true)->escape();
-        $detail = Stream::of($detail, true)->escape()->nl2br()->text('<div class="detail">%s</div>');
-        $html  = <<<EOS
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <style type="text/css">
-    <!--
-    -->
-    </style>
-</head>
-<body>
-    <div class="contents">
-        <h2 class="title">{$status} {$title}</h2>
-        {$detail}
-        <a class="home" href="{$home}">HOME</a>
-    </div>
-</body>
-</html>
-EOS
-        ;
-
-        return Responder::toResponse($html, $status, [], $request);
-    }
-
     /**
      * {@inheritDoc}
      */
