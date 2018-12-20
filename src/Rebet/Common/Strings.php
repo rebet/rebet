@@ -247,14 +247,14 @@ class Strings
     }
     
     /**
-     * 指定の文字列をインデントします。
-     * ※対象の文字列が空の場合もインデントされます。
+     * Indent the given string.
+     * Note: Indented even when the target character string is empty.
      *
-     * @param string|null $string インデント対象文字列
-     * @param int $depth インデント文字数（デフォルト：1）
-     * @param string $char インデント文字（デフォルト：'\t'）
+     * @param string|null $string
+     * @param string $char for indent (default: '\t')
+     * @param int $depth (default: 1)
      */
-    public static function indent(?string $string, int $depth = 1, string $char = "\t") : ?string
+    public static function indent(?string $string, string $char = "\t", int $depth = 1) : ?string
     {
         if ($string === null) {
             return null;

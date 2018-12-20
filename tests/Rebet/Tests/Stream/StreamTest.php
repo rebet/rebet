@@ -425,8 +425,8 @@ class StreamTest extends RebetTestCase
         $this->assertSame('Hello R...', $this->string->cut(10)->return());
 
         // Strings::indent
-        $this->assertNull($this->null->indent(1, '> ')->return());
-        $this->assertSame("> Hello\n> Rebet", $this->text->indent(1, '> ')->return());
+        $this->assertNull($this->null->indent('> ')->return());
+        $this->assertSame("> Hello\n> Rebet", $this->text->indent('> ')->return());
 
         // default
         $this->assertSame('(null)', $this->null->_('default', '(null)')->return());

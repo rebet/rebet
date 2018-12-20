@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Foundation\Routing;
 
+use Rebet\Common\Strings;
 use Rebet\Http\HttpStatus;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -32,18 +33,23 @@ class BasicFallbackHandler extends FallbackHandler
 
             case HttpStatus::CLIENT_ERROR:
                 $reason = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Client Error' ;
-                Log::trace("HTTP {$status} {$reason} occurred.", ['request' => "{$request}"], $e);
+                Log::trace("HTTP {$status} {$reason} occurred.\n".$this->requestToString($request), [], $e);
                 return;
 
             case HttpStatus::SERVER_ERROR:
                 $reason = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Server Error' ;
-                Log::error("HTTP {$status} {$reason} occurred.", ['request' => "{$request}"], $e);
+                Log::error("HTTP {$status} {$reason} occurred.\n".$this->requestToString($request), [], $e);
                 return;
 
             default:
                 $reason = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Status Code' ;
-                Log::error("HTTP {$status} {$reason} occurred.", ['request' => "{$request}"], $e);
+                Log::error("HTTP {$status} {$reason} occurred.\n".$this->requestToString($request), [], $e);
                 return;
         }
+    }
+    
+    protected function requestToString(Request $request) : string
+    {
+        return Strings::indent("----- [HTTP REQUEST] -----\n{$request}\n--------------------------", '=> ');
     }
 }

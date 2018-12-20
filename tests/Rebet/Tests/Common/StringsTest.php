@@ -145,21 +145,21 @@ class StringsTest extends RebetTestCase
 
         $this->assertSame("\t1st", Strings::indent("1st"));
         $this->assertSame("\t1st\n\t2nd\n\t3rd", Strings::indent("1st\n2nd\n3rd"));
-        $this->assertSame("    1st\n    2nd\n    3rd", Strings::indent("1st\n2nd\n3rd", 1, '    '));
-        $this->assertSame(">>1st\n>>2nd\n>>3rd", Strings::indent("1st\n2nd\n3rd", 1, '>>'));
-        $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd", Strings::indent("1st\n2nd\n3rd", 2, '>>'));
+        $this->assertSame("    1st\n    2nd\n    3rd", Strings::indent("1st\n2nd\n3rd", '    '));
+        $this->assertSame(">>1st\n>>2nd\n>>3rd", Strings::indent("1st\n2nd\n3rd", '>>'));
+        $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd", Strings::indent("1st\n2nd\n3rd", '>>', 2));
 
         $this->assertSame("\n\t1st", Strings::indent("\n1st"));
         $this->assertSame("\n\t1st\n\t2nd\n\t3rd", Strings::indent("\n1st\n2nd\n3rd"));
-        $this->assertSame("\n    1st\n    2nd\n    3rd", Strings::indent("\n1st\n2nd\n3rd", 1, '    '));
-        $this->assertSame("\n>>1st\n>>2nd\n>>3rd", Strings::indent("\n1st\n2nd\n3rd", 1, '>>'));
-        $this->assertSame("\n>>>>1st\n>>>>2nd\n>>>>3rd", Strings::indent("\n1st\n2nd\n3rd", 2, '>>'));
+        $this->assertSame("\n    1st\n    2nd\n    3rd", Strings::indent("\n1st\n2nd\n3rd", '    '));
+        $this->assertSame("\n>>1st\n>>2nd\n>>3rd", Strings::indent("\n1st\n2nd\n3rd", '>>'));
+        $this->assertSame("\n>>>>1st\n>>>>2nd\n>>>>3rd", Strings::indent("\n1st\n2nd\n3rd", '>>', 2));
 
         $this->assertSame("\t1st\n", Strings::indent("1st\n"));
         $this->assertSame("\t1st\n\t2nd\n\t3rd\n", Strings::indent("1st\n2nd\n3rd\n"));
-        $this->assertSame("    1st\n    2nd\n    3rd\n", Strings::indent("1st\n2nd\n3rd\n", 1, '    '));
-        $this->assertSame(">>1st\n>>2nd\n>>3rd\n", Strings::indent("1st\n2nd\n3rd\n", 1, '>>'));
-        $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd\n", Strings::indent("1st\n2nd\n3rd\n", 2, '>>'));
+        $this->assertSame("    1st\n    2nd\n    3rd\n", Strings::indent("1st\n2nd\n3rd\n", '    '));
+        $this->assertSame(">>1st\n>>2nd\n>>3rd\n", Strings::indent("1st\n2nd\n3rd\n", '>>'));
+        $this->assertSame(">>>>1st\n>>>>2nd\n>>>>3rd\n", Strings::indent("1st\n2nd\n3rd\n", '>>', 2));
     }
 
     public function test_contains()

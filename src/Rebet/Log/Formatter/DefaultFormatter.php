@@ -32,13 +32,12 @@ class DefaultFormatter implements LogFormatter
             $message = Strings::rtrim(print_r($message, true), "\n");
         }
         $prefix = $log->now->format('Y-m-d H:i:s.u')." ".getmypid()." [{$log->level}] ";
-        $body   = $prefix.$message; // Strings::indent($message, 1, $prefix);
+        $body   = $prefix.$message; // Strings::indent($message, $prefix);
         
         if ($log->var) {
             $body .= Strings::indent(
                 "\n*** VAR ***".
                 "\n".Strings::rtrim(print_r($log->var, true), "\n"),
-                1,
                 "== " //"{$prefix}== "
             );
         }
@@ -47,11 +46,18 @@ class DefaultFormatter implements LogFormatter
             $body .= Strings::indent(
                 "\n*** EXTRA ***".
                 "\n".Strings::rtrim(print_r($log->extra, true), "\n"),
-                1,
                 "-- " //"{$prefix}-- "
             );
         }
         
+        if ($log->error) {
+            $body .= Strings::indent(
+                "\n*** EXCEPTION ***".
+                ($log->error instanceof \Throwable ? "\n{$log->error}" : "\n".Strings::rtrim(print_r($log->error, true), "\n")),
+                "** " //"{$prefix}** "
+            );
+        }
+
         return $body;
     }
 }
