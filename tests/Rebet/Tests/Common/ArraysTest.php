@@ -4,7 +4,6 @@ namespace Rebet\Tests\Common;
 use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
-use Rebet\Stream\Stream;
 use Rebet\Tests\Mock\CountableStub;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\Mock\IteratorAggregateStub;
@@ -85,16 +84,16 @@ class ArraysTest extends RebetTestCase
         $array = [['#foo', ['#bar']], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
         // Nested arrays are flattened alongside arrays
-        $array = [Stream::of(['#foo', '#bar']), ['#baz']];
+        $array = [new \ArrayObject(['#foo', '#bar']), ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
         // Nested arrays containing plain arrays are flattened
-        $array = [Stream::of(['#foo', ['#bar']]), ['#baz']];
+        $array = [new \ArrayObject(['#foo', ['#bar']]), ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
         // Nested arrays containing arrays are flattened
-        $array = [['#foo', Stream::of(['#bar'])], ['#baz']];
+        $array = [['#foo', new \ArrayObject(['#bar'])], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
         // Nested arrays containing arrays containing arrays are flattened
-        $array = [['#foo', Stream::of(['#bar', ['#zap']])], ['#baz']];
+        $array = [['#foo', new \ArrayObject(['#bar', ['#zap']])], ['#baz']];
         $this->assertEquals(['#foo', '#bar', '#zap', '#baz'], Arrays::flatten($array));
     }
 
@@ -495,11 +494,11 @@ class ArraysTest extends RebetTestCase
         $this->assertTrue(Arrays::exists([null], 0));
         $this->assertTrue(Arrays::exists(['a' => 1], 'a'));
         $this->assertTrue(Arrays::exists(['a' => null], 'a'));
-        $this->assertTrue(Arrays::exists(Stream::of(['a' => null]), 'a'));
+        $this->assertTrue(Arrays::exists(new \ArrayObject(['a' => null]), 'a'));
         $this->assertFalse(Arrays::exists([1], 1));
         $this->assertFalse(Arrays::exists([null], 1));
         $this->assertFalse(Arrays::exists(['a' => 1], 0));
-        $this->assertFalse(Arrays::exists(Stream::of(['a' => null]), 'b'));
+        $this->assertFalse(Arrays::exists(new \ArrayObject(['a' => null]), 'b'));
     }
 
     public function test_crossJoin()

@@ -1098,8 +1098,8 @@ class CollectionTest extends RebetTestCase
     public function testPluckWithArrayAccessValues()
     {
         $data = new Collection([
-            new TestArrayAccessImplementation(['name' => 'taylor', 'email' => 'foo']),
-            new TestArrayAccessImplementation(['name' => 'dayle', 'email' => 'bar']),
+            new \ArrayObject(['name' => 'taylor', 'email' => 'foo']),
+            new \ArrayObject(['name' => 'dayle', 'email' => 'bar']),
         ]);
 
         $this->assertEquals(['taylor' => 'foo', 'dayle' => 'bar'], $data->pluck('email', 'name')->all());

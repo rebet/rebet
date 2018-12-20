@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Common;
 
-use Rebet\Stream\Stream;
-
 /**
  * Array Utility Class
  *
@@ -353,7 +351,7 @@ class Arrays
      */
     public static function accessible($value)
     {
-        return is_array($value) || $value instanceof \ArrayAccess;
+        return is_array($value) || ($value instanceof \ArrayAccess && $value instanceof \Traversable);
     }
     
     /**
@@ -513,7 +511,7 @@ class Arrays
         }
         $result = [];
         foreach ($array as $item) {
-            $item = $item instanceof Stream ? $item->return() : $item;
+            $item = static::accessible($item) ? static::toArray($item) : $item ;
             if (! is_array($item)) {
                 $result[] = $item;
             } elseif ($depth === 1) {
