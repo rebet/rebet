@@ -21,9 +21,9 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public static function by(string $message) : RebetException
+    public static function by($reason) : RebetException
     {
-        return new static($message);
+        return new static($reason);
     }
 
     /**

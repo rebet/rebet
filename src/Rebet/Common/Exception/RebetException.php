@@ -16,10 +16,10 @@ interface RebetException
     /**
      * Create a Rebet Exception
      *
-     * @param string $message
+     * @param mixed $reason
      * @return self
      */
-    public static function by(string $message) : self ;
+    public static function by($reason) : self ;
     
     /**
      * Set the given previous exception.

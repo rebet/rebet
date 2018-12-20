@@ -2,10 +2,11 @@
 namespace Rebet\Http\Exception;
 
 use Rebet\Common\Exception\RuntimeException;
-use Rebet\Http\Http;
+use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
+use Rebet\Translation\Trans;
 
 /**
  * Http Exception Class
@@ -36,14 +37,14 @@ class HttpException extends RuntimeException implements ProblemRespondable
      * Http Exception.
      *
      * @param int $status code of HTTP
-     * @param string|null $detail (default: null)
+     * @param string|null $detail message or full transration key (default: null)
      * @param string|null $title (default: Basic HTTP status label)
      * @param \Throwable $previous (default: null)
      */
     public function __construct(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null)
     {
         $this->status = $status;
-        $this->detail = $detail;
+        $this->detail = Trans::get($detail) ?? $detail ;
         $this->title  = $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
         $message      = $detail ? "{$this->status} {$this->title}: {$detail}" : "{$this->status} {$this->title}" ;
         parent::__construct($message, $previous);

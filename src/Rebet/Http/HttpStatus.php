@@ -145,7 +145,7 @@ class HttpStatus
      * @param integer $status
      * @return integer
      */
-    public static function classOf(int $status) : int 
+    public static function classOf(int $status) : int
     {
         return (int)($status / 100);
     }
@@ -209,7 +209,7 @@ class HttpStatus
      * Immediately abort HTTP request handling by throws HttpException.
      *
      * @param int $status code of HTTP
-     * @param string|null $detail (default: null)
+     * @param string|null $detail message or full transration key (default: null)
      * @param string|null $title (default: Basic HTTP status label)
      * @param \Throwable $previous (default: null)
      * @return void

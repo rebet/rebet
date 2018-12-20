@@ -88,7 +88,7 @@ class Translator
     public function __construct(Loader $loader, ?string $locale = null, ?string $fallback_locale = null)
     {
         $this->loader          = $loader;
-        $this->locale          = $locale ?? static::config('default_locale') ;
+        $this->locale          = $locale ?? static::config('default_locale', false, 'en') ;
         $this->fallback_locale = $fallback_locale ?? static::config('fallback_locale', false, 'en') ;
     }
 
@@ -165,14 +165,17 @@ class Translator
      * This translator normally recursive search for translated text by given nested key.
      * If this behavior is not desirable, you can suppress recursive search by adding '!' to the end of group name.
      *
-     * @param string $key "{$group}.{$key}" or "{$group}!.{$key}"
+     * @param string|null $key "{$group}.{$key}" or "{$group}!.{$key}"
      * @param array $replacement (default: [])
      * @param int|string|null $selector (default: null)
      * @param string $locale
      * @return string|null
      */
-    public function get(string $key, array $replacement = [], $selector = null, ?string $locale = null) : ?string
+    public function get(?string $key, array $replacement = [], $selector = null, ?string $locale = null) : ?string
     {
+        if ($key === null) {
+            return null;
+        }
         [$group, $key]    = explode('.', $key, 2);
         $recursive_search = true;
         if (Strings::endsWith($group, '!')) {
