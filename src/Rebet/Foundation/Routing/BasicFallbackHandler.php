@@ -48,6 +48,12 @@ class BasicFallbackHandler extends FallbackHandler
         }
     }
     
+    /**
+     * Create a request string for logging.
+     *
+     * @param Request $request
+     * @return string
+     */
     protected function requestToString(Request $request) : string
     {
         return Strings::indent("----- [HTTP REQUEST] -----\n{$request}\n--------------------------", '=> ');
