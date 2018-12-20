@@ -254,7 +254,7 @@ abstract class Enum implements \JsonSerializable, Convertible
         $class      = get_called_class();
         $key        = "{$class}.{$field}.{$this->value}";
         $translated = static::translator()->get("enum.{$key}", [], null, $locale);
-        return $translated === $key ? $this->$field : $translated ;
+        return $translated === null ? $this->$field : $translated ;
     }
 
     /**
@@ -340,8 +340,8 @@ abstract class Enum implements \JsonSerializable, Convertible
             throw new \LogicException("Invalid enum const. {$class}::{$name} is not defined.");
         }
 
-        $args = $rc->getConstant($name);
-        $enum = new static(...$args);
+        $args       = $rc->getConstant($name);
+        $enum       = new static(...$args);
         $enum->name = $name;
 
         self::$enum_data_cache[$class][$name] = $enum;
@@ -471,7 +471,6 @@ abstract class Enum implements \JsonSerializable, Convertible
     {
         return self::fieldOf('label', $label, $translate, $locale);
     }
-    
     
     /**
      * Get an enum with the target name.

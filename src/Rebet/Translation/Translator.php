@@ -160,7 +160,7 @@ class Translator
 
     /**
      * Get the translation for the given key.
-     * If can not translate the given key then return the key without group.
+     * If can not translate the given key then return null.
      *
      * This translator normally recursive search for translated text by given nested key.
      * If this behavior is not desirable, you can suppress recursive search by adding '!' to the end of group name.
@@ -169,9 +169,9 @@ class Translator
      * @param array $replacement (default: [])
      * @param int|string|null $selector (default: null)
      * @param string $locale
-     * @return string
+     * @return string|null
      */
-    public function get(string $key, array $replacement = [], $selector = null, ?string $locale = null) : string
+    public function get(string $key, array $replacement = [], $selector = null, ?string $locale = null) : ?string
     {
         [$group, $key]    = explode('.', $key, 2);
         $recursive_search = true;
@@ -194,9 +194,9 @@ class Translator
             if ($recursive_search && Strings::contains($key, '.')) {
                 $parent_key = Strings::lbtrim($key, '.');
                 $line       = $this->get("{$group}.{$parent_key}", $replacement, $selector, $locale);
-                return $line === $parent_key ? $key : $line ;
+                return $line === $parent_key ? null : $line ;
             }
-            return $key ;
+            return null ;
         }
 
         return $this->replace($group, $line, $replacement, $locale);

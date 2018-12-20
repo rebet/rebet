@@ -315,7 +315,7 @@ class Context
     protected function labelTranslate(string $field) : ?string
     {
         $label = $this->translator->get("attribute!.{$field}");
-        if ($label !== $field) {
+        if ($label !== null) {
             if (Strings::contains($label, ':parent') && Strings::contains($field, '.')) {
                 $parent = $this->labelTranslate(Strings::ratrim($field, '.'));
                 return str_replace(':parent', $parent, $label);

@@ -62,7 +62,7 @@ class Trans
 
     /**
      * Get the translation for the given key.
-     * If can not translate the given key then return the key without group.
+     * If can not translate the given key then return null.
      *
      * This translator normally recursive search for translated text by given nested key.
      * If this behavior is not desirable, you can suppress recursive search by adding '!' to the end of group name.
@@ -71,7 +71,7 @@ class Trans
      * @param array $replacement (default: [])
      * @param int|string|null $selector (default: null)
      * @param string $locale
-     * @return string
+     * @return string|null
      */
     public static function get(string $key, array $replace = [], $selector = null, ?string $locale = null) : ?string
     {

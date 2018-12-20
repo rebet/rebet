@@ -115,8 +115,8 @@ abstract class FallbackHandler
      */
     protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Trans::get("message.error_views.{$status}.title") ?? $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error' ;
-        $detail = Trans::get("message.error_views.{$status}.detail") ?? $detail ;
+        $title  = Trans::get("message.errors.{$status}.title") ?? $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error' ;
+        $detail = Trans::get("message.errors.{$status}.detail") ?? $detail ;
         $param  = [
             'status'    => $status,
             'title'     => $title,
@@ -154,7 +154,7 @@ abstract class FallbackHandler
             ]), $status);
         }
 
-        $home   = $request->getRoutePrefix().'/' ;
+        $home   = $request->route ? $request->getRoutePrefix().'/' : '/' ;
         $title  = Stream::of($title, true)->escape();
         $detail = Stream::of($detail, true)->escape()->nl2br()->text('<div class="detail">%s</div>')->default('');
         $html   = <<<EOS
