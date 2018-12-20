@@ -8,14 +8,14 @@ use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 
 /**
- * Fallback Exception Class
+ * Fallback Redirect Exception Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FallbackException extends RuntimeException implements ProblemRespondable
+class FallbackRedirectException extends RuntimeException implements ProblemRespondable
 {
     /**
      * Fallback url when some error occurred.

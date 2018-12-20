@@ -2,7 +2,7 @@
 namespace Rebet\Routing;
 
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Http\Exception\FallbackException;
+use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
@@ -84,7 +84,7 @@ abstract class FallbackHandler
     {
         $response = null;
         switch (true) {
-            case $e instanceof FallbackException:
+            case $e instanceof FallbackRedirectException:
                 $response = $e->redirect();
                 break;
             case $e instanceof HttpException:

@@ -4,7 +4,7 @@ namespace Rebet\Http;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Http\Cookie\Cookie;
-use Rebet\Http\Exception\FallbackException;
+use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Session\Session;
 use Rebet\Routing\Router;
 use Rebet\Validation\Validator;
@@ -101,7 +101,7 @@ class Request extends SymfonyRequest
             return $valid_data;
         }
 
-        throw FallbackException::by('Validate Failed.')->to($fallback_url)->with($this->input())->errors($validator->errors());
+        throw FallbackRedirectException::by('Validate Failed.')->to($fallback_url)->with($this->input())->errors($validator->errors());
     }
 
     /**
