@@ -4,7 +4,7 @@ namespace Rebet\Routing;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Http\Exception\FallbackException;
 use Rebet\Http\Exception\HttpException;
-use Rebet\Http\Http;
+use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
