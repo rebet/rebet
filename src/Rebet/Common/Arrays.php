@@ -683,4 +683,37 @@ class Arrays
         $keys = array_keys($array);
         return array_combine($keys, array_map($callback, $array, $keys));
     }
+
+    /**
+     * Get the items in the collection that are not present in the given items.
+     *
+     * @param  array $array
+     * @param  mixed $items
+     * @param  callable|null $comparator function(mixed $a, mixed $b) (default: null)
+     * @return array
+     */
+    public static function diff(array $array, $items, ?callable $comparator = null) : array
+    {
+        return $comparator
+            ? array_udiff($array, static::toArray($items) ?? [], $comparator)
+            : array_diff($array, static::toArray($items) ?? [])
+            ;
+    }
+
+    /**
+     * Determine if all items in the collection pass the given test.
+     *
+     * @param array $array
+     * @param callable $test of function($v, $k) : bool { ... }
+     * @return bool
+     */
+    public function every(array $array, callable $test) : bool
+    {
+        foreach ($array as $k => $v) {
+            if (!$callback($v, $k)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -32,7 +32,10 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
                     Strings::class   => ['cut', 'indent', 'ltrim', 'rtrim', 'mbtrim' => 'trim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch'],
-                    Arrays::class    => ['pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'first', 'last', 'flatten', 'prepend', 'shuffle', 'map'],
+                    Arrays::class    => [
+                        'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
+                        'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'diff'
+                    ],
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.

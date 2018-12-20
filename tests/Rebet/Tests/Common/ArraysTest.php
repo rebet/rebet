@@ -591,4 +591,22 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([$resource], Arrays::toArray($resource));
         fclose($resource);
     }
+    
+    public function test_diff()
+    {
+        $array = ['id' => 1, 'first_word' => 'Hello'];
+        $items = ['first_word' => 'Hello', 'last_word' => 'World'];
+        $this->assertEquals(['id' => 1], Arrays::diff($array, $items));
+        $this->assertEquals(['id' => 1], Arrays::diff($array, new \ArrayObject($items)));
+        
+        $this->assertEquals(['id' => 1, 'first_word' => 'Hello'], Arrays::diff($array, null));
+        
+        
+        $array = ['en_GB', 'fr', 'HR'];
+        $items = ['en_gb', 'hr'];
+        $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, $items));
+        $this->assertEquals([1 => 'fr'], Arrays::diff($array, $items, 'strcasecmp'));
+
+        $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, null, 'strcasecmp'));
+    }
 }
