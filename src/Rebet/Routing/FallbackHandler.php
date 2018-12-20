@@ -116,10 +116,10 @@ abstract class FallbackHandler
      */
     protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Trans::get("message.errors.{$status}.title") ?? $title ;
-        $detail = Trans::get("message.errors.{$status}.detail") ?? $detail ;
+        $title  = Trans::get("message.fallbacks.{$status}.title") ?? $title ;
+        $detail = Trans::get("message.fallbacks.{$status}.detail") ?? $detail ;
 
-        $view = View::of("/errors/{$status}");
+        $view = View::of("/fallbacks/{$status}");
         if ($view->exists()) {
             return Responder::toResponse($view->with([
                 'status'    => $status,
@@ -149,7 +149,7 @@ abstract class FallbackHandler
             $title        = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
             $custom_title = false;
         }
-        $view = View::of("/errors/default");
+        $view = View::of("/fallbacks/default");
         if ($view->exists()) {
             return Responder::toResponse($view->with([
                 'status'    => $status,
