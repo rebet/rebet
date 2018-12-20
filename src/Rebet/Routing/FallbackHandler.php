@@ -154,7 +154,7 @@ abstract class FallbackHandler
             ]), $status);
         }
 
-        $home   = $request->route ? $request->getRoutePrefix().'/' : '/' ;
+        $home   = $request->getRoutePrefix().'/' ;
         $title  = Stream::of($title, true)->escape();
         $detail = Stream::of($detail, true)->escape()->nl2br()->text('<div class="detail">%s</div>')->default('');
         $html   = <<<EOS

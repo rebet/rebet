@@ -7,7 +7,6 @@ use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Foundation\App;
-use Rebet\Http\Exception\FallbackException;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
@@ -45,7 +44,7 @@ class Router
      *
      * @var array
      */
-    public static $routing_tree = [];
+    protected static $routing_tree = [];
     
     /**
      * Default Route
@@ -81,6 +80,13 @@ class Router
      * @var Rebet\Pipeline\Pipeline
      */
     protected static $pipeline = null;
+
+    /**
+     * The primary prefix
+     *
+     * @var string
+     */
+    protected static $primary_prefix = null;
     
     /**
      * Clear all routing rules.
@@ -89,12 +95,13 @@ class Router
      */
     public static function clear() : void
     {
-        static::$routing_tree  = [];
-        static::$current       = null;
-        static::$rules         = null;
-        static::$pipeline      = null;
-        static::$default_route = [];
-        static::$fallback      = null;
+        static::$routing_tree   = [];
+        static::$current        = null;
+        static::$rules          = null;
+        static::$pipeline       = null;
+        static::$default_route  = [];
+        static::$fallback       = null;
+        static::$primary_prefix = null;
     }
 
     /**
@@ -370,8 +377,6 @@ class Router
                 $route->middlewares()
             ))->then($route);
             return static::$pipeline->send($request);
-        } catch (FallbackException $e) {
-            return $e->redirect();
         } catch (\Throwable $e) {
             return static::handleFallback($request, $e);
         }
@@ -498,6 +503,20 @@ class Router
         return static::$current;
     }
 
+    /**
+     * Get or Set the primary prefix.
+     *
+     * @param string|null $prefix (default: null)
+     * @return string|null
+     */
+    public static function primaryPrefix(?string $prefix = null) : ?string
+    {
+        if ($prefix === null) {
+            return static::$primary_prefix;
+        }
+        static::$primary_prefix = $prefix;
+    }
+
     // ====================================================
     // Router instance for Routing Rules Build
     // ====================================================
@@ -566,6 +585,7 @@ class Router
     
     /**
      * Set the prefix path for this rules.
+     * If the primary prefix is not set then set the given prefix to primary prefix.
      *
      * @param string $prefix
      * @return self
@@ -573,6 +593,9 @@ class Router
     public function prefix(string $prefix) : self
     {
         $this->prefix = Path::normalize($prefix);
+        if (static::$primary_prefix === null) {
+            static::$primary_prefix = $this->prefix;
+        }
         return $this;
     }
 

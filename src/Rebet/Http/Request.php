@@ -6,6 +6,7 @@ use Rebet\Common\Strings;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Exception\FallbackException;
 use Rebet\Http\Session\Session;
+use Rebet\Routing\Router;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
 use Rebet\View\View;
@@ -246,7 +247,7 @@ class Request extends SymfonyRequest
 
     /**
      * Get route prefix.
-     * If the route is not set then throw LogicException.
+     * If the route is not set then return primary prefix.
      *
      * @return string
      * @throws LogicException
@@ -254,7 +255,7 @@ class Request extends SymfonyRequest
     public function getRoutePrefix() : string
     {
         if (!$this->route) {
-            throw new \LogicException("Route is not selected for this request.");
+            return Router::primaryPrefix() ?? '';
         }
         return $this->route->prefix ?? '';
     }
