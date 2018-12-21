@@ -49,8 +49,9 @@ class BladeCustomizer
         // Usage:
         //   @prefix
         $blade->code('prefix', 'echo(', function ($prefix) {
+            $prefix = Stream::of($prefix, true);
             return $prefix ? $prefix->escape() : '' ;
-        }, ');', '$prefix');
+        }, ');', '$prefix ?? null');
         
         // ------------------------------------------------
         // [is/isnot] Check current users role (Authorization)
