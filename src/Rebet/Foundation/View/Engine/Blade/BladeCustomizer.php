@@ -42,6 +42,17 @@ class BladeCustomizer
         });
 
         // ------------------------------------------------
+        // [prefix] Output route prefix
+        // ------------------------------------------------
+        // Params:
+        //   (none)
+        // Usage:
+        //   @prefix
+        $blade->code('prefix', 'echo(', function ($prefix) {
+            return $prefix ? $prefix->escape() : '' ;
+        }, ');', '$prefix');
+        
+        // ------------------------------------------------
         // [is/isnot] Check current users role (Authorization)
         // ------------------------------------------------
         // Params:

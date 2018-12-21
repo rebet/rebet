@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Routing;
 
+use Rebet\Common\Callback;
 use Rebet\Common\Path;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
@@ -82,11 +83,11 @@ class Router
     protected static $pipeline = null;
 
     /**
-     * The primary prefix
+     * The defined prefixes
      *
-     * @var string
+     * @var array
      */
-    protected static $primary_prefix = null;
+    protected static $prefixes = [];
     
     /**
      * Clear all routing rules.
@@ -95,13 +96,13 @@ class Router
      */
     public static function clear() : void
     {
-        static::$routing_tree   = [];
-        static::$current        = null;
-        static::$rules          = null;
-        static::$pipeline       = null;
-        static::$default_route  = [];
-        static::$fallback       = null;
-        static::$primary_prefix = null;
+        static::$routing_tree  = [];
+        static::$current       = null;
+        static::$rules         = null;
+        static::$pipeline      = null;
+        static::$default_route = [];
+        static::$fallback      = null;
+        static::$prefixes      = [];
     }
 
     /**
@@ -504,17 +505,19 @@ class Router
     }
 
     /**
-     * Get or Set the primary prefix.
+     * Get the prefix from given request_path.
      *
-     * @param string|null $prefix (default: null)
+     * @param string|null $request_path
      * @return string|null
      */
-    public static function primaryPrefix(?string $prefix = null) : ?string
+    public static function getPrefixFrom(string $request_path) : ?string
     {
-        if ($prefix === null) {
-            return static::$primary_prefix;
+        foreach (static::$prefixes as $prefix) {
+            if (Strings::startsWith($request_path, "{$prefix}/")) {
+                return $prefix;
+            }
         }
-        static::$primary_prefix = $prefix;
+        return null;
     }
 
     // ====================================================
@@ -593,8 +596,9 @@ class Router
     public function prefix(string $prefix) : self
     {
         $this->prefix = Path::normalize($prefix);
-        if (static::$primary_prefix === null) {
-            static::$primary_prefix = $this->prefix;
+        if (!in_array($this->prefix, static::$prefixes)) {
+            static::$prefixes[] = $this->prefix;
+            usort(static::$prefixes, Callback::compare('mb_strlen', true));
         }
         return $this;
     }

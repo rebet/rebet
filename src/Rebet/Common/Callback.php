@@ -50,15 +50,17 @@ class Callback
     /**
      * Get the compare callback closure.
      *
-     * @param mixed $key
-     * @return \Closure of function($l, $r) : int { retrun $l->$key compare $r->$key; }
+     * @param mixed $key (default: null)
+     * @param bool $invert (default: false)
+     * @return \Closure of function($a, $b) : int { ... }
      */
-    public static function compare($key) : \Closure
+    public static function compare($key = null, bool $invert = false) : \Closure
     {
-        return function ($l, $r) use ($key) {
-            $l = Reflector::get($l, $key);
-            $r = Reflector::get($r, $key);
-            return $l === $r ? 0 : ($l > $r ? 1 : -1);
+        $invert = $invert ? -1 : 1 ;
+        return function ($a, $b) use ($key, $invert) {
+            $a = $key ? (is_callable($key) ? $key($a) : Reflector::get($a, $key)) : $a ;
+            $b = $key ? (is_callable($key) ? $key($b) : Reflector::get($b, $key)) : $b ;
+            return $a === $b ? 0 : ($a > $b ? 1 : -1) * $invert;
         };
     }
 }

@@ -247,7 +247,7 @@ class Request extends SymfonyRequest
 
     /**
      * Get route prefix.
-     * If the route is not set then return primary prefix.
+     * If the route is not set then return prefix from request path.
      *
      * @return string
      * @throws LogicException
@@ -255,7 +255,7 @@ class Request extends SymfonyRequest
     public function getRoutePrefix() : string
     {
         if (!$this->route) {
-            return Router::primaryPrefix() ?? '';
+            return Router::getPrefixFrom($this->getRequestPath()) ?? '';
         }
         return $this->route->prefix ?? '';
     }
