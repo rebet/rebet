@@ -595,6 +595,8 @@ class ArraysTest extends RebetTestCase
     
     public function test_diff()
     {
+        $this->assertNull(Arrays::diff(null, null));
+
         $array = ['id' => 1, 'first_word' => 'Hello'];
         $items = ['first_word' => 'Hello', 'last_word' => 'World'];
         $this->assertEquals(['id' => 1], Arrays::diff($array, $items));
@@ -613,6 +615,8 @@ class ArraysTest extends RebetTestCase
     
     public function test_intersect()
     {
+        $this->assertNull(Arrays::intersect(null, null));
+
         $array = ['id' => 1, 'first_word' => 'Hello'];
         $this->assertEquals([], Arrays::intersect($array, null));
         $this->assertEquals([], Arrays::intersect($array, []));
@@ -628,6 +632,11 @@ class ArraysTest extends RebetTestCase
 
     public function test_every()
     {
+        $array = null;
+        $this->assertTrue(Arrays::every($array, function () {
+            return false;
+        }));
+
         $array = [];
         $this->assertTrue(Arrays::every($array, function () {
             return false;
@@ -651,6 +660,8 @@ class ArraysTest extends RebetTestCase
 
     public function test_groupByAttribute()
     {
+        $this->assertNull(Arrays::groupBy(null, 'rating'));
+
         $data = [
             ['rating' => 1, 'url' => 'a'],
             ['rating' => 1, 'url' => 'b'],
@@ -845,6 +856,7 @@ class ArraysTest extends RebetTestCase
     public function test_union()
     {
         $array = ['name' => 'Hello'];
+        $this->assertNull(Arrays::union(null, null));
         $this->assertEquals(['name' => 'Hello'], Arrays::union($array, null));
         $this->assertEquals(['name' => 'Hello'], Arrays::union($array, []));
 
@@ -852,5 +864,22 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['name' => 'Hello', 'id' => 1], Arrays::union($array, new \ArrayObject(['id' => 1])));
 
         $this->assertEquals(['name' => 'Hello', 'id' => 1], Arrays::union($array, ['name' => 'World', 'id' => 1]));
+    }
+
+    public function test_min()
+    {
+        $this->assertNull(Arrays::min(null));
+
+        $array = [1, 2, 5, -2, 4];
+        $this->assertSame(-2, Arrays::min($array));
+
+        $array = ['b', 'a', 'c'];
+        $this->assertSame('a', Arrays::min($array));
+
+        $array = [['name' => 'c'], ['name' => 'b'], ['name' => 'a']];
+        $this->assertSame(['name' => 'a'], Arrays::min($array, 'name'));
+
+        $array = ['1111', '22', '333'];
+        $this->assertSame('22', Arrays::min($array, 'mb_strlen'));
     }
 }

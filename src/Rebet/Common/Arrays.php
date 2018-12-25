@@ -674,26 +674,45 @@ class Arrays
     /**
      * Run a map over each of the items.
      *
-     * @param array $array
+     * @param array|null $array
      * @param  callable  $callback function($value, $key) { ... }
-     * @return array
+     * @return array|null
      */
-    public static function map(array $array, callable $callback) : array
+    public static function map(?array $array, callable $callback) : ?array
     {
+        if ($array === null) {
+            return null;
+        }
         $keys = array_keys($array);
         return array_combine($keys, array_map($callback, $array, $keys));
     }
 
     /**
+     * Reduce the collection to a single value.
+     *
+     * @param array|null $array
+     * @param callable $reducer function($carry, $item)
+     * @param mixed $initial (defualt: null)
+     * @return mixed
+     */
+    public static function reduce(?array $array, callable $reducer, $initial = null)
+    {
+        return $array === null ? null : array_reduce($array, $reducer, $initial) ;
+    }
+    
+    /**
      * Get the items in the collection that are not present in the given items.
      *
-     * @param  array $array
+     * @param  array|null $array
      * @param  mixed $items
      * @param  callable|null $comparator function(mixed $a, mixed $b) (default: null)
-     * @return array
+     * @return array|null
      */
-    public static function diff(array $array, $items, ?callable $comparator = null) : array
+    public static function diff(?array $array, $items, ?callable $comparator = null) : ?array
     {
+        if ($array === null) {
+            return null;
+        }
         return $comparator
             ? array_udiff($array, static::toArray($items) ?? [], $comparator)
             : array_diff($array, static::toArray($items) ?? [])
@@ -703,13 +722,16 @@ class Arrays
     /**
      * Intersect the collection with the given items.
      *
-     * @param array $array
+     * @param array|null $array
      * @param mixed $items
      * @param callable|null $comparator function(mixed $a, mixed $b) (default: null)
-     * @return array
+     * @return array|null
      */
-    public static function intersect(array $array, $items, ?callable $comparator = null) : array
+    public static function intersect(?array $array, $items, ?callable $comparator = null) : ?array
     {
+        if ($array === null) {
+            return null;
+        }
         return $comparator
             ? array_uintersect($array, static::toArray($items) ?? [], $comparator)
             : array_intersect($array, static::toArray($items) ?? [])
@@ -723,8 +745,11 @@ class Arrays
      * @param callable $test of function($v, $k) : bool { ... }
      * @return bool
      */
-    public static function every(array $array, callable $test) : bool
+    public static function every(?array $array, callable $test) : bool
     {
+        if ($array === null) {
+            return true;
+        }
         foreach ($array as $k => $v) {
             if (!$test($v, $k)) {
                 return false;
@@ -736,13 +761,16 @@ class Arrays
     /**
      * Group an associative array by a field or using a callback.
      *
-     * @param  array $array
+     * @param  array|null $array
      * @param  callable|string|array $group_by
      * @param  bool  $preserve_keys (default: false)
      * @return array
      */
-    public static function groupBy(array $array, $group_by, bool $preserve_keys = false) : array
+    public static function groupBy(?array $array, $group_by, bool $preserve_keys = false) : ?array
     {
+        if ($array === null) {
+            return null;
+        }
         if (is_array($group_by)) {
             $next_groups = $group_by;
             $group_by    = array_shift($next_groups);
@@ -775,12 +803,30 @@ class Arrays
     /**
      * Union the collection with the given items.
      *
-     * @param array $array
+     * @param array|null $array
      * @param mixed $other
      * @return array
      */
-    public static function union(array $array, $other) : array
+    public static function union(?array $array, $other) : ?array
     {
-        return $array + (static::toArray($other) ?? []);
+        return $array === null ? null : $array + (static::toArray($other) ?? []);
+    }
+
+    /**
+     * Get the min value of a given key or retriever.
+     *
+     * @param array|null $array
+     * @param callable|string|null $retriever (default: null)
+     * @param mixed $initial (default: null)
+     * @return mixed
+     */
+    public static function min(?array $array, $retriever = null, $initial = null)
+    {
+        $comparator = function ($carry, $value) use ($retriever) {
+            $v = is_callable($retriever) ? $retriever($value) : Reflector::get($value, $retriever);
+            $c = is_callable($retriever) ? $retriever($carry) : Reflector::get($carry, $retriever);
+            return $carry === null || $v < $c ? $value : $carry ;
+        };
+        return static::reduce($array, $comparator, $initial);
     }
 }
