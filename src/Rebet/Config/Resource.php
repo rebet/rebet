@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Config;
 
+use Rebet\Common\Exception\LogicException;
+
 /**
  * リソースローダー クラス
  *
@@ -104,13 +106,13 @@ class Resource
      * @param string $path リソースファイルパス
      * @param array $option ロードオプション（デフォルト： []）
      * @return リソースデータ
-     * @throws \LogicException
+     * @throws LogicException
      */
     public static function load(string $type, string $path, array $option = [])
     {
         $loader = self::config("loader.{$type}", false);
         if (empty($loader) || !\is_callable($loader)) {
-            throw new \LogicException("Unsupported file type [$type]. Please set loader to Rebet\Config\Resource class.");
+            throw LogicException::by("Unsupported file type [$type]. Please set loader to Rebet\Config\Resource class.");
         }
         return $loader($path, $option);
     }

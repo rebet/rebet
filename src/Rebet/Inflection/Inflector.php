@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Inflection;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
@@ -467,7 +468,7 @@ class Inflector
             }
         }
 
-        throw new \LogicException("Can't convert the word '{$word}' to plural from. Please review the plural.rules config.");
+        throw LogicException::by("Can't convert the word '{$word}' to plural from. Please review the plural.rules config.");
     }
 
     /**

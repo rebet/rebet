@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Event;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
@@ -124,7 +125,7 @@ class Event
         }
         $listener = Reflector::instantiate($listener);
         if (!method_exists($listener, 'handle')) {
-            throw new \LogicException("Event listener ".get_class($listener)." must have 'handle' method or callable.");
+            throw LogicException::by("Event listener ".get_class($listener)." must have 'handle' method or callable.");
         }
         $method = new \ReflectionMethod($listener, 'handle');
         return [Reflector::getTypeHint($method->getParameters()[0]), $listener];

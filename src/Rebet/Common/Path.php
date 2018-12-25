@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\Exception\LogicException;
+
 /**
  * Path Class
  *
@@ -53,7 +55,7 @@ class Path
             }
             if (empty($absolutes) || end($absolutes) === '..') {
                 if (!$is_relatable) {
-                    throw new \LogicException("Invalid path format: {$path}");
+                    throw LogicException::by("Invalid path format: {$path}");
                 }
                 $absolutes[] = '..';
                 continue;

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http\Response;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Http\Http;
 use Rebet\Http\Response;
@@ -39,7 +40,7 @@ class ProblemResponse extends JsonResponse
     {
         $status_label = HttpStatus::reasonPhraseOf($status);
         if ($status_label === null) {
-            throw new \LogicException("Invalid http status code [{$status}]");
+            throw LogicException::by("Invalid http status code [{$status}]");
         }
         $title         = $title ?? $status_label;
         $type          = $type ?? static::TYPE_NO_ADDITIONAL;
@@ -75,7 +76,7 @@ class ProblemResponse extends JsonResponse
     public function additional($key, $value = null) : self
     {
         if ($this->problem['type'] === static::TYPE_NO_ADDITIONAL) {
-            throw new \LogicException("The type of 'about:blank' can not contains additional.");
+            throw LogicException::by("The type of 'about:blank' can not contains additional.");
         }
         if (is_array($key)) {
             unset($key['status'], $key['title'], $key['type'], $key['detail']);

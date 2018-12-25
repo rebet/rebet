@@ -191,7 +191,7 @@ class StringsTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid cut length and ellipsis. The length must be longer than ellipsis.
      */
     public function test_cut_exception()

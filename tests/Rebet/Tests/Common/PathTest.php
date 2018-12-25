@@ -33,7 +33,7 @@ class PathTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
      */
     public function test_normalizePath_invalid()

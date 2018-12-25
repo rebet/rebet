@@ -2,6 +2,7 @@
 namespace Rebet\Enum;
 
 use Rebet\Common\Convertible;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
@@ -215,12 +216,12 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @param mixed $value
      * @param string $label
-     * @throws \LogicException
+     * @throws LogicException
      */
     protected function __construct($value, string $label)
     {
         if (!\is_scalar($value)) {
-            throw new \LogicException("Invalid value type. Value should be scalar.");
+            throw LogicException::by("Invalid value type. Value should be scalar.");
         }
         $this->value = $value;
         $this->label = $label;
@@ -337,7 +338,7 @@ abstract class Enum implements \JsonSerializable, Convertible
             return self::$enum_data_cache[$class][$name];
         }
         if (!defined("static::{$name}")) {
-            throw new \LogicException("Invalid enum const. {$class}::{$name} is not defined.");
+            throw LogicException::by("Invalid enum const. {$class}::{$name} is not defined.");
         }
 
         $args       = $rc->getConstant($name);
@@ -399,13 +400,13 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param boolean $translate (default: false)
      * @param string|null $locale (default: depend on configure)
      * @return array
-     * @throws \LogicException
+     * @throws LogicException
      */
     public static function maps(string $field = 'value', bool $translate = false, ?string $locale = null) : array
     {
         $class = get_called_class();
         if (!\property_exists($class, $field)) {
-            throw new \LogicException("Invalid property access. Property {$class}->{$field} is not exists.");
+            throw LogicException::by("Invalid property access. Property {$class}->{$field} is not exists.");
         }
 
         $locale = $locale ?? static::translator()->getLocale();
@@ -432,7 +433,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param boolean $translate (default: false)
      * @param string|null $locale (default: depend on configure)
      * @return self|null
-     * @throws \LogicException
+     * @throws LogicException
      */
     public static function fieldOf(string $field, $value, bool $translate = false, ?string $locale = null) : ?self
     {
@@ -497,7 +498,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     {
         $class = get_called_class();
         if (!\property_exists($class, $name)) {
-            throw new \LogicException("Invalid property access. Property {$class}->{$name} is not exists.");
+            throw LogicException::by("Invalid property access. Property {$class}->{$name} is not exists.");
         }
 
         $values = [];
@@ -575,7 +576,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     {
         $class = get_called_class();
         if (!\property_exists($class, $name)) {
-            throw new \LogicException("Invalid property access. Property {$class}->{$name} is not exists.");
+            throw LogicException::by("Invalid property access. Property {$class}->{$name} is not exists.");
         }
 
         $values = [];

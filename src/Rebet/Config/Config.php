@@ -2,6 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\Reflector;
 use Rebet\Common\Utils;
@@ -327,7 +328,7 @@ class Config
      *
      * @param string|null $key
      * @return void
-     * @throws \LogicException
+     * @throws LogicException
      */
     protected static function validateKey(?string $key) : void
     {
@@ -336,7 +337,7 @@ class Config
         }
         foreach (\explode('.', $key) as $value) {
             if (\ctype_digit($value)) {
-                throw new \LogicException("Invalid config key access, the key '{$key}' contains digit only part.");
+                throw LogicException::by("Invalid config key access, the key '{$key}' contains digit only part.");
             }
         }
     }

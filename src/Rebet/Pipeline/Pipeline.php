@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Pipeline;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 
 /**
@@ -71,7 +72,7 @@ class Pipeline
     public function send($passable)
     {
         if ($this->pipeline === null) {
-            throw new \LogicException('Pipeline not build yet. You shold buld a pipeline using then() first.');
+            throw LogicException::by('Pipeline not build yet. You shold buld a pipeline using then() first.');
         }
         return ($this->pipeline)($passable);
     }

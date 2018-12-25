@@ -92,7 +92,7 @@ class EnvResourceTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      */
     public function test_load_notfound()
     {

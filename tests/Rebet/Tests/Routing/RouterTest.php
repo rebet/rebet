@@ -181,7 +181,7 @@ class RouterTest extends RebetTestCase
     }
     
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().
      */
     public function test_invalidRuleDefine_match()
@@ -193,7 +193,7 @@ class RouterTest extends RebetTestCase
     }
     
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().
      */
     public function test_invalidRuleDefine_default()

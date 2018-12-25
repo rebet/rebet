@@ -15,7 +15,7 @@ class PipelineTest extends RebetTestCase
     }
     
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Pipeline not build yet. You shold buld a pipeline using then() first.
      */
     public function test_send_beforePipelineBuild()

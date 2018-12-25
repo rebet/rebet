@@ -2,6 +2,7 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
@@ -176,11 +177,11 @@ class Validator
     protected function validateRules(Context $context, array $rules, ?Rule $spot_validations) : void
     {
         if (!is_array($rules)) {
-            throw new \LogicException("Invalid rules format. A 'rule/then/else' list should be array.");
+            throw LogicException::by("Invalid rules format. A 'rule/then/else' list should be array.");
         }
         foreach ($rules as $rule) {
             if (!is_array($rule)) {
-                throw new \LogicException("Invalid rules format. A 'rule/then/else' list item should be array.");
+                throw LogicException::by("Invalid rules format. A 'rule/then/else' list item should be array.");
             }
             $crud = array_shift($rule);
             if (!Strings::contains($crud, $context->crud())) {

@@ -2,6 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Exception\LogicException;
 
 /**
  * Environment Dependent Resource Loader Class
@@ -33,7 +34,7 @@ class EnvResource
      * @param string $suffix (default: .php)
      * @param array $option (default: [])
      * @return array
-     * @throws \LogicException
+     * @throws LogicException
      */
     public static function load(string $dir_path, $base_names, string $env, string $suffix = 'php', array $option = []) : array
     {
@@ -46,7 +47,7 @@ class EnvResource
             $env_resource      = Resource::load($suffix, $env_resource_path, $option);
 
             if ($base_resource === null && $env_resource === null) {
-                throw new \LogicException("Resource {$base_name} {$suffix} not found in {$dir_path}.");
+                throw LogicException::by("Resource {$base_name} {$suffix} not found in {$dir_path}.");
             }
 
             $resource = Arrays::override($resource, $base_resource ?? []);

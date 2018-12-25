@@ -2,6 +2,7 @@
 namespace Rebet\Stream;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Json;
 use Rebet\Common\Math;
 use Rebet\Common\Reflector;
@@ -314,7 +315,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 return static::$null;
             }
             if ($converted === null) {
-                throw new \LogicException("Apply {$name} filter failed. The origin value '{$origin}' can not convert to {$type}.", 0, $e);
+                throw LogicException::by("Apply {$name} filter failed. The origin value '{$origin}' can not convert to {$type}.")->caused($e);
             }
             throw $e;
         }

@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\Exception\LogicException;
+
 /**
  * 文字列関連 ユーティリティ クラス
  *
@@ -324,7 +326,7 @@ class Strings
         }
         $max = $length - mb_strlen($ellipsis);
         if ($max < 1) {
-            throw new \LogicException("Invalid cut length and ellipsis. The length must be longer than ellipsis.");
+            throw LogicException::by("Invalid cut length and ellipsis. The length must be longer than ellipsis.");
         }
         return mb_substr($string, 0, $max).$ellipsis;
     }

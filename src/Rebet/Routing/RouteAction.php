@@ -2,6 +2,7 @@
 namespace Rebet\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
@@ -57,7 +58,7 @@ class RouteAction
     public function __construct(Route $route, $reflector, $instance = null)
     {
         if (!($reflector instanceof \ReflectionFunction) && !($reflector instanceof \ReflectionMethod)) {
-            throw new \LogicException('Invalid type of reflector.');
+            throw LogicException::by('Invalid type of reflector.');
         }
         $this->route            = $route;
         $this->reflector        = $reflector;

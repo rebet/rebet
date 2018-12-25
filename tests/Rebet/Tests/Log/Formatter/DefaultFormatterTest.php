@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Tests\Log\Formatter;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\DateTime\DateTime;
-use Rebet\Log\Formatter\DefaultFormatter;
 
+use Rebet\Log\Formatter\DefaultFormatter;
 use Rebet\Log\LogContext;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
@@ -111,7 +112,7 @@ EOS
         $this->context->level   = LogLevel::FATAL();
         $this->context->message = 'This is test message.';
         $this->context->var     = ['test' => 123];
-        $this->context->error   = new \LogicException("Test");
+        $this->context->error   = LogicException::by("Test");
         $formatted              = $this->formatter->format($this->context);
         $this->assertStringStartsWith(
             <<<EOS
@@ -131,7 +132,7 @@ EOS
         $this->context->level   = LogLevel::DEBUG();
         $this->context->message = 'This is test message.';
         $this->context->var     = ['test' => 123];
-        $this->context->error   = new \LogicException("Test");
+        $this->context->error   = LogicException::by("Test");
         $this->context->extra   = ['etra' => 'abc'];
         $formatted              = $this->formatter->format($this->context);
         $this->assertStringStartsWith(

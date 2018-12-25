@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http\Cookie;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Utils;
 use Rebet\Http\Request;
 use Rebet\Routing\Router;
@@ -34,7 +35,7 @@ class Cookie extends SymfonyCookie
     {
         $request = Request::current();
         if (!$request) {
-            throw new \LogicException("Request has not been initialized.");
+            throw LogicException::by("Request has not been initialized.");
         }
         return $request->cookies->has($name);
     }
@@ -51,7 +52,7 @@ class Cookie extends SymfonyCookie
     {
         $request = Request::current();
         if (!$request) {
-            throw new \LogicException("Request has not been initialized.");
+            throw LogicException::by("Request has not been initialized.");
         }
         return $request->cookies->get($name, $default);
     }

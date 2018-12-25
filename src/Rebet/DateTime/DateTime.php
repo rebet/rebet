@@ -2,6 +2,7 @@
 namespace Rebet\DateTime;
 
 use Rebet\Common\Convertible;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
@@ -693,7 +694,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $at_time = static::valueOf($at_time);
         if ($at_time === null) {
-            throw new \LogicException("Invalid datetime format of given at time '{$at_time}'.");
+            throw LogicException::by("Invalid datetime format of given at time '{$at_time}'.");
         }
         return floor(($at_time->format('Ymd') - $this->format('Ymd')) / 10000);
     }

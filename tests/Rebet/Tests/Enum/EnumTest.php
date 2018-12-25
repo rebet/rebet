@@ -35,7 +35,7 @@ class EnumTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid enum const. Rebet\Tests\Mock\Gender::INVALID is not defined.
      */
     public function test_callStatic_undefine()
@@ -147,7 +147,7 @@ class EnumTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
      */
     public function test_maps_invalid()
@@ -174,7 +174,7 @@ class EnumTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
      */
     public function test_fieldOf_invalid()
@@ -281,7 +281,7 @@ class EnumTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
      */
     public function test_listOf_invalid()
@@ -440,7 +440,7 @@ class EnumTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
      */
     public function test_nextOf_invalid()

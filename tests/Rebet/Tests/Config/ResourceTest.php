@@ -81,7 +81,7 @@ class ResourceTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Unsupported file type [yaml]. Please set loader to Rebet\Config\Resource class.
      */
     public function test_load_unsuported()

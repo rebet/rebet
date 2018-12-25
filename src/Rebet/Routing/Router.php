@@ -2,6 +2,7 @@
 namespace Rebet\Routing;
 
 use Rebet\Common\Callback;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Path;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
@@ -223,7 +224,7 @@ class Router
         } elseif (is_string($action)) {
             $route = new MethodRoute($methods, $uri, $action);
         } else {
-            throw new \LogicException("Invalid action type for declarative routing.");
+            throw LogicException::by("Invalid action type for declarative routing.");
         }
         
         return static::addRoute($route);
@@ -289,7 +290,7 @@ class Router
     protected static function addRoute(Route $route) : Route
     {
         if (!static::$rules) {
-            throw new \LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+            throw LogicException::by("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         static::applyRulesTo($route);
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
@@ -334,7 +335,7 @@ class Router
     public static function default($route) : Route
     {
         if (!static::$rules) {
-            throw new \LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+            throw LogicException::by("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         $route = Reflector::instantiate($route);
         static::applyRulesTo($route);

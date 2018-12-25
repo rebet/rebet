@@ -32,7 +32,7 @@ class LocaleResource
      * @param string $suffix (default: .php)
      * @param array $option (default: [])
      * @return array
-     * @throws \LogicException
+     * @throws LogicException
      */
     public static function load($loading_path, string $locale, string $base_name, string $suffix = 'php', array $option = []) : array
     {

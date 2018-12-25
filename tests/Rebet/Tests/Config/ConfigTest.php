@@ -656,7 +656,7 @@ class ConfigTest extends RebetTestCase
     }
     
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
      */
     public function test_has_digitKeyAccessLast()
@@ -673,7 +673,7 @@ class ConfigTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid config key access, the key '1' contains digit only part.
      */
     public function test_has_digitKeyAccessOnly()
@@ -683,7 +683,7 @@ class ConfigTest extends RebetTestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'driver.123.dummy' contains digit only part.
      */
     public function test_has_digitKeyAccessMiddle()

@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\Exception\LogicException;
+
 /**
  * Array Utility Class
  *
@@ -275,7 +277,7 @@ class Arrays
                 return $diff;
         }
 
-        throw new \LogicException("Invalid array merge mode '{$option}' given.");
+        throw LogicException::by("Invalid array merge mode '{$option}' given.");
     }
 
     /**
