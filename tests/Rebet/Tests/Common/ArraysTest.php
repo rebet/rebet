@@ -611,6 +611,21 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, null, 'strcasecmp'));
     }
     
+    public function test_intersect()
+    {
+        $array = ['id' => 1, 'first_word' => 'Hello'];
+        $this->assertEquals([], Arrays::intersect($array, null));
+        $this->assertEquals([], Arrays::intersect($array, []));
+
+        $other = ['first_world' => 'Hello', 'last_word' => 'World'];
+        $this->assertEquals(['first_word' => 'Hello'], Arrays::intersect($array, $other));
+        $this->assertEquals(['first_word' => 'Hello'], Arrays::intersect($array, new \ArrayObject($other)));
+
+        $other = ['first_world' => 'HELLO', 'last_word' => 'World'];
+        $this->assertEquals([], Arrays::intersect($array, $other));
+        $this->assertEquals(['first_word' => 'Hello'], Arrays::intersect($array, $other, 'strcasecmp'));
+    }
+
     public function test_every()
     {
         $array = [];

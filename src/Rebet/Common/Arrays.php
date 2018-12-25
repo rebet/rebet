@@ -701,6 +701,22 @@ class Arrays
     }
 
     /**
+     * Intersect the collection with the given items.
+     *
+     * @param array $array
+     * @param mixed $items
+     * @param callable|null $comparator function(mixed $a, mixed $b) (default: null)
+     * @return array
+     */
+    public static function intersect(array $array, $items, ?callable $comparator = null) : array
+    {
+        return $comparator
+            ? array_uintersect($array, static::toArray($items) ?? [], $comparator)
+            : array_intersect($array, static::toArray($items) ?? [])
+            ;
+    }
+
+    /**
      * Determine if all items in the collection pass the given test.
      *
      * @param array $array
