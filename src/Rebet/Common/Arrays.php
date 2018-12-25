@@ -771,4 +771,16 @@ class Arrays
         }
         return $results;
     }
+
+    /**
+     * Union the collection with the given items.
+     *
+     * @param array $array
+     * @param mixed $other
+     * @return array
+     */
+    public static function union(array $array, $other) : array
+    {
+        return $array + (static::toArray($other) ?? []);
+    }
 }

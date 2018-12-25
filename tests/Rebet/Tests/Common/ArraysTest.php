@@ -841,4 +841,16 @@ class ArraysTest extends RebetTestCase
 
         $this->assertEquals($expected_result, $result);
     }
+
+    public function test_union()
+    {
+        $array = ['name' => 'Hello'];
+        $this->assertEquals(['name' => 'Hello'], Arrays::union($array, null));
+        $this->assertEquals(['name' => 'Hello'], Arrays::union($array, []));
+
+        $this->assertEquals(['name' => 'Hello', 'id' => 1], Arrays::union($array, ['id' => 1]));
+        $this->assertEquals(['name' => 'Hello', 'id' => 1], Arrays::union($array, new \ArrayObject(['id' => 1])));
+
+        $this->assertEquals(['name' => 'Hello', 'id' => 1], Arrays::union($array, ['name' => 'World', 'id' => 1]));
+    }
 }

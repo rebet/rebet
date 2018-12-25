@@ -26,7 +26,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
 
     public static function defaultConfig() : array
     {
-        return[
+        return [
             'filter' => [
                 'delegaters' => [
                     Reflector::class => ['convert'],
@@ -36,7 +36,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Arrays::class    => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'diff', 'intersect', 'every',
-                        'groupBy',
+                        'groupBy', 'union'
                     ],
                 ],
                 'customs' => [
