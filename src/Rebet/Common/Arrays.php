@@ -6,12 +6,10 @@ use Rebet\Common\Exception\LogicException;
 /**
  * Array Utility Class
  *
- * Belows fonction implementation are borrowed from Illuminate\Support\Arr of laravel/framework ver 5.7 with some modifications.
- *
- *  - shuffle / pull / prepend / only / last / flatten / value (from helpers.php) / first
- *  - where / forget / except / exists / crossJoin / collapse / accessible
+ * Some fonctions implementation are borrowed from Illuminate\Support\Arr and Collection of laravel/framework ver 5.7 with some modifications.
  *
  * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Support/Arr.php
+ * @see https://github.com/laravel/framework/blob/5.7/src/Illuminate/Support/Collection.php
  * @see https://github.com/laravel/framework/blob/5.7/LICENSE.md
  *
  * @package   Rebet
@@ -353,7 +351,7 @@ class Arrays
      */
     public static function accessible($value)
     {
-        return is_array($value) || ($value instanceof \ArrayAccess && $value instanceof \Traversable);
+        return is_array($value) || ($value instanceof \ArrayAccess && $value instanceof \Traversable && $value instanceof \Countable);
     }
     
     /**
@@ -709,13 +707,52 @@ class Arrays
      * @param callable $test of function($v, $k) : bool { ... }
      * @return bool
      */
-    public function every(array $array, callable $test) : bool
+    public static function every(array $array, callable $test) : bool
     {
         foreach ($array as $k => $v) {
-            if (!$callback($v, $k)) {
+            if (!$test($v, $k)) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * Group an associative array by a field or using a callback.
+     *
+     * @param  array $array
+     * @param  callable|string|array $group_by
+     * @param  bool  $preserve_keys (default: false)
+     * @return array
+     */
+    public static function groupBy(array $array, $group_by, bool $preserve_keys = false) : array
+    {
+        if (is_array($group_by)) {
+            $next_groups = $group_by;
+            $group_by    = array_shift($next_groups);
+        }
+        $group_by = is_callable($group_by) ? $group_by : Callback::retriever($group_by) ;
+        $results  = [];
+        foreach ($array as $key => $value) {
+            $group_keys = $group_by($value, $key);
+            if (! is_array($group_keys)) {
+                $group_keys = [$group_keys];
+            }
+            foreach ($group_keys as $group_key) {
+                $group_key = is_bool($group_key) ? (int) $group_key : $group_key;
+                if (! array_key_exists($group_key, $results)) {
+                    $results[$group_key] = [];
+                }
+                if ($preserve_keys) {
+                    $results[$group_key][$key] = $value;
+                } else {
+                    $results[$group_key][] = $value;
+                }
+            }
+        }
+        if (! empty($next_groups)) {
+            return static::map($results, function ($array) use ($next_groups, $preserve_keys) { return static::groupBy($array, $next_groups, $preserve_keys); });
+        }
+        return $results;
     }
 }

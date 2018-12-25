@@ -63,4 +63,15 @@ class Callback
             return $a === $b ? 0 : ($a > $b ? 1 : -1) * $invert;
         };
     }
+
+    /**
+     * Get the value retriever callback closure.
+     *
+     * @param string|null $key
+     * @return \Closure of function($value) : mixed { ... }
+     */
+    public static function retriever(?string $key) : \Closure
+    {
+        return function ($item) use ($key) { return Reflector::get($item, $key); };
+    }
 }

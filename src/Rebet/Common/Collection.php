@@ -665,7 +665,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
     /**
      * Group an associative array by a field or using a callback.
      *
-     * @param  callable|string  $groupBy
+     * @param  callable|string|array $groupBy
      * @param  bool  $preserveKeys
      * @return static
      */

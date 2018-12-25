@@ -3,6 +3,7 @@ namespace Rebet\Tests\Common;
 
 use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Arrays;
+use Rebet\Common\Callback;
 use Rebet\Common\OverrideOption;
 use Rebet\Tests\Mock\CountableStub;
 use Rebet\Tests\Mock\Gender;
@@ -608,5 +609,221 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([1 => 'fr'], Arrays::diff($array, $items, 'strcasecmp'));
 
         $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, null, 'strcasecmp'));
+    }
+    
+    public function test_every()
+    {
+        $array = [];
+        $this->assertTrue(Arrays::every($array, function () {
+            return false;
+        }));
+
+        $array = [['age' => 18], ['age' => 20], ['age' => 20]];
+        $this->assertTrue(Arrays::every($array, Callback::test('age', '>=', 18)));
+        $this->assertFalse(Arrays::every($array, Callback::test('age', '<', 18)));
+        $this->assertTrue(Arrays::every($array, function ($item) {
+            return $item['age'] >= 18;
+        }));
+        $this->assertFalse(Arrays::every($array, function ($item) {
+            return $item['age'] >= 20;
+        }));
+
+        $array = [null, null];
+        $this->assertTrue(Arrays::every($array, function ($item) {
+            return $item === null;
+        }));
+    }
+
+    public function test_groupByAttribute()
+    {
+        $data = [
+            ['rating' => 1, 'url' => 'a'],
+            ['rating' => 1, 'url' => 'b'],
+            ['rating' => 2, 'url' => 'b'],
+        ];
+
+        $result = Arrays::groupBy($data, 'rating');
+        $this->assertSame([
+            1 => [
+                ['rating' => 1, 'url' => 'a'],
+                ['rating' => 1, 'url' => 'b'],
+            ],
+            2 => [
+                ['rating' => 2, 'url' => 'b'],
+            ],
+        ], $result);
+
+        $result = Arrays::groupBy($data, 'url');
+        $this->assertSame([
+            'a' => [
+                ['rating' => 1, 'url' => 'a']
+            ],
+            'b' => [
+                ['rating' => 1, 'url' => 'b'],
+                ['rating' => 2, 'url' => 'b'],
+            ],
+        ], $result);
+    }
+
+    public function test_groupByAttributePreservingKeys()
+    {
+        $data = [
+            10 => ['rating' => 1, 'url' => 'a'],
+            20 => ['rating' => 1, 'url' => 'b'],
+            30 => ['rating' => 2, 'url' => 'b']
+        ];
+
+        $result = Arrays::groupBy($data, 'rating', true);
+
+        $expected_result = [
+            1 => [
+                10 => ['rating' => 1, 'url' => 'a'],
+                20 => ['rating' => 1, 'url' => 'b']
+            ],
+            2 => [
+                30 => ['rating' => 2, 'url' => 'b']
+            ],
+        ];
+
+        $this->assertEquals($expected_result, $result);
+    }
+
+    public function test_groupByClosureWhereItemsHaveSingleGroup()
+    {
+        $data = [
+            ['rating' => 1, 'url' => 'a'],
+            ['rating' => 1, 'url' => 'b'],
+            ['rating' => 2, 'url' => 'b']
+        ];
+
+        $result = Arrays::groupBy($data, function ($item) {
+            return $item['rating'];
+        });
+
+        $this->assertEquals([
+            1 => [
+                ['rating' => 1, 'url' => 'a'],
+                ['rating' => 1, 'url' => 'b']
+            ],
+            2 => [
+                ['rating' => 2, 'url' => 'b']
+            ]
+        ], $result);
+    }
+
+    public function test_groupByClosureWhereItemsHaveSingleGroupPreservingKeys()
+    {
+        $data = [
+            10 => ['rating' => 1, 'url' => 'a'],
+            20 => ['rating' => 1, 'url' => 'b'],
+            30 => ['rating' => 2, 'url' => 'b']
+        ];
+
+        $result = Arrays::groupBy($data, function ($item) {
+            return $item['rating'];
+        }, true);
+
+        $expected_result = [
+            1 => [
+                10 => ['rating' => 1, 'url' => 'a'],
+                20 => ['rating' => 1, 'url' => 'b']
+            ],
+            2 => [
+                30 => ['rating' => 2, 'url' => 'b']
+            ],
+        ];
+
+        $this->assertEquals($expected_result, $result);
+    }
+
+    public function test_groupByClosureWhereItemsHaveMultipleGroups()
+    {
+        $data = [
+            ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
+            ['user' => 2, 'roles' => ['Role_1', 'Role_2']],
+            ['user' => 3, 'roles' => ['Role_1'          ]],
+        ];
+
+        $result = Arrays::groupBy($data, 'roles');
+
+        $expected_result = [
+            'Role_1' => [
+                ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
+                ['user' => 2, 'roles' => ['Role_1', 'Role_2']],
+                ['user' => 3, 'roles' => ['Role_1'          ]],
+            ],
+            'Role_2' => [
+                ['user' => 2, 'roles' => ['Role_1', 'Role_2']],
+            ],
+            'Role_3' => [
+                ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
+            ],
+        ];
+
+        $this->assertEquals($expected_result, $result);
+    }
+
+    public function test_groupByClosureWhereItemsHaveMultipleGroupsPreservingKeys()
+    {
+        $data = [
+            10 => ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
+            20 => ['user' => 2, 'roles' => ['Role_1', 'Role_2']],
+            30 => ['user' => 3, 'roles' => ['Role_1'          ]],
+        ];
+
+        $result = Arrays::groupBy($data, 'roles', true);
+
+        $expected_result = [
+            'Role_1' => [
+                10 => ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
+                20 => ['user' => 2, 'roles' => ['Role_1', 'Role_2']],
+                30 => ['user' => 3, 'roles' => ['Role_1'          ]],
+            ],
+            'Role_2' => [
+                20 => ['user' => 2, 'roles' => ['Role_1', 'Role_2']],
+            ],
+            'Role_3' => [
+                10 => ['user' => 1, 'roles' => ['Role_1', 'Role_3']],
+            ],
+        ];
+
+        $this->assertEquals($expected_result, $result);
+    }
+
+    public function test_groupByMultiLevelAndClosurePreservingKeys()
+    {
+        $data = [
+            10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+            20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+            30 => ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1'          ]],
+            40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2'          ]],
+        ];
+
+        $result = Arrays::groupBy($data, ['skilllevel', 'roles'], true);
+
+        $expected_result = [
+            1 => [
+                'Role_1' => [
+                    10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+                    20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+                ],
+                'Role_3' => [
+                    10 => ['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+                ],
+                'Role_2' => [
+                    20 => ['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+                ],
+            ],
+            2 => [
+                'Role_1' => [
+                    30 => ['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1']],
+                ],
+                'Role_2' => [
+                    40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected_result, $result);
     }
 }

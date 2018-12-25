@@ -35,7 +35,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Strings::class   => ['cut', 'indent', 'ltrim', 'rtrim', 'mbtrim' => 'trim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch'],
                     Arrays::class    => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
-                        'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'diff'
+                        'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'diff', 'every', 'groupBy',
                     ],
                 ],
                 'customs' => [
