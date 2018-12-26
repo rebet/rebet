@@ -888,4 +888,27 @@ class ArraysTest extends RebetTestCase
         $array = ['1111', '2222', '333'];
         $this->assertSame('44', Arrays::min($array, 'mb_strlen', '44'));
     }
+
+    public function test_max()
+    {
+        $this->assertNull(Arrays::max(null));
+
+        $array = [1, 2, 5, -2, 4];
+        $this->assertSame(5, Arrays::max($array));
+
+        $array = ['b', 'a', 'c'];
+        $this->assertSame('c', Arrays::max($array));
+
+        $array = [['name' => 'c'], ['name' => 'b'], ['name' => 'a']];
+        $this->assertSame(['name' => 'c'], Arrays::max($array, 'name'));
+
+        $array = [['key' => 'c'], ['key' => 'b'], ['key' => 'a']];
+        $this->assertSame(['key' => 'c'], Arrays::max($array, '@key'));
+
+        $array = ['1111', '22', '333'];
+        $this->assertSame('1111', Arrays::max($array, 'mb_strlen'));
+
+        $array = ['1111', '2222', '333'];
+        $this->assertSame('1111', Arrays::max($array, 'mb_strlen', '44'));
+    }
 }
