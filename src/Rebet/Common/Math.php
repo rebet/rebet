@@ -248,7 +248,7 @@ class Math
      */
     public static function format(string $value, int $scale = 0, string $decimal_point = ".", string $thousands_separator = ",") : string
     {
-        [$integer, $decimal] = array_pad(explode('.', static::round($value, $scale)), 2, '');
+        [$integer, $decimal] = Strings::split(static::round($value, $scale), '.', 2, '');
         $integer             = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1'.$thousands_separator, $integer);
         return empty($decimal) ? $integer : "{$integer}{$decimal_point}{$decimal}" ;
     }

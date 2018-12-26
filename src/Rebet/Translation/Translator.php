@@ -326,7 +326,7 @@ class Translator
         $value     = $matches[2];
         if (Strings::startsWith($part, '[')) {
             if (Strings::contains($condition, ',')) {
-                [$from, $to] = array_pad(explode(',', $condition, 2), 2, null);
+                [$from, $to] = Strings::split($condition, ',', 2);
                 if ($to === null && $selector == $from) {
                     return $value;
                 } elseif ($to === '*' && $selector >= $from) {

@@ -195,7 +195,7 @@ class Validator
                 }
             }
     
-            [$name, $option] = array_pad(explode(':', $validation), 2, '');
+            [$name, $option] = Strings::split($validation, ':', 2, '');
             if (Strings::contains($option, '?')) {
                 $context->quiet(true);
             }

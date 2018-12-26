@@ -225,4 +225,16 @@ class StringsTest extends RebetTestCase
         $this->assertFalse(Strings::wildmatch('/user/profile-confirm', '/user/profile'));
         $this->assertTrue(Strings::wildmatch('/user/profile-confirm', ['/user/profile', '/user/profile-*']));
     }
+
+    public function test_split()
+    {
+        $this->assertSame([null, null], Strings::split(null, ',', 2));
+        $this->assertSame(['', null], Strings::split('', ',', 2));
+        $this->assertSame(['1', null], Strings::split('1', ',', 2));
+        $this->assertSame(['1', '2'], Strings::split('1,2', ',', 2));
+        $this->assertSame(['1', '2,3'], Strings::split('1,2,3', ',', 2));
+        $this->assertSame(['1', '2', '3'], Strings::split('1,2,3', ',', 3));
+
+        $this->assertSame(['1', '-'], Strings::split('1', ',', 2, '-'));
+    }
 }

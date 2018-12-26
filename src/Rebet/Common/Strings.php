@@ -459,4 +459,19 @@ class Strings
         $namespace     = $namespace === $namespace_cut ? $namespace : "..\\{$namespace_cut}" ;
         return $namespace.'\\'.$class->getShortName();
     }
+
+    /**
+     * Split the string by given delimiter and pad the result array.
+     * This behavior may be useful for assigning split results to variables using list() or [].
+     *
+     * @param string|null $string
+     * @param string $delimiter
+     * @param integer $size
+     * @param mixed $padding (default: null)
+     * @return array
+     */
+    public static function split(?string $string, string $delimiter, int $size, $padding = null) : array
+    {
+        return array_pad($string === null ? [] : explode($delimiter, $string, $size), $size, $padding);
+    }
 }

@@ -49,12 +49,12 @@ class Reflector
             return null;
         }
         if (is_string($config)) {
-            [$class, $method] = array_pad(\explode('@', $config), 2, null);
+            [$class, $method] = Strings::split($config, '@', 2);
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_array($config)) {
             $class_config     = array_shift($config);
-            [$class, $method] = array_pad(\explode('@', $class_config), 2, null);
+            [$class, $method] = Strings::split($class_config, '@', 2);
             return empty($method) ? new $class(...$config) : $class::$method(...$config) ;
         }
         return $config;
