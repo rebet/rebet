@@ -825,8 +825,8 @@ class Arrays
     {
         $reducer = function ($carry, $value) use ($retriever) {
             if (is_callable($retriever)) {
-                $v = $retriever($value);
-                $c = $retriever($carry);
+                $v = call_user_func($retriever, $value);
+                $c = call_user_func($retriever, $carry);
             } else {
                 $key = Strings::ltrim($retriever, '@', 1);
                 $v   = Reflector::get($value, $key);
@@ -850,8 +850,8 @@ class Arrays
     {
         $reducer = function ($carry, $value) use ($retriever) {
             if (is_callable($retriever)) {
-                $v = $retriever($value);
-                $c = $retriever($carry);
+                $v = call_user_func($retriever, $value);
+                $c = call_user_func($retriever, $carry);
             } else {
                 $key = Strings::ltrim($retriever, '@', 1);
                 $v   = Reflector::get($value, $key);
@@ -860,5 +860,68 @@ class Arrays
             return $carry === null || $v > $c ? $value : $carry ;
         };
         return static::reduce($array, $reducer, $initial);
+    }
+
+    /**
+     * Sort the array using the given comparator or sort flag.
+     *
+     * @param array|null $array
+     * @param int $order (default: SORT_ASC)
+     * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
+     * @return array|null
+     */
+    public static function sort(?array $array, int $order = SORT_ASC, $comparator = SORT_REGULAR) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        if (is_int($comparator)) {
+            $order === SORT_ASC ? asort($array, $comparator) : arsort($array, $comparator) ;
+            return $array;
+        }
+
+        if (is_callable($comparator)) {
+            $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
+            uasort($array, $sorter);
+            return $array;
+        }
+        
+        return $array;
+    }
+
+    /**
+     * Sort the collection using the given key or value retriever.
+     *
+     * @param array|null $array
+     * @param callable|string $retriever
+     * @param int $order (default: SORT_ASC)
+     * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
+     * @return array
+     */
+    public static function sortBy(?array $array, $retriever, int $order = SORT_ASC, $comparator = SORT_REGULAR) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        $comparator = !is_int($comparator) ? $comparator : function ($a, $b) use ($comparator) {
+            sort($array = [$a, $b], $comparator);
+            return $array[0] === $a ? -1 : 1 ;
+        };
+
+        $sorter = function ($a, $b) use ($retriever, $comparator) {
+            if (is_callable($retriever)) {
+                $a = call_user_func($retriever, $a);
+                $b = call_user_func($retriever, $b);
+            } else {
+                $key = Strings::ltrim($retriever, '@', 1);
+                $a   = Reflector::get($a, $key);
+                $b   = Reflector::get($b, $key);
+            }
+            return call_user_func($comparator, $a, $b);
+        };
+        
+        return static::sort($array, $order, $sorter);
     }
 }

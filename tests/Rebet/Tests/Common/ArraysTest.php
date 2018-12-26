@@ -911,4 +911,29 @@ class ArraysTest extends RebetTestCase
         $array = ['1111', '2222', '333'];
         $this->assertSame('1111', Arrays::max($array, 'mb_strlen', '44'));
     }
+
+    // public function test_sort()
+    // {
+    //     $this->assertEquals([1, 2, 3, 4, 5], Arrays::sort([5, 3, 1, 2, 4]));
+    //     $this->assertEquals([5, 4, 3, 2, 1], Arrays::sort([5, 3, 1, 2, 4], SORT_DESC));
+
+    //     $data = (new Collection([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4]))->sort();
+    //     $this->assertEquals([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5], $data->values()->all());
+
+    //     $data = (new Collection(['foo', 'bar-10', 'bar-1']))->sort();
+    //     $this->assertEquals(['bar-1', 'bar-10', 'foo'], $data->values()->all());
+    // }
+
+    // public function test_sortWithCallback()
+    // {
+    //     $data = (new Collection([5, 3, 1, 2, 4]))->sort(function ($a, $b) {
+    //         if ($a === $b) {
+    //             return 0;
+    //         }
+
+    //         return ($a < $b) ? -1 : 1;
+    //     });
+
+    //     $this->assertEquals(range(1, 5), array_values($data->all()));
+    // }
 }
