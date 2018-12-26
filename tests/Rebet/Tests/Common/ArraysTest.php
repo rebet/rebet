@@ -879,7 +879,13 @@ class ArraysTest extends RebetTestCase
         $array = [['name' => 'c'], ['name' => 'b'], ['name' => 'a']];
         $this->assertSame(['name' => 'a'], Arrays::min($array, 'name'));
 
+        $array = [['key' => 'c'], ['key' => 'b'], ['key' => 'a']];
+        $this->assertSame(['key' => 'a'], Arrays::min($array, '@key'));
+
         $array = ['1111', '22', '333'];
         $this->assertSame('22', Arrays::min($array, 'mb_strlen'));
+
+        $array = ['1111', '2222', '333'];
+        $this->assertSame('44', Arrays::min($array, 'mb_strlen', '44'));
     }
 }

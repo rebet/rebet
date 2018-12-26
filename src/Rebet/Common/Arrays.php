@@ -813,20 +813,27 @@ class Arrays
     }
 
     /**
-     * Get the min value of a given key or retriever.
+     * Get the min value of a given key or value retriever.
+     * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever (default: null)
+     * @param callable|string|null $retriever key name (with/without '@') or function($value): mixed. (default: null)
      * @param mixed $initial (default: null)
      * @return mixed
      */
     public static function min(?array $array, $retriever = null, $initial = null)
     {
-        $comparator = function ($carry, $value) use ($retriever) {
-            $v = is_callable($retriever) ? $retriever($value) : Reflector::get($value, $retriever);
-            $c = is_callable($retriever) ? $retriever($carry) : Reflector::get($carry, $retriever);
+        $reducer = function ($carry, $value) use ($retriever) {
+            if (is_callable($retriever)) {
+                $v = $retriever($value);
+                $c = $retriever($carry);
+            } else {
+                $key = Strings::ltrim($retriever, '@', 1);
+                $v   = Reflector::get($value, $key);
+                $c   = Reflector::get($carry, $key);
+            }
             return $carry === null || $v < $c ? $value : $carry ;
         };
-        return static::reduce($array, $comparator, $initial);
+        return static::reduce($array, $reducer, $initial);
     }
 }
