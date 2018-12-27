@@ -945,6 +945,8 @@ class ArraysTest extends RebetTestCase
         $retriever = function ($x) { return $x; };
         $this->assertEquals(['8', '14', '23'], array_values(Arrays::sortBy($data, $retriever)));
         $this->assertEquals(['23', '14', '8'], array_values(Arrays::sortBy($data, $retriever, SORT_DESC)));
+        $this->assertEquals(['8', '23', '14'], array_values(Arrays::sortBy($data, 'mb_strlen')));
+        $this->assertEquals(['14', '23', '8'], array_values(Arrays::sortBy($data, 'mb_strlen', SORT_DESC)));
 
         $data      = [['age' => '23'], ['age' => '8'], ['age' => '14']];
         $retriever = 'age';

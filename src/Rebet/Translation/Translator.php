@@ -224,7 +224,7 @@ class Translator
             return $line;
         }
 
-        $replacement = Stream::of($replacement, true)->sort(SORT_DESC, 'mb_strlen')->return();
+        $replacement = Stream::of($replacement, true)->sortBy('mb_strlen', SORT_DESC)->return();
         $delimiter   = $this->grammar($group, 'delimiter', ', ', $locale);
         foreach ($replacement as $key => $value) {
             $value = is_array($value) ? implode($delimiter, $value) : $value ;
