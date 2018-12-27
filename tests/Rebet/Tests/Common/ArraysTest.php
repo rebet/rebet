@@ -990,4 +990,25 @@ class ArraysTest extends RebetTestCase
         $retriever = 'age';
         $this->assertEquals(['b' => ['age' => '14'], 'c' => ['age' => '23'], 'a' => ['age' => '8']], Arrays::sortBy($data, $retriever));
     }
+
+    public function test_sortKeys()
+    {
+        $data = ['c' => 'C', 'a' => 'A', 'b' => 'B'];
+        $this->assertEquals(['a' => 'A', 'b' => 'B', 'c' => 'C'], Arrays::sortKeys($data));
+        $this->assertEquals(['c' => 'C', 'b' => 'B', 'a' => 'A'], Arrays::sortKeys($data, SORT_DESC));
+
+        $data = ['22' => 'C', '8' => 'A', '14' => 'B'];
+        $this->assertEquals(['8' => 'A', '14' => 'B', '22' => 'C'], Arrays::sortKeys($data, SORT_ASC));
+        $this->assertEquals(['14' => 'B', '22' => 'C', '8' => 'A'], Arrays::sortKeys($data, SORT_ASC, SORT_STRING));
+
+        $comparator = function ($a, $b) {
+            $a = $a % 10;
+            $b = $b % 10;
+            if ($a === $b) {
+                return 0;
+            }
+            return $a < $b ? -1 : 1 ;
+        };
+        $this->assertEquals(['22' => 'C', '14' => 'B', '8' => 'A'], Arrays::sortKeys($data, SORT_ASC, $comparator));
+    }
 }

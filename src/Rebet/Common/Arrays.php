@@ -925,4 +925,32 @@ class Arrays
         
         return static::sort($array, $order, $sorter);
     }
+
+    /**
+     * Sort the array keys using the given comparator or sort flag.
+     *
+     * @param array|null $array
+     * @param int $order (default: SORT_ASC)
+     * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
+     * @return array|null
+     */
+    public static function sortKeys(?array $array, int $order = SORT_ASC, $comparator = SORT_REGULAR) : ?array
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        if (is_int($comparator)) {
+            $order === SORT_ASC ? ksort($array, $comparator) : krsort($array, $comparator) ;
+            return $array;
+        }
+
+        if (is_callable($comparator)) {
+            $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
+            uksort($array, $sorter);
+            return $array;
+        }
+        
+        return $array;
+    }
 }
