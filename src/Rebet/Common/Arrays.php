@@ -932,4 +932,25 @@ class Arrays
         
         return $array;
     }
+
+    /**
+     * Get the sum of the given values.
+     *
+     * @param array|null $array
+     * @param callable|string|null $retriever (default: null)
+     * @return int|null
+     */
+    public static function sum(?array $array, $retriever = null) : ?int
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        if ($retriever === null) {
+            return array_sum($array);
+        }
+
+        $retriever = Callback::retriever($retriever);
+        return static::reduce($array, function ($carry, $item) use ($retriever) { return $carry + $retriever($item); }, 0);
+    }
 }

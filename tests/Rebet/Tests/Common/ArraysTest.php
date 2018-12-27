@@ -1013,4 +1013,14 @@ class ArraysTest extends RebetTestCase
         };
         $this->assertEquals(['22' => 'C', '14' => 'B', '8' => 'A'], Arrays::sortKeys($data, SORT_ASC, $comparator));
     }
+
+    public function test_sum()
+    {
+        $this->assertNull(Arrays::sum(null));
+        $this->assertSame(0, Arrays::sum([]));
+        $this->assertSame(55, Arrays::sum(range(1, 10)));
+        $this->assertSame(55, Arrays::sum(range(1, 10), function ($x) { return $x; }));
+        $this->assertSame(88, Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
+        $this->assertSame(58, Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
+    }
 }
