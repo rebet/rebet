@@ -953,4 +953,21 @@ class Arrays
         $retriever = Callback::retriever($retriever);
         return static::reduce($array, function ($carry, $item) use ($retriever) { return $carry + $retriever($item); }, 0);
     }
+
+    /**
+     * Get the average value of a given key.
+     *
+     * @param array|null $array
+     * @param  callable|string|null  $callback
+     * @return mixed
+     */
+    public static function avg(?array $array, $retriever = null) : ?string
+    {
+        if ($array === null) {
+            return null;
+        }
+
+        $retriever = Callback::retriever($retriever);
+        return static::sum($array, $retriever) / static::count($array) ;
+    }
 }
