@@ -912,28 +912,82 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('1111', Arrays::max($array, 'mb_strlen', '44'));
     }
 
-    // public function test_sort()
-    // {
-    //     $this->assertEquals([1, 2, 3, 4, 5], Arrays::sort([5, 3, 1, 2, 4]));
-    //     $this->assertEquals([5, 4, 3, 2, 1], Arrays::sort([5, 3, 1, 2, 4], SORT_DESC));
+    public function test_sort()
+    {
+        $this->assertEquals([2 => 1, 3 => 2, 1 => 3, 4 => 4, 0 => 5], Arrays::sort([5, 3, 1, 2, 4]));
+        $this->assertEquals([0 => 5, 4 => 4, 1 => 3, 3 => 2, 2 => 1], Arrays::sort([5, 3, 1, 2, 4], SORT_DESC));
 
-    //     $data = (new Collection([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4]))->sort();
-    //     $this->assertEquals([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5], $data->values()->all());
+        $this->assertEquals(
+            [4 => -5, 3 => -4, 1 => -3, 2 => -2, 0 => -1, 5 => 0, 8 => 1, 9 => 2, 7 => 3, 10 => 4, 6 => 5],
+            Arrays::sort([-1, -3, -2, -4, -5, 0, 5, 3, 1, 2, 4])
+        );
 
-    //     $data = (new Collection(['foo', 'bar-10', 'bar-1']))->sort();
-    //     $this->assertEquals(['bar-1', 'bar-10', 'foo'], $data->values()->all());
-    // }
+        $this->assertEquals([2 => 'foo', 1 => 'bar-10', 0 => 'bar-1'], Arrays::sort(['bar-1', 'bar-10', 'foo']));
 
-    // public function test_sortWithCallback()
-    // {
-    //     $data = (new Collection([5, 3, 1, 2, 4]))->sort(function ($a, $b) {
-    //         if ($a === $b) {
-    //             return 0;
-    //         }
+        $this->assertEquals([2 => '123', 3 => '22', 1 => '3', 4 => '44', 0 => '5'], Arrays::sort(['5', '3', '123', '22', '44']));
+        $this->assertEquals([1 => '3', 0 => '5', 3 => '22', 4 => '44', 2 => '123'], Arrays::sort(['5', '3', '123', '22', '44'], SORT_ASC, SORT_NUMERIC));
 
-    //         return ($a < $b) ? -1 : 1;
-    //     });
+        $comparator = function ($a, $b) {
+            $a = str_pad($a, 3, '0', STR_PAD_LEFT);
+            $b = str_pad($b, 3, '0', STR_PAD_LEFT);
+            if ($a === $b) {
+                return 0;
+            }
+            return $a < $b ? -1 : 1 ;
+        };
+        $this->assertEquals([1 => '3', 0 => '5', 3 => '22', 4 => '44', 2 => '123'], Arrays::sort(['5', '3', '123', '22', '44'], SORT_ASC, $comparator));
+        $this->assertEquals([2 => '123', 4 => '44', 3 => '22', 0 => '5', 1 => '3'], Arrays::sort(['5', '3', '123', '22', '44'], SORT_DESC, $comparator));
+    }
 
-    //     $this->assertEquals(range(1, 5), array_values($data->all()));
-    // }
+    public function test_sortBy()
+    {
+        $data      = ['23', '8', '14'];
+        $retriever = function ($x) { return $x; };
+        $this->assertEquals(['8', '14', '23'], array_values(Arrays::sortBy($data, $retriever)));
+        $this->assertEquals(['23', '14', '8'], array_values(Arrays::sortBy($data, $retriever, SORT_DESC)));
+
+        $data      = [['age' => '23'], ['age' => '8'], ['age' => '14']];
+        $retriever = 'age';
+        $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever)));
+        $this->assertEquals([['age' => '23'], ['age' => '14'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC)));
+
+        $this->assertEquals([['age' => '14'], ['age' => '23'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_ASC, SORT_STRING)));
+        $this->assertEquals([['age' => '8'], ['age' => '23'], ['age' => '14']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC, SORT_STRING)));
+
+        $comparator = function ($a, $b) {
+            $a = str_pad($a, 2, '0', STR_PAD_LEFT);
+            $b = str_pad($b, 2, '0', STR_PAD_LEFT);
+            if ($a === $b) {
+                return 0;
+            }
+            return $a < $b ? -1 : 1 ;
+        };
+        $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever, SORT_ASC, $comparator)));
+        $this->assertEquals([['age' => '23'], ['age' => '14'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC, $comparator)));
+
+        $retriever = function ($item) { return intval($item['age']); };
+        $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever)));
+        $this->assertEquals([['age' => '23'], ['age' => '14'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC)));
+
+        $this->assertEquals([['age' => '14'], ['age' => '23'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_ASC, SORT_STRING)));
+        $this->assertEquals([['age' => '8'], ['age' => '23'], ['age' => '14']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC, SORT_STRING)));
+        $comparator = function ($a, $b) {
+            $a = $a % 10;
+            $b = $b % 10;
+            if ($a === $b) {
+                return 0;
+            }
+            return $a < $b ? -1 : 1 ;
+        };
+        $this->assertEquals([['age' => '23'], ['age' => '14'], ['age' => '8']], array_values(Arrays::sortBy($data, $retriever, SORT_ASC, $comparator)));
+        $this->assertEquals([['age' => '8'], ['age' => '14'], ['age' => '23']], array_values(Arrays::sortBy($data, $retriever, SORT_DESC, $comparator)));
+
+        $data      = ['c' => 'C', 'a' => 'A', 'b' => 'B'];
+        $retriever = function ($x) { return $x; };
+        $this->assertEquals(['a' => 'A', 'b' => 'B', 'c' => 'C'], Arrays::sortBy($data, $retriever));
+
+        $data      = ['c' => ['age' => '23'], 'a' => ['age' => '8'], 'b' => ['age' => '14']];
+        $retriever = 'age';
+        $this->assertEquals(['b' => ['age' => '14'], 'c' => ['age' => '23'], 'a' => ['age' => '8']], Arrays::sortBy($data, $retriever));
+    }
 }

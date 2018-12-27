@@ -906,7 +906,8 @@ class Arrays
         }
 
         $comparator = !is_int($comparator) ? $comparator : function ($a, $b) use ($comparator) {
-            sort($array = [$a, $b], $comparator);
+            $array = [$a, $b];
+            sort($array, $comparator);
             return $array[0] === $a ? -1 : 1 ;
         };
 
