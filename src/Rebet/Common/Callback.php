@@ -66,12 +66,19 @@ class Callback
 
     /**
      * Get the value retriever callback closure.
+     * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
-     * @param string|null $key
+     * @param callable|string|null $retriever
      * @return \Closure of function($value) : mixed { ... }
      */
-    public static function retriever(?string $key) : \Closure
+    public static function retriever($retriever) : \Closure
     {
-        return function ($item) use ($key) { return Reflector::get($item, $key); };
+        if (is_callable($retriever)) {
+            return \Closure::fromCallable($retriever);
+        }
+
+        return function ($item) use ($retriever) {
+            return Reflector::get($item, Strings::ltrim($retriever, '@', 1));
+        };
     }
 }

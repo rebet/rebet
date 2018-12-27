@@ -775,7 +775,7 @@ class Arrays
             $next_groups = $group_by;
             $group_by    = array_shift($next_groups);
         }
-        $group_by = is_callable($group_by) ? $group_by : Callback::retriever($group_by) ;
+        $group_by = Callback::retriever($group_by) ;
         $results  = [];
         foreach ($array as $key => $value) {
             $group_keys = $group_by($value, $key);
@@ -823,16 +823,9 @@ class Arrays
      */
     public static function min(?array $array, $retriever = null, $initial = null)
     {
-        $reducer = function ($carry, $value) use ($retriever) {
-            if (is_callable($retriever)) {
-                $v = call_user_func($retriever, $value);
-                $c = call_user_func($retriever, $carry);
-            } else {
-                $key = Strings::ltrim($retriever, '@', 1);
-                $v   = Reflector::get($value, $key);
-                $c   = Reflector::get($carry, $key);
-            }
-            return $carry === null || $v < $c ? $value : $carry ;
+        $retriever = Callback::retriever($retriever);
+        $reducer   = function ($carry, $value) use ($retriever) {
+            return $carry === null || $retriever($value) < $retriever($carry) ? $value : $carry ;
         };
         return static::reduce($array, $reducer, $initial);
     }
@@ -848,16 +841,9 @@ class Arrays
      */
     public static function max(?array $array, $retriever = null, $initial = null)
     {
-        $reducer = function ($carry, $value) use ($retriever) {
-            if (is_callable($retriever)) {
-                $v = call_user_func($retriever, $value);
-                $c = call_user_func($retriever, $carry);
-            } else {
-                $key = Strings::ltrim($retriever, '@', 1);
-                $v   = Reflector::get($value, $key);
-                $c   = Reflector::get($carry, $key);
-            }
-            return $carry === null || $v > $c ? $value : $carry ;
+        $retriever = Callback::retriever($retriever);
+        $reducer   = function ($carry, $value) use ($retriever) {
+            return $carry === null || $retriever($value) > $retriever($carry) ? $value : $carry ;
         };
         return static::reduce($array, $reducer, $initial);
     }
@@ -911,16 +897,9 @@ class Arrays
             return $array[0] === $a ? -1 : 1 ;
         };
 
-        $sorter = function ($a, $b) use ($retriever, $comparator) {
-            if (is_callable($retriever)) {
-                $a = call_user_func($retriever, $a);
-                $b = call_user_func($retriever, $b);
-            } else {
-                $key = Strings::ltrim($retriever, '@', 1);
-                $a   = Reflector::get($a, $key);
-                $b   = Reflector::get($b, $key);
-            }
-            return call_user_func($comparator, $a, $b);
+        $retriever = Callback::retriever($retriever);
+        $sorter    = function ($a, $b) use ($retriever, $comparator) {
+            return call_user_func($comparator, $retriever($a), $retriever($b));
         };
         
         return static::sort($array, $order, $sorter);
