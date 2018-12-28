@@ -556,6 +556,10 @@ class ArraysTest extends RebetTestCase
         $this->assertSame(3, Arrays::count([1, 2, 3]));
         $this->assertSame(4, Arrays::count(new CountableStub(4)));
         $this->assertSame(5, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5])));
+
+        $odd_counter = function ($v) { return $v % 2 === 1; };
+        $this->assertSame(2, Arrays::count([1, 2, 3], $odd_counter));
+        $this->assertSame(3, Arrays::count(new IteratorAggregateStub([1, 2, 3, 4, 5]), $odd_counter));
     }
 
     public function test_toArray()
@@ -1017,10 +1021,44 @@ class ArraysTest extends RebetTestCase
     public function test_sum()
     {
         $this->assertNull(Arrays::sum(null));
-        $this->assertSame(0, Arrays::sum([]));
-        $this->assertSame(55, Arrays::sum(range(1, 10)));
-        $this->assertSame(55, Arrays::sum(range(1, 10), function ($x) { return $x; }));
-        $this->assertSame(88, Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
-        $this->assertSame(58, Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
+        $this->assertSame('0', Arrays::sum([]));
+        $this->assertSame('55', Arrays::sum(range(1, 10)));
+        $this->assertSame('55', Arrays::sum(range(1, 10), function ($x) { return $x; }));
+        $this->assertSame('88', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
+        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
+        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; }));
+        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4]));
+        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4], function ($v) { return $v; }));
+
+        $this->assertFalse(0.3 == array_sum([0.1, 0.2]));
+        $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2]));
+        $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2], null, true));
+
+        $data = array_fill(0, 10000, 0.1);
+        $this->assertFalse(1000 == array_sum($data));
+        $this->assertFalse(1000 == Arrays::sum($data));
+        $this->assertTrue(1000 == Arrays::sum($data, null, true));
+    }
+
+    public function test_avg()
+    {
+        $this->assertNull(Arrays::avg(null));
+        $this->assertNull(Arrays::avg([]));
+        $this->assertSame('5.5', Arrays::avg(range(1, 10)));
+        $this->assertSame('5.5', Arrays::avg(range(1, 10), function ($x) { return $x; }));
+        $this->assertSame('22', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
+        $this->assertSame('14.5', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
+        $this->assertSame('29', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; }));
+        $this->assertSame('2', Arrays::avg([1, 2, 3, null, 4]));
+        $this->assertSame('2.5', Arrays::avg([1, 2, 3, null, 4], function ($v) { return $v; }));
+
+        $this->assertFalse(0.15 == array_sum([0.1, 0.2]) / 2);
+        $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2]));
+        $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2], null, true));
+
+        $data = array_fill(0, 10000, 0.1);
+        $this->assertFalse(0.1 == array_sum($data) / 10000);
+        $this->assertFalse(0.1 == Arrays::avg($data));
+        $this->assertTrue(0.1 == Arrays::avg($data, null, true));
     }
 }

@@ -620,17 +620,18 @@ class Arrays
      * Count items of given value.
      *
      * @param mixed $value
+     * @param callable|null $test of counting target function($value, $key):bool
      * @return int
      */
-    public static function count($value) : int
+    public static function count($value, ?callable $test = null) : int
     {
-        if (is_array($value) || $value instanceof \Countable) {
+        if ($test === null && (is_array($value) || $value instanceof \Countable)) {
             return count($value);
         }
         if (is_iterable($value)) {
             $count = 0;
-            foreach ($value as $item) {
-                $count++;
+            foreach ($value as $key => $item) {
+                $count += $test === null ? 1 : (call_user_func($test, $item, $key) ? 1 : 0) ;
             }
             return $count;
         }
@@ -938,36 +939,44 @@ class Arrays
      *
      * @param array|null $array
      * @param callable|string|null $retriever (default: null)
-     * @return int|null
+     * @param bool $arbitrary_precision (default: false)
+     * @param int|null $precision for arbitrary precision (default: null)
+     * @return string|null
      */
-    public static function sum(?array $array, $retriever = null) : ?int
+    public static function sum(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?string
     {
         if ($array === null) {
             return null;
         }
 
-        if ($retriever === null) {
-            return array_sum($array);
+        if ($retriever === null && !$arbitrary_precision) {
+            return (string)array_sum($array);
         }
 
         $retriever = Callback::retriever($retriever);
-        return static::reduce($array, function ($carry, $item) use ($retriever) { return $carry + $retriever($item); }, 0);
+        return (string)static::reduce($array, function ($carry, $item) use ($retriever, $arbitrary_precision, $precision) {
+            return $arbitrary_precision ? Math::add($carry, (string)($retriever($item) ?? '0'), $precision) : $carry + ($retriever($item) ?? 0) ;
+        }, '0');
     }
 
     /**
-     * Get the average value of a given key.
+     * Get the average of the given values.
      *
      * @param array|null $array
      * @param  callable|string|null  $callback
-     * @return mixed
+     * @param bool $arbitrary_precision (default: false)
+     * @param int|null $precision for arbitrary precision (default: null)
+     * @return string|null
      */
-    public static function avg(?array $array, $retriever = null) : ?string
+    public static function avg(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?string
     {
-        if ($array === null) {
+        if (empty($array)) {
             return null;
         }
-
-        $retriever = Callback::retriever($retriever);
-        return static::sum($array, $retriever) / static::count($array) ;
+        $retriever = $retriever === null ? null : Callback::retriever($retriever) ;
+        $counter   = $retriever === null ? null : function ($v) use ($retriever) { return call_user_func($retriever, $v) !== null; };
+        $sum       = static::sum($array, $retriever, $arbitrary_precision, $precision);
+        $count     = static::count($array, $counter);
+        return (string)($arbitrary_precision ? Math::div($sum, $count, $precision) : $sum / $count) ;
     }
 }

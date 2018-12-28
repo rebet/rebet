@@ -130,7 +130,7 @@ class Math
     }
 
     /**
-     * Perform arbitrary double precision addition by bcadd().
+     * Perform arbitrary precision addition by bcadd().
      *
      * @param string $left
      * @param string $right
@@ -148,7 +148,7 @@ class Math
     }
 
     /**
-     * Perform arbitrary double precision subtraction by bcsub().
+     * Perform arbitrary precision subtraction by bcsub().
      *
      * @param string $left
      * @param string $right
@@ -166,7 +166,7 @@ class Math
     }
 
     /**
-     * Perform arbitrary double precision multiplication by bcmul().
+     * Perform arbitrary precision multiplication by bcmul().
      *
      * @param string $left
      * @param string $right
@@ -185,7 +185,7 @@ class Math
     }
 
     /**
-     * Perform arbitrary double precision division by bcmul().
+     * Perform arbitrary precision division by bcmul().
      *
      * @param string $left
      * @param string $right
@@ -204,7 +204,7 @@ class Math
     }
 
     /**
-     * Perform arbitrary double precision comparison by bccomp().
+     * Perform arbitrary precision comparison by bccomp().
      *
      * @param string $left
      * @param string $right
@@ -221,7 +221,7 @@ class Math
     }
     
     /**
-     * It checks left equals right by perform arbitrary double precision comparison.
+     * It checks left equals right by perform arbitrary precision comparison.
      *
      * @param string $left
      * @param string $right
@@ -234,7 +234,7 @@ class Math
     }
     
     /**
-     * It checks left greater than right by perform arbitrary double precision comparison.
+     * It checks left greater than right by perform arbitrary precision comparison.
      *
      * @param string $left
      * @param string $right
@@ -247,7 +247,7 @@ class Math
     }
 
     /**
-     * It checks left greater equals right by perform arbitrary double precision comparison.
+     * It checks left greater equals right by perform arbitrary precision comparison.
      *
      * @param string $left
      * @param string $right
@@ -260,7 +260,7 @@ class Math
     }
 
     /**
-     * It checks left less than right by perform arbitrary double precision comparison.
+     * It checks left less than right by perform arbitrary precision comparison.
      *
      * @param string $left
      * @param string $right
@@ -273,7 +273,7 @@ class Math
     }
 
     /**
-     * It checks left less equals right by perform arbitrary double precision comparison.
+     * It checks left less equals right by perform arbitrary precision comparison.
      *
      * @param string $left
      * @param string $right
