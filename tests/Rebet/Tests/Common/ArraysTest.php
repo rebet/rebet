@@ -1079,4 +1079,16 @@ class ArraysTest extends RebetTestCase
         $this->assertTrue(0.15 == Arrays::median([0.1, 0.2]));
         $this->assertTrue(0.15 == Arrays::median([0.1, 0.2], null, true));
     }
+
+    public function test_mode()
+    {
+        $this->assertNull(Arrays::mode(null));
+        $this->assertNull(Arrays::mode([]));
+
+        $this->assertSame([1, 2, 3], Arrays::mode([1, 2, null, 3]));
+        $this->assertSame([4], Arrays::mode([1, 2, 3, 4, 4, 5]));
+        $this->assertSame([1, 4], Arrays::mode([1, 2, 3, 4, 4, 5, 1]));
+        $this->assertSame([1], Arrays::mode([1, 2, 3, 4, 1, 4, 5, 1]));
+        $this->assertSame([4], Arrays::mode([['no' => 1], ['no' => 2], ['no' => 3], ['no' => 4], ['no' => 4], ['no' => 5]], 'no'));
+    }
 }

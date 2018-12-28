@@ -763,11 +763,11 @@ class Arrays
      * Group an associative array by a field or using a callback.
      *
      * @param  array|null $array
-     * @param  callable|string|array $group_by
+     * @param  callable|string|array $group_by (default: null)
      * @param  bool  $preserve_keys (default: false)
      * @return array
      */
-    public static function groupBy(?array $array, $group_by, bool $preserve_keys = false) : ?array
+    public static function groupBy(?array $array, $group_by = null, bool $preserve_keys = false) : ?array
     {
         if ($array === null) {
             return null;
@@ -1006,5 +1006,24 @@ class Arrays
             return (string)$array[$middle];
         }
         return static::avg([$array[$middle - 1], $array[$middle]], null, $arbitrary_precision, $precision);
+    }
+
+    /**
+     * Get the mode of a given key.
+     *
+     * @param array|null $array
+     * @param callable|string|null $retriever
+     * @return array|null
+     */
+    public static function mode(?array $array, $retriever = null) : ?array
+    {
+        if (empty($array)) {
+            return null;
+        }
+        $array  = $retriever === null ? $array : static::map($array, Callback::retriever($retriever));
+        $counts = static::map(static::groupBy(static::compact($array)), function ($v) { return static::count($v); });
+        $counts = static::sort($counts);
+        $count  = end($counts);
+        return array_keys(static::where($counts, function ($v) use ($count) { return $v === $count; }));
     }
 }
