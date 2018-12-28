@@ -2,11 +2,10 @@
 namespace Rebet\Common;
 
 use Rebet\Common\Exception\LogicException;
+use Rebet\Config\Configurable;
 
 /**
  * Math Class
- *
- * @todo implements
  *
  * Note: About Significant Figure Rules
  *  - The zeros at the end of a number without a decimal point, it is considered valid.
@@ -26,6 +25,15 @@ use Rebet\Common\Exception\LogicException;
  */
 class Math
 {
+    use Configurable;
+
+    public static function defaultConfig() : array
+    {
+        return [
+            'default_precision' => null,
+        ];
+    }
+
     /**
      * @var int Precision type decimal places for add/sub/comp.
      */
@@ -35,6 +43,18 @@ class Math
      * @var int Precision type significant figure for mul/div.
      */
     const TYPE_SIGNIFICANT_FIGURE = 2;
+
+    /**
+     * Set default precision for all of calculations (exclude comp methods).
+     * Note: If set precision to null, that means using Significant Figure Rules of this modules
+     *
+     * @param integer|null $default_precision
+     * @return void
+     */
+    public static function setDefaultPrecision(?int $default_precision) : void
+    {
+        static::setConfig(['default_precision' => $default_precision]);
+    }
 
     /**
      * No instantiation
@@ -119,6 +139,7 @@ class Math
      */
     public static function add(string $left, string $right, ?int $precision = null)
     {
+        $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
             return static::roundByDecimalPlaces(bcadd($left, $right, $precision + 1), $precision);
         }
@@ -136,6 +157,7 @@ class Math
      */
     public static function sub(string $left, string $right, ?int $precision = null)
     {
+        $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
             return static::roundByDecimalPlaces(bcsub($left, $right, $precision + 1), $precision) ;
         }
@@ -153,12 +175,13 @@ class Math
      */
     public static function mul(string $left, string $right, ?int $precision = null)
     {
+        $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
             return static::roundByDecimalPlaces(bcmul($left, $right, $precision + 1), $precision);
         }
 
         [$left, $right, $scale, $significant_figure] = static::compensate($left, $right);
-        return static::roundBySignificantFigures(bcmul($left, $right, $scale * 2), $significant_figure + 1);
+        return static::roundBySignificantFigures(bcmul($left, $right, max($scale, $significant_figure) * 2), $significant_figure + 1);
     }
 
     /**
@@ -171,12 +194,13 @@ class Math
      */
     public static function div(string $left, string $right, ?int $precision = null)
     {
+        $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
             return static::roundByDecimalPlaces(bcdiv($left, $right, $precision + 1), $precision);
         }
 
         [$left, $right, $scale, $significant_figure] = static::compensate($left, $right);
-        return static::roundBySignificantFigures(bcdiv($left, $right, $scale * 2), $significant_figure + 1);
+        return static::roundBySignificantFigures(bcdiv($left, $right, max($scale, $significant_figure) * 2), $significant_figure + 1);
     }
 
     /**
@@ -309,11 +333,12 @@ class Math
      * Floor the given value.
      *
      * @param string $value
-     * @param int $precision (default: 0)
+     * @param int|null $precision (default: depend on default_precision or 0)
      * @return string
      */
-    public static function floor(string $value, int $precision = 0) : string
+    public static function floor(string $value, ?int $precision = null) : string
     {
+        $precision = $precision ?? static::config('default_precision', false) ?? 0;
         return static::shiftingCalc($value, $precision, function ($shifted, $negative, $precision) {
             $delta = $negative && bccomp(static::decimalOf($shifted), '0') === 1 ? '-1' : '0' ;
             return bcadd(Strings::ratrim($shifted, '.'), $delta, $precision) ;
@@ -324,12 +349,13 @@ class Math
      * Round up the value by given decimal part precision.
      *
      * @param string $value
-     * @param int $precision (default: 0)
+     * @param int|null $precision (default: depend on default_precision or 0)
      * @param int $precision_type (default: TYPE_DECIMAL_PLACES)
      * @return string
      */
-    public static function round(string $value, int $precision = 0, ?int $precision_type = null) : string
+    public static function round(string $value, ?int $precision = null, ?int $precision_type = null) : string
     {
+        $precision = $precision ?? static::config('default_precision', false) ?? 0;
         switch ($precision_type ?? static::TYPE_DECIMAL_PLACES) {
             case static::TYPE_DECIMAL_PLACES:
                 return static::roundByDecimalPlaces($value, $precision);
@@ -343,11 +369,12 @@ class Math
      * Round up the value by given decimal places precision.
      *
      * @param string $value
-     * @param int $precision (default: 0)
+     * @param int $precision (default: depend on default_precision or 0)
      * @return string
      */
-    protected static function roundByDecimalPlaces(string $value, int $precision = 0) : string
+    protected static function roundByDecimalPlaces(string $value, ?int $precision = null) : string
     {
+        $precision = $precision ?? static::config('default_precision', false) ?? 0;
         return static::shiftingCalc($value, $precision, function ($shifted, $negative, $precision) {
             return bcadd($shifted, $negative ? '-0.5' : '0.5', $precision);
         });
@@ -360,7 +387,7 @@ class Math
      * @param integer $precision
      * @return string
      */
-    protected static function roundBySignificantFigures(string $value, int $precision) : string
+    public static function roundBySignificantFigures(string $value, int $precision) : string
     {
         if ($precision < 1) {
             throw LogicException::by("Invalid significant figure precision [{$precision}] was given. Significant figure precision must be higher than 0.");
@@ -390,11 +417,12 @@ class Math
      * Ceil the given value.
      *
      * @param string $value
-     * @param int $precision (default: 0)
+     * @param int $precision (default: depend on default_precision or 0)
      * @return string
      */
-    public static function ceil(string $value, int $precision = 0) : string
+    public static function ceil(string $value, ?int $precision = null) : string
     {
+        $precision = $precision ?? static::config('default_precision', false) ?? 0;
         return static::shiftingCalc($value, $precision, function ($shifted, $negative, $precision) {
             $delta = !$negative && bccomp(static::decimalOf($shifted), '0') === 1 ? '1' : '0' ;
             return bcadd(Strings::ratrim($shifted, '.'), $delta, $precision) ;
@@ -405,12 +433,13 @@ class Math
      * Add a thousand separator to the given number.
      *
      * @param string $value
-     * @param int $precision (default: 0)
+     * @param int $precision (default: depend on default_precision or 0)
      * @param string $decimal_point (default: '.')
      * @param string $thousands_separator (default: ',')
      */
-    public static function format(string $value, int $precision = 0, string $decimal_point = ".", string $thousands_separator = ",") : string
+    public static function format(string $value, ?int $precision = null, string $decimal_point = ".", string $thousands_separator = ",") : string
     {
+        $precision           = $precision ?? static::config('default_precision', false) ?? 0;
         [$integer, $decimal] = Strings::split(static::round($value, $precision), '.', 2, '');
         $integer             = preg_replace('/(\d)(?=(\d{3})+(?!\d))/', '$1'.$thousands_separator, $integer);
         return empty($decimal) ? $integer : "{$integer}{$decimal_point}{$decimal}" ;
