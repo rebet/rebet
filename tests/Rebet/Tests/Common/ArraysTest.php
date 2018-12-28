@@ -1061,4 +1061,22 @@ class ArraysTest extends RebetTestCase
         $this->assertFalse(0.1 == Arrays::avg($data));
         $this->assertTrue(0.1 == Arrays::avg($data, null, true));
     }
+
+    public function test_median()
+    {
+        $this->assertNull(Arrays::median(null));
+        $this->assertNull(Arrays::median([]));
+        $this->assertSame('5.5', Arrays::median(range(1, 10)));
+        $this->assertSame('5.5', Arrays::median(range(1, 10), function ($x) { return $x; }));
+        $this->assertSame('22.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
+        $this->assertSame('18', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18], ['age' => 9]], 'age'));
+        $this->assertSame('13.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
+        $this->assertSame('29', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; }));
+        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4]));
+        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4], function ($v) { return $v; }));
+
+        $this->assertFalse(0.15 == array_sum([0.1, 0.2]) / 2);
+        $this->assertTrue(0.15 == Arrays::median([0.1, 0.2]));
+        $this->assertTrue(0.15 == Arrays::median([0.1, 0.2], null, true));
+    }
 }

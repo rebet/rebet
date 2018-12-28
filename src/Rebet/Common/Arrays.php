@@ -961,9 +961,10 @@ class Arrays
 
     /**
      * Get the average of the given values.
+     * Note: If the retriever return null then that item exclude from count. It means that you can calculate the selective average value.
      *
      * @param array|null $array
-     * @param  callable|string|null  $callback
+     * @param callable|string|null $retriever
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
      * @return string|null
@@ -978,5 +979,32 @@ class Arrays
         $sum       = static::sum($array, $retriever, $arbitrary_precision, $precision);
         $count     = static::count($array, $counter);
         return (string)($arbitrary_precision ? Math::div($sum, $count, $precision) : $sum / $count) ;
+    }
+
+    /**
+     * Get the median of the given values.
+     *
+     * @param array|null $array
+     * @param callable|string|null $retriever
+     * @param bool $arbitrary_precision (default: false)
+     * @param int|null $precision for arbitrary precision (default: null)
+     * @return string|null
+     */
+    public static function median(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?string
+    {
+        if (empty($array)) {
+            return null;
+        }
+        $array = $retriever === null ? $array : static::map($array, Callback::retriever($retriever));
+        $array = array_values(static::sort(static::compact($array)));
+        $count = static::count($array);
+        if ($count == 0) {
+            return null;
+        }
+        $middle = (int) ($count / 2);
+        if ($count % 2) {
+            return (string)$array[$middle];
+        }
+        return static::avg([$array[$middle - 1], $array[$middle]], null, $arbitrary_precision, $precision);
     }
 }
