@@ -9,7 +9,7 @@ use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 
 /**
- * 日付 クラス
+ * Date Time Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -50,38 +50,38 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     protected $default_format;
 
     /**
-     * テスト用の現在日時を設定し、本クラスをモック化します。
+     * Set the current date time for testing and mock this class.
      *
-     * @param string $now テスト用の現在時刻
-     * @param string $timezone タイムゾーン（デフォルト：UTC）
+     * @param string $now
+     * @param string $timezone (default: UTC)
      */
     public static function setTestNow(string $now, string $timezone = 'UTC') : void
     {
         self::setConfig(['test_now' => $now, 'test_now_timezone' => $timezone]);
     }
-    
+
     /**
-     * 現在のテスト用日時を取得します
-     * 。
-     * @return ?string テスト用日時
+     * Get the current test date time
+     *
+     * @return string|null
      */
     public static function getTestNow() : ?string
     {
         return self::config('test_now', false);
     }
-    
+
     /**
-     * 現在のテスト用日時のタイムゾーンを取得します
-     * 。
-     * @return ?string テスト用日時のタイムゾーン
+     * Get the time zone of the current test date time.
+     *
+     * @return string|null
      */
     public static function getTestNowTimezone() : ?string
     {
         return self::config('test_now_timezone', false);
     }
-    
+
     /**
-     * 現在のテスト用日時を削除します。
+     * Delete the current test date time.
      */
     public static function removeTestNow() : void
     {
@@ -89,10 +89,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * 指定の値を DateTime に変換します。
-     * 本メソッドは Reflector::convert() 用の I/F となります。
+     * Converts the given value to DateTime.
+     * This method is an I/F for Reflector::convert().
      *
-     * より詳細な DateTime 変換に関しては下記を参照／利用してください。
+     * For more detailed DateTime conversion please refe / use below.
      *
      * @see static::createDateTime()
      * @see static::analyzeDateTime()
@@ -109,44 +109,47 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             return null;
         }
     }
-    
+
     /**
-     * DateTime オブジェクトを解析します。
-     * 解析可能な文字列は以下の通りです。
+     * Parses a objects representing DateTime.
+     * This method is a convenience method which excludes date format information from analyzeDateTime() and returns only the DateTime.
      *
-     * 　1. 引数 $main_format で指定したフォーマット
-     * 　2. コンフィグ設定 'acceptable_date_format' に定義されているフォーマット
-     * 　3. コンフィグ設定 'default_format' にフォーマットされているフォーマット
+     * @see DateTime::analyzeDateTime()
      *
-     * ※本メソッドは analyzeDateTime() から日付フォーマット情報を除外して日付のみを返す簡易メソッドです。
-     * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
-     *
-     * @param string|\DateTimeInterface|int|null $value 日時文字列
-     * @param string|array $main_format 優先解析フォーマット（デフォルト：[]）
-     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-     * @return static|null 解析結果
+     * @param string|\DateTimeInterface|int|float|null $value
+     * @param string|array $main_format for primary analyze (default: [])
+     * @param string|\DateTimezone|null $timezone (default: depend on configure)
+     * @return static|null
      */
     public static function createDateTime($value, $main_format = [], $timezone = null) : ?DateTime
     {
         [$date, ] = self::analyzeDateTime($value, $main_format, $timezone);
         return $date;
     }
-    
+
     /**
-     * DateTime オブジェクトを解析します。
-     * 解析可能な文字列は以下の通りです。
+     * Parses a objects representing DateTime.
+     * The objects that can be analyzed are as follows.
      *
-     * 　1. 引数 $main_format で指定したフォーマット
-     * 　2. コンフィグ設定 'acceptable_date_format' に定義されているフォーマット
-     * 　3. コンフィグ設定 'default_format' にフォーマットされているフォーマット
+     *   \DateTimeInterface:
+     *    Convert to DateTime from given \DateTimeInterface with new timezone if given
+     *   int:
+     *    Analyze by int as millisecond of Epoch time
+     *   float:
+     *    Analyze by float as microsecond of Epoch time
+     *   string:
+     * 　 1st. Analyze by formats that given $main_format
+     * 　 2nd. Analyze by formats that the 'acceptable_date_format' config settings
+     * 　 3rd. Analyze by format that the default format.
      *
-     * ※本メソッドは解析に成功した日付フォーマットも返します。
-     * ※タイムゾーンはデフォルトタイムゾーンが使用されます。
+     * Note:
+     *  This method also returns the date format that succeeded in analysis.
+     *  The default time zone is used for the time zone.
      *
-     * @param string|\DateTimeInterface|int|null $value 日時文字列
-     * @param string|array $main_format 優先解析フォーマット（デフォルト：[]）
-     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
-     * @return array [DateTime|null, apply_format|null] or null 解析結果
+     * @param string|\DateTimeInterface|int|float|null $value
+     * @param string|array $main_format for primary analyze (default: [])
+     * @param string|\DateTimezone|null $timezone (default: depend on configure)
+     * @return array [DateTime|null, apply_format|null] or null
      */
     public static function analyzeDateTime($value, $main_format = [], $timezone = null) : array
     {
@@ -172,13 +175,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         
         return [$date, $apply_format];
     }
-    
+
     /**
-     * DateTime オブジェクトを生成を試みます。
+     * Try to parse DateTime
      *
-     * @param string $value 日時文字列
-     * @param string $format フォーマット
-     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @param string $value
+     * @param string $format
+     * @param string|\DateTimezone|null $timezone (default: depend on configure)
      * @return static|null
      */
     private static function tryToParseDateTime($value, $format, $timezone = null)
@@ -187,23 +190,14 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         $le   = static::getLastErrors();
         return $date === false || !empty($le['errors']) || !empty($le['warnings']) ? null : $date ;
     }
-    
+
     /**
-     * 新しい DateTime オブジェクトを返します。
-     * このオブジェクトは、time で指定した文字列を format で指定した書式に沿って解釈した時刻を表します。
+     * Create new DateTime object.
+     * This method is a method for \DateTime compatibility.
      *
-     * なお、本メソッドは \DateTime 互換用のメソッドとなります。
-     * 文字列から日付型への変換に関してはより便利な
-     *
-     *   DateTime::analyzeDateTime()
-     *   DateTime::createDateTime()
-     *   DateTime::valueOf()
-     *
-     * をご利用下さい。
-     *
-     * @param string $format フォーマット
-     * @param string|\DateTimeInterface|null $value 日時文字列
-     * @param string|\DateTimezone|null $timezone タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @param string $format
+     * @param string|\DateTimeInterface|null $value
+     * @param string|\DateTimezone|null $timezone (default: depend on confiure)
      * @return DateTime|bool
      */
     public static function createFromFormat($format, $value, $timezone = null)
@@ -222,7 +216,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * タイムゾーンを決定します
+     * Adopt the time zone
+     *
+     * @param string|\DateTimeZone|null $timezone
+     * @return DateTimeZone
      */
     private static function adoptTimezone($timezone) : DateTimeZone
     {
@@ -231,8 +228,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
+     * Create the DateTime objects.
+     *
      * @param string|\DateTimeInterface|int $time
-     * @param string|\DateTimeZone $timezone タイムゾーン（デフォオルト：コンフィグ設定依存）
+     * @param string|\DateTimeZone $timezone (default: depend on configure)
      */
     public function __construct($time = 'now', $timezone = null)
     {
@@ -305,27 +304,29 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * タイムゾーンを設定します。
+     * Set timezone
      *
-     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @param string|\DateTimeZone|null (default: depend on confige)
      * @return static
      */
     public function setTimezone($timezone)
     {
         return parent::setTimezone(self::adoptTimezone($timezone));
     }
-    
+
     /**
-     * デフォルトフォーマットに従って文字列を返します。
+     * It returns a string according to the default format.
+     *
      * @return string
      */
     public function __toString() : string
     {
         return $this->format($this->default_format);
     }
-    
+
     /**
-     * デフォルトフォーマットに従って文字列を返します。
+     * It returns a string according to the default format.
+     *
      * @return string
      */
     public function jsonSerialize() : string
@@ -334,31 +335,31 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * 現在時刻を取得します
+     * Get DateTime of now.
      *
-     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @param string|\DateTimeZone|null (default: depend on configure)
      * @return static
      */
     public static function now($timezone = null) : DateTime
     {
         return new static('now', $timezone);
     }
-    
+
     /**
-     * 本日を取得します
+     * Get DateTime of today.
      *
-     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @param string|\DateTimeZone|null (default: depend on configure)
      * @return static
      */
     public static function today($timezone = null) : DateTime
     {
         return new static('today', $timezone);
     }
-    
+
     /**
-     * 昨日を取得します
+     * Get DateTime of yesterday.
      *
-     * @param string|\DateTimeZone|null タイムゾーン（デフォルト：コンフィグ設定依存）
+     * @param string|\DateTimeZone|null (default: depend on configure)
      * @return static
      */
     public static function yesterday($timezone = null) : DateTime
@@ -367,8 +368,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 年を加算します
-     * @param int $year 年
+     * Add year
+     *
+     * @param int $year
      * @return static
      */
     public function addYear(int $year) : DateTime
@@ -377,8 +379,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 年を取得します
-     * @return int 年
+     * Get year
+     *
+     * @return int
      */
     public function getYear() : int
     {
@@ -386,8 +389,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 年を設定します
-     * @param int $year 年
+     * Set year
+     *
+     * @param int $year
      * @return static
      */
     public function setYear(int $year) : DateTime
@@ -396,8 +400,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 月を加算します
-     * @param int $month 月
+     * Add month
+     *
+     * @param int $month
      * @return static
      */
     public function addMonth(int $month) : DateTime
@@ -406,8 +411,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 月を取得します
-     * @return int 月
+     * Get month
+     *
+     * @return int
      */
     public function getMonth() : int
     {
@@ -415,8 +421,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 月を設定します
-     * @param int $month 月
+     * Set month
+     *
+     * @param int $month
      * @return static
      */
     public function setMonth(int $month) : DateTime
@@ -425,8 +432,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 日を加算します
-     * @param int $day 日
+     * Add day
+     *
+     * @param int $day
      * @return static
      */
     public function addday(int $day) : DateTime
@@ -435,8 +443,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 日を設定します
-     * @param int $day 日
+     * Set Day
+     *
+     * @param int $day
      * @return static
      */
     public function setDay(int $day) : DateTime
@@ -445,8 +454,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 日を取得します
-     * @return int 日
+     * Get day
+     *
+     * @return int
      */
     public function getDay() : int
     {
@@ -454,8 +464,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 時を加算します
-     * @param int $minute 時
+     * Add hour
+     *
+     * @param int $hour
      * @return static
      */
     public function addHour(int $hour) : DateTime
@@ -464,8 +475,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 時を設定します
-     * @param int $hour 時
+     * Set hour
+     *
+     * @param int $hour
      * @return static
      */
     public function setHour(int $hour) : DateTime
@@ -474,85 +486,94 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
-     * 時を取得します
-     * @return int 時
+     * Get hour
+     *
+     * @return int
      */
     public function getHour() : int
     {
         return (int)$this->format('H');
     }
-    
+
     /**
-     * 分を加算します
-     * @param int $minute 分
+     * Add minute
+     *
+     * @param int $minute
      * @return static
      */
     public function addMinute(int $minute) : DateTime
     {
         return $this->modify("{$minute} minute");
     }
-    
+
     /**
-     * 分を設定します
-     * @param int $minute 分
+     * Set minute
+     *
+     * @param int $minute
      * @return static
      */
     public function setMinute(int $minute) : DateTime
     {
         return $this->setTime($this->getHour(), $minute, $this->getSecond());
     }
-    
+
     /**
-     * 分を取得します
-     * @return int 分
+     * Get minute
+     *
+     * @return int
      */
     public function getMinute() : int
     {
         return (int)$this->format('i');
     }
-    
+
     /**
-     * 秒を加算します
-     * @param int $second 秒
+     * Add second
+     *
+     * @param int $second
      * @return static
      */
     public function addSecond(int $second) : DateTime
     {
         return $this->modify("{$second} second");
     }
-    
+
     /**
-     * 秒を設定します
-     * @param int $second 秒
+     * Set second
+     *
+     * @param int $second
      * @return static
      */
     public function setSecond(int $second) : DateTime
     {
         return $this->setTime($this->getHour(), $this->getMinute(), $second);
     }
-    
+
     /**
-     * 秒を取得します
-     * @return int 秒
+     * Get second
+     *
+     * @return int
      */
     public function getSecond() : int
     {
         return (int)$this->format('s');
     }
-    
+
     /**
-     * ミリ秒(3桁)を含むマイクロ精度秒（6桁）を加算します
-     * @param int $milli_micro マイクロ秒精度
+     * Add micro precision seconds (6 digits) including milliseconds (3 digits)
+     *
+     * @param int $milli_micro
      * @return static
      */
     public function addMilliMicro(int $milli_micro) : DateTime
     {
         return $this->setMilliMicro($this->getMilliMicro() + $milli_micro);
     }
-    
+
     /**
-     * ミリ秒(3桁)を含むマイクロ精度秒（6桁）を設定します
-     * @param int $milli_micro マイクロ秒精度
+     * Set micro precision seconds (6 digits) including milliseconds (3 digits)
+     *
+     * @param int $milli_micro
      * @return static
      */
     public function setMilliMicro(int $milli_micro) : DateTime
@@ -568,8 +589,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * ミリ秒(3桁)を含むマイクロ精度秒（6桁）を取得します
-     * @return int マイクロ精度秒 を取得します。
+     * Get micro precision seconds (6 digits) including milliseconds (3 digits)
+     *
+     * @return int
      */
     public function getMilliMicro() : int
     {
@@ -577,57 +599,63 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * ミリ秒を加算します
-     * @param int $millis ミリ秒
+     * Add millisecond
+     *
+     * @param int $millis
      * @return static
      */
     public function addMilli(int $milli) : DateTime
     {
         return $this->addMilliMicro($milli * 1000);
     }
-    
+
     /**
-     * ミリ秒を設定します
-     * @param int $milli ミリ秒
+     * Set millisecond
+     *
+     * @param int $milli
      * @return static
      */
     public function setMilli(int $milli) : DateTime
     {
         return $this->setMilliMicro($milli * 1000 + $this->getMicro());
     }
-    
+
     /**
-     * ミリ秒を取得します
-     * @return int ミリ秒
+     * Get millisecond
+     *
+     * @return int
      */
     public function getMilli() : int
     {
         return (int)floor($this->getMilliMicro() / 1000);
     }
-    
+
     /**
-     * マイクロ秒を加算します
-     * @param int $millis マイクロ秒
+     * Add microsecond
+     *
+     * @param int $micro
      * @return static
      */
     public function addMicro(int $micro) : DateTime
     {
         return $this->addMilliMicro($micro);
     }
-    
+
     /**
-     * マイクロ秒を設定します
-     * @param int $micro マイクロ秒
+     * Set microsecond
+     *
+     * @param int $micro
      * @return static
      */
     public function setMicro(int $micro) : DateTime
     {
         return $this->setMilliMicro($this->getMilli() * 1000 + $micro);
     }
-    
+
     /**
-     * マイクロ秒を取得します
-     * @return int マイクロ秒
+     * Get microsecond
+     *
+     * @return int
      */
     public function getMicro() : int
     {
@@ -635,10 +663,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * 小数点以下にマイクロ秒を含む Unix Epoch 時間を返します。
-     *
-     * 【注意】
-     * 小数点以下のマイクロ秒は float の丸め誤差の影響をうけるため正確な値を返さないことに注意して下さい。
+     * Get the Unix Epoch time including microseconds after the decimal point.
+     * Note: The microsecond after the decimal point of micro time stamp are affected by rounding error of float and will not return accurate value.
      *
      * @return float
      */
@@ -648,10 +674,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * 型変換をします。
+     * Convert type to given type.
      *
      * @see Convertible
-     *
      * @param string $type
      * @return void
      */
