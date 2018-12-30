@@ -5,9 +5,9 @@ use Rebet\Common\Convertible;
 use Rebet\Common\Reflector;
 
 /**
- * タイムゾーン クラス
+ * Date Time Zone Class
  *
- * @todo シングルトン化 or クラス自体削除するか否かの検討
+ * @todo Investigation as to whether singletonization or class itself should be deleted
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -17,9 +17,9 @@ use Rebet\Common\Reflector;
 class DateTimeZone extends \DateTimeZone implements Convertible
 {
     /**
-     * タイムゾーンを構築します。
+     * Create DateTimeZone
      *
-     * @param string|\DateTimeZone $timezone タイムゾーン
+     * @param string|\DateTimeZone $timezone
      */
     public function __construct($timezone)
     {
@@ -28,7 +28,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
     }
 
     /**
-     * 指定の値を DateTimeZone に変換します。
+     * {@inheritDoc}
      *
      * @see Reflector::convert()
      * @see Convertible
@@ -40,11 +40,9 @@ class DateTimeZone extends \DateTimeZone implements Convertible
     {
         return new DateTimeZone($value);
     }
-    
+
     /**
-     * 文字列に変換します。
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function __toString()
     {
@@ -52,7 +50,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
     }
 
     /**
-     * 型変換を行います。
+     * {@inheritDoc}
      *
      * @see Convertible
      *
