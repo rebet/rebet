@@ -9,34 +9,30 @@ use Rebet\Common\Utils;
 use Rebet\Config\Exception\ConfigNotDefineException;
 
 /**
- * コンフィグ クラス
+ * Config Class
  *
- * 各種設定を統一的に扱うクラス。
- * 本クラスのコンフィグには以下の4段階の設定があり、
+ * Classes that handle various settings in a unified way.
+ * The configuration of this class has the following four layers of settings,
  *
- * 　1. ライブラリコンフィグ
- * 　2. フレームワークコンフィグ
- * 　3. アプリケーションコンフィグ
- * 　4. ランタイムコンフィグ
+ *  1. Library     Configuration (Low priority)
+ *  2. Framework   Configuration
+ *  3. Application Configuration
+ *  4. Runtime     Configuration (High priority)
  *
- * 【優先度高 4 > 3 > 2 > 1 優先度低】 の優先度に従って設定を上書きすることができます。
- * また、各設定は以下のように定義／動作します。
+ * You can overwrite the setting according by the higher priority layer.
+ * In addition, each setting is defined / operated as follows.
  *
- * 　1. ライブラリコンフィグ
- * 　　　⇒ 各クラス定義にて Configurable trait の実装
- * 　2. フレームワークコンフィグ
- * 　　　⇒ フレームワーク初期化処理にて Config::framework() で設定／上書き
- * 　3. アプリケーションコンフィグ
- * 　　　⇒ アプリケーション初期化処理にて Config::application() で設定／上書き
- * 　4. ランタイムコンフィグ
- * 　　　⇒ アプリケーション実行中に Config::runtime() で設定／上書き
- * 　　　⇒ Configurable 実装クラスにて protected setConfig() を利用した個別実装のコンフィグ設定メソッドで設定／上書き
+ *  1. Library Configuration
+ *     => Implementation of Configurable Trait in each class definition
+ *  2. Framework Configuration
+ *     => Set / overwrite with Config::framework() in framework initialization processing
+ *  3. Application Configuration
+ *     => Set / overwrite with Config::application() in application initialization processing
+ *  4. Runtime Configuration
+ *     => Set / overwrite with Config::runtime() during application execution
+ *     => The individual configration methods of the Configurable implementation class that using protected Configurable::setConfig() method.
  *
- * なお、上記レイヤー別の上書きは挙動は Rebet\Common\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) と同様の動作をします。
- *
- * @todo i18n 関連の考察
- * @todo 現在の設定をレイヤー別に参照するメソッドなどの実装
- * @todo レイヤー別の設定を配列で取得するメソッドの実装
+ * Note: The behaviors behave like Rebet\Common\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
  *
  * @see Rebet\Config\Configurable
  * @see Rebet\Common\Arrays
@@ -56,8 +52,8 @@ class Config
     }
 
     /**
-     * コンフィグ設定
-     * 構造は下記の通り
+     * Configuration setting
+     * The structure is as follows
      *
      * config = [
      *    'Layer' => [
@@ -77,7 +73,7 @@ class Config
     ];
 
     /**
-     * コンフィグのオプション設定
+     * Option setting of config
      *
      * option = [
      *    'Layer' => [
@@ -97,7 +93,7 @@ class Config
     ];
 
     /**
-     * コンパイル済みオプション設定
+     * Compiled option setting
      *
      * compiled = [
      *   'Section' => [
@@ -110,7 +106,11 @@ class Config
     protected static $compiled = [];
 
     /**
-     * コンフィグデータを全てクリアします
+     * Clear configration data of given section.
+     * If the null given then clear all data.
+     *
+     * @param string|null $section (default: null)
+     * @return void
      */
     public static function clear(?string $section = null) : void
     {
@@ -129,11 +129,12 @@ class Config
     }
 
     /**
-     * 現在の設定内容を全て取得します。
+     * Get all of configuration settings.
      *
-     * ※まだロードされていない未使用のライブラリコンフィグ設定は含まれません
-     * ※本メソッドの呼び出しによって ConfigReferrer 経由でロードされたライブラリコンフィグ設定は
-     * 　本メソッドの戻り値に含まれないことがあります
+     * Note:
+     *  - Unused library configuration settings that have not yet been loaded are not included.
+     *  - The library configuration setting loaded via ConfigReferrer by calling this method
+     *    it may not be included in the return value of this method.
      *
      * @return array
      */
@@ -143,8 +144,8 @@ class Config
     }
 
     /**
-     * 対象セクションのコンフィグ設定をコンパイルします。
-     * 本コンパイルは各レイヤー情報の Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
+     * Compile the config setting of the target section.
+     * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
      * @param string $section
      * @return void
@@ -162,8 +163,12 @@ class Config
     }
 
     /**
-     * 対象レイヤーのコンフィグを設定／上書きします。
-     * 本設定は Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
+     * Set / overwrite the configuration of the target layer.
+     * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
+     *
+     * @param string $layer
+     * @param array $config
+     * @return void
      */
     protected static function put(string $layer, array $config) : void
     {
@@ -174,9 +179,9 @@ class Config
             static::compile($section);
         }
     }
-    
+
     /**
-     * コンフィグ設定を解析します。
+     * Analyze configuration settings.
      *
      * @param array $config
      * @param array $option
@@ -199,9 +204,9 @@ class Config
         }
         return $analyzed;
     }
-    
+
     /**
-     * セクション以下のコンフィグ設定を解析します。
+     * Analyze the configuration settings under the section.
      *
      * @param array $config
      * @param array $option
@@ -234,8 +239,8 @@ class Config
     }
 
     /**
-     * フレームワークコンフィグを設定します。
-     * 本設定は Arrays::override(.., OverrideOption::PREPEND) による上書き設定となります。
+     * Set the framework layer config.
+     * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
      * ex)
      * Config::framework([
@@ -258,8 +263,8 @@ class Config
     }
 
     /**
-     * アプリケーションコンフィグを設定します。
-     * 本設定は Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
+     * Set the application layer config.
+     * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
      * ex)
      * Config::application([
@@ -282,8 +287,8 @@ class Config
     }
 
     /**
-     * ランタイムコンフィグを設定します。
-     * 本設定は Arrays::override(..., OverrideOption::PREPEND) による上書き設定となります。
+     * Set the runtime layer config.
+     * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
      * ex)
      * Config::runtime([
@@ -304,15 +309,15 @@ class Config
     {
         self::put(Layer::RUNTIME, $config);
     }
-    
+
     /**
-     * 対象のコンフィグに指定の設定が定義されているかチェックします。
-     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
+     * It checks the configuration setting for the given target is defined.
+     * Note: This method will throw an exception if the key selector contains only numeric values.
      *
-     * @param array $config チェック対象のコンフィグ
-     * @param string $section チェック対象のセクション
-     * @param string $key|null チェック対象のキー（.区切りで階層指定可）
-     * @return int true: 定義あり, false: 定義なし
+     * @param array $config
+     * @param string $section
+     * @param string|null $key can contains dot notation
+     * @return bool
      * @throws LogicException
      */
     protected static function isDefine(array $config, string $section, ?string $key) : bool
@@ -324,7 +329,7 @@ class Config
     }
 
     /**
-     * アクセスキーの形式をチェックします。
+     * Check the format of the access key.
      *
      * @param string|null $key
      * @return void
@@ -343,17 +348,18 @@ class Config
     }
 
     /**
-     * コンフィグの設定値を取得します。
-     * ※キー名に blank を指定するとすべてのコンフィグ設定を取得します
+     * Get the configuration value of given key.
+     * If blank is given as the key name, all configuration settings will be acquired.
      *
-     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
-     * インデックス指定でのアクセスが必要な場合は対象の配列をデータを取得してから個別にアクセスして下さい。
+     * Note:
+     *  - This method will throw an exception if the key selector contains only numeric values.
+     *  - When access with index specification is required, please access the target array individually after acquiring the data.
      *
-     * @param string $section セクション
-     * @param string|null $key 設定キー名[.区切りで階層指定可]（デフォルト：null）
-     * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
-     * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
-     * @return ?mixed 設定値
+     * @param string $section
+     * @param string|null $key can contains dot notation (default:null)
+     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param mixed $default (default: null)
+     * @return mixed
      * @throws ConfigNotDefineException
      * @throws LogicException
      */
@@ -374,7 +380,7 @@ class Config
     }
 
     /**
-     * ライブラリコンフィグをロードします。
+     * Load library configuration from given section.
      *
      * @param string $section
      * @return void
@@ -389,15 +395,15 @@ class Config
     }
 
     /**
-     * コンフィグの設定値からインスタンスを生成します。
+     * Create an instance from the configuration settings using Reflector::instantiate().
      *
      * @see Rebet\Common\Reflector::instantiate()
      *
-     * @param string $section セクション
-     * @param string $key 設定キー名（.区切りで階層指定可）
-     * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
-     * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
-     * @return ?mixed インスタンス
+     * @param string $section
+     * @param string $key can contains dot notation
+     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param mixed $default (default: null)
+     * @return mixed
      * @throws ConfigNotDefineException
      * @throws LogicException
      */
@@ -407,14 +413,15 @@ class Config
     }
 
     /**
-     * コンフィグの設定が定義されているかチェックします。
+     * It Checks the configuration of the config is defined.
      *
-     * なお、キーセレクタの要素に数値のみのインデックスアクセスが含まれる場合、本メソッドは例外を throw します。
-     * インデックス指定でのアクセスが必要な場合は対象の配列をデータを取得してから個別にアクセスして下さい。
+     * Note:
+     *  - This method will throw an exception if the key selector contains only numeric values.
+     *  - When access with index specification is required, please access the target array individually after acquiring the data.
      *
-     * @param string $section セクション
-     * @param string $key 設定キー名（.区切りで階層指定）
-     * @return bool true: 定義済み, false: 未定義
+     * @param string $section
+     * @param string $key can contains dot notation
+     * @return bool
      * @throws LogicException
      */
     public static function has(string $section, string $key) : bool
@@ -430,10 +437,9 @@ class Config
     }
 
     /**
-     * 他のセクションのコンフィグ設定を共有するリファラを返します。
+     * Returns the referrer that shares the configuration settings of other section / keys.
      *
      * ex)
-     * // 日時に関連したクラスでの定義例
      * public static function defaultConfig() {
      *     return [
      *         'default_format'   => 'Y-m-d H:i:s',
@@ -441,9 +447,9 @@ class Config
      *     ];
      * }
      *
-     * @param string $section 参照先セクション
-     * @param string $key 参照先キー名（.区切りで階層指定）
-     * @param mixed $default 参照先がブランクの場合のデフォルト値（デフォルト：null）
+     * @param string $section to refer
+     * @param string $key to refer can contains dot notation
+     * @param mixed $default when the referral configuration value is blank (default: null)
      * @return ConfigReferrer
      */
     public static function refer(string $section, string $key, $default = null) : ConfigReferrer
@@ -453,18 +459,18 @@ class Config
     }
 
     /**
-     * 設定値の確定をその設定が参照されるまで遅延する遅延評価式を返します。
+     * Returns a delay evaluation formula that delays the set value confirmation until its setting is referenced.
      *
      * ex)
-     * // getenv を利用しているコンフィグが DotEnv::load() より前にロードされる場合
+     * // When config using getenv is loaded before DotEnv::load()
      * public static function defaultConfig() {
      *     return [
      *         'env' => Config::promise(function(){ return getenv('APP_ENV') ?: 'development' ; }),
      *     ];
      * }
      *
-     * @param \Closure $promise 遅延評価式
-     * @param bool $only_once 最初の遅延評価で値を確定するか否か（デフォルト：true）
+     * @param \Closure $promise
+     * @param bool $only_once (default: true)
      * @return ConfigPromise
      */
     public static function promise(\Closure $promise, bool $only_once = true) : ConfigPromise

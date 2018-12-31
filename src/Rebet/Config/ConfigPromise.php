@@ -4,10 +4,10 @@ namespace Rebet\Config;
 use Rebet\Common\DotAccessDelegator;
 
 /**
- * コンフィグ遅延評価 クラス
+ * Config Promise Class
  *
- * コンフィグ設定に置いて、遅延評価を行いたい場合に利用します。
- * ※本オブジェクトは Config::promise() ファサードを利用して構築できます。
+ * It is used when you want to do lazy evaluation by putting it in config setting.
+ * This object can be constructed using the Config::promise() facade.
  *
  * @see Rebet\Config\Config::promise()
  *
@@ -18,38 +18,34 @@ use Rebet\Common\DotAccessDelegator;
  */
 class ConfigPromise implements DotAccessDelegator
 {
-    
     /**
-     * 遅延評価式
-     * @var \Closure
+     * @var \Closure of delay evaluation
      */
     private $promise = null;
 
     /**
-     * 最初の遅延評価で値を確定するか否か
+     * Whether or not to determine the value by the first delay evaluation
      * @var bool
      */
     private $only_once = true;
 
     /**
-     * 遅延実行で確定した値
-     * ※ only_once が true の場合に利用
+     * Values ​​determined by delayed execution (used when only_once is true).
      * @var mixed
      */
     private $evaluated_value = null;
 
     /**
-     * 既に評価済みか否か
-     * ※ only_once が true の場合に利用
+     * Whether it has already been evaluated (used when only_once is true).
      * @var mixed
      */
     private $is_evaluated = false;
 
     /**
-     * コンフィグ遅延評価クラスを構築します。
+     * Construct a delayed evaluation class.
      *
-     * @param \Closure $promise 遅延評価式
-     * @param bool $only_once 最初の遅延評価で値を確定するか否か（デフォルト：true）
+     * @param \Closure $promise of delay evaluation
+     * @param bool $only_once (default: true)
      */
     public function __construct(\Closure $promise, bool $only_once = true)
     {
@@ -58,7 +54,7 @@ class ConfigPromise implements DotAccessDelegator
     }
 
     /**
-     * 遅延評価結果を取得します。
+     * Get the delay evaluation result.
      */
     public function get()
     {
