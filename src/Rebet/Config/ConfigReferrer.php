@@ -4,15 +4,16 @@ namespace Rebet\Config;
 use Rebet\Common\DotAccessDelegator;
 
 /**
- * コンフィグ参照 クラス
+ * Config Referrer Class
  *
- * 他のセクションのコンフィグ設定を共有する場合に利用するクラスとなります。
- * なお、参照は片方向参照となります。
- * ※本オブジェクトは Config::refer() ファサードを利用して構築できます。
+ * It is a class to use when sharing configuration settings of other sections.
+ * Note:
+ *  - The reference will be unidirectional reference.
+ *  - This object can be constructed using Config::refer() facade.
  *
  * @see Rebet\Config\Config::refer()
  *
- * @todo 循環参照の検知＆例外 throw
+ * @todo Circular reference detection & exception throw
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -21,27 +22,28 @@ use Rebet\Common\DotAccessDelegator;
  */
 class ConfigReferrer implements DotAccessDelegator
 {
-    
     /**
-     * 参照先セクション
+     * @var string of refer section name
      */
     private $section = null;
 
     /**
-     * 参照先キー
+     * @var string of refer key name
      */
     private $key = null;
 
     /**
-     * 参照先がブランクの場合はのデフォルト値
+     * @var mixed default value when reference destination is blank
      */
     private $default = null;
 
     /**
-     * コンフィグ設定参照クラスを構築します。
-     * @param string $section 参照先セクション
-     * @param int|string $key 参照先キー
-     * @param mixed 参照値
+     * Create a Config Referrer Class
+     *
+     * @param string $section name of refer section (or class)
+     * @param string $key name of refer key can contains dot notation
+     * @param mixed $default (default: null)
+     * @return mixed
      */
     public function __construct(string $section, $key, $default = null)
     {
@@ -51,7 +53,9 @@ class ConfigReferrer implements DotAccessDelegator
     }
 
     /**
-     * 参照先の現在の設定値を取得します。
+     * Gets the current set value of the reference destination.
+     *
+     * @return mixed
      */
     public function get()
     {
