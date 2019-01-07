@@ -2,7 +2,9 @@
 namespace Rebet\Config;
 
 /**
- * コンフィグ関連クラスのレイヤー名を定義する クラス
+ * Layer Class
+ *
+ * Class that defines the layer name of the configuration related class.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -19,26 +21,22 @@ final class Layer
     }
 
     /**
-     * ライブラリレイヤー
-     * @var string 'library'
+     * @var string library layer
      */
     public const LIBRARY = 'library';
 
     /**
-     * フレームワークレイヤー
-     * @var string 'framework'
+     * @var string framework layer
      */
     public const FRAMEWORK = 'framework';
 
     /**
-     * アプリケーションレイヤー
-     * @var string 'application'
+     * @var string application layer
      */
     public const APPLICATION = 'application';
 
     /**
-     * ランタイムレイヤー
-     * @var string 'runtime'
+     * @var string runtime layer
      */
     public const RUNTIME = 'runtime';
 }
