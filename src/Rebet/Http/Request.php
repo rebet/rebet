@@ -227,9 +227,9 @@ class Request extends SymfonyRequest
      */
     public function bearerToken()
     {
-        $header = $this->header('Authorization', '');
+        $header = $this->headers->get('Authorization', '');
         if (Strings::startsWith($header, 'Bearer ')) {
-            return Strings::substr($header, 7);
+            return \mb_substr($header, 7);
         }
     }
 

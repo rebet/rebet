@@ -31,6 +31,16 @@ abstract class AuthProvider
     abstract public function findById($id) : ?AuthUser ;
 
     /**
+     * Find user by token.
+     *
+     * @param string $token_name
+     * @param string $token
+     * @param mixed $precondition (default: null)
+     * @return AuthUser|null
+     */
+    abstract public function findByToken(string $token_name, ?string $token, $precondition = null) : ?AuthUser ;
+
+    /**
      * Find user by signin_id and password.
      * The signin_id may be named 'login_id', 'email', etc.
      *

@@ -5,6 +5,7 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
+use Rebet\Http\Response;
 
 /**
  * Token Guard Class
@@ -73,7 +74,7 @@ class TokenGuard implements Guard
      */
     public function authenticate(Request $request, AuthProvider $provider) : AuthUser
     {
-        $user = $provider->findByCredentials([$this->storage_key, $this->getTokenFrom($request)]);
+        $user = $provider->findByToken($this->storage_key, $this->getTokenFrom($request));
         return $user ? $user : AuthUser::guest();
     }
 
