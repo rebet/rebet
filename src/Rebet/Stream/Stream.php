@@ -63,6 +63,9 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'invoke'   => function ($value, ...$args) { return call_user_func($value, ...$args); },
                     'equals'   => function ($value, $other) { return $value == $other; },
                     'sameAs'   => function ($value, $other) { return $value === $other; },
+                    'if'       => function ($value, $test, $then, $else = null) { return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ; },
+                    'unless'   => function ($value, $test, $then, $else = null) { return !(is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ; },
+                    'case'     => function ($value, array $map, $default = null) { return $map[$value] ?? $default; },
                 ],
             ],
         ];
