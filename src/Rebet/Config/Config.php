@@ -356,7 +356,7 @@ class Config
      *  - When access with index specification is required, please access the target array individually after acquiring the data.
      *
      * @param string $section
-     * @param string|null $key can contains dot notation (default:null)
+     * @param string|null $key can contains dot notation (default: null)
      * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
      * @param mixed $default (default: null)
      * @return mixed

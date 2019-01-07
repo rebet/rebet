@@ -4,22 +4,21 @@ namespace Rebet\Config;
 use Rebet\Common\Arrays;
 
 /**
- * コンフィグ設定を利用する トレイト
+ * Configurable Trait
  *
- * 本トレイトを実装することで、対象クラス内にて以下の形でコンフィグを利用できます。
+ * By implementing this trait, config can be used in the target class in the following form.
  *
- *   self::config('key');
- *   //or static::config('key');
+ *   self::config('key');  // or static::config('key');
  *
- * また、外部からは以下のようにコンフィグ設定にアクセスできます。
+ * Also, you can access the configuration settings from the outside as follows.
  *
- *   ConfigurableImplement::config('key');
+ *   ConfigurableImplements::config('key');
  *
- * なお、上記のアクセスは下記コードと同義です。
+ * The above access is synonymous with the following code.
  *
- *   Config::get(ConfigurableImplement::class, 'key');
+ *   Config::get(ConfigurableImplements::class, 'key');
  *
- * そのため、本トレイトにて実装されたデフォルトコンフィグ設定は以下のように上書可能となります。
+ * Therefore, the default configuration settings implemented by this trait can be overwritten as follows.
  *
  *   Config::application([
  *       ConfigurableImplement::class => [
@@ -37,24 +36,24 @@ use Rebet\Common\Arrays;
 trait Configurable
 {
     /**
-     * デフォルトコンフィグ設定。
-     * 各トレイト導入クラスにてライブラリのデフォルト設定を定義して下さい。
-     * ここで返される設定は自動的にトレイト実装クラス名のセクションに分類されるため、
-     * セクションの指定は不要です。
+     * Default config settings.
+     * Define default settings of the library in each trait implemantion class.
+     * Since the settings returned here are automatically classified into sections of the trait implementation class name,
+     * Section specification is unnecessary.
      *
      * ex)
-     * // データベースに関連したクラスでの定義例
+     * // Examples of definitions in classes related to databases
      * public static function defaultConfig() {
      *     return [
-     *         'driver' => 'mysql',
-     *         'host' => 'localhost',
-     *         'port' => 3306,
+     *         'driver'   => 'mysql',
+     *         'host'     => 'localhost',
+     *         'port'     => 3306,
      *         'database' => null,
-     *         'user' => null,
+     *         'user'     => null,
      *     ];
      * }
      *
-     * // 日時に関連したクラスでの定義例
+     * // Examples of definitions in classes related to date and time
      * public static function defaultConfig() {
      *     return [
      *         'default_format'   => 'Y-m-d H:i:s',
@@ -62,22 +61,26 @@ trait Configurable
      *     ];
      * }
      *
-     * // Configurable を実装したクラスを継承し、サブクラスで新しい設定を導入/上書する定義例
+     * // Inherit a class that implements Configurable and overwrite new setting in subclass
      * public static function defaultConfig() {
-     *     return self::parentConfigOverride([
+     *     return static::parentConfigOverride([
      *         'default_format' => 'M d, Y g:i A',
-     *         'new_key' => 'new_value',
+     *         'new_key'        => 'new_value',
      *     ];
      * }
-     *
      */
     abstract public static function defaultConfig() : array ;
 
     /**
-     * 親クラスのデフォルトコンフィグ設定を差分オーバーライドします。
+     * Differentially override the default config setting of the parent class.
      *
-     * @param array $config 差分コンフィグ設定
-     * @return array オーバーライド後の設定内容
+     * Note:
+     * Please be aware that it is the copy of the setting in the initial state that is inherited.
+     * It means the setting change content of the parent class is not followed.
+     * (The settings between subclass and parent class is completely different)
+     *
+     * @param array $config of diff
+     * @return array
      */
     protected static function parentConfigOverride(array $diff) : array
     {
@@ -87,13 +90,13 @@ trait Configurable
     }
 
     /**
-     * 自身のコンフィグ設定を取得します。
-     * ※キー名に blank を指定するとすべてのコンフィグ設定を取得します
+     * Get the own configuration setting.
+     * If blank is given as the key name, all configuration settings will be acquired.
      *
-     * @param string|null $key 設定キー名[.区切りで階層指定]（デフォルト：null）
-     * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
-     * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
-     * @return ?mixed 設定値
+     * @param string|null $key can contains dot notation (default: null)
+     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param mixed $default (default: null)
+     * @return mixed
      * @throws ConfigNotDefineException
      */
     public static function config(?string $key = null, bool $required = true, $default = null)
@@ -102,15 +105,15 @@ trait Configurable
     }
 
     /**
-     * 自身のコンフィグ設定を元にインスタンス生成した値を取得します。
+     * Create an instance from the own configuration settings using Reflector::instantiate().
      *
      * @see Rebet\Config\Config::instantiate()
      * @see Rebet\Common\Reflector::instantiate()
      *
-     * @param string $key 設定キー名（.区切りで階層指定）
-     * @param bool $required 必須項目指定（デフォルト：true） … true指定時、設定値が blank だと例外を throw します
-     * @param ?mixed $default 必須項目指定が false で、値が未設定の場合にこの値が返ります。
-     * @return ?mixed 設定値
+     * @param string $key can contains dot notation
+     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param mixed $default (default: null)
+     * @return mixed
      * @throws ConfigNotDefineException
      */
     protected static function configInstantiate(string $key, bool $required = true, $default = null)
@@ -119,10 +122,10 @@ trait Configurable
     }
 
     /**
-     * 自身のコンフィグ設定を更新します。
-     * 本メソッドは ランタイムレイヤー のコンフィグ設定を追加します。
+     * Update own configuration settings by given config.
+     * This method adds the configuration setting of the runtime layer.
      *
-     * @param array $config コンフィグ設定
+     * @param array $config
      */
     protected static function setConfig(array $config) : void
     {
@@ -130,7 +133,7 @@ trait Configurable
     }
 
     /**
-     * 自身のコンフィグ設定をクリアします。
+     * It clears own configuration setting.
      */
     protected static function clearConfig() : void
     {
