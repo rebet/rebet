@@ -4,6 +4,7 @@ namespace Rebet\Http\Response;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Http\Http;
+use Rebet\Http\HttpStatus;
 use Rebet\Http\Response;
 
 /**
