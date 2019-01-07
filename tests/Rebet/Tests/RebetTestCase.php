@@ -10,6 +10,8 @@ use Rebet\Config\Config;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
 use Rebet\Foundation\App;
+use Rebet\Http\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * Rebet用の基底テストケースクラス。
@@ -33,6 +35,9 @@ abstract class RebetTestCase extends TestCase
                 'resources' => [
                     'i18n' => App::path('/resources/i18n'),
                 ],
+            ],
+            Session::class => [
+                'storage' => MockArraySessionStorage::class,
             ],
         ]);
         Enum::clear();

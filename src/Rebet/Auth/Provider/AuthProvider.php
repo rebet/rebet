@@ -92,10 +92,10 @@ abstract class AuthProvider
      * Find user by remember token.
      * If this provider support remember token must be override the method in sub class.
      *
-     * @param string $token
+     * @param string|null $token
      * @return AuthUser|null
      */
-    public function findByRememberToken(string $token) : ?AuthUser
+    public function findByRememberToken(?string $token) : ?AuthUser
     {
         return null;
     }

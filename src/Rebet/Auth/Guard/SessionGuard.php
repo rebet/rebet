@@ -75,9 +75,9 @@ class SessionGuard implements Guard
         $session->set($this->toSessionKey('id'), $user->id);
         $provider = $user->provider();
         if ($remember && $provider->supportRememberToken()) {
-            $token = $provider->issuingRememberToken($id, $this->remember_days);
+            $token = $provider->issuingRememberToken($user->id, $this->remember_days);
             if ($token !== null) {
-                Cookie::set(COOKIE_KEY_REMEMBER, $token, $this->remember_days === 0 ? 0 : "+{$this->remember_days} day");
+                Cookie::set(static::COOKIE_KEY_REMEMBER, $token, $this->remember_days === 0 ? 0 : "+{$this->remember_days} day");
             }
         }
     }
@@ -90,10 +90,10 @@ class SessionGuard implements Guard
         if (!$user->isGuest()) {
             $provider = $user->provider();
             if ($provider->supportRememberToken()) {
-                $provider->removeRememberToken($request->cookies->get(COOKIE_KEY_REMEMBER));
+                $provider->removeRememberToken($request->cookies->get(static::COOKIE_KEY_REMEMBER));
             }
             $request->getSession()->remove($this->toSessionKey('id'));
-            Cookie::remove(COOKIE_KEY_REMEMBER);
+            Cookie::remove(static::COOKIE_KEY_REMEMBER);
         }
         return Responder::redirect($redirect_to);
     }
@@ -110,8 +110,18 @@ class SessionGuard implements Guard
             return $user;
         }
         if ($provider->supportRememberToken()) {
-            $user = $provider->findByRememberToken($request->cookies->get(COOKIE_KEY_REMEMBER));
+            $user = $provider->findByRememberToken($request->cookies->get(static::COOKIE_KEY_REMEMBER));
         }
         return $user ? $user : AuthUser::guest();
+    }
+
+    /**
+     * Get the 'remember me' days period.
+     *
+     * @return integer of days
+     */
+    public function getRememberDays() : int
+    {
+        return $this->remember_days;
     }
 }

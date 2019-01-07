@@ -25,6 +25,32 @@ class Cookie extends SymfonyCookie
     protected static $queued = [];
 
     /**
+     * Create a Cookie based on Symfony's Cookie::create() default parameters.
+     *
+     * @param string $name
+     * @param string $value
+     * @param integer $expire
+     * @param string|null $path
+     * @param string $domain
+     * @param boolean $secure
+     * @param boolean $httpOnly
+     * @param boolean $raw
+     * @param string|null $sameSite
+     */
+    public function __construct(string $name, string $value = null, $expire = 0, ?string $path = '/', string $domain = null, bool $secure = null, bool $httpOnly = true, bool $raw = false, ?string $sameSite = self::SAMESITE_LAX)
+    {
+        parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function create(string $name, string $value = null, $expire = 0, ?string $path = '/', string $domain = null, bool $secure = null, bool $httpOnly = true, bool $raw = false, ?string $sameSite = self::SAMESITE_LAX) : parent
+    {
+        return new static($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
+    }
+
+    /**
      * It checks current request has a given name cookie.
      *
      * @param string $name
@@ -91,11 +117,11 @@ class Cookie extends SymfonyCookie
      */
     public static function remove(string $name, ?string $path = null, ?string $domain = null) : void
     {
-        static::enqueue(new static($name, null, -2628000, $path ?? Utils::evl(Router::current()->prefix ?? null, '/'), $domain));
+        static::enqueue(new static($name, null, 0, $path ?? Utils::evl(Router::current()->prefix ?? null, '/'), $domain));
     }
 
     /**
-     * Set the cookie to current response and queued for next response.
+     * Set the cookie to queued for next response.
      *
      * @param Cookie $cookie
      * @return void
@@ -106,14 +132,16 @@ class Cookie extends SymfonyCookie
     }
 
     /**
-     * Remove the cookie of given name from current response and queued for next response.
+     * Get and remove the cookie of given name from queued for next response.
      *
      * @param string $name
-     * @return void
+     * @return self|null
      */
-    public static function dequeue(string $name) : void
+    public static function dequeue(string $name) : ?self
     {
+        $cookie = static::$queued[$name] ?? null;
         unset(static::$queued[$name]);
+        return $cookie;
     }
 
     /**
