@@ -4,9 +4,7 @@ namespace Rebet\Env;
 use Dotenv\Dotenv as VlucasDotenv;
 
 /**
- * 環境変数 クラス
- *
- * Dotenv モジュールを用いて .env ファイルをロードします。
+ * Dotenv Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -16,12 +14,12 @@ use Dotenv\Dotenv as VlucasDotenv;
 class Dotenv extends VlucasDotenv
 {
     /**
-     * Dotenv モジュールを初期化して .env ファイルをロードします。
-     * 本メソッドは composer の ../vendor/autoload.php の直後に呼ばれることが想定されています。
+     * Initialize the Dotenv module and load the .env file.
+     * Note: This method is supposed to be called immediately after composer ../vendor/autoload.php.
      *
-     * @param string $path .env ファイルパス
-     * @param string $filename .env ファイル名（デフォルト：.env）
-     * @return Dotenv Dotenv オブジェクト
+     * @param string $path of .env file
+     * @param string $filename of .env file (default: .env)
+     * @return Dotenv
      */
     public static function init(string $path, string $filename = '.env') : self
     {
