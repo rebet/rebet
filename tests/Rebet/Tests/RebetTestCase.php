@@ -4,13 +4,21 @@ namespace Rebet\Tests;
 use PHPUnit\Framework\TestCase;
 
 
+use Rebet\Auth\Auth;
+use Rebet\Auth\AuthUser;
+use Rebet\Auth\Guard\SessionGuard;
+use Rebet\Auth\Guard\TokenGuard;
+use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
 use Rebet\Foundation\App;
+use Rebet\Http\Request;
+use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
+use Rebet\Routing\Route\ClosureRoute;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
@@ -28,6 +36,10 @@ abstract class RebetTestCase extends TestCase
         Config::clear();
         App::initFrameworkConfig();
         App::setRoot(__DIR__.'/../../');
+        $users = [
+            ['id' => 1, 'role' => 'admin', 'name' => 'admin', 'email' => 'admin@rebet.com', 'password' => '$2y$10$.jrmw67edFM7WIYaufaX1e6H8G7WUBS7v2W1orAf3bs/E9VpCevUS', 'api_token' => 'token_1'], // password: admin
+            ['id' => 2, 'role' => 'user' , 'name' => 'user' , 'email' => 'user@rebet.com' , 'password' => '$2y$10$WIo2wrIYUBQRg5KTpb7.BeMnv7vYWpIZvSp6y0YfOaxLzYDOs8zhm', 'api_token' => 'token_2'], // password: user
+        ];
         Config::application([
             App::class => [
                 'timezone'  => 'UTC',
@@ -38,6 +50,24 @@ abstract class RebetTestCase extends TestCase
             ],
             Session::class => [
                 'storage' => MockArraySessionStorage::class,
+            ],
+            Auth::class => [
+                'authenticator' => [
+                    'web' => [
+                        'guard'    => SessionGuard::class,
+                        'provider' => [ArrayProvider::class, $users],
+                        'fallback' => '/user/signin', // url or function(Request):Response
+                    ],
+                    'api' => [
+                        'guard'    => TokenGuard::class,
+                        'provider' => [ArrayProvider::class, $users],
+                        'fallback' => function (Request $request) { return Responder::problem(403); }, // url or function(Request):Response
+                    ],
+                ],
+                'roles' => [
+                    'admin' => function (AuthUser $user) { return $user->role === 'admin'; },
+                    'user'  => function (AuthUser $user) { return $user->role === 'user'; },
+                ],
             ],
         ]);
         Enum::clear();
@@ -130,5 +160,17 @@ abstract class RebetTestCase extends TestCase
             $max_length = $min_length;
         }
         return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
+    }
+
+    protected function createRequestMock($path, $roles = null, $channel = 'web') : Request
+    {
+        $session = new Session();
+        $session->start();
+        $request = Request::create($path);
+        $request->setRebetSession($session);
+        $request->route = new ClosureRoute([], $path, function () { return 'TEST'; });
+        $request->route->roles(...((array)$roles));
+        $request->channel = $channel;
+        return $request;
     }
 }

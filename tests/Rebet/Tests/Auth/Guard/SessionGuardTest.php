@@ -5,10 +5,7 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Http\Cookie\Cookie;
-use Rebet\Http\Request;
 use Rebet\Http\Response\RedirectResponse;
-use Rebet\Http\Session\Session;
-use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Tests\RebetTestCase;
 
 class SessionGuardTest extends RebetTestCase
@@ -39,11 +36,7 @@ class SessionGuardTest extends RebetTestCase
         $this->user->provider($this->provider);
         $this->authenticator = $authenticator;
 
-        $session = new Session();
-        $session->start();
-        $this->request = Request::create('/');
-        $this->request->setRebetSession($session);
-        $this->request->route = new ClosureRoute([], '/', function () { return 'TEST'; });
+        $this->request = $this->createRequestMock('/');
     }
 
     public function test___construct()
