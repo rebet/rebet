@@ -552,27 +552,16 @@ EOS
 
         $this->assertSame('Hello Test', $this->callable->invoke('Test')->return());
 
-        // if
-        $this->assertSame('A', $this->null->_('if', null, 'A')->return());
-        $this->assertSame(null, $this->null->_('if', 123, 'A')->return());
-        $this->assertSame('A', $this->int->_('if', 123, 'A')->return());
-        $this->assertSame(123, $this->int->_('if', 234, 'A')->return());
-        $this->assertSame('B', $this->int->_('if', 234, 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('if', true, 'A', 'B')->return());
-        $this->assertSame('B', $this->int->_('if', false, 'A', 'B')->return());
+        // when
+        $this->assertSame('A', $this->null->_('when', null, 'A')->return());
+        $this->assertSame(null, $this->null->_('when', 123, 'A')->return());
+        $this->assertSame('A', $this->int->_('when', 123, 'A')->return());
+        $this->assertSame(123, $this->int->_('when', 234, 'A')->return());
+        $this->assertSame('B', $this->int->_('when', 234, 'A', 'B')->return());
+        $this->assertSame('A', $this->int->_('when', true, 'A', 'B')->return());
+        $this->assertSame('B', $this->int->_('when', false, 'A', 'B')->return());
 
-        $this->assertSame('A', $this->int->if(123, 'A')->return());
-
-        // unless
-        $this->assertSame(null, $this->null->_('unless', null, 'A')->return());
-        $this->assertSame('A', $this->null->_('unless', 123, 'A')->return());
-        $this->assertSame(123, $this->int->_('unless', 123, 'A')->return());
-        $this->assertSame('A', $this->int->_('unless', 234, 'A')->return());
-        $this->assertSame('B', $this->int->_('unless', 123, 'A', 'B')->return());
-        $this->assertSame('B', $this->int->_('unless', true, 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('unless', false, 'A', 'B')->return());
-
-        $this->assertSame('A', $this->int->unless(999, 'A')->return());
+        $this->assertSame('A', $this->int->when(123, 'A')->return());
 
         // case
         $case = [123 => 'A', 'Hello Rebet' => 'B'];
@@ -580,7 +569,7 @@ EOS
         $this->assertSame('default', $this->null->_('case', $case, 'default')->return());
         $this->assertSame('A', $this->int->_('case', $case)->return());
         $this->assertSame('B', $this->string->_('case', $case)->return());
-        $this->assertSame(null, $this->text->_('case', $case)->return());
+        $this->assertSame("Hello\nRebet", $this->text->_('case', $case)->return());
         $this->assertSame('C', $this->text->_('case', $case, 'C')->return());
 
         $this->assertSame('A', $this->int->case($case)->return());
