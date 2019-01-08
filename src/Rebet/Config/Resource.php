@@ -4,37 +4,39 @@ namespace Rebet\Config;
 use Rebet\Common\Exception\LogicException;
 
 /**
- * リソースローダー クラス
+ * Resource Class
  *
- * 現在対応しているリソース（拡張子）は下記の通りです。
+ * Currently supported resources (extension) are as follows.
  *
  *  - php
- *    => 指定の php ファイルを require した結果を返します。
- *    => オプション：なし
+ *    => Return the result of requirement of specified php file.
+ *    => Option: none
  *
  *  - json
- *    => 指定の json ファイルを json_decode した結果を返します。
- *    => オプション：なし
+ *    => Returns the result of json_decode of the specified json file.
+ *    => Option: none
  *
  *  - ini
- *    => 指定の ini ファイルを parse_ini_file した結果を返します。
- *    => オプション：
- *         process_sections => bool          （デフォルト： true）
- *         scanner_mode     => INI_SCANNER_* （デフォルト： INI_SCANNER_TYPED）
+ *    => Returns the result of parse_ini_file of specified ini file.
+ *    => Option:
+ *         process_sections => bool          (default: true)
+ *         scanner_mode     => INI_SCANNER_* (default: INI_SCANNER_TYPED)
  *
  *  - txt
- *    => 指定の txt ファイルを explode した結果を返します。
- *    => オプション：
- *         delimiter => string （デフォルト： \n）
+ *    => Returns the result of explode of the specified txt file.
+ *    => Option:
+ *         delimiter => string (default: \n)
  *
- * 上記のリソースローダーの挙動は Config 設定で loader クロージャを上書きすることで変更可能です。
- * また、新規のリソースも Config 設定にて loader クロージャを定義することで追加できます。
+ * The behavior of the above resource loader can be changed by overwriting loader closure in Config setting.
+ * Also, new resources can be added by defining loader closure in Config setting.
  *
  * ex)
  * Resource::setLoader('yaml', function(string $path, array $option) {
  *     return Symfony\Component\Yaml\Yaml::parse(\file_get_contents($path));
  * })
- * 又は
+ *
+ * Otherwise,
+ *
  * Config::application([
  *     Rebet\Config\Resource::class => {
  *         'loader' => [
@@ -88,10 +90,10 @@ class Resource
     }
 
     /**
-     * リソースローダーを登録します。
+     * Register the resource loader.
      *
-     * @param string $suffix リソースサフィックス
-     * @param \Closure ローディングクロージャ
+     * @param string $suffix
+     * @param \Closure
      * @return mixed
      */
     public static function setLoader(string $suffix, \Closure $loader)
@@ -100,12 +102,12 @@ class Resource
     }
 
     /**
-     * 指定のリソースをロードします。
+     * Load the specified resource.
      *
-     * @param string $type リソースタイプ（=拡張子）
-     * @param string $path リソースファイルパス
-     * @param array $option ロードオプション（デフォルト： []）
-     * @return リソースデータ
+     * @param string $type
+     * @param string $path
+     * @param array $option (default: [])
+     * @return mixed
      * @throws LogicException
      */
     public static function load(string $type, string $path, array $option = [])
