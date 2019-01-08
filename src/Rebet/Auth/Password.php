@@ -54,7 +54,7 @@ class Password
      */
     public static function verify(?string $password, ?string $hash) : bool
     {
-        return $password === null || $hash === null ? false : password_verify($password, $hash) ;
+        return ($password === null || $hash === null) ? false : password_verify($password, $hash) ;
     }
 
     /**

@@ -17,22 +17,23 @@ class AuthenticateTest extends RebetTestCase
 
     public function test_handle()
     {
-        $middleware = new Authenticate();
+        $middleware  = new Authenticate();
+        $destination = function ($request) { return Responder::toResponse('OK'); };
 
         $request  = $this->createRequestMock('/');
-        $response = $middleware->handle($request, function ($request) { return Responder::toResponse('OK'); });
+        $response = $middleware->handle($request, $destination);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('OK', $response->getContent());
 
         $request  = $this->createRequestMock('/', 'user');
-        $response = $middleware->handle($request, function ($request) { return Responder::toResponse('OK'); });
+        $response = $middleware->handle($request, $destination);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
 
         $user = Auth::attempt($request, 'user@rebet.com', 'user');
         Auth::signin($request, $user, '/user/signin');
 
-        $response = $middleware->handle($request, function ($request) { return Responder::toResponse('OK'); });
+        $response = $middleware->handle($request, $destination);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('OK', $response->getContent());
     }

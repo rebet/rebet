@@ -12,6 +12,7 @@ use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
+use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
 use Rebet\Foundation\App;
@@ -22,9 +23,9 @@ use Rebet\Routing\Route\ClosureRoute;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
- * Rebet用の基底テストケースクラス。
+ * RebetTestCase Class
  *
- * テストの手間を軽減するための各種ヘルパーメソッドを定義します。
+ * We define various helper methods to reduce the labor of testing.
  */
 abstract class RebetTestCase extends TestCase
 {
@@ -37,8 +38,9 @@ abstract class RebetTestCase extends TestCase
         App::initFrameworkConfig();
         App::setRoot(__DIR__.'/../../');
         $users = [
-            ['id' => 1, 'role' => 'admin', 'name' => 'admin', 'email' => 'admin@rebet.com', 'password' => '$2y$10$.jrmw67edFM7WIYaufaX1e6H8G7WUBS7v2W1orAf3bs/E9VpCevUS', 'api_token' => 'token_1'], // password: admin
-            ['id' => 2, 'role' => 'user' , 'name' => 'user' , 'email' => 'user@rebet.com' , 'password' => '$2y$10$WIo2wrIYUBQRg5KTpb7.BeMnv7vYWpIZvSp6y0YfOaxLzYDOs8zhm', 'api_token' => 'token_2'], // password: user
+            ['id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.com'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
+            ['id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.com'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
+            ['id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.com' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => 'token_3', 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
         ];
         Config::application([
             App::class => [
