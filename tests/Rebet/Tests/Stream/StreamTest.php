@@ -552,6 +552,36 @@ EOS
 
         $this->assertSame('Hello Test', $this->callable->invoke('Test')->return());
 
+        // nnvl
+        $this->assertSame(null, $this->null->_('nnvl', 'A')->return());
+        $this->assertSame('B', $this->null->_('nnvl', 'A', 'B')->return());
+        $this->assertSame('A', $this->int->_('nnvl', 'A')->return());
+        $this->assertSame('A', Stream::of('')->_('nnvl', 'A')->return());
+        $this->assertSame('A', Stream::of([])->_('nnvl', 'A')->return());
+        $this->assertSame('A', Stream::of(0)->_('nnvl', 'A')->return());
+
+        $this->assertSame('A', $this->int->nnvl('A')->return());
+
+        // nbvl
+        $this->assertSame(null, $this->null->_('nbvl', 'A')->return());
+        $this->assertSame('B', $this->null->_('nbvl', 'A', 'B')->return());
+        $this->assertSame('A', $this->int->_('nbvl', 'A')->return());
+        $this->assertSame(null, Stream::of('')->_('nbvl', 'A')->return());
+        $this->assertSame(null, Stream::of([])->_('nbvl', 'A')->return());
+        $this->assertSame('A', Stream::of(0)->_('nbvl', 'A')->return());
+
+        $this->assertSame('A', $this->int->nbvl('A')->return());
+
+        // nevl
+        $this->assertSame(null, $this->null->_('nevl', 'A')->return());
+        $this->assertSame('B', $this->null->_('nevl', 'A', 'B')->return());
+        $this->assertSame('A', $this->int->_('nevl', 'A')->return());
+        $this->assertSame(null, Stream::of('')->_('nevl', 'A')->return());
+        $this->assertSame(null, Stream::of([])->_('nevl', 'A')->return());
+        $this->assertSame(null, Stream::of(0)->_('nevl', 'A')->return());
+
+        $this->assertSame('A', $this->int->nevl('A')->return());
+
         // when
         $this->assertSame('A', $this->null->_('when', null, 'A')->return());
         $this->assertSame(null, $this->null->_('when', 123, 'A')->return());
