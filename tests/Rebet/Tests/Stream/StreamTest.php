@@ -558,6 +558,7 @@ EOS
         $this->assertSame('A', $this->int->_('when', 123, 'A')->return());
         $this->assertSame(123, $this->int->_('when', 234, 'A')->return());
         $this->assertSame('B', $this->int->_('when', 234, 'A', 'B')->return());
+        $this->assertSame('A', $this->int->_('when', function ($v) { return $v < 999; }, 'A', 'B')->return());
         $this->assertSame('A', $this->int->_('when', true, 'A', 'B')->return());
         $this->assertSame('B', $this->int->_('when', false, 'A', 'B')->return());
 
