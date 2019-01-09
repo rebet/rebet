@@ -5,6 +5,7 @@ use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
+use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Event\Event;
@@ -121,5 +122,34 @@ class AuthTest extends RebetTestCase
         $this->assertSame('user.resigned@rebet.com', $charenged_signin_id);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
+    }
+
+    public function test_signout()
+    {
+        $signouted_user_id = null;
+        Event::listen(function (Signouted $event) use (&$signouted_user_id) { $signouted_user_id = $event->user->id; });
+
+        $user = Auth::user();
+        $this->assertTrue($user->isGuest());
+
+        $request  = $this->createRequestMock('/');
+        $response = Auth::signout($request);
+        $user     = Auth::user();
+        $this->assertTrue($user->isGuest());
+        $this->assertNull($signouted_user_id);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/', $response->getTargetUrl());
+
+        $user     = Auth::attempt($request, 'user@rebet.com', 'user');
+        $response = Auth::signin($request, $user, '/user/signin');
+        $user     = Auth::user();
+        $this->assertSame(2, $user->id);
+
+        $response = Auth::signout($request, '/signouted');
+        $user     = Auth::user();
+        $this->assertTrue($user->isGuest());
+        $this->assertSame(2, $signouted_user_id);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/signouted', $response->getTargetUrl());
     }
 }

@@ -113,6 +113,8 @@ class Auth
      * @param string $goto url when signined (default: '/')
      * @param bool $remember (default: false)
      * @return Response
+     * @uses Event::dispatch SigninFailed when signin failed.
+     * @uses Event::dispatch Signined when signin success.
      */
     public static function signin(Request $request, ?AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
     {
@@ -136,6 +138,7 @@ class Auth
      * @param Request $request
      * @param string $redirect_to (default: '/')
      * @return Response
+     * @uses Event::dispatch Signouted when signout.
      */
     public static function signout(Request $request, string $redirect_to = '/') : Response
     {
@@ -155,6 +158,7 @@ class Auth
      *
      * @param Request $request
      * @return Response|null response when authenticate failed
+     * @uses Event::dispatch Authenticated when authenticate success.
      */
     public static function authenticate(Request $request) : ?Response
     {
