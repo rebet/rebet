@@ -108,16 +108,16 @@ class Auth
      * If the user who was guarded and redirected to sign in page will success sign in then replay the guarded request, otherwise go to given url.
      *
      * @param Request $request
-     * @param AuthUser $user
+     * @param AuthUser|null $user
      * @param string $fallback url when signin failed
      * @param string $goto url when signined (default: '/')
      * @param bool $remember (default: false)
      * @return Response
      */
-    public static function signin(Request $request, AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
+    public static function signin(Request $request, ?AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
     {
-        if ($user->isGuest()) {
-            Event::dispatch(new SigninFailed($request, $user->charengedSigninId()));
+        if ($user === null || $user->isGuest()) {
+            Event::dispatch(new SigninFailed($request, $user ? $user->charengedSigninId() : null));
             return Responder::redirect($fallback)
                     ->with($request->input())
                     ->errors(['signin' => [Trans::get('message.signin_failed')]])
