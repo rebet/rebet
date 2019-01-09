@@ -9,6 +9,8 @@ use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Event\Event;
+use Rebet\Http\Responder;
+use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 use Rebet\Tests\RebetTestCase;
 
@@ -151,5 +153,39 @@ class AuthTest extends RebetTestCase
         $this->assertSame(2, $signouted_user_id);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/signouted', $response->getTargetUrl());
+    }
+
+    public function test_authenticate()
+    {
+        $this->assertTrue(Auth::user()->isGuest());
+
+        $request  = $this->createRequestMock('/');
+        $response = Auth::authenticate($request);
+        $this->assertNull($response);
+
+        $request  = $this->createRequestMock('/user/mypage', 'user');
+        $response = Auth::authenticate($request);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/user/signin', $response->getTargetUrl());
+
+        $user = Auth::attempt($request, 'user@rebet.com', 'user');
+        Auth::signin($request, $user, '/user/signin');
+
+        $response = Auth::authenticate($request);
+        $this->assertNull($response);
+
+        $request  = $this->createRequestMock('/admin/dushbord', 'admin');
+        $response = Auth::authenticate($request);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/user/signin', $response->getTargetUrl());
+
+        $request  = $this->createRequestMock('/api/user', 'admin', 'api');
+        $response = Auth::authenticate($request);
+        $this->assertInstanceOf(ProblemResponse::class, $response);
+        $this->assertEquals(Responder::problem(403), $response);
+
+        $request->query->set('api_token', 'token_1');
+        $response = Auth::authenticate($request);
+        $this->assertNull($response);
     }
 }

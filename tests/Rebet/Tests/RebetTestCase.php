@@ -171,7 +171,7 @@ abstract class RebetTestCase extends TestCase
         $session->start();
         $request = Request::create($path);
         $request->setRebetSession($session);
-        $request->route = new ClosureRoute([], $path, function () { return 'TEST'; });
+        $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
         $request->route->roles(...((array)$roles));
         $request->channel = $channel;
         return $request;
