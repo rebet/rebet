@@ -21,12 +21,21 @@ class SigninFailed implements Authentication
     public $request;
 
     /**
+     * Charenged Sign-in ID when sign-in failed.
+     *
+     * @var mixed
+     */
+    public $charenged_signin_id;
+
+    /**
      * Create an event
      *
      * @param Request $request
+     * @param mixed $charenged_signin_id when sign-in failed. (default: null)
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, $charenged_signin_id = null)
     {
-        $this->request = $request;
+        $this->request             = $request;
+        $this->charenged_signin_id = $charenged_signin_id;
     }
 }

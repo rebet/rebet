@@ -42,6 +42,7 @@ abstract class RebetTestCase extends TestCase
             ['id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.com'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
             ['id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.com' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => 'token_3', 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
         ];
+        $auth_precondition = function ($user) { return !isset($user['resigned_at']); };
         Config::application([
             App::class => [
                 'timezone'  => 'UTC',
@@ -57,12 +58,12 @@ abstract class RebetTestCase extends TestCase
                 'authenticator' => [
                     'web' => [
                         'guard'    => SessionGuard::class,
-                        'provider' => [ArrayProvider::class, $users],
+                        'provider' => [ArrayProvider::class, $users, null, $auth_precondition],
                         'fallback' => '/user/signin', // url or function(Request):Response
                     ],
                     'api' => [
                         'guard'    => TokenGuard::class,
-                        'provider' => [ArrayProvider::class, $users],
+                        'provider' => [ArrayProvider::class, $users, null, $auth_precondition],
                         'fallback' => function (Request $request) { return Responder::problem(403); }, // url or function(Request):Response
                     ],
                 ],

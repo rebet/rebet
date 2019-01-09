@@ -87,17 +87,19 @@ class Auth
     public static function attempt(Request $request, $signin_id, string $password, $precondition = null, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
-        $auth     = $authenticator ?? $route->auth() ?? $request->channel ;
+        $auth     = $authenticator ?? ($route ? $route->auth() : null) ?? $request->channel ;
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
         $user     = $provider->findByCredentials($signin_id, $password, $precondition);
+
         if ($user) {
             $provider->authenticator($auth);
             $user->provider($provider);
-
+    
             $guard = static::configInstantiate("authenticator.{$auth}.guard");
             $guard->authenticator($auth);
             $user->guard($guard);
         }
+
         return $user;
     }
 
@@ -106,16 +108,16 @@ class Auth
      * If the user who was guarded and redirected to sign in page will success sign in then replay the guarded request, otherwise go to given url.
      *
      * @param Request $request
-     * @param AuthUser|null $user
+     * @param AuthUser $user
      * @param string $fallback url when signin failed
      * @param string $goto url when signined (default: '/')
      * @param bool $remember (default: false)
      * @return Response
      */
-    public static function signin(Request $request, ?AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
+    public static function signin(Request $request, AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
     {
-        if ($user === null || $user->isGuest()) {
-            Event::dispatch(new SigninFailed($request));
+        if ($user->isGuest()) {
+            Event::dispatch(new SigninFailed($request, $user->charengedSigninId()));
             return Responder::redirect($fallback)
                     ->with($request->input())
                     ->errors(['signin' => [Trans::get('message.signin_failed')]])
@@ -132,10 +134,10 @@ class Auth
      * [Authentication] It will sign out the authenticated user.
      *
      * @param Request $request
-     * @param string $redirect_to
+     * @param string $redirect_to (default: '/')
      * @return Response
      */
-    public static function signout(Request $request, string $redirect_to) : Response
+    public static function signout(Request $request, string $redirect_to = '/') : Response
     {
         $user = static::user();
         if ($user === null || $user->isGuest()) {
@@ -157,7 +159,7 @@ class Auth
     public static function authenticate(Request $request) : ?Response
     {
         $route    = $request->route;
-        $auth     = $route->auth() ?? $request->channel;
+        $auth     = ($route ? $route->auth() : null) ?? $request->channel;
         $guard    = static::configInstantiate("authenticator.{$auth}.guard");
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
         $guard->authenticator($auth);
@@ -168,7 +170,7 @@ class Auth
         $user->guard($guard);
         static::$user = $user;
 
-        $roles = $route->roles();
+        $roles = $route ? $route->roles() : [] ;
         if (empty($roles) || static::role($user, ...$roles)) {
             Event::dispatch(new Authenticated($request, $user));
             return null;

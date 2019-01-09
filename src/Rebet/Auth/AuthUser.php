@@ -42,6 +42,13 @@ class AuthUser
     protected $aliases = [];
 
     /**
+     * Sign-in ID when sign-in failed.
+     *
+     * @var mixed
+     */
+    protected $charenged_signin_id = null;
+
+    /**
      * The authenticated guard instance.
      *
      * @var Guard
@@ -99,12 +106,16 @@ class AuthUser
     /**
      * Get the Guest user instance.
      *
+     * @param mixed $charenged_signin_id when signin failed.
      * @param array $aliases (default: depend on configure)
      * @return self
      */
-    public static function guest(?array $aliases = null) : self
+    public static function guest($charenged_signin_id = null, ?array $aliases = []) : self
     {
-        return new static(null, $aliases ?? static::config('guest_aliases', false, []));
+        $guest = new static(null, array_merge(static::config('guest_aliases', false, []), $aliases));
+
+        $guest->charenged_signin_id = $charenged_signin_id;
+        return $guest;
     }
 
     /**
@@ -169,6 +180,16 @@ class AuthUser
     public function isGuest() : bool
     {
         return $this->user === null;
+    }
+
+    /**
+     * Get the Sign-in ID when sign-in failed.
+     *
+     * @return mixed
+     */
+    public function charengedSigninId()
+    {
+        return $this->charenged_signin_id;
     }
 
     /**
