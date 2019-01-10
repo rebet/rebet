@@ -20,6 +20,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
 use Rebet\Routing\Route\ClosureRoute;
+use Rebet\Tests\Common\Mock\User;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
@@ -71,6 +72,12 @@ abstract class RebetTestCase extends TestCase
                     'admin' => function (AuthUser $user) { return $user->role === 'admin'; },
                     'user'  => function (AuthUser $user) { return $user->role === 'user'; },
                 ],
+                'policies' => [
+                    User::class => [
+                        '@befor' => function (AuthUser $user, User $target) { return $user->is('admin'); },
+                        'update' => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
+                    ],
+                ]
             ],
         ]);
         Enum::clear();

@@ -8,6 +8,7 @@ class User
 {
     use Popuratable;
 
+    public $user_id;
     public $name;
     public $birthday;
     

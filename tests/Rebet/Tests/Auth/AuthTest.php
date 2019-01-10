@@ -12,6 +12,8 @@ use Rebet\Event\Event;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
+use Rebet\Tests\Common\Mock\Bank;
+use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
 
 class AuthTest extends RebetTestCase
@@ -220,5 +222,24 @@ class AuthTest extends RebetTestCase
         $this->assertSame(1, $user->id);
         $response = Auth::authenticate($request);
         $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
+
+    public function test_definePolicy()
+    {
+        $request = $this->createRequestMock('/');
+        Auth::signin($request, Auth::attempt($request, 'user@rebet.com', 'user'), '/user/signin');
+        $this->assertSame(2, Auth::user()->id);
+
+        $bank          = new Bank();
+        $bank->user_id = 1;
+
+        $this->assertFalse(Auth::policy(Auth::user(), 'update', $bank));
+
+        Auth::definePolicy(Bank::class, 'update', function (AuthUser $user, Bank $target) { return $user->id === $target->user_id; });
+
+        $this->assertFalse(Auth::policy(Auth::user(), 'update', $bank));
+
+        $bank->user_id = 2;
+        $this->assertTrue(Auth::policy(Auth::user(), 'update', $bank));
     }
 }

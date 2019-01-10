@@ -247,7 +247,7 @@ class Auth
             return true;
         }
         $policy = static::config("policies.{$selector}.{$action}", false);
-        return is_callable($policy) ? static::invoke(\Closure::fromCallable($policy), $user, $targets) : true;
+        return is_callable($policy) ? static::invoke(\Closure::fromCallable($policy), $user, array_merge([$target], $extras)) : false ;
     }
 
     /**
@@ -310,11 +310,11 @@ class Auth
 
         foreach ($function->getParameters() as $parameter) {
             $type = Reflector::getTypeHint($parameter);
-            if (Reflector::typeOf($request, $type) || ($type === null && $parameter->name === 'request')) {
+            if (($type !== null && Reflector::typeOf($request, $type)) || ($type === null && $parameter->name === 'request')) {
                 $args[] = $request;
                 continue;
             }
-            if (Reflector::typeOf($user, $type) || ($type === null && $parameter->name === 'user')) {
+            if (($type !== null && Reflector::typeOf($user, $type)) || ($type === null && $parameter->name === 'user')) {
                 $args[] = $user;
                 continue;
             }

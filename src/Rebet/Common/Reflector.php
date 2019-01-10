@@ -386,6 +386,9 @@ class Reflector
         if ($value === null) {
             return null;
         }
+        if (static::typeOf($value, $type)) {
+            return $value;
+        }
 
         switch ($type) {
             //---------------------------------------------
