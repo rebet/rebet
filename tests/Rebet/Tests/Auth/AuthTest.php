@@ -190,8 +190,35 @@ class AuthTest extends RebetTestCase
         $this->assertNull($response);
     }
 
-    // public function test_defineRole()
-    // {
-    //     Auth::defineRole('visitor', function (AuthUser $user) { return $user->is('guest', 'user'); });
-    // }
+    public function test_defineRole()
+    {
+        $user = Auth::user();
+        $this->assertTrue($user->isGuest());
+        $this->assertFalse(Auth::role($user, 'visitor'));
+
+        Auth::defineRole('visitor', function (AuthUser $user) { return $user->is('guest', 'user'); });
+
+        $this->assertTrue(Auth::role($user, 'visitor'));
+
+        $request  = $this->createRequestMock('/contact', 'visitor');
+        $response = Auth::authenticate($request);
+        $this->assertNull($response);
+        $this->assertTrue($user->isGuest());
+
+        $user = Auth::attempt($request, 'user@rebet.com', 'user');
+        Auth::signin($request, $user, '/user/signin');
+        $user = Auth::user();
+        $this->assertSame(2, $user->id);
+
+        $response = Auth::authenticate($request);
+        $this->assertNull($response);
+
+        $user = Auth::attempt($request, 'admin@rebet.com', 'admin');
+        Auth::signin($request, $user, '/admin/signin');
+
+        $user = Auth::user();
+        $this->assertSame(1, $user->id);
+        $response = Auth::authenticate($request);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
 }
