@@ -141,10 +141,10 @@ class Math
     {
         $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
-            return static::roundByDecimalPlaces(bcadd($left, $right, $precision + 1), $precision);
+            return static::roundByDecimalPlaces(\bcadd($left, $right, $precision + 1), $precision);
         }
         [$left, $right, $scale, /*$significant_figure*/] = static::compensate($left, $right);
-        return bcadd($left, $right, $scale);
+        return \bcadd($left, $right, $scale);
     }
 
     /**
@@ -159,10 +159,10 @@ class Math
     {
         $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
-            return static::roundByDecimalPlaces(bcsub($left, $right, $precision + 1), $precision) ;
+            return static::roundByDecimalPlaces(\bcsub($left, $right, $precision + 1), $precision) ;
         }
         [$left, $right, $scale, /*$significant_figure*/] = static::compensate($left, $right);
-        return bcsub($left, $right, $scale);
+        return \bcsub($left, $right, $scale);
     }
 
     /**
@@ -177,11 +177,11 @@ class Math
     {
         $precision = $precision ?? static::config('default_precision', false) ;
         if ($precision !== null) {
-            return static::roundByDecimalPlaces(bcmul($left, $right, $precision + 1), $precision);
+            return static::roundByDecimalPlaces(\bcmul($left, $right, $precision + 1), $precision);
         }
 
         [$left, $right, $scale, $significant_figure] = static::compensate($left, $right);
-        return static::roundBySignificantFigures(bcmul($left, $right, max($scale, $significant_figure) * 2), $significant_figure + 1);
+        return static::roundBySignificantFigures(\bcmul($left, $right, \max($scale, $significant_figure) * 2), $significant_figure + 1);
     }
 
     /**
@@ -200,7 +200,7 @@ class Math
         }
 
         [$left, $right, $scale, $significant_figure] = static::compensate($left, $right);
-        return static::roundBySignificantFigures(bcdiv($left, $right, max($scale, $significant_figure) * 2), $significant_figure + 1);
+        return static::roundBySignificantFigures(bcdiv($left, $right, \max($scale, $significant_figure) * 2), $significant_figure + 1);
     }
 
     /**
@@ -214,10 +214,10 @@ class Math
     public static function comp(string $left, string $right, ?int $precision = null)
     {
         if ($precision !== null) {
-            return bccomp($left, $right, $precision);
+            return \bccomp($left, $right, $precision);
         }
         [$left, $right, $scale, /*$significant_figure*/] = static::compensate($left, $right);
-        return bccomp($left, $right, $scale) ;
+        return \bccomp($left, $right, $scale) ;
     }
     
     /**
@@ -295,15 +295,15 @@ class Math
      */
     protected static function shiftingCalc(string $value, int $precision, callable $calc) : string
     {
-        $shifter = bcpow('10', $precision, abs(min($precision, 0)));
-        return bcdiv(
+        $shifter = \bcpow('10', $precision, \abs(min($precision, 0)));
+        return \bcdiv(
             $calc(
-                bcmul($value, $shifter, max(static::scaleOf($value) - $precision, 0)),
+                \bcmul($value, $shifter, \max(static::scaleOf($value) - $precision, 0)),
                 static::isNegative($value),
-                max($precision, 0)
+                \max($precision, 0)
             ),
             $shifter,
-            max($precision, 0)
+            \max($precision, 0)
         );
     }
 
@@ -315,7 +315,7 @@ class Math
      */
     public static function isNegative(string $value) : bool
     {
-        return bccomp($value, '0', static::scaleOf($value)) === -1;
+        return \bccomp($value, '0', static::scaleOf($value)) === -1;
     }
 
     /**
@@ -340,8 +340,8 @@ class Math
     {
         $precision = $precision ?? static::config('default_precision', false) ?? 0;
         return static::shiftingCalc($value, $precision, function ($shifted, $negative, $precision) {
-            $delta = $negative && bccomp(static::decimalOf($shifted), '0') === 1 ? '-1' : '0' ;
-            return bcadd(Strings::ratrim($shifted, '.'), $delta, $precision) ;
+            $delta = $negative && \bccomp(static::decimalOf($shifted), '0') === 1 ? '-1' : '0' ;
+            return \bcadd(Strings::ratrim($shifted, '.'), $delta, $precision) ;
         });
     }
 
@@ -376,7 +376,7 @@ class Math
     {
         $precision = $precision ?? static::config('default_precision', false) ?? 0;
         return static::shiftingCalc($value, $precision, function ($shifted, $negative, $precision) {
-            return bcadd($shifted, $negative ? '-0.5' : '0.5', $precision);
+            return \bcadd($shifted, $negative ? '-0.5' : '0.5', $precision);
         });
     }
 
@@ -424,8 +424,8 @@ class Math
     {
         $precision = $precision ?? static::config('default_precision', false) ?? 0;
         return static::shiftingCalc($value, $precision, function ($shifted, $negative, $precision) {
-            $delta = !$negative && bccomp(static::decimalOf($shifted), '0') === 1 ? '1' : '0' ;
-            return bcadd(Strings::ratrim($shifted, '.'), $delta, $precision) ;
+            $delta = !$negative && \bccomp(static::decimalOf($shifted), '0') === 1 ? '1' : '0' ;
+            return \bcadd(Strings::ratrim($shifted, '.'), $delta, $precision) ;
         });
     }
 

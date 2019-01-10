@@ -190,7 +190,7 @@ class Auth
      * [Authorization] Define the role for given name.
      *
      * @param string $name
-     * @param callable $checker
+     * @param callable $checker function(AuthUser $user):bool
      * @return void
      */
     public static function defineRole(string $name, callable $checker) : void

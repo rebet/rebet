@@ -18,6 +18,7 @@ class AuthTest extends RebetTestCase
 {
     public function setUp()
     {
+        parent::setUp();
         $request = $this->createRequestMock('/user/signout');
         Auth::signout($request);
     }
@@ -188,4 +189,9 @@ class AuthTest extends RebetTestCase
         $response = Auth::authenticate($request);
         $this->assertNull($response);
     }
+
+    // public function test_defineRole()
+    // {
+    //     Auth::defineRole('visitor', function (AuthUser $user) { return $user->is('guest', 'user'); });
+    // }
 }
