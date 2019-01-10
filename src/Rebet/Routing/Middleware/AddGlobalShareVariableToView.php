@@ -27,7 +27,7 @@ class AddGlobalShareVariableToView
         View::share([
             'request' => $request,
             'route'   => $request->route,
-            'prefix'  => $request->route->prefix,
+            'prefix'  => $request->getRoutePrefix(),
             'session' => $request->session(),
         ]);
         return $next($request);

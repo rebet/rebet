@@ -85,7 +85,7 @@ class SessionGuard implements Guard
     /**
      * {@inheritDoc}
      */
-    public function signout(Request $request, AuthUser $user, string $redirect_to) : Response
+    public function signout(Request $request, AuthUser $user, string $redirect_to = '/') : Response
     {
         if (!$user->isGuest()) {
             $provider = $user->provider();

@@ -101,7 +101,7 @@ class Responder
         if (Strings::startsWith($url, '@')) {
             $url = Strings::ltrim($url, '@', 1);
         } else {
-            $url = Strings::startsWith($url, '/') ? $request->route->prefix.$url : $url ;
+            $url = Strings::startsWith($url, '/') ? $request->getRoutePrefix().$url : $url ;
         }
         return static::prepare(new RedirectResponse($url, $status, $headers), $request);
     }

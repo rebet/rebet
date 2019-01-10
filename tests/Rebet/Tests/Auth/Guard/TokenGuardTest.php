@@ -5,6 +5,7 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\TokenGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Http\Request;
+use Rebet\Http\Response\JsonResponse;
 use Rebet\Tests\RebetTestCase;
 
 class TokenGuardTest extends RebetTestCase
@@ -40,24 +41,19 @@ class TokenGuardTest extends RebetTestCase
         $this->assertInstanceOf(TokenGuard::class, $guard);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage TokenGuard not supported signin() function.
-     */
     public function test_signin()
     {
+        // Nothing happens
         $this->guard->signin($this->request, AuthUser::guest());
-        $this->fail('Never execute');
+        $this->assertTrue(true);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage TokenGuard not supported signout() function.
-     */
     public function test_signout()
     {
-        $response = $this->guard->signout($this->request, AuthUser::guest(), '/signouted');
-        $this->fail('Never execute');
+        // Nothing happens
+        $response = $this->guard->signout($this->request, AuthUser::guest());
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame('{"result":true}', $response->getContent());
     }
 
     public function test_authenticate()

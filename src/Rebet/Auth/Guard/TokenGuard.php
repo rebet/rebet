@@ -5,6 +5,7 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
+use Rebet\Http\Responder;
 use Rebet\Http\Response;
 
 /**
@@ -54,19 +55,24 @@ class TokenGuard implements Guard
     }
 
     /**
+     * This method nothing to do.
+     *
      * {@inheritDoc}
      */
     public function signin(Request $request, AuthUser $user, bool $remember = false) : void
     {
-        throw new \BadMethodCallException("TokenGuard not supported signin() function.");
+        // Nothing to do
     }
     
     /**
+     * This method nothing to do and always return JsonResponse of {"result":true}.
+     *
      * {@inheritDoc}
      */
-    public function signout(Request $request, AuthUser $user, string $redirect_to) : Response
+    public function signout(Request $request, AuthUser $user, string $redirect_to = '/') : Response
     {
-        throw new \BadMethodCallException("TokenGuard not supported signout() function.");
+        // Nothing to do (Just return JsonResponse)
+        return Responder::toResponse(['result' => true]);
     }
 
     /**

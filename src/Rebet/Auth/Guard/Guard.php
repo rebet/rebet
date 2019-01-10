@@ -31,10 +31,10 @@ interface Guard
      *
      * @param Request $request
      * @param AuthUser $user
-     * @param string $redirect_to
+     * @param string $redirect_to (default: '/')
      * @return Response
      */
-    public function signout(Request $request, AuthUser $user, string $redirect_to) : Response;
+    public function signout(Request $request, AuthUser $user, string $redirect_to = '/') : Response;
 
     /**
      * Recall authenticate user from an incoming request.
