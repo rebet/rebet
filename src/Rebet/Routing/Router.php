@@ -641,9 +641,9 @@ class Router
     }
 
     /**
-     * Set ruting rules by given callback.
+     * Set routing rules by given callback.
      *
-     * @param callable $callback function(){ ... }
+     * @param callable $callback function():void
      * @return self
      */
     public function routing(callable $callback) : self

@@ -72,7 +72,7 @@ class View implements Renderable
      * Create a view of given name.
      *
      * @param string $name
-     * @param callable|null $changer function($name){...} to return cahnged name.
+     * @param callable|null $changer function($view_name):string to return cahnged name.
      * @return self
      */
     public static function of(string $name, ?callable $changer = null) : self
@@ -84,7 +84,7 @@ class View implements Renderable
      * Create a view
      *
      * @param string $name
-     * @param callable|null $changer function($name){...} to return cahnged view name.
+     * @param callable|null $changer function($view_name):string to return cahnged view name.
      * @param Engine|null $engine
      */
     public function __construct(string $name, ?callable $changer = null, ?Engine $engine = null)
@@ -105,7 +105,7 @@ class View implements Renderable
      * Set the view valiable composer.
      *
      * @param string $regex
-     * @param callable $composer
+     * @param callable $composer function(View $view):void
      * @return void
      */
     public static function composer(string $regex, callable $composer) : void

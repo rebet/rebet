@@ -255,7 +255,7 @@ class Translator
      * Set the ordinalize callback for given locale.
      *
      * @param string $locale
-     * @param callable $ordinalize
+     * @param callable $ordinalize function($number):mixed
      * @return void
      */
     public static function setOrdinalize(string $locale, callable $ordinalize) : void

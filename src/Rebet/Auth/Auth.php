@@ -190,7 +190,7 @@ class Auth
      * [Authorization] Define the role for given name.
      *
      * @param string $name
-     * @param callable $checker function(AuthUser $user):bool
+     * @param callable $checker function([Request $request,] AuthUser $user):bool
      * @return void
      */
     public static function defineRole(string $name, callable $checker) : void
@@ -202,7 +202,7 @@ class Auth
      * [Authorization] Define the before policy for given action to target.
      *
      * @param string $target class name
-     * @param callable $policy function(AuthUser $user, TargetClass $target, ...$etras):bool
+     * @param callable $policy function([Request $request,] AuthUser $user, TargetClass $target, ...$etras):bool
      * @return void
      */
     public static function defineBeforePolicy(string $target, callable $policy) : void
@@ -215,7 +215,7 @@ class Auth
      *
      * @param string $target
      * @param string $action
-     * @param callable $policy function(AuthUser $user, TargetClass $target, ...$etras):bool
+     * @param callable $policy function([Request $request,] AuthUser $user, TargetClass $target, ...$etras):bool
      * @return void
      */
     public static function definePolicy(string $target, string $action, callable $policy) : void

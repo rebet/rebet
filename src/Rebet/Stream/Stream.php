@@ -134,7 +134,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * Create a Null Contagion instance
      *
      * @param mixed $origin
-     * @param callable|null $promise
+     * @param callable|null $promise function():mixed
      * @param boolean $safety (default: false)
      */
     protected function __construct($origin, ?callable $promise = null, bool $safety = false)
@@ -181,7 +181,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * Add the given filter to Stream.
      *
      * @param string $name
-     * @param callable $filter
+     * @param callable $filter function(mixed $value, ...$args):mixed
      * @return void
      */
     public static function addFilter(string $name, callable $filter) : void

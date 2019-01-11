@@ -27,7 +27,7 @@ class ClosureRoute extends DeclarativeRoute
      *
      * @param array $methods
      * @param string $uri
-     * @param callable $action
+     * @param callable $action function([Request $request,] mixed ...$route_parameters)
      */
     public function __construct(array $methods, string $uri, callable $action)
     {

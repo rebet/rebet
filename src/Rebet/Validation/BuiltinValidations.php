@@ -335,7 +335,7 @@ class BuiltinValidations extends Validations
      * @param Context $c
      * @param string $other
      * @param string|array $value value or array or :field_name
-     * @param callable $callback function(Context $c, string $other, $value, string $label) { ... }
+     * @param callable $callback function(Context $c, string $other, $value, string $label):bool
      * @return boolean
      */
     protected function handleIf(Context $c, string $other, $value, callable $callback) : bool
@@ -353,7 +353,7 @@ class BuiltinValidations extends Validations
      * @param Context $c
      * @param string $other
      * @param string|array $value value or array or :field_name
-     * @param callable $callback function(Context $c, string $other, $value, string $label) { ... }
+     * @param callable $callback function(Context $c, string $other, $value, string $label):bool
      * @return boolean
      */
     protected function handleUnless(Context $c, string $other, $value, callable $callback) : bool
@@ -409,7 +409,7 @@ class BuiltinValidations extends Validations
      * @param Context $c
      * @param string|array $other
      * @param integer|null $at_least
-     * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $inputed){ ... }
+     * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $inputed):bool
      * @return boolean
      */
     protected function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
@@ -433,7 +433,7 @@ class BuiltinValidations extends Validations
      * @param Context $c
      * @param string|array $other
      * @param integer|null $at_least
-     * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $not_inputed){ ... }
+     * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $not_inputed):bool
      * @return boolean
      */
     protected function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
@@ -570,10 +570,10 @@ class BuiltinValidations extends Validations
      *
      * @param Context $c
      * @param Kind $kind
-     * @param callable $test function($value) { ... }
+     * @param callable $test function($value):bool
      * @param string $messsage_key
      * @param array $replacement (default: [])
-     * @param callable $selector function($value) { ... } (default: null)
+     * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
     protected function handleListableValue(Context $c, Kind $kind, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
@@ -792,10 +792,10 @@ class BuiltinValidations extends Validations
      * @param Context $c
      * @param int|float|string $number
      * @param int $decimal (default: 0)
-     * @param callable $test function(string $value, string $number, int $decimal){ ... }
+     * @param callable $test function(string $value, string $number, int $decimal):bool
      * @param string $messsage_key
      * @param array $replacement (default: [])
-     * @param callable $selector function($value) { ... } (default: null)
+     * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
     protected function handleNumber(Context $c, $number, int $decimal = 0, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
@@ -1246,10 +1246,10 @@ class BuiltinValidations extends Validations
      * @param Context $c
      * @param string|\DateTimeInterface $at_time
      * @param string|array $format
-     * @param callable $test function(DateTime $value, DateTime at_time){ ... }
+     * @param callable $test function(DateTime $value, DateTime at_time):bool
      * @param string $messsage_key
      * @param array $replacement (default: [])
-     * @param callable $selector function($value) { ... } (default: null)
+     * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
     protected function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool

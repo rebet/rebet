@@ -62,7 +62,7 @@ class ArrayProvider extends AuthProvider
      * @param array $users
      * @param string|null $signin_id_name (default: depend on configure)
      * @param string|null $token_name (default: depend on configure)
-     * @param callable|null $precondition (default: depend on configure)
+     * @param callable|null $precondition function($user):bool (default: depend on configure)
      */
     public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
     {

@@ -290,7 +290,7 @@ class Math
      *
      * @param string $value
      * @param integer $precision
-     * @param callable $calc function(string $shifted_value) { ... }
+     * @param callable $calc function(string $shifted_value):string
      * @return string
      */
     protected static function shiftingCalc(string $value, int $precision, callable $calc) : string

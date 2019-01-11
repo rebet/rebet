@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Symfony\Component\HttpFoundation\StreamedResponse as SymfonyStreamedResponse;
 use Rebet\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse as SymfonyStreamedResponse;
 
 /**
  * Streamed Response Class
@@ -19,7 +19,7 @@ class StreamedResponse extends SymfonyStreamedResponse implements Response
     /**
      * Create Streamed Response
      *
-     * @param callable $callback
+     * @param callable $callback function():void { streamd send content logic }
      * @param integer $status
      * @param array $headers
      */

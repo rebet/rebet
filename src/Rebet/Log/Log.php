@@ -153,7 +153,7 @@ class Log
     /**
      * ロガーを初期化します。
      *
-     * @param callable|null $handler
+     * @param callable|null $handler function(LogContext $log):string|array|null or any handler class uses LogHandleable trait.
      * @param array|null $middlewares
      * @return void
      */

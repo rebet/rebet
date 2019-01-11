@@ -692,7 +692,7 @@ class Arrays
      * Reduce the collection to a single value.
      *
      * @param array|null $array
-     * @param callable $reducer function($carry, $item)
+     * @param callable $reducer function($carry, $item):mixed
      * @param mixed $initial (defualt: null)
      * @return mixed
      */
@@ -725,7 +725,7 @@ class Arrays
      *
      * @param array|null $array
      * @param mixed $items
-     * @param callable|null $comparator function(mixed $a, mixed $b) (default: null)
+     * @param callable|null $comparator function(mixed $a, mixed $b):mixed (default: null)
      * @return array|null
      */
     public static function intersect(?array $array, $items, ?callable $comparator = null) : ?array
@@ -743,7 +743,7 @@ class Arrays
      * Determine if all items in the collection pass the given test.
      *
      * @param array $array
-     * @param callable $test of function($v, $k) : bool { ... }
+     * @param callable $test of function($v, $k):bool
      * @return bool
      */
     public static function every(?array $array, callable $test) : bool
@@ -818,7 +818,7 @@ class Arrays
      * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value): mixed. (default: null)
+     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
      * @param mixed $initial (default: null)
      * @return mixed
      */
@@ -836,7 +836,7 @@ class Arrays
      * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value): mixed. (default: null)
+     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
      * @param mixed $initial (default: null)
      * @return mixed
      */
@@ -881,7 +881,7 @@ class Arrays
      * Sort the collection using the given key or value retriever.
      *
      * @param array|null $array
-     * @param callable|string $retriever
+     * @param callable|string $retriever key name (with/without '@') or function($value):mixed.
      * @param int $order (default: SORT_ASC)
      * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array
@@ -938,7 +938,7 @@ class Arrays
      * Get the sum of the given values.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever (default: null)
+     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
      * @return string|null
@@ -964,7 +964,7 @@ class Arrays
      * Note: If the retriever return null then that item exclude from count. It means that you can calculate the selective average value.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever
+     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
      * @return string|null
@@ -985,7 +985,7 @@ class Arrays
      * Get the median of the given values.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever
+     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
      * @return string|null
@@ -1012,7 +1012,7 @@ class Arrays
      * Get the mode of a given key.
      *
      * @param array|null $array
-     * @param callable|string|null $retriever
+     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @return array|null
      */
     public static function mode(?array $array, $retriever = null) : ?array
