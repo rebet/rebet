@@ -52,7 +52,7 @@ class ArrayProvider extends AuthProvider
      * Create a readonly array provider.
      * Users information must have the following data,
      *
-     *  - 'id'        => id
+     *  - 'user_id'   => id of user
      *  - 'role'      => role ('user', 'admin', etc)
      *  - 'email'     => email address   (for credentials)
      *  - 'password'  => hashed password (for credentials)
@@ -77,7 +77,7 @@ class ArrayProvider extends AuthProvider
     public function findById($id) : ?AuthUser
     {
         return $this->users
-            ->first(function ($user) use ($id) { return $user['id'] == $id; })
+            ->first(function ($user) use ($id) { return $user['user_id'] == $id; })
             ->return(function ($user) { return new AuthUser($user); });
     }
 

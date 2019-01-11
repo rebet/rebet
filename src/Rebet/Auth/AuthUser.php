@@ -81,7 +81,7 @@ class AuthUser
      *    ex) 'role' => '@ADMIN' (get 'ADMIN' value when access via $auth_user->role)
      *
      *  - callable to get the value from source.
-     *    ex) 'name' => function($user) { return $user ? "{$user->first_name} {$user->last_name}" : null ; }
+     *    ex) 'name' => function($user) { return $user ? "{$user->first_name} {$user->last_name}" : 'Guest' ; }
      *    Note: Argument $user will be null when the user is guest.
      *
      *  - others for fixed value.
@@ -89,7 +89,7 @@ class AuthUser
      *
      * Note that AuthUser must be able to access an identifier that uniquely identifies the user source given the property name "id".
      * If the "id" alias is not specified, this class generates a primary key alias from the class name of the given user source by Inflector.
-     * (However, if the user source is an array, use "id" as it is defaultly.)
+     * (If the user source is an array, use "user_id" as it is defaultly.)
      *
      * @param mixed $user
      * @param array $aliases
@@ -99,7 +99,7 @@ class AuthUser
         $this->user    = $user;
         $this->aliases = $aliases;
         if ($user && !isset($this->aliases['id'])) {
-            $this->aliases['id'] = is_array($user) ? 'id' : Inflector::primarize((new \ReflectionClass($user))->getShortName());
+            $this->aliases['id'] = is_array($user) ? 'user_id' : Inflector::primarize((new \ReflectionClass($user))->getShortName());
         }
     }
 

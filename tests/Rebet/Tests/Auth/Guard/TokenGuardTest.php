@@ -24,10 +24,10 @@ class TokenGuardTest extends RebetTestCase
 
         $this->provider = new ArrayProvider(
             [
-                ['id' => 1, 'api_token' => 'token_1'],
-                ['id' => 2, 'api_token' => 'token_2'],
-                ['id' => 3, 'api_token' => 'token_3'],
-                ['id' => 4, 'api_token' => 'token_4'],
+                ['user_id' => 1, 'api_token' => 'token_1'],
+                ['user_id' => 2, 'api_token' => 'token_2'],
+                ['user_id' => 3, 'api_token' => 'token_3'],
+                ['user_id' => 4, 'api_token' => 'token_4'],
             ]
         );
         $this->provider->authenticator($authenticator);

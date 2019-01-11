@@ -9,6 +9,7 @@ class User
     use Popuratable;
 
     public $user_id;
+    public $role;
     public $name;
     public $birthday;
     
@@ -21,4 +22,9 @@ class User
      * @Nest(Address::class)
      */
     public $shipping_addresses = [];
+
+    public function age() : ?int
+    {
+        return $this->birthday ? $this->birthday->age() : null ;
+    }
 }
