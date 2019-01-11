@@ -199,11 +199,23 @@ class Auth
     }
 
     /**
+     * [Authorization] Define the before policy for given action to target.
+     *
+     * @param string $target class name
+     * @param callable $policy function(AuthUser $user, TargetClass $target, ...$etras):bool
+     * @return void
+     */
+    public static function defineBeforePolicy(string $target, callable $policy) : void
+    {
+        static::definePolicy($target, '@before', $policy);
+    }
+
+    /**
      * [Authorization] Define the policy for given action to target.
      *
      * @param string $target
      * @param string $action
-     * @param callable $policy
+     * @param callable $policy function(AuthUser $user, TargetClass $target, ...$etras):bool
      * @return void
      */
     public static function definePolicy(string $target, string $action, callable $policy) : void

@@ -21,8 +21,7 @@ class AuthTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $request = $this->createRequestMock('/user/signout');
-        Auth::signout($request);
+        $this->signout();
     }
 
     public function test_user()
@@ -145,8 +144,7 @@ class AuthTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/', $response->getTargetUrl());
 
-        $user     = Auth::attempt($request, 'user@rebet.com', 'user');
-        $response = Auth::signin($request, $user, '/user/signin');
+        $this->signin();
         $user     = Auth::user();
         $this->assertSame(2, $user->id);
 
@@ -171,9 +169,7 @@ class AuthTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
 
-        $user = Auth::attempt($request, 'user@rebet.com', 'user');
-        Auth::signin($request, $user, '/user/signin');
-
+        $this->signin($request);
         $response = Auth::authenticate($request);
         $this->assertNull($response);
 
@@ -207,17 +203,14 @@ class AuthTest extends RebetTestCase
         $this->assertNull($response);
         $this->assertTrue($user->isGuest());
 
-        $user = Auth::attempt($request, 'user@rebet.com', 'user');
-        Auth::signin($request, $user, '/user/signin');
+        $this->signin($request);
         $user = Auth::user();
         $this->assertSame(2, $user->id);
 
         $response = Auth::authenticate($request);
         $this->assertNull($response);
 
-        $user = Auth::attempt($request, 'admin@rebet.com', 'admin');
-        Auth::signin($request, $user, '/admin/signin');
-
+        $this->signin($request, 'admin@rebet.com', 'admin');
         $user = Auth::user();
         $this->assertSame(1, $user->id);
         $response = Auth::authenticate($request);
@@ -226,8 +219,7 @@ class AuthTest extends RebetTestCase
 
     public function test_definePolicy()
     {
-        $request = $this->createRequestMock('/');
-        Auth::signin($request, Auth::attempt($request, 'user@rebet.com', 'user'), '/user/signin');
+        $this->signin();
         $this->assertSame(2, Auth::user()->id);
 
         $bank          = new Bank();
@@ -241,5 +233,69 @@ class AuthTest extends RebetTestCase
 
         $bank->user_id = 2;
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $bank));
+    }
+
+    public function test_defineBeforePolicy()
+    {
+        $this->signin(null, 'admin@rebet.com', 'admin');
+        $this->assertTrue(Auth::user()->is('admin'));
+
+        $bank          = new Bank();
+        $bank->user_id = 2;
+
+        $this->assertFalse(Auth::policy(Auth::user(), 'update', $bank));
+
+        Auth::defineBeforePolicy(Bank::class, function (AuthUser $user, Bank $target) { return $user->is('admin'); });
+
+        $this->assertTrue(Auth::policy(Auth::user(), 'update', $bank));
+    }
+
+    public function test_policy()
+    {
+        $user          = new User();
+        $user->user_id = 2;
+
+        $this->assertTrue(Auth::user()->isGuest());
+        $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
+
+        $this->signin();
+        $this->assertSame(2, Auth::user()->id);
+        $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
+
+        $user->user_id = 1;
+        $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
+
+        $this->signin(null, 'admin@rebet.com', 'admin');
+        $this->assertTrue(Auth::user()->is('admin'));
+
+        $user->user_id = 1;
+        $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
+
+        $user->user_id = 2;
+        $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
+    }
+
+    public function test_role()
+    {
+        $user = Auth::user();
+        $this->assertTrue($user->isGuest());
+
+        $this->assertTrue(Auth::role($user, 'all'));
+        $this->assertTrue(Auth::role($user, 'guest'));
+        $this->assertFalse(Auth::role($user, 'user'));
+        $this->assertFalse(Auth::role($user, 'admin'));
+        $this->assertFalse(Auth::role($user, 'user', 'admin'));
+        $this->assertTrue(Auth::role($user, 'guest', 'user'));
+
+        $this->signin();
+        $user = Auth::user();
+        $this->assertSame(2, $user->id);
+
+        $this->assertTrue(Auth::role($user, 'all'));
+        $this->assertFalse(Auth::role($user, 'guest'));
+        $this->assertTrue(Auth::role($user, 'user'));
+        $this->assertFalse(Auth::role($user, 'admin'));
+        $this->assertTrue(Auth::role($user, 'user', 'admin'));
+        $this->assertTrue(Auth::role($user, 'guest', 'user'));
     }
 }

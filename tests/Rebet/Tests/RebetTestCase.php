@@ -74,8 +74,8 @@ abstract class RebetTestCase extends TestCase
                 ],
                 'policies' => [
                     User::class => [
-                        '@befor' => function (AuthUser $user, User $target) { return $user->is('admin'); },
-                        'update' => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
+                        '@before' => function (AuthUser $user, User $target) { return $user->is('admin'); },
+                        'update'  => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
                     ],
                 ]
             ],
@@ -182,5 +182,17 @@ abstract class RebetTestCase extends TestCase
         $request->route->roles(...((array)$roles));
         $request->channel = $channel;
         return $request;
+    }
+
+    protected function signin(Request $request = null, string $signin_id = 'user@rebet.com', string $password = 'user') : Request
+    {
+        $request = $request ?? $this->createRequestMock('/');
+        Auth::signin($request, Auth::attempt($request, $signin_id, $password), '/');
+        return $request;
+    }
+
+    protected function signout(Request $request = null) : void
+    {
+        Auth::signout($request ?? $this->createRequestMock('/'));
     }
 }
