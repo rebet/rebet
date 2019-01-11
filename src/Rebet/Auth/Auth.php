@@ -13,6 +13,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Translation\Trans;
+use Rebet\Auth\Event\AuthenticateFailed;
 
 /**
  * Auth Class
@@ -92,12 +93,10 @@ class Auth
         $user     = $provider->findByCredentials($signin_id, $password, $precondition);
 
         if ($user) {
-            $provider->authenticator($auth);
-            $user->provider($provider);
+            $user->provider($provider->authenticator($auth));
     
             $guard = static::configInstantiate("authenticator.{$auth}.guard");
-            $guard->authenticator($auth);
-            $user->guard($guard);
+            $user->guard($guard->authenticator($auth));
         }
 
         return $user;
@@ -158,30 +157,31 @@ class Auth
      *
      * @param Request $request
      * @return Response|null response when authenticate failed
-     * @uses Event::dispatch Authenticated when authenticate success.
+     * @uses Event::dispatch Authenticated when authenticate success (exclude Guest user).
+     * @uses Event::dispatch AuthenticateFailed when authenticate failed (exclude Guest user).
      */
     public static function authenticate(Request $request) : ?Response
     {
         $route    = $request->route;
         $auth     = ($route ? $route->auth() : null) ?? $request->channel;
-        $guard    = static::configInstantiate("authenticator.{$auth}.guard");
-        $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $guard->authenticator($auth);
-        $provider->authenticator($auth);
+        $guard    = static::configInstantiate("authenticator.{$auth}.guard")->authenticator($auth);
+        $provider = static::configInstantiate("authenticator.{$auth}.provider")->authenticator($auth);
 
-        $user = $guard->authenticate($request, $provider);
-        $user->provider($provider);
-        $user->guard($guard);
-        static::$user = $user;
-
+        $user  = $guard->authenticate($request, $provider)->provider($provider)->guard($guard);
         $roles = $route ? $route->roles() : [] ;
         if (empty($roles) || static::role($user, ...$roles)) {
-            Event::dispatch(new Authenticated($request, $user));
+            static::$user = $user;
+            if(!$user->isGuest()) {
+                Event::dispatch(new Authenticated($request, $user));
+            }
             return null;
         }
 
         $request->saveAs('guarded_by_auth');
 
+        if (!$user->isGuest()) {
+            Event::dispatch(new AuthenticateFailed($request, $user));
+        }
         $fallback = static::config("authenticator.{$auth}.fallback");
         return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
     }

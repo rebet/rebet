@@ -25,7 +25,7 @@ class SessionGuardTest extends RebetTestCase
 
         $this->provider = new ArrayProvider(
             [
-                $user_1 = ['user_id' => 1, 'role' => 'admin', 'name' => 'test', 'email' => 'test@rebet.com', 'password' => '$2y$10$2LE4ETkjzUomoqFgcRaCnOX2AOjqbCcP3ADJJfzsWjp927EzxAeXu'],
+                $user_1 = ['user_id' => 1, 'role' => 'admin', 'name' => 'test', 'email' => 'test@rebet.local', 'password' => '$2y$10$2LE4ETkjzUomoqFgcRaCnOX2AOjqbCcP3ADJJfzsWjp927EzxAeXu'],
             ],
             'email'
         );

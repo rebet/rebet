@@ -642,7 +642,7 @@ class BuiltinValidationsTest extends RebetTestCase
             // --------------------------------------------
             [[
                 'name'  => 'Email',
-                'data'  => ['null' => null, 'foo' => 'foo@rebet.com', 'bar' => '.bar@rebet.com', 'baz' => ['foo@rebet.com', '.bar@rebet.com', 'abc', 'foo.bar@rebet.com', 'foo..baz@rebet.com']],
+                'data'  => ['null' => null, 'foo' => 'foo@rebet.local', 'bar' => '.bar@rebet.local', 'baz' => ['foo@rebet.local', '.bar@rebet.local', 'abc', 'foo.bar@rebet.local', 'foo..baz@rebet.local']],
                 'tests' => [
                     ['nothing', [     ], true , []],
                     ['null'   , [     ], true , []],
@@ -650,9 +650,9 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['bar'    , [     ], false, ['bar' => ["The Bar must be a valid email address."]]],
                     ['bar'    , [false], true , []],
                     ['baz'    , [     ], false, ['baz' => [
-                        "The 2nd Baz (.bar@rebet.com) must be a valid email address.",
+                        "The 2nd Baz (.bar@rebet.local) must be a valid email address.",
                         "The 3rd Baz (abc) must be a valid email address.",
-                        "The 5th Baz (foo..baz@rebet.com) must be a valid email address.",
+                        "The 5th Baz (foo..baz@rebet.local) must be a valid email address.",
                     ]]],
                     ['baz'    , [false], false, ['baz' => [
                         "The 3rd Baz (abc) must be a valid email address.",
@@ -795,7 +795,7 @@ EOS
             // --------------------------------------------
             [[
                 'name'  => 'AlphaDigitMark',
-                'data'  => ['null' => null, 'foo' => '123abcDEF', 'bar' => '[123-abc]', 'baz' => 'ＡＢＣ', 'qux' => ['123-abc', '1,234', 'FOO_BAR', 123, 'foo@rebet.com']],
+                'data'  => ['null' => null, 'foo' => '123abcDEF', 'bar' => '[123-abc]', 'baz' => 'ＡＢＣ', 'qux' => ['123-abc', '1,234', 'FOO_BAR', 123, 'foo@rebet.local']],
                 'tests' => [
                     ['nothing', [     ], true , []],
                     ['null'   , [     ], true , []],
@@ -806,7 +806,7 @@ EOS
                     ['baz'    , [     ], false, ['baz' => ["The Baz may only contain letters, digits or marks (include !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ )."]]],
                     ['qux'    , ["-_" ], false, ['qux' => [
                         "The 2nd Qux (1,234) may only contain letters, digits or marks (include -_).",
-                        "The 5th Qux (foo@rebet.com) may only contain letters, digits or marks (include -_).",
+                        "The 5th Qux (foo@rebet.local) may only contain letters, digits or marks (include -_).",
                     ]]],
                 ]
             ]],

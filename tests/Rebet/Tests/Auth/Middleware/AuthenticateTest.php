@@ -30,7 +30,7 @@ class AuthenticateTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
 
-        $user = Auth::attempt($request, 'user@rebet.com', 'user');
+        $user = Auth::attempt($request, 'user@rebet.local', 'user');
         Auth::signin($request, $user, '/user/signin');
 
         $response = $middleware->handle($request, $destination);

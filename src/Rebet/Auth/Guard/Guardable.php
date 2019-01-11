@@ -22,10 +22,14 @@ trait Guardable
      * Get and Set authenticator name of this guard.
      *
      * @param string|null $name
-     * @return mixed
+     * @return self|string|null
      */
     public function authenticator(?string $name = null)
     {
-        return $name === null ? $this->authenticator : $this->authenticator = $name ;
+        if($name === null) {
+            return $this->authenticator;
+        }
+        $this->authenticator = $name;
+        return $this;
     }
 }

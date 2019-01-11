@@ -17,9 +17,9 @@ class ArrayProviderTest extends RebetTestCase
     public function setUp()
     {
         $this->users = [
-            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.com'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
-            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.com'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
-            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.com' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => 'token_3', 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
+            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
+            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
+            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => 'token_3', 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
         ];
 
         $this->provider                  = new ArrayProvider($this->users);
@@ -129,24 +129,24 @@ class ArrayProviderTest extends RebetTestCase
             $this->assertNull($user);
         }
 
-        $user = $this->provider_exclude_resigned->findByCredentials('admin@rebet.com', 'admin');
+        $user = $this->provider_exclude_resigned->findByCredentials('admin@rebet.local', 'admin');
         $this->assertSame(1, $user->id);
 
-        $user = $this->provider_exclude_resigned->findByCredentials('user@rebet.com', 'user');
+        $user = $this->provider_exclude_resigned->findByCredentials('user@rebet.local', 'user');
         $this->assertSame(2, $user->id);
 
-        $user = $this->provider_exclude_resigned->findByCredentials('user.resignd@rebet.com', 'user.resignd');
+        $user = $this->provider_exclude_resigned->findByCredentials('user.resignd@rebet.local', 'user.resignd');
         $this->assertNull($user);
 
 
         $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user = $this->provider->findByCredentials('admin@rebet.com', 'admin', $precondition);
+        $user = $this->provider->findByCredentials('admin@rebet.local', 'admin', $precondition);
         $this->assertSame(1, $user->id);
 
-        $user = $this->provider->findByCredentials('user@rebet.com', 'user', $precondition);
+        $user = $this->provider->findByCredentials('user@rebet.local', 'user', $precondition);
         $this->assertNull($user);
 
-        $user = $this->provider->findByCredentials('user.resignd@rebet.com', 'user.resignd', $precondition);
+        $user = $this->provider->findByCredentials('user.resignd@rebet.local', 'user.resignd', $precondition);
         $this->assertNull($user);
     }
 
@@ -193,7 +193,7 @@ class ArrayProviderTest extends RebetTestCase
     public function test_authenticator()
     {
         $this->assertNull($this->provider->authenticator());
-        $this->provider->authenticator('web');
+        $this->assertInstanceOf(ArrayProvider::class, $this->provider->authenticator('web'));
         $this->assertSame('web', $this->provider->authenticator());
     }
 }

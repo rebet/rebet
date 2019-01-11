@@ -11,10 +11,10 @@ class GuardableTest extends RebetTestCase
         $guard = new SessionGuard();
         $this->assertNull($guard->authenticator());
 
-        $guard->authenticator('web');
+        $this->assertInstanceOf(SessionGuard::class, $guard->authenticator('web'));
         $this->assertSame('web', $guard->authenticator());
 
-        $guard->authenticator('api');
+        $this->assertInstanceOf(SessionGuard::class, $guard->authenticator('api'));
         $this->assertSame('api', $guard->authenticator());
     }
 }

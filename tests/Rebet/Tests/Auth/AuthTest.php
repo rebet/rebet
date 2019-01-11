@@ -15,6 +15,8 @@ use Rebet\Http\Response\RedirectResponse;
 use Rebet\Tests\Common\Mock\Bank;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Auth\Event\Authenticated;
+use Rebet\Auth\Event\AuthenticateFailed;
 
 class AuthTest extends RebetTestCase
 {
@@ -31,7 +33,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame(null, $user->id);
 
         $request = $this->createRequestMock('/');
-        $user    = Auth::attempt($request, 'user@rebet.com', 'user');
+        $user    = Auth::attempt($request, 'user@rebet.local', 'user');
         Auth::signin($request, $user, '/user/signin');
 
         $user = Auth::user();
@@ -42,7 +44,7 @@ class AuthTest extends RebetTestCase
     public function test_attempt()
     {
         $request  = $this->createRequestMock('/');
-        $user     = Auth::attempt($request, 'user@rebet.com', 'user');
+        $user     = Auth::attempt($request, 'user@rebet.local', 'user');
         $provider = $user->provider();
         $guard    = $user->guard();
         $this->assertSame(2, $user->id);
@@ -52,21 +54,21 @@ class AuthTest extends RebetTestCase
         $this->assertSame('web', $provider->authenticator());
         $this->assertSame('web', $guard->authenticator());
 
-        $user = Auth::attempt($request, 'user@rebet.com', 'invalid_password');
+        $user = Auth::attempt($request, 'user@rebet.local', 'invalid_password');
         $this->assertNull($user);
 
         $user = Auth::attempt($request, 'invalid_signin_id', 'user');
         $this->assertNull($user);
 
-        $user = Auth::attempt($request, 'user.resigned@rebet.com', 'user.resigned');
+        $user = Auth::attempt($request, 'user.resigned@rebet.local', 'user.resigned');
         $this->assertNull($user);
 
         $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user         = Auth::attempt($request, 'user@rebet.com', 'user', $precondition);
+        $user         = Auth::attempt($request, 'user@rebet.local', 'user', $precondition);
         $this->assertNull($user);
 
         $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user         = Auth::attempt($request, 'admin@rebet.com', 'admin', $precondition);
+        $user         = Auth::attempt($request, 'admin@rebet.local', 'admin', $precondition);
         $this->assertSame(1, $user->id);
         $this->assertTrue($user->is('admin'));
     }
@@ -81,7 +83,7 @@ class AuthTest extends RebetTestCase
         $this->assertNull($signined_user_id);
 
         $request  = $this->createRequestMock('/');
-        $user     = Auth::attempt($request, 'user@rebet.com', 'user');
+        $user     = Auth::attempt($request, 'user@rebet.local', 'user');
         $response = Auth::signin($request, $user, '/user/signin');
 
         $user = Auth::user();
@@ -91,13 +93,13 @@ class AuthTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/', $response->getTargetUrl());
 
-        $user     = Auth::attempt($request, 'admin@rebet.com', 'admin');
-        $response = Auth::signin($request, $user, '/admin/signin', '/admin/dashbord');
+        $user     = Auth::attempt($request, 'admin@rebet.local', 'admin');
+        $response = Auth::signin($request, $user, '/admin/signin', '/admin/dashboard');
         $this->assertFalse($user->isGuest());
         $this->assertSame(1, $user->id);
         $this->assertSame(1, $signined_user_id);
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('/admin/dashbord', $response->getTargetUrl());
+        $this->assertSame('/admin/dashboard', $response->getTargetUrl());
     }
     
     public function test_signin_failed()
@@ -109,21 +111,21 @@ class AuthTest extends RebetTestCase
         $this->assertTrue($user->isGuest());
 
         $request  = $this->createRequestMock('/');
-        $user     = Auth::attempt($request, 'user@rebet.com', 'invalid_password');
-        $response = Auth::signin($request, $user ?? AuthUser::guest('user@rebet.com'), '/user/signin');
+        $user     = Auth::attempt($request, 'user@rebet.local', 'invalid_password');
+        $response = Auth::signin($request, $user ?? AuthUser::guest('user@rebet.local'), '/user/signin');
 
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
-        $this->assertSame('user@rebet.com', $charenged_signin_id);
+        $this->assertSame('user@rebet.local', $charenged_signin_id);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
 
-        $user     = Auth::attempt($request, 'user.resigned@rebet.com', 'user.resigned');
-        $response = Auth::signin($request, $user ?? AuthUser::guest('user.resigned@rebet.com'), '/user/signin');
+        $user     = Auth::attempt($request, 'user.resigned@rebet.local', 'user.resigned');
+        $response = Auth::signin($request, $user ?? AuthUser::guest('user.resigned@rebet.local'), '/user/signin');
 
         $user = Auth::user();
         $this->assertTrue($user->isGuest());
-        $this->assertSame('user.resigned@rebet.com', $charenged_signin_id);
+        $this->assertSame('user.resigned@rebet.local', $charenged_signin_id);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
     }
@@ -158,27 +160,41 @@ class AuthTest extends RebetTestCase
 
     public function test_authenticate()
     {
+        $authenticate_user_id        = 'not set';
+        $authenticate_failed_user_id = 'not set';
+        Event::listen(function (Authenticated $event) use (&$authenticate_user_id) { $authenticate_user_id = $event->user->id; });
+        Event::listen(function (AuthenticateFailed $event) use (&$authenticate_failed_user_id) { $authenticate_failed_user_id = $event->user->id; });
+
         $this->assertTrue(Auth::user()->isGuest());
 
         $request  = $this->createRequestMock('/');
         $response = Auth::authenticate($request);
         $this->assertNull($response);
+        $this->assertSame('not set', $authenticate_user_id);
+        $this->assertSame('not set', $authenticate_failed_user_id);
 
         $request  = $this->createRequestMock('/user/mypage', 'user');
         $response = Auth::authenticate($request);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
+        $this->assertSame('not set', $authenticate_user_id);
+        $this->assertSame('not set', $authenticate_failed_user_id);
 
         $this->signin($request);
         $response = Auth::authenticate($request);
         $this->assertNull($response);
+        $this->assertSame(2, $authenticate_user_id);
+        $this->assertSame('not set', $authenticate_failed_user_id);
 
-        $request  = $this->createRequestMock('/admin/dushbord', 'admin');
+        $request  = $this->createRequestMock('/admin/dashboard', 'admin');
+        $this->signin($request);
         $response = Auth::authenticate($request);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/user/signin', $response->getTargetUrl());
+        $this->assertSame(2, $authenticate_failed_user_id);
 
         $request  = $this->createRequestMock('/api/user', 'admin', 'api');
+        $this->signin($request);
         $response = Auth::authenticate($request);
         $this->assertInstanceOf(ProblemResponse::class, $response);
         $this->assertEquals(Responder::problem(403), $response);
@@ -210,7 +226,7 @@ class AuthTest extends RebetTestCase
         $response = Auth::authenticate($request);
         $this->assertNull($response);
 
-        $this->signin($request, 'admin@rebet.com', 'admin');
+        $this->signin($request, 'admin@rebet.local', 'admin');
         $user = Auth::user();
         $this->assertSame(1, $user->id);
         $response = Auth::authenticate($request);
@@ -237,7 +253,7 @@ class AuthTest extends RebetTestCase
 
     public function test_defineBeforePolicy()
     {
-        $this->signin(null, 'admin@rebet.com', 'admin');
+        $this->signin(null, 'admin@rebet.local', 'admin');
         $this->assertTrue(Auth::user()->is('admin'));
 
         $bank          = new Bank();
@@ -265,7 +281,7 @@ class AuthTest extends RebetTestCase
         $user->user_id = 1;
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
 
-        $this->signin(null, 'admin@rebet.com', 'admin');
+        $this->signin(null, 'admin@rebet.local', 'admin');
         $this->assertTrue(Auth::user()->is('admin'));
 
         $user->user_id = 1;

@@ -7,6 +7,8 @@ use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Inflection\Inflector;
+use Rebet\Common\Exception\LogicException;
+use Rebet\Common\Json;
 
 /**
  * Auth User Class
@@ -16,14 +18,15 @@ use Rebet\Inflection\Inflector;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class AuthUser
+class AuthUser implements \JsonSerializable
 {
     use Configurable;
 
     public static function defaultConfig() : array
     {
         return [
-            'guest_aliases' => [],
+            'guest_aliases'               => [],
+            'aliases_max_recursion_depth' => 20,
         ];
     }
 
@@ -75,21 +78,28 @@ class AuthUser
      * Aliases can be defined in the following format.
      *
      *  - string of the source field name.
-     *    ex) 'email' => 'mail_addres'
+     *    ex) 'email' => 'mail_address'
+     *    Note: This alias can be set new value to origin source field via alias.
+     *    Note: Aliases are resolved recursively.
+     *          If you do not want this behavior, recursion can be suppressed by giving "!" at the beginning of the alias name.
+     *          ex) 'email' => '!mail_address'
      *
      *  - string starts with '@' for fixed string value.
      *    ex) 'role' => '@ADMIN' (get 'ADMIN' value when access via $auth_user->role)
+     *    Note: This alias can not be set new value via alias.
      *
      *  - callable to get the value from source.
      *    ex) 'name' => function($user) { return $user ? "{$user->first_name} {$user->last_name}" : 'Guest' ; }
+     *    Note: This alias can not be set new value via alias.
      *    Note: Argument $user will be null when the user is guest.
      *
      *  - others for fixed value.
      *    ex) 'role' => 1
+     *    Note: This alias can not be set new value via alias.
      *
      * Note that AuthUser must be able to access an identifier that uniquely identifies the user source given the property name "id".
      * If the "id" alias is not specified, this class generates a primary key alias from the class name of the given user source by Inflector.
-     * (If the user source is an array, use "user_id" as it is defaultly.)
+     * (If the user source is null or an array, use "user_id" as it is defaultly.)
      *
      * @param mixed $user
      * @param array $aliases
@@ -98,8 +108,8 @@ class AuthUser
     {
         $this->user    = $user;
         $this->aliases = $aliases;
-        if ($user && !isset($this->aliases['id'])) {
-            $this->aliases['id'] = is_array($user) ? 'user_id' : Inflector::primarize((new \ReflectionClass($user))->getShortName());
+        if (!isset($this->aliases['id'])) {
+            $this->aliases['id'] = $user === null || is_array($user) ? 'user_id' : Inflector::primarize((new \ReflectionClass($user))->getShortName());
         }
     }
 
@@ -121,21 +131,56 @@ class AuthUser
     /**
      * Get and Set the Guard instance of this authenticated user.
      *
-     * @return Guard|null
+     * @return self|Guard|null
      */
-    public function guard(?Guard $guard = null) : ?Guard
+    public function guard(?Guard $guard = null)
     {
-        return $guard === null ? $this->guard : $this->guard = $guard ;
+        if($guard === null) {
+            return $this->guard;
+        }
+        $this->guard = $guard;
+        return $this;
     }
 
     /**
      * Get and Set the AuthProvider instance of this authenticated user.
      *
-     * @return AuthProvider|null
+     * @return self|AuthProvider|null
      */
-    public function provider(?AuthProvider $provider = null) : ?AuthProvider
+    public function provider(?AuthProvider $provider = null)
     {
-        return $provider === null ? $this->provider : $this->provider = $provider ;
+        if($provider === null) {
+            return $this->provider;
+        }
+        $this->provider = $provider;
+        return $this;
+    }
+
+    /**
+     * Get alias name of given name.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    protected function alias(string $name)
+    {
+        $max   = static::config('aliases_max_recursion_depth');
+        $depth = 0;
+        $alias = $name ;
+        while (isset($this->aliases[$alias])) {
+            $alias = $this->aliases[$alias];
+            if(!is_string($alias)) {
+                break;
+            }
+            if(Strings::startsWith($alias, '!')) {
+                $alias = Strings::ltrim($alias, '!', 1);
+                break;
+            }
+            if($max < ++$depth) {
+                throw LogicException::by("Too many (over {$max}) aliases recursion depth.");
+            }
+        }
+        return $alias;
     }
 
     /**
@@ -147,12 +192,12 @@ class AuthUser
      */
     protected function get(string $name, $default = null)
     {
-        $alias = $this->aliases[$name] ?? $name ;
-        if (Strings::startsWith($alias, '@')) {
-            return Strings::ltrim($alias, '@');
-        }
+        $alias = $this->alias($name);
         if ($alias instanceof \Closure) {
             return $alias($this->user);
+        }
+        if (Strings::startsWith($alias, '@')) {
+            return Strings::ltrim($alias, '@');
         }
         if (!is_string($alias)) {
             return $alias ?? $default;
@@ -161,15 +206,17 @@ class AuthUser
     }
 
     /**
-     * Reload authenticated user data.
+     * Refresh authenticated user data from provider.
      *
-     * @return void
+     * @return self
      */
-    public function reload() : void
+    public function refresh() : self
     {
         if ($this->provider) {
-            $this->user = $this->provider->findById($this->id);
+            $user = $this->provider->findById($this->id);
+            $this->user = $user ? $user->raw() : $this->user ;
         }
+        return $this;
     }
 
     /**
@@ -247,7 +294,7 @@ class AuthUser
      *
      * @return mixed
      */
-    public function raw()
+    public function &raw()
     {
         return $this->user;
     }
@@ -261,5 +308,39 @@ class AuthUser
     public function __get($key)
     {
         return $this->get($key);
+    }
+
+    /**
+     * Property set accessor.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        if ($this->user === null) {
+            return;
+        }
+        $alias = $this->alias($key);
+        if(is_string($alias) && !Strings::startsWith($alias, '@')) {
+            Reflector::set($this->user, $alias, $value);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        return Reflector::convert($this->user, 'string') ?? json_encode($this) ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function jsonSerialize()
+    {
+        return Json::serialize($this->user);
     }
 }
