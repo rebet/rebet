@@ -33,13 +33,16 @@ class Password
     /**
      * Generate password hash from given plain password using password_hash() php function.
      *
-     * @param string $password
+     * @param string|null $password
      * @param integer|null $algorithm (default: depend on configure)
      * @param array|null $options (default: depend on configure)
-     * @return string
+     * @return string|null
      */
-    public static function hash(string $password, ?int $algorithm = null, ?array $options = null) : string
+    public static function hash(?string $password, ?int $algorithm = null, ?array $options = null) : ?string
     {
+        if($password === null) {
+            return null;
+        }
         $algorithm = $algorithm ?? static::config('algorithm');
         $options   = $options ?? static::config('options', false, []);
         return password_hash($password, $algorithm, $options);
@@ -60,13 +63,16 @@ class Password
     /**
      * It checks the password needs rehash.
      *
-     * @param string $hash
+     * @param string|null $hash
      * @param integer|null $algorithm (default: depend on configure)
      * @param array|null $options (default: depend on configure)
-     * @return string
+     * @return bool
      */
-    public static function needsRehash(string $hash, ?int $algorithm = null, ?array $options = null) : string
+    public static function needsRehash(?string $hash, ?int $algorithm = null, ?array $options = null) : bool
     {
+        if($hash === null) {
+            return false;
+        }
         $algorithm = $algorithm ?? static::config('algorithm');
         $options   = $options ?? static::config('options', false, []);
         return password_needs_rehash($hash, $algorithm, $options);
