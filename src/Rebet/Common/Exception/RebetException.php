@@ -28,14 +28,21 @@ interface RebetException
      * @return self
      */
     public function caused(\Throwable $previous) : self ;
+
+    /**
+     * Get the previous exception.
+     *
+     * @return \Throwable|null
+     */
+    public function getCaused() : ? \Throwable ;
     
     /**
      * Set the given code
      *
-     * @param integer $code
+     * @param mixed $code
      * @return self
      */
-    public function code(int $code) : self ;
+    public function code($code) : self ;
 
     /**
      * Set the given appendix data.

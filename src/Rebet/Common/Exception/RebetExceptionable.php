@@ -41,7 +41,18 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function code(int $code) : RebetException
+    public function getCaused() : ?\Throwable
+    {
+        $rc = new \ReflectionClass(\Exception::class);
+        $rp = $rc->getProperty('previous');
+        $rp->setAccessible(true);
+        return $rp->getValue($this);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function code($code) : RebetException
     {
         $this->code = $code;
         return $this;

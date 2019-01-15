@@ -3,6 +3,8 @@ namespace Rebet\Tests\Mock;
 
 use Rebet\Auth\Annotation\Authenticator;
 use Rebet\Auth\Annotation\Role;
+use Rebet\Common\Annotation\Nest;
+use Rebet\Tests\Common\Mock\User;
 
 /**
  * @Authenticator("a")
@@ -11,6 +13,7 @@ use Rebet\Auth\Annotation\Role;
 class AnnotatedStub
 {
     /**
+     * @Nest(User::class)
      */
     public $annotations;
 
