@@ -309,14 +309,14 @@ class Strings
     }
     
     /**
-     * Cut the string and append to ellipsis that become a given length.
+     * Clip the string and append to ellipsis that become a given length.
      *
      * @param string|null $string
      * @param integer $length
      * @param string $ellipsis (default: '...')
      * @return string|null
      */
-    public static function cut(?string $string, int $length, string $ellipsis = '...') : ?string
+    public static function clip(?string $string, int $length, string $ellipsis = '...') : ?string
     {
         if ($string === null) {
             return null;
@@ -326,7 +326,7 @@ class Strings
         }
         $max = $length - mb_strlen($ellipsis);
         if ($max < 1) {
-            throw LogicException::by("Invalid cut length and ellipsis. The length must be longer than ellipsis.");
+            throw LogicException::by("Invalid clip length and ellipsis. The length must be longer than ellipsis.");
         }
         return mb_substr($string, 0, $max).$ellipsis;
     }
@@ -428,27 +428,27 @@ class Strings
             return 'null';
         }
         if (is_string($arg)) {
-            return Strings::cut($arg, $length, $ellipsis);
+            return Strings::clip($arg, $length, $ellipsis);
         }
         if (is_scalar($arg)) {
-            return Strings::cut((string)$arg, $length, $ellipsis);
+            return Strings::clip((string)$arg, $length, $ellipsis);
         }
         if (is_resource($arg)) {
-            return Strings::cut('*'.get_resource_type($arg).'*', $length, $ellipsis);
+            return Strings::clip('*'.get_resource_type($arg).'*', $length, $ellipsis);
         }
         if (method_exists($arg, '__toString')) {
-            return Strings::cut($arg->__toString(), $length, $ellipsis);
+            return Strings::clip($arg->__toString(), $length, $ellipsis);
         }
         if (is_object($arg) && $arg instanceof \JsonSerializable) {
             $json = $arg->jsonSerialize();
             if (is_scalar($json)) {
-                return Strings::cut((string)$json, $length, $ellipsis);
+                return Strings::clip((string)$json, $length, $ellipsis);
             }
         }
         if (is_array($arg) && $array_scanning) {
             $describes = '';
             foreach ($arg as $key => $value) {
-                $describes .= "{$key} => ".Strings::cut(static::argToString($value, $length, false), $length, $ellipsis).", ";
+                $describes .= "{$key} => ".Strings::clip(static::argToString($value, $length, false), $length, $ellipsis).", ";
             }
             return '['.Strings::rtrim($describes, ', ').']';
         }

@@ -180,23 +180,23 @@ class StringsTest extends RebetTestCase
         $this->assertFalse(Strings::contains('123abcABC', ['234', 'DEF']));
     }
 
-    public function test_cut()
+    public function test_clip()
     {
-        $this->assertNull(Strings::cut(null, 10));
-        $this->assertSame('', Strings::cut('', 10));
-        $this->assertSame('12345', Strings::cut('12345', 10));
-        $this->assertSame('1234567890', Strings::cut('1234567890', 10));
-        $this->assertSame('1234567...', Strings::cut('1234567890+', 10));
-        $this->assertSame('123456789*', Strings::cut('1234567890+', 10, '*'));
+        $this->assertNull(Strings::clip(null, 10));
+        $this->assertSame('', Strings::clip('', 10));
+        $this->assertSame('12345', Strings::clip('12345', 10));
+        $this->assertSame('1234567890', Strings::clip('1234567890', 10));
+        $this->assertSame('1234567...', Strings::clip('1234567890+', 10));
+        $this->assertSame('123456789*', Strings::clip('1234567890+', 10, '*'));
     }
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid cut length and ellipsis. The length must be longer than ellipsis.
+     * @expectedExceptionMessage Invalid clip length and ellipsis. The length must be longer than ellipsis.
      */
-    public function test_cut_exception()
+    public function test_clip_exception()
     {
-        $this->assertSame('', Strings::cut('1234567890', 2));
+        $this->assertSame('', Strings::clip('1234567890', 2));
     }
 
     public function test_match()

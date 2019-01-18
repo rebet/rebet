@@ -420,9 +420,9 @@ class StreamTest extends RebetTestCase
         $this->assertSame('(empty)', $this->null->evl('(empty)')->return());
         $this->assertSame(123, $this->int->evl('(empty)')->return());
 
-        // Strings::cut
-        $this->assertNull($this->null->cut(10)->return());
-        $this->assertSame('Hello R...', $this->string->cut(10)->return());
+        // Strings::clip
+        $this->assertNull($this->null->clip(10)->return());
+        $this->assertSame('Hello R...', $this->string->clip(10)->return());
 
         // Strings::indent
         $this->assertNull($this->null->indent('> ')->return());
@@ -502,13 +502,13 @@ class StreamTest extends RebetTestCase
 
         $this->assertSame('Good by Rebet', $this->string->replace('/Hello/', 'Good by')->return());
 
-        // cut
-        $this->assertNull($this->null->_('cut', 4)->return());
-        $this->assertSame('Hell...', $this->string->_('cut', 7)->return());
-        $this->assertSame('Hello R', $this->string->_('cut', 7, '')->return());
-        $this->assertSame('Hell《略》', $this->string->_('cut', 7, '《略》')->return());
+        // clip
+        $this->assertNull($this->null->_('clip', 4)->return());
+        $this->assertSame('Hell...', $this->string->_('clip', 7)->return());
+        $this->assertSame('Hello R', $this->string->_('clip', 7, '')->return());
+        $this->assertSame('Hell《略》', $this->string->_('clip', 7, '《略》')->return());
 
-        $this->assertSame('Hell...', $this->string->cut(7)->return());
+        $this->assertSame('Hell...', $this->string->clip(7)->return());
 
         // lower
         $this->assertNull($this->null->_('lower')->return());
