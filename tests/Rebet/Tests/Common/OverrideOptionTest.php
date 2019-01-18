@@ -31,6 +31,9 @@ class OverrideOptionTest extends RebetTestCase
             ['key!<', ['key!', '<']],
             ['key!>', ['key!', '>']],
             ['key+', ['key+', null]],
+            ['!', ['', '!']],
+            ['<', ['', '<']],
+            ['>', ['', '>']],
         ];
     }
 }
