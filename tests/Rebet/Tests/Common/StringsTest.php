@@ -180,6 +180,34 @@ class StringsTest extends RebetTestCase
         $this->assertFalse(Strings::contains('123abcABC', ['234', 'DEF']));
     }
 
+    public function test_lcut()
+    {
+        $this->assertNull(Strings::lcut(null, 10));
+        $this->assertSame('', Strings::lcut('', 10));
+        $this->assertSame('12345', Strings::lcut('12345', -1));
+        $this->assertSame('12345', Strings::lcut('12345', 0));
+        $this->assertSame('2345', Strings::lcut('12345', 1));
+        $this->assertSame('345', Strings::lcut('12345', 2));
+        $this->assertSame('45', Strings::lcut('12345', 3));
+        $this->assertSame('5', Strings::lcut('12345', 4));
+        $this->assertSame('', Strings::lcut('12345', 5));
+        $this->assertSame('', Strings::lcut('12345', 6));
+    }
+
+    public function test_rcut()
+    {
+        $this->assertNull(Strings::rcut(null, 10));
+        $this->assertSame('', Strings::rcut('', 10));
+        $this->assertSame('12345', Strings::rcut('12345', -1));
+        $this->assertSame('12345', Strings::rcut('12345', 0));
+        $this->assertSame('1234', Strings::rcut('12345', 1));
+        $this->assertSame('123', Strings::rcut('12345', 2));
+        $this->assertSame('12', Strings::rcut('12345', 3));
+        $this->assertSame('1', Strings::rcut('12345', 4));
+        $this->assertSame('', Strings::rcut('12345', 5));
+        $this->assertSame('', Strings::rcut('12345', 6));
+    }
+
     public function test_clip()
     {
         $this->assertNull(Strings::clip(null, 10));

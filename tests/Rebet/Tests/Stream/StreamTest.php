@@ -502,6 +502,18 @@ class StreamTest extends RebetTestCase
 
         $this->assertSame('Good by Rebet', $this->string->replace('/Hello/', 'Good by')->return());
 
+        // lcut
+        $this->assertNull($this->null->_('lcut', 4)->return());
+        $this->assertSame('ebet', $this->string->_('lcut', 7)->return());
+
+        $this->assertSame('ebet', $this->string->lcut(7)->return());
+
+        // rcut
+        $this->assertNull($this->null->_('rcut', 4)->return());
+        $this->assertSame('Hell', $this->string->_('rcut', 7)->return());
+
+        $this->assertSame('Hell', $this->string->rcut(7)->return());
+
         // clip
         $this->assertNull($this->null->_('clip', 4)->return());
         $this->assertSame('Hell...', $this->string->_('clip', 7)->return());

@@ -309,6 +309,50 @@ class Strings
     }
     
     /**
+     * Delete N characters from the left.
+     *
+     * @param string|null $string
+     * @param integer $length
+     * @param string $encoding (default: 'UTF-8')
+     * @return string|null
+     */
+    public static function lcut(?string $string, int $length, string $encoding = 'UTF-8') : ?string
+    {
+        if ($string === null) {
+            return null;
+        }
+        if (0 >= $length) {
+            return $string;
+        }
+        if (mb_strlen($string) <= $length) {
+            return '';
+        }
+        return mb_substr($string, $length, null, $encoding);
+    }
+
+    /**
+     * Delete N characters from the right.
+     *
+     * @param string|null $string
+     * @param integer $length
+     * @param string $encoding (default: 'UTF-8')
+     * @return string|null
+     */
+    public static function rcut(?string $string, int $length, string $encoding = 'UTF-8') : ?string
+    {
+        if ($string === null) {
+            return null;
+        }
+        if (0 >= $length) {
+            return $string;
+        }
+        if (mb_strlen($string) <= $length) {
+            return '';
+        }
+        return mb_substr($string, 0, $length * -1, $encoding);
+    }
+
+    /**
      * Clip the string and append to ellipsis that become a given length.
      *
      * @param string|null $string
