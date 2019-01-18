@@ -22,7 +22,7 @@ class Json
      * Get the json serialize value.
      *
      * @param mixed $value
-     * @return string
+     * @return mixed
      */
     public static function serialize($value)
     {
@@ -31,12 +31,12 @@ class Json
                 return null;
             case $value instanceof \JsonSerializable:
                 return $value->jsonSerialize();
-            case Arrays::accessible($value):
+            case is_array($value):
                 return array_map(function ($v) { return Json::serialize($v); }, $value);
-            case $value instanceof \Traversable:
-                return array_map(function ($v) { return Json::serialize($v); }, iterator_to_array($value));
             case method_exists($value, 'toArray'):
                 return array_map(function ($v) { return Json::serialize($v); }, $value->toArray());
+            case $value instanceof \Traversable:
+                return array_map(function ($v) { return Json::serialize($v); }, iterator_to_array($value));
             default:
                 return $value;
         }
