@@ -29,29 +29,7 @@ trait Arrayable
     {
         return $this->container();
     }
-
-    /**
-     * Get the sub array contains given keys.
-     *
-     * @param mixed ...$keys
-     * @return array
-     */
-    public function only(...$keys) : array
-    {
-        return Arrays::only($this->container(), $keys);
-    }
-
-    /**
-     * Get the sub array except given keys.
-     *
-     * @param mixed ...$keys
-     * @return array
-     */
-    public function except(...$keys) : array
-    {
-        return Arrays::except($this->container(), $keys);
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -73,7 +51,7 @@ trait Arrayable
      */
     public function offsetSet($offset, $value)
     {
-        $container = $this->container();
+        $container = &$this->container();
         if ($offset === null) {
             $container[] = $value;
         } else {
@@ -115,17 +93,6 @@ trait Arrayable
         return array_map(function ($value) {
             return method_exists($value, 'toArray') ? $value->toArray() : $value;
         }, $this->container());
-    }
-
-    /**
-     * Get the collection of items as JSON.
-     *
-     * @param  int  $options
-     * @return string
-     */
-    public function toJson($options = 0)
-    {
-        return json_encode($this->jsonSerialize(), $options);
     }
 
     /**
