@@ -19,7 +19,8 @@ class UtilsTest extends RebetTestCase
 
     public function test_coalesce()
     {
-        $this->assertSame(3, Utils::coalesce(null, [], '', 0, 3, 'a'));
+        $this->assertSame(3, Utils::coalesce(null, [], '', 3, 'a'));
+        $this->assertSame(0, Utils::coalesce(null, [], '', 0, 3, 'a'));
         $this->assertSame('a', Utils::coalesce('a', null, [], '', 0, 3));
     }
 
