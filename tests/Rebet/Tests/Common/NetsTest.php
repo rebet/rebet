@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Common;
 
 use Rebet\Common\Nets;
-use Rebet\Common\System;
 
 use Rebet\Tests\RebetTestCase;
 
@@ -52,87 +51,6 @@ class NetsTest extends RebetTestCase
             $encoded = Nets::encodeBase64Url($plain);
             $decoded = Nets::decodeBase64Url($encoded);
             $this->assertSame($plain, $decoded);
-        }
-    }
-
-    /**
-     * @expectedException Rebet\Tests\ExitException
-     */
-    public function test_redirect()
-    {
-        try {
-            Nets::redirect('https://github.com/rebet/rebet');
-            $this->fail('Never executed.');
-        } finally {
-            $headers = System::headers_list();
-            $this->assertContains('HTTP/1.1 302 Found', $headers);
-            $this->assertContains('Location: https://github.com/rebet/rebet', $headers);
-        }
-    }
-
-    /**
-     * @expectedException Rebet\Tests\ExitException
-     */
-    public function test_redirect_withParam()
-    {
-        try {
-            $url = Nets::redirect('https://www.google.com/search', ['q' => 'github rebet']);
-            $this->fail('Never executed.');
-        } finally {
-            $headers = System::headers_list();
-            $this->assertContains('HTTP/1.1 302 Found', $headers);
-            $this->assertContains('Location: https://www.google.com/search?q=github+rebet', $headers);
-        }
-    }
-
-    /**
-     * @expectedException Rebet\Tests\ExitException
-     */
-    public function test_redirect_withParamBoth()
-    {
-        try {
-            $url = Nets::redirect('https://www.google.com/search?oe=utf-8', ['q' => 'github rebet']);
-            $this->fail('Never executed.');
-        } finally {
-            $headers = System::headers_list();
-            $this->assertContains('HTTP/1.1 302 Found', $headers);
-            $this->assertContains('Location: https://www.google.com/search?oe=utf-8&q=github+rebet', $headers);
-        }
-    }
-
-    /**
-     * @expectedException Rebet\Tests\ExitException
-     */
-    public function test_json()
-    {
-        ob_start();
-        try {
-            Nets::json(['name' => 'John', 'hobbies' => ['game', 'outdoor']]);
-            $this->fail('Never executed.');
-        } finally {
-            $this->assertSame('{"name":"John","hobbies":["game","outdoor"]}', ob_get_clean());
-        
-            $headers = System::headers_list();
-            $this->assertContains('HTTP/1.1 200 OK', $headers);
-            $this->assertContains('Content-Type: application/json; charset=UTF-8', $headers);
-        }
-    }
-
-    /**
-     * @expectedException Rebet\Tests\ExitException
-     */
-    public function test_jsonp()
-    {
-        ob_start();
-        try {
-            Nets::jsonp(['name' => 'John', 'hobbies' => ['game', 'outdoor']], 'callback');
-            $this->fail('Never executed.');
-        } finally {
-            $this->assertSame('callback({"name":"John","hobbies":["game","outdoor"]})', ob_get_clean());
-            
-            $headers = System::headers_list();
-            $this->assertContains('HTTP/1.1 200 OK', $headers);
-            $this->assertContains('Content-Type: application/javascript; charset=UTF-8', $headers);
         }
     }
 
