@@ -2,10 +2,10 @@
 namespace Rebet\Common;
 
 /**
- * 透過ドットアクセス インターフェース
+ * Dot Access Delegator Interface
  *
- * Reflector::get() による「ドット」表記アクセスにて、自身を透過（スキップ）して
- * 委譲先のオブジェクトへのアクセスを可能とするインターフェースです。
+ * It is an interface that permits access passing through transparently to the delegate destination object
+ * by the "dot" notation access by Reflector::get().
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -15,7 +15,9 @@ namespace Rebet\Common;
 interface DotAccessDelegator
 {
     /**
-     * 移譲先のオブジェクトを取得します。
+     * Get the delegate destination object.
+     *
+     * @return mixed
      */
     public function get();
 }
