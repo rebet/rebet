@@ -4,13 +4,7 @@ namespace Rebet\Common;
 use Rebet\Common\Exception\LogicException;
 
 /**
- * 文字列関連 ユーティリティ クラス
- *
- * 文字列に関連した簡便なユーティリティメソッドを集めたクラスです。
- *
- * if(Strings::endsWith($file, '.pdf')) {
- *     // Something to do
- * }
+ * Strings Utility Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -27,16 +21,16 @@ class Strings
     }
 
     /**
-     * 最も左側にある指定文字列より左側(Left Before)の文字をトリムします。
+     * Trim characters before the leftmost given delimiter string.
      *
      * ex)
      * Strings::lbtrim('1.2.3', '.');        //=> '2.3'
      * Strings::lbtrim('1.2.3', '.', false); //=> '.2.3'
      *
-     * @param string|null $str トリム対象
-     * @param string $delimiter 区切り文字
-     * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-     * @return string|null トリム文字列
+     * @param string|null $str
+     * @param string $delimiter
+     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @return string|null
      */
     public static function lbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
@@ -48,16 +42,16 @@ class Strings
     }
     
     /**
-     * 最も左側にある指定文字列より右側(Left After)の文字をトリムします。
+     * Trim characters after the leftmost given delimiter string.
      *
      * ex)
      * Strings::latrim('1.2.3', '.');        //=> '1'
      * Strings::latrim('1.2.3', '.', false); //=> '1.'
      *
-     * @param string|null $str トリム対象
-     * @param string $delimiter 区切り文字
-     * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-     * @return string|null トリム文字列
+     * @param string|null $str
+     * @param string $delimiter
+     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @return string|null
      */
     public static function latrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
@@ -69,16 +63,16 @@ class Strings
     }
     
     /**
-     * 最も右側にある指定文字列より左側(Right Before)の文字をトリムします。
+     * Trim characters before the rightmost given delimiter string.
      *
      * ex)
      * Strings::rbtrim('1.2.3', '.');        //=> '3'
      * Strings::rbtrim('1.2.3', '.', false); //=> '.3'
      *
-     * @param string|null $str トリム対象
-     * @param string $delimiter 区切り文字
-     * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-     * @return string|null トリム文字列
+     * @param string|null $str
+     * @param string $delimiter
+     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @return string|null
      */
     public static function rbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
@@ -90,16 +84,16 @@ class Strings
     }
     
     /**
-     * 最も右側にある指定文字列より右側(Right After)の文字をトリムします。
+     * Trim characters after the rightmost given delimiter string.
      *
      * ex)
      * Strings::ratrim('1.2.3', '.');        //=> '1.2'
      * Strings::ratrim('1.2.3', '.', false); //=> '1.2.'
      *
-     * @param string|null $str トリム対象
-     * @param string $delimiter 区切り文字
-     * @param bool $remove_delimiter 区切り文字削除／true : 削除する, false : 削除しない （デフォルト：true）
-     * @return string|null トリム文字列
+     * @param string|null $str
+     * @param string $delimiter
+     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @return string|null
      */
     public static function ratrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
@@ -123,7 +117,7 @@ class Strings
      * @param string|null $str
      * @param string $prefix (default: ' ')
      * @param int|null $max (default: null)
-     * @return string|null トリム文字列
+     * @return string|null
      */
     public static function ltrim(?string  $str, string $prefix = ' ', ?int $max = null) : ?string
     {
@@ -141,9 +135,10 @@ class Strings
      * Strings::rtrim('　　　全角　　　', '　');    //=> '　　　全角'
      * Strings::rtrim('　　　全角　　　', '　', 2); //=> '　　　全角　'
      *
-     * @param string|null $str トリム対象
-     * @param string $suffix トリム文字列
-     * @return string|null トリム文字列
+     * @param string|null $str
+     * @param string $suffix (default: ' ')
+     * @param int|null $max (default: null)
+     * @return string|null
      */
     public static function rtrim(?string $str, string $suffix = ' ', ?int $max = null) : ?string
     {
@@ -162,7 +157,8 @@ class Strings
      * Strings::rtrim('　　　全角　　　', '　', 2); //=> '　全角　'
      *
      * @param string|null $str
-     * @param string $deletion
+     * @param string $deletion (default: ' ')
+     * @param int|null $max (default: null)
      * @return string|null
      */
     public static function trim(?string $str, string $deletion = ' ', ?int $max = null) : ?string
@@ -182,14 +178,14 @@ class Strings
     }
 
     /**
-     * 指定の文字列 [$haystack] が指定の文字列 [$needle] で始まるか検査します。
+     * It checks whether the given string $haystack starts with the $needle.
      *
      * ex)
      * Strings::startsWith('abc123', 'abc'); //=> true
      *
-     * @param string|null $haystack 検査対象文字列
-     * @param string $needle   被検査文字列
-     * @return bool true : 始まる／false : 始まらない
+     * @param string|null $haystack
+     * @param string $needle
+     * @return bool
      */
     public static function startsWith(?string $haystack, string $needle) : bool
     {
@@ -197,14 +193,14 @@ class Strings
     }
     
     /**
-     * 指定の文字列 [$haystack] が指定の文字列 [$needle] で終わるか検査します。
+     * It checks whether the given string $haystack ends with the $needle.
      *
      * ex)
      * Strings::endsWith('abc123', '123'); //=> true
      *
-     * @param string|null $haystack 検査対象文字列
-     * @param string $needle 被検査文字列
-     * @return bool true : 終わる／false : 終わらない
+     * @param string|null $haystack
+     * @param string $needle
+     * @return bool
      */
     public static function endsWith(?string $haystack, string $needle) : bool
     {
@@ -212,16 +208,16 @@ class Strings
     }
     
     /**
-     * 機種依存文字が含まれるかチェックします。
+     * It checks whether model dependent characters are included.
      *
      * ex)
      * Strings::checkDependenceChar('あ①♬㈱♥');                //=> [2 => '♬', 4 => '♥']
      * Strings::checkDependenceChar('あ①♬㈱♥', 'iso-2022-jp'); //=> [1 => '①', 2 => '♬', 3 => '㈱', 4 => '♥']
      * Strings::checkDependenceChar('あ①♬㈱♥', 'UTF-8');       //=> []
      *
-     * @param string|null $text 検査対象文字列
-     * @param string $encode 機種依存チェックを行う文字コード（デフォルト： sjis-win）
-     * @return array 機種依存文字の配列
+     * @param string|null $text
+     * @param string $encode (default: 'sjis-win')
+     * @return array of dependence chars
      */
     public static function checkDependenceChar(?string $text, string $encode = 'sjis-win') : array
     {
@@ -235,13 +231,13 @@ class Strings
     }
     
     /**
-     * 文字列を文字の配列に変換します。
+     * Converts a string to an array of characters.
      *
      * ex)
      * Strings::toCharArray('abc'); //=> ['a', 'b', 'c']
      *
-     * @param string|null $string 文字列
-     * @return array 文字の配列
+     * @param string|null $string
+     * @return array
      */
     public static function toCharArray(?string $string) : array
     {
