@@ -222,7 +222,7 @@ class Context
 
         $message = null;
         if (Strings::startsWith($key, '@')) {
-            $message = Strings::ltrim($key, '@');
+            $message = Strings::lcut($key, 1);
         } else {
             $message = $this->translator->replace('validation', $this->message($key), $replace) ?? $this->translator->get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
         }
@@ -357,7 +357,7 @@ class Context
                 $value instanceof Enum ? $value->translate('label', $this->translator->getLocale()) : $value,
             ];
         }
-        $field = Strings::ltrim($value, ':');
+        $field = Strings::lcut($value, 1);
         return [$this->value($field), $this->label($field)];
     }
 

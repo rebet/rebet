@@ -45,7 +45,7 @@ class OverrideOption
     {
         foreach ([self::REPLACE, self::PREPEND, self::APEND] as $option) {
             if (Strings::endsWith($key, $option)) {
-                return [Strings::ratrim($key, $option), $option];
+                return [Strings::rcut($key, mb_strlen($option)), $option];
             }
         }
 

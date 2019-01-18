@@ -3,12 +3,12 @@ namespace Rebet\Auth;
 
 use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
+use Rebet\Common\Exception\LogicException;
+use Rebet\Common\Json;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Inflection\Inflector;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Json;
 
 /**
  * Auth User Class
@@ -135,7 +135,7 @@ class AuthUser implements \JsonSerializable
      */
     public function guard(?Guard $guard = null)
     {
-        if($guard === null) {
+        if ($guard === null) {
             return $this->guard;
         }
         $this->guard = $guard;
@@ -149,7 +149,7 @@ class AuthUser implements \JsonSerializable
      */
     public function provider(?AuthProvider $provider = null)
     {
-        if($provider === null) {
+        if ($provider === null) {
             return $this->provider;
         }
         $this->provider = $provider;
@@ -169,14 +169,14 @@ class AuthUser implements \JsonSerializable
         $alias = $name ;
         while (isset($this->aliases[$alias])) {
             $alias = $this->aliases[$alias];
-            if(!is_string($alias)) {
+            if (!is_string($alias)) {
                 break;
             }
-            if(Strings::startsWith($alias, '!')) {
-                $alias = Strings::ltrim($alias, '!', 1);
+            if (Strings::startsWith($alias, '!')) {
+                $alias = Strings::lcut($alias, 1);
                 break;
             }
-            if($max < ++$depth) {
+            if ($max < ++$depth) {
                 throw LogicException::by("Too many (over {$max}) aliases recursion depth.");
             }
         }
@@ -197,7 +197,7 @@ class AuthUser implements \JsonSerializable
             return $alias($this->user);
         }
         if (Strings::startsWith($alias, '@')) {
-            return Strings::ltrim($alias, '@');
+            return Strings::lcut($alias, 1);
         }
         if (!is_string($alias)) {
             return $alias ?? $default;
@@ -213,7 +213,7 @@ class AuthUser implements \JsonSerializable
     public function refresh() : self
     {
         if ($this->provider) {
-            $user = $this->provider->findById($this->id);
+            $user       = $this->provider->findById($this->id);
             $this->user = $user ? $user->raw() : $this->user ;
         }
         return $this;
@@ -323,7 +323,7 @@ class AuthUser implements \JsonSerializable
             return;
         }
         $alias = $this->alias($key);
-        if(is_string($alias) && !Strings::startsWith($alias, '@')) {
+        if (is_string($alias) && !Strings::startsWith($alias, '@')) {
             Reflector::set($this->user, $alias, $value);
         }
     }

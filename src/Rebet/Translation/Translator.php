@@ -180,7 +180,7 @@ class Translator
         $recursive_search = true;
         if (Strings::endsWith($group, '!')) {
             $recursive_search = false;
-            $group            = Strings::rtrim($group, '!');
+            $group            = Strings::rcut($group, 1);
         }
         $trans_locales = array_unique([$locale ?? $this->locale, $this->fallback_locale]);
 

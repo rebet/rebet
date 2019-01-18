@@ -99,7 +99,7 @@ class Responder
         $request = $request ?? Request::current() ;
         $url     = empty($query) ? $url : $url.(Strings::contains($url, '?') ? '&' : '?').http_build_query($query) ;
         if (Strings::startsWith($url, '@')) {
-            $url = Strings::ltrim($url, '@', 1);
+            $url = Strings::lcut($url, 1);
         } else {
             $url = Strings::startsWith($url, '/') ? $request->getRoutePrefix().$url : $url ;
         }
