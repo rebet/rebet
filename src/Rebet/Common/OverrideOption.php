@@ -2,9 +2,9 @@
 namespace Rebet\Common;
 
 /**
- * オーバライドオプション クラス
+ * Override Option Class
  *
- * @todo Enum にするべきか？
+ * @see Arrays::override()
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -14,23 +14,17 @@ namespace Rebet\Common;
 class OverrideOption
 {
     /**
-     * 置換オプション
-     *
-     * @var string
+     * @var string of option on replace
      */
     public const REPLACE = '!';
 
     /**
-     * 前方追加オプション（連番配列のみ）
-     *
-     * @var string
+     * @var string of option on prepend (Sequential array only)
      */
     public const PREPEND = '<';
 
     /**
-     * 後方追加オプション（連番配列のみ）
-     *
-     * @var string
+     * @var string of option on apend (Sequential array only)
      */
     public const APEND = '>';
     
@@ -42,7 +36,7 @@ class OverrideOption
     }
 
     /**
-     * 指定のキー文字列を純粋キー名とオプションに分割します。
+     * Divides the specified key string into pure key names and options.
      *
      * @param string $key
      * @return array [string $key, string|null $option]
