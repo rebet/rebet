@@ -42,7 +42,7 @@ class FileLoader implements Loader
      * @param string $suffix (default: .php)
      * @param array $option (default: [])
      */
-    public function __construct($loading_path, string $suffix = '.php', array $option = [])
+    public function __construct($loading_path, string $suffix = 'php', array $option = [])
     {
         $this->loading_path = (array)$loading_path;
         $this->suffix       = $suffix;

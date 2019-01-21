@@ -40,7 +40,7 @@ class LocaleResource
 
         $resource = [];
         foreach ($loading_path as $path) {
-            $resource_path = "{$path}/{$locale}/{$base_name}{$suffix}";
+            $resource_path = "{$path}/{$locale}/{$base_name}.{$suffix}";
             $resource      = Arrays::override($resource, Resource::load($suffix, $resource_path, $option ?? []) ?? []);
         }
 
