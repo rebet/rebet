@@ -134,9 +134,11 @@ trait Configurable
 
     /**
      * It clears own configuration setting.
+     *
+     * @param string ...$layers (default: all layers)
      */
-    protected static function clearConfig() : void
+    protected static function clearConfig(string ...$layers) : void
     {
-        Config::clear(static::class);
+        Config::clear(static::class, ...$layers);
     }
 }

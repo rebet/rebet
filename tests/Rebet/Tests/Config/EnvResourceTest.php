@@ -13,7 +13,7 @@ class EnvResourceTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->resources = App::path('/resources/Config/EnvResource');
+        $this->resources = App::path('/resources/tests/Config/EnvResource');
     }
 
     public function test_load()

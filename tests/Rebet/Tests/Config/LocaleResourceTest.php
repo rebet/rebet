@@ -43,7 +43,7 @@ class LocaleResourceTest extends RebetTestCase
 
         $resources = LocaleResource::load([
             App::path('/resources/i18n'),
-            App::path('/resources/Config/LocaleResource')
+            App::path('/resources/tests/Config/LocaleResource')
         ], 'ja', 'enum');
         $this->assertSame([
             Gender::class => [

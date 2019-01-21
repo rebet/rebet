@@ -4,9 +4,6 @@ namespace Rebet\Enum;
 use Rebet\Common\Convertible;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
-use Rebet\Translation\FileLoader;
 use Rebet\Translation\Translator;
 
 /**
@@ -103,17 +100,6 @@ use Rebet\Translation\Translator;
  */
 abstract class Enum implements \JsonSerializable, Convertible
 {
-    use Configurable;
-
-    public static function defaultConfig()
-    {
-        return [
-            'resources' => [
-                'i18n' => [],
-            ],
-        ];
-    }
-
     /**
      * Enum Data Cache
      *
@@ -144,13 +130,6 @@ abstract class Enum implements \JsonSerializable, Convertible
      * ]
      */
     private static $enum_map_cache  = [];
-
-    /**
-     * Translator for label
-     *
-     * @var Translator
-     */
-    protected static $translator = null;
 
     /**
      * Value of enum.
@@ -193,22 +172,7 @@ abstract class Enum implements \JsonSerializable, Convertible
             static::$enum_list_cache = [];
             static::$enum_map_cache  = [];
         }
-        static::$translator = null;
-    }
-
-    /**
-     * Get the translator for enums.
-     *
-     * @return Translator
-     */
-    protected static function translator() : Translator
-    {
-        if (static::$translator) {
-            return static::$translator;
-        }
-        static::$translator = new Translator(new FileLoader(Enum::config('resources.i18n', false, [])));
-
-        return static::$translator;
+        Translator::clear('enum');
     }
 
     /**
@@ -254,7 +218,7 @@ abstract class Enum implements \JsonSerializable, Convertible
         }
         $class      = get_called_class();
         $key        = "{$class}.{$field}.{$this->value}";
-        $translated = static::translator()->get("enum.{$key}", [], null, $locale);
+        $translated = Translator::get("enum.{$key}", [], null, true, $locale);
         return $translated === null ? $this->$field : $translated ;
     }
 
@@ -409,7 +373,7 @@ abstract class Enum implements \JsonSerializable, Convertible
             throw LogicException::by("Invalid property access. Property {$class}->{$field} is not exists.");
         }
 
-        $locale = $locale ?? static::translator()->getLocale();
+        $locale = $locale ?? Translator::getLocale();
         $key    = $translate ? "{$class}@{$field}:{$locale}" : "{$class}@{$field}";
         if (isset(self::$enum_map_cache[$key])) {
             return self::$enum_map_cache[$key];

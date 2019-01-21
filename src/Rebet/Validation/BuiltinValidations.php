@@ -10,7 +10,7 @@ use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Stream\Stream;
-use Rebet\Translation\FileLoader;
+use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 
 /**
@@ -29,10 +29,12 @@ class BuiltinValidations extends Validations
 
     public static function defaultConfig() : array
     {
+        $dictionary = Translator::dictionary();
+        if ($dictionary instanceof FileDictionary) {
+            $dictionary->addLibraryResource(static::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
+        }
+
         return static::parentConfigOverride([
-            'resources' => [
-                'i18n' => [Path::normalize(__DIR__ . '/i18n')],
-            ],
             'default'   => [
                 'DependenceChar' => [
                     'encode' => 'sjis-win'
@@ -174,16 +176,6 @@ class BuiltinValidations extends Validations
                 ],
             ],
         ]);
-    }
-
-    /**
-     * Get the default translator for this validations.
-     *
-     * @return Translator
-     */
-    public function translator() : Translator
-    {
-        return new Translator(new FileLoader(static::config('resources.i18n')));
     }
 
     // ====================================================

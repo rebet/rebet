@@ -3,7 +3,6 @@ namespace Rebet\Tests\Validation;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\Validation\Mock\UserValidation;
-use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
 
@@ -36,8 +35,7 @@ class RuleTest extends RebetTestCase
             'C',
             ['mail_address' => 'john@rebet.local'],
             $this->errors,
-            ['dummy' => []],
-            (new BuiltinValidations)->translator()
+            ['dummy' => []]
         );
         $c->initBy('mail_address');
         $this->assertTrue($this->rule->validate('MailAddressExists', $c));

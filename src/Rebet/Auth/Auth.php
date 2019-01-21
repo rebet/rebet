@@ -2,6 +2,7 @@
 namespace Rebet\Auth;
 
 use Rebet\Auth\Event\Authenticated;
+use Rebet\Auth\Event\AuthenticateFailed;
 use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
@@ -12,8 +13,7 @@ use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
-use Rebet\Translation\Trans;
-use Rebet\Auth\Event\AuthenticateFailed;
+use Rebet\Translation\Translator;
 
 /**
  * Auth Class
@@ -121,7 +121,7 @@ class Auth
             Event::dispatch(new SigninFailed($request, $user ? $user->charengedSigninId() : null));
             return Responder::redirect($fallback)
                     ->with($request->input())
-                    ->errors(['signin' => [Trans::get('message.signin_failed')]])
+                    ->errors(['signin' => [Translator::get('message.signin_failed')]])
                     ;
         }
 
@@ -171,7 +171,7 @@ class Auth
         $roles = $route ? $route->roles() : [] ;
         if (empty($roles) || static::role($user, ...$roles)) {
             static::$user = $user;
-            if(!$user->isGuest()) {
+            if (!$user->isGuest()) {
                 Event::dispatch(new Authenticated($request, $user));
             }
             return null;

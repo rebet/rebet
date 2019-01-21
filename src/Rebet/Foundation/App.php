@@ -5,17 +5,15 @@ use Rebet\Common\Path;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
-use Rebet\Enum\Enum;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Route\MethodRoute;
-use Rebet\Translation\Trans;
 use Rebet\Translation\Translator;
-use Rebet\Validation\BuiltinValidations;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Smarty\Smarty;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\View;
+use Rebet\Translation\FileDictionary;
 
 /**
  * Application Config Class
@@ -106,32 +104,14 @@ class App
             // Translation Configure
             //---------------------------------------------
             Translator::class => [
-                'default_locale'  => Config::refer(App::class, 'locale'),
+                'locale'          => Config::refer(App::class, 'locale'),
                 'fallback_locale' => Config::refer(App::class, 'fallback_locale', false, Config::promise(function () { return App::config('locale'); })),
             ],
 
-            Trans::class => [
+            FileDictionary::class => [
                 'resources' => [
-                    'i18n' => [Config::refer(App::class, 'resources.i18n')]
-                ],
-            ],
-
-            //---------------------------------------------
-            // BuiltinValidations Configure
-            //---------------------------------------------
-            BuiltinValidations::class => [
-                'resources' => [
-                    'i18n' => [Config::refer(App::class, 'resources.i18n')]
-                ],
-            ],
-
-            //---------------------------------------------
-            // Enum Configure
-            //---------------------------------------------
-            Enum::class => [
-                'resources' => [
-                    'i18n' => [Config::refer(App::class, 'resources.i18n')]
-                ],
+                    'i18n' => [Config::refer(App::class, 'resources.i18n')],
+                ]
             ],
         ]);
     }

@@ -3,22 +3,19 @@ namespace Rebet\Tests\Validation;
 
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
 
 class ContextTest extends RebetTestCase
 {
     private $errors;
-    private $translator;
     private $rule_set;
     
     public function setup()
     {
         parent::setUp();
-        $this->errors     = [];
-        $this->translator = (new BuiltinValidations)->translator();
-        $this->rule_set   = [
+        $this->errors   = [];
+        $this->rule_set = [
             'name' => [
                 'label' => '氏名',
                 'rule'  => [
@@ -97,8 +94,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
 
         $this->assertInstanceOf(Context::class, $c);
@@ -110,8 +106,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
 
         $this->assertSame(null, $c->field);
@@ -136,8 +131,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
         $this->assertFalse($c->hasError());
         $this->assertFalse($c->hasError('*'));
@@ -170,8 +164,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
         $this->assertTrue($c->blank());
 
@@ -188,8 +181,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
 
         $this->assertNull($this->errors['global'] ?? null);
@@ -208,8 +200,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
 
         $c->initBy('name');
@@ -224,8 +215,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
 
         $this->assertNull($this->errors['global'] ?? null);
@@ -240,42 +230,13 @@ class ContextTest extends RebetTestCase
         $this->assertSame(['Name error 1', 'Name error 2'], $this->errors['name'] ?? null);
     }
 
-    public function test_appendError_customMessage()
-    {
-        $c = new Context(
-            'C',
-            [
-                'name'     => 'John Smith',
-                'birthday' => null,
-            ],
-            $this->errors,
-            [
-                'name'     => $this->rule_set['name'],
-                'birthday' => $this->rule_set['birthday'],
-            ],
-            $this->translator
-        );
-        $c->setMessage('birthday.MaxLength', 'カスタムメッセージ[:max]');
-
-        $c->initBy('name');
-        $this->assertNull($this->errors['name'] ?? null);
-        $c->appendError('MaxLength', ['max' => 12]);
-        $this->assertSame(['氏名は12文字以下で入力して下さい。'], $this->errors['name'] ?? null);
-
-        $c->initBy('birthday');
-        $this->assertNull($this->errors['birthday'] ?? null);
-        $c->appendError('MaxLength', ['max' => 12]);
-        $this->assertSame(['カスタムメッセージ[12]'], $this->errors['birthday'] ?? null);
-    }
-
     public function test_appendError_customMessageInRule()
     {
         $c = new Context(
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name_withMessage']],
-            $this->translator
+            ['name' => $this->rule_set['name_withMessage']]
         );
 
         $c->initBy('name');
@@ -296,8 +257,7 @@ class ContextTest extends RebetTestCase
             [
                 'name'     => $this->rule_set['name'],
                 'birthday' => $this->rule_set['birthday'],
-            ],
-            $this->translator
+            ]
         );
 
         $this->assertSame('John Smith', $c->value('name'));
@@ -346,8 +306,7 @@ class ContextTest extends RebetTestCase
                 'birthday'           => $this->rule_set['birthday'],
                 'bank'               => $this->rule_set['bank'],
                 'shipping_addresses' => $this->rule_set['shipping_addresses'],
-            ],
-            $this->translator
+            ]
         );
 
         $this->assertSame('氏名', $c->label('name'));
@@ -403,8 +362,7 @@ class ContextTest extends RebetTestCase
                 'name'     => $this->rule_set['name'],
                 'birthday' => $this->rule_set['birthday'],
                 'bank'     => $this->rule_set['bank'],
-            ],
-            $this->translator
+            ]
         );
 
         $this->assertSame(
@@ -436,8 +394,7 @@ class ContextTest extends RebetTestCase
             [
                 'name' => $this->rule_set['name'],
                 'bank' => $this->rule_set['bank'],
-            ],
-            $this->translator
+            ]
         );
 
         $this->assertSame([1, 1], $c->resolve(1));
@@ -469,8 +426,7 @@ class ContextTest extends RebetTestCase
             [
                 'name'               => $this->rule_set['name'],
                 'shipping_addresses' => $this->rule_set['shipping_addresses'],
-            ],
-            $this->translator
+            ]
         );
         
         $this->assertSame([[], null], $c->pluckNested(null));
@@ -523,8 +479,7 @@ class ContextTest extends RebetTestCase
             'C',
             ['name' => 'John Smith'],
             $this->errors,
-            ['name' => $this->rule_set['name']],
-            $this->translator
+            ['name' => $this->rule_set['name']]
         );
         $this->assertSame('C', $c->crud());
     }
@@ -561,8 +516,7 @@ class ContextTest extends RebetTestCase
                 'birthday'           => $this->rule_set['birthday'],
                 'bank'               => $this->rule_set['bank'],
                 'shipping_addresses' => $this->rule_set['shipping_addresses'],
-            ],
-            $this->translator
+            ]
         );
         $c->initBy('name');
         $this->assertSame('John Smith', $c->value);

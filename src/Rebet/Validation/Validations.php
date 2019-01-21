@@ -4,7 +4,6 @@ namespace Rebet\Validation;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
-use Rebet\Translation\Translator;
 
 /**
  * Abstract Validations Class
@@ -37,13 +36,6 @@ abstract class Validations
         static::setConfig(['customs' => [$name => $validation]]);
     }
 
-    /**
-     * Get the default translator for this validations.
-     *
-     * @return Translator
-     */
-    abstract public function translator() : Translator ;
-    
     /**
      * Invoke validation the given name.
      * If registered custom validation is exists then invoke it first.

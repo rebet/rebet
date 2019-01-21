@@ -69,13 +69,6 @@ class Context
     private $errors = [];
 
     /**
-     * Translator
-     *
-     * @var Translator
-     */
-    private $translator;
-
-    /**
      * Validation label settings
      *
      * @var array
@@ -117,15 +110,13 @@ class Context
      * @param array $data
      * @param array $errors
      * @param array $rules
-     * @param Translator $translator
      */
-    public function __construct(string $crud, array $data, array &$errors, array $rules, Translator $translator)
+    public function __construct(string $crud, array $data, array &$errors, array $rules)
     {
-        $this->crud       = $crud;
-        $this->data       = $data;
-        $this->errors     = &$errors;
-        $this->translator = $translator;
-        $this->rules      = $rules;
+        $this->crud   = $crud;
+        $this->data   = $data;
+        $this->errors = &$errors;
+        $this->rules  = $rules;
     }
 
     /**
@@ -224,7 +215,7 @@ class Context
         if (Strings::startsWith($key, '@')) {
             $message = Strings::lcut($key, 1);
         } else {
-            $message = $this->translator->replace('validation', $this->message($key), $replace) ?? $this->translator->get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
+            $message = Translator::replace('validation', $this->message($key), $replace) ?? Translator::get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
         }
 
         $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = $message;
@@ -314,7 +305,7 @@ class Context
      */
     protected function labelTranslate(string $field) : ?string
     {
-        $label = $this->translator->get("attribute!.{$field}");
+        $label = Translator::get("attribute.{$field}", [], null, false);
         if ($label !== null) {
             if (Strings::contains($label, ':parent') && Strings::contains($field, '.')) {
                 $parent = $this->labelTranslate(Strings::ratrim($field, '.'));
@@ -354,7 +345,7 @@ class Context
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
             return [
                 $value instanceof Enum ? $value->value : $value,
-                $value instanceof Enum ? $value->translate('label', $this->translator->getLocale()) : $value,
+                $value instanceof Enum ? $value->translate('label', Translator::getLocale()) : $value,
             ];
         }
         $field = Strings::lcut($value, 1);
@@ -407,7 +398,7 @@ class Context
      */
     public function ordinalize(int $num) : string
     {
-        return $this->translator->ordinalize($num);
+        return Translator::ordinalize($num);
     }
 
     /**
@@ -419,21 +410,7 @@ class Context
      */
     public function grammar(string $name, $default = null)
     {
-        return $this->translator->grammar('validation', $name, $default);
-    }
-
-    /**
-     * Set the custom message for the given key and locale.
-     *
-     * @param string $key
-     * @param string $message
-     * @param string $locale (default: null)
-     * @return self
-     */
-    public function setMessage(string $key, string $message, ?string $locale = null) : self
-    {
-        $this->translator->put("validation.{$key}", $message, $locale);
-        return $this;
+        return Translator::grammar('validation', $name, $default);
     }
 
     /**

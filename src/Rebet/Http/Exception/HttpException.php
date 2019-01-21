@@ -6,7 +6,7 @@ use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
-use Rebet\Translation\Trans;
+use Rebet\Translation\Translator;
 
 /**
  * Http Exception Class
@@ -44,7 +44,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
     public function __construct(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null)
     {
         $this->status = $status;
-        $this->detail = Trans::get($detail) ?? $detail ;
+        $this->detail = Translator::get($detail) ?? $detail ;
         $this->title  = $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
         $message      = $detail ? "{$this->status} {$this->title}: {$detail}" : "{$this->status} {$this->title}" ;
         parent::__construct($message, $previous);

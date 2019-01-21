@@ -2,6 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\OverrideOption;
 
 /**
  * Locale Dependent Resource Loader Class
@@ -41,7 +42,7 @@ class LocaleResource
         $resource = [];
         foreach ($loading_path as $path) {
             $resource_path = "{$path}/{$locale}/{$base_name}.{$suffix}";
-            $resource      = Arrays::override($resource, Resource::load($suffix, $resource_path, $option ?? []) ?? []);
+            $resource      = Arrays::override($resource, Resource::load($suffix, $resource_path, $option ?? []) ?? [], [], OverrideOption::PREPEND);
         }
 
         return $resource;

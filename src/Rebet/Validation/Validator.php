@@ -6,7 +6,6 @@ use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
-use Rebet\Translation\Translator;
 
 /**
  * Validator Class
@@ -35,13 +34,6 @@ class Validator
     protected $validations;
 
     /**
-     * Translator
-     *
-     * @var Translator
-     */
-    protected $translator;
-
-    /**
      * The data under validation.
      *
      * @var array
@@ -60,13 +52,11 @@ class Validator
      *
      * @param array $data
      * @param Validations $validations (default: depend on configure)
-     * @param Translator $translator (default: $validations->translator())
      */
-    public function __construct(array $data, Validations $validations = null, Translator $translator = null)
+    public function __construct(array $data, Validations $validations = null)
     {
         $this->data        = $data;
         $this->validations = $validations ?? static::configInstantiate('validations');
-        $this->translator  = $translator ?? $this->validations->translator() ;
     }
 
     /**
@@ -93,7 +83,7 @@ class Validator
             }
 
             $errors       = [];
-            $context      = new Context($crud, $this->data, $errors, $rule, $this->translator);
+            $context      = new Context($crud, $this->data, $errors, $rule);
             $valid_data   = Arrays::override($valid_data, $this->_validate($context, $rule, $spot));
             $this->errors = array_merge($this->errors, $errors);
         }

@@ -110,18 +110,20 @@ class Config
      * If the null given then clear all data.
      *
      * @param string|null $section (default: null)
+     * @param string ...$layers (default: all layers)
      * @return void
      */
-    public static function clear(?string $section = null) : void
+    public static function clear(?string $section = null, string ...$layers) : void
     {
+        $layers = empty($layers) ? [Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] : $layers ;
         if ($section === null) {
-            foreach ([Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
+            foreach ($layers as $layer) {
                 static::$config[$layer] = [];
                 static::$option[$layer] = [];
             }
             static::$compiled = [];
         } else {
-            foreach ([Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
+            foreach ($layers as $layer) {
                 unset(static::$config[$layer][$section], static::$option[$layer][$section]);
             }
             unset(static::$compiled[$section]);

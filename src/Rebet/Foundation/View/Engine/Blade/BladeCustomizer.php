@@ -4,8 +4,8 @@ namespace Rebet\Foundation\View\Engine\Blade;
 use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
 use Rebet\Stream\Stream;
-use Rebet\Translation\Trans;
 use Rebet\View\Engine\Blade\BladeCompiler;
+use Rebet\Translation\Translator;
 
 /**
  * Blade custom directives for Rebet
@@ -141,8 +141,8 @@ class BladeCustomizer
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
             $names = $names ?? '*' ;
-            $outer = $outer ?? Trans::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
-            $inner = $inner ?? Trans::grammar('message', "errors.inner") ?? '<li>:message</li>';
+            $outer = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
+            $inner = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
         
             $output = '';
             if ($names === '*') {
@@ -196,7 +196,7 @@ class BladeCustomizer
         $blade->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
             $errors           = Stream::of($errors, true);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
-            [$value, $else]   = array_pad((array)Trans::grammar('message', "errors.{$grammer}"), 2, '');
+            [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
         }, ');', '$errors ?? null');
 

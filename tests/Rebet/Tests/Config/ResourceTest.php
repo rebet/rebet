@@ -13,7 +13,7 @@ class ResourceTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->resources = App::path('/resources/Config/Resource');
+        $this->resources = App::path('/resources/tests/Config/Resource');
     }
 
     public function test_load()

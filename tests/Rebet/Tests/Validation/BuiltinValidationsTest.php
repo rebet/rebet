@@ -5,10 +5,11 @@ use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
+use Rebet\Translation\Translator;
+use Rebet\Translation\FileDictionary;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
@@ -29,21 +30,15 @@ class BuiltinValidationsTest extends RebetTestCase
         $this->assertInstanceOf(BuiltinValidations::class, $validations);
     }
     
-    public function test_translator()
-    {
-        $this->assertInstanceOf(Translator::class, $this->validations->translator());
-    }
-
     /**
      * @dataProvider dataValidationMethods
      */
     public function test_validationMethods(array $record) : void
     {
         extract($record);
-        $errors     = [];
-        $translator = $this->validations->translator();
+        $errors = [];
         foreach ($tests as $i => [$field, $args, $expect_valid, $expect_errors]) {
-            $c = new Context('C', $data, $errors, [], $translator);
+            $c = new Context('C', $data, $errors, []);
             $c->initBy($field);
             $errors  = [];
             $valid   = $this->validations->validate($name, $c, ...$args);
@@ -98,11 +93,11 @@ class BuiltinValidationsTest extends RebetTestCase
                 'name'  => 'With',
                 'data'  => ['foo' => null, 'bar' => 1, 'baz' => 2],
                 'tests' => [
-                    ['foo', ['foo'           ], false, []],
-                    ['foo', ['bar'           ], true , []],
-                    ['foo', [['foo','bar']   ], false, []],
-                    ['foo', [['bar','baz']   ], true , []],
-                    ['foo', [['foo','bar'], 1], true, []],
+                    ['foo', ['foo'            ], false, []],
+                    ['foo', ['bar'            ], true , []],
+                    ['foo', [['foo', 'bar']   ], false, []],
+                    ['foo', [['bar', 'baz']   ], true , []],
+                    ['foo', [['foo', 'bar'], 1], true, []],
                 ]
             ]],
             
@@ -113,11 +108,11 @@ class BuiltinValidationsTest extends RebetTestCase
                 'name'  => 'Without',
                 'data'  => ['foo' => 1, 'bar' => null, 'baz' => null],
                 'tests' => [
-                    ['foo', ['foo'           ], false, []],
-                    ['foo', ['bar'           ], true , []],
-                    ['foo', [['foo','bar']   ], false, []],
-                    ['foo', [['bar','baz']   ], true , []],
-                    ['foo', [['foo','bar'], 1], true, []],
+                    ['foo', ['foo'            ], false, []],
+                    ['foo', ['bar'            ], true , []],
+                    ['foo', [['foo', 'bar']   ], false, []],
+                    ['foo', [['bar', 'baz']   ], true , []],
+                    ['foo', [['foo', 'bar'], 1], true, []],
                 ]
             ]],
             

@@ -12,7 +12,7 @@ use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Stream\Stream;
-use Rebet\Translation\Trans;
+use Rebet\Translation\Translator;
 use Rebet\View\View;
 
 /**
@@ -116,8 +116,8 @@ abstract class FallbackHandler
      */
     protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Trans::get("message.fallbacks.{$status}.title") ?? $title ;
-        $detail = Trans::get("message.fallbacks.{$status}.detail") ?? $detail ;
+        $title  = Translator::get("message.fallbacks.{$status}.title") ?? $title ;
+        $detail = Translator::get("message.fallbacks.{$status}.detail") ?? $detail ;
 
         $view = View::of("/fallbacks/{$status}");
         if ($view->exists()) {
