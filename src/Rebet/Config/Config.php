@@ -8,6 +8,7 @@ use Rebet\Common\Reflector;
 use Rebet\Common\Utils;
 use Rebet\Config\Exception\ConfigNotDefineException;
 use Rebet\Common\Strings;
+use Rebet\Common\DotAccessDelegator;
 
 /**
  * Config Class
@@ -177,7 +178,23 @@ class Config
         $compiled = static::$config[Layer::LIBRARY][$section] ?? [];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
             if (isset(static::$config[$layer][$section])) {
-                $compiled = Arrays::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? [], OverrideOption::PREPEND);
+                $config = static::$config[$layer][$section];
+                $compiled = Arrays::override(
+                    $compiled, 
+                    $config, 
+                    static::$option[$layer][$section] ?? [], 
+                    OverrideOption::PREPEND, 
+                    function($base, $diff, $option, $default_array_override_option) {
+                        if($base instanceof DotAccessDelegator || $diff instanceof DotAccessDelegator) {
+                            return static::promise(function() use($base, $diff, $option, $default_array_override_option) {
+                                $base = $base instanceof DotAccessDelegator ? $base->get() : $base ;
+                                $diff = $diff instanceof DotAccessDelegator ? $diff->get() : $diff ;
+                                return Arrays::override($base, $diff, $option, $default_array_override_option);
+                            }, false);
+                        }
+                        return null;
+                    }
+                );
             }
         }
 
@@ -205,11 +222,11 @@ class Config
     /**
      * Analyze configuration settings.
      *
-     * @param array $config
+     * @param mixed $config
      * @param array $option
      * @return void
      */
-    protected static function analyze(array $config, array &$option)
+    protected static function analyze($config, array &$option)
     {
         if (!\is_array($config) || Arrays::isSequential($config)) {
             return $config;
@@ -477,11 +494,11 @@ class Config
      * }
      *
      * @param string $section to refer
-     * @param string $key to refer can contains dot notation
+     * @param string $key to refer can contains dot notation (default: null)
      * @param mixed $default when the referral configuration value is blank (default: null)
      * @return ConfigReferrer
      */
-    public static function refer(string $section, string $key, $default = null) : ConfigReferrer
+    public static function refer(string $section, ?string $key = null, $default = null) : ConfigReferrer
     {
         static::validateKey($key);
         return new ConfigReferrer($section, $key, $default);

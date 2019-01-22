@@ -213,10 +213,17 @@ class Arrays
      * @param mixed $diff
      * @param array|string $option
      * @param string $default_array_override_option Default: OverrideOption::APEND
+     * @param \Closure $handler of special override logic(if return null then do nothing). function($base, $diff, $option, $default_array_override_option):mixed (default: null)
      * @return mixed
      */
-    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND)
+    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null)
     {
+        if($handler) {
+            if($value = $handler($base, $diff, $option, $default_array_override_option)) {
+                return $value;
+            }
+        }
+
         if (!static::accessible($base) || !static::accessible($diff) || $option === OverrideOption::REPLACE) {
             return $diff;
         }
@@ -235,7 +242,7 @@ class Arrays
             [$key, $apply_option] = OverrideOption::split($key);
             $apply_option         = $apply_option ?? $option[$key] ?? null ;
             if (isset($base[$key])) {
-                $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_override_option);
+                $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_override_option, $handler);
             } else {
                 $base[$key] = $value;
             }

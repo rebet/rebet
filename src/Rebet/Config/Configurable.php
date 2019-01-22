@@ -61,12 +61,19 @@ trait Configurable
      *     ];
      * }
      *
-     * // Inherit a class that implements Configurable and overwrite new setting in subclass
+     * // Copy and overwrite new setting from specified class (this case will setting not be shared between specified class and own class)
      * public static function defaultConfig() {
-     *     return static::parentConfigOverride([
+     *     return static::copyConfigFrom(parent::class, [
      *         'default_format' => 'M d, Y g:i A',
      *         'new_key'        => 'new_value',
-     *     ];
+     *     ]);
+     * }
+     * 
+     * // Share the setting with specified class
+     * public static function defaultConfig() {
+     *     return static::shareConfigWith(parent::class, [
+     *         'default_format' => 'Y-m-d',
+     *     ]);
      * }
      * 
      * @return array|string
@@ -74,21 +81,42 @@ trait Configurable
     abstract public static function defaultConfig() ;
 
     /**
-     * Differentially override the default config setting of the parent class.
+     * Copy and differentially override the default config setting from the given class (usually parent::class).
      *
      * Note:
      * Please be aware that it is the copy of the setting in the initial state that is inherited.
      * It means the setting change content of the parent class is not followed.
      * (The settings between subclass and parent class is completely different)
      *
+     * @see self::shareConfigWith()
+     * 
      * @param array $config of diff
      * @return array
      */
-    protected static function parentConfigOverride(array $diff) : array
+    protected static function copyConfigFrom(string $class, array $diff = []) : array
     {
-        $rc   = new \ReflectionClass(static::class);
-        $base = $rc->getParentClass()->getMethod('defaultConfig')->invoke(null);
+        $rc   = new \ReflectionClass($class);
+        $base = $rc->getMethod('defaultConfig')->invoke(null);
         return Arrays::override($base, $diff);
+    }
+
+    /**
+     * Share and differentially override the config setting with the given class (usually parent::class).
+     *
+     * Note:
+     * It overrides the setting based on the final setting of the given class.
+     * It means the upper layer settings of given class weaker than the diff settings.
+     * 
+     * @see self::copyConfigFrom()
+     * 
+     * @param array $config of diff
+     * @return array
+     */
+    protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
+    {
+        return Config::promise(function() use($class, $diff) {
+            return Arrays::override($class::config(), $diff);
+        });
     }
 
     /**

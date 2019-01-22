@@ -17,8 +17,8 @@ class ConfigurableTest extends RebetTestCase
 
     public function test_configInstantiate()
     {
-        ConfigurableTest_Mock::setDriver(ConfigurableTest_MockChildA::class);
-        $this->assertInstanceOf(ConfigurableTest_MockChildA::class, ConfigurableTest_Mock::instantiate('driver'));
+        ConfigurableTest_Mock::setDriver(ConfigurableTest_MockChildInherit::class);
+        $this->assertInstanceOf(ConfigurableTest_MockChildInherit::class, ConfigurableTest_Mock::instantiate('driver'));
     }
 
     public function test_config()
@@ -101,10 +101,63 @@ class ConfigurableTest extends RebetTestCase
 
     public function test_config_extends()
     {
-        $mock   = new ConfigurableTest_Mock();
-        $childA = new ConfigurableTest_MockChildA();
-        $childB = new ConfigurableTest_MockChildB();
-        $childC = new ConfigurableTest_MockChildC();
+        $mock     = new ConfigurableTest_Mock();
+        $inherit  = new ConfigurableTest_MockChildInherit();
+        $share    = new ConfigurableTest_MockChildShare();
+        $override = new ConfigurableTest_MockChildOverride();
+        $hide     = new ConfigurableTest_MockChildHide();
+        
+        $this->assertSame(
+            [
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => 3306,
+                'database' => null,
+                'user'     => null,
+            ],
+            ConfigurableTest_Mock::config()
+        );
+
+        $this->assertSame(
+            [
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => 3306,
+                'database' => null,
+                'user'     => null,
+            ],
+            ConfigurableTest_MockChildInherit::config()
+        );
+
+        $this->assertSame(
+            [
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => 3306,
+                'database' => null,
+                'user'     => null,
+            ],
+            ConfigurableTest_MockChildShare::config()
+        );
+
+        $this->assertSame(
+            [
+                'driver'   => 'sqlite',
+                'host'     => 'localhost',
+                'port'     => 3306,
+                'database' => null,
+                'user'     => null,
+                'encode'   => 'utf8mb4',
+            ],
+            ConfigurableTest_MockChildOverride::config()
+        );
+        
+        $this->assertSame(
+            [
+                'driver' => 'pgsql',
+            ],
+            ConfigurableTest_MockChildHide::config()
+        );
         
         $this->assertSame(
             [
@@ -116,7 +169,7 @@ class ConfigurableTest extends RebetTestCase
                 'encode'   => 'utf8',
                 'new_key'  => 'new_value',
             ],
-            ConfigurableTest_MockGrandChildA::defaultConfig()
+            ConfigurableTest_MockGrandChildOverride::config()
         );
 
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
@@ -124,39 +177,64 @@ class ConfigurableTest extends RebetTestCase
         $this->assertSame('mysql', $mock->configInMember('driver'));
         $this->assertNull(ConfigurableTest_Mock::config('encode', false));
 
-        $this->assertSame('mysql', ConfigurableTest_MockChildA::config('driver'));
-        $this->assertSame('mysql', ConfigurableTest_MockChildA::configInStatic('driver'));
-        $this->assertSame('mysql', $childA->configInMember('driver'));
-        $this->assertNull(ConfigurableTest_MockChildA::config('encode', false));
+        $this->assertSame('mysql', ConfigurableTest_MockChildInherit::config('driver'));
+        $this->assertSame('mysql', ConfigurableTest_MockChildInherit::configInStatic('driver'));
+        $this->assertSame('mysql', $inherit->configInMember('driver'));
+        $this->assertNull(ConfigurableTest_MockChildInherit::config('encode', false));
+
+        $this->assertSame('mysql', ConfigurableTest_MockChildShare::config('driver'));
+        $this->assertSame('mysql', ConfigurableTest_MockChildShare::configInStatic('driver'));
+        $this->assertSame('mysql', $share->configInMember('driver'));
+        $this->assertNull(ConfigurableTest_MockChildShare::config('encode', false));
+
+        $this->assertSame('sqlite', ConfigurableTest_MockChildOverride::config('driver'));
+        $this->assertSame('sqlite', ConfigurableTest_MockChildOverride::configInStatic('driver'));
+        $this->assertSame('sqlite', $override->configInMember('driver'));
+        $this->assertSame('utf8mb4', ConfigurableTest_MockChildOverride::config('encode'));
+
+        $this->assertSame('pgsql', ConfigurableTest_MockChildHide::config('driver'));
+        $this->assertSame('pgsql', ConfigurableTest_MockChildHide::configInStatic('driver'));
+        $this->assertSame('pgsql', $hide->configInMember('driver'));
+        $this->assertNull(ConfigurableTest_MockChildShare::config('encode', false));
+        $this->assertNull(ConfigurableTest_MockChildHide::config('host', false));
 
         Config::application([
-            ConfigurableTest_MockChildA::class => [
+            ConfigurableTest_Mock::class => [
                 'driver' => 'oracle',
-                'encode' => 'utf8'
             ]
         ]);
 
-        $this->assertSame('oracle', ConfigurableTest_MockChildA::config('driver'));
-        $this->assertSame('oracle', ConfigurableTest_MockChildA::configInStatic('driver'));
-        $this->assertSame('oracle', $childA->configInMember('driver'));
-        $this->assertSame('utf8', ConfigurableTest_MockChildA::config('encode'));
+        $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
+        $this->assertSame('mysql' , ConfigurableTest_MockChildInherit::config('driver'));
+        $this->assertSame('oracle', ConfigurableTest_MockChildShare::config('driver'));
+        $this->assertSame('sqlite', ConfigurableTest_MockChildOverride::config('driver'));
+        $this->assertSame('pgsql' , ConfigurableTest_MockChildHide::config('driver'));
 
-        $this->assertSame('sqlite', ConfigurableTest_MockChildB::config('driver'));
-        $this->assertSame('sqlite', ConfigurableTest_MockChildB::configInStatic('driver'));
-        $this->assertSame('sqlite', $childB->configInMember('driver'));
-        $this->assertSame('utf8mb4', ConfigurableTest_MockChildB::config('encode'));
-        $this->assertSame('utf8mb4', ConfigurableTest_MockChildB::configInStatic('encode'));
-        $this->assertSame('utf8mb4', $childB->configInMember('encode'));
+        Config::application([
+            ConfigurableTest_MockChildShare::class => [
+                'driver' => 'mariadb',
+            ]
+        ]);
 
-        $this->assertSame('pgsql', ConfigurableTest_MockChildC::config('driver'));
-        $this->assertSame('pgsql', ConfigurableTest_MockChildC::configInStatic('driver'));
-        $this->assertSame('pgsql', $childC->configInMember('driver'));
-        $this->assertNull(ConfigurableTest_MockChildC::config('host', false));
+        $this->assertSame('oracle' , ConfigurableTest_Mock::config('driver'));
+        $this->assertSame('mysql'  , ConfigurableTest_MockChildInherit::config('driver'));
+        $this->assertSame('mariadb', ConfigurableTest_MockChildShare::config('driver'));
+        $this->assertSame('sqlite' , ConfigurableTest_MockChildOverride::config('driver'));
+        $this->assertSame('pgsql'  , ConfigurableTest_MockChildHide::config('driver'));
 
-        $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
-        $this->assertSame('mysql', ConfigurableTest_Mock::configInStatic('driver'));
-        $this->assertSame('mysql', $mock->configInMember('driver'));
-        $this->assertNull(ConfigurableTest_Mock::config('encode', false));
+        $this->assertSame('localhost', ConfigurableTest_Mock::config('host'));
+        $this->assertSame('localhost', ConfigurableTest_MockChildShare::config('host'));
+
+        Config::application([
+            ConfigurableTest_Mock::class => [
+                'host' => '192.168.1.1',
+            ]
+        ]);
+
+        $this->assertSame('192.168.1.1', ConfigurableTest_Mock::config('host'));
+        $this->assertSame('192.168.1.1', ConfigurableTest_MockChildShare::config('host'));
+        $this->assertSame('oracle' , ConfigurableTest_Mock::config('driver'));
+        $this->assertSame('mariadb', ConfigurableTest_MockChildShare::config('driver'));
     }
 
     public function test_config_clear()
@@ -228,21 +306,28 @@ class ConfigurableTest_Mock
         return static::clearConfig(...$layers);
     }
 }
-class ConfigurableTest_MockChildA extends ConfigurableTest_Mock
+class ConfigurableTest_MockChildInherit extends ConfigurableTest_Mock
 {
     // No override
 }
-class ConfigurableTest_MockChildB extends ConfigurableTest_Mock
+class ConfigurableTest_MockChildOverride extends ConfigurableTest_Mock
 {
     public static function defaultConfig()
     {
-        return self::parentConfigOverride([
+        return self::copyConfigFrom(parent::class, [
             'driver' => 'sqlite',
             'encode' => 'utf8mb4',
         ]);
     }
 }
-class ConfigurableTest_MockChildC extends ConfigurableTest_Mock
+class ConfigurableTest_MockChildShare extends ConfigurableTest_Mock
+{
+    public static function defaultConfig()
+    {
+        return Config::refer(parent::class);
+    }
+}
+class ConfigurableTest_MockChildHide extends ConfigurableTest_Mock
 {
     public static function defaultConfig()
     {
@@ -251,11 +336,11 @@ class ConfigurableTest_MockChildC extends ConfigurableTest_Mock
         ];
     }
 }
-class ConfigurableTest_MockGrandChildA extends ConfigurableTest_MockChildB
+class ConfigurableTest_MockGrandChildOverride extends ConfigurableTest_MockChildOverride
 {
     public static function defaultConfig()
     {
-        return self::parentConfigOverride([
+        return self::copyConfigFrom(parent::class, [
             'encode'  => 'utf8',
             'new_key' => 'new_value',
         ]);

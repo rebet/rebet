@@ -34,7 +34,7 @@ class BuiltinValidations extends Validations
             $dictionary->addLibraryResource(static::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
         }
 
-        return static::parentConfigOverride([
+        return static::copyConfigFrom(parent::class, [
             'default'   => [
                 'DependenceChar' => [
                     'encode' => 'sjis-win'

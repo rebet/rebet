@@ -42,11 +42,11 @@ class ConfigReferrer implements DotAccessDelegator
      * Create a Config Referrer Class
      *
      * @param string $section name of refer section (or class)
-     * @param string $key name of refer key can contains dot notation
+     * @param string $key name of refer key can contains dot notation (default: null)
      * @param mixed $default (default: null)
      * @return mixed
      */
-    public function __construct(string $section, $key, $default = null)
+    public function __construct(string $section, $key = null, $default = null)
     {
         $this->section = $section;
         $this->key     = $key;
