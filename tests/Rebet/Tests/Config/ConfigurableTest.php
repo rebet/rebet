@@ -3,6 +3,7 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\Config\Layer;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigurableTest extends RebetTestCase
@@ -160,11 +161,21 @@ class ConfigurableTest extends RebetTestCase
     {
         $this->assertSame('mysql', ConfigurableTest_Mock::config('driver'));
 
-        Config::application([
+        Config::framework([
             ConfigurableTest_Mock::class => [
                 'driver' => 'oracle',
             ]
         ]);
+        $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
+
+        Config::application([
+            ConfigurableTest_Mock::class => [
+                'driver' => 'postgresql',
+            ]
+        ]);
+        $this->assertSame('postgresql', ConfigurableTest_Mock::config('driver'));
+
+        ConfigurableTest_Mock::clear(Layer::APPLICATION);
         $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
 
         ConfigurableTest_Mock::clear();
@@ -210,9 +221,9 @@ class ConfigurableTest_Mock
         return static::configInstantiate($key);
     }
 
-    public static function clear()
+    public static function clear(string ...$layers)
     {
-        return static::clearConfig();
+        return static::clearConfig(...$layers);
     }
 }
 class ConfigurableTest_MockChildA extends ConfigurableTest_Mock

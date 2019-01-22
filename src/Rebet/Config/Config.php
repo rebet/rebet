@@ -154,7 +154,7 @@ class Config
      */
     protected static function compile(string $section) : void
     {
-        $compiled = static::$config[Layer::LIBRARY][$section];
+        $compiled = static::$config[Layer::LIBRARY][$section] ?? [];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
             if (isset(static::$config[$layer][$section])) {
                 $compiled = Arrays::override($compiled, static::$config[$layer][$section], static::$option[$layer][$section] ?? [], OverrideOption::PREPEND);
@@ -368,13 +368,8 @@ class Config
     public static function get(string $section, ?string $key = null, bool $required = true, $default = null)
     {
         static::validateKey($key);
-
-        if (!isset(static::$config[Layer::LIBRARY][$section])) {
-            static::loadLibraryConfig($section);
-            static::compile($section);
-        }
-        
-        $value = Reflector::get(static::$compiled[$section], $key);
+        static::setup($section);
+        $value = Reflector::get(static::$compiled[$section] ?? null, $key);
         if ($required && Utils::isBlank($value)) {
             throw ConfigNotDefineException::by("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
         }
@@ -429,13 +424,25 @@ class Config
     public static function has(string $section, string $key) : bool
     {
         static::validateKey($key);
-        
+        static::setup($section);
+        return static::isDefine(static::$compiled, $section, $key);
+    }
+
+    /**
+     * Setup the configuration settings for the given section
+     *
+     * @param string $section
+     * @return void
+     */
+    protected static function setup(string $section) : void
+    {
         if (!isset(static::$config[Layer::LIBRARY][$section])) {
             static::loadLibraryConfig($section);
             static::compile($section);
         }
-
-        return static::isDefine(static::$compiled, $section, $key);
+        if (!isset(static::$compiled[$section])) {
+            static::compile($section);
+        }
     }
 
     /**

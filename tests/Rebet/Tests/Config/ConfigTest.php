@@ -3,6 +3,7 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\Config\Layer;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 
@@ -29,25 +30,43 @@ class ConfigTest extends RebetTestCase
     {
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
         Config::framework([
             ConfigTest_Mock::class => [
                 'driver' => 'sqlite',
             ],
             ConfigTest_MockOption::class => [
-                'map' => ['a' => 'A']
+                'map' => ['a' => 'A', 'b' => 'B']
             ]
         ]);
         $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('A', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('B', Config::get(ConfigTest_MockOption::class, 'map.b'));
+
+        Config::application([
+            ConfigTest_MockOption::class => [
+                'map' => ['b' => 'BB']
+            ]
+        ]);
+        $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('A', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('BB', Config::get(ConfigTest_MockOption::class, 'map.b'));
+
+        Config::clear(ConfigTest_MockOption::class, Layer::FRAMEWORK);
+        $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
+        $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('BB', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
         Config::clear(ConfigTest_MockOption::class);
         $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
         Config::clear();
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
+        $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
     }
 
     public function test_get()
