@@ -26,6 +26,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             'default_format'             => 'Y-m-d H:i:s',
             'default_timezone'           => date_default_timezone_get() ?: 'UTC',
             'acceptable_datetime_format' => [
+                'Y-m-d H:i:s.u',
                 'Y-m-d H:i:s',
                 'Y/m/d H:i:s',
                 'YmdHis',
@@ -42,6 +43,17 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         ];
     }
 
+    /**
+     * The day of week.
+     */
+    public const SUNDAY    = 0;
+    public const MONDAY    = 1;
+    public const TUESDAY   = 2;
+    public const WEDNESDAY = 3;
+    public const THURSDAY  = 4;
+    public const FRIDAY    = 5;
+    public const SATURDAY  = 6;
+    
     /**
      * Default format of this DateTime.
      *
@@ -366,6 +378,17 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return new static('yesterday', $timezone);
     }
+
+    /**
+     * Get DateTime of tomorrow.
+     *
+     * @param string|\DateTimeZone|null (default: depend on configure)
+     * @return static
+     */
+    public static function tomorrow($timezone = null) : DateTime
+    {
+        return new static('tomorrow', $timezone);
+    }
     
     /**
      * Add year
@@ -437,7 +460,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $day
      * @return static
      */
-    public function addday(int $day) : DateTime
+    public function addDay(int $day) : DateTime
     {
         return $this->modify("{$day} day");
     }
@@ -674,6 +697,16 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
+     * Get day of week 
+     *
+     * @return int
+     */
+    public function getDayOfWeek() : int
+    {
+        return (int)$this->format('w');
+    }
+
+    /**
      * Convert type to given type.
      *
      * @see Convertible
@@ -686,8 +719,12 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             return $this;
         }
         switch ($type) {
+            case DateTime::class:
+                return $this->toDateTime();
+            case Date::class:
+                return $this->toDate();
             case \DateTime::class:
-                return \DateTime::createFromFormat("Y-m-d H:i:s.u", $this->format("Y-m-d H:i:s.u"), $this->getTimezone());
+                return $this->toNativeDateTime();
             case 'string':
                 return $this->jsonSerialize();
             case 'int':
@@ -723,5 +760,172 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             throw LogicException::by("Invalid datetime format of given at time '{$at_time}'.");
         }
         return floor(($at_time->format('Ymd') - $this->format('Ymd')) / 10000);
+    }
+
+    /**
+     * Convert this to Date class
+     *
+     * @return DateTime
+     */
+    public function toDate() : Date {
+        return new Date($this);
+    }
+
+    /**
+     * Convert this to DateTime class
+     *
+     * @return DateTime
+     */
+    public function toDateTime() : DateTime {
+        return $this;
+    }
+
+    /**
+     * Convert this to native DateTime class
+     *
+     * @return \DateTime
+     */
+    public function toNativeDateTime() : \DateTime {
+        return \DateTime::createFromFormat("Y-m-d H:i:s.u", $this->format("Y-m-d H:i:s.u"), $this->getTimezone());
+    }
+
+    /**
+     * Convert this to starts of year (y-01-01 00:00:00.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfYear() : DateTime
+    {
+        return $this->modify('01/01 00:00:00.000000');
+    }
+
+    /**
+     * Convert this to ends of year (y-12-31 23:59:59.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfYear() : DateTime
+    {
+        return $this->modify('12/31 23:59:59.999999');
+    }
+
+    /**
+     * Convert this to starts of month (y-m-01 00:00:00.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfMonth() : DateTime
+    {
+        return $this->setDay(1)->startsOfDay();
+    }
+
+    /**
+     * Convert this to ends of month (y-m-31|30|29|28 23:59:59.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfMonth() : DateTime
+    {
+        return $this->modify('first day of next month')->addDay(-1)->endsOfDay();
+    }
+
+    /**
+     * Convert this to starts of day (y-m-d 00:00:00.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfDay() : DateTime
+    {
+        return $this->modify('00:00:00.000000');
+    }
+
+    /**
+     * Convert this to ends of day (y-m-d 23:59:59.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfDay() : DateTime
+    {
+        return $this->modify('23:59:59.999999');
+    }
+
+    /**
+     * Convert this to starts of hour (y-m-d h:00:00.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfHour() : DateTime
+    {
+        return $this->modify($this->getHour().':00:00.000000');
+    }
+
+    /**
+     * Convert this to ends of hour (y-m-d h:59:59.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfHour() : DateTime
+    {
+        return $this->modify($this->getHour().':59:59.999999');
+    }
+
+    /**
+     * Convert this to starts of minute (y-m-d h:i:00.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfMinute() : DateTime
+    {
+        return $this->setSecond(0)->startsOfSecond();
+    }
+
+    /**
+     * Convert this to ends of minute (y-m-d h:i:59.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfMinute() : DateTime
+    {
+        return $this->setSecond(59)->endsOfSecond();
+    }
+
+    /**
+     * Convert this to starts of second (y-m-d h:i:s.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfSecond() : DateTime
+    {
+        return $this->setMilliMicro(0);
+    }
+
+    /**
+     * Convert this to ends of second (y-m-d h:i:s.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfSecond() : DateTime
+    {
+        return $this->setMilliMicro(999999);
+    }
+
+    /**
+     * Convert this to starts of week (Monday this week 00:00:00.000000)
+     *
+     * @return DateTime
+     */
+    public function startsOfWeek() : DateTime
+    {
+        return $this->modify('Monday this week')->startsOfDay();
+    }
+
+    /**
+     * Convert this to ends of week (Sunday of this week 23:59:59.999999)
+     *
+     * @return DateTime
+     */
+    public function endsOfWeek() : DateTime
+    {
+        return $this->modify('Sunday this week')->endsOfDay();
     }
 }

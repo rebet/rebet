@@ -429,6 +429,19 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-19 00:00:00.000000', $yesterday->format('Y-m-d H:i:s.u'));
     }
     
+    public function test_tomorrow()
+    {
+        $tomorrow = DateTime::tomorrow();
+        $this->assertInstanceOf(DateTime::class, $tomorrow);
+        $this->assertSame('UTC', $tomorrow->getTimezone()->getName());
+        $this->assertSame('2010-10-21 00:00:00.000000', $tomorrow->format('Y-m-d H:i:s.u'));
+        
+        $tomorrow = DateTime::tomorrow('Asia/Tokyo');
+        $this->assertInstanceOf(DateTime::class, $tomorrow);
+        $this->assertSame('Asia/Tokyo', $tomorrow->getTimezone()->getName());
+        $this->assertSame('2010-10-21 00:00:00.000000', $tomorrow->format('Y-m-d H:i:s.u'));
+    }
+
     public function test_addYear()
     {
         $date = DateTime::now();
@@ -928,4 +941,79 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame(21, DateTime::createDateTime('1999-10-20')->age('2020-10-20'));
         $this->assertSame(21, DateTime::createDateTime('1999-10-19')->age('2020-10-20'));
     }
+
+    public function test_startsOfYear()
+    {
+        $this->assertSame('2010-01-01 00:00:00.000000', DateTime::now()->startsOfYear()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfYear()
+    {
+        $this->assertSame('2010-12-31 23:59:59.999999', DateTime::now()->endsOfYear()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_startsOfMonth()
+    {
+        $this->assertSame('2010-10-01 00:00:00.000000', DateTime::now()->startsOfMonth()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfMonth()
+    {
+        $this->assertSame('2010-10-31 23:59:59.999999', DateTime::now()->endsOfMonth()->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-12-31 23:59:59.999999', DateTime::createDateTime('2010-12-20 12:34:56.123456')->endsOfMonth()->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-11-30 23:59:59.999999', DateTime::createDateTime('2010-11-20 12:34:56.123456')->endsOfMonth()->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2020-02-29 23:59:59.999999', DateTime::createDateTime('2020-02-20 12:34:56.123456')->endsOfMonth()->format('Y-m-d H:i:s.u'));
+        $this->assertSame('2010-02-28 23:59:59.999999', DateTime::createDateTime('2010-02-20 12:34:56.123456')->endsOfMonth()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_startsOfDay()
+    {
+        $this->assertSame('2010-10-20 00:00:00.000000', DateTime::now()->startsOfDay()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfDay()
+    {
+        $this->assertSame('2010-10-20 23:59:59.999999', DateTime::now()->endsOfDay()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_startsOfHour()
+    {
+        $this->assertSame('2010-10-20 10:00:00.000000', DateTime::now()->startsOfHour()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfHour()
+    {
+        $this->assertSame('2010-10-20 10:59:59.999999', DateTime::now()->endsOfHour()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_startsOfMinute()
+    {
+        $this->assertSame('2010-10-20 10:20:00.000000', DateTime::now()->startsOfMinute()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfMinute()
+    {
+        $this->assertSame('2010-10-20 10:20:59.999999', DateTime::now()->endsOfMinute()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_startsOfSecond()
+    {
+        $this->assertSame('2010-10-20 10:20:30.000000', DateTime::now()->startsOfSecond()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfSecond()
+    {
+        $this->assertSame('2010-10-20 10:20:30.999999', DateTime::now()->endsOfSecond()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_startsOfWeek()
+    {
+        $this->assertSame('2010-10-18 00:00:00.000000', DateTime::now()->startsOfWeek()->format('Y-m-d H:i:s.u'));
+    }
+
+    public function test_endsOfWeek()
+    {
+        $this->assertSame('2010-10-24 23:59:59.999999', DateTime::now()->endsOfWeek()->format('Y-m-d H:i:s.u'));
+    }
+
 }
