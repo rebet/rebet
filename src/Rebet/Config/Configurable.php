@@ -116,7 +116,7 @@ trait Configurable
     {
         return Config::promise(function() use($class, $diff) {
             return Arrays::override($class::config(), $diff);
-        });
+        }, false);
     }
 
     /**
