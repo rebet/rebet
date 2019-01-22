@@ -2,6 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\OverrideOption;
 
 /**
  * Configurable Trait
@@ -90,14 +91,15 @@ trait Configurable
      *
      * @see self::shareConfigWith()
      * 
-     * @param array $config of diff
+     * @param string $class
+     * @param array $diff (default: [])
      * @return array
      */
     protected static function copyConfigFrom(string $class, array $diff = []) : array
     {
         $rc   = new \ReflectionClass($class);
         $base = $rc->getMethod('defaultConfig')->invoke(null);
-        return Arrays::override($base, $diff);
+        return Arrays::override($base, $diff, [], OverrideOption::PREPEND);
     }
 
     /**
@@ -109,14 +111,13 @@ trait Configurable
      * 
      * @see self::copyConfigFrom()
      * 
-     * @param array $config of diff
-     * @return array
+     * @param string $class
+     * @param array $diff (default: [])
+     * @return ConfigPromise
      */
     protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
     {
-        return Config::promise(function() use($class, $diff) {
-            return Arrays::override($class::config(), $diff);
-        }, false);
+        return Config::promise(function() use($class, $diff) { return Arrays::override($class::config(), $diff, [], OverrideOption::PREPEND); }, false);
     }
 
     /**
