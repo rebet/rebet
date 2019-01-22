@@ -22,7 +22,7 @@ class AuthUser implements \JsonSerializable
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'guest_aliases'               => [],

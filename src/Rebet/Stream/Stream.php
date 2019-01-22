@@ -24,7 +24,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'filter' => [

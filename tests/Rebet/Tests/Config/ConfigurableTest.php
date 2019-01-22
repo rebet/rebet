@@ -5,6 +5,8 @@ use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\Layer;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Common\Strings;
+use Rebet\DateTime\DateTime;
 
 class ConfigurableTest extends RebetTestCase
 {

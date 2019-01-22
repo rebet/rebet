@@ -27,7 +27,7 @@ class Auth
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'authenticator' => [

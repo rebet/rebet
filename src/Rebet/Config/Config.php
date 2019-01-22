@@ -7,6 +7,7 @@ use Rebet\Common\OverrideOption;
 use Rebet\Common\Reflector;
 use Rebet\Common\Utils;
 use Rebet\Config\Exception\ConfigNotDefineException;
+use Rebet\Common\Strings;
 
 /**
  * Config Class
@@ -131,6 +132,20 @@ class Config
     }
 
     /**
+     * Get all of configuration settings as dump string.
+     *
+     * Note:
+     *  - Unused library configuration settings that have not yet been loaded are not included.
+     * 
+     * @return string
+     */
+    public static function dump(string ...$sections) : string
+    {
+        static::all(); // Load the library configuration via ConfigReferrer by call all() method once.
+        return Strings::toString(static::all(...$sections));
+    }
+
+    /**
      * Get all of configuration settings.
      *
      * Note:
@@ -138,11 +153,16 @@ class Config
      *  - The library configuration setting loaded via ConfigReferrer by calling this method
      *    it may not be included in the return value of this method.
      *
+     * @param string ...$sections (default: all)
      * @return array
      */
-    public static function all() : array
+    public static function all(string ...$sections) : array
     {
-        return Reflector::get(static::$compiled, null, []);
+        $target = empty($sections) ? static::$compiled : [] ;
+        foreach ($sections as $section) {
+            $target[$section] = static::$compiled[$section] ?? null ;
+        }
+        return Reflector::get($target, null, []);
     }
 
     /**

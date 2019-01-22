@@ -14,7 +14,7 @@ use Rebet\Log\LogLevel;
  */
 class StderrHandler extends FormattableHandler
 {
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'log_level'     => LogLevel::ERROR(),

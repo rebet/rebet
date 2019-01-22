@@ -22,7 +22,7 @@ class SessionGuard implements Guard
 {
     use Configurable, Guardable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'remember_days' => 0,

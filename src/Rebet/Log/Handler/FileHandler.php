@@ -16,7 +16,7 @@ use Rebet\Log\LogLevel;
  */
 class FileHandler extends FormattableHandler
 {
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'log_level'       => LogLevel::ERROR(),

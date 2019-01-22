@@ -16,7 +16,7 @@ class MemcachedSessionHandler extends SymfonyMemcachedSessionHandler
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'expiretime' => 86400,

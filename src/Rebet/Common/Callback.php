@@ -81,4 +81,65 @@ class Callback
             return Reflector::get($item, Strings::ltrim($retriever, '@', 1));
         };
     }
+
+    /**
+     * Create a string of given callable.
+     *
+     * @param callable $callback
+     * @param bool $verbose (default: true)
+     * @return string
+     */
+    public static function toString(callable $callback, bool $verbose = true) : string 
+    {
+        // try{
+        //     $reflector = new \ReflectionMethod($callback);
+        //     $class     = $reflector->getDeclaringClass();
+        //     $function = $class->getShortName().'::'.$reflector->getName();
+        //     if($verbose) {
+        //         $function = $class->getNamespaceName().'\\'.$function;
+        //     }
+        // } catch(\Throwable $e) {
+            $reflector = new \ReflectionFunction(\Closure::fromCallable($callback));
+            $class     = $reflector->getClosureScopeClass();
+            $function  = $class ? $class->getShortName().'::'.$reflector->getShortName() : $reflector->getShortName() ;
+            if($verbose && $class) {
+                $function = $class->getNamespaceName().'\\'.$function;
+            }
+        // }
+
+        $string = "{$function}(";
+        $parameters = $reflector->getParameters();
+        foreach ($parameters as $parameter) {
+            $type_hint = null;
+            $name      = '$'.$parameter->getName();
+            $name      = $parameter->isVariadic() ? "...{$name}" : $name ;
+            $name      = $parameter->isPassedByReference() ? "&{$name}" : $name ;
+
+            if($verbose) {
+                $type_hint = Reflector::getTypeHint($parameter);
+                $type_hint = $type_hint !== null && $parameter->allowsNull() ? "?{$type_hint}" : $type_hint ;
+                
+                try {
+                    $name = $parameter->isOptional() ? "{$name} = ".(Strings::rbtrim($parameter->getDefaultValueConstantName(), '\\') ?? $parameter->getDefaultValue() ?? 'null') : $name ;
+                } catch(\ReflectionException $e) {
+                    // It is not possible to get the default value of built-in functions or methods of built-in classes.
+                    // Trying to do this will result a ReflectionException being thrown.
+                }
+            }
+
+            $string .= $type_hint === null ? "{$name}, " : "{$type_hint} {$name}, " ;
+        }
+        if(!empty($parameters)) {
+            $string  = Strings::rcut($string, 2);
+        }
+        $string .= ')';
+
+        if ($verbose) {
+            $return_type = $reflector->getReturnType();
+            $return_type = $return_type !== null && $return_type->allowsNull() ? "?{$return_type}" : $return_type ;
+            $string      = $return_type === null ? $string : "{$string} : {$return_type}";
+        }
+
+        return $string;
+    }
 }

@@ -27,7 +27,7 @@ class BuiltinValidations extends Validations
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         $dictionary = Translator::dictionary();
         if ($dictionary instanceof FileDictionary) {

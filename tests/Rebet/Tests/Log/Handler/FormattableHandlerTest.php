@@ -76,7 +76,7 @@ class FormattableHandlerTest_NullHandler extends FormattableHandler
 {
     public $reported_log = null;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'log_level'     => LogLevel::INFO(),

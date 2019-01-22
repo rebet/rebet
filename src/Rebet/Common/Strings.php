@@ -414,6 +414,61 @@ class Strings
     }
 
     /**
+     * Convert value to string.
+     *
+     * @param mixed $value
+     * @return string
+     */
+    public static function toString($value) : string
+    {
+        if ($value === null) {
+            return 'null';
+        }
+        if (is_string($value)) {
+            if(Strings::contains($value, "\n")) {
+                return '"""'."\n".static::indent($value, ' ', 2)."\n".'"""'."\n";
+            }
+            return $value;
+        }
+        if (is_scalar($value)) {
+            return (string)$value;
+        }
+        if (is_resource($value)) {
+            return '*'.get_resource_type($value).'*';
+        }
+        if (method_exists($value, '__toString')) {
+            return $value->__toString();
+        }
+        if (is_callable($value)) {
+            return Callback::toString($value);
+        }
+        if (is_object($value) && $value instanceof \JsonSerializable) {
+            $json = $value->jsonSerialize();
+            if (is_scalar($json)) {
+                return (string)$json;
+            }
+        }
+        if(is_array($value) && empty($value)) {
+            return "[]";
+        }
+        if (Arrays::accessible($value) || $value instanceof \Traversable) {
+            $describes = '';
+            $count     = 0;
+            foreach ($value as $k => $v) {
+                $describes .= "\n".static::indent("{$k} => ".static::toString($v).", ", ' ', 4);
+                $count++;
+            }
+            return (Reflector::getType($value) ?? 'unkown').":{$count} [".static::rtrim($describes, ', ')."\n]";
+        }
+        
+        $class         = new \ReflectionClass($value);
+        $namespace     = $class->getNamespaceName();
+        $namespace_cut = static::rbtrim($namespace, '\\');
+        $namespace     = $namespace === $namespace_cut ? $namespace : "..\\{$namespace_cut}" ;
+        return '<instance of '.$namespace.'\\'.$class->getShortName().'>';
+    }
+
+    /**
      * Convert debug_backtrace to string.
      *
      * @param array $trace
@@ -451,7 +506,7 @@ class Strings
         foreach ($args as $key => $arg) {
             $describes .= static::argToString($arg, $length, $ellipsis).", ";
         }
-        return Strings::rtrim($describes, ', ');
+        return static::rtrim($describes, ', ');
     }
     
     /**
@@ -460,42 +515,43 @@ class Strings
      * @param mixed $arg
      * @param integer $length (default: 20)
      * @param string $ellipsis (default: '...')
+     * @param bool $array_scanning (default: true)
      * @return string
      */
-    protected static function argToString($arg, int $length = 20, string $ellipsis = '...', $array_scanning = true) : string
+    protected static function argToString($arg, int $length = 20, string $ellipsis = '...', bool $array_scanning = true) : string
     {
         if ($arg === null) {
             return 'null';
         }
         if (is_string($arg)) {
-            return Strings::clip($arg, $length, $ellipsis);
+            return static::clip($arg, $length, $ellipsis);
         }
         if (is_scalar($arg)) {
-            return Strings::clip((string)$arg, $length, $ellipsis);
+            return static::clip((string)$arg, $length, $ellipsis);
         }
         if (is_resource($arg)) {
-            return Strings::clip('*'.get_resource_type($arg).'*', $length, $ellipsis);
+            return static::clip('*'.get_resource_type($arg).'*', $length, $ellipsis);
         }
         if (method_exists($arg, '__toString')) {
-            return Strings::clip($arg->__toString(), $length, $ellipsis);
+            return static::clip($arg->__toString(), $length, $ellipsis);
         }
         if (is_object($arg) && $arg instanceof \JsonSerializable) {
             $json = $arg->jsonSerialize();
             if (is_scalar($json)) {
-                return Strings::clip((string)$json, $length, $ellipsis);
+                return static::clip((string)$json, $length, $ellipsis);
             }
         }
         if (is_array($arg) && $array_scanning) {
             $describes = '';
             foreach ($arg as $key => $value) {
-                $describes .= "{$key} => ".Strings::clip(static::argToString($value, $length, false), $length, $ellipsis).", ";
+                $describes .= "{$key} => ".static::clip(static::argToString($value, $length, $ellipsis, false), $length, $ellipsis).", ";
             }
-            return '['.Strings::rtrim($describes, ', ').']';
+            return '['.static::rtrim($describes, ', ').']';
         }
         
         $class         = new \ReflectionClass($arg);
         $namespace     = $class->getNamespaceName();
-        $namespace_cut = Strings::rbtrim($namespace, '\\');
+        $namespace_cut = static::rbtrim($namespace, '\\');
         $namespace     = $namespace === $namespace_cut ? $namespace : "..\\{$namespace_cut}" ;
         return $namespace.'\\'.$class->getShortName();
     }

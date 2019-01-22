@@ -2,6 +2,7 @@
 namespace Rebet\Config;
 
 use Rebet\Common\DotAccessDelegator;
+use Rebet\Common\Strings;
 
 /**
  * Config Referrer Class
@@ -60,5 +61,13 @@ class ConfigReferrer implements DotAccessDelegator
     public function get()
     {
         return Config::get($this->section, $this->key, false, $this->default);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        return "<Referrer: {$this->section}.{$this->key} (default: ".Strings::toString($this->default).")>";
     }
 }

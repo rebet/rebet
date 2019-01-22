@@ -2,6 +2,9 @@
 namespace Rebet\Config;
 
 use Rebet\Common\DotAccessDelegator;
+use Rebet\Common\Callback;
+use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
 
 /**
  * Config Promise Class
@@ -44,7 +47,7 @@ class ConfigPromise implements DotAccessDelegator
     /**
      * Construct a delayed evaluation class.
      *
-     * @param \Closure $promise of delay evaluation
+     * @param \Closure $promise of delay evaluation function():mixed
      * @param bool $only_once (default: true)
      */
     public function __construct(\Closure $promise, bool $only_once = true)
@@ -67,5 +70,16 @@ class ConfigPromise implements DotAccessDelegator
         $this->evaluated_value = ($this->promise)();
         $this->is_evaluated    = true;
         return $this->evaluated_value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        if($this->is_evaluated) {
+            return Strings::toString($this->evaluated_value);
+        }
+        return "<Promise: ".($this->only_once ? "once" : "dynamic").'>';
     }
 }

@@ -19,7 +19,7 @@ class ArrayProvider extends AuthProvider
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'signin_id_name' => 'email',

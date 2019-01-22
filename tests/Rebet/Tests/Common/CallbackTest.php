@@ -3,6 +3,9 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Common\Callback;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Config\Layer;
+use Rebet\Tests\Mock\Gender;
+use Rebet\Enum\Enum;
 
 class CallbackTest extends RebetTestCase
 {
@@ -203,6 +206,41 @@ class CallbackTest extends RebetTestCase
             [(object)['count' => 123, 'name' => 'foo'], '@count', 123],
             [(object)['count' => 123, 'name' => 'foo'], 'name', 'foo'],
 
+        ];
+    }
+
+    /**
+     * @dataProvider dataToStrings
+     */
+    public function test_toString($expect, $callable, $verbose)
+    {
+        $this->assertSame($expect, Callback::toString($callable, $verbose));
+    }
+
+    public function dataToStrings() : array
+    {
+        return [
+            ['mb_strlen($str, $encoding)', 'mb_strlen', true ],
+            ['mb_strlen($str, $encoding)', 'mb_strlen', false],
+
+            ['Rebet\Common\Callback::test($key, string $operator, $value) : Closure', Callback::class.'::test', true ],
+            ['Rebet\Common\Callback::test($key, string $operator, $value) : Closure', [Callback::class, 'test'], true ],
+            ['Callback::test($key, $operator, $value)', Callback::class.'::test', false],
+
+            ['Rebet\Tests\Common\CallbackTest::{closure}()', function(){}, true ],
+            ['CallbackTest::{closure}()'                   , function(){}, false],
+
+            ['Rebet\Tests\Common\CallbackTest::{closure}(?int $i = null, string ...$s) : ?int', function(?int $i = null, string ...$s) : ?int { return $i; }, true ],
+            ['CallbackTest::{closure}($i, ...$s)'                                             , function(?int $i = null, string ...$s) : ?int { return $i; }, false],
+
+            ['Rebet\Tests\Common\CallbackTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
+            ['CallbackTest::{closure}($i, $j, $k, $l)'                                                                                             , function(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
+
+            ['Rebet\Tests\Common\CallbackTest::{closure}(array &$a, string &...$s)', function(array &$a, string &...$s) { }, true ],
+            ['CallbackTest::{closure}(&$a, &...$s)'                                , function(array &$a, string &...$s) { }, false],
+
+            ['Rebet\Tests\Common\CallbackTest::{closure}(Rebet\Tests\Mock\Gender $g) : Rebet\Enum\Enum', function(Gender $g) : Enum { return $g; } , true ],
+            ['CallbackTest::{closure}($g)'                                                             , function(Gender $g) : Enum { return $g; } , false],
         ];
     }
 }

@@ -15,7 +15,7 @@ class Password
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'algorithm' => PASSWORD_DEFAULT,

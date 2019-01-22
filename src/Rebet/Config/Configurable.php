@@ -68,8 +68,10 @@ trait Configurable
      *         'new_key'        => 'new_value',
      *     ];
      * }
+     * 
+     * @return array|string
      */
-    abstract public static function defaultConfig() : array ;
+    abstract public static function defaultConfig() ;
 
     /**
      * Differentially override the default config setting of the parent class.

@@ -16,7 +16,7 @@ class NativeFileSessionHandler extends SymfonyNativeFileSessionHandler
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'save_path' => ini_get('session.save_path'),

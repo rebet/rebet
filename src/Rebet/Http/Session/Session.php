@@ -22,7 +22,7 @@ class Session
 {
     use Configurable;
 
-    public static function defaultConfig() : array
+    public static function defaultConfig()
     {
         return [
             'storage' => SessionStorage::class,

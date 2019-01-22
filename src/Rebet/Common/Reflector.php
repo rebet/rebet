@@ -548,6 +548,29 @@ class Reflector
     }
 
     /**
+     * Get type or class name given value.
+     *
+     * @param mixed $value
+     * @return string|null
+     */
+    public static function getType($value) : ?string
+    {
+        if($value === null) {
+            return null;
+        }
+        if(is_object($value)) {
+            return get_class($value);
+        }
+        foreach (['string', 'array', 'int', 'float', 'bool', 'callable', 'resource', 'iterable'] as $type) {
+            $type_check = "is_{$type}";
+            if($type_check($value)) {
+                return $type;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get type or class name which is a type hint as a character string.
      * # If type hint is nothing then return null.
      *

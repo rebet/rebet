@@ -71,4 +71,10 @@ class ConfigReferrerTest extends RebetTestCase
         $this->assertSame('test', ConfigReferrerTest_Mock::config('user', false));
         $this->assertSame('test', ConfigReferrerTest_Mock::config('user', false, 'default_user'));
     }
+
+    public function test___toString()
+    {
+        $this->assertSame("<Referrer: Rebet\Tests\Config\ConfigReferrerTest_Mock.driver (default: null)>", $this->ref_driver->__toString());
+        $this->assertSame("<Referrer: Rebet\Tests\Config\ConfigReferrerTest_Mock.user (default: default_user)>", $this->ref_user->__toString());
+    }
 }
