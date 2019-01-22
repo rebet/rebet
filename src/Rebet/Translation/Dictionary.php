@@ -12,15 +12,6 @@ namespace Rebet\Translation;
 interface Dictionary
 {
     /**
-     * Clear the given language group resouces.
-     *
-     * @param string|null $group (default: null)
-     * @param string|null $locale (default: null)
-     * @return self
-     */
-    public function clear(?string $group = null, ?string $locale = null) : self ;
-
-    /**
      * Get the grammar of given key.
      * This method get the value named "@{$key}" from translation dictionary resource.
      *

@@ -89,7 +89,7 @@ class FileDictionary implements Dictionary
      * @param string ...$group
      * @return self
      */
-    public function addLibraryResource(string $class, $resource, ...$groups) : Dictionary
+    public function addLibraryResource(string $class, $resource, ...$groups) : self
     {
         if(static::$resouce_adders[$class] ?? false) {
             return $this;
@@ -111,9 +111,13 @@ class FileDictionary implements Dictionary
     }
 
     /**
-     * {@inheritDoc}
+     * Clear the given language group resouces.
+     *
+     * @param string|null $group (default: null)
+     * @param string|null $locale (default: null)
+     * @return self
      */
-    public function clear(?string $group = null, ?string $locale = null) : Dictionary
+    public function clear(?string $group = null, ?string $locale = null) : self
     {
         if ($group !== null && $locale !== null) {
             unset($this->resouces[$group][$locale]);
@@ -134,7 +138,7 @@ class FileDictionary implements Dictionary
      * @param string $locale
      * @return self
      */
-    protected function load(string $group, string $locale) : Dictionary
+    protected function load(string $group, string $locale) : self
     {
         if ($this->isLoaded($group, $locale)) {
             return $this;

@@ -21,13 +21,16 @@ class Translator
     {
         return [
             'dictionary'      => FileDictionary::class,
+            'resource_adder'  => [
+                FileDictionary::class => function($dictionary, ...$args) { $dictionary->addLibraryResource(...$args); }
+            ],
             'locale'          => null,
             'fallback_locale' => 'en',
             'ordinalize'      => [
                 'en' => function (int $num) {
                     return in_array($num % 100, [11, 12, 13]) ? $num.'th' : $num.(['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');
                 },
-            ]
+            ],
         ];
     }
     
@@ -45,6 +48,21 @@ class Translator
     {
     }
     
+    /**
+     * Add resource to the dictionary if will use the specified dictionary class.
+     *
+     * @param string $class of dictionary
+     * @param mixed ...$args of dictionary resource parameters
+     * @return void
+     */
+    public static function addResourceTo(string $class, ...$args) : void 
+    {
+        $adder = static::config('resource_adder.'.$class, false);
+        if($adder) {
+            call_user_func($adder, static::dictionary(), ...$args);
+        }
+    }
+
     /**
      * Get the dictionary.
      *
@@ -103,13 +121,11 @@ class Translator
     /**
      * Clear the given language group resouces.
      *
-     * @param string|null $group (default: null)
-     * @param string|null $locale (default: null)
      * @return void
      */
-    public static function clear(?string $group = null, ?string $locale = null) : void
+    public static function clear() : void
     {
-        static::dictionary()->clear($group, $locale);
+        static::$dictionary = null;
     }
 
     /**

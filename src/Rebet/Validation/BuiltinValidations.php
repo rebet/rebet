@@ -29,10 +29,7 @@ class BuiltinValidations extends Validations
 
     public static function defaultConfig()
     {
-        $dictionary = Translator::dictionary();
-        if ($dictionary instanceof FileDictionary) {
-            $dictionary->addLibraryResource(static::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
-        }
+        Translator::addResourceTo(FileDictionary::class, static::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
 
         return static::copyConfigFrom(parent::class, [
             'default'   => [
