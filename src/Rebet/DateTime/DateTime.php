@@ -44,17 +44,6 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * The day of week.
-     */
-    public const SUNDAY    = 0;
-    public const MONDAY    = 1;
-    public const TUESDAY   = 2;
-    public const WEDNESDAY = 3;
-    public const THURSDAY  = 4;
-    public const FRIDAY    = 5;
-    public const SATURDAY  = 6;
-    
-    /**
      * Default format of this DateTime.
      *
      * @var string
@@ -697,13 +686,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * Get day of week 
+     * Get day of week
      *
-     * @return int
+     * @return DayOfWeek
      */
-    public function getDayOfWeek() : int
+    public function getDayOfWeek() : DayOfWeek
     {
-        return (int)$this->format('w');
+        return DayOfWeek::valueOf($this->format('w'));
     }
 
     /**
@@ -739,14 +728,42 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * Get the formatted datetime.
      * If null given as format then use default_format to format.
      *
+     * The following extended formats are available in this class.
+     *   - xw   : A min   textual representation of the `LOCALIZED` day of the week
+     *   - xww  : A short textual representation of the `LOCALIZED` day of the week
+     *   - xwww : A full  textual representation of the `LOCALIZED` day of the week
+     *
      * @param string|null $format (default: null)
      * @return void
      */
     public function format($format = null)
     {
-        return $format ? parent::format($format) : parent::format($this->default_format);
+        $format = $format ?? $this->default_format ;
+
+        if (Strings::contains($format, 'xwww')) {
+            $format = preg_replace("/(?<!\\\\)xwww/u", $this->escape($this->getDayOfWeek()->translate('label')), $format);
+        }
+        if (Strings::contains($format, 'xww')) {
+            $format = preg_replace("/(?<!\\\\)xww/u", $this->escape($this->getDayOfWeek()->translate('label_short')), $format);
+        }
+        if (Strings::contains($format, 'xw')) {
+            $format = preg_replace("/(?<!\\\\)xw/u", $this->escape($this->getDayOfWeek()->translate('label_min')), $format);
+        }
+
+        return parent::format($format);
     }
 
+    /**
+     * All characters escape for format.
+     *
+     * @param string $text
+     * @return string
+     */
+    protected function escape(string $text) : string
+    {
+        return Strings::rcut(preg_replace('//u', '\\', $text), 1);
+    }
+    
     /**
      * Get age of this date time as of given at time.
      *
@@ -767,7 +784,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return DateTime
      */
-    public function toDate() : Date {
+    public function toDate() : Date
+    {
         return new Date($this);
     }
 
@@ -776,7 +794,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return DateTime
      */
-    public function toDateTime() : DateTime {
+    public function toDateTime() : DateTime
+    {
         return $this;
     }
 
@@ -785,7 +804,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return \DateTime
      */
-    public function toNativeDateTime() : \DateTime {
+    public function toNativeDateTime() : \DateTime
+    {
         return \DateTime::createFromFormat("Y-m-d H:i:s.u", $this->format("Y-m-d H:i:s.u"), $this->getTimezone());
     }
 

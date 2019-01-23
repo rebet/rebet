@@ -5,7 +5,9 @@ use Rebet\Common\Strings;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
+use Rebet\DateTime\DayOfWeek;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Translation\Translator;
 
 class DateTimeTest extends RebetTestCase
 {
@@ -900,6 +902,11 @@ class DateTimeTest extends RebetTestCase
         }
     }
 
+    public function test_getDayOfWeek()
+    {
+        $this->assertEquals(DayOfWeek::WEDNESDAY(), DateTime::now()->getDayOfWeek());
+    }
+
     public function test_convertTo()
     {
         $micro  = microtime(true);
@@ -919,10 +926,43 @@ class DateTimeTest extends RebetTestCase
         $this->assertEquals(floatval((string)$micro), $now->convertTo('float'));
     }
 
-    public function test_foramt()
+    public function test_format()
     {
         $this->assertSame('2010-10-20 10:20:30', DateTime::now()->format());
         $this->assertSame('2010/10/20 10:20:30', DateTime::now()->format('Y/m/d H:i:s'));
+    }
+
+    /**
+     * @dataProvider dataFormatExtendeds
+     */
+    public function test_format_extended($locale, $expect, $datetime, $format)
+    {
+        Translator::setLocale($locale);
+        $this->assertSame($expect, $datetime->format($format));
+    }
+
+    public function dataFormatExtendeds()
+    {
+        $this->setUp();
+
+        return [
+            ['en', '2010-10-20(x3) 10:20:30', DateTime::now(), 'Y-m-d(\xw) H:i:s'],
+            ['en', '2010-10-20(x33) 10:20:30', DateTime::now(), 'Y-m-d(\xww) H:i:s'],
+            ['en', '2010-10-20(x333) 10:20:30', DateTime::now(), 'Y-m-d(\xwww) H:i:s'],
+            ['en', '2010-10-20(xw) 10:20:30', DateTime::now(), 'Y-m-d(x\w) H:i:s'],
+
+            ['en', '2010-10-20(We) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
+            ['en', '2010-10-20(Wed) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
+            ['en', '2010-10-20(Wednesday) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
+
+            ['ja', '2010-10-20(水) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
+            ['ja', '2010-10-20(水) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
+            ['ja', '2010-10-20(水曜日) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
+
+            ['non', '2010-10-20(We) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
+            ['non', '2010-10-20(Wed) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
+            ['non', '2010-10-20(Wednesday) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
+        ];
     }
 
     public function test_age()
@@ -1015,5 +1055,4 @@ class DateTimeTest extends RebetTestCase
     {
         $this->assertSame('2010-10-24 23:59:59.999999', DateTime::now()->endsOfWeek()->format('Y-m-d H:i:s.u'));
     }
-
 }
