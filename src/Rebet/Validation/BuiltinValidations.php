@@ -29,8 +29,6 @@ class BuiltinValidations extends Validations
 
     public static function defaultConfig()
     {
-        Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
-
         return static::copyConfigFrom(parent::class, [
             'default'   => [
                 'DependenceChar' => [
@@ -1435,3 +1433,8 @@ class BuiltinValidations extends Validations
         ]) ;
     }
 }
+
+// ---------------------------------------------------------
+// Add library default translation resource
+// ---------------------------------------------------------
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'validation');

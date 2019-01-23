@@ -21,9 +21,8 @@ use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Tests\Common\Mock\User;
-use Rebet\Translation\FileDictionary;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Rebet\Translation\Translator;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
  * RebetTestCase Class

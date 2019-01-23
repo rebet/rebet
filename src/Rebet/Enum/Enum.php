@@ -101,6 +101,14 @@ use Rebet\Translation\Translator;
 abstract class Enum implements \JsonSerializable, Convertible
 {
     /**
+     * Translation group name.
+     * If you want to change translator group then override the constants.
+     *
+     * @var string (default: 'enum')
+     */
+    protected const TRANSLATION_GROUP = 'enum';
+
+    /**
      * Enum Data Cache
      *
      * self::$enum_data_cache = [
@@ -172,7 +180,6 @@ abstract class Enum implements \JsonSerializable, Convertible
             static::$enum_list_cache = [];
             static::$enum_map_cache  = [];
         }
-        Translator::clear('enum');
     }
 
     /**
@@ -218,7 +225,7 @@ abstract class Enum implements \JsonSerializable, Convertible
         }
         $class      = get_called_class();
         $key        = "{$class}.{$field}.{$this->value}";
-        $translated = Translator::get("enum.{$key}", [], null, true, $locale);
+        $translated = Translator::get(static::TRANSLATION_GROUP.".{$key}", [], null, true, $locale);
         return $translated === null ? $this->$field : $translated ;
     }
 
@@ -230,7 +237,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      */
     public function equals($value) : bool
     {
-        return $value instanceof static ? $this === $value : $this->value == $value ;
+        return $value instanceof static ? $this == $value : $this->value == $value ;
     }
     
     /**
@@ -297,6 +304,10 @@ abstract class Enum implements \JsonSerializable, Convertible
      */
     private static function constToEnum(\ReflectionClass $rc, string $name) : ?self
     {
+        if (in_array($name, ['TRANSLATION_GROUP'])) {
+            return null;
+        }
+
         $class = $rc->getName();
         if (isset(self::$enum_data_cache[$class][$name])) {
             return self::$enum_data_cache[$class][$name];
@@ -335,7 +346,9 @@ abstract class Enum implements \JsonSerializable, Convertible
         $rc   = new \ReflectionClass(get_called_class());
         $list = [];
         foreach ($rc->getConstants() as $key => $args) {
-            $list[] = self::constToEnum($rc, $key);
+            if ($enum = self::constToEnum($rc, $key)) {
+                $list[] = $enum;
+            }
         }
         return $list;
     }
