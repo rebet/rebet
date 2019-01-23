@@ -744,10 +744,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             return $this;
         }
         switch ($type) {
-            case DateTime::class:
-                return $this->toDateTime();
             case Date::class:
                 return $this->toDate();
+            case DateTime::class:
+                return $this->toDateTime();
             case \DateTime::class:
                 return $this->toNativeDateTime();
             case 'string':

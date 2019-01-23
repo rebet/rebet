@@ -1,13 +1,6 @@
 <?php
 namespace Rebet\DateTime;
 
-use Rebet\Common\Convertible;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
-
 /**
  * Date Class
  *
@@ -38,11 +31,18 @@ class Date extends DateTime
     }
 
     /**
-     * Convert this to DateTime class
-     *
-     * @return DateTime
+     * {@inheritDoc}
      */
-    public function toDateTime() : DateTime {
+    public function toDate() : Date
+    {
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toDateTime() : DateTime
+    {
         return new DateTime($this);
     }
 }
