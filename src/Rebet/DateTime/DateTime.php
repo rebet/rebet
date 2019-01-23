@@ -777,6 +777,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * Note:
      * You can add custom formats by defining the 'custom_formats' configure settings.
      * The above custom format is also defined by 'custom_formats', it is possible to override the behavior.
+     * Extended format is output only and can not be used with analytic methods such as createFromFormat().
      *
      * @param string|null $format (default: null)
      * @return void
