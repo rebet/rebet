@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\DateTime;
 
+use Rebet\Common\Arrays;
+use Rebet\Common\Callback;
 use Rebet\Common\Convertible;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
@@ -40,6 +42,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             'test_now'                   => null,
             'test_now_timezone'          => null,
             'test_now_format'            => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
+            'custom_formats'             => [
+                'xwww' => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label'); },
+                'xww'  => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_short'); },
+                'xw'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },
+                'xmmm' => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label'); },
+                'xmm'  => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label_short'); },
+            ],
         ];
     }
 
@@ -433,6 +442,16 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
+     * Get localized month.
+     *
+     * @return Month
+     */
+    public function getLocalizedMonth() : Month
+    {
+        return Month::valueOf($this->getMonth());
+    }
+
+    /**
      * Set month
      *
      * @param int $month
@@ -729,9 +748,16 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * If null given as format then use default_format to format.
      *
      * The following extended formats are available in this class.
+     *
      *   - xw   : A min   textual representation of the `LOCALIZED` day of the week
      *   - xww  : A short textual representation of the `LOCALIZED` day of the week
      *   - xwww : A full  textual representation of the `LOCALIZED` day of the week
+     *   - xmm  : A short textual representation of the `LOCALIZED` month
+     *   - xmmm : A full  textual representation of the `LOCALIZED` month
+     *
+     * Note:
+     * You can add custom formats by defining the 'custom_formats' configure settings.
+     * The above custom format is also defined by 'custom_formats', it is possible to override the behavior.
      *
      * @param string|null $format (default: null)
      * @return void
@@ -740,14 +766,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $format = $format ?? $this->default_format ;
 
-        if (Strings::contains($format, 'xwww')) {
-            $format = preg_replace("/(?<!\\\\)xwww/u", $this->escape($this->getDayOfWeek()->translate('label')), $format);
-        }
-        if (Strings::contains($format, 'xww')) {
-            $format = preg_replace("/(?<!\\\\)xww/u", $this->escape($this->getDayOfWeek()->translate('label_short')), $format);
-        }
-        if (Strings::contains($format, 'xw')) {
-            $format = preg_replace("/(?<!\\\\)xw/u", $this->escape($this->getDayOfWeek()->translate('label_min')), $format);
+        $custom_formats = Arrays::sortKeys(static::config('custom_formats', false, []), SORT_DESC, Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; }));
+        foreach ($custom_formats as $key => $callback) {
+            if (Strings::contains($format, $key)) {
+                $format = preg_replace("/(?<!\\\\){$key}/u", $this->escape($callback($this)), $format);
+            }
         }
 
         return parent::format($format);
@@ -761,7 +784,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     protected function escape(string $text) : string
     {
-        return Strings::rcut(preg_replace('//u', '\\', $text), 1);
+        return preg_replace('/(?=[a-zA-Z])/u', '\\', $text);
     }
     
     /**

@@ -6,6 +6,7 @@ use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
 use Rebet\DateTime\DayOfWeek;
+use Rebet\DateTime\Month;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
 
@@ -515,6 +516,18 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame(10, $month);
     }
     
+    public function test_getLocalizedMonth()
+    {
+        $date  = DateTime::now();
+        $month = $date->getLocalizedMonth();
+        $this->assertInstanceOf(Month::class, $month);
+        $this->assertEquals(Month::OCTOBER(), $month);
+        $this->assertSame('10月', "{$month}");
+
+        Translator::setLocale('en');
+        $this->assertSame('October', "{$month}");
+    }
+
     public function test_addDay()
     {
         $date = DateTime::now();
@@ -958,6 +971,13 @@ class DateTimeTest extends RebetTestCase
             ['ja', '2010-10-20(水) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
             ['ja', '2010-10-20(水) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
             ['ja', '2010-10-20(水曜日) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
+
+            ['en', '2010-Oct-20 10:20:30', DateTime::now(), 'Y-xmm-d H:i:s'],
+            ['en', '2010-October-20 10:20:30', DateTime::now(), 'Y-xmmm-d H:i:s'],
+
+            ['ja', '2010-10月-20 10:20:30', DateTime::now(), 'Y-xmm-d H:i:s'],
+            ['ja', '2010-10月-20 10:20:30', DateTime::now(), 'Y-xmmm-d H:i:s'],
+
 
             ['non', '2010-10-20(We) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
             ['non', '2010-10-20(Wed) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],

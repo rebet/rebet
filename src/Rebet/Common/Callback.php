@@ -50,7 +50,7 @@ class Callback
     /**
      * Get the compare callback closure.
      *
-     * @param mixed $key (default: null)
+     * @param string|callabel|null $key of string or function($value):mixed (default: null)
      * @param bool $invert (default: false)
      * @return \Closure of function($a, $b) : int { ... }
      */
@@ -89,7 +89,7 @@ class Callback
      * @param bool $verbose (default: true)
      * @return string
      */
-    public static function toString(callable $callback, bool $verbose = true) : string 
+    public static function toString(callable $callback, bool $verbose = true) : string
     {
         // try{
         //     $reflector = new \ReflectionMethod($callback);
@@ -99,15 +99,15 @@ class Callback
         //         $function = $class->getNamespaceName().'\\'.$function;
         //     }
         // } catch(\Throwable $e) {
-            $reflector = new \ReflectionFunction(\Closure::fromCallable($callback));
-            $class     = $reflector->getClosureScopeClass();
-            $function  = $class ? $class->getShortName().'::'.$reflector->getShortName() : $reflector->getShortName() ;
-            if($verbose && $class) {
-                $function = $class->getNamespaceName().'\\'.$function;
-            }
+        $reflector = new \ReflectionFunction(\Closure::fromCallable($callback));
+        $class     = $reflector->getClosureScopeClass();
+        $function  = $class ? $class->getShortName().'::'.$reflector->getShortName() : $reflector->getShortName() ;
+        if ($verbose && $class) {
+            $function = $class->getNamespaceName().'\\'.$function;
+        }
         // }
 
-        $string = "{$function}(";
+        $string     = "{$function}(";
         $parameters = $reflector->getParameters();
         foreach ($parameters as $parameter) {
             $type_hint = null;
@@ -115,13 +115,13 @@ class Callback
             $name      = $parameter->isVariadic() ? "...{$name}" : $name ;
             $name      = $parameter->isPassedByReference() ? "&{$name}" : $name ;
 
-            if($verbose) {
+            if ($verbose) {
                 $type_hint = Reflector::getTypeHint($parameter);
                 $type_hint = $type_hint !== null && $parameter->allowsNull() ? "?{$type_hint}" : $type_hint ;
                 
                 try {
                     $name = $parameter->isOptional() ? "{$name} = ".(Strings::rbtrim($parameter->getDefaultValueConstantName(), '\\') ?? $parameter->getDefaultValue() ?? 'null') : $name ;
-                } catch(\ReflectionException $e) {
+                } catch (\ReflectionException $e) {
                     // It is not possible to get the default value of built-in functions or methods of built-in classes.
                     // Trying to do this will result a ReflectionException being thrown.
                 }
@@ -129,7 +129,7 @@ class Callback
 
             $string .= $type_hint === null ? "{$name}, " : "{$type_hint} {$name}, " ;
         }
-        if(!empty($parameters)) {
+        if (!empty($parameters)) {
             $string  = Strings::rcut($string, 2);
         }
         $string .= ')';
