@@ -1,4 +1,5 @@
 <?php
+use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DayOfWeek;
 use Rebet\DateTime\Month;
 
@@ -12,4 +13,7 @@ return [
         'label_short' => ['日', '月', '火', '水', '木', '金', '土'],
         'label_min'   => ['日', '月', '火', '水', '木', '金', '土'],
     ],
+    '@meridiem' => function (DateTime $datetime, bool $uppercase) {
+        return $datetime->getHour() < 12 ? '午前' : '午後' ;
+    },
 ];

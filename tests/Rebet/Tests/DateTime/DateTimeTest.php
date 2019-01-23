@@ -920,6 +920,21 @@ class DateTimeTest extends RebetTestCase
         $this->assertEquals(DayOfWeek::WEDNESDAY(), DateTime::now()->getDayOfWeek());
     }
 
+    public function test_getMeridiem()
+    {
+        Translator::setLocale('en');
+        $this->assertSame('AM', DateTime::createDateTime('2010-01-01 11:00:00')->getMeridiem());
+        $this->assertSame('am', DateTime::createDateTime('2010-01-01 11:00:00')->getMeridiem(false));
+        $this->assertSame('PM', DateTime::createDateTime('2010-01-01 12:00:00')->getMeridiem());
+        $this->assertSame('pm', DateTime::createDateTime('2010-01-01 12:00:00')->getMeridiem(false));
+
+        Translator::setLocale('ja');
+        $this->assertSame('午前', DateTime::createDateTime('2010-01-01 11:00:00')->getMeridiem());
+        $this->assertSame('午前', DateTime::createDateTime('2010-01-01 11:00:00')->getMeridiem(false));
+        $this->assertSame('午後', DateTime::createDateTime('2010-01-01 12:00:00')->getMeridiem());
+        $this->assertSame('午後', DateTime::createDateTime('2010-01-01 12:00:00')->getMeridiem(false));
+    }
+
     public function test_convertTo()
     {
         $micro  = microtime(true);
@@ -978,6 +993,15 @@ class DateTimeTest extends RebetTestCase
             ['ja', '2010-10月-20 10:20:30', DateTime::now(), 'Y-xmm-d H:i:s'],
             ['ja', '2010-10月-20 10:20:30', DateTime::now(), 'Y-xmmm-d H:i:s'],
 
+            ['en', '2010-10-20 am 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
+            ['en', '2010-10-20 AM 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
+            ['en', '2010-10-20 pm 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
+            ['en', '2010-10-20 PM 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
+
+            ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
+            ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
+            ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
+            ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
 
             ['non', '2010-10-20(We) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
             ['non', '2010-10-20(Wed) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],

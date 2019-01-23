@@ -5,10 +5,13 @@ use Rebet\Common\Arrays;
 use Rebet\Common\Callback;
 use Rebet\Common\Convertible;
 use Rebet\Common\Exception\LogicException;
+use Rebet\Common\Path;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\Translation\FileDictionary;
+use Rebet\Translation\Translator;
 
 /**
  * Date Time Class
@@ -48,6 +51,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 'xw'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },
                 'xmmm' => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label'); },
                 'xmm'  => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label_short'); },
+                'xa'   => function (DateTime $datetime) { return $datetime->getMeridiem(false); },
+                'xA'   => function (DateTime $datetime) { return $datetime->getMeridiem(true); },
             ],
         ];
     }
@@ -705,13 +710,25 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
-     * Get day of week
+     * Get localized day of week
      *
      * @return DayOfWeek
      */
     public function getDayOfWeek() : DayOfWeek
     {
         return DayOfWeek::valueOf($this->format('w'));
+    }
+
+    /**
+     * Get localized meridiem text.
+     *
+     * @param bool $uppercase (default: true)
+     * @return string|null
+     */
+    public function getMeridiem(bool $uppercase = true) : ?string
+    {
+        $callback = Translator::grammar('datetime', 'meridiem');
+        return $callback ? $callback($this, $uppercase) : null ;
     }
 
     /**
@@ -754,6 +771,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *   - xwww : A full  textual representation of the `LOCALIZED` day of the week
      *   - xmm  : A short textual representation of the `LOCALIZED` month
      *   - xmmm : A full  textual representation of the `LOCALIZED` month
+     *   - xa   : Lowercase `LOCALIZED` meridiem
+     *   - xA   : Uppercase `LOCALIZED` meridiem
      *
      * Note:
      * You can add custom formats by defining the 'custom_formats' configure settings.
@@ -972,3 +991,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         return $this->modify('Sunday this week')->endsOfDay();
     }
 }
+
+// ---------------------------------------------------------
+// Add library default translation resource
+// ---------------------------------------------------------
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'datetime');
