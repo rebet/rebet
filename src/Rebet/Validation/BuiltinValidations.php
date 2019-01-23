@@ -29,7 +29,7 @@ class BuiltinValidations extends Validations
 
     public static function defaultConfig()
     {
-        Translator::addResourceTo(FileDictionary::class, static::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
+        Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__ . '/i18n'), 'validation');
 
         return static::copyConfigFrom(parent::class, [
             'default'   => [

@@ -22,7 +22,7 @@ class Translator
         return [
             'dictionary'      => FileDictionary::class,
             'resource_adder'  => [
-                FileDictionary::class => function($dictionary, ...$args) { $dictionary->addLibraryResource(...$args); }
+                FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
             ],
             'locale'          => null,
             'fallback_locale' => 'en',
@@ -55,11 +55,14 @@ class Translator
      * @param mixed ...$args of dictionary resource parameters
      * @return void
      */
-    public static function addResourceTo(string $class, ...$args) : void 
+    public static function addResourceTo(string $class, ...$args) : void
     {
-        $adder = static::config('resource_adder.'.$class, false);
-        if($adder) {
-            call_user_func($adder, static::dictionary(), ...$args);
+        $dictionary = static::dictionary();
+        if ($dictionary instanceof $class) {
+            $resource_adder = static::config('resource_adder.'.$class, false);
+            if ($resource_adder) {
+                call_user_func($resource_adder, $dictionary, ...$args);
+            }
         }
     }
 

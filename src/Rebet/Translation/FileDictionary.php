@@ -84,19 +84,17 @@ class FileDictionary implements Dictionary
     /**
      * Add the given group resouces to Library layer resouces.
      *
-     * @param string $class of resource adder
-     * @param string|array $resource files directory path or path lists
+     * @param string $resource files directory path
      * @param string ...$group
      * @return self
      */
-    public function addLibraryResource(string $class, $resource, ...$groups) : self
+    public function addLibraryResource(string $resource, string ...$groups) : self
     {
-        if(static::$resouce_adders[$class] ?? false) {
+        if (in_array($resource, static::$resouce_dirs, true)) {
             return $this;
         }
-        static::$resouce_adders[$class] = true;
 
-        static::$resouce_dirs = array_merge(static::$resouce_dirs, (array)$resource);
+        static::$resouce_dirs[] = $resource;
         static::clearConfig(Layer::LIBRARY);
 
         if (empty($groups)) {

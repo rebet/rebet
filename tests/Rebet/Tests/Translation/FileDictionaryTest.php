@@ -41,7 +41,7 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertSame('翻訳', $attribute);
         $this->assertTrue($this->dictionary->isLoaded('attribute', 'ja'));
 
-        $this->assertInstanceOf(FileDictionary::class, $this->dictionary->addLibraryResource(static::class, App::path('/resources/tests/Translation/FileDictionary'), 'enum'));
+        $this->assertInstanceOf(FileDictionary::class, $this->dictionary->addLibraryResource(App::path('/resources/tests/Translation/FileDictionary'), 'enum'));
         $this->assertFalse($this->dictionary->isLoaded('enum', 'ja'));
         $this->assertTrue($this->dictionary->isLoaded('attribute', 'ja'));
 
@@ -106,7 +106,7 @@ class FileDictionaryTest extends RebetTestCase
 
     public function test_grammar()
     {
-        $this->dictionary->addLibraryResource(static::class, App::path('/resources/tests/Translation/FileDictionary'));
+        $this->dictionary->addLibraryResource(App::path('/resources/tests/Translation/FileDictionary'));
         $this->assertSame(', ', $this->dictionary->grammar('unittest', 'delimiter', 'en'));
         $this->assertSame(':first_name :last_name', $this->dictionary->grammar('unittest', 'full_name', 'en'));
         $this->assertSame(':last_name:first_name', $this->dictionary->grammar('unittest', 'full_name', 'ja'));
@@ -119,7 +119,7 @@ class FileDictionaryTest extends RebetTestCase
      */
     public function test_sentence($expect, string $key, array $locales, $selector = null, bool $recursive = true)
     {
-        $this->dictionary->addLibraryResource(static::class, App::path('/resources/tests/Translation/FileDictionary'));
+        $this->dictionary->addLibraryResource(App::path('/resources/tests/Translation/FileDictionary'));
         $this->assertSame($expect, $this->dictionary->sentence('unittest', $key, $locales, $selector, $recursive));
     }
 
