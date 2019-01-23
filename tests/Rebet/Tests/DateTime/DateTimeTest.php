@@ -1099,4 +1099,50 @@ class DateTimeTest extends RebetTestCase
     {
         $this->assertSame('2010-10-24 23:59:59.999999', DateTime::now()->endsOfWeek()->format('Y-m-d H:i:s.u'));
     }
+
+    /**
+     * @dataProvider dataXxxxs
+     */
+    public function test_isXxxx(string $datetime, $xxxx, $expect)
+    {
+        $method = "is{$xxxx}";
+        $this->assertSame($expect, DateTime::createDateTime($datetime)->$method());
+    }
+
+    public function dataXxxxs()
+    {
+        return [
+            ['2010-10-17', 'Sunday'   , true],
+            ['2010-10-18', 'Monday'   , true],
+            ['2010-10-19', 'Tuesday'  , true],
+            ['2010-10-20', 'Wednesday', true],
+            ['2010-10-21', 'Thursday' , true],
+            ['2010-10-22', 'Friday'   , true],
+            ['2010-10-23', 'Saturday' , true],
+
+            ['2010-10-18', 'Sunday'   , false],
+            ['2010-10-19', 'Monday'   , false],
+            ['2010-10-20', 'Tuesday'  , false],
+            ['2010-10-21', 'Wednesday', false],
+            ['2010-10-22', 'Thursday' , false],
+            ['2010-10-23', 'Friday'   , false],
+            ['2010-10-17', 'Saturday' , false],
+
+            ['2010-10-17', 'Weekends', true ],
+            ['2010-10-18', 'Weekends', false],
+            ['2010-10-19', 'Weekends', false],
+            ['2010-10-20', 'Weekends', false],
+            ['2010-10-21', 'Weekends', false],
+            ['2010-10-22', 'Weekends', false],
+            ['2010-10-23', 'Weekends', true ],
+
+            ['2010-10-17', 'Weekdays', false],
+            ['2010-10-18', 'Weekdays', true ],
+            ['2010-10-19', 'Weekdays', true ],
+            ['2010-10-20', 'Weekdays', true ],
+            ['2010-10-21', 'Weekdays', true ],
+            ['2010-10-22', 'Weekdays', true ],
+            ['2010-10-23', 'Weekdays', false],
+        ];
+    }
 }

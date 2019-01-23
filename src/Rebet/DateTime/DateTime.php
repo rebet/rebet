@@ -991,6 +991,96 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->modify('Sunday this week')->endsOfDay();
     }
+
+    /**
+     * It checks the day of week is weekend (Sunday or Saturday)
+     *
+     * @return boolean
+     */
+    public function isWeekends() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is weekday (Not weekend)
+     *
+     * @return boolean
+     */
+    public function isWeekdays() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Sunday.
+     *
+     * @return boolean
+     */
+    public function isSunday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Monday.
+     *
+     * @return boolean
+     */
+    public function isMonday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Tuesday.
+     *
+     * @return boolean
+     */
+    public function isTuesday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Wednesday.
+     *
+     * @return boolean
+     */
+    public function isWednesday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Thursday.
+     *
+     * @return boolean
+     */
+    public function isThursday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Friday.
+     *
+     * @return boolean
+     */
+    public function isFriday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
+
+    /**
+     * It checks the day of week is Saturday.
+     *
+     * @return boolean
+     */
+    public function isSaturday() : bool
+    {
+        return $this->getDayOfWeek()->{__FUNCTION__}();
+    }
 }
 
 // ---------------------------------------------------------
