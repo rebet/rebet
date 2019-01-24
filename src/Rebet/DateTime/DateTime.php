@@ -797,15 +797,15 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $format = $format ?? $this->default_format ;
 
-        $length_conparator   = Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
-        $localized_templates = Arrays::sortKeys(Translator::grammar('datetime', 'formats', []), SORT_DESC, $length_conparator);
-        foreach ($localized_templates as $key => $replacement) {
+        $length_comparator   = Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
+        $localized_templates = Arrays::sortKeys(Translator::grammar('datetime', 'formats', []), SORT_DESC, $length_comparator);
+        foreach ($localized_templates as $key => $template) {
             if (Strings::contains($format, $key)) {
-                $format = preg_replace("/(?<!\\\\){$key}/u", $replacement, $format);
+                $format = preg_replace("/(?<!\\\\){$key}/u", $template, $format);
             }
         }
 
-        $custom_formats = Arrays::sortKeys(static::config('custom_formats', false, []), SORT_DESC, $length_conparator);
+        $custom_formats = Arrays::sortKeys(static::config('custom_formats', false, []), SORT_DESC, $length_comparator);
         foreach ($custom_formats as $key => $callback) {
             if (Strings::contains($format, $key)) {
                 $format = preg_replace("/(?<!\\\\){$key}/u", $this->escape($callback($this)), $format);
