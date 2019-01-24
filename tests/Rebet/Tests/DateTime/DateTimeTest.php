@@ -972,40 +972,61 @@ class DateTimeTest extends RebetTestCase
     public function dataFormatExtendeds()
     {
         $this->setUp();
+        $now = DateTime::now();
 
         return [
-            ['en', '2010-10-20(x3) 10:20:30', DateTime::now(), 'Y-m-d(\xw) H:i:s'],
-            ['en', '2010-10-20(x33) 10:20:30', DateTime::now(), 'Y-m-d(\xww) H:i:s'],
-            ['en', '2010-10-20(x333) 10:20:30', DateTime::now(), 'Y-m-d(\xwww) H:i:s'],
-            ['en', '2010-10-20(xw) 10:20:30', DateTime::now(), 'Y-m-d(x\w) H:i:s'],
+            ['en', '2010-10-20(x3) 10:20:30', $now, 'Y-m-d(\xw) H:i:s'],
+            ['en', '2010-10-20(x33) 10:20:30', $now, 'Y-m-d(\xww) H:i:s'],
+            ['en', '2010-10-20(x333) 10:20:30', $now, 'Y-m-d(\xwww) H:i:s'],
+            ['en', '2010-10-20(xw) 10:20:30', $now, 'Y-m-d(x\w) H:i:s'],
 
-            ['en', '2010-10-20(We) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
-            ['en', '2010-10-20(Wed) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
-            ['en', '2010-10-20(Wednesday) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
 
-            ['ja', '2010-10-20(水) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
-            ['ja', '2010-10-20(水) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
-            ['ja', '2010-10-20(水曜日) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
+            ['en', '2010-10-20(We) 10:20:30', $now, 'Y-m-d(xw) H:i:s'],
+            ['en', '2010-10-20(Wed) 10:20:30', $now, 'Y-m-d(xww) H:i:s'],
+            ['en', '2010-10-20(Wednesday) 10:20:30', $now, 'Y-m-d(xwww) H:i:s'],
 
-            ['en', '2010-Oct-20 10:20:30', DateTime::now(), 'Y-xmm-d H:i:s'],
-            ['en', '2010-October-20 10:20:30', DateTime::now(), 'Y-xmmm-d H:i:s'],
-
-            ['ja', '2010-10月-20 10:20:30', DateTime::now(), 'Y-xmm-d H:i:s'],
-            ['ja', '2010-10月-20 10:20:30', DateTime::now(), 'Y-xmmm-d H:i:s'],
+            ['en', '2010-Oct-20 10:20:30', $now, 'Y-xmm-d H:i:s'],
+            ['en', '2010-October-20 10:20:30', $now, 'Y-xmmm-d H:i:s'],
 
             ['en', '2010-10-20 am 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
             ['en', '2010-10-20 AM 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
             ['en', '2010-10-20 pm 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
             ['en', '2010-10-20 PM 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
 
+            ['en', '10:20', $now, 'Xt'],
+            ['en', '10:20:30', $now, 'Xtt'],
+            ['en', '10:20:30.000000', $now, 'Xttt'],
+            ['en', '20/10/2010', $now, 'Xd'],
+            ['en', '20 October 2010', $now, 'Xdd'],
+            ['en', 'Wednesday, 20 October 2010', $now, 'Xddd'],
+            ['en', 'Wednesday, 20 October 2010 10:20:30', $now, 'Xddd Xtt'],
+            ['en', 'Wednesday, 20 October 2010 10:20:30 UTC [AM]', $now, 'Xddd Xtt e [xA]'],
+
+
+            ['ja', '2010-10-20(水) 10:20:30', $now, 'Y-m-d(xw) H:i:s'],
+            ['ja', '2010-10-20(水) 10:20:30', $now, 'Y-m-d(xww) H:i:s'],
+            ['ja', '2010-10-20(水曜日) 10:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+
+            ['ja', '2010-10月-20 10:20:30', $now, 'Y-xmm-d H:i:s'],
+            ['ja', '2010-10月-20 10:20:30', $now, 'Y-xmmm-d H:i:s'],
+
             ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
             ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
             ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
             ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
 
-            ['non', '2010-10-20(We) 10:20:30', DateTime::now(), 'Y-m-d(xw) H:i:s'],
-            ['non', '2010-10-20(Wed) 10:20:30', DateTime::now(), 'Y-m-d(xww) H:i:s'],
-            ['non', '2010-10-20(Wednesday) 10:20:30', DateTime::now(), 'Y-m-d(xwww) H:i:s'],
+            ['ja', '10:20', $now, 'Xt'],
+            ['ja', '10:20:30', $now, 'Xtt'],
+            ['ja', '10:20:30.000000', $now, 'Xttt'],
+            ['ja', '2010/10/20', $now, 'Xd'],
+            ['ja', '2010年10月20日', $now, 'Xdd'],
+            ['ja', '2010年10月20日(水)', $now, 'Xddd'],
+            ['ja', '2010年10月20日(水) 10:20:30 UTC [午前]', $now, 'Xddd Xtt e [xA]'],
+
+
+            ['non', '2010-10-20(We) 10:20:30', $now, 'Y-m-d(xw) H:i:s'],
+            ['non', '2010-10-20(Wed) 10:20:30', $now, 'Y-m-d(xww) H:i:s'],
+            ['non', '2010-10-20(Wednesday) 10:20:30', $now, 'Y-m-d(xwww) H:i:s'],
         ];
     }
 

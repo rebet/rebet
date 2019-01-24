@@ -766,6 +766,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * The following extended formats are available in this class.
      *
+     * $ Parts that make up the elements of the date (starts with 'x')
      *   - xw   : A min   textual representation of the `LOCALIZED` day of the week
      *   - xww  : A short textual representation of the `LOCALIZED` day of the week
      *   - xwww : A full  textual representation of the `LOCALIZED` day of the week
@@ -774,9 +775,19 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *   - xa   : Lowercase `LOCALIZED` meridiem
      *   - xA   : Uppercase `LOCALIZED` meridiem
      *
+     *   Note: You can add/change custom formats by defining the 'custom_formats' configure settings.
+     *
+     * $ Localized date and time format template (starts with 'X')
+     *   - Xt   : A min   `LOCALIZED` time (include hour and minute with/without meridiem)
+     *   - Xtt  : A short `LOCALIZED` time (include hour, minute and second with/without meridiem)
+     *   - Xttt : A full  `LOCALIZED` time (include hour, minute, second and milli/micro second with/without meridiem)
+     *   - Xd   : A min   `LOCALIZED` date (include year, month and day. using number and mark separator)
+     *   - Xdd  : A short `LOCALIZED` date (include year, month and day.)
+     *   - Xddd : A full  `LOCALIZED` date (include year, month, day and day of week)
+     *
+     *   Note: You can add/change custom formats by defining the 'formats' datetime transration settings.
+     *
      * Note:
-     * You can add custom formats by defining the 'custom_formats' configure settings.
-     * The above custom format is also defined by 'custom_formats', it is possible to override the behavior.
      * Extended format is output only and can not be used with analytic methods such as createFromFormat().
      *
      * @param string|null $format (default: null)
@@ -786,7 +797,15 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $format = $format ?? $this->default_format ;
 
-        $custom_formats = Arrays::sortKeys(static::config('custom_formats', false, []), SORT_DESC, Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; }));
+        $length_conparator   = Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
+        $localized_templates = Arrays::sortKeys(Translator::grammar('datetime', 'formats', []), SORT_DESC, $length_conparator);
+        foreach ($localized_templates as $key => $replacement) {
+            if (Strings::contains($format, $key)) {
+                $format = preg_replace("/(?<!\\\\){$key}/u", $replacement, $format);
+            }
+        }
+
+        $custom_formats = Arrays::sortKeys(static::config('custom_formats', false, []), SORT_DESC, $length_conparator);
         foreach ($custom_formats as $key => $callback) {
             if (Strings::contains($format, $key)) {
                 $format = preg_replace("/(?<!\\\\){$key}/u", $this->escape($callback($this)), $format);
