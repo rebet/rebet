@@ -3,6 +3,7 @@ namespace Rebet\Config;
 
 use Rebet\Common\Arrays;
 use Rebet\Common\OverrideOption;
+use Rebet\Common\Strings;
 
 /**
  * Locale Dependent Resource Loader Class
@@ -10,6 +11,7 @@ use Rebet\Common\OverrideOption;
  * Load the resource file according to the current locale by the following procedure.
  *
  *  1. Load {$loading_path}/{$locale}/{$base_name}.{$suffix} file
+ *     Note: if locale contains country part like 'en_US', try to find 'en_US' first and if not exists it try to find 'en'.
  *  2. Arrays::override() while repeating 1 for the given directories
  *
  * Furthermore, Rebet\Config\Resource::load() is used for loading resources.
@@ -41,8 +43,12 @@ class LocaleResource
 
         $resource = [];
         foreach ($loading_path as $path) {
-            $resource_path = "{$path}/{$locale}/{$base_name}.{$suffix}";
-            $resource      = Arrays::override($resource, Resource::load($suffix, $resource_path, $option ?? []) ?? [], [], OverrideOption::PREPEND);
+            foreach (array_unique([$locale, Strings::latrim($locale, '_')]) as $locale) {
+                if (file_exists($resource_path = "{$path}/{$locale}/{$base_name}.{$suffix}")) {
+                    break;
+                }
+            }
+            $resource = Arrays::override($resource, Resource::load($suffix, $resource_path, $option ?? []) ?? [], [], OverrideOption::PREPEND);
         }
 
         return $resource;

@@ -53,5 +53,18 @@ class LocaleResourceTest extends RebetTestCase
                 ],
             ],
         ], $resources);
+
+        $this->assertSame(
+            ['locale' => 'en_US'],
+            LocaleResource::load(App::path('/resources/tests/Config/LocaleResource'), 'en_US', 'locale')
+        );
+        $this->assertSame(
+            ['locale' => 'en'],
+            LocaleResource::load(App::path('/resources/tests/Config/LocaleResource'), 'en_NZ', 'locale')
+        );
+        $this->assertSame(
+            ['locale' => 'en'],
+            LocaleResource::load(App::path('/resources/tests/Config/LocaleResource'), 'en', 'locale')
+        );
     }
 }
