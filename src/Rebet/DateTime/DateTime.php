@@ -16,6 +16,10 @@ use Rebet\Translation\Translator;
 /**
  * Date Time Class
  *
+ * @todo implements is[Last|Current|Next]Xxxx()
+ * @todo implements [floor|round|ceil]Xxxx(int $step = 1)
+ * @todo implements DateInterval extended class
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
