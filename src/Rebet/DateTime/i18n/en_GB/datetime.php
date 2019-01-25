@@ -4,7 +4,7 @@ use Rebet\DateTime\DayOfWeek;
 use Rebet\DateTime\Month;
 
 /**
- * DateTime translation settings for English (en).
+ * DateTime translation settings for English (en_GB).
  *
  * Some fonctions implementation and translation text are borrowed from briannesbitt/Carbon ver 2.8 with some modifications.
  *

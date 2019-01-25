@@ -4,7 +4,7 @@ use Rebet\DateTime\DayOfWeek;
 use Rebet\DateTime\Month;
 
 /**
- * DateTime translation settings for English (en).
+ * DateTime translation settings for English (en_AU).
  *
  * Some fonctions implementation and translation text are borrowed from briannesbitt/Carbon ver 2.8 with some modifications.
  *
@@ -33,9 +33,9 @@ return [
                 ;
     },
     '@formats' => [
-        'Xt'   => 'H:i',
-        'Xtt'  => 'H:i:s',
-        'Xttt' => 'H:i:s.u',
+        'Xt'   => 'h:i xA',
+        'Xtt'  => 'h:i:s xA',
+        'Xttt' => 'h:i:s.u xA',
         'Xd'   => 'd/m/Y',
         'Xdd'  => 'd xmmm Y',
         'Xddd' => 'xwww, d xmmm Y',

@@ -4,7 +4,7 @@ use Rebet\DateTime\DayOfWeek;
 use Rebet\DateTime\Month;
 
 /**
- * DateTime translation settings for Japanese.
+ * DateTime translation settings for Japanese (ja).
  *
  * Some fonctions implementation and translation text are borrowed from briannesbitt/Carbon ver 2.8 with some modifications.
  *
