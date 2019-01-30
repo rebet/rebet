@@ -399,6 +399,22 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public function add($interval)
+    {
+        return parent::add(is_string($interval) ? new \DateInterval($interval) : $interval);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sub($interval)
+    {
+        return parent::sub(is_string($interval) ? new \DateInterval($interval) : $interval);
+    }
+
+    /**
      * Add year
      *
      * @param int $year

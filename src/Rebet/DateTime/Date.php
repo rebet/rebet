@@ -4,6 +4,8 @@ namespace Rebet\DateTime;
 /**
  * Date Class
  *
+ * Note: Time will be truncated in this class.
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -28,6 +30,55 @@ class Date extends DateTime
     {
         $time = $time instanceof DateTime ? $time : new DateTime($time, $timezone) ;
         parent::__construct($time->startsOfDay(), $timezone);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function modify($modify)
+    {
+        $date = parent::modify($modify);
+        return $date->format('H:i:s.u') === '00:00:00.000000' ? $date : $date->startsOfDay() ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTime($hour, $minute, $second = null, $microseconds = null)
+    {
+        return parent::setTime($hour, $minute, $second, $microseconds)->startsOfDay();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTimestamp($unixtimestamp)
+    {
+        return parent::setTimestamp($unixtimestamp)->startsOfDay();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTimezone($timezone)
+    {
+        return parent::setTimezone($timezone)->startsOfDay();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function add($interval)
+    {
+        return parent::add($interval)->startsOfDay();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sub($interval)
+    {
+        return parent::sub($interval)->startsOfDay();
     }
 
     /**
