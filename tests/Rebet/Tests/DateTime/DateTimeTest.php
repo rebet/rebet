@@ -132,6 +132,25 @@ class DateTimeTest extends RebetTestCase
         }
     }
 
+    public function test_valueOf()
+    {
+        $date = DateTime::valueOf('2010-10-20 10:20:30.123456');
+        $this->assertInstanceOf(DateTime::class, $date);
+        $this->assertSame('UTC', $date->getTimezone()->getName());
+        $this->assertSame('2010-10-20 10:20:30.123456', $date->format('Y-m-d H:i:s.u'));
+
+        $date = DateTime::valueOf('now');
+        $this->assertInstanceOf(DateTime::class, $date);
+        $this->assertSame('UTC', $date->getTimezone()->getName());
+        $this->assertSame('2010-10-20 10:20:30.000000', $date->format('Y-m-d H:i:s.u'));
+
+        $date = DateTime::valueOf('invalid');
+        $this->assertNull($date);
+
+        $date = DateTime::valueOf(null);
+        $this->assertNull($date);
+    }
+    
     public function test_createFromFormat()
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s.u', '2010-10-20 10:20:30.123456');
@@ -363,6 +382,15 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('Asia/Tokyo', $new->getTimezone()->getName());
     }
     
+    public function test___toString()
+    {
+        $now = DateTime::now();
+        $this->assertSame('2010-10-20 10:20:30', "{$now}");
+
+        $now->setDefaultFormat('Y/m/d H:i:s');
+        $this->assertSame('2010/10/20 10:20:30', "{$now}");
+    }
+
     public function test_sub()
     {
         $date = new DateTime();
