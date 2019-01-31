@@ -191,6 +191,20 @@ abstract class RebetTestCase extends TestCase
         return $request;
     }
 
+    protected function createJsonRequestMock($path, $roles = null, $channel = 'api') : Request
+    {
+        $session = new Session();
+        $session->start();
+        $request = Request::create($path);
+        $request->headers->set('X-Requested-With', 'XMLHttpRequest');
+        $request->headers->set('Accept', '*/*');
+        $request->setRebetSession($session);
+        $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
+        $request->route->roles(...((array)$roles));
+        $request->channel = $channel;
+        return $request;
+    }
+
     protected function signin(Request $request = null, string $signin_id = 'user@rebet.local', string $password = 'user') : Request
     {
         $request = $request ?? $this->createRequestMock('/');
