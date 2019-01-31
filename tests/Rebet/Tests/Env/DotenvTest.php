@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Env;
 
 use Rebet\Env\Dotenv;
+use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 
 class DotenvTest extends RebetTestCase
@@ -27,7 +28,7 @@ class DotenvTest extends RebetTestCase
      */
     public function test_init()
     {
-        $dotenv = Dotenv::init(__DIR__.'/../../../resources', '.env.unittest');
+        $dotenv = Dotenv::init(App::path('/resources'), '.env.unittest');
         $this->assertSame('unittest', \getenv('APP_ENV'));
     }
 }
