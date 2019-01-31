@@ -169,16 +169,17 @@ abstract class Enum implements \JsonSerializable, Convertible
      */
     public static function clear(?string $class = null) : void
     {
-        if ($class) {
-            unset(
-                static::$enum_data_cache[$class],
-                static::$enum_list_cache[$class],
-                static::$enum_map_cache[$class]
-            );
+        $class = $class ?? get_called_class() ;
+        if ($class === Enum::class) {
+            self::$enum_data_cache = [];
+            self::$enum_list_cache = [];
+            self::$enum_map_cache  = [];
         } else {
-            static::$enum_data_cache = [];
-            static::$enum_list_cache = [];
-            static::$enum_map_cache  = [];
+            unset(
+                self::$enum_data_cache[$class],
+                self::$enum_list_cache[$class],
+                self::$enum_map_cache[$class]
+            );
         }
     }
 

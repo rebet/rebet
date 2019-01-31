@@ -5,6 +5,7 @@ use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Translation\Translator;
 
 class EnumTest extends RebetTestCase
 {
@@ -16,6 +17,38 @@ class EnumTest extends RebetTestCase
         parent::setUp();
         $this->male   = Gender::MALE();
         $this->female = Gender::FEMALE();
+    }
+
+    public function test_clear()
+    {
+        $reflection = new \ReflectionProperty(Enum::class, 'enum_data_cache');
+        $reflection->setAccessible(true);
+
+        Gender::lists();
+        EnumTest_AcceptStatus::lists();
+
+        $this->assertTrue(isset($reflection->getValue()[Gender::class]));
+        $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
+
+        Enum::clear(Gender::class);
+
+        $this->assertFalse(isset($reflection->getValue()[Gender::class]));
+        $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
+
+        Gender::lists();
+        
+        Enum::clear();
+
+        $this->assertFalse(isset($reflection->getValue()[Gender::class]));
+        $this->assertFalse(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
+
+        Gender::lists();
+        EnumTest_AcceptStatus::lists();
+
+        Gender::clear();
+        
+        $this->assertFalse(isset($reflection->getValue()[Gender::class]));
+        $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
     }
 
     public function test_callStatic()
@@ -351,6 +384,26 @@ class EnumTest extends RebetTestCase
             ['WAITING', 'ACCEPTED', 'REJECTED'],
             EnumTest_AcceptStatus::names()
         );
+    }
+    
+    public function test_translate()
+    {
+        $this->assertSame('男性', Gender::MALE()->translate());
+        $this->assertSame('女性', Gender::FEMALE()->translate());
+
+        $this->assertSame('男性', Gender::MALE()->translate('label'));
+        $this->assertSame('Male', Gender::MALE()->translate('label', 'en'));
+        $this->assertSame('Männlich', Gender::MALE()->translate('label', 'de'));
+
+        App::setLocale('de');
+
+        $this->assertSame('Männlich', Gender::MALE()->translate());
+        $this->assertSame('Weiblich', Gender::FEMALE()->translate());
+
+        Translator::setLocale('en');
+
+        $this->assertSame('Male', Gender::MALE()->translate());
+        $this->assertSame('Female', Gender::FEMALE()->translate());
     }
 
     public function test_nexts()
