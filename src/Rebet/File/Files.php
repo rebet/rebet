@@ -4,9 +4,7 @@ namespace Rebet\File;
 use Rebet\File\Exception\ZipArchiveException;
 
 /**
- * ファイル関連 ユーティリティ クラス
- *
- * ファイル関連の簡便なユーティリティメソッドを集めたクラスです。
+ * Files Utility Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -23,9 +21,9 @@ class Files
     }
 
     /**
-     * 対象のディレクトリを サブディレクトリを含め 削除します。
+     * Delete the target directory including the subdirectory.
      *
-     * @param  string $dir 削除対象ディレクトリパス
+     * @param string $dir
      * @return void
      */
     public static function removeDir(string $dir) : void
@@ -49,26 +47,26 @@ class Files
     }
 
     /**
-     * 対象の ZIP ファイルを展開します。
+     * Extract the target ZIP file.
      *
-     * @param  string $zipPath ZIPファイルパス
-     * @param  string $destDir 展開先ディレクトリパス
+     * @param string $zip_path
+     * @param string $dest_dir
      * @return void
      * @throws Rebet\File\Exception\ZipArchiveException
      */
-    public static function unzip(string $zipPath, string $destDir) : void
+    public static function unzip(string $zip_path, string $dest_dir) : void
     {
         $zip = new \ZipArchive();
-        self::zipErrorCheck($zip->open($zipPath), "Open {$zipPath} failed.");
-        $zip->extractTo($destDir);
+        self::zipErrorCheck($zip->open($zip_path), "Open {$zip_path} failed.");
+        $zip->extractTo($dest_dir);
         $zip->close();
     }
     
     /**
-     * ZipArchive の エラーコード を Exception に変換します。
+     * Convert ZipArchive error code to Exception.
      *
-     * @param int|bool $code 成否及びエラーコード
-     * @param ?string $messsage エラー発生時のメッセージ（デフォルト： 'ZipArchive error.'）
+     * @param int|bool $code
+     * @param string|null $messsage of error happend (default: 'ZipArchive error.')
      * @throws Rebet\File\Exception\ZipArchiveException
      */
     private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
@@ -111,19 +109,18 @@ class Files
     }
 
     /**
-     * 対象のパスを ZIP 圧縮します。
+     * Compress target path by ZIP.
      *
-     * @param  string   $sourcePath       圧縮対象ファイル or ディレクトリ
-     * @param  string   $outZipPath       圧縮後のZIPファイルパス
-     * @param  boolean  $includeTargetDir 指定ディレクトリをZIPアーカイブに含めるか否か（デフォルト：true[=含める]）
-     * @param  \Closure $filter           格納データ取捨選択用フィルタ
-     *                                    ⇒ $path を引数に取り、 true を返すとそのパスを含み, false を返すとそのパスを除外する。
-     *                                    　 （デフォルト：null = function($path) { return true; }; = 全データ格納）
-     * @param  number   $outDirPermission ZIP格納ディレクトリ自動生成時のパーミッション（デフォルト：0775）
+     * @param string $source_path of target file or directory
+     * @param string $out_zip_path
+     * @param boolean $include_target_dir (default: true)
+     * @param \Closure $filter of zipped file selector (default: null = function($path) { return true; })
+     *                 => Take $path as an argument, return true to include that path, and return false to exclude that path.
+     * @param int $out_dir_permission (default: 0775)
      * @return void
      * @throws Rebet\File\Exception\ZipArchiveException
      */
-    public static function zip(string $sourcePath, string $outZipPath, bool $includeTargetDir = true, ?\Closure $filter = null, int $outDirPermission = 0775) : void
+    public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, ?\Closure $filter = null, int $out_dir_permission = 0775) : void
     {
         if (empty($filter)) {
             $filter = function ($path) {
@@ -131,51 +128,51 @@ class Files
             };
         }
         
-        $pathInfo   = pathInfo($sourcePath);
-        $parentPath = $pathInfo['dirname'];
-        $dirName    = $pathInfo['basename'];
+        $path_info   = pathInfo($source_path);
+        $parent_path = $path_info['dirname'];
+        $dir_name    = $path_info['basename'];
         
-        $destDir = dirname($outZipPath);
-        if (!file_exists($destDir)) {
-            mkdir($destDir, $outDirPermission, true);
+        $dest_dir = dirname($out_zip_path);
+        if (!file_exists($dest_dir)) {
+            mkdir($dest_dir, $out_dir_permission, true);
         }
         
         $z = new \ZipArchive();
-        self::zipErrorCheck($z->open($outZipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE), "Open {$outZipPath} failed.");
-        if ($includeTargetDir) {
-            $z->addEmptyDir($dirName);
+        self::zipErrorCheck($z->open($out_zip_path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE), "Open {$out_zip_path} failed.");
+        if ($include_target_dir) {
+            $z->addEmptyDir($dir_name);
         }
-        self::folderToZip($sourcePath, $z, strlen($includeTargetDir ? "$parentPath/" : "$parentPath/$dirName/"), $filter);
+        self::folderToZip($source_path, $z, strlen($include_target_dir ? "{$parent_path}/" : "{$parent_path}/{$dir_name}/"), $filter);
         $z->close();
     }
     
     /**
-     * ディレクトリを再帰的にZIP圧縮します。
+     * ZIP compressed directories recursively.
      *
      * @param  string $folder
-     * @param  \ZipArchive $zipFile
-     * @param  int $exclusiveLength
+     * @param  \ZipArchive $zip_file
+     * @param  int $exclusive_length
      * @param  \Closure $filter
      * @return void
      */
-    private static function folderToZip(string $folder, \ZipArchive &$zipFile, int $exclusiveLength, \Closure $filter)
+    private static function folderToZip(string $folder, \ZipArchive &$zip_file, int $exclusive_length, \Closure $filter)
     {
         $handle = opendir($folder);
         while (false !== $f = readdir($handle)) {
             if ($f != '.' && $f != '..') {
-                $filePath = "$folder/$f";
-                if (!$filter($filePath)) {
+                $file_path = "{$folder}/{$f}";
+                if (!$filter($file_path)) {
                     continue;
                 }
                 
                 // Remove prefix from file path before add to zip.
-                $localPath = substr($filePath, $exclusiveLength);
-                if (is_file($filePath)) {
-                    $zipFile->addFile($filePath, $localPath);
-                } elseif (is_dir($filePath)) {
+                $local_path = substr($file_path, $exclusive_length);
+                if (is_file($file_path)) {
+                    $zip_file->addFile($file_path, $local_path);
+                } elseif (is_dir($file_path)) {
                     // Add sub-directory.
-                    $zipFile->addEmptyDir($localPath);
-                    self::folderToZip($filePath, $zipFile, $exclusiveLength, $filter);
+                    $zip_file->addEmptyDir($local_path);
+                    self::folderToZip($file_path, $zip_file, $exclusive_length, $filter);
                 }
             }
         }
