@@ -31,13 +31,13 @@ class Files
         if (!file_exists($dir)) {
             return;
         }
-        if ($handle = opendir("$dir")) {
+        if ($handle = opendir($dir)) {
             while (false !== ($item = readdir($handle))) {
                 if ($item != "." && $item != "..") {
-                    if (is_dir("$dir/$item")) {
-                        self::removeDir("$dir/$item");
+                    if (is_dir("{$dir}/{$item}")) {
+                        self::removeDir("{$dir}/{$item}");
                     } else {
-                        unlink("$dir/$item");
+                        unlink("{$dir}/{$item}");
                     }
                 }
             }
