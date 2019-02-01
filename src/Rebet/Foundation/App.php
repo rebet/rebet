@@ -8,12 +8,11 @@ use Rebet\DateTime\DateTime;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Route\MethodRoute;
+use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
-use Rebet\View\Engine\Smarty\Smarty;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\View;
-use Rebet\Translation\FileDictionary;
 
 /**
  * Application Config Class
@@ -88,11 +87,6 @@ class App
             // Blade template settings
             Blade::class => [
                 'customizers' => ['Rebet\\Foundation\\View\\Engine\\Blade\\BladeCustomizer::customize'],
-            ],
-
-            // Smarty template settings
-            Smarty::class => [
-                'customizers' => ['Rebet\\Foundation\\View\\Engine\\Smarty\\SmartyCustomizer::customize'],
             ],
 
             // Twig template settings
