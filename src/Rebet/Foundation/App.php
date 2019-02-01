@@ -19,8 +19,6 @@ use Rebet\View\View;
  *
  * Define and manage application and framework configuration settings.
  *
- * @todo Create an English resource and change the library default setting to ja => en
- *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -34,9 +32,7 @@ class App
     {
         return [
             'channel'         => null,
-            'env'             => Config::promise(function () {
-                return getenv('APP_ENV') ?: 'development' ;
-            }),
+            'env'             => Config::promise(function () { return getenv('APP_ENV') ?: 'development' ; }),
             'entry_point'     => null,
             'root'            => null,
             'locale'          => null,
