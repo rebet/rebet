@@ -4,8 +4,8 @@ namespace Rebet\Foundation\View\Engine\Blade;
 use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
 use Rebet\Stream\Stream;
-use Rebet\View\Engine\Blade\BladeCompiler;
 use Rebet\Translation\Translator;
+use Rebet\View\Engine\Blade\BladeCompiler;
 
 /**
  * Blade custom directives for Rebet
@@ -49,8 +49,7 @@ class BladeCustomizer
         // Usage:
         //   @prefix
         $blade->code('prefix', 'echo(', function ($prefix) {
-            $prefix = Stream::of($prefix, true);
-            return $prefix ? $prefix->escape() : '' ;
+            return Stream::of($prefix, true)->escape() ;
         }, ');', '$prefix ?? null');
         
         // ------------------------------------------------

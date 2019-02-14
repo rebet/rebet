@@ -3,6 +3,8 @@ namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
+use Rebet\Auth\Event\Authenticated;
+use Rebet\Auth\Event\AuthenticateFailed;
 use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
@@ -15,8 +17,6 @@ use Rebet\Http\Response\RedirectResponse;
 use Rebet\Tests\Common\Mock\Bank;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Auth\Event\Authenticated;
-use Rebet\Auth\Event\AuthenticateFailed;
 
 class AuthTest extends RebetTestCase
 {
@@ -313,5 +313,12 @@ class AuthTest extends RebetTestCase
         $this->assertFalse(Auth::role($user, 'admin'));
         $this->assertTrue(Auth::role($user, 'user', 'admin'));
         $this->assertTrue(Auth::role($user, 'guest', 'user'));
+        $this->assertTrue(Auth::role($user, 'user', 'editable'));
+        $this->assertFalse(Auth::role($user, 'user:editable'));
+
+        $this->signin(null, 'user.editable@rebet.local', 'user.editable');
+        $user = Auth::user();
+        $this->assertTrue(Auth::role($user, 'user', 'editable'));
+        $this->assertTrue(Auth::role($user, 'user:editable'));
     }
 }
