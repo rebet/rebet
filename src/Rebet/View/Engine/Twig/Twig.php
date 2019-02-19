@@ -3,6 +3,8 @@ namespace Rebet\View\Engine\Twig;
 
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
+use Rebet\View\Engine\Twig\Environment\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Twig templeate engine Class
@@ -32,7 +34,7 @@ class Twig implements Engine
     /**
      * Real twig template object.
      *
-     * @var \Twig_Environment
+     * @var Environment
      */
     public $twig = null;
 
@@ -55,8 +57,8 @@ class Twig implements Engine
         $options           = $config['options'] ?? static::config('options', false, []) ;
         $customizers       = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
 
-        $loader     = new \Twig_Loader_Filesystem($template_dir);
-        $this->twig = new \Twig_Environment($loader, $options);
+        $loader     = new FilesystemLoader($template_dir);
+        $this->twig = new Environment($loader, $options);
         
         foreach (array_reverse($customizers) as $customizer) {
             $invoker = \Closure::fromCallable($customizer);

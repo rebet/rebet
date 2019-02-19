@@ -63,7 +63,7 @@ EOS
         $this->assertSame('/rebet/controller/action/arg1', $this->engine->render('custom/prefix', ['prefix' => '/rebet']));
     }
 
-    public function test_render_is()
+    public function test_render_role()
     {
         $this->assertSame(
             <<<EOS
@@ -71,7 +71,7 @@ Guest
 
 EOS
             ,
-            $this->engine->render('custom/is')
+            $this->engine->render('custom/role')
         );
 
         $request = $this->createRequestMock('/');
@@ -85,7 +85,7 @@ Not Guest.
 
 EOS
             ,
-            $this->engine->render('custom/is')
+            $this->engine->render('custom/role')
         );
         $this->signout();
 
@@ -99,7 +99,7 @@ Not Guest.
 
 EOS
             ,
-            $this->engine->render('custom/is')
+            $this->engine->render('custom/role')
         );
         $this->signout();
 
@@ -112,7 +112,7 @@ Not Guest.
 
 EOS
             ,
-            $this->engine->render('custom/is')
+            $this->engine->render('custom/role')
         );
     }
 }

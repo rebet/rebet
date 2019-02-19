@@ -24,14 +24,14 @@ class BladeCompiler extends LaravelBladeCompiler
      * Register an "code" statement directive.
      * If you give '$errors' as bind then you can get the $errors of assigned value as first argument of callback.
      *
-     * @param  string  $name
-     * @param  string  $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
-     * @param  callable  $callback
-     * @param  string  $close code to callbak returns like ');', ';', '):' etc (default: ';')
-     * @param  string  $bind (default: null)
+     * @param string $name
+     * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
+     * @param callable $callback
+     * @param string $close code to callbak returns like ');', ';', '):' etc
+     * @param string $bind (default: null)
      * @return void
      */
-    public function code($name, string $open, callable $callback, string $close = ';', string $bind = null) : void
+    public function code($name, string $open, callable $callback, string $close, string $bind = null) : void
     {
         $this->codes[$name] = $callback;
         $this->directive($name, function ($expression) use ($name, $open, $close, $bind) {
@@ -46,8 +46,8 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Call the codes closuer.
      *
-     * @param  string  $name
-     * @param  array  $parameters
+     * @param string $name
+     * @param array $parameters
      * @return bool
      */
     public function call($name, ...$parameters)
@@ -58,8 +58,8 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Register an "if" (and not) statement directive.
      *
-     * @param  string  $name
-     * @param  callable  $callback
+     * @param string $name
+     * @param callable $callback
      * @return void
      */
     public function if($name, callable $callback)

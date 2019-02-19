@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\View\Engine\Blade;
+namespace Rebet\Tests\Foundation\View\Engine\Blade;
 
 use Rebet\Foundation\App;
 use Rebet\Tests\Foundation\View\Engine\EngineCustomizerTestCase;

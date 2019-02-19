@@ -33,12 +33,12 @@ class BladeCustomizer
         // [env/envnot] Check current environment
         // ------------------------------------------------
         // Params:
-        //   $env : string|array - allow enviroments
+        //   $env : string - allow enviroments
         // Usage:
         //   @env('local') ... @else ... @endenv
-        //   @env(['local', 'testing']) ... @else ... @endenv
-        $blade->if('env', function ($env) {
-            return in_array(App::getEnv(), (array)$env);
+        //   @env('local', 'testing') ... @else ... @endenv
+        $blade->if('env', function (string ...$env) {
+            return in_array(App::getEnv(), $env);
         });
 
         // ------------------------------------------------
@@ -53,15 +53,15 @@ class BladeCustomizer
         }, ');', '$prefix ?? null');
         
         // ------------------------------------------------
-        // [is/isnot] Check current users role (Authorization)
+        // [role/rolenot] Check current users role (Authorization)
         // ------------------------------------------------
         // Params:
         //   $roles : string - role names
         // Usage:
-        //   @is('admin') ... @else ... @endis
-        //   @is('user', 'guest') ... @else ... @endis
-        //   @is('user', 'guest:post-editable') ... @else ... @endis
-        $blade->if('is', function (string ...$roles) {
+        //   @role('admin') ... @else ... @endrole
+        //   @role('user', 'guest') ... @else ... @endrole
+        //   @role('user', 'guest:post-editable') ... @else ... @endrole
+        $blade->if('role', function (string ...$roles) {
             return Auth::user()->is(...$roles);
         });
 

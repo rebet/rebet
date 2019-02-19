@@ -1,7 +1,7 @@
 @env('unittest')
 unittest
 @endenv
-@env(['unittest','local'])
+@env('unittest', 'local')
 unittest or local
 @endenv
 @env('production')
