@@ -35,7 +35,7 @@ class BladeCustomizer
         // Params:
         //   $env : string - allow enviroments
         // Usage:
-        //   @env('local') ... @else ... @endenv
+        //   @env('local') ... @elseenv('testing') ... @else ... @endenv
         //   @env('local', 'testing') ... @else ... @endenv
         $blade->if('env', function (string ...$env) {
             return in_array(App::getEnv(), $env);
@@ -58,7 +58,7 @@ class BladeCustomizer
         // Params:
         //   $roles : string - role names
         // Usage:
-        //   @role('admin') ... @else ... @endrole
+        //   @role('admin') ... @elserole('user') ... @else ... @endrole
         //   @role('user', 'guest') ... @else ... @endrole
         //   @role('user', 'guest:post-editable') ... @else ... @endrole
         $blade->if('role', function (string ...$roles) {
@@ -73,7 +73,7 @@ class BladeCustomizer
         //   $target : string|object - target object or class or any name
         //   $extras : mixed         - extra arguments
         // Usage:
-        //   @can('update', $post) ... @else ... @endcan
+        //   @can('update', $post) ... @elsecan('create', Post::class) ... @else ... @endcan
         //   @can('create', Post::class) ... @else ... @endcan
         //   @can('update', 'remark', $post) ... @else ... @endcan
         $blade->if('can', function (string $action, $target, ...$extras) {

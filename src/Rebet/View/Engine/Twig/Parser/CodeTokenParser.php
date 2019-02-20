@@ -17,29 +17,31 @@ use Twig\TokenParser\AbstractTokenParser;
 class CodeTokenParser extends AbstractTokenParser
 {
     protected $tag;
-    protected $conjunction;
+    protected $verbs;
     protected $open;
     protected $callback;
     protected $close;
-    protected $context_args;
+    protected $separators;
 
     /**
      * Create Code Token Parser
      *
      * @param string $tag
-     * @param string|null $conjunction
+     * @param string|null $verbs
+     * @param array|null $separators of arguments. If null given then [','] will set.
      * @param string $open
      * @param callable $callback
      * @param string $close
      * @param array $binds (default: [])
      */
-    public function __construct(string $tag, ?string $conjunction, string $open, callable $callback, string $close, array $binds = [])
+    public function __construct(string $tag, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = [])
     {
-        $this->tag         = $tag;
-        $this->conjunction = $conjunction;
-        $this->open        = $open;
-        $this->close       = $close;
-        $this->binds       = $binds;
+        $this->tag        = $tag;
+        $this->verbs      = $verbs;
+        $this->separators = $separators ?? [','];
+        $this->open       = $open;
+        $this->close      = $close;
+        $this->binds      = $binds;
 
         CodeNode::addCallback($tag, $callback);
     }
@@ -54,20 +56,20 @@ class CodeTokenParser extends AbstractTokenParser
         if ($stream->nextIf(Token::OPERATOR_TYPE, 'not')) {
             $invert = true;
         }
-        if (!empty($this->conjunction)) {
+        if (!empty($this->verbs)) {
             switch ($stream->getCurrent()->getValue()) {
-                case $this->conjunction:
-                    $stream->expect($stream->getCurrent()->getType(), $this->conjunction);
+                case $this->verbs:
+                    $stream->expect($stream->getCurrent()->getType(), $this->verbs);
                     if ($stream->nextIf(Token::NAME_TYPE, 'not')) {
                         $invert = true;
                     }
                     break;
-                case "{$this->conjunction} not":
-                    $stream->expect($stream->getCurrent()->getType(), "{$this->conjunction} not");
+                case "{$this->verbs} not":
+                    $stream->expect($stream->getCurrent()->getType(), "{$this->verbs} not");
                     $invert = true;
                     break;
-                case "not {$this->conjunction}":
-                    $stream->expect($stream->getCurrent()->getType(), "not {$this->conjunction}");
+                case "not {$this->verbs}":
+                    $stream->expect($stream->getCurrent()->getType(), "not {$this->verbs}");
                     $invert = true;
                     break;
             }
@@ -77,14 +79,10 @@ class CodeTokenParser extends AbstractTokenParser
             if ($stream->test(Token::BLOCK_END_TYPE)) {
                 break;
             }
-            if ($stream->nextIf(Token::PUNCTUATION_TYPE, ',')) {
-                continue;
-            }
-            if ($stream->nextIf(Token::OPERATOR_TYPE, 'and')) {
-                continue;
-            }
-            if ($stream->nextIf(Token::OPERATOR_TYPE, 'or')) {
-                continue;
+            foreach ($this->separators as $separator) {
+                if ($stream->nextIf($stream->getCurrent()->getType(), $separator)) {
+                    continue 2;
+                }
             }
             if ($stream->test(Token::PUNCTUATION_TYPE, '[')) {
                 $template_args[] = $this->parser->getExpressionParser()->parseArrayExpression();

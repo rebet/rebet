@@ -25,30 +25,32 @@ class Environment extends TwigEnvironment
      * If you give '$errors' as binds then you can get the $errors of assigned value as first argument of callback.
      *
      * @param string $name
-     * @param string|null $conjunction
+     * @param string|null $verbs
+     * @param array|null $separators of arguments. If null given then [','] will set.
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
      * @param callable $callback
      * @param string $close code to callbak returns like ');', ';', '):' etc
      * @param array $binds (default: null)
      * @return void
      */
-    public function code($name, ?string $conjunction, string $open, callable $callback, string $close, array $binds = []) : void
+    public function code($name, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = []) : void
     {
-        $this->addTokenParser(new CodeTokenParser($name, $conjunction, $open, $callback, $close, $binds));
+        $this->addTokenParser(new CodeTokenParser($name, $verbs, $separators, $open, $callback, $close, $binds));
     }
 
     /**
      * Register an "if" (and not) extention.
      *
      * @param string $name
-     * @param string|null $conjunction
+     * @param string|null $verbs
+     * @param array|null $separators of arguments. If null given then [','] will set.
      * @param callable $callback
      * @return void
      */
-    public function if(string $name, ?string $conjunction, callable $callback)
+    public function if(string $name, ?string $verbs, ?array $separators, callable $callback)
     {
-        $this->addTokenParser(new CodeTokenParser($name, $conjunction, 'if(', $callback, ") {\n"));
-        $this->addTokenParser(new CodeTokenParser("else{$name}", $conjunction, '} elseif(', $callback, ") {\n"));
+        $this->code($name, $verbs, $separators, 'if(', $callback, ") {\n");
+        $this->code("else{$name}", $verbs, $separators, '} elseif(', $callback, ") {\n");
         if (!$this->registered_else) {
             $this->addTokenParser(new RawTokenParser("else", "} else {\n"));
             $this->registered_else = true;

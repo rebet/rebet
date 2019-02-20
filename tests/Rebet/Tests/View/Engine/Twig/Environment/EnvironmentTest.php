@@ -27,7 +27,7 @@ class EnvironmentTest extends RebetTestCase
 
     public function test_code()
     {
-        $this->env->code('hello', null, 'echo(', function ($name = 'everyone') { return "Hello {$anme}."; }, ');');
+        $this->env->code('hello', null, [], 'echo(', function ($name = 'everyone') { return "Hello {$anme}."; }, ');');
 
         $source   = '{% hello %}';
         $expect   = <<<EOS
@@ -62,7 +62,7 @@ EOS
 
     public function test_if()
     {
-        $this->env->if('env', 'is', function ($env) { return true; });
+        $this->env->if('env', 'is', [], function ($env) { return true; });
 
         $source   = <<<EOS
 {% env is "local" %}

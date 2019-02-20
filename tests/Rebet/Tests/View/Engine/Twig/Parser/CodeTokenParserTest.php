@@ -14,12 +14,12 @@ class CodeTokenParserTest extends RebetTestCase
 {
     public function test___constract()
     {
-        $this->assertInstanceOf(CodeTokenParser::class, new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'));
+        $this->assertInstanceOf(CodeTokenParser::class, new CodeTokenParser('hello', null, null, 'echo', function (...$args) { return "Hello dummy"; }, ';'));
     }
 
     public function test_getTag()
     {
-        $paser = new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';');
+        $paser = new CodeTokenParser('hello', null, null, 'echo', function (...$args) { return "Hello dummy"; }, ';');
         $this->assertSame('hello', $paser->getTag());
     }
 
@@ -42,7 +42,7 @@ class CodeTokenParserTest extends RebetTestCase
     {
         return [
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello %}',
                 <<<EOS
 // line 1
@@ -50,7 +50,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello") ;
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello [] %}',
                 <<<EOS
 // line 1
@@ -58,7 +58,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", []) ;
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello "world" %}',
                 <<<EOS
 // line 1
@@ -66,7 +66,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", "world") ;
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello name %}',
                 <<<EOS
 // line 1
@@ -74,7 +74,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["name"] ?
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello name "!" %}',
                 <<<EOS
 // line 1
@@ -82,7 +82,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["name"] ?
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello name "!" %}',
                 <<<EOS
 // line 1
@@ -90,7 +90,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["name"] ?
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [',', 'and'], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello you, he and name "!" %}',
                 <<<EOS
 // line 1
@@ -98,7 +98,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["you"] ??
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';'),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';'),
                 '{% hello [you, he, name] "!" %}',
                 <<<EOS
 // line 1
@@ -106,7 +106,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => (\$context["yo
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';', ['foo']),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';', ['foo']),
                 '{% hello %}',
                 <<<EOS
 // line 1
@@ -114,7 +114,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["foo"] ??
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';', ['foo']),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';', ['foo']),
                 '{% hello "world" %}',
                 <<<EOS
 // line 1
@@ -122,7 +122,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["foo"] ??
 EOS
             ],
             [
-                new CodeTokenParser('hello', null, 'echo', function (...$args) { return "Hello dummy"; }, ';', ['foo']),
+                new CodeTokenParser('hello', null, [], 'echo', function (...$args) { return "Hello dummy"; }, ';', ['foo']),
                 '{% hello "world" bar %}',
                 <<<EOS
 // line 1
@@ -130,7 +130,7 @@ echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["foo"] ??
 EOS
             ],
             [
-                new CodeTokenParser('role', 'is', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'is', [], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role is "admin" %}',
                 <<<EOS
 // line 1
@@ -139,7 +139,7 @@ if( Rebet\View\Engine\Twig\Node\CodeNode::execute("role", "admin") ) {
 EOS
             ],
             [
-                new CodeTokenParser('role', 'is', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'is', [], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role is "admin" "user"%}',
                 <<<EOS
 // line 1
@@ -148,7 +148,7 @@ if( Rebet\View\Engine\Twig\Node\CodeNode::execute("role", "admin", "user") ) {
 EOS
             ],
             [
-                new CodeTokenParser('role', 'is', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'is', [',', 'or'], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role is "admin", "user"%}',
                 <<<EOS
 // line 1
@@ -157,7 +157,7 @@ if( Rebet\View\Engine\Twig\Node\CodeNode::execute("role", "admin", "user") ) {
 EOS
             ],
             [
-                new CodeTokenParser('role', 'is', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'is', [',', 'or'], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role is "admin" or "user"%}',
                 <<<EOS
 // line 1
@@ -166,7 +166,7 @@ if( Rebet\View\Engine\Twig\Node\CodeNode::execute("role", "admin", "user") ) {
 EOS
             ],
             [
-                new CodeTokenParser('role', 'is', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'is', [], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role is not "admin" %}',
                 <<<EOS
 // line 1
@@ -175,7 +175,7 @@ if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("role", "admin") )) {
 EOS
             ],
             [
-                new CodeTokenParser('role', 'in', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'in', [','], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role in "admin", "user" %}',
                 <<<EOS
 // line 1
@@ -184,7 +184,7 @@ if( Rebet\View\Engine\Twig\Node\CodeNode::execute("role", "admin", "user") ) {
 EOS
             ],
             [
-                new CodeTokenParser('role', 'in', 'if(', function ($role) { return true; }, ") {\n"),
+                new CodeTokenParser('role', 'in', [','], 'if(', function ($role) { return true; }, ") {\n"),
                 '{% role not in "admin", "user" %}',
                 <<<EOS
 // line 1

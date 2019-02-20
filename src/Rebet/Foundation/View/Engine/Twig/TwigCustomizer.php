@@ -27,9 +27,9 @@ class TwigCustomizer
         // Params:
         //   $env : string|array - allow enviroments
         // Usage:
-        //   {% env is 'local' %} ... {% else %} ... {% endenv %}
+        //   {% env is 'local' %} ... {% elseenv is 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
-        $twig->if('env', 'is', function (string ...$env) {
+        $twig->if('env', 'is', [',', 'or'], function (string ...$env) {
             return in_array(App::getEnv(), $env);
         });
 
@@ -40,7 +40,7 @@ class TwigCustomizer
         //   (none)
         // Usage:
         //   {% prefix %}
-        $twig->code('prefix', null, 'echo(', function ($prefix) {
+        $twig->code('prefix', null, [], 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', ['prefix']);
         
@@ -50,12 +50,28 @@ class TwigCustomizer
         // Params:
         //   $roles : string - role names
         // Usage:
-        //   {% role is 'admin' %} ... {% else %} ... {% endrole %}
+        //   {% role is 'admin' %} ... {% elserole is 'user' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
-        $twig->if('role', 'is', function (string ...$roles) {
+        $twig->if('role', 'is', [',', 'or'], function (string ...$roles) {
             return Auth::user()->is(...$roles);
+        });
+
+        // ------------------------------------------------
+        // [can/can not] Check policy for target to current user (Authorization)
+        // ------------------------------------------------
+        // Params:
+        //   $action : string        - action name
+        //   $target : string|object - target object or class or any name
+        //   $extras : mixed         - extra arguments
+        // Usage:
+        //   {% can 'update' $post %} ... {% elsecan 'create' Post::class %} ... {% else %} ... {% endcan %}
+        //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}
+        //   {% can 'update' 'remark' with $post %} ... {% else %} ... {% endcan %}
+        //   {% can 'update' $post with $a, $b and $c %} ... {% else %} ... {% endcan %}
+        $twig->if('can', null, ['with', ',', 'and'], function (string $action, $target, ...$extras) {
+            return Auth::user()->can($action, $target, ...$extras);
         });
     }
 }
