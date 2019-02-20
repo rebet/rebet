@@ -1,16 +1,16 @@
-{% role ('user') %}
+{% role is 'user' %}
 user
 {% endrole %}
-{% role ('admin') %}
+{% role is 'admin' %}
 admin
 {% endrole %}
-{% role ('user:editable') %}
+{% role is 'user:editable' %}
 user and editable
 {% endrole %}
-{% role ('admin','user') %}
+{% role is 'admin' or 'user' %}
 admin or user
 {% endrole %}
-{% role ('guest') %}
+{% role is 'guest' %}
 Guest
 {% else %}
 Not Guest.

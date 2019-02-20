@@ -73,5 +73,9 @@ class CodeNodeTest extends RebetTestCase
         $node = new CodeNode('if(', 'is_active', $args, '):');
         $src  = $this->compiler->compile($node)->getSource();
         $this->assertSame('if( Rebet\View\Engine\Twig\Node\CodeNode::execute("is_active", ($context["status"] ?? null)) ):', $src);
+
+        $node = new CodeNode('if(', 'is_active', $args, '):', [], true);
+        $src  = $this->compiler->compile($node)->getSource();
+        $this->assertSame('if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("is_active", ($context["status"] ?? null)) )):', $src);
     }
 }

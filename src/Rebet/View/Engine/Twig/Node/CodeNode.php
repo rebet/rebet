@@ -60,12 +60,13 @@ class CodeNode extends Node
      *
      * @param string $open
      * @param string $name
-     * @param \Twig_Node $template_args
+     * @param Node $template_args
      * @param string $close
      * @param array $binds (default: [])
+     * @param bool $invert (default: false)
      * @param int $lineno (default: 0)
      */
-    public function __construct(string $open, string $name, \Twig_Node $template_args, string $close, array $binds = [], int $lineno = 0)
+    public function __construct(string $open, string $name, Node $template_args, string $close, array $binds = [], bool $invert = false, int $lineno = 0)
     {
         $args   = [];
         $args[] = new ConstantExpression($name, $lineno);
@@ -78,8 +79,9 @@ class CodeNode extends Node
         parent::__construct(
             ['args' => $this->toArgsNode($args, $lineno, $name)],
             [
-                'open'  => $open,
-                'close' => $close,
+                'open'   => $open,
+                'close'  => $close,
+                'invert' => $invert,
             ],
             $lineno,
             $name
@@ -91,12 +93,15 @@ class CodeNode extends Node
      */
     public function compile(Compiler $compiler)
     {
+        $invert = $this->getAttribute('invert');
         $compiler
             ->addDebugInfo($this)
             ->raw($this->getAttribute('open'))
+            ->raw($invert ? '!(' : '')
             ->raw(" Rebet\\View\\Engine\\Twig\\Node\\CodeNode::execute(")
             ->subcompile($this->getNode('args'))
             ->raw(") ")
+            ->raw($invert ? ')' : '')
             ->raw($this->getAttribute('close'))
             ;
     }

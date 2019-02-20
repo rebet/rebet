@@ -27,7 +27,7 @@ class EnvironmentTest extends RebetTestCase
 
     public function test_code()
     {
-        $this->env->code('hello', 'echo(', function ($name = 'everyone') { return "Hello {$anme}."; }, ');');
+        $this->env->code('hello', null, 'echo(', function ($name = 'everyone') { return "Hello {$anme}."; }, ');');
 
         $source   = '{% hello %}';
         $expect   = <<<EOS
@@ -39,17 +39,7 @@ EOS
         $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
         $this->assertSame($expect, $src);
 
-        $source   = '{% hello() %}';
-        $expect   = <<<EOS
-// line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello") );
-EOS
-        ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
-
-        $source   = '{% hello("world") %}';
+        $source   = '{% hello "world" %}';
         $expect   = <<<EOS
 // line 1
 echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", "world") );
@@ -59,7 +49,7 @@ EOS
         $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
         $this->assertSame($expect, $src);
 
-        $source   = '{% hello(name) %}';
+        $source   = '{% hello name %}';
         $expect   = <<<EOS
 // line 1
 echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["name"] ?? null)) );
@@ -72,12 +62,12 @@ EOS
 
     public function test_if()
     {
-        $this->env->if('env', function ($env) { return true; });
+        $this->env->if('env', 'is', function ($env) { return true; });
 
         $source   = <<<EOS
-{% env("local") %}
+{% env is "local" %}
     LOCAL
-{% elseenv("testing") %}
+{% elseenv is "testing" %}
     TESTING
 {% endenv %}
 EOS
@@ -103,9 +93,9 @@ EOS
 
 
         $source   = <<<EOS
-{% envnot("local") %}
+{% env is not "local" %}
     LOCAL
-{% elseenvnot("testing") %}
+{% elseenv is not "testing" %}
     TESTING
 {% else %}
     OTHER
@@ -114,12 +104,12 @@ EOS
         ;
         $expect   = <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("envnot", "local") )) {
+if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", "local") )) {
 // line 2
 echo "    LOCAL
 ";
 // line 3
-} elseif(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenvnot", "testing") )) {
+} elseif(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", "testing") )) {
 // line 4
 echo "    TESTING
 ";

@@ -22,14 +22,14 @@ class TwigCustomizer
     public static function customize(Environment $twig) : void
     {
         // ------------------------------------------------
-        // [env/envnot] Check current environment
+        // [env is/env is not] Check current environment
         // ------------------------------------------------
         // Params:
         //   $env : string|array - allow enviroments
         // Usage:
-        //   {% env('local') %} ... {% else %} ... {% endenv %}
-        //   {% env('local', 'testing') %} ... {% else %} ... {% endenv %}
-        $twig->if('env', function (string ...$env) {
+        //   {% env is 'local' %} ... {% else %} ... {% endenv %}
+        //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
+        $twig->if('env', 'is', function (string ...$env) {
             return in_array(App::getEnv(), $env);
         });
 
@@ -40,20 +40,21 @@ class TwigCustomizer
         //   (none)
         // Usage:
         //   {% prefix %}
-        $twig->code('prefix', 'echo(', function ($prefix) {
+        $twig->code('prefix', null, 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', ['prefix']);
         
         // ------------------------------------------------
-        // [role/rolenot] Check current users role (Authorization)
+        // [role is/role is not] Check current users role (Authorization)
         // ------------------------------------------------
         // Params:
         //   $roles : string - role names
         // Usage:
-        //   {% role('admin') %} ... {% else %} ... {% endrole %}
-        //   {% role('user', 'guest') %} ... {% else %} ... {% endrole %}
-        //   {% role('user', 'guest:post-editable') %} ... {% else %} ... {% endrole %}
-        $twig->if('role', function (string ...$roles) {
+        //   {% role is 'admin' %} ... {% else %} ... {% endrole %}
+        //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
+        //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
+        //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
+        $twig->if('role', 'is', function (string ...$roles) {
             return Auth::user()->is(...$roles);
         });
     }
