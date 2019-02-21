@@ -1,12 +1,13 @@
 <?php
 namespace Rebet\Tests\View\Engine\Blade;
 
-use Illuminate\View\Compilers\BladeCompiler;
-use org\bovigo\vfs\vfsStream;
+use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 
+use org\bovigo\vfs\vfsStream;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
+use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 class BladeTest extends RebetTestCase
 {
@@ -36,7 +37,7 @@ class BladeTest extends RebetTestCase
 
     public function test_compiler()
     {
-        $this->assertInstanceOf(BladeCompiler::class, $this->blade->compiler());
+        $this->assertInstanceOf(LaravelBladeCompiler::class, $this->blade->compiler());
     }
 
     public function test_exists()

@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\View\Engine\Blade;
+namespace Rebet\View\Engine\Blade\Compiler;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 

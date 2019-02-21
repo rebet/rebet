@@ -5,7 +5,7 @@ use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
 use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
-use Rebet\View\Engine\Blade\BladeCompiler;
+use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 /**
  * Blade custom directives for Rebet
