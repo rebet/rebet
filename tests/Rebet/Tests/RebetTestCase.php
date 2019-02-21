@@ -9,6 +9,7 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Guard\TokenGuard;
 use Rebet\Auth\Provider\ArrayProvider;
+use Rebet\Common\Namespaces;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
@@ -54,6 +55,11 @@ abstract class RebetTestCase extends TestCase
                     'i18n' => App::path('/resources/i18n'),
                 ],
             ],
+            Namespaces::class => [
+                'aliases' => [
+                    '@entity' => '\\Rebet\\Tests\\Common\\Mock',
+                ],
+            ],
             Session::class => [
                 'storage' => MockArraySessionStorage::class,
             ],
@@ -77,8 +83,9 @@ abstract class RebetTestCase extends TestCase
                 ],
                 'policies' => [
                     User::class => [
-                        '@before' => function (AuthUser $user, User $target) { return $user->is('admin'); },
+                        '@before' => function (AuthUser $user) { return $user->is('admin'); },
                         'update'  => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
+                        'create'  => function (AuthUser $user) { return $user->is('editable'); },
                     ],
                 ]
             ],

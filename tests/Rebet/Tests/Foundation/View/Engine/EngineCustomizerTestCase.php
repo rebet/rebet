@@ -4,6 +4,7 @@ namespace Rebet\Tests\Foundation\View\Engine;
 use org\bovigo\vfs\vfsStream;
 
 use Rebet\Foundation\App;
+use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Engine;
 
@@ -113,6 +114,57 @@ Not Guest.
 EOS
             ,
             $this->engine->render('custom/role')
+        );
+    }
+
+    public function test_render_can()
+    {
+        $user          = new User();
+        $user->user_id = 2;
+
+        $this->assertSame(
+            <<<EOS
+
+EOS
+            ,
+            $this->engine->render('custom/can', ['user' => $user])
+        );
+
+        $request = $this->createRequestMock('/');
+        $this->signin($request);
+
+        $this->assertSame(
+            <<<EOS
+can update user
+
+EOS
+            ,
+            $this->engine->render('custom/can', ['user' => $user])
+        );
+        $this->signout();
+
+        $this->signin($request, 'user.editable@rebet.local', 'user.editable');
+        $this->assertSame(
+            <<<EOS
+can create user(absolute class name)
+can create user(relative class name)
+
+EOS
+            ,
+            $this->engine->render('custom/can', ['user' => $user])
+        );
+        $this->signout();
+
+        $this->signin($request, 'admin@rebet.local', 'admin');
+        $this->assertSame(
+            <<<EOS
+can update user
+can create user(absolute class name)
+can create user(relative class name)
+
+EOS
+            ,
+            $this->engine->render('custom/can', ['user' => $user])
         );
     }
 }

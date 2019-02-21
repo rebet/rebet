@@ -7,6 +7,7 @@ use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\Guard;
+use Rebet\Common\Namespaces;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Event\Event;
@@ -42,11 +43,11 @@ class Auth
                     'fallback' => null, // url or function(Request):Response
                 ],
             ],
-            'roles'       => [
+            'roles' => [
                 'all'   => function (AuthUser $user) { return true; },
                 'guest' => function (AuthUser $user) { return $user->isGuest(); },
             ],
-            'policies'    => [],
+            'policies' => [],
         ];
     }
 
@@ -231,12 +232,15 @@ class Auth
      *
      * @param AuthUser $user
      * @param string $action
-     * @param string|object $target
+     * @param string|object $target when the class name that is not contains '\' given then add the value of "policy_namespace" config settings as namespace.
      * @param mixed ...$extras
      * @return boolean|null
      */
     public static function policy(AuthUser $user, string $action, $target, ...$extras) : bool
     {
+        if (is_string($target)) {
+            $target = Namespaces::resolve($target);
+        }
         return static::_policy($user, '@before', $target, $extras) || static::_policy($user, $action, $target, $extras);
     }
 

@@ -2,8 +2,9 @@
 namespace Rebet\Tests\Routing;
 
 use org\bovigo\vfs\vfsStream;
-use Rebet\Config\Config;
+use Rebet\Common\Namespaces;
 
+use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
@@ -31,10 +32,10 @@ class RouterTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         App::setChannel('web');
         Config::application([
-            App::class => [
-                'namespace' => [
-                    'controller' => '\\Rebet\\Tests\\Routing',
-                ]
+            Namespaces::class => [
+                'aliases' => [
+                    '@controller' => '\\Rebet\\Tests\\Routing',
+                ],
             ],
             Router::class => [
                 'middlewares!' => [],
@@ -142,20 +143,20 @@ class RouterTest extends RebetTestCase
                 return View::of('welcome')->with(['name' => 'Samantha']);
             });
             
-            Router::get('/method/private-call', 'RouterTestController@privateCall');
-            Router::get('/method/private-call-accessible', 'RouterTestController@privateCall')->accessible(true);
-            Router::get('/method/protected-call', 'RouterTestController@protectedCall');
-            Router::get('/method/protected-call-accessible', 'RouterTestController@protectedCall')->accessible(true);
-            Router::get('/method/public-call', 'RouterTestController@publicCall');
-            Router::get('/method/with-param/{id}', 'RouterTestController@withParam');
-            Router::get('/method/with-param/where/{id}', 'RouterTestController@withParam')->where('id', '/^[0-9]+$/');
-            Router::get('/method/with-param/missmatch/{bad_name}', 'RouterTestController@withParam');
-            Router::get('/method/with-optional-param/{id?}', 'RouterTestController@withOptionalParam');
-            Router::get('/method/with-multi-param/{from}/to/{to}', 'RouterTestController@withMultiParam');
-            Router::get('/method/with-multi-param/invert/{from}/to/{to}', 'RouterTestController@withMultiInvertParam');
-            Router::get('/method/with-convert-enum-param/{gender}', 'RouterTestController@withConvertEnumParam');
-            Router::get('/method/namespace/nest', 'Nest\\NestController@foo');
-            Router::get('/method/namespace/different', 'Rebet\\Tests\\Mock\\DifferentNamespaceController@foo');
+            Router::get('/method/private-call', 'RouterTestController::privateCall');
+            Router::get('/method/private-call-accessible', 'RouterTestController::privateCall')->accessible(true);
+            Router::get('/method/protected-call', 'RouterTestController::protectedCall');
+            Router::get('/method/protected-call-accessible', 'RouterTestController::protectedCall')->accessible(true);
+            Router::get('/method/public-call', 'RouterTestController::publicCall');
+            Router::get('/method/with-param/{id}', 'RouterTestController::withParam');
+            Router::get('/method/with-param/where/{id}', 'RouterTestController::withParam')->where('id', '/^[0-9]+$/');
+            Router::get('/method/with-param/missmatch/{bad_name}', 'RouterTestController::withParam');
+            Router::get('/method/with-optional-param/{id?}', 'RouterTestController::withOptionalParam');
+            Router::get('/method/with-multi-param/{from}/to/{to}', 'RouterTestController::withMultiParam');
+            Router::get('/method/with-multi-param/invert/{from}/to/{to}', 'RouterTestController::withMultiInvertParam');
+            Router::get('/method/with-convert-enum-param/{gender}', 'RouterTestController::withConvertEnumParam');
+            Router::get('/method/namespace/nest', 'Nest\\NestController::foo');
+            Router::get('/method/namespace/different', 'Rebet\\Tests\\Mock\\DifferentNamespaceController::foo');
             
             Router::redirect('/redirect', '/destination');
             Router::redirect('/redirect/with-param/replace/{id}', '/destination/{id}');
@@ -851,7 +852,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: \Rebet\Tests\Routing\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_defaultConventionalRouteWhereRejectTop()
     {
@@ -866,7 +867,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: \Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
     {
@@ -895,7 +896,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ \Rebet\Tests\Routing\RouterTestController::annotationAliasOnly ] accespt only alias access.
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::annotationAliasOnly ] accespt only alias access.
      */
     public function test_routing_defaultConventionalRouteAliasOnly()
     {
@@ -955,7 +956,7 @@ class RouterTest extends RebetTestCase
         Router::clear();
         Router::rules('web')->prefix('/prefix')->routing(function () {
             Router::get('/get', function () { return 'Content: /prefix/get'; });
-            Router::get('/method/public-call', 'RouterTestController@publicCall');
+            Router::get('/method/public-call', 'RouterTestController::publicCall');
             Router::controller('/controller/namespace/short', 'RouterTestController');
             Router::default(ConventionalRoute::class);
         })->fallback(function (Request $request, \Throwable $e) {

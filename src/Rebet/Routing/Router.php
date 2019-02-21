@@ -219,10 +219,10 @@ class Router
     {
         $route   = null;
         $methods = array_map('strtoupper', (array)$methods);
-        if (is_callable($action)) {
-            $route = new ClosureRoute($methods, $uri, $action);
-        } elseif (is_string($action)) {
+        if (is_string($action) && Strings::contains($action, '::')) {
             $route = new MethodRoute($methods, $uri, $action);
+        } elseif (is_callable($action)) {
+            $route = new ClosureRoute($methods, $uri, $action);
         } else {
             throw LogicException::by("Invalid action type for declarative routing.");
         }

@@ -5,9 +5,6 @@ use Rebet\Common\Path;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
-use Rebet\Routing\Route\ControllerRoute;
-use Rebet\Routing\Route\ConventionalRoute;
-use Rebet\Routing\Route\MethodRoute;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
@@ -38,9 +35,6 @@ class App
             'locale'          => null,
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
-            'namespace'       => [
-                'controller' => null,
-            ],
             'resources'       => [
                 'i18n' => null,
             ],
@@ -60,21 +54,6 @@ class App
             //---------------------------------------------
             DateTime::class => [
                 'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
-            ],
-
-            //---------------------------------------------
-            // Routing Configure
-            //---------------------------------------------
-            MethodRoute::class => [
-                'namespace' => Config::refer(App::class, 'namespace.controller'),
-            ],
-
-            ControllerRoute::class => [
-                'namespace' => Config::refer(App::class, 'namespace.controller'),
-            ],
-
-            ConventionalRoute::class => [
-                'namespace' => Config::refer(App::class, 'namespace.controller'),
             ],
 
             //---------------------------------------------

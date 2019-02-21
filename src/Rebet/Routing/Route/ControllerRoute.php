@@ -15,6 +15,11 @@ use Rebet\Inflection\Inflector;
  */
 class ControllerRoute extends ConventionalRoute
 {
+    public static function defaultConfig()
+    {
+        return static::shareConfigWith(parent::class);
+    }
+
     /**
      * Target uri for routing
      *

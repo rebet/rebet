@@ -277,6 +277,8 @@ class AuthTest extends RebetTestCase
         $this->signin();
         $this->assertSame(2, Auth::user()->id);
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
+        $this->assertFalse(Auth::policy(Auth::user(), 'create', User::class));
+        $this->assertFalse(Auth::policy(Auth::user(), 'create', '@entity\\User'));
 
         $user->user_id = 1;
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
@@ -284,11 +286,23 @@ class AuthTest extends RebetTestCase
         $this->signin(null, 'admin@rebet.local', 'admin');
         $this->assertTrue(Auth::user()->is('admin'));
 
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', User::class));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@entity\\User'));
+
         $user->user_id = 1;
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
 
         $user->user_id = 2;
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
+
+        $this->signin(null, 'user.editable@rebet.local', 'user.editable');
+        $this->assertSame(4, Auth::user()->id);
+
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', User::class));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@entity\\User'));
+
+        $user->user_id = 1;
+        $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
     }
 
     public function test_role()

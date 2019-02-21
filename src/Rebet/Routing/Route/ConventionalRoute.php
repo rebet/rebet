@@ -2,6 +2,7 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Common\Namespaces;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Config;
@@ -50,7 +51,7 @@ class ConventionalRoute extends Route
     public static function defaultConfig()
     {
         return [
-            'namespace'                  => null,
+            'namespace'                  => '@controller',
             'default_part_of_controller' => 'top',
             'default_part_of_action'     => 'index',
             'uri_snake_separator'        => '-',
@@ -149,7 +150,7 @@ class ConventionalRoute extends Route
      * Create a conventional route.
      *
      * @param array  $option [
-     *     'namespace'                  => refer App config 'namespace.controller',
+     *     'namespace'                  => '@controller',
      *     'default_part_of_controller' => 'top',
      *     'default_part_of_action'     => 'index',
      *     'uri_snake_separator'        => '-',
@@ -161,7 +162,7 @@ class ConventionalRoute extends Route
      */
     public function __construct(array $option = [])
     {
-        $this->namespace                  = $option['amespace'] ?? static::config('namespace');
+        $this->namespace                  = Namespaces::resolve($option['namespace'] ?? static::config('namespace'));
         $this->default_part_of_controller = $option['default_part_of_controller'] ?? static::config('default_part_of_controller');
         $this->default_part_of_action     = $option['default_part_of_action'] ?? static::config('default_part_of_action');
         $this->uri_snake_separator        = $option['uri_snake_separator'] ?? static::config('uri_snake_separator');

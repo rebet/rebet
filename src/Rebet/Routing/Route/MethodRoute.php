@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Common\Namespaces;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
@@ -22,52 +23,43 @@ class MethodRoute extends DeclarativeRoute
     public static function defaultConfig()
     {
         return [
-            'namespace' => null,
+            'namespace' => '@controller',
         ];
     }
 
     /**
-     * 名前空間
-     *
      * @var string
      */
     protected $namespace = null;
 
     /**
-     * メソッドアクション
-     *
      * @var \ReflectionMethod
      */
     protected $action = null;
     
     /**
-     * コントローラオブジェクト
-     *
      * @var Controller
      */
     protected $controller = null;
 
     /**
-     * アクセス制御
-     *
      * @var boolean
      */
     protected $accessible = false;
     
     /**
-     * ルートオブジェクトを構築します
+     * Create Route instance.
      *
      * @param array $methods
      * @param string $uri
-     * @param string $action 'Controller + @ + method'
-     * @param string $namespace default config is refer App config 'namespace.controller'
+     * @param string $action 'Controller::method'
+     * @param string $namespace (default: depend on configure)
      * @throws ReflectionException
      */
     public function __construct(array $methods, string $uri, string $action, string $namespace = null)
     {
         parent::__construct($methods, $uri);
-        $action          = str_replace('@', '::', $action);
-        $this->namespace = $namespace ?? static::config('namespace', false, '') ;
+        $this->namespace = Namespaces::resolve($namespace ?? static::config('namespace', false, '')) ;
         try {
             $this->action    = new \ReflectionMethod($action);
             $this->namespace = $this->action->getNamespaceName();
