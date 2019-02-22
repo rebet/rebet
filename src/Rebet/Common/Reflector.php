@@ -23,13 +23,13 @@ class Reflector
      * The definition objects that instance creation can deal with are as follows.
      *
      *  string :
-     *     {ClassName}@{factoryMathod}
+     *     {ClassName}::{factoryMathod}
      *       => Instantiate the target class with a factory method without arguments
      *     {ClassName}
      *       => Instantiate the target class with a constructor without arguments
      *
      *  array :
-     *     [{ClassName}@{factoryMathod}, arg1, arg2, ... ]
+     *     [{ClassName}::{factoryMathod}, arg1, arg2, ... ]
      *       ⇒ Instantiate the target class with a factory method with arguments
      *     [{ClassName}, arg1, arg2, ... ]
      *       ⇒ Instantiate the target class with a constructor with arguments
@@ -49,12 +49,12 @@ class Reflector
             return null;
         }
         if (is_string($config)) {
-            [$class, $method] = Strings::split($config, '@', 2);
+            [$class, $method] = Strings::split($config, '::', 2);
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_array($config)) {
             $class_config     = array_shift($config);
-            [$class, $method] = Strings::split($class_config, '@', 2);
+            [$class, $method] = Strings::split($class_config, '::', 2);
             return empty($method) ? new $class(...$config) : $class::$method(...$config) ;
         }
         return $config;
@@ -555,15 +555,15 @@ class Reflector
      */
     public static function getType($value) : ?string
     {
-        if($value === null) {
+        if ($value === null) {
             return null;
         }
-        if(is_object($value)) {
+        if (is_object($value)) {
             return get_class($value);
         }
         foreach (['string', 'array', 'int', 'float', 'bool', 'callable', 'resource', 'iterable'] as $type) {
             $type_check = "is_{$type}";
-            if($type_check($value)) {
+            if ($type_check($value)) {
                 return $type;
             }
         }

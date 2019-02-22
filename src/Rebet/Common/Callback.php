@@ -91,21 +91,12 @@ class Callback
      */
     public static function toString(callable $callback, bool $verbose = true) : string
     {
-        // try{
-        //     $reflector = new \ReflectionMethod($callback);
-        //     $class     = $reflector->getDeclaringClass();
-        //     $function = $class->getShortName().'::'.$reflector->getName();
-        //     if($verbose) {
-        //         $function = $class->getNamespaceName().'\\'.$function;
-        //     }
-        // } catch(\Throwable $e) {
         $reflector = new \ReflectionFunction(\Closure::fromCallable($callback));
         $class     = $reflector->getClosureScopeClass();
         $function  = $class ? $class->getShortName().'::'.$reflector->getShortName() : $reflector->getShortName() ;
         if ($verbose && $class) {
             $function = $class->getNamespaceName().'\\'.$function;
         }
-        // }
 
         $string     = "{$function}(";
         $parameters = $reflector->getParameters();

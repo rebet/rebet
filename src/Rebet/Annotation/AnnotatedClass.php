@@ -39,8 +39,7 @@ class AnnotatedClass
     }
 
     /**
-     * Undocumented function
-     * AnnotationRegistry
+     * Create class annotations accesser.
      *
      * @param string|object|\ReflectionClass $class
      * @param AnnotationReader|null $reader

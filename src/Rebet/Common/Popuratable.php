@@ -37,7 +37,7 @@ trait Popuratable
      */
     protected function _popurate($src, $option = [], string $prefix) : self
     {
-        if (empty($src) && empty($files)) {
+        if (empty($src)) {
             return $this;
         }
         
@@ -60,10 +60,10 @@ trait Popuratable
                         continue;
                     }
                     foreach ($items as $item) {
-                        $this->$field[] = $this->nest($nest->value, $this, $item, $option, "{$prefix}{$field}.");
+                        $this->$field[] = $this->nest($nest->value, $item, $option, "{$prefix}{$field}.");
                     }
                 } else {
-                    $this->$field = $this->nest($nest->value, $this, Reflector::get($src, $field), $option, "{$prefix}{$field}.");
+                    $this->$field = $this->nest($nest->value, Reflector::get($src, $field), $option, "{$prefix}{$field}.");
                 }
                 continue;
             }
@@ -77,12 +77,12 @@ trait Popuratable
     /**
      * Create nested validatable object
      *
-     * @param string $class Nested Validatable Class Name
-     * @param object $parent
+     * @param string $class nested validatable class name
      * @param array|object $src
      * @param array $option
+     * @param string $prefix
      */
-    private function nest($class, $parent, $src, array $option, string $prefix)
+    private function nest($class, $src, array $option, string $prefix)
     {
         $nested = Reflector::instantiate($class);
         Reflector::invoke($nested, '_popurate', [$src, $option, $prefix], true);
