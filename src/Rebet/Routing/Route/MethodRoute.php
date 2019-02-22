@@ -59,12 +59,12 @@ class MethodRoute extends DeclarativeRoute
     public function __construct(array $methods, string $uri, string $action, string $namespace = null)
     {
         parent::__construct($methods, $uri);
-        $this->namespace = Namespaces::resolve($namespace ?? static::config('namespace', false, '')) ;
         try {
             $this->action    = new \ReflectionMethod($action);
             $this->namespace = $this->action->getNamespaceName();
         } catch (\ReflectionException $e) {
-            $this->action = new \ReflectionMethod($this->namespace.'\\'.$action);
+            $this->namespace = Namespaces::resolve($namespace ?? static::config('namespace', false, '')) ;
+            $this->action    = new \ReflectionMethod($this->namespace.'\\'.$action);
         }
     }
 

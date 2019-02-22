@@ -278,7 +278,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame(2, Auth::user()->id);
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
         $this->assertFalse(Auth::policy(Auth::user(), 'create', User::class));
-        $this->assertFalse(Auth::policy(Auth::user(), 'create', '@entity\\User'));
+        $this->assertFalse(Auth::policy(Auth::user(), 'create', '@mock\\User'));
 
         $user->user_id = 1;
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
@@ -287,7 +287,7 @@ class AuthTest extends RebetTestCase
         $this->assertTrue(Auth::user()->is('admin'));
 
         $this->assertTrue(Auth::policy(Auth::user(), 'create', User::class));
-        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@entity\\User'));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@mock\\User'));
 
         $user->user_id = 1;
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
@@ -299,7 +299,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame(4, Auth::user()->id);
 
         $this->assertTrue(Auth::policy(Auth::user(), 'create', User::class));
-        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@entity\\User'));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@mock\\User'));
 
         $user->user_id = 1;
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));

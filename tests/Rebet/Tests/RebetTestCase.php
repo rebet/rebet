@@ -57,7 +57,7 @@ abstract class RebetTestCase extends TestCase
             ],
             Namespaces::class => [
                 'aliases' => [
-                    '@entity' => '\\Rebet\\Tests\\Common\\Mock',
+                    '@mock' => 'Rebet\\Tests\\Common\\Mock',
                 ],
             ],
             Session::class => [
