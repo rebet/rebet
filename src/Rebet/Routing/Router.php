@@ -212,7 +212,7 @@ class Router
      *
      * @param array|string $methods
      * @param string $uri
-     * @param string|callable $action
+     * @param string|callable $action can be use @ namespace alias
      * @return Route
      */
     public static function match($methods, string $uri, $action) : Route

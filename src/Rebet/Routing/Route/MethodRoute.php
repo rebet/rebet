@@ -28,11 +28,6 @@ class MethodRoute extends DeclarativeRoute
     }
 
     /**
-     * @var string
-     */
-    protected $namespace = null;
-
-    /**
      * @var \ReflectionMethod
      */
     protected $action = null;
@@ -52,19 +47,16 @@ class MethodRoute extends DeclarativeRoute
      *
      * @param array $methods
      * @param string $uri
-     * @param string $action 'Controller::method'
-     * @param string $namespace (default: depend on configure)
+     * @param string $action 'Namespace\\Controller::method'. The namespace can be use @ namespace alias.
      * @throws ReflectionException
      */
-    public function __construct(array $methods, string $uri, string $action, string $namespace = null)
+    public function __construct(array $methods, string $uri, string $action)
     {
         parent::__construct($methods, $uri);
         try {
-            $this->action    = new \ReflectionMethod($action);
-            $this->namespace = $this->action->getNamespaceName();
+            $this->action = new \ReflectionMethod(Namespaces::resolve($action));
         } catch (\ReflectionException $e) {
-            $this->namespace = Namespaces::resolve($namespace ?? static::config('namespace', false, '')) ;
-            $this->action    = new \ReflectionMethod($this->namespace.'\\'.$action);
+            $this->action = new \ReflectionMethod(Namespaces::resolve(static::config('namespace', false, '').'\\'.$action));
         }
     }
 
@@ -77,9 +69,12 @@ class MethodRoute extends DeclarativeRoute
      */
     protected function createRouteAction(Request $request) : RouteAction
     {
-        $this->controller          = $this->action->getDeclaringClass()->newInstance();
-        $this->controller->request = $request;
-        $this->controller->route   = $this;
+        $this->controller = null;
+        if (!$this->action->isStatic()) {
+            $this->controller          = $this->action->getDeclaringClass()->newInstance();
+            $this->controller->request = $request;
+            $this->controller->route   = $this;
+        }
         $this->action->setAccessible($this->accessible);
         return new RouteAction($this, $this->action, $this->controller);
     }

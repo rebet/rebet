@@ -45,15 +45,15 @@ class Namespaces
      * Resolve namespace alias that starts with '@' like '@controller\\UserController'.
      * Note: The leading '\' will be deleted.
      *
-     * @param string|null $class
-     * @return string|null
+     * @param mixed $class
+     * @return mixed
      */
-    public static function resolve(?string $class) : ?string
+    public static function resolve($class)
     {
         if ($class === null) {
             return null;
         }
-        return static::_resolve($class);
+        return is_string($class) ? static::_resolve($class) : $class ;
     }
 
     /**

@@ -232,15 +232,13 @@ class Auth
      *
      * @param AuthUser $user
      * @param string $action
-     * @param string|object $target when the class name that is not contains '\' given then add the value of "policy_namespace" config settings as namespace.
+     * @param string|object $target can be use @ namespace alias
      * @param mixed ...$extras
      * @return boolean|null
      */
     public static function policy(AuthUser $user, string $action, $target, ...$extras) : bool
     {
-        if (is_string($target)) {
-            $target = Namespaces::resolve($target);
-        }
+        $target = Namespaces::resolve($target);
         return static::_policy($user, '@before', $target, $extras) || static::_policy($user, $action, $target, $extras);
     }
 

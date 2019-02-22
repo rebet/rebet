@@ -150,7 +150,7 @@ class ConventionalRoute extends Route
      * Create a conventional route.
      *
      * @param array  $option [
-     *     'namespace'                  => '@controller',
+     *     'namespace'                  => '@controller', // can be use @ namespace alias
      *     'default_part_of_controller' => 'top',
      *     'default_part_of_action'     => 'index',
      *     'uri_snake_separator'        => '-',
