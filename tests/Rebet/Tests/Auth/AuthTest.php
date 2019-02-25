@@ -14,6 +14,7 @@ use Rebet\Event\Event;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
+use Rebet\Tests\Common\Mock\Address;
 use Rebet\Tests\Common\Mock\Bank;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
@@ -249,6 +250,10 @@ class AuthTest extends RebetTestCase
 
         $bank->user_id = 2;
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $bank));
+
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', Address::class, []));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', Address::class, [1, 2, 3, 4]));
+        $this->assertFalse(Auth::policy(Auth::user(), 'create', Address::class, [1, 2, 3, 4, 5]));
     }
 
     public function test_defineBeforePolicy()

@@ -124,10 +124,12 @@ EOS
 
         $this->assertSame(
             <<<EOS
+can not update user
+Can not create an address when the user is guest or the addresses count greater equal 5.
 
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user])
+            $this->engine->render('custom/can', ['user' => $user, 'addresses' => []])
         );
 
         $request = $this->createRequestMock('/');
@@ -136,22 +138,26 @@ EOS
         $this->assertSame(
             <<<EOS
 can update user
+Can create an address when the addresses count less than 5.
 
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user])
+            $this->engine->render('custom/can', ['user' => $user, 'addresses' => []])
         );
         $this->signout();
 
         $this->signin($request, 'user.editable@rebet.local', 'user.editable');
         $this->assertSame(
             <<<EOS
-can create user(absolute class name)
+can not update user
+can create user(absolute class name 1)
+can create user(absolute class name 2)
 can create user(relative class name)
+Can create an address when the addresses count less than 5.
 
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user])
+            $this->engine->render('custom/can', ['user' => $user, 'addresses' => []])
         );
         $this->signout();
 
@@ -159,12 +165,27 @@ EOS
         $this->assertSame(
             <<<EOS
 can update user
-can create user(absolute class name)
+can create user(absolute class name 1)
+can create user(absolute class name 2)
 can create user(relative class name)
+Can create an address when the addresses count less than 5.
 
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user])
+            $this->engine->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4]])
+        );
+
+        $this->assertSame(
+            <<<EOS
+can update user
+can create user(absolute class name 1)
+can create user(absolute class name 2)
+can create user(relative class name)
+Can not create an address when the user is guest or the addresses count greater equal 5.
+
+EOS
+            ,
+            $this->engine->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4, 5]])
         );
     }
 }
