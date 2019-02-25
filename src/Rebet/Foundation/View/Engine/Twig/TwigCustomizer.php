@@ -17,6 +17,11 @@ use Rebet\View\Engine\Twig\Environment\Environment;
 class TwigCustomizer
 {
     /**
+     * @var string of field name
+     */
+    protected static $field = null;
+
+    /**
      * define costom extentions for Rebet.
      */
     public static function customize(Environment $twig) : void
@@ -73,5 +78,44 @@ class TwigCustomizer
         $twig->if('can', null, ['with', ',', 'and'], function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
         });
+
+        // ------------------------------------------------
+        // [field] Bind field attribute name
+        // ------------------------------------------------
+        // Params:
+        //   $name : string - attribute name
+        // Usage:
+        //   {% field %}
+        //   {% field 'email' %} ... {% endfield %}
+        // Note:
+        //   It does not correspond to nesting.
+        $field = &static::$field;
+        $twig->code('field', '', [], 'echo(', function ($name = null) use (&$field) {
+            if ($name === null) {
+                return $field;
+            }
+            $field = $name;
+            return '';
+        }, ');');
+        $twig->code('endfield', '', [], '', function () use (&$field) {
+            $field = null;
+        }, ';');
+
+        // ------------------------------------------------
+        // [errors] Check error is exists
+        // ------------------------------------------------
+        // Params:
+        //   $name : string - attribute name (default: null)
+        // Usage:
+        //   {% errors %}... {% else %}... {% enderrors %}
+        //   {% errors 'email' %} ... {% else %} ... {% enderrors %}
+        // Under {% field %}:
+        //   {% errors %} ... {% else %} ... {% enderrors %}
+        $twig->code('errors', '', [], 'if(', function ($errors, $name = null) use (&$field) {
+            $errors = Stream::of($errors, true);
+            $name   = $name ?? $field ;
+            return $name ? $errors[$name]->isset() : !$errors->empty() ;
+        }, '){', ['errors']);
+        $twig->raw('enderrors', '}');
     }
 }

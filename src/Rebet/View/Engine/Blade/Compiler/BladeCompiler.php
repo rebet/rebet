@@ -21,6 +21,20 @@ class BladeCompiler extends LaravelBladeCompiler
     protected $codes = [];
 
     /**
+     * Register an "raw" statement directive.
+     *
+     * @param string $name
+     * @param string $code
+     * @return void
+     */
+    public function raw(string $name, string $code) : void
+    {
+        $this->directive($name, function () use ($code) {
+            return "<?php {$code} ?>";
+        });
+    }
+
+    /**
      * Register an "code" statement directive.
      * If you give '$errors' as bind then you can get the $errors of assigned value as first argument of callback.
      *
@@ -66,16 +80,22 @@ class BladeCompiler extends LaravelBladeCompiler
     {
         parent::if($name, $callback);
 
-        $this->directive($name.'not', function ($expression) use ($name) {
-            return $expression !== ''
-                    ? "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
-                    : "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}')): ?>";
-        });
+        $this->directive(
+            $name.'not',
+            function ($expression) use ($name) {
+                return $expression !== ''
+                ? "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
+                : "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}')): ?>";
+            }
+        );
 
-        $this->directive('else'.$name.'not', function ($expression) use ($name) {
-            return $expression !== ''
+        $this->directive(
+            'else'.$name.'not',
+            function ($expression) use ($name) {
+                return $expression !== ''
                 ? "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
                 : "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}')): ?>";
-        });
+            }
+        );
     }
 }

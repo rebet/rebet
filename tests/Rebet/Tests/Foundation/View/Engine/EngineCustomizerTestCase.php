@@ -188,4 +188,18 @@ EOS
             $this->engine->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4, 5]])
         );
     }
+
+    public function test_render_field()
+    {
+        $this->assertSame(
+            <<<EOS
+[1] ;
+[2] name;
+[3] ;
+
+EOS
+        ,
+        $this->engine->render('custom/field')
+        );
+    }
 }

@@ -18,9 +18,7 @@ use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 class BladeCustomizer
 {
     /**
-     * field name
-     *
-     * @var string
+     * @var string of field name
      */
     protected static $field = null;
 
@@ -84,19 +82,23 @@ class BladeCustomizer
         // [field] Bind field attribute name
         // ------------------------------------------------
         // Params:
-        //   $names : string - attribute name
+        //   $name : string|null - attribute name
         // Usage:
+        //   @field
         //   @field('email') ... @endfield
         // Note:
         //   It does not correspond to nesting.
         $field = &static::$field;
-        $blade->code('field', '', function ($name) use (&$field) {
+        $blade->code('field', 'echo (', function ($name = null) use (&$field) {
+            if ($name === null) {
+                return $field;
+            }
             $field = $name;
-        }, ';');
-        $blade->directive('endfield', function () use (&$field) {
-            $field = null;
             return '';
-        });
+        }, ');');
+        $blade->code('endfield', '', function () use (&$field) {
+            $field = null;
+        }, ';');
 
         // ------------------------------------------------
         // [errors] Check error is exists
@@ -113,9 +115,7 @@ class BladeCustomizer
             $name   = $name ?? $field ;
             return $name ? $errors[$name]->isset() : !$errors->empty() ;
         }, '):', '$errors ?? null');
-        $blade->directive('enderrors', function () {
-            return '<?php endif; ?>';
-        });
+        $blade->raw('enderrors', 'endif;');
 
         // ------------------------------------------------
         // [error] Output error message of given attributes

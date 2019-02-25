@@ -21,6 +21,18 @@ class Environment extends TwigEnvironment
     protected $registered_else = false;
 
     /**
+     * Register an "raw" extention.
+     *
+     * @param string $tag
+     * @param string $code
+     * @return void
+     */
+    public function raw(string $tag, string $code) : void
+    {
+        $this->addTokenParser(new RawTokenParser($tag, $code));
+    }
+
+    /**
      * Register an "code" extention.
      * If you give '$errors' as binds then you can get the $errors of assigned value as first argument of callback.
      *
@@ -52,9 +64,9 @@ class Environment extends TwigEnvironment
         $this->code($name, $verbs, $separators, 'if(', $callback, ") {\n");
         $this->code("else{$name}", $verbs, $separators, '} elseif(', $callback, ") {\n");
         if (!$this->registered_else) {
-            $this->addTokenParser(new RawTokenParser("else", "} else {\n"));
+            $this->raw("else", "} else {\n");
             $this->registered_else = true;
         }
-        $this->addTokenParser(new RawTokenParser("end{$name}", "}\n"));
+        $this->raw("end{$name}", "}\n");
     }
 }
