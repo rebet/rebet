@@ -85,8 +85,9 @@ class TwigCustomizer
         // Params:
         //   $name : string - attribute name
         // Usage:
-        //   {% field %}
         //   {% field 'email' %} ... {% endfield %}
+        // Under {% field %}:
+        //   {% field %}
         // Note:
         //   It does not correspond to nesting.
         $field = &static::$field;
@@ -107,14 +108,14 @@ class TwigCustomizer
         // Params:
         //   $name : string - attribute name (default: null)
         // Usage:
-        //   {% errors %}... {% else %}... {% enderrors %}
+        //   {% errors %} ... {% else %} ... {% enderrors %}
         //   {% errors 'email' %} ... {% else %} ... {% enderrors %}
         // Under {% field %}:
         //   {% errors %} ... {% else %} ... {% enderrors %}
         $twig->code('errors', '', [], 'if(', function ($errors, $name = null) use (&$field) {
             $errors = Stream::of($errors, true);
             $name   = $name ?? $field ;
-            return $name ? $errors[$name]->isset() : !$errors->empty() ;
+            return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
         }, '){', ['errors']);
         $twig->raw('enderrors', '}');
     }

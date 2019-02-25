@@ -84,8 +84,9 @@ class BladeCustomizer
         // Params:
         //   $name : string|null - attribute name
         // Usage:
-        //   @field
         //   @field('email') ... @endfield
+        // Under @field:
+        //   @field
         // Note:
         //   It does not correspond to nesting.
         $field = &static::$field;
@@ -113,7 +114,7 @@ class BladeCustomizer
         $blade->code('errors', 'if(', function ($errors, $name = null) use (&$field) {
             $errors = Stream::of($errors, true);
             $name   = $name ?? $field ;
-            return $name ? $errors[$name]->isset() : !$errors->empty() ;
+            return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
         }, '):', '$errors ?? null');
         $blade->raw('enderrors', 'endif;');
 

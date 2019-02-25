@@ -198,8 +198,78 @@ EOS
 [3] ;
 
 EOS
-        ,
-        $this->engine->render('custom/field')
+            ,
+            $this->engine->render('custom/field')
+        );
+    }
+
+    public function test_render_errors()
+    {
+        $errors = [];
+
+        $this->assertSame(
+            <<<EOS
+Has not any error.
+
+EOS
+            ,
+            $this->engine->render('custom/errors', ['errors' => $errors])
+        );
+
+        $errors = [
+            'name' => [
+                'The name field is required.'
+            ]
+        ];
+
+        $this->assertSame(
+            <<<EOS
+Has some error.
+Has some error about 'name'.
+Has some error about 'name' (Under field of 'email').
+
+EOS
+            ,
+            $this->engine->render('custom/errors', ['errors' => $errors])
+        );
+
+        $errors = [
+            'email' => [
+                'The email field is required.'
+            ]
+        ];
+
+        $this->assertSame(
+            <<<EOS
+Has some error.
+Has some error about 'email'.
+Has some error about 'email' (Under field of 'email').
+
+EOS
+            ,
+            $this->engine->render('custom/errors', ['errors' => $errors])
+        );
+
+        $errors = [
+            'name' => [
+                'The name field is required.'
+            ],
+            'email' => [
+                'The email field is required.'
+            ]
+        ];
+
+        $this->assertSame(
+            <<<EOS
+Has some error.
+Has some error about 'name'.
+Has some error about 'email'.
+Has some error about 'email' (Under field of 'email').
+Has some error about 'name' (Under field of 'email').
+
+EOS
+            ,
+            $this->engine->render('custom/errors', ['errors' => $errors])
         );
     }
 }
