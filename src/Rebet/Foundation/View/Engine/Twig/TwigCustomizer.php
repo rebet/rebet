@@ -4,6 +4,7 @@ namespace Rebet\Foundation\View\Engine\Twig;
 use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
 use Rebet\Stream\Stream;
+use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Environment\Environment;
 
 /**
@@ -93,7 +94,7 @@ class TwigCustomizer
         $field = &static::$field;
         $twig->code('field', '', [], 'echo(', function ($name = null) use (&$field) {
             if ($name === null) {
-                return $field;
+                return Stream::of($field, true)->escape();
             }
             $field = $name;
             return '';
@@ -118,5 +119,49 @@ class TwigCustomizer
             return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
         }, '){', ['errors']);
         $twig->raw('enderrors', '}');
+
+        // ------------------------------------------------
+        // [error] Output error message of given attributes
+        // ------------------------------------------------
+        // Params:
+        //   $names : string|array - attribute names (default: {% field %} if exists, otherwise '*')
+        //   $outer : string       - outer text/html template with :messages placeholder (default: @errors.outer in /i18n/message.php)
+        //   $inner : string       - inner text/html template with :message placeholder (default: @errors.inner in /i18n/message.php)
+        // Usage:
+        //   {% error %}
+        //   {% error 'email' %}
+        //   {% error ['first_name', 'last_name'] %}
+        //   {% error '*' %}
+        //   {% error 'email' format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
+        //   {% error 'email' format by '<div class="error">:messages</div>', '* :message<br>' %}
+        // Under {% field %}:
+        //   {% error %}
+        //   {% error format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
+        //   {% error format by '<div class="error">:messages</div>', '* :message<br>' %}
+        $twig->code('error', '', ['format', 'by', ','], 'echo(', function ($errors, ...$args) use (&$field) {
+            $errors                  = Stream::of($errors, true);
+            [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
+
+            $names = $names ?? '*' ;
+            $outer = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>'."\n";
+            $inner = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
+
+            $output = '';
+            if ($names === '*') {
+                foreach ($errors as $messages) {
+                    foreach ($messages as $message) {
+                        $output .= str_replace(':message', $message->escape(), $inner);
+                    }
+                }
+            } else {
+                $names = (array)$names;
+                foreach ($names as $name) {
+                    foreach ($errors[$name] as $message) {
+                        $output .= str_replace(':message', $message->escape(), $inner);
+                    }
+                }
+            }
+            return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
+        }, ');', ['errors']);
     }
 }

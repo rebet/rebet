@@ -1,0 +1,13 @@
+{% error %}
+---
+{% error 'name' %}
+---
+{% error 'name' format by "=====\n:messages=====\n", " * :message\n" %}
+---
+{% error 'email' %}
+---
+{% field 'email' %}
+{% error %}
+---
+{% error format by "=====\n:messages=====\n", " * :message\n" %}
+{% endfield %}

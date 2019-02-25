@@ -272,4 +272,106 @@ EOS
             $this->engine->render('custom/errors', ['errors' => $errors])
         );
     }
+
+    public function test_render_error()
+    {
+        $errors = [];
+
+        $this->assertSame(
+            <<<EOS
+---
+---
+---
+---
+---
+
+EOS
+            ,
+            $this->engine->render('custom/error', ['errors' => $errors])
+        );
+
+        $errors = [
+            'name' => [
+                'The name field is required.',
+                'The name may not be greater than 20 characters.'
+            ]
+        ];
+        $this->assertSame(
+            <<<EOS
+<ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
+---
+<ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
+---
+=====
+ * The name field is required.
+ * The name may not be greater than 20 characters.
+=====
+---
+---
+---
+
+EOS
+            ,
+            $this->engine->render('custom/error', ['errors' => $errors])
+        );
+
+        $errors = [
+            'email' => [
+                'The email field is required.',
+                'The email may not be greater than 255 characters.'
+            ]
+        ];
+        $this->assertSame(
+            <<<EOS
+<ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+---
+---
+---
+<ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+---
+<ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+---
+=====
+ * The email field is required.
+ * The email may not be greater than 255 characters.
+=====
+
+EOS
+            ,
+            $this->engine->render('custom/error', ['errors' => $errors])
+        );
+
+        $errors = [
+            'name' => [
+                'The name field is required.',
+                'The name may not be greater than 20 characters.'
+            ],
+            'email' => [
+                'The email field is required.',
+            ]
+        ];
+        $this->assertSame(
+            <<<EOS
+<ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li><li>The email field is required.</li></ul>
+---
+<ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
+---
+=====
+ * The name field is required.
+ * The name may not be greater than 20 characters.
+=====
+---
+<ul class="error"><li>The email field is required.</li></ul>
+---
+<ul class="error"><li>The email field is required.</li></ul>
+---
+=====
+ * The email field is required.
+=====
+
+EOS
+            ,
+            $this->engine->render('custom/error', ['errors' => $errors])
+        );
+    }
 }

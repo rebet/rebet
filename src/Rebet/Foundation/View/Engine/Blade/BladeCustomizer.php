@@ -141,9 +141,9 @@ class BladeCustomizer
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
             $names = $names ?? '*' ;
-            $outer = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
+            $outer = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>'."\n";
             $inner = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
-        
+
             $output = '';
             if ($names === '*') {
                 foreach ($errors as $messages) {
