@@ -29,8 +29,8 @@ class CodeTokenParser extends AbstractTokenParser
      * Create Code Token Parser.
      * The separators defined by array like below,
      *
-     *  1) Separators array such as ['/a/', '/b/', '/c/'] expects separator tokens to exist in this order.
-     *     Note: Not guarantee that all of the defined separators will exist.
+     *  1) Separators array such as ['/a/', '/b/', '/c/'] expects separator tokens to apper in this order.
+     *     Note: Not guarantee that all of the defined separators will be appered.
      *  2) Separators array items are regex.
      *  3) If the separator item ends with '*' like '/,/*' that means item '/,/' can be none or repeated.
      *
@@ -105,8 +105,8 @@ class CodeTokenParser extends AbstractTokenParser
      * Skip separator tokens.
      * The separators defined by array like below,
      *
-     *  1) Separators array such as ['/a/', '/b/', '/c/'] expects separator tokens to exist in this order.
-     *     Note: Not guarantee that all of the defined separators will exist.
+     *  1) Separators array such as ['/a/', '/b/', '/c/'] expects separator tokens to apper in this order.
+     *     Note: Not guarantee that all of the defined separators will be appered.
      *  2) Separators array items are regex.
      *  3) If the separator item ends with '*' like '/,/*' that means item '/,/' can be none or repeated.
      *
