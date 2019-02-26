@@ -448,4 +448,74 @@ EOS
             $this->engine->render('custom/iferror', ['errors' => $errors])
         );
     }
+
+    public function test_render_e()
+    {
+        $errors = [];
+
+        $this->assertSame(
+<<<EOS
+---
+#333---
+---
+
+EOS
+            ,
+            $this->engine->render('custom/e', ['errors' => $errors])
+        );
+
+        $errors = [
+            'name' => [
+                'The name field is required.',
+                'The name may not be greater than 20 characters.'
+            ]
+        ];
+        $this->assertSame(
+            <<<EOS
+is-danger---
+red---
+---
+
+EOS
+            ,
+            $this->engine->render('custom/e', ['errors' => $errors])
+        );
+
+        $errors = [
+            'email' => [
+                'The email field is required.',
+                'The email may not be greater than 255 characters.'
+            ]
+        ];
+        $this->assertSame(
+            <<<EOS
+---
+#333---
+is-danger---
+is-danger
+EOS
+            ,
+            $this->engine->render('custom/e', ['errors' => $errors])
+        );
+
+        $errors = [
+            'name' => [
+                'The name field is required.',
+                'The name may not be greater than 20 characters.'
+            ],
+            'email' => [
+                'The email field is required.',
+            ]
+        ];
+        $this->assertSame(
+            <<<EOS
+is-danger---
+red---
+is-danger---
+is-danger
+EOS
+            ,
+            $this->engine->render('custom/e', ['errors' => $errors])
+        );
+    }
 }

@@ -183,5 +183,24 @@ class TwigCustomizer
             [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $then ?? '' ;
         }, ');', ['errors']);
+
+        // ------------------------------------------------
+        // [e] Output error grammers if error
+        // ------------------------------------------------
+        // Params:
+        //   $name    : string - attribute name (default: @field if exists)
+        //   $grammer : string - glammer name of @errors in /i18n/message.php.
+        // Usage:
+        //   {% e 'email' 'class' %}
+        //   {% e 'email' 'icon' %}
+        // Under {% field %}:
+        //   {% e 'class' %}
+        //   {% e 'icon' %}
+        $twig->code('e', '', [], 'echo(', function ($errors, ...$args) use (&$field) {
+            $errors           = Stream::of($errors, true);
+            [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
+            [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
+            return $errors[$name]->isBlank() ? $else : $value ;
+        }, ');', ['errors']);
     }
 }
