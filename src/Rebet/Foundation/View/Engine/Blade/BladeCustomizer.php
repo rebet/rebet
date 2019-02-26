@@ -102,23 +102,6 @@ class BladeCustomizer
         }, ';');
 
         // ------------------------------------------------
-        // [errors] Check error is exists
-        // ------------------------------------------------
-        // Params:
-        //   $name : string - attribute name (default: null)
-        // Usage:
-        //   @errors ... @else ... @enderrors
-        //   @errors('email') ... @else ... @enderrors
-        // Under @field:
-        //   @errors ... @else ... @enderrors
-        $blade->code('errors', 'if(', function ($errors, $name = null) use (&$field) {
-            $errors = Stream::of($errors, true);
-            $name   = $name ?? $field ;
-            return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
-        }, '):', '$errors ?? null');
-        $blade->raw('enderrors', 'endif;');
-
-        // ------------------------------------------------
         // [error] Output error message of given attributes
         // ------------------------------------------------
         // Params:
@@ -163,12 +146,28 @@ class BladeCustomizer
         }, ');', '$errors ?? null');
 
         // ------------------------------------------------
+        // [errors/errorsnot] Check error is exists
+        // ------------------------------------------------
+        // Params:
+        //   $name : string - attribute name (default: null)
+        // Usage:
+        //   @errors ... @else ... @enderrors
+        //   @errors('email') ... @else ... @enderrors
+        // Under @field:
+        //   @errors ... @else ... @enderrors
+        $blade->if('errors', function ($errors, $name = null) use (&$field) {
+            $errors = Stream::of($errors, true);
+            $name   = $name ?? $field ;
+            return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
+        }, '$errors ?? null');
+
+        // ------------------------------------------------
         // [iferror] Output given value if error
         // ------------------------------------------------
         // Params:
-        //   $name    : string - attribute names
-        //   $iferror : mixed  - return value if error is exists
-        //   $else    : mixed  - return value if error is not exists (default: '')
+        //   $name : string - attribute names
+        //   $then : mixed  - return value if error is exists
+        //   $else : mixed  - return value if error is not exists (default: '')
         // Usage:
         //   @iferror('email', 'color: red;')
         //   @iferror('email', 'color: red;', 'color: gleen;')
@@ -176,9 +175,9 @@ class BladeCustomizer
         //   @iferror('color: red;')
         //   @iferror('color: red;', 'color: gleen;')
         $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors                  = Stream::of($errors, true);
-            [$name, $iferror, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
-            return $errors[$name]->isBlank() ? $else : $iferror ?? '' ;
+            $errors               = Stream::of($errors, true);
+            [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
+            return $errors[$name]->isBlank() ? $else : $then ?? '' ;
         }, ');', '$errors ?? null');
 
         // ------------------------------------------------

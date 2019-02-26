@@ -36,22 +36,22 @@ class BladeCompiler extends LaravelBladeCompiler
 
     /**
      * Register an "code" statement directive.
-     * If you give '$errors' as bind then you can get the $errors of assigned value as first argument of callback.
+     * If you give '$errors' as binds then you can get the $errors of assigned value as first argument of callback.
      *
      * @param string $name
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
      * @param callable $callback
      * @param string $close code to callbak returns like ');', ';', '):' etc
-     * @param string $bind (default: null)
+     * @param string $binds (default: null)
      * @return void
      */
-    public function code($name, string $open, callable $callback, string $close, string $bind = null) : void
+    public function code($name, string $open, callable $callback, string $close, string $binds = null) : void
     {
         $this->codes[$name] = $callback;
-        $this->directive($name, function ($expression) use ($name, $open, $close, $bind) {
+        $this->directive($name, function ($expression) use ($name, $open, $close, $binds) {
             $expression = empty($expression) ? '' : ", {$expression}" ;
-            return $bind
-                ? "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}', {$bind}{$expression}) {$close} ?>"
+            return $binds
+                ? "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}', {$binds}{$expression}) {$close} ?>"
                 : "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}'{$expression}) {$close} ?>"
                 ;
         });
@@ -72,29 +72,50 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Register an "if" (and not) statement directive.
      *
-     * @param string $name
+     * @param string|array $name
      * @param callable $callback
+     * @param string $binds (default: null)
      * @return void
      */
-    public function if($name, callable $callback)
+    public function if($name, callable $callback, string $binds = null)
     {
-        parent::if($name, $callback);
+        $this->conditions[$name] = $callback;
+
+        $this->directive($name, function ($expression) use ($name, $binds) {
+            $expression = empty($expression) ? '' : ", {$expression}" ;
+            return $binds
+                    ? "<?php if (\Illuminate\Support\Facades\Blade::check('{$name}', {$binds}{$expression})): ?>"
+                    : "<?php if (\Illuminate\Support\Facades\Blade::check('{$name}'{$expression})): ?>";
+        });
+
+        $this->directive('else'.$name, function ($expression) use ($name, $binds) {
+            $expression = empty($expression) ? '' : ", {$expression}" ;
+            return $binds
+                ? "<?php elseif (\Illuminate\Support\Facades\Blade::check('{$name}', {$binds}{$expression})): ?>"
+                : "<?php elseif (\Illuminate\Support\Facades\Blade::check('{$name}'{$expression})): ?>";
+        });
+
+        $this->directive('end'.$name, function () {
+            return '<?php endif; ?>';
+        });
 
         $this->directive(
             $name.'not',
-            function ($expression) use ($name) {
-                return $expression !== ''
-                ? "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
-                : "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}')): ?>";
+            function ($expression) use ($name, $binds) {
+                $expression = empty($expression) ? '' : ", {$expression}" ;
+                return $binds
+                ? "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}', {$binds}{$expression})): ?>"
+                : "<?php if (! \Illuminate\Support\Facades\Blade::check('{$name}'{$expression})): ?>";
             }
         );
 
         $this->directive(
             'else'.$name.'not',
-            function ($expression) use ($name) {
-                return $expression !== ''
-                ? "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}', {$expression})): ?>"
-                : "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}')): ?>";
+            function ($expression) use ($name, $binds) {
+                $expression = empty($expression) ? '' : ", {$expression}" ;
+                return $binds
+                ? "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}', {$binds}{$expression})): ?>"
+                : "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}'{$expression})): ?>";
             }
         );
     }

@@ -42,7 +42,7 @@ class Environment extends TwigEnvironment
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
      * @param callable $callback
      * @param string $close code to callbak returns like ');', ';', '):' etc
-     * @param array $binds (default: null)
+     * @param array $binds (default: [])
      * @return void
      */
     public function code($name, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = []) : void
@@ -57,12 +57,13 @@ class Environment extends TwigEnvironment
      * @param string|null $verbs
      * @param array|null $separators of arguments. If null given then [','] will set.
      * @param callable $callback
+     * @param array $binds (default: [])
      * @return void
      */
-    public function if(string $name, ?string $verbs, ?array $separators, callable $callback)
+    public function if(string $name, ?string $verbs, ?array $separators, callable $callback, array $binds = [])
     {
-        $this->code($name, $verbs, $separators, 'if(', $callback, ") {\n");
-        $this->code("else{$name}", $verbs, $separators, '} elseif(', $callback, ") {\n");
+        $this->code($name, $verbs, $separators, 'if(', $callback, ") {\n", $binds);
+        $this->code("else{$name}", $verbs, $separators, '} elseif(', $callback, ") {\n", $binds);
         if (!$this->registered_else) {
             $this->raw("else", "} else {\n");
             $this->registered_else = true;
