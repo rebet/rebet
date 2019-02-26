@@ -35,7 +35,7 @@ class TwigCustomizer
         // Usage:
         //   {% env is 'local' %} ... {% elseenv is 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
-        $twig->if('env', 'is', [',', 'or'], function (string ...$env) {
+        $twig->if('env', 'is', ['/,/*', '/or/'], function (string ...$env) {
             return in_array(App::getEnv(), $env);
         });
 
@@ -49,7 +49,7 @@ class TwigCustomizer
         $twig->code('prefix', null, [], 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', ['prefix']);
-        
+
         // ------------------------------------------------
         // [role is/role is not] Check current users role (Authorization)
         // ------------------------------------------------
@@ -60,7 +60,7 @@ class TwigCustomizer
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
-        $twig->if('role', 'is', [',', 'or'], function (string ...$roles) {
+        $twig->if('role', 'is', ['/,/*', '/or/'], function (string ...$roles) {
             return Auth::user()->is(...$roles);
         });
 
@@ -76,7 +76,7 @@ class TwigCustomizer
         //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update' 'remark' with $post %} ... {% else %} ... {% endcan %}
         //   {% can 'update' $post with $a, $b and $c %} ... {% else %} ... {% endcan %}
-        $twig->if('can', null, ['with', ',', 'and'], function (string $action, $target, ...$extras) {
+        $twig->if('can', null, ['/with/', '/,/*', '/and/'], function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
         });
 
@@ -121,7 +121,7 @@ class TwigCustomizer
         //   {% error %}
         //   {% error format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
         //   {% error format by '<div class="error">:messages</div>', '* :message<br>' %}
-        $twig->code('error', '', ['format', 'by', ','], 'echo(', function ($errors, ...$args) use (&$field) {
+        $twig->code('error', '', ['/format/', '/by/', '/,/'], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors                  = Stream::of($errors, true);
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
@@ -178,7 +178,7 @@ class TwigCustomizer
         //   {% iferror then 'color: red;' %}
         //   {% iferror then 'color: red;' else 'color: gleen;' %}
         //   {% iferror ? 'color: red;' : 'color: gleen;' %}
-        $twig->code('iferror', '', ['then', '?', 'else', ':'], 'echo(', function ($errors, ...$args) use (&$field) {
+        $twig->code('iferror', '', ['/then|\?/', '/else|:/'], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors               = Stream::of($errors, true);
             [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $then ?? '' ;
@@ -202,5 +202,25 @@ class TwigCustomizer
             [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
         }, ');', ['errors']);
+
+        // ------------------------------------------------
+        // [input] Output input data
+        // ------------------------------------------------
+        // Params:
+        //   $name    : string - attribute name
+        //   $default : mixed  - default valule (default: '')
+        // Usage:
+        //   {% input 'email' %}
+        //   {% input 'email' default $user->email %}
+        //   {% input 'email' ?? $user->email %}
+        // Under {% field %}:
+        //   {% input %}
+        //   {% input default $user->email %}
+        //   {% input ?? $user->email %}
+        $twig->code('input', '', ['/default|\?\?/'], 'echo(', function ($input, ...$args) use (&$field) {
+            $input            = Stream::of($input, true);
+            [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
+            return $input[$name]->default($default)->escape();
+        }, ');', ['input']);
     }
 }

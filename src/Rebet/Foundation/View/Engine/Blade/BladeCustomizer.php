@@ -49,7 +49,7 @@ class BladeCustomizer
         $blade->code('prefix', 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', '$prefix ?? null');
-        
+
         // ------------------------------------------------
         // [role/rolenot] Check current users role (Authorization)
         // ------------------------------------------------

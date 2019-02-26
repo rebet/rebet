@@ -518,4 +518,67 @@ EOS
             $this->engine->render('custom/e', ['errors' => $errors])
         );
     }
+
+    public function test_render_input()
+    {
+        $input = [];
+
+        $this->assertSame(
+            <<<EOS
+---
+default---
+default---
+---
+default
+EOS
+            ,
+            $this->engine->render('custom/input', ['input' => $input])
+        );
+
+        $input = [
+            'name' => 'Name'
+        ];
+        $this->assertSame(
+            <<<EOS
+Name---
+Name---
+default---
+---
+default
+EOS
+            ,
+            $this->engine->render('custom/input', ['input' => $input])
+        );
+
+        $input = [
+            'email' => 'test@rebet.local'
+        ];
+        $this->assertSame(
+            <<<EOS
+---
+default---
+test@rebet.local---
+test@rebet.local---
+test@rebet.local
+EOS
+            ,
+            $this->engine->render('custom/input', ['input' => $input])
+        );
+
+        $input = [
+            'name'  => 'Name',
+            'email' => 'test@rebet.local'
+        ];
+        $this->assertSame(
+            <<<EOS
+Name---
+Name---
+test@rebet.local---
+test@rebet.local---
+test@rebet.local
+EOS
+            ,
+            $this->engine->render('custom/input', ['input' => $input])
+        );
+    }
 }
