@@ -2,15 +2,25 @@
 namespace Rebet\Tests\Foundation;
 
 use Rebet\Config\Config;
+use Rebet\Config\Layer;
 use Rebet\Env\Dotenv;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Translation\Translator;
 
 class AppTest extends RebetTestCase
 {
     public function setUp()
     {
         parent::setUp();
+    }
+
+    public function test_initFrameworkConfig()
+    {
+        Config::clear(null, Layer::FRAMEWORK);
+        $this->assertSame(null, Translator::config('locale', false));
+        App::initFrameworkConfig();
+        $this->assertSame('ja', Translator::config('locale', false));
     }
 
     public function test_getRoot()

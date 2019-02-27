@@ -9,7 +9,6 @@ use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
-use Rebet\View\View;
 
 /**
  * Application Config Class
@@ -84,7 +83,7 @@ class App
             ],
         ]);
     }
-    
+
     /**
      * Get application root path
      *
@@ -205,7 +204,27 @@ class App
     {
         return \in_array(self::getChannel(), $channel, true);
     }
-    
+
+    /**
+     * Get the current entry point name.
+     *
+     * @return string
+     */
+    public static function getEntryPoint() : string
+    {
+        return self::config('entry_point');
+    }
+
+    /**
+     * Set the current entry point name.
+     *
+     * @param string $entry_point エントリポイント名
+     */
+    public static function setEntryPoint(string $entry_point) : void
+    {
+        self::setConfig(['entry_point' => $entry_point]);
+    }
+
     /**
      * It returns the value according to the environment based on the current execution environment.
      * The following can be specified for the key name of $case, and the value is acquired according to the priority of 1 => 4.
@@ -232,26 +251,6 @@ class App
         }, false);
     }
 
-    /**
-     * Get the current entry point name.
-     *
-     * @return string
-     */
-    public static function getEntryPoint() : string
-    {
-        return self::config('entry_point');
-    }
-
-    /**
-     * Set the current entry point name.
-     *
-     * @param string $entry_point エントリポイント名
-     */
-    public static function setEntryPoint(string $entry_point) : void
-    {
-        self::setConfig(['entry_point' => $entry_point]);
-    }
-    
     /**
      * Get the current time zone.
      *
