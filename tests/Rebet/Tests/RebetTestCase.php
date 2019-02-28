@@ -17,6 +17,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
 use Rebet\Foundation\App;
+use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
@@ -104,6 +105,7 @@ abstract class RebetTestCase extends TestCase
         Enum::clear();
         Event::clear();
         Translator::clear();
+        Cookie::clear();
         StderrCapture::clear();
     }
     
@@ -230,5 +232,13 @@ abstract class RebetTestCase extends TestCase
     protected function signout(Request $request = null) : void
     {
         Auth::signout($request ?? $this->createRequestMock('/'));
+    }
+
+    protected function setProperty($target, string $name, $value)
+    {
+        $class = is_string($target) ? $target : get_class($target) ;
+        $rp    = new \ReflectionProperty($class, $name);
+        $rp->setAccessible(true);
+        $rp->setValue(is_string($target) ? null : $target, $value);
     }
 }

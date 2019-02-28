@@ -2,9 +2,9 @@
 namespace Rebet\Http\Cookie;
 
 use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Utils;
+use Rebet\Config\Config;
+use Rebet\Config\Configurable;
 use Rebet\Http\Request;
-use Rebet\Routing\Router;
 use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
 
 /**
@@ -17,6 +17,21 @@ use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
  */
 class Cookie extends SymfonyCookie
 {
+    use Configurable;
+
+    public static function defaultConfig()
+    {
+        return [
+            'expire'    => 0,
+            'path'      => function ($path) { return (Request::current()->getRoutePrefix() ?? '').$path; },
+            'domain'    => null,
+            'secure'    => false,
+            'http_only' => true,
+            'raw'       => false,
+            'samesite'  => self::SAMESITE_LAX,
+        ];
+    }
+
     /**
      * Queue a cookie to send with the next response.
      *
@@ -25,29 +40,50 @@ class Cookie extends SymfonyCookie
     protected static $queued = [];
 
     /**
+     * Clear the cookie queue what for next response.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$queued = [];
+    }
+
+    /**
      * Create a Cookie based on Symfony's Cookie::create() default parameters.
      *
      * @param string $name
-     * @param string $value
-     * @param integer $expire
-     * @param string|null $path
-     * @param string $domain
-     * @param boolean $secure
-     * @param boolean $httpOnly
-     * @param boolean $raw
-     * @param string|null $sameSite
+     * @param string|null $value
+     * @param string|int|null $expire (default: depend on configure)
+     * @param string|null $path (default: depend on configure)
+     * @param string|null $domain (default: depend on configure)
+     * @param boolean|null $secure (default: depend on configure)
+     * @param boolean|null $http_only (default: depend on configure)
+     * @param boolean|null $raw (default: depend on configure)
+     * @param string|null $samesite (default: depend on configure)
      */
-    public function __construct(string $name, string $value = null, $expire = 0, ?string $path = '/', string $domain = null, bool $secure = null, bool $httpOnly = true, bool $raw = false, ?string $sameSite = self::SAMESITE_LAX)
+    public function __construct(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null)
     {
-        parent::__construct($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
+        $path_converter = static::config('path');
+        parent::__construct(
+            $name,
+            $value,
+            $expire ?? static::config('expire'),
+            is_callable($path_converter) ? call_user_func($path_converter, $path ?? '') : ($path ?? $path_converter),
+            $domain ?? static::config('domain', false),
+            $secure ?? static::config('secure'),
+            $http_only ?? static::config('http_only'),
+            $raw ?? static::config('raw'),
+            $samesite ?? static::config('samesite', false)
+        );
     }
 
     /**
      * {@inheritDoc}
      */
-    public static function create(string $name, string $value = null, $expire = 0, ?string $path = '/', string $domain = null, bool $secure = null, bool $httpOnly = true, bool $raw = false, ?string $sameSite = self::SAMESITE_LAX) : parent
+    public static function create(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null) : parent
     {
-        return new static($name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
+        return new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite);
     }
 
     /**
@@ -92,32 +128,32 @@ class Cookie extends SymfonyCookie
      * defaultly.
      *
      * @param string $name
-     * @param string $value
-     * @param integer $expire (default: 0)
-     * @param string|null $path (default: current route prefix, if it is empty then '/')
-     * @param string|null $domain (default: null)
-     * @param boolean $secure (default: true)
-     * @param boolean $http_only (default: true)
-     * @param boolean $raw (default: false)
-     * @param string|null $same_site (default: null)
+     * @param string|null $value
+     * @param string|int|null $expire (default: depend on configure)
+     * @param string|null $path (default: depend on configure)
+     * @param string|null $domain (default: depend on configure)
+     * @param boolean|null $secure (default: depend on configure)
+     * @param boolean|null $http_only (default: depend on configure)
+     * @param boolean|null $raw (default: depend on configure)
+     * @param string|null $samesite (default: depend on configure)
      * @return void
      */
-    public static function set(string $name, string $value = null, $expire = 0, ?string $path = null, ?string $domain = null, bool $secure = true, bool $http_only = true, bool $raw = false, ?string $same_site = null) : void
+    public static function set(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null) : void
     {
-        static::enqueue(new static($name, $value, $expire, $path ?? Utils::evl(Router::current()->prefix ?? null, '/'), $domain, $secure, $http_only, $raw, $same_site));
+        static::enqueue(new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite));
     }
 
     /**
      * Set the expiered cookie of given name to queued for next response.
      *
      * @param string $name
-     * @param string|null $path (default: current route prefix, if it is empty then '/')
-     * @param string|null $domain (default: null)
+     * @param string|null $path (default: depend on configure)
+     * @param string|null $domain (default: depend on configure)
      * @return void
      */
     public static function remove(string $name, ?string $path = null, ?string $domain = null) : void
     {
-        static::enqueue(new static($name, null, 0, $path ?? Utils::evl(Router::current()->prefix ?? null, '/'), $domain));
+        static::enqueue(new static($name, null, 0, $path, $domain));
     }
 
     /**

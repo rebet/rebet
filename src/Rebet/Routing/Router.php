@@ -19,7 +19,6 @@ use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Route\RedirectRoute;
 use Rebet\Routing\Route\Route;
 use Rebet\Routing\Route\ViewRoute;
-use Rebet\View\View;
 
 /**
  * Router Class
@@ -47,7 +46,7 @@ class Router
      * @var array
      */
     protected static $routing_tree = [];
-    
+
     /**
      * Default Route
      *
@@ -89,7 +88,7 @@ class Router
      * @var array
      */
     protected static $prefixes = [];
-    
+
     /**
      * Clear all routing rules.
      *

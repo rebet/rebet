@@ -71,16 +71,16 @@ class Request extends SymfonyRequest
         if ($this->cookies->has('_beacon')) {
             $this->can_use_cookie = true;
         } else {
-            Cookie::set('_beacon', 1);
+            Cookie::set('_beacon', '1');
         }
     }
 
     /**
      * Get current request.
      *
-     * @return Request
+     * @return Request|null
      */
-    public static function current() : Request
+    public static function current() : ?Request
     {
         return static::$current;
     }
