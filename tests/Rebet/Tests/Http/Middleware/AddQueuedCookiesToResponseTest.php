@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Auth\Middleware;
+namespace Rebet\Tests\Http\Middleware;
 
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Middleware\AddQueuedCookiesToResponse;
