@@ -38,14 +38,14 @@ class HttpException extends RuntimeException implements ProblemRespondable
      *
      * @param int $status code of HTTP
      * @param string|null $detail message or full transration key (default: null)
-     * @param string|null $title (default: Basic HTTP status label)
+     * @param string|null $title or full transration key (default: Basic HTTP status label)
      * @param \Throwable $previous (default: null)
      */
     public function __construct(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null)
     {
         $this->status = $status;
         $this->detail = Translator::get($detail) ?? $detail ;
-        $this->title  = $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
+        $this->title  = Translator::get($title) ?? $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
         $message      = $detail ? "{$this->status} {$this->title}: {$detail}" : "{$this->status} {$this->title}" ;
         parent::__construct($message, $previous);
     }

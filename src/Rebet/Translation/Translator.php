@@ -172,6 +172,9 @@ class Translator
             return null;
         }
         [$group, $key] = Strings::split($key, '.', 2);
+        if ($key === null) {
+            return null;
+        }
         
         $locale   = $locale ?? static::config('locale');
         $sentence = static::dictionary()->sentence($group, $key, array_unique([$locale, static::config('fallback_locale')]), $selector, $recursive);
