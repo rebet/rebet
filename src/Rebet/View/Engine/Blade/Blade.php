@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\View\Engine\Blade;
 
+use Illuminate\Container\Container;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Blade as LaravelBlade;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
@@ -35,13 +36,13 @@ class Blade implements Engine
             'customizers' => [],
         ];
     }
-    
+
     /**
-     * The blade template engine factory
+     * Illuminate Container instance.
      *
-     * @var Illuminate\View\Factory
+     * @var \Illuminate\Container\Container
      */
-    protected $factory = null;
+    protected $app = null;
 
     /**
      * Create Blade template engine
@@ -52,23 +53,42 @@ class Blade implements Engine
         $cache_path  = $config['cache_path'] ?? static::config('cache_path', false) ;
         $customizers = array_merge($config['customizers'] ?? [], static::config('customizers', false, [])) ;
 
-        $resolver   = new EngineResolver();
-        $finder     = new FileViewFinder(new Filesystem(), (array)$view_path);
-        $dispatcher = new Dispatcher();
-
-        $resolver->register("blade", function () use ($cache_path) {
+        $this->app = new Container();
+        $this->app->bind('files', function () {
+            return new Filesystem();
+        });
+        $this->app->bind('view.finder', function ($app) use ($view_path) {
+            return new FileViewFinder($app['files'], (array)$view_path);
+        });
+        $this->app->bind('events', function () {
+            return new Dispatcher();
+        });
+        $this->app->singleton('view.engine.resolver', function ($app) use ($cache_path) {
             if (! is_dir($cache_path)) {
                 mkdir($cache_path, 0777, true);
             }
-            $blade = new BladeCompiler(new Filesystem(), $cache_path);
-            return new CompilerEngine($blade);
+            $resolver = new EngineResolver();
+            $app->singleton('blade.compiler', function ($app) use ($cache_path) {
+                return new BladeCompiler($app['files'], $cache_path);
+            });
+            $resolver->register('blade', function () use ($app) {
+                return new CompilerEngine($app['blade.compiler']);
+            });
+            $resolver->register('php', function () {
+                return new PhpEngine();
+            });
+            $resolver->register('file', function () {
+                return new FileEngine();
+            });
+            return $resolver;
         });
-
-        $this->factory = new Factory($resolver, $finder, $dispatcher);
-
-        $app         = LaravelBlade::getFacadeApplication();
-        $app['view'] = $this->factory;
-        LaravelBlade::setFacadeApplication($app);
+        $this->app->singleton('view', function ($app) {
+            $env = new Factory($app['view.engine.resolver'], $app['view.finder'], $app['events']);
+            $env->setContainer($app);
+            $env->share('app', $app);
+            return $env;
+        });
+        Facade::setFacadeApplication($this->app);
 
         foreach (array_reverse($customizers) as $customizer) {
             $invoker = \Closure::fromCallable($customizer);
@@ -83,7 +103,7 @@ class Blade implements Engine
      */
     public function compiler() : BladeCompiler
     {
-        return $this->factory->getEngineResolver()->resolve('blade')->getCompiler();
+        return $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
     }
 
     /**
@@ -91,7 +111,7 @@ class Blade implements Engine
      */
     public function render(string $name, array $data = []) : string
     {
-        return $this->factory->make($name, $data)->render();
+        return $this->app['view']->make($name, $data)->render();
     }
 
     /**
@@ -99,6 +119,6 @@ class Blade implements Engine
      */
     public function exists(string $name) : bool
     {
-        return $this->factory->exists($name);
+        return $this->app['view']->exists($name);
     }
 }
