@@ -32,7 +32,7 @@ class BladeTest extends RebetTestCase
         $this->blade = new Blade([
             'view_path'  => App::path('/resources/views/blade'),
             'cache_path' => 'vfs://root/cache',
-        ]);
+        ], true);
     }
 
     public function test_compiler()
@@ -109,12 +109,12 @@ EOS
         $this->blade = new Blade([
             'view_path'   => App::path('/resources/views/blade'),
             'cache_path'  => 'vfs://root/cache',
-            'customizers' => [function (BladeCompiler $blade) {
-                $blade->directive('hello', function ($word) {
-                    return "Hello {$word}!";
-                });
-            }],
-        ]);
+        ], true);
+        Blade::customize(function (BladeCompiler $blade) {
+            $blade->directive('hello', function ($word) {
+                return "Hello {$word}!";
+            });
+        });
 
         $this->assertSame(
             <<<EOS

@@ -36,34 +36,36 @@ class Blade implements Engine
             'customizers' => [],
         ];
     }
-
+    
     /**
-     * Illuminate Container instance.
+     * It provides the Blade engine components to the globally container if 'view' component not exists.
      *
-     * @var \Illuminate\Container\Container
+     * @param array $view_path
+     * @param string $cache_path
+     * @param bool $clean_rebuild (default: false)
+     * @return Container
      */
-    protected $app = null;
-
-    /**
-     * Create Blade template engine
-     */
-    public function __construct(array $config = [])
+    public static function provide(array $view_path, string $cache_path, bool $clean_rebuild = false) : void
     {
-        $view_path   = $config['view_path'] ?? static::config('view_path') ;
-        $cache_path  = $config['cache_path'] ?? static::config('cache_path', false) ;
-        $customizers = array_merge($config['customizers'] ?? [], static::config('customizers', false, [])) ;
+        if ($clean_rebuild) {
+            $app = Container::setInstance(new Container()) ;
+        } else {
+            $app = Container::getInstance() ?? Container::setInstance(new Container()) ;
+            if ($app->has('view')) {
+                return;
+            }
+        }
 
-        $this->app = new Container();
-        $this->app->bind('files', function () {
+        $app->bind('files', function () {
             return new Filesystem();
         });
-        $this->app->bind('view.finder', function ($app) use ($view_path) {
+        $app->bind('view.finder', function ($app) use ($view_path) {
             return new FileViewFinder($app['files'], (array)$view_path);
         });
-        $this->app->bind('events', function () {
+        $app->bind('events', function () {
             return new Dispatcher();
         });
-        $this->app->singleton('view.engine.resolver', function ($app) use ($cache_path) {
+        $app->singleton('view.engine.resolver', function ($app) use ($cache_path) {
             if (! is_dir($cache_path)) {
                 mkdir($cache_path, 0777, true);
             }
@@ -82,18 +84,41 @@ class Blade implements Engine
             });
             return $resolver;
         });
-        $this->app->singleton('view', function ($app) {
+        $app->singleton('view', function ($app) {
             $env = new Factory($app['view.engine.resolver'], $app['view.finder'], $app['events']);
             $env->setContainer($app);
             $env->share('app', $app);
             return $env;
         });
-        Facade::setFacadeApplication($this->app);
+        Facade::setFacadeApplication($app);
 
-        foreach (array_reverse($customizers) as $customizer) {
-            $invoker = \Closure::fromCallable($customizer);
-            $invoker($this->compiler());
+        foreach (array_reverse(static::config('customizers', false, [])) as $customizer) {
+            call_user_func($customizer, static::compiler());
         }
+    }
+
+    /**
+     * Create Blade template engine
+     *
+     * @param array $config
+     * @param boolean $clean_rebuild (default: false)
+     */
+    public function __construct(array $config = [], bool $clean_rebuild = false)
+    {
+        $view_path   = $config['view_path'] ?? static::config('view_path') ;
+        $cache_path  = $config['cache_path'] ?? static::config('cache_path', false) ;
+
+        static::provide((array)$view_path, $cache_path, $clean_rebuild);
+    }
+
+    /**
+     * Get the view factory instance.
+     *
+     * @return Factory
+     */
+    protected static function factory() : Factory
+    {
+        return Container::getInstance()['view'];
     }
 
     /**
@@ -101,9 +126,20 @@ class Blade implements Engine
      *
      * @return Illuminate\View\Compilers\BladeCompiler
      */
-    public function compiler() : BladeCompiler
+    public static function compiler() : BladeCompiler
     {
-        return $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
+        return static::factory()->getEngineResolver()->resolve('blade')->getCompiler();
+    }
+
+    /**
+     * Customize Blade template engine by given callback customizer.
+     *
+     * @param callable $customizer is function(BladeCompiler $blade) : void
+     * @return void
+     */
+    public static function customize(callable $customizer) : void
+    {
+        call_user_func($customizer, static::compiler());
     }
 
     /**
@@ -111,7 +147,7 @@ class Blade implements Engine
      */
     public function render(string $name, array $data = []) : string
     {
-        return $this->app['view']->make($name, $data)->render();
+        return static::factory()->make($name, $data)->render();
     }
 
     /**
@@ -119,6 +155,6 @@ class Blade implements Engine
      */
     public function exists(string $name) : bool
     {
-        return $this->app['view']->exists($name);
+        return static::factory()->exists($name);
     }
 }

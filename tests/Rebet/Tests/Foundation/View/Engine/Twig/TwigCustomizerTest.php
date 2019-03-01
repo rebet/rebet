@@ -15,6 +15,6 @@ class TwigCustomizerTest extends EngineCustomizerTestCase
             'options'      => [
                 // 'cache' => 'vfs://root/cache',
             ],
-        ]);
+        ], true);
     }
 }

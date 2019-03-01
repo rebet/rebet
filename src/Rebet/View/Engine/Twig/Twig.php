@@ -36,7 +36,7 @@ class Twig implements Engine
      *
      * @var Environment
      */
-    public $twig = null;
+    protected static $twig = null;
 
     /**
      * Template file suffix
@@ -49,21 +49,31 @@ class Twig implements Engine
      * Create Twig template engine
      *
      * @param array $config
+     * @param bool $clean_rebuild (default: false)
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], bool $clean_rebuild = false)
     {
         $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
         $template_dir      = $config['template_dir'] ?? static::config('template_dir') ;
         $options           = $config['options'] ?? static::config('options', false, []) ;
-        $customizers       = array_merge($config['customizers'] ?? [], static::config('customizers', false, []));
 
-        $loader     = new FilesystemLoader($template_dir);
-        $this->twig = new Environment($loader, $options);
-        
-        foreach (array_reverse($customizers) as $customizer) {
-            $invoker = \Closure::fromCallable($customizer);
-            $invoker($this->twig);
+        if (static::$twig === null || $clean_rebuild) {
+            static::$twig = new Environment(new FilesystemLoader($template_dir), $options);
+            foreach (array_reverse(static::config('customizers', false, [])) as $customizer) {
+                call_user_func($customizer, static::$twig);
+            }
         }
+    }
+
+    /**
+     * Customize Twig template engine by given callback customizer.
+     *
+     * @param callable $customizer is function(Environment $twig) : void
+     * @return void
+     */
+    public static function customize(callable $customizer) : void
+    {
+        call_user_func($customizer, static::$twig);
     }
 
     /**
@@ -71,7 +81,7 @@ class Twig implements Engine
      */
     public function render(string $name, array $data = []) : string
     {
-        return $this->twig->render($name.$this->file_suffix, $data);
+        return static::$twig->render($name.$this->file_suffix, $data);
     }
 
     /**
@@ -79,6 +89,6 @@ class Twig implements Engine
      */
     public function exists(string $name) : bool
     {
-        return $this->twig->getLoader()->exists($name.$this->file_suffix);
+        return static::$twig->getLoader()->exists($name.$this->file_suffix);
     }
 }

@@ -14,7 +14,7 @@ class TwigTest extends RebetTestCase
     /**
      * @var Rebet\View\Engine\Twig\Twig
      */
-    private $Twig;
+    private $twig;
 
     public function setUp()
     {
@@ -32,7 +32,7 @@ class TwigTest extends RebetTestCase
             'options'      => [
                 // 'cache' => 'vfs://root/cache',
             ],
-        ]);
+        ], true);
     }
 
     public function test_exists()

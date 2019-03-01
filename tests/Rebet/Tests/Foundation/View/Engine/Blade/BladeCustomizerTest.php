@@ -13,6 +13,6 @@ class BladeCustomizerTest extends EngineCustomizerTestCase
         return new Blade([
             'view_path'  => App::path('/resources/views/blade'),
             'cache_path' => 'vfs://root/cache',
-        ]);
+        ], true);
     }
 }
