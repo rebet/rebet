@@ -15,7 +15,7 @@ class StartSessionTest extends RebetTestCase
         $this->assertInstanceOf(StartSession::class, new StartSession());
     }
 
-    public function test_handle()
+    public function test_handleAndTerminate()
     {
         $middleware  = new StartSession();
         $destination = function ($request) { return Responder::toResponse('OK'); };
@@ -32,5 +32,9 @@ class StartSessionTest extends RebetTestCase
         $this->assertSame('OK', $response->getContent());
         $session = $request->session();
         $this->assertInstanceOf(Session::class, $session);
+        $this->assertTrue($session->isStarted());
+
+        $middleware->terminate($request, $response);
+        $this->assertFalse($session->isStarted());
     }
 }

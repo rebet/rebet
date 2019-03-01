@@ -42,6 +42,6 @@ class StartSession
      */
     public function terminate(Request $request, Response $response)
     {
-        $request->getSession()->save();
+        $request->session()->save();
     }
 }
