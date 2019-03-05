@@ -36,7 +36,7 @@ class Utils
     {
         return $expr ? $ifTrue : $ifFalse ;
     }
-    
+
     /**
      * Get the first element that is not blank.
      *
@@ -80,7 +80,7 @@ class Utils
     {
         return $value === null || $value === '' || $value === [] ;
     }
-    
+
     /**
      * If the given value is blank, it returns the default value.
      *
@@ -93,7 +93,7 @@ class Utils
     {
         return static::isBlank($value) ? $default : $value ;
     }
-    
+
     /**
      * It checks whether the given value is empty.
      * Note: empty is null, 0, ''(empty string) or [](empty array)
@@ -117,7 +117,7 @@ class Utils
     {
         return $value === null || $value === '' || $value === [] || $value === 0 ;
     }
-    
+
     /**
      * If the given value is empty, it returns the default value.
      *
@@ -130,7 +130,7 @@ class Utils
     {
         return static::isEmpty($value) ? $default : $value ;
     }
-    
+
     /**
      * Get an anonymous function for embedding a string into a here-document.
      *
@@ -162,7 +162,7 @@ class Utils
     {
         return $var === null || $var === '' ? null : intval($var, $base);
     }
-    
+
     /**
      * Convert to float type
      * Note: null / empty string returns null.

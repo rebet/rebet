@@ -90,7 +90,7 @@ class Reflector
         if (Utils::isBlank($key)) {
             return $object === null ? $default : static::resolveDotAccessDelegator($object) ;
         }
-        
+
         if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
             return static::resolveDotAccessDelegator($object[$key]) ?? $default ;
         }
@@ -123,7 +123,7 @@ class Reflector
         $value = $rp->getValue($object);
         return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
     }
-    
+
     /**
      * Resolve DotAccessDelegator.
      *
@@ -213,7 +213,7 @@ class Reflector
         }
         return;
     }
-    
+
     /**
      * It checks whether an array or object has a given property.
      *
@@ -236,7 +236,7 @@ class Reflector
         if ($object === null) {
             return false;
         }
-        
+
         $current  = Strings::latrim($key, '.');
         $nest_obj = null;
         if (Arrays::accessible($object)) {
@@ -296,11 +296,10 @@ class Reflector
                     throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
                 }
                 return static::remove($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
-            } else {
-                $ret = $object[$current] ?? null;
-                unset($object[$current]);
-                return static::resolveDotAccessDelegator($ret);
             }
+            $ret = $object[$current] ?? null;
+            unset($object[$current]);
+            return static::resolveDotAccessDelegator($ret);
         }
 
         if (!\property_exists($object, $current)) {
@@ -313,17 +312,14 @@ class Reflector
             $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
             $rp->setValue($object, $target);
             return static::resolveDotAccessDelegator($ret);
-        } else {
-            $rp = new \ReflectionProperty($object, $current);
-            if ($rp->isPublic() || $rp->getModifiers() === 4096) {
-                $ret = $object->$current;
-                unset($object->$current);
-                return static::resolveDotAccessDelegator($ret);
-            } else {
-                throw new \OutOfBoundsException("Nested key '{$current}' can not access.");
-            }
         }
-        return null;
+        $rp = new \ReflectionProperty($object, $current);
+        if ($rp->isPublic() || $rp->getModifiers() === 4096) {
+            $ret = $object->$current;
+            unset($object->$current);
+            return static::resolveDotAccessDelegator($ret);
+        }
+        throw new \OutOfBoundsException("Nested key '{$current}' can not access.");
     }
 
     /**
@@ -518,7 +514,7 @@ class Reflector
         }
         return null;
     }
-    
+
     /**
      * It checks whether the target value is the given Type
      * # If value is null then return false
@@ -538,12 +534,12 @@ class Reflector
         }
         if (is_object($value) && $value instanceof $type) {
             return true;
-        } else {
-            $type_check = "is_{$type}";
-            if (function_exists($type_check) && $type_check($value)) {
-                return true;
-            }
         }
+        $type_check = "is_{$type}";
+        if (function_exists($type_check) && $type_check($value)) {
+            return true;
+        }
+
         return false;
     }
 

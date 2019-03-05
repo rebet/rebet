@@ -46,7 +46,7 @@ class CookieTest extends RebetTestCase
         ]);
         $request                = $this->createRequestMock('/');
         $request->route->prefix = '/test';
-        
+
         $cookie = new Cookie('key');
         $this->assertInstanceOf(Cookie::class, $cookie);
         $this->assertSame('key', $cookie->getName());

@@ -40,7 +40,7 @@ class Strings
         }
         return mb_substr($str, $start + ($remove_delimiter ? mb_strlen($delimiter) : 0));
     }
-    
+
     /**
      * Trim characters after the leftmost given delimiter string.
      *
@@ -61,7 +61,7 @@ class Strings
         }
         return mb_substr($str, 0, $end + ($remove_delimiter ? 0 : mb_strlen($delimiter)));
     }
-    
+
     /**
      * Trim characters before the rightmost given delimiter string.
      *
@@ -82,7 +82,7 @@ class Strings
         }
         return mb_substr($str, $start + ($remove_delimiter ? mb_strlen($delimiter) : 0));
     }
-    
+
     /**
      * Trim characters after the rightmost given delimiter string.
      *
@@ -103,7 +103,7 @@ class Strings
         }
         return mb_substr($str, 0, $end + ($remove_delimiter ? 0 : mb_strlen($delimiter)));
     }
-    
+
     /**
      * Trim the repetition of the specified character string at the left end.
      *
@@ -124,7 +124,7 @@ class Strings
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
         return $str === null ? null : preg_replace("/\A(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);
     }
-    
+
     /**
      * Trim the repetition of the specified character string at the right end.
      *
@@ -145,7 +145,7 @@ class Strings
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
         return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/')."){$repeat}\z/u", '', $str);
     }
-    
+
     /**
      * Trim the repetition of the given character string at the both end.
      *
@@ -191,7 +191,7 @@ class Strings
     {
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
-    
+
     /**
      * It checks whether the given string $haystack ends with the $needle.
      *
@@ -206,7 +206,7 @@ class Strings
     {
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
     }
-    
+
     /**
      * It checks whether model dependent characters are included.
      *
@@ -226,10 +226,10 @@ class Strings
         if (strlen($org) != strlen($conv)) {
             return array_diff(self::toCharArray($org), self::toCharArray($conv));
         }
-        
+
         return [];
     }
-    
+
     /**
      * Converts a string to an array of characters.
      *
@@ -243,7 +243,7 @@ class Strings
     {
         return preg_split("//u", $string, -1, PREG_SPLIT_NO_EMPTY);
     }
-    
+
     /**
      * Indent the given string.
      * Note: Indented even when the target character string is empty.
@@ -303,7 +303,7 @@ class Strings
     {
         return $search === '' ? true : strpos($string, $search) !== false ;
     }
-    
+
     /**
      * Delete N characters from the left.
      *
@@ -460,7 +460,7 @@ class Strings
             }
             return (Reflector::getType($value) ?? 'unkown').":{$count} [".static::rtrim($describes, ', ')."\n]";
         }
-        
+
         $class         = new \ReflectionClass($value);
         $namespace     = $class->getNamespaceName();
         $namespace_cut = static::rbtrim($namespace, '\\');
@@ -487,7 +487,7 @@ class Strings
             ($withArgs && !empty($value['args']) ? '('.static::argsToString($value['args']).')' : "()")
             ;
         });
-        
+
         return empty($trace) ? "" : join("\n", $trace) ;
     }
 
@@ -508,7 +508,7 @@ class Strings
         }
         return static::rtrim($describes, ', ');
     }
-    
+
     /**
      * Convert arg to string.
      *
@@ -548,7 +548,7 @@ class Strings
             }
             return '['.static::rtrim($describes, ', ').']';
         }
-        
+
         $class         = new \ReflectionClass($arg);
         $namespace     = $class->getNamespaceName();
         $namespace_cut = static::rbtrim($namespace, '\\');

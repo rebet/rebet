@@ -16,6 +16,9 @@ return PhpCsFixer\Config::create()
         'ordered_imports'                 => true,
         'return_type_declaration'         => ['space_before' => 'one'],
         'whitespace_after_comma_in_array' => true,
+        'no_superfluous_elseif'           => true,
+        'no_useless_else'                 => true,
+        'no_whitespace_in_blank_line'     => true,
     ])
     ->setLineEnding("\n")
     ->setFinder(

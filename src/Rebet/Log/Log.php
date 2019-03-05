@@ -66,7 +66,7 @@ class Log
     {
         self::log(LogLevel::TRACE(), $message, $var, $error);
     }
-    
+
     /**
      * DEBUG レベルログを出力します。
      *
@@ -79,7 +79,7 @@ class Log
     {
         self::log(LogLevel::DEBUG(), $message, $var, $error);
     }
-    
+
     /**
      * INFO レベルログを出力します。
      *
@@ -92,7 +92,7 @@ class Log
     {
         self::log(LogLevel::INFO(), $message, $var, $error);
     }
-    
+
     /**
      * WARN レベルログを出力します。
      *
@@ -105,7 +105,7 @@ class Log
     {
         self::log(LogLevel::WARN(), $message, $var, $error);
     }
-    
+
     /**
      * ERROR レベルログを出力します。
      *
@@ -118,7 +118,7 @@ class Log
     {
         self::log(LogLevel::ERROR(), $message, $var, $error);
     }
-    
+
     /**
      * FATAL レベルログを出力します。
      *
@@ -131,7 +131,7 @@ class Log
     {
         self::log(LogLevel::FATAL(), $message, $var, $error);
     }
-    
+
     /**
      * メモリ使用量を出力します。
      *
@@ -149,7 +149,7 @@ class Log
         $message = $message."Memory {$current} MB / Peak Memory {$peak} MB";
         self::log(LogLevel::INFO(), $message);
     }
-    
+
     /**
      * ロガーを初期化します。
      *
@@ -195,7 +195,7 @@ class Log
         }
         self::$pipeline->send(new LogContext(DateTime::now(), $level, $message, $var, $error));
     }
-    
+
     /**
      * エラーハンドラー用のエラーハンドル
      *

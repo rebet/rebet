@@ -21,7 +21,7 @@ class ClosureRoute extends DeclarativeRoute
      * @var \Closure
      */
     protected $action = null;
-    
+
     /**
      * Create a closure route
      *
@@ -46,7 +46,7 @@ class ClosureRoute extends DeclarativeRoute
     {
         return new RouteAction($this, new \ReflectionFunction($this->action));
     }
-    
+
     /**
      * Terminate the route.
      *

@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 abstract class RebetTestCase extends TestCase
 {
     private static $start_at;
-    
+
     public function setUp()
     {
         System::initMock();
@@ -108,12 +108,12 @@ abstract class RebetTestCase extends TestCase
         Cookie::clear();
         StderrCapture::clear();
     }
-    
+
     public static function setUpBeforeClass()
     {
         self::$start_at = microtime(true);
     }
-    
+
     public static function tearDownAfterClass()
     {
         if (in_array('--debug', $_SERVER['argv'], true)) {
@@ -121,7 +121,7 @@ abstract class RebetTestCase extends TestCase
             printf(" ... Time: %f [ms]\n", $spend * 1000);
         }
     }
-    
+
     protected function assertSameStderr($expects, callable $test)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
@@ -143,7 +143,7 @@ abstract class RebetTestCase extends TestCase
             $this->assertContains($expect, $actual);
         }
     }
-    
+
     protected function assertRegExpStderr($expects, callable $test)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
@@ -176,7 +176,7 @@ abstract class RebetTestCase extends TestCase
             $this->assertContains($expect, $actual);
         }
     }
-    
+
     protected function assertRegExpOutbuufer($expects, callable $test)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
@@ -187,7 +187,7 @@ abstract class RebetTestCase extends TestCase
             $this->assertRegExp($expect, $actual);
         }
     }
-    
+
     protected function _randomCode(int $min_length, ?int $max_length = null, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
     {
         if ($max_length == null) {

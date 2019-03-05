@@ -63,7 +63,7 @@ class SessionGuardTest extends RebetTestCase
         $mock->method('supportRememberToken')->willReturn(true);
         $mock->method('issuingRememberToken')->willReturn('MOCKED_TOKEN');
         $this->user->provider($mock);
-        
+
         $this->guard->signin($this->request, $this->user, true);
         $session = $this->request->session();
         $this->assertSame(1, $session->get('auth:web:id'));
@@ -89,7 +89,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertSame('MOCKED_TOKEN', $cookie->getValue());
         $this->assertSame(null, $removed);
         $this->request->cookies->set(SessionGuard::COOKIE_KEY_REMEMBER, 'MOCKED_TOKEN');
-    
+
         $response = $this->guard->signout($this->request, $this->user, '/signouted');
         $session  = $this->request->session();
         $this->assertNull($session->get('auth:web:id'));

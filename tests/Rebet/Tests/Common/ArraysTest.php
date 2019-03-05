@@ -68,7 +68,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([1, 2, 3, 4, 5], Arrays::flatten([1, 2, [3, [4], 5]]));
         $this->assertSame([1, 2, 3, 4, 5, 6], Arrays::flatten([1, 2, [3, [4], 5, [], 6]]));
 
-        
+
         // Flat arrays are unaffected
         $array = ['#foo', '#bar', '#baz'];
         $this->assertEquals(['#foo', '#bar', '#baz'], Arrays::flatten($array));
@@ -119,7 +119,7 @@ class ArraysTest extends RebetTestCase
             Arrays::pluck($list, null, 'user_id')
         );
     }
-    
+
     public function test_override()
     {
         $this->assertSame(1, Arrays::override(null, 1));
@@ -349,12 +349,12 @@ class ArraysTest extends RebetTestCase
             [1, 2, 3, '1', 3, 'a', 'b', 'c', 'a', 'a', 'B']
         ));
     }
-    
+
     public function test_shuffleWithSeed()
     {
         $this->assertNull(Arrays::shuffle(null, 1234));
         $this->assertEquals([], Arrays::shuffle([], 1234));
-        
+
         $this->assertEquals(
             Arrays::shuffle(range(0, 100, 10), 1234),
             Arrays::shuffle(range(0, 100, 10), 1234)
@@ -383,7 +383,7 @@ class ArraysTest extends RebetTestCase
         $this->assertNull($name);
         $this->assertEquals(['joe@example.com' => ['name' => 'Joe']], $array);
     }
-    
+
     public function test_prepend()
     {
         $array = Arrays::prepend(['one', 'two', 'three', 'four'], 'zero');
@@ -391,7 +391,7 @@ class ArraysTest extends RebetTestCase
         $array = Arrays::prepend(['one' => 1, 'two' => 2], 0, 'zero');
         $this->assertEquals(['zero' => 0, 'one' => 1, 'two' => 2], $array);
     }
-    
+
     public function test_only()
     {
         $array = ['name' => 'Desk', 'price' => 100, 'orders' => 10];
@@ -540,7 +540,7 @@ class ArraysTest extends RebetTestCase
         // Not really a proper usage, still, test for preserving BC
         $this->assertSame([[]], Arrays::crossJoin());
     }
-    
+
     public function test_collapse()
     {
         $data = [['foo', 'bar'], ['baz']];
@@ -596,7 +596,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([$resource], Arrays::toArray($resource));
         fclose($resource);
     }
-    
+
     public function test_diff()
     {
         $this->assertNull(Arrays::diff(null, null));
@@ -605,10 +605,10 @@ class ArraysTest extends RebetTestCase
         $items = ['first_word' => 'Hello', 'last_word' => 'World'];
         $this->assertEquals(['id' => 1], Arrays::diff($array, $items));
         $this->assertEquals(['id' => 1], Arrays::diff($array, new \ArrayObject($items)));
-        
+
         $this->assertEquals(['id' => 1, 'first_word' => 'Hello'], Arrays::diff($array, null));
-        
-        
+
+
         $array = ['en_GB', 'fr', 'HR'];
         $items = ['en_gb', 'hr'];
         $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, $items));
@@ -616,7 +616,7 @@ class ArraysTest extends RebetTestCase
 
         $this->assertEquals(['en_GB', 'fr', 'HR'], Arrays::diff($array, null, 'strcasecmp'));
     }
-    
+
     public function test_intersect()
     {
         $this->assertNull(Arrays::intersect(null, null));

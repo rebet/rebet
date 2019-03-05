@@ -84,7 +84,7 @@ class WebDisplayTest extends RebetTestCase
             }
         );
         System::initMock();
-        
+
         System::header('Content-Type: text/json; charset=UTF-8');
         $this->assertSameOutbuffer(
             '',

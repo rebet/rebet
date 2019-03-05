@@ -98,7 +98,7 @@ class RouterTest extends RebetTestCase
             Router::get('/parameter/option/{id?}', function ($id = 'default') {
                 return "Content: /parameter/option/{id?} - {$id}";
             });
-            
+
             Router::get('/parameter/between/{from}/to/{to}', function ($from, $to) {
                 return "Content: /parameter/between/{from}/to/{to} - {$from}, {$to}";
             });
@@ -114,7 +114,7 @@ class RouterTest extends RebetTestCase
             Router::get('/parameter/convert/int/{value}', function (int $value) {
                 return "Content: /parameter/convert/int/{value} - {$value} ".(is_int($value) ? 'int' : 'not int');
             });
-            
+
             Router::get('/parameter/convert/array/{value}', function (array $value) {
                 return "Content: /parameter/convert/array/{value} - ".join('/', $value);
             });
@@ -142,7 +142,7 @@ class RouterTest extends RebetTestCase
             Router::get('/renderable', function () {
                 return View::of('welcome')->with(['name' => 'Samantha']);
             });
-            
+
             Router::get('/method/private-call', 'RouterTestController::privateCall');
             Router::get('/method/private-call-accessible', 'RouterTestController::privateCall')->accessible(true);
             Router::get('/method/protected-call', 'RouterTestController::protectedCall');
@@ -157,7 +157,7 @@ class RouterTest extends RebetTestCase
             Router::get('/method/with-convert-enum-param/{gender}', 'RouterTestController::withConvertEnumParam');
             Router::get('/method/namespace/nest', 'Nest\\NestController::foo');
             Router::get('/method/namespace/different', 'Rebet\\Tests\\Mock\\DifferentNamespaceController::foo');
-            
+
             Router::redirect('/redirect', '/destination');
             Router::redirect('/redirect/with-param/replace/{id}', '/destination/{id}');
             Router::redirect('/redirect/with-param/query/{id}', '/destination');
@@ -180,7 +180,7 @@ class RouterTest extends RebetTestCase
             Router::controller('/controller/where', 'RouterTestController')->where('id', '/^[a-z]*$/');
         });
     }
-    
+
     /**
      * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().
@@ -192,7 +192,7 @@ class RouterTest extends RebetTestCase
         });
         $this->fail('Never execute.');
     }
-    
+
     /**
      * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().
@@ -212,7 +212,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /', $response->getContent());
     }
-    
+
     public function test_routing_get()
     {
         $response = Router::handle(Request::create('/get'));
@@ -235,7 +235,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/get', 'POST'));
         $this->fail('Never execute.');
     }
-    
+
     public function test_routing_post()
     {
         $response = Router::handle(Request::create('/post', 'POST'));
@@ -313,7 +313,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
     }
-    
+
     public function test_routing_match()
     {
         $response = Router::handle(Request::create('/match/get-head-post'));
@@ -331,12 +331,12 @@ class RouterTest extends RebetTestCase
         $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
     }
-    
+
     public function test_routing_parameterRequierd()
     {
         $response = Router::handle(Request::create('/parameter/requierd/1'));
         $this->assertSame('Content: /parameter/requierd/{id} - 1', $response->getContent());
-        
+
         $response = Router::handle(Request::create('/parameter/requierd/abc'));
         $this->assertSame('Content: /parameter/requierd/{id} - abc', $response->getContent());
     }
@@ -368,7 +368,7 @@ class RouterTest extends RebetTestCase
 
         $response = Router::handle(Request::create('/parameter/option/abc'));
         $this->assertSame('Content: /parameter/option/{id?} - abc', $response->getContent());
-        
+
         $response = Router::handle(Request::create('/parameter/option/'));
         $this->assertSame('Content: /parameter/option/{id?} - default', $response->getContent());
 
@@ -431,7 +431,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/json/jsonSerializable'));
         $this->assertSame('"2010-10-20 10:20:30"', $response->getContent());
     }
-    
+
     public function test_routing_renderable()
     {
         $response = Router::handle(Request::create('/renderable'));
@@ -467,7 +467,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/method/protected-call-accessible'));
         $this->assertSame('Controller: protectedCall', $response->getContent());
     }
-    
+
     public function test_routing_methodPublicCall()
     {
         $response = Router::handle(Request::create('/method/public-call'));
@@ -482,7 +482,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/method/with-param/123'));
         $this->assertSame('Controller: withParam - 123', $response->getContent());
-        
+
         $response = Router::handle(Request::create('/method/with-param/'));
         $this->fail('Never execute.');
     }
@@ -495,7 +495,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/method/with-param/where/123'));
         $this->assertSame('Controller: withParam - 123', $response->getContent());
-        
+
         $response = Router::handle(Request::create('/method/with-param/where/abc'));
         $this->fail('Never execute.');
     }
@@ -514,26 +514,26 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/method/with-optional-param/123'));
         $this->assertSame('Controller: withOptionalParam - 123', $response->getContent());
-        
+
         $response = Router::handle(Request::create('/method/with-optional-param/'));
         $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
 
         $response = Router::handle(Request::create('/method/with-optional-param'));
         $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
     }
-    
+
     public function test_routing_methodWithMultiParam()
     {
         $response = Router::handle(Request::create('/method/with-multi-param/1/to/10'));
         $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
     }
-    
+
     public function test_routing_methodWithMultiInvertParam()
     {
         $response = Router::handle(Request::create('/method/with-multi-param/invert/1/to/10'));
         $this->assertSame('Controller: withMultiInvertParam - 1 to 10', $response->getContent());
     }
-    
+
     public function test_routing_methodWithConvertEnumParam()
     {
         $response = Router::handle(Request::create('/method/with-convert-enum-param/1'));
@@ -829,7 +829,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/'));
         $this->assertSame('Top: index', $response->getContent());
     }
-    
+
     public function test_routing_defaultConventionalRouteWhere()
     {
         Router::clear();
@@ -879,14 +879,14 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/router-test/with-param/ABC'));
         $this->fail("Never Execute.");
     }
-    
+
     public function test_routing_defaultConventionalRouteAccessible()
     {
         Router::clear();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->accessible(true);
         });
-        
+
         $response = Router::handle(Request::create('/router-test/private-call'));
         $this->assertSame('Controller: privateCall', $response->getContent());
 
@@ -1030,7 +1030,7 @@ class RouterTestController extends Controller
     {
         return "Controller: withOptionalParam - {$id}";
     }
-    
+
     public function withMultiParam($from, $to)
     {
         return "Controller: withMultiParam - {$from} to {$to}";
@@ -1045,7 +1045,7 @@ class RouterTestController extends Controller
     {
         return "Controller: withConvertEnumParam - {$gender}";
     }
-    
+
     /**
      * @Channel("api")
      */
@@ -1101,7 +1101,7 @@ class TopController extends Controller
     {
         return 'Top: index';
     }
-    
+
     public function withParam($id)
     {
         return "Top: withParam - {$id}";

@@ -40,7 +40,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
         Session::current()->saveInheritData('input', $input, $this->getTargetUrl());
         return $this;
     }
-    
+
     /**
      * Set the errors data to the redirect.
      *

@@ -212,7 +212,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     {
         return new static(null, $promise, $safety);
     }
-    
+
     /**
      * Get and initialize the origin value
      *
@@ -429,7 +429,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             is_object($origin) ? get_object_vars($origin) : (array)$origin
         ));
     }
-    
+
     /**
      * {@inheritDoc}
      */

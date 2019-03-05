@@ -129,7 +129,7 @@ class ProblemResponse extends JsonResponse
         $this->setData($this->problem);
         return $this;
     }
-    
+
     /**
      * Get the problem details data of given key.
      *

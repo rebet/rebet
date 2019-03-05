@@ -41,7 +41,7 @@ class BasicAuth
                 return $password;
             };
         }
-        
+
         $user      = Reflector::get($_SERVER, 'PHP_AUTH_USER');
         $pass      = $to_hash(Reflector::get($_SERVER, 'PHP_AUTH_PW')) ;
         $auth_pass = Reflector::get($auth_list, $user);

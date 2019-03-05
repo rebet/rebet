@@ -95,7 +95,7 @@ class Context
      * @var boolean
      */
     private $quiet = false;
-    
+
     /**
      * Extra infomation for handle validation
      *
@@ -154,7 +154,7 @@ class Context
         $this->quiet = $quiet;
         return $this;
     }
-    
+
     /**
      * Check current value (or given field) is blank.
      *

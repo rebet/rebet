@@ -67,7 +67,7 @@ class Router
      * @var Route
      */
     protected static $current = null;
-    
+
     /**
      * Current routing rule builder.
      *
@@ -202,7 +202,7 @@ class Router
     {
         return static::match([], $uri, $action);
     }
-    
+
     /**
      * Register a new route responding to some methods.
      * If given methods is empty(=[]) then match all method.
@@ -225,10 +225,10 @@ class Router
         } else {
             throw LogicException::by("Invalid action type for declarative routing.");
         }
-        
+
         return static::addRoute($route);
     }
-   
+
     /**
      * Sets the controller route that matches the specified URI.
      * Various routing annotations are available for detailed access control.
@@ -278,7 +278,7 @@ class Router
     {
         return static::addRoute(new ViewRoute($uri, $name, $args));
     }
-    
+
     /**
      * Add given route to the router.
      * This method constructs an incomplete route search tree for route resolution speeding up.
@@ -295,7 +295,7 @@ class Router
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
         return $route;
     }
-    
+
     /**
      * Stores the root object while digging the route search tree.
      *
@@ -357,7 +357,7 @@ class Router
 
         $roles = static::$rules->roles;
         $route->roles(...$roles);
-        
+
         $route->auth(static::$rules->auth);
     }
 
@@ -382,7 +382,7 @@ class Router
             return static::handleFallback($request, $e);
         }
     }
-    
+
     /**
      * Handle fallback.
      *
@@ -478,7 +478,7 @@ class Router
 
         throw RouteNotFoundException::by("Route {$request->getMethod()} {$request_uri} not found.");
     }
-    
+
     /**
      * Terminate the route and middlewares.
      *
@@ -551,14 +551,14 @@ class Router
      * @var array
      */
     protected $middlewares = [];
-    
+
     /**
      * The roles/abilities for this rules.
      *
      * @var array
      */
     protected $roles = [];
-    
+
     /**
      * The authenticator name for this rules
      *
@@ -585,7 +585,7 @@ class Router
     {
         return new static($channel);
     }
-    
+
     /**
      * Set the prefix path for this rules.
      * If the primary prefix is not set then set the given prefix to primary prefix.

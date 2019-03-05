@@ -24,7 +24,7 @@ class Event
             'listeners' => [],
         ];
     }
-    
+
     /**
      * The compiled listeners.
      *
@@ -102,7 +102,7 @@ class Event
         if (static::$listeners !== null) {
             return;
         }
-        
+
         static::$listeners = [];
         foreach (static::config('listeners', false, []) as $listener) {
             [$event, $listener]          = static::resolve($listener);

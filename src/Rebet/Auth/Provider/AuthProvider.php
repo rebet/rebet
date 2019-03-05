@@ -150,7 +150,7 @@ abstract class AuthProvider
         $this->authenticator = $name;
         return $this;
     }
-    
+
     /**
      * Generate token.
      *

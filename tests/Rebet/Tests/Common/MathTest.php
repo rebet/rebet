@@ -22,7 +22,7 @@ class MathTest extends RebetTestCase
         $this->assertSame(3, Math::scaleOf('0.000'));
         $this->assertSame(3, Math::scaleOf('-0.000'));
     }
-    
+
     public function test_significantFigureOf()
     {
         $this->assertSame(null, Math::significantFigureOf(''));
@@ -217,19 +217,19 @@ class MathTest extends RebetTestCase
         $this->assertSame('123.5', Math::floor('123.555555555', 1));
         $this->assertSame('123.0', Math::floor('123.000000001', 1));
         $this->assertSame('-123.5', Math::floor('-123.444444444', 1));
-        
+
         $this->assertSame('123.00', Math::floor('123', 2));
         $this->assertSame('123.44', Math::floor('123.444444444', 2));
         $this->assertSame('123.55', Math::floor('123.555555555', 2));
         $this->assertSame('123.00', Math::floor('123.000000001', 2));
         $this->assertSame('-123.45', Math::floor('-123.444444444', 2));
-        
+
         $this->assertSame('120', Math::floor('123', -1));
         $this->assertSame('120', Math::floor('123.444444444', -1));
         $this->assertSame('120', Math::floor('123.555555555', -1));
         $this->assertSame('120', Math::floor('123.000000001', -1));
         $this->assertSame('-130', Math::floor('-123.444444444', -1));
-        
+
         $this->assertSame('100', Math::floor('123', -2));
         $this->assertSame('0', Math::floor('123', -3));
         $this->assertSame('0', Math::floor('123', -4));
@@ -310,7 +310,7 @@ class MathTest extends RebetTestCase
         $this->assertSame('120', Math::round('123.03456', 2, Math::TYPE_SIGNIFICANT_FIGURE));
         $this->assertSame('100', Math::round('123.03456', 1, Math::TYPE_SIGNIFICANT_FIGURE));
     }
-    
+
     public function test_ceil()
     {
         $this->assertSame('123', Math::ceil('123'));

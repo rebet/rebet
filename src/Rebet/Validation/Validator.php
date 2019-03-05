@@ -135,7 +135,7 @@ class Validator
             if ($context->hasError()) {
                 continue;
             }
-            
+
             // Handle convert
             $convert = $config['convert'] ?? null;
             if ($convert) {
@@ -184,7 +184,7 @@ class Validator
                     $args[] = $value;
                 }
             }
-    
+
             [$name, $option] = Strings::split($validation, ':', 2, '');
             if (Strings::contains($option, '?')) {
                 $context->quiet(true);

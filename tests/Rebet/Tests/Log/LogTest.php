@@ -17,7 +17,7 @@ class LogTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         Log::init();
     }
-    
+
     public function test_log()
     {
         $this->assertSameStderr(
@@ -26,7 +26,7 @@ class LogTest extends RebetTestCase
                 Log::trace('Test');
             }
         );
-        
+
         $this->assertContainsStderr(
             [
                 '2010-10-20 10:20:30.040050',
@@ -37,14 +37,14 @@ class LogTest extends RebetTestCase
                 Log::error('Test');
             }
         );
-        
+
         $this->assertSameOutbuffer(
             '',
             function () {
                 Log::terminate();
             }
         );
-        
+
         Config::application([
             Log::class => [
                 'log_middlewares' => [
@@ -53,7 +53,7 @@ class LogTest extends RebetTestCase
             ],
         ]);
         Log::init();
-        
+
         $pid = getmypid();
         $this->assertSameStderr(
             "2010-10-20 10:20:30.040050 {$pid} [ERROR] Test log\n",
@@ -61,7 +61,7 @@ class LogTest extends RebetTestCase
                 Log::error('Test log');
             }
         );
-        
+
         $this->assertContainsOutbuffer(
             [
                 '2010-10-20&nbsp;10:20:30.040050',
@@ -73,7 +73,7 @@ class LogTest extends RebetTestCase
             }
         );
     }
-    
+
     public function test_log_lebel()
     {
         Config::application([
@@ -81,7 +81,7 @@ class LogTest extends RebetTestCase
                 'log_level' => LogLevel::TRACE(),
             ],
         ]);
-        
+
         $this->assertContainsStderr('TRACE', function () {
             Log::trace('Test');
         });
@@ -101,7 +101,7 @@ class LogTest extends RebetTestCase
             Log::fatal('Test');
         });
     }
-    
+
     public function test_memory()
     {
         Config::application([
@@ -109,7 +109,7 @@ class LogTest extends RebetTestCase
                 'log_level' => LogLevel::INFO(),
             ],
         ]);
-        
+
         $this->assertContainsStderr('Memory', function () {
             Log::memory();
         });

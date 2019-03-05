@@ -104,7 +104,7 @@ class ConfigurableTest extends RebetTestCase
         $share    = new ConfigurableTest_MockChildShare();
         $override = new ConfigurableTest_MockChildOverride();
         $hide     = new ConfigurableTest_MockChildHide();
-        
+
         $this->assertSame(
             [
                 'driver'   => 'mysql',
@@ -149,14 +149,14 @@ class ConfigurableTest extends RebetTestCase
             ],
             ConfigurableTest_MockChildOverride::config()
         );
-        
+
         $this->assertSame(
             [
                 'driver' => 'pgsql',
             ],
             ConfigurableTest_MockChildHide::config()
         );
-        
+
         $this->assertSame(
             [
                 'driver'   => 'sqlite',

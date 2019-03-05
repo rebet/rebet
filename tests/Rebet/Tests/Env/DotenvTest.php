@@ -11,7 +11,7 @@ class DotenvTest extends RebetTestCase
     {
         parent::setUp();
     }
-    
+
     /**
      * @runInSeparateProcess
      * @expectedException \Dotenv\Exception\InvalidPathException
@@ -22,7 +22,7 @@ class DotenvTest extends RebetTestCase
         $dotenv = Dotenv::init(__DIR__);
         $this->fail("Never execute.");
     }
-    
+
     /**
      * @runInSeparateProcess
      */

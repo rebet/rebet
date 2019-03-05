@@ -46,7 +46,7 @@ class ViewSelector
      * @var \Closure|null
      */
     protected $changer = null;
-    
+
     /**
      * Create a view selector
      *

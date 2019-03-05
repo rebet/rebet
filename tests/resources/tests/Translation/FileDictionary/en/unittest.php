@@ -2,7 +2,7 @@
 return [
     "@delimiter" => ", ",
     "@full_name" => ":first_name :last_name",
-    
+
     "hello"  => "Hello Rebet.",
     "welcom" => "Welcom :name !",
 

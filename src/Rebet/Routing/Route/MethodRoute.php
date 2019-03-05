@@ -2,7 +2,6 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Common\Namespaces;
-use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -31,7 +30,7 @@ class MethodRoute extends DeclarativeRoute
      * @var \ReflectionMethod
      */
     protected $action = null;
-    
+
     /**
      * @var Controller
      */
@@ -41,7 +40,7 @@ class MethodRoute extends DeclarativeRoute
      * @var boolean
      */
     protected $accessible = false;
-    
+
     /**
      * Create Route instance.
      *
@@ -78,7 +77,7 @@ class MethodRoute extends DeclarativeRoute
         $this->action->setAccessible($this->accessible);
         return new RouteAction($this, $this->action, $this->controller);
     }
-    
+
     /**
      * シャットダウン処理を行います。
      *
@@ -90,7 +89,7 @@ class MethodRoute extends DeclarativeRoute
     {
         // Do Nothing.
     }
-    
+
     /**
      * 非公開メソッドへのアクセス制御を設定します。
      *

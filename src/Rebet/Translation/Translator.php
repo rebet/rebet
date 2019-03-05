@@ -33,7 +33,7 @@ class Translator
             ],
         ];
     }
-    
+
     /**
      * Dictionary
      *
@@ -47,7 +47,7 @@ class Translator
     private function __construct()
     {
     }
-    
+
     /**
      * Add resource to the dictionary if will use the specified dictionary class.
      *
@@ -175,7 +175,7 @@ class Translator
         if ($key === null) {
             return null;
         }
-        
+
         $locale   = $locale ?? static::config('locale');
         $sentence = static::dictionary()->sentence($group, $key, array_unique([$locale, static::config('fallback_locale')]), $selector, $recursive);
 

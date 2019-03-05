@@ -36,16 +36,16 @@ class EventTest extends RebetTestCase
     {
         $this->assertSameOutbuffer('6-a', function () { Event::dispatch('a'); });
         $this->assertSameOutbuffer('', function () { Event::dispatch(1); });
-        
+
         Event::listen(function (int $event) { echo $event; });
         $this->assertSameOutbuffer('6-a', function () { Event::dispatch('a'); });
         $this->assertSameOutbuffer('1', function () { Event::dispatch(1); });
-        
+
         Event::clear();
         $this->assertSameOutbuffer('', function () { Event::dispatch('a'); });
         $this->assertSameOutbuffer('', function () { Event::dispatch(1); });
     }
-    
+
     public function test_dispatch()
     {
         $this->assertSameOutbuffer(

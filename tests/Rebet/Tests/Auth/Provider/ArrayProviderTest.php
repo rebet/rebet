@@ -13,7 +13,7 @@ class ArrayProviderTest extends RebetTestCase
     private $provider;
     private $provider_by_signin_id;
     private $provider_exclude_resigned;
-    
+
     public function setUp()
     {
         $this->users = [
@@ -163,7 +163,7 @@ class ArrayProviderTest extends RebetTestCase
 
         $this->assertSame($old_password, $new_password);
     }
-    
+
     public function test_supportRememberToken()
     {
         // supportRememberToken() is not supported.

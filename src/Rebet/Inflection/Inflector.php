@@ -318,7 +318,7 @@ class Inflector
     {
         return Utils::isBlank($word) ? $word : static::singularize(static::snakize($word, $replacement, $delimiters)).'_id';
     }
-    
+
     /**
      * Converts a plural word into the format for a Rebet singular class name.
      * Converts 'table_names' to 'TableName'.

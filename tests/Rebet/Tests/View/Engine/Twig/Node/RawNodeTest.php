@@ -11,7 +11,7 @@ class RawNodeTest extends RebetTestCase
 {
     protected $env;
     protected $compiler;
- 
+
     public function setUp()
     {
         parent::setUp();

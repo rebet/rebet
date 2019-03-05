@@ -26,14 +26,14 @@ class RouteAction
      * @var Route
      */
     private $route = null;
-    
+
     /**
      * Instance to be action executed
      *
      * @var mixed
      */
     private $instance = null;
-    
+
     /**
      * Action Reflector
      *
@@ -65,7 +65,7 @@ class RouteAction
         $this->instance         = $instance;
         $this->annotated_method = $this->isFunction() ? null : AnnotatedMethod::of($reflector);
     }
-    
+
     /**
      * Invoke this action
      *

@@ -19,7 +19,7 @@ class LogLevel extends Enum
     const INFO  = [3, 'INFO '];
     const DEBUG = [4, 'DEBUG'];
     const TRACE = [5, 'TRACE'];
-    
+
     /**
      * Convert error type of E_* format to LogLevel.
      *
@@ -51,7 +51,7 @@ class LogLevel extends Enum
         }
         return self::WARN();
     }
-    
+
     /**
      * This enum do not need to translate.
      *
@@ -71,7 +71,7 @@ class LogLevel extends Enum
     {
         return $this->value <= $level->value;
     }
-    
+
     /**
      * It checks whether it is less than the given log level.
      *

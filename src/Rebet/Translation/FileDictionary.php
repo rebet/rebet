@@ -28,7 +28,7 @@ class FileDictionary implements Dictionary
             ],
         ];
     }
-    
+
     /**
      * @var array of resouce adders class names
      */
@@ -80,7 +80,7 @@ class FileDictionary implements Dictionary
         $this->suffix = $suffix;
         $this->option = $option;
     }
-    
+
     /**
      * Add the given group resouces to Library layer resouces.
      *
@@ -243,9 +243,11 @@ class FileDictionary implements Dictionary
                 }
                 if ($to === '*' && $selector >= $from) {
                     return $value;
-                } elseif ($from === '*' && $selector <= $to) {
+                }
+                if ($from === '*' && $selector <= $to) {
                     return $value;
-                } elseif ($selector >= $from && $selector <= $to) {
+                }
+                if ($selector >= $from && $selector <= $to) {
                     return $value;
                 }
             } elseif ($condition == $selector || $condition === '*') {

@@ -163,7 +163,7 @@ class Request extends SymfonyRequest
         }
         return $duplicate;
     }
-    
+
     /**
      * Convert the given array of Symfony UploadedFiles to Rebet UploadedFiles.
      *
@@ -350,7 +350,7 @@ class Request extends SymfonyRequest
     {
         return ($this->isAjax() && ! $this->isPjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
     }
-    
+
     /**
      * Determine if the current request is asking for JSON.
      *

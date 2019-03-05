@@ -109,7 +109,7 @@ class Callback
             if ($verbose) {
                 $type_hint = Reflector::getTypeHint($parameter);
                 $type_hint = $type_hint !== null && $parameter->allowsNull() ? "?{$type_hint}" : $type_hint ;
-                
+
                 try {
                     $name = $parameter->isOptional() ? "{$name} = ".(Strings::rbtrim($parameter->getDefaultValueConstantName(), '\\') ?? $parameter->getDefaultValue() ?? 'null') : $name ;
                 } catch (\ReflectionException $e) {

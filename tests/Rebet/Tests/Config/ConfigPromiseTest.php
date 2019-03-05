@@ -44,7 +44,7 @@ class ConfigPromiseTest extends RebetTestCase
 
         \putenv('PROMISE_TEST=1');
         $this->promise_once->get();
-        
+
         $this->assertSame("1", $this->promise_once->__toString());
         $this->assertSame("<Promise: dynamic>", $this->promise_every->__toString());
     }

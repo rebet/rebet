@@ -93,7 +93,7 @@ abstract class DeclarativeRoute extends Route
                 $vars[$key] = $value;
             }
         }
-        
+
         return $vars;
     }
 
@@ -104,7 +104,7 @@ abstract class DeclarativeRoute extends Route
     {
         return Path::normalize(Strings::latrim($this->uri, '{'));
     }
-    
+
     /**
      * Get the regex pattern for URI match and capture routing parameters.
      *

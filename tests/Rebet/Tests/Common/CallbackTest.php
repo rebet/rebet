@@ -167,7 +167,7 @@ class CallbackTest extends RebetTestCase
             [(object)['a' => 2], (object)['a' => 3], 'a', true,  1],
         ];
     }
-    
+
     /**
      * @dataProvider dataRetrievers
      */

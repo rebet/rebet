@@ -21,7 +21,7 @@ class AuthenticateException extends RuntimeException implements ProblemRespondab
     {
         parent::__construct($message, $previous);
     }
-    
+
     /**
      * {@inheritDoc}
      */

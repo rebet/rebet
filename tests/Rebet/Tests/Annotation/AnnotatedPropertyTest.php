@@ -14,7 +14,7 @@ class AnnotatedPropertyTest extends RebetTestCase
         $ap = new AnnotatedProperty($rp);
         $this->assertInstanceOf(AnnotatedProperty::class, $ap);
     }
-    
+
     public function test_of()
     {
         $rp = new \ReflectionProperty(AnnotatedPropertyTest_Mock::class, 'foo');
@@ -23,18 +23,18 @@ class AnnotatedPropertyTest extends RebetTestCase
 
         $ap = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
         $this->assertInstanceOf(AnnotatedProperty::class, $ap);
-        
+
         $mock = new AnnotatedPropertyTest_Mock();
         $ap   = AnnotatedProperty::of('foo', $mock);
         $this->assertInstanceOf(AnnotatedProperty::class, $ap);
     }
-    
+
     public function test_annotaion()
     {
         $ap    = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class);
         $annot = $ap->annotation(PropertyAnnot::class, false);
         $this->assertNull($annot);
-        
+
         $annot = $ap->annotation(PropertyAnnot::class);
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('prop', $annot->value);
@@ -51,7 +51,7 @@ class AnnotatedPropertyTest extends RebetTestCase
         $this->assertNull($ap->annotation(Channel::class, false));
         $this->assertNull($ap->annotation(Channel::class));
     }
-    
+
     public function test_annotaions()
     {
         $ap          = AnnotatedProperty::of('bar', AnnotatedPropertyTest_Mock::class);
@@ -61,12 +61,12 @@ class AnnotatedPropertyTest extends RebetTestCase
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('bar-prop', $annot->value);
     }
-    
+
     public function test_declaringClass()
     {
         $ac = AnnotatedProperty::of('foo', AnnotatedPropertyTest_Mock::class)->declaringClass();
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
-        
+
         $annot = $ac->annotation(PropertyAnnot::class);
         $this->assertInstanceOf(PropertyAnnot::class, $annot);
         $this->assertSame('prop', $annot->value);

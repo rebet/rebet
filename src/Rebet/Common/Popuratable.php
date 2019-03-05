@@ -40,7 +40,7 @@ trait Popuratable
         if (empty($src)) {
             return $this;
         }
-        
+
         $class = AnnotatedClass::of($this);
         foreach ($this as $field => $origin) {
             $property = $class->property($field);
@@ -67,7 +67,7 @@ trait Popuratable
                 }
                 continue;
             }
-            
+
             $this->$field = $this->applyPopurateOption($option, $prefix, $field, $src, $origin);
         }
 
@@ -103,7 +103,7 @@ trait Popuratable
     {
         $defined = Reflector::has($src, $field);
         $value   = Reflector::get($src, $field);
-        
+
         if (empty($option)) {
             return $defined ? $value : $origin ;
         }

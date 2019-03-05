@@ -210,7 +210,7 @@ class Valid
      *   Selector    - count of value
      */
     const BLANK_IF = 'BlankIf:!';
-    
+
     /**
      * Empty Unless Validation.
      * It checks the value is blank.
@@ -227,7 +227,7 @@ class Valid
      *   Selector    - count of value
      */
     const BLANK_UNLESS = 'BlankUnless:!';
-    
+
     /**
      * Blank With Validation.
      * It checks the value is blank.
@@ -303,7 +303,7 @@ class Valid
      *   Selector    - none or given selector
      */
     const REGEX = 'Regex:';
-    
+
     /**
      * Not Regex Validation.
      * It checks the value will not match given pattern.
@@ -397,7 +397,7 @@ class Valid
      *   Selector    - none
      */
     const FLOAT = 'Float:!';
-    
+
     /**
      * Number Less Than Validation.
      * It checks the value number will less than given number.
@@ -431,7 +431,7 @@ class Valid
      *   Selector    - none
      */
     const NUMBER_LESS_THAN_OR_EQUAL = 'NumberLessThanOrEqual:';
-    
+
     /**
      * Number Greater Than Validation.
      * It checks the value number will greater than or equal given min number.
@@ -465,7 +465,7 @@ class Valid
      *   Selector    - none
      */
     const NUMBER_GREATER_THAN_OR_EQUAL = 'NumberGreaterThanOrEqual:';
-    
+
     /**
      * Email Validation.
      * It checks the value format is mail address.

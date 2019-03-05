@@ -29,7 +29,7 @@ trait Arrayable
     {
         return $this->container();
     }
-    
+
     /**
      * {@inheritDoc}
      */

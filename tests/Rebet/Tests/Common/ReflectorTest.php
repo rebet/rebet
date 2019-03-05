@@ -586,7 +586,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(0, Reflector::convert('a', $type));
 
         $this->assertSame(null, Reflector::convert([1, 2], $type));
-        
+
         $resource = fopen('vfs://root/dummy.txt', 'r');
         $this->assertSame(null, Reflector::convert($resource, $type));
         fclose($resource);
@@ -596,11 +596,11 @@ class ReflectorTest extends RebetTestCase
 
         $convertTo = new ReflectorTest_ConvertTo();
         $this->assertSame(123, Reflector::convert($convertTo, $type));
-        
+
         $toType = new ReflectorTest_ToType();
         $this->assertSame(123, Reflector::convert($toType, $type));
     }
-    
+
     public function test_convert_float()
     {
         $type = 'float';
@@ -660,13 +660,13 @@ class ReflectorTest extends RebetTestCase
         $toType = new ReflectorTest_ToType();
         $this->assertSame(true, Reflector::convert($toType, $type));
     }
-    
+
     public function test_convert_object()
     {
         $this->assertNull(Reflector::convert(null, Gender::class));
         $this->assertSame(Gender::MALE(), Reflector::convert(1, Gender::class));
         $this->assertSame(Gender::FEMALE(), Reflector::convert(2, Gender::class));
-        
+
         $object = new ReflectorTest_Mock();
         $this->assertSame(null, Reflector::convert($object, ReflectorTest_ConvertTo::class));
 
@@ -675,7 +675,7 @@ class ReflectorTest extends RebetTestCase
 
         $toType = new ReflectorTest_ToType();
         $this->assertEquals(new ReflectorTest_ConvertTo(), Reflector::convert($toType, ReflectorTest_ConvertTo::class));
-        
+
         $this->assertEquals(null, Reflector::convert($toType, Gender::class));
     }
 
@@ -685,7 +685,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(123, Reflector::convert(123, null));
         $this->assertSame([1, 2], Reflector::convert([1, 2], null));
     }
-    
+
     public function test_getTypeHint()
     {
         $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {

@@ -20,7 +20,7 @@ interface RebetException
      * @return self
      */
     public static function by(...$reason) : self ;
-    
+
     /**
      * Set the given previous exception.
      *
@@ -35,7 +35,7 @@ interface RebetException
      * @return \Throwable|null
      */
     public function getCaused() : ? \Throwable ;
-    
+
     /**
      * Set the given code
      *

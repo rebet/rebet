@@ -23,7 +23,7 @@ abstract class Route
      * @var array
      */
     protected $wheres = [];
-    
+
     /**
      * Route action.
      *
@@ -44,7 +44,7 @@ abstract class Route
      * @var array
      */
     protected $middlewares = [];
-    
+
     /**
      * Authenticator name for this route.
      *
@@ -214,7 +214,7 @@ abstract class Route
         $this->roles = func_get_args();
         return $this;
     }
-    
+
     /**
      *  Get or set the authenticator name attached to the route.
      *

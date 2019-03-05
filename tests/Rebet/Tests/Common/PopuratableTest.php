@@ -51,7 +51,7 @@ class PopuratableTest extends RebetTestCase
         $this->assertInstanceOf(Address::class, $user->shipping_addresses[0]);
         $this->assertSame('1230001', $user->shipping_addresses[0]->zip);
     }
-    
+
     public function test_popurateOptionAlias()
     {
         $user = new User();
@@ -63,7 +63,7 @@ class PopuratableTest extends RebetTestCase
                 ],
             ],
         ]);
-        
+
         $this->assertSame('JOHN SMITH', $user->name);
         $this->assertSame('1987-01-23', $user->birthday);
         $this->assertSame('SB', $user->bank->name);

@@ -86,7 +86,7 @@ class Securities
         }
         return $text;
     }
-    
+
     /**
      * Generate a random hash value.
      *
@@ -101,7 +101,7 @@ class Securities
         $algorithm = $algorithm ?? static::config('hash.algorithm') ;
         return self::hash(date('Y-m-d H:i:s'), self::randomCode(8), self::randomCode(8), $algorithm, 10);
     }
-    
+
     /**
      * Encrypt with private key encryption by openssl_encrypt().
      *
@@ -123,7 +123,7 @@ class Securities
         $encrypted  = openssl_encrypt($plain, $cipher, $secret_key, OPENSSL_RAW_DATA, $iv);
         return $iv.$encrypted;
     }
-    
+
     /**
      * Decrypt with private key decryption by openssl_decrypt().
      *

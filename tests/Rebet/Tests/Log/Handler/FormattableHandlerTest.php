@@ -38,28 +38,28 @@ class FormattableHandlerTest extends RebetTestCase
         $this->context->message = "This is test.";
         $formatted_log          = $this->handler->handle($this->context);
         $this->assertNull($formatted_log);
-        
+
         $this->context->level   = LogLevel::INFO();
         $this->context->message = "This is test.";
         $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
-        
+
         $this->context->level   = LogLevel::WARN();
         $this->context->message = "This is test.";
         $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
-        
+
         $this->context->level   = LogLevel::ERROR();
         $this->context->message = "This is test.";
         $formatted_log          = $this->handler->handle($this->context);
         $this->assertNotNull($formatted_log);
         $this->assertSame($formatted_log, $this->handler->reported_log);
         $this->handler->terminate();
-        
+
         $this->context->level   = LogLevel::FATAL();
         $this->context->message = "This is test.";
         $formatted_log          = $this->handler->handle($this->context);

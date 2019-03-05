@@ -25,7 +25,7 @@ class Responder
     private function __construct()
     {
     }
-    
+
     /**
      * Create a response for given data.
      *

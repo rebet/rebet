@@ -25,7 +25,7 @@ interface Guard
      * @return void
      */
     public function signin(Request $request, AuthUser $user, bool $remember = false) : void;
-    
+
     /**
      * It will sign out the authenticated user.
      *

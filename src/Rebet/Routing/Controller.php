@@ -30,7 +30,7 @@ abstract class Controller
      * @var Route
      */
     public $route = null;
-    
+
     /**
      * Perform preprocessing of the controller.
      * Please override with subclass if necessary.

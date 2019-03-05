@@ -28,7 +28,7 @@ class StderrCapture extends \php_user_filter
     {
         return self::$stderr;
     }
-    
+
     public static function clear()
     {
         self::$stderr = '';
@@ -40,19 +40,19 @@ class StderrCapture extends \php_user_filter
         self::clear();
         return $stderr;
     }
-    
+
     public static function clearStart()
     {
         self::clear();
         self::start();
     }
-    
+
     public static function stopGet()
     {
         self::stop();
         return self::get();
     }
-    
+
     public static function stopGetClear()
     {
         self::stop();
@@ -60,7 +60,7 @@ class StderrCapture extends \php_user_filter
         self::clear();
         return $stderr;
     }
-    
+
     public function filter($in, $out, &$consumed, $closing)
     {
         while ($bucket = stream_bucket_make_writeable($in)) {

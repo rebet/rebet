@@ -95,7 +95,7 @@ class Auth
 
         if ($user) {
             $user->provider($provider->authenticator($auth));
-    
+
             $guard = static::configInstantiate("authenticator.{$auth}.guard");
             $user->guard($guard->authenticator($auth));
         }

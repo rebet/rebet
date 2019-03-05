@@ -51,28 +51,28 @@ class UserAgent
             ],
         ];
     }
-    
+
     /**
      * User-Agent header text.
      *
      * @var string
      */
     private $user_agent = null;
-    
+
     /**
      * user agent type
      *
      * @var string
      */
     private $type = null;
-    
+
     /**
      * Whether it is crawler or not
      *
      * @var boolean
      */
     private $is_crawler = false;
-    
+
     /**
      * Create a user agent
      *
@@ -113,7 +113,7 @@ class UserAgent
     {
         return $this->isSmartphone() || $this->isTablet() ;
     }
-    
+
     /**
      * It checks whether the user agent is smart phone.
      *
@@ -123,7 +123,7 @@ class UserAgent
     {
         return $this->type === 'smartphone';
     }
-    
+
     /**
      * It checks whether the user agent is tablet.
      *
@@ -133,7 +133,7 @@ class UserAgent
     {
         return $this->type === 'tablet';
     }
-    
+
     /**
      * It checks whether the user agent is pc(not mobile).
      *
@@ -143,7 +143,7 @@ class UserAgent
     {
         return $this->type === 'others';
     }
-    
+
     /**
      * It checks whether the user agent is unknown.
      *
@@ -163,7 +163,7 @@ class UserAgent
     {
         return $this->is_crawler;
     }
-    
+
     /**
      * Get user agent type.
      *
@@ -173,7 +173,7 @@ class UserAgent
     {
         return $this->type;
     }
-    
+
     /**
      * Gets the user agent string.
      *

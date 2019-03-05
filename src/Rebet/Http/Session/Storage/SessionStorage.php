@@ -54,7 +54,7 @@ class SessionStorage extends NativeSessionStorage
             ],
         ];
     }
-    
+
     /**
      * {@inheritDoc}
      *

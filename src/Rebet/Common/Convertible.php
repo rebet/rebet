@@ -24,7 +24,7 @@ interface Convertible
      * @return mixed
      */
     public static function valueOf($value);
-    
+
     /**
      * Convert the type from self to other.
      * If conversion is not possible then return null.

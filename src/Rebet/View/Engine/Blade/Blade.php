@@ -36,7 +36,7 @@ class Blade implements Engine
             'customizers' => [],
         ];
     }
-    
+
     /**
      * It provides the Blade engine components to the globally container if 'view' component not exists.
      *

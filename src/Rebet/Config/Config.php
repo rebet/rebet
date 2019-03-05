@@ -231,14 +231,14 @@ class Config
         if (!\is_array($config) || Arrays::isSequential($config)) {
             return $config;
         }
-        
+
         $analyzed = [];
         foreach ($config as $section => $value) {
             if (\is_array($value) && !Arrays::isSequential($value)) {
                 $option[$section] = $option[$section] ?? [] ;
                 $value            = static::analyzeSection($value, $option[$section]);
             }
-            
+
             $analyzed[$section] = $value;
         }
         return $analyzed;
@@ -263,7 +263,7 @@ class Config
             if ($apply_option !== null) {
                 $option[$key] = $apply_option;
             }
-            
+
             if (\is_array($value) && !Arrays::isSequential($value)) {
                 $nested_option = [];
                 $value         = static::analyzeSection($value, $nested_option);

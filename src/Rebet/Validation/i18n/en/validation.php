@@ -10,7 +10,7 @@
 return [
     "@delimiter"                    => ", ",
     "@nested_attribute_format"      => ":attribute :nested_attribute",
-    
+
     "Required"                      => "The :attribute field is required.",
     "RequiredIf"                    => [
         "[0,1] The :attribute field is required when :other is :value.",
@@ -160,6 +160,6 @@ return [
     "Accepted"                      => "The :attribute must be accepted.",
     "CorrelatedRequired"            => "The :attribute are required at least :at_least.",
     "CorrelatedUnique"              => "The :attribute must be entered a different value. The :duplicate have duplicated.",
-    
+
 
 ];

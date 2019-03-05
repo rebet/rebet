@@ -5,7 +5,6 @@ use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Common\Namespaces;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
-use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
@@ -103,7 +102,7 @@ class ConventionalRoute extends Route
      * @var string
      */
     protected $action_suffix = null;
-    
+
     /**
      * Accessible to non public member action(method).
      *
@@ -117,7 +116,7 @@ class ConventionalRoute extends Route
      * @var array
      */
     protected $aliases = [];
-    
+
     /**
      * Name via alias.
      *
@@ -255,7 +254,7 @@ class ConventionalRoute extends Route
             }
             $vars[$name] = $value;
         }
-        
+
         return $vars;
     }
 

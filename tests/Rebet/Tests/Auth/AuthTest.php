@@ -73,7 +73,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame(1, $user->id);
         $this->assertTrue($user->is('admin'));
     }
-    
+
     public function test_signin_success()
     {
         $signined_user_id = null;
@@ -102,7 +102,7 @@ class AuthTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/admin/dashboard', $response->getTargetUrl());
     }
-    
+
     public function test_signin_failed()
     {
         $charenged_signin_id = null;

@@ -27,7 +27,7 @@ class BuiltinValidationsTest extends RebetTestCase
         $validations = new BuiltinValidations();
         $this->assertInstanceOf(BuiltinValidations::class, $validations);
     }
-    
+
     /**
      * @dataProvider dataValidationMethods
      */
@@ -67,7 +67,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar', [2, 4, 6]], false, []],
                 ]
             ]],
-            
+
             // --------------------------------------------
             // Valid::UNLESS
             // --------------------------------------------
@@ -98,7 +98,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['foo', 'bar'], 1], true, []],
                 ]
             ]],
-            
+
             // --------------------------------------------
             // Valid::WITHOUT
             // --------------------------------------------
@@ -113,7 +113,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', [['foo', 'bar'], 1], true, []],
                 ]
             ]],
-            
+
             // --------------------------------------------
             // Valid::IF_NO_ERROR
             // --------------------------------------------
@@ -125,7 +125,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo', ['bar'], true , []],
                 ]
             ]],
-            
+
             // --------------------------------------------
             // Valid::IF_AN_ERROR
             // --------------------------------------------
@@ -486,7 +486,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ]]],
                 ]
             ]],
-            
+
             // --------------------------------------------
             // Valid::FLOAT
             // --------------------------------------------
@@ -567,7 +567,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ]]],
                 ]
             ]],
-            
+
             // --------------------------------------------
             // Valid::NUMBER_GREATER_THAN
             // --------------------------------------------
@@ -1188,7 +1188,7 @@ EOS
                     ['foo'    , ['baz', 3, 2], true , []],
                 ]
             ]],
-        
+
             // --------------------------------------------
             // Valid::ACCEPTED
             // --------------------------------------------

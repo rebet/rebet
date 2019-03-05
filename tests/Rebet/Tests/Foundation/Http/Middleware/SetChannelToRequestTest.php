@@ -22,7 +22,7 @@ class SetChannelToRequestTest extends RebetTestCase
 
         $request  = $this->createRequestMock('/', null, null);
         $this->assertSame(null, $request->channel);
-        
+
         $response = $middleware->handle($request, $destination);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('OK', $response->getContent());

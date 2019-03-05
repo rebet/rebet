@@ -39,7 +39,7 @@ class AuthUserTest extends RebetTestCase
         $user->role     = 'user';
         $user->name     = 'User';
         $user->birthday = DateTime::createDateTime('1991-02-03')->setDefaultFormat('Y-m-d');
-        
+
         $this->object_user_source = $user;
 
         $bank          = new Bank();
@@ -238,22 +238,22 @@ class AuthUserTest extends RebetTestCase
             $this->assertInstanceOf(AuthUser::class, $user);
             $this->assertSame(2, $user->id);
             $this->assertSame('user', $user->role);
-    
+
             $user = new AuthUser($user_source, ['role' => '@admin']);
             $this->assertSame('admin', $user->role);
-    
+
             $user = new AuthUser($user_source, ['role' => 'user_id']);
             $this->assertSame(2, $user->role);
-    
+
             $user = new AuthUser($user_source, ['role' => function ($user) { return $user ? strtoupper(Reflector::get($user, 'role')) : null ; }]);
             $this->assertSame('USER', $user->role);
-    
+
             $user = new AuthUser($user_source, ['role' => 123]);
             $this->assertSame(123, $user->role);
-    
+
             $user = new AuthUser($user_source, ['bank_name' => 'bank.name']);
             $this->assertSame('Sample Bank', $user->bank_name);
-    
+
             $user = new AuthUser($user_source, ['name' => '!email', 'email' => '!name']);
             $this->assertSame('user@rebet.local', $user->name);
             $this->assertSame('User', $user->email);

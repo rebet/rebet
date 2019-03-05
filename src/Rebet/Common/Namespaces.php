@@ -21,7 +21,7 @@ class Namespaces
             'aliases' => [],
         ];
     }
-    
+
     /**
      * No instantiation
      */

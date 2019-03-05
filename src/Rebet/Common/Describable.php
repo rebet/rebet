@@ -23,10 +23,10 @@ trait Describable
         foreach ($dest as $field => $origin) {
             Reflector::set($dest, $field, $this->applyDescribeOption($option, $this, $field, $origin), true);
         }
-        
+
         return $dest;
     }
-    
+
     /**
      * It creates the given dest class object and copies own value.
      *
@@ -39,7 +39,7 @@ trait Describable
         $entity = new $class();
         return $this->inject($entity, $option);
     }
-    
+
     /**
      * Apply Option
      *

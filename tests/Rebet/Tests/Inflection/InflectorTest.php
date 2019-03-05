@@ -143,7 +143,7 @@ class InflectorTest extends RebetTestCase
     public function dataSampleWords() : array
     {
         Inflector::reset();
-        
+
         // In the format ['singular', 'plural']
         return [
             ['', ''],

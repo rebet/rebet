@@ -41,7 +41,7 @@ EOS
             ,
             $formatted
         );
-        
+
         $this->context->level   = LogLevel::DEBUG();
         $this->context->message = 123;
         $formatted              = $this->formatter->format($this->context);
@@ -52,7 +52,7 @@ EOS
             ,
             $formatted
         );
-        
+
         $this->context->level   = LogLevel::INFO();
         $this->context->message = 'This is test message.';
         $formatted              = $this->formatter->format($this->context);
@@ -63,7 +63,7 @@ EOS
             ,
             $formatted
         );
-        
+
         $this->context->level   = LogLevel::INFO();
         $this->context->message = "1st line.\n2nd line.";
         $formatted              = $this->formatter->format($this->context);
@@ -75,7 +75,7 @@ EOS
             ,
             $formatted
         );
-        
+
         $this->context->level   = LogLevel::WARN();
         $this->context->message = [1, 2, 3];
         $formatted              = $this->formatter->format($this->context);
@@ -128,7 +128,7 @@ EOS
             ,
             $formatted
         );
-        
+
         $this->context->level   = LogLevel::DEBUG();
         $this->context->message = 'This is test message.';
         $this->context->var     = ['test' => 123];

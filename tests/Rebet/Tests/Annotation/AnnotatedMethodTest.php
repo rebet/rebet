@@ -16,7 +16,7 @@ class AnnotatedMethodTest extends RebetTestCase
         $am = new AnnotatedMethod($rm);
         $this->assertInstanceOf(AnnotatedMethod::class, $am);
     }
-    
+
     public function test_of()
     {
         $rm = new \ReflectionMethod(AnnotatedMethodTest_Mock::class, 'foo');
@@ -25,18 +25,18 @@ class AnnotatedMethodTest extends RebetTestCase
 
         $am = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
         $this->assertInstanceOf(AnnotatedMethod::class, $am);
-        
+
         $mock = new AnnotatedMethodTest_Mock();
         $am   = AnnotatedMethod::of('foo', $mock);
         $this->assertInstanceOf(AnnotatedMethod::class, $am);
     }
-    
+
     public function test_annotaion()
     {
         $am      = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class);
         $channel = $am->annotation(Channel::class, false);
         $this->assertNull($channel);
-        
+
         $channel = $am->annotation(Channel::class);
         $this->assertInstanceOf(Channel::class, $channel);
         $this->assertSame(['web'], $channel->allows);
@@ -60,7 +60,7 @@ class AnnotatedMethodTest extends RebetTestCase
         $this->assertNull($am->annotation(Method::class, false));
         $this->assertNull($am->annotation(Method::class));
     }
-    
+
     public function test_annotaions()
     {
         $am          = AnnotatedMethod::of('bar', AnnotatedMethodTest_Mock::class);
@@ -70,12 +70,12 @@ class AnnotatedMethodTest extends RebetTestCase
         $this->assertInstanceOf(Channel::class, $channel);
         $this->assertSame(['api'], $channel->allows);
     }
-    
+
     public function test_declaringClass()
     {
         $ac = AnnotatedMethod::of('foo', AnnotatedMethodTest_Mock::class)->declaringClass();
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
-        
+
         $channel = $ac->annotation(Channel::class);
         $this->assertInstanceOf(Channel::class, $channel);
         $this->assertSame(['web'], $channel->allows);

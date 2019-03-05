@@ -61,7 +61,7 @@ class Files
         $zip->extractTo($dest_dir);
         $zip->close();
     }
-    
+
     /**
      * Convert ZipArchive error code to Exception.
      *
@@ -127,16 +127,16 @@ class Files
                 return true;
             };
         }
-        
+
         $path_info   = pathInfo($source_path);
         $parent_path = $path_info['dirname'];
         $dir_name    = $path_info['basename'];
-        
+
         $dest_dir = dirname($out_zip_path);
         if (!file_exists($dest_dir)) {
             mkdir($dest_dir, $out_dir_permission, true);
         }
-        
+
         $z = new \ZipArchive();
         self::zipErrorCheck($z->open($out_zip_path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE), "Open {$out_zip_path} failed.");
         if ($include_target_dir) {
@@ -145,7 +145,7 @@ class Files
         self::folderToZip($source_path, $z, strlen($include_target_dir ? "{$parent_path}/" : "{$parent_path}/{$dir_name}/"), $filter);
         $z->close();
     }
-    
+
     /**
      * ZIP compressed directories recursively.
      *
@@ -164,7 +164,7 @@ class Files
                 if (!$filter($file_path)) {
                     continue;
                 }
-                
+
                 // Remove prefix from file path before add to zip.
                 $local_path = substr($file_path, $exclusive_length);
                 if (is_file($file_path)) {

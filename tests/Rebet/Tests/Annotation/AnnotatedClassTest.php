@@ -15,29 +15,29 @@ class AnnotatedClassTest extends RebetTestCase
     {
         $ac = new AnnotatedClass(AnnotatedClassTest_Mock::class);
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
-        
+
         $mock = new AnnotatedClassTest_Mock();
         $ac   = new AnnotatedClass($mock);
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
     }
-    
+
     public function test_of()
     {
         $ac = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
-        
+
         $mock = new AnnotatedClassTest_Mock();
         $ac   = AnnotatedClass::of($mock);
         $this->assertInstanceOf(AnnotatedClass::class, $ac);
     }
-    
+
     public function test_annotaion()
     {
         $ac      = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
         $channel = $ac->annotation(Channel::class);
         $this->assertInstanceOf(Channel::class, $channel);
         $this->assertSame(['web'], $channel->allows);
-        
+
         $where = $ac->annotation(Where::class);
         $this->assertInstanceOf(Where::class, $where);
         $this->assertSame(['id' => '[0-9]+', 'code' => '[a-zA-Z]+'], $where->wheres);
@@ -48,7 +48,7 @@ class AnnotatedClassTest extends RebetTestCase
         $ac = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
         $this->assertNull($ac->annotation(Method::class, false));
     }
-    
+
     public function test_annotaions()
     {
         $ac          = AnnotatedClass::of(AnnotatedClassTest_Mock::class);
@@ -62,7 +62,7 @@ class AnnotatedClassTest extends RebetTestCase
         $this->assertInstanceOf(Where::class, $where);
         $this->assertSame(['id' => '[0-9]+', 'code' => '[a-zA-Z]+'], $where->wheres);
     }
-    
+
     public function test_method()
     {
         $am = AnnotatedClass::of(AnnotatedClassTest_Mock::class)->method('bar');
@@ -89,7 +89,7 @@ class AnnotatedClassTest extends RebetTestCase
 class AnnotatedClassTest_Mock
 {
     public $foo;
-    
+
     public function bar()
     {
     }

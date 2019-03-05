@@ -40,7 +40,7 @@ class Pipeline
      * @var array
      */
     protected $real_pipes = [];
-    
+
     /**
      * The entry point closure of pipeline.
      *
@@ -76,7 +76,7 @@ class Pipeline
         }
         return ($this->pipeline)($passable);
     }
-    
+
     /**
      * Set the array of pipes.
      *
@@ -100,7 +100,7 @@ class Pipeline
         $this->method = $method;
         return $this;
     }
-    
+
     /**
      * Build the pipeline with a final destination callback.
      *
@@ -118,7 +118,7 @@ class Pipeline
         );
         return $this;
     }
-    
+
     /**
      * Get final destination callback.
      *
@@ -169,7 +169,7 @@ class Pipeline
         return function ($stack, $pipe) {
             $pipe               = \is_callable($pipe) ? $pipe : Reflector::instantiate($pipe) ;
             $this->real_pipes[] = $pipe;
-            
+
             return function ($passable) use ($stack, $pipe) {
                 return method_exists($pipe, $this->method) ? $pipe->{$this->method}($passable, $stack) : $pipe($passable, $stack);
             };

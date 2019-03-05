@@ -36,7 +36,7 @@ class EnumTest extends RebetTestCase
         $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
 
         Gender::lists();
-        
+
         Enum::clear();
 
         $this->assertFalse(isset($reflection->getValue()[Gender::class]));
@@ -46,7 +46,7 @@ class EnumTest extends RebetTestCase
         EnumTest_AcceptStatus::lists();
 
         Gender::clear();
-        
+
         $this->assertFalse(isset($reflection->getValue()[Gender::class]));
         $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
     }
@@ -75,7 +75,7 @@ class EnumTest extends RebetTestCase
     {
         $invalid = Gender::INVALID();
     }
-    
+
     public function test_equals()
     {
         $male2 = Gender::MALE();
@@ -89,27 +89,27 @@ class EnumTest extends RebetTestCase
         $this->assertFalse($this->male->equals('2'));
         $this->assertFalse($this->male->equals($this->female));
     }
-    
+
     public function test_in()
     {
         $this->assertTrue($this->male->in(1, 2));
         $this->assertTrue($this->male->in('1', '2'));
         $this->assertTrue($this->male->in(...Gender::lists()));
-        
+
         $this->assertFalse($this->male->in(2, 3, 4));
         $this->assertFalse($this->male->in($this->female));
     }
-    
+
     public function test_toString()
     {
         $this->assertSame('男性', "{$this->male}");
-        
+
         App::setLocale('en');
         Enum::clear();
-        
+
         $this->assertSame('Male', "{$this->male}");
     }
-    
+
     public function test_jsonSerialize()
     {
         $this->assertSame(1, $this->male->jsonSerialize());
@@ -160,7 +160,7 @@ class EnumTest extends RebetTestCase
             ],
             Gender::maps('label', true)
         );
-        
+
         $this->assertSame(
             [
                 'Männlich' => Gender::MALE(),
@@ -200,7 +200,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame(Gender::MALE(), Gender::fieldOf('label', 'Männlich', true, 'de'));
         $this->assertSame(Gender::FEMALE(), Gender::fieldOf('label', 'Weiblich', true, 'de'));
         $this->assertNull(Gender::fieldOf('value', 3));
-        
+
         $this->assertSame(EnumTest_AcceptStatus::REJECTED(), EnumTest_AcceptStatus::fieldOf('value', 'R'));
         $this->assertSame(EnumTest_AcceptStatus::ACCEPTED(), EnumTest_AcceptStatus::fieldOf('color', 'green'));
         $this->assertNull(EnumTest_AcceptStatus::fieldOf('value', 1));
@@ -385,7 +385,7 @@ class EnumTest extends RebetTestCase
             EnumTest_AcceptStatus::names()
         );
     }
-    
+
     public function test_translate()
     {
         $this->assertSame('男性', Gender::MALE()->translate());
@@ -501,7 +501,7 @@ class EnumTest extends RebetTestCase
         $this->assertNull(Gender::listOf('invalid'));
         $this->fail("Never execute.");
     }
-    
+
     public function test_nextValues()
     {
         $this->assertSame(
@@ -519,7 +519,7 @@ class EnumTest extends RebetTestCase
             EnumTest_AcceptStatus::nextValues(EnumTest_AcceptStatus::ACCEPTED(), ['role' => 'admin'])
         );
     }
-    
+
     public function test_nextLabels()
     {
         $this->assertSame(
@@ -544,7 +544,7 @@ class EnumTest_AcceptStatus extends Enum
     const WAITING  = ['W', '待機中', 'orange', 'far fa-clock'];
     const ACCEPTED = ['A', '受理', 'green', 'fas fa-check-circle'];
     const REJECTED = ['R', '却下', 'red', 'fas fa-times-circle'];
-    
+
     public $color;
     public $icon;
 
@@ -562,10 +562,9 @@ class EnumTest_AcceptStatus extends Enum
                 $current = self::valueOf($current);
                 if ($current === self::WAITING()) {
                     return [self::WAITING(), self::ACCEPTED(), self::REJECTED()];
-                } else {
-                    return [$current];
                 }
-                // no break
+                    return [$current];
+
             case 'admin':
                 return self::lists();
         }

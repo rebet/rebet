@@ -48,7 +48,7 @@ trait RebetExceptionable
         $rp->setAccessible(true);
         return $rp->getValue($this);
     }
-    
+
     /**
      * {@inheritDoc}
      */

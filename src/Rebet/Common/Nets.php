@@ -31,7 +31,7 @@ class Nets
     {
         return strtr(base64_encode($byte), '+/=', '._-');
     }
-    
+
     /**
      * Convert available strings in URL to binary data.
      * Note: Restore the data from the character string "+ / =" of Base64 "URL Unsafe" replaced by URL Safe character "._-".

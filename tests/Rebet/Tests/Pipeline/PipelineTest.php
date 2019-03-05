@@ -7,13 +7,13 @@ use Rebet\Tests\RebetTestCase;
 class PipelineTest extends RebetTestCase
 {
     private $pipeline;
-    
+
     public function setup()
     {
         parent::setUp();
         $this->pipeline = new Pipeline();
     }
-    
+
     /**
      * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Pipeline not build yet. You shold buld a pipeline using then() first.
@@ -22,7 +22,7 @@ class PipelineTest extends RebetTestCase
     {
         $output = $this->pipeline->send('onion');
     }
-    
+
     public function test_usage_basic()
     {
         $this->pipeline->through([
@@ -33,17 +33,17 @@ class PipelineTest extends RebetTestCase
         ])->then(function ($input) {
             return $input;
         });
-        
+
         $output = $this->pipeline->send('onion');
         $this->assertSame('(onion!)', $output);
-        
+
         $output = $this->pipeline->via('before')->send('onion');
         $this->assertSame('(onion)!', $output);
-        
+
         $output = $this->pipeline->via('both')->send('onion');
         $this->assertSame('((onion)!)', $output);
     }
-    
+
     public function test_usage_objectAndArray()
     {
         $this->pipeline->through(
@@ -58,11 +58,11 @@ class PipelineTest extends RebetTestCase
         )->then(function ($input) {
             return $input;
         });
-        
+
         $output = $this->pipeline->send('onion');
         $this->assertSame('([ONION!])', $output);
     }
-    
+
     public function test_getDestination()
     {
         $this->assertNull($this->pipeline->getDestination());
@@ -84,17 +84,17 @@ class PipelineTest extends RebetTestCase
         )->then(function ($input) {
             return $input;
         });
-        
+
         $this->assertSameOutbuffer(
             '[terminate](terminate)',
             function () {
                 $this->pipeline->invoke('terminate');
             }
         );
-        
+
         $output = $this->pipeline->send('onion');
         $this->assertSame('([onion!])', $output);
-        
+
         $this->pipeline->invoke('set', '<', '>');
         $output = $this->pipeline->send('onion');
         $this->assertSame('<<onion!>>', $output);

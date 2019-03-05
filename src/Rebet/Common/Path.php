@@ -62,7 +62,7 @@ class Path
             }
             \array_pop($absolutes);
         }
-        
+
         $realpath = \implode('/', $absolutes);
         if ($is_relatable) {
             if (Strings::startsWith($convert_path, '/')) {

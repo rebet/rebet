@@ -14,7 +14,7 @@ class DateTimeZoneTest extends RebetTestCase
         $origin = new \DateTimeZone("UTC");
         $rebet  = new DateTimeZone($origin);
         $this->assertSame("UTC", $rebet->getName());
-        
+
         $rebet2 = new DateTimeZone($rebet);
         $this->assertSame("UTC", $rebet2->getName());
     }

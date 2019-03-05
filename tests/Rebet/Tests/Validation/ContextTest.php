@@ -10,7 +10,7 @@ class ContextTest extends RebetTestCase
 {
     private $errors;
     private $rule_set;
-    
+
     public function setup()
     {
         parent::setUp();
@@ -428,7 +428,7 @@ class ContextTest extends RebetTestCase
                 'shipping_addresses' => $this->rule_set['shipping_addresses'],
             ]
         );
-        
+
         $this->assertSame([[], null], $c->pluckNested(null));
 
         $c->initBy('name');

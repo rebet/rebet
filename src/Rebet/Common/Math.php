@@ -219,7 +219,7 @@ class Math
         [$left, $right, $scale, /*$significant_figure*/] = static::compensate($left, $right);
         return \bccomp($left, $right, $scale) ;
     }
-    
+
     /**
      * It checks left equals right by perform arbitrary precision comparison.
      *
@@ -232,7 +232,7 @@ class Math
     {
         return static::comp($left, $right, $precision) === 0;
     }
-    
+
     /**
      * It checks left greater than right by perform arbitrary precision comparison.
      *
@@ -409,7 +409,7 @@ class Math
         if (static::lt($value, '1')) {
             return static::roundByDecimalPlaces($value, $precision + ($vs - $vsf));
         }
-        
+
         return static::roundByDecimalPlaces($value, $precision - ($vsf - $vs));
     }
 

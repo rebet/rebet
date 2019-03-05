@@ -234,7 +234,7 @@ class BuiltinValidations extends Validations
             return false;
         });
     }
-    
+
     /**
      * If No Error condition
      *
@@ -300,7 +300,7 @@ class BuiltinValidations extends Validations
             return $c->appendError('RequiredIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
-    
+
     /**
      * Required Unless Validation
      *
@@ -315,7 +315,7 @@ class BuiltinValidations extends Validations
             return $c->appendError('RequiredUnless', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
-    
+
     /**
      * Handle If validate precondition
      *
@@ -351,7 +351,7 @@ class BuiltinValidations extends Validations
         }
         return true;
     }
-    
+
     /**
      * Required With Validation
      *
@@ -389,7 +389,7 @@ class BuiltinValidations extends Validations
             );
         });
     }
-    
+
     /**
      * Handle With validate precondition
      *
@@ -437,7 +437,7 @@ class BuiltinValidations extends Validations
         }
         return true;
     }
-    
+
     /**
      * Blank If Validation
      *
@@ -452,7 +452,7 @@ class BuiltinValidations extends Validations
             return $c->appendError('BlankIf', ['other' => $c->label($other), 'value' => $label], Arrays::count($value));
         });
     }
-    
+
     /**
      * Blank Unless Validation
      *
@@ -612,7 +612,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($selector) { return $selector; }
         );
     }
-    
+
     /**
      * Not Regex Validation
      *
@@ -651,7 +651,7 @@ class BuiltinValidations extends Validations
             function ($value) use ($selector) { return $selector; }
         );
     }
-    
+
     /**
      * Max Length Validation
      *
@@ -866,7 +866,7 @@ class BuiltinValidations extends Validations
         if ($c->blank()) {
             return true;
         }
-        
+
         /*
          * This pattern is derived from Symfony\Component\Validator\Constraints\UrlValidator (2.7.4).
          *
@@ -1054,7 +1054,7 @@ class BuiltinValidations extends Validations
         if (!is_array($ng_words)) {
             $ng_words = file($ng_words, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         }
-        
+
         $hit_ng_word = null;
         return $this->handleListableValue(
             $c,
@@ -1386,7 +1386,7 @@ class BuiltinValidations extends Validations
 
         return true;
     }
-    
+
     /**
      * Accepted Validation
      *

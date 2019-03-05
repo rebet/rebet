@@ -31,7 +31,7 @@ class ResourceTest extends RebetTestCase
             ],
             Resource::load('php', $this->resources.'/test.php')
         );
-        
+
         $this->assertSame(
             [
                 'a' => [
@@ -45,7 +45,7 @@ class ResourceTest extends RebetTestCase
             ],
             Resource::load('ini', $this->resources.'/test.ini')
         );
-        
+
         $this->assertSame(
             [
                 'int'    => 1,
@@ -54,7 +54,7 @@ class ResourceTest extends RebetTestCase
             ],
             Resource::load('ini', $this->resources.'/test.ini', ['process_sections' => false])
         );
-        
+
         $this->assertSame(
             [
                 'int'    => 1,
@@ -68,7 +68,7 @@ class ResourceTest extends RebetTestCase
             ],
             Resource::load('json', $this->resources.'/test.json')
         );
-        
+
         $this->assertSame(
             [
                 '1st',

@@ -47,7 +47,7 @@ class BasicFallbackHandler extends FallbackHandler
                 return;
         }
     }
-    
+
     /**
      * Create a request string for logging.
      *

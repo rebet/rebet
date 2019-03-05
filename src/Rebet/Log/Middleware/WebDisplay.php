@@ -31,7 +31,7 @@ class WebDisplay
      * @var string
      */
     private $buffer = "";
-    
+
     /**
      * Handle log context.
      *
@@ -65,7 +65,7 @@ class WebDisplay
                 $fc = '#ee3333'; $bc = '#ffeeee';
                 break;
         }
-        
+
         $mark          = substr_count($display_log, "\n") > 1 ? "☰" : "　" ;
         $message       = preg_replace('/\n/s', '<br />', str_replace(' ', '&nbsp;', htmlspecialchars($display_log)));
         $this->buffer .= <<<EOS

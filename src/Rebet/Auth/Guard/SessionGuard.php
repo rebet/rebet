@@ -81,7 +81,7 @@ class SessionGuard implements Guard
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

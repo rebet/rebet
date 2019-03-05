@@ -41,7 +41,7 @@ class Arrays
         if (count($list) <= $number) {
             return [$list, []] ;
         }
-        
+
         $selected   = [];
         $max_idx    = count($list) - 1;
         $i          = 0;
@@ -69,7 +69,7 @@ class Arrays
             unset($list[$idx]);
             $i++;
         }
-        
+
         return [$selected, array_merge($list)];
     }
 
@@ -360,7 +360,7 @@ class Arrays
     {
         return is_array($value) || ($value instanceof \ArrayAccess && $value instanceof \Traversable && $value instanceof \Countable);
     }
-    
+
     /**
      * Determine if the given key exists in the provided array.
      *
@@ -433,7 +433,7 @@ class Arrays
             unset($array[array_shift($parts)]);
         }
     }
-    
+
     /**
      * Filter the array using the given callback.
      *
@@ -463,7 +463,7 @@ class Arrays
         }
         return array_filter($array, function ($value) { return !Utils::isBlank($value); });
     }
-    
+
     /**
      * Return the first element in an array passing a given truth test.
      *
@@ -707,7 +707,7 @@ class Arrays
     {
         return $array === null ? null : array_reduce($array, $reducer, $initial) ;
     }
-    
+
     /**
      * Get the items in the collection that are not present in the given items.
      *
@@ -880,7 +880,7 @@ class Arrays
             uasort($array, $sorter);
             return $array;
         }
-        
+
         return $array;
     }
 
@@ -909,7 +909,7 @@ class Arrays
         $sorter    = function ($a, $b) use ($retriever, $comparator) {
             return call_user_func($comparator, $retriever($a), $retriever($b));
         };
-        
+
         return static::sort($array, $order, $sorter);
     }
 
@@ -937,7 +937,7 @@ class Arrays
             uksort($array, $sorter);
             return $array;
         }
-        
+
         return $array;
     }
 

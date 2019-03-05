@@ -27,7 +27,7 @@ class OverrideOption
      * @var string of option on apend (Sequential array only)
      */
     public const APEND = '>';
-    
+
     /**
      * No instantiation
      */

@@ -179,10 +179,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if ($value instanceof \DateTimeInterface || is_int($value) || is_float($value)) {
             return [new static($value, $timezone), self::config('default_format')];
         }
-        
+
         $formats   = ((array)$main_format) + self::config('acceptable_datetime_format');
         $formats[] = self::config('default_format');
-        
+
         $date         = null;
         $apply_format = null;
         foreach ($formats as $format) {
@@ -192,7 +192,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 break;
             }
         }
-        
+
         return [$date, $apply_format];
     }
 
@@ -229,7 +229,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             return new static($value, $timezone);
         }
         $value = is_string($value) ? $value : (string)$value ;
-        
+
         $date = parent::createFromFormat($format, $value, self::adoptTimezone($timezone));
         $le   = static::getLastErrors();
         return $date === false || !empty($le['errors']) || !empty($le['warnings']) ? false : new static($date) ;
@@ -246,7 +246,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         $adopt_timezone = $timezone ?? self::config('default_timezone');
         return $adopt_timezone instanceof DateTimeZone ? $adopt_timezone : new DateTimeZone($adopt_timezone);
     }
-    
+
     /**
      * Create the DateTime objects.
      *
@@ -397,7 +397,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return new static('tomorrow', $timezone);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -424,7 +424,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->modify("{$year} year");
     }
-    
+
     /**
      * Get year
      *
@@ -434,7 +434,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return (int)$this->format('Y');
     }
-    
+
     /**
      * Set year
      *
@@ -445,7 +445,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->setDate($year, $this->getMonth(), $this->getDay());
     }
-    
+
     /**
      * Add month
      *
@@ -456,7 +456,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->modify("{$month} month");
     }
-    
+
     /**
      * Get month
      *
@@ -466,7 +466,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return (int)$this->format('m');
     }
-    
+
     /**
      * Get localized month.
      *
@@ -487,7 +487,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->setDate($this->getYear(), $month, $this->getDay());
     }
-    
+
     /**
      * Add day
      *
@@ -498,7 +498,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->modify("{$day} day");
     }
-    
+
     /**
      * Set Day
      *
@@ -509,7 +509,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->setDate($this->getYear(), $this->getMonth(), $day);
     }
-    
+
     /**
      * Get day
      *
@@ -519,7 +519,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return (int)$this->format('d');
     }
-    
+
     /**
      * Add hour
      *
@@ -530,7 +530,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->modify("{$hour} hour");
     }
-    
+
     /**
      * Set hour
      *
@@ -541,7 +541,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return $this->setTime($hour, $this->getMinute(), $this->getSecond());
     }
-    
+
     /**
      * Get hour
      *
@@ -846,7 +846,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         return preg_replace('/(?=[a-zA-Z])/u', '\\', $text);
     }
-    
+
     /**
      * Get age of this date time as of given at time.
      *

@@ -13,12 +13,12 @@ class User
     public $role;
     public $name;
     public $birthday;
-    
+
     /**
      * @Nest(Bank::class)
      */
     public $bank = null;
-    
+
     /**
      * @Nest(Address::class)
      */

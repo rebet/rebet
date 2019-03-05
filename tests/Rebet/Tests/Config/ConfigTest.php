@@ -151,7 +151,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('rebet_user', Config::get(ConfigTest_Mock::class, 'user'));
         $this->assertSame('rebet_user', Config::get(ConfigTest_Mock::class, 'user', false, 'default_user'));
         $this->assertSame('ja_JP', Config::get('global', 'lang'));
-        
+
         Config::runtime([
             ConfigTest_Mock::class => [
                 'database' => null,
@@ -503,7 +503,7 @@ class ConfigTest extends RebetTestCase
         $this->assertNull(Config::get(ConfigTest_MockOption::class, 'parent.map.b', false));
         $this->assertSame('cc', Config::get(ConfigTest_MockOption::class, 'parent.map.c'));
     }
-    
+
     public function test_get_optionArrayPrepend()
     {
         $this->assertSame(
@@ -661,7 +661,7 @@ class ConfigTest extends RebetTestCase
     public function test_get_all()
     {
         Config::clear();
-        
+
         $config = Config::all();
         $this->assertSame([], $config);
 
@@ -673,7 +673,7 @@ class ConfigTest extends RebetTestCase
             $config[DateTime::class]['test_now']
         );
     }
-    
+
     /**
      * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
@@ -685,7 +685,7 @@ class ConfigTest extends RebetTestCase
                 'array' => [1, 2, 3],
             ]
         ]);
-        
+
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'array'));
         Config::has(ConfigTest_Mock::class, 'array.1');
         $this->fail("Never execute.");
@@ -721,7 +721,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('1', ConfigTest_MockPromise::config('promise_every', false));
         $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('refer_promise_once', false));
         $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('refer_promise_every', false));
-        
+
         \putenv('PROMISE_TEST=2');
         $this->assertSame('default', ConfigTest_MockPromise::config('promise_not', false));
         $this->assertSame('1', ConfigTest_MockPromise::config('promise_once', false));
@@ -729,7 +729,7 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('1', ConfigTest_MockPromiseReferrer::config('refer_promise_once', false));
         $this->assertSame('2', ConfigTest_MockPromiseReferrer::config('refer_promise_every', false));
     }
-   
+
     public function test_get_anonymousClass()
     {
         $a = new class {
@@ -784,13 +784,13 @@ class ConfigTest extends RebetTestCase
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'undefined'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'invalid'));
         $this->assertFalse(Config::has(ConfigTest_Mock::class, 'nothing'));
-        
+
         Config::runtime([
             ConfigTest_Mock::class => [
                 'nothing' => 'something',
             ]
         ]);
-        
+
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'driver'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'database'));
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'undefined'));

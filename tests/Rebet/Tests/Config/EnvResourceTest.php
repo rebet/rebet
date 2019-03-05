@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 class EnvResourceTest extends RebetTestCase
 {
     private $resources;
-    
+
     public function setUp()
     {
         parent::setUp();
@@ -62,7 +62,7 @@ class EnvResourceTest extends RebetTestCase
             ],
             EnvResource::load($this->resources, ['test', 'extra'], 'production')
         );
-        
+
         $this->assertSame(
             [
                 'a' => [
@@ -75,7 +75,7 @@ class EnvResourceTest extends RebetTestCase
             ],
             EnvResource::load($this->resources, 'test', 'unittest', 'ini')
         );
-        
+
         $this->assertSame(
             [
                 'int'    => 1,

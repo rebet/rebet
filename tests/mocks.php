@@ -130,7 +130,7 @@ namespace Rebet\Common {
                 $parts                         = \explode(' ', self::$emulated_header['http'][0], 2);
                 self::$emulated_header['http'] = [$parts[0].' '.self::HTTP_STATUS[$http_response_code]];
             }
-            
+
             if (\strpos($header, ':') !== false) {
                 $parts = \explode(':', $header, 2);
                 $key   = \strtolower($parts[0]);
@@ -142,8 +142,6 @@ namespace Rebet\Common {
                 } else {
                     self::$emulated_header[$key][] = $header;
                 }
-            } else {
-                // Do nothing.
             }
         }
 

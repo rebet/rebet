@@ -22,7 +22,7 @@ class Password
             'options'   => [],
         ];
     }
-    
+
     /**
      * No instantiation
      */
@@ -47,7 +47,7 @@ class Password
         $options   = $options ?? static::config('options', false, []);
         return password_hash($password, $algorithm, $options);
     }
-    
+
     /**
      * Verify the given password and password hash.
      *

@@ -33,7 +33,7 @@ class DefaultFormatter implements LogFormatter
         }
         $prefix = $log->now->format('Y-m-d H:i:s.u')." ".getmypid()." [{$log->level}] ";
         $body   = $prefix.$message; // Strings::indent($message, $prefix);
-        
+
         if ($log->var) {
             $body .= Strings::indent(
                 "\n*** VAR ***".
@@ -41,7 +41,7 @@ class DefaultFormatter implements LogFormatter
                 "== " //"{$prefix}== "
             );
         }
-        
+
         if ($log->extra) {
             $body .= Strings::indent(
                 "\n*** EXTRA ***".
@@ -49,7 +49,7 @@ class DefaultFormatter implements LogFormatter
                 "-- " //"{$prefix}-- "
             );
         }
-        
+
         if ($log->error) {
             $body .= Strings::indent(
                 "\n*** EXCEPTION ***".

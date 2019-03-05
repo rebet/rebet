@@ -63,7 +63,7 @@ class TokenGuard implements Guard
     {
         // Nothing to do
     }
-    
+
     /**
      * This method nothing to do and always return JsonResponse of {"result":true}.
      *
