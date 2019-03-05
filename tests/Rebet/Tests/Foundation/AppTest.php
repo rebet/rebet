@@ -81,11 +81,29 @@ class AppTest extends RebetTestCase
         $this->assertSame('en', App::getLocale());
     }
 
+    public function test_getFallbackLocale()
+    {
+        $this->assertSame('en', App::getFallbackLocale());
+
+        Config::runtime([
+            App::class => [
+                'fallback_locale' => 'ja',
+            ],
+        ]);
+
+        $this->assertSame('ja', App::getFallbackLocale());
+    }
+
     public function test_setLocale()
     {
         $this->assertSame('ja', App::getLocale());
-        App::setLocale('en');
-        $this->assertSame('en', App::getLocale());
+        $this->assertSame('en', App::getFallbackLocale());
+        App::setLocale('de');
+        $this->assertSame('de', App::getLocale());
+        $this->assertSame('en', App::getFallbackLocale());
+        App::setLocale('ja', 'ja');
+        $this->assertSame('ja', App::getLocale());
+        $this->assertSame('ja', App::getFallbackLocale());
     }
 
     public function test_localeIn()
@@ -106,7 +124,7 @@ class AppTest extends RebetTestCase
 
         $this->assertSame('production', App::getEnv());
     }
-    
+
     /**
      * @runInSeparateProcess
      */

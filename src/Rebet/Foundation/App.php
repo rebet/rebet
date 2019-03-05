@@ -73,7 +73,7 @@ class App
             //---------------------------------------------
             Translator::class => [
                 'locale'          => Config::refer(App::class, 'locale'),
-                'fallback_locale' => Config::refer(App::class, 'fallback_locale', false, Config::promise(function () { return App::config('locale'); })),
+                'fallback_locale' => Config::refer(App::class, 'fallback_locale'),
             ],
 
             FileDictionary::class => [
@@ -126,13 +126,27 @@ class App
     }
 
     /**
-     * Set the current locale by given locale.
+     * Get the current fallback locale.
+     *
+     * @return string
+     */
+    public static function getFallbackLocale() : string
+    {
+        return self::config('fallback_locale');
+    }
+
+    /**
+     * Set the current locale (and fallback locale) by given locale.
      *
      * @param string $locale
+     * @param string|null $fallback_locale if null given then do nothing (default: null)
      */
-    public static function setLocale(string $locale) : void
+    public static function setLocale(string $locale, ?string $fallback_locale = null) : void
     {
         self::setConfig(['locale' => $locale]);
+        if ($fallback_locale !== null) {
+            self::setConfig(['fallback_locale' => $fallback_locale]);
+        }
     }
 
     /**
