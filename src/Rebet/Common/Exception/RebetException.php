@@ -34,7 +34,7 @@ interface RebetException
      *
      * @return \Throwable|null
      */
-    public function getCaused() : ? \Throwable ;
+    public function getCaused() : ?\Throwable ;
 
     /**
      * Set the given code

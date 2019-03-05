@@ -315,7 +315,7 @@ class Auth
      * @param array $targets (default: [])
      * @return boolean|null
      */
-    protected static function invoke(\Closure $action, $user, array $targets = []) : ? bool
+    protected static function invoke(\Closure $action, $user, array $targets = []) : ?bool
     {
         $function = new \ReflectionFunction($action);
         $request  = Request::current();
