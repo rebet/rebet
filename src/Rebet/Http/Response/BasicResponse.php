@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Rebet\Http\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Basic Response Class
@@ -19,9 +19,9 @@ class BasicResponse extends SymfonyResponse implements Response
     /**
      * Create a Response
      *
-     * @param string $content
-     * @param integer $status
-     * @param array $headers
+     * @param string $content (default: '')
+     * @param integer $status (default: 200)
+     * @param array $headers (default: [])
      */
     public function __construct($content = '', int $status = 200, array $headers = [])
     {

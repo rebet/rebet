@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Symfony\Component\HttpFoundation\BinaryFileResponse as SymfonyBinaryFileResponse;
 use Rebet\Http\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse as SymfonyBinaryFileResponse;
 
 /**
  * Binary File Response Class
@@ -19,13 +19,13 @@ class BinaryFileResponse extends SymfonyBinaryFileResponse implements Response
     /**
      * Create Binary File Response
      *
-     * @param [type] $file
-     * @param integer $status
-     * @param array $headers
-     * @param boolean $public
-     * @param string $contentDisposition
-     * @param boolean $autoEtag
-     * @param boolean $autoLastModified
+     * @param mixed $file
+     * @param integer $status (default: 200)
+     * @param array $headers (default: [])
+     * @param boolean $public (default: true)
+     * @param string $contentDisposition (default: null)
+     * @param boolean $autoEtag (default: false)
+     * @param boolean $autoLastModified (default: true)
      */
     public function __construct($file, int $status = 200, array $headers = [], bool $public = true, string $contentDisposition = null, bool $autoEtag = false, bool $autoLastModified = true)
     {

@@ -6,6 +6,7 @@ use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
+use Rebet\Translation\Translator;
 
 /**
  * Fallback Redirect Exception Class
@@ -95,17 +96,15 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
 
     /**
      * {@inheritDoc}
-     *
-     * @todo Fix version of URI on official release or move the spec document to new repository.
      */
     public function problem() : ProblemResponse
     {
         return Responder::problem(
             400,
-            'https://github.com/rebet/rebet/blob/master/spec/problem-details/fallback-errors.md',
-            'A retryable error occurred. Please check error details and try again.'
+            Translator::get('message.fallback_errors.title') ?? 'A retryable error occurred. Please check error details and try again.',
+            ProblemResponse::TYPE_FALLBACK_ERRORS
         )
-        ->detail($this->getMessage())
+        ->detail(Translator::get('message.fallback_errors.detail') ?? $this->getMessage())
         ->additional([
             'errors' => $this->errors,
             'input'  => $this->input,

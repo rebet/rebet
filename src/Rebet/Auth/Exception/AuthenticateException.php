@@ -5,6 +5,7 @@ use Rebet\Common\Exception\RuntimeException;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
+use Rebet\Translation\Translator;
 
 /**
  * Authenticate Exception Class
@@ -26,6 +27,6 @@ class AuthenticateException extends RuntimeException implements ProblemRespondab
      */
     public function problem() : ProblemResponse
     {
-        return Responder::problem(403)->detail($this->getMessage());
+        return Responder::problem(403)->detail(Translator::get('message.http.403.detail') ?? $this->getMessage());
     }
 }

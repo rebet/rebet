@@ -8,7 +8,7 @@ return [
     'http' => [
         404 => [
             'title'  => 'Custom Not Found',
-            'detail' => 'The specified page can not be found. Please try again from the TOP page.',
+            'detail' => 'The page could not be found. The specified URL is incorrect, or the page may have already been deleted / moved.',
         ]
     ],
 ];

@@ -21,8 +21,8 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      * Create Redirect Response
      *
      * @param string $url
-     * @param integer $status
-     * @param array $headers
+     * @param integer $status (default: 302)
+     * @param array $headers (default: [])
      */
     public function __construct(string $url, int $status = 302, array $headers = [])
     {
@@ -37,7 +37,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     public function with(array $input) : self
     {
-        Session::current()->saveInheritData('input', $input);
+        Session::current()->saveInheritData('input', $input, $this->getTargetUrl());
         return $this;
     }
     
@@ -51,7 +51,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     public function errors(array $errors) : self
     {
-        Session::current()->saveInheritData('errors', $errors);
+        Session::current()->saveInheritData('errors', $errors, $this->getTargetUrl());
         return $this;
     }
 }

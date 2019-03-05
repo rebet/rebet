@@ -275,10 +275,10 @@ class Session
      *
      * @param string $name
      * @param string $request_path without route prefix
-     * @param mixed $default (default: null)
+     * @param mixed $default (default: [])
      * @return array
      */
-    public function loadInheritData(string $name, string $request_path, $default = null) : array
+    public function loadInheritData(string $name, string $request_path, $default = []) : array
     {
         $flash = $this->flash();
         foreach ($flash->get("_inherit_{$name}", []) as $key => [$wildcard, $data]) {

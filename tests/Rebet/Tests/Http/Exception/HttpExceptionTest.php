@@ -5,6 +5,7 @@ use Rebet\Foundation\App;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Translation\Translator;
 
 class HttpExceptionTest extends RebetTestCase
 {
@@ -13,14 +14,14 @@ class HttpExceptionTest extends RebetTestCase
         $e = new HttpException(404, 'Page not found');
         $this->assertInstanceOf(HttpException::class, $e);
         $this->assertSame(404, $e->getStatus());
-        $this->assertSame('Not Found', $e->getTitle());
+        $this->assertSame('指定のページが見つかりません', $e->getTitle());
         $this->assertSame('Page not found', $e->getDetail());
 
         $e = new HttpException(404, 'message.http.404.detail', 'message.http.404.title');
         $this->assertInstanceOf(HttpException::class, $e);
         $this->assertSame(404, $e->getStatus());
         $this->assertSame('指定のページが見つかりません', $e->getTitle());
-        $this->assertSame('ご指定のページが見つかりません。TOPページから再度やり直して下さい。', $e->getDetail());
+        $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $e->getDetail());
 
         App::setLocale('en');
 
@@ -28,7 +29,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertInstanceOf(HttpException::class, $e);
         $this->assertSame(404, $e->getStatus());
         $this->assertSame('Custom Not Found', $e->getTitle());
-        $this->assertSame('The specified page can not be found. Please try again from the TOP page.', $e->getDetail());
+        $this->assertSame('The page could not be found. The specified URL is incorrect, or the page may have already been deleted / moved.', $e->getDetail());
 
         $e = new HttpException(404, '詳細メッセージ直接指定', '件名直接指定');
         $this->assertInstanceOf(HttpException::class, $e);
@@ -49,7 +50,7 @@ class HttpExceptionTest extends RebetTestCase
     public function test_getTitle()
     {
         $e = new HttpException(404);
-        $this->assertSame('Not Found', $e->getTitle());
+        $this->assertSame('指定のページが見つかりません', $e->getTitle());
 
         $e = new HttpException(500);
         $this->assertSame('Internal Server Error', $e->getTitle());
@@ -64,6 +65,12 @@ class HttpExceptionTest extends RebetTestCase
 
         $e = new HttpException(404, null, 'message.http.404.title');
         $this->assertSame('Custom Not Found', $e->getTitle());
+
+        App::setLocale('de');
+        Translator::setFallbackLocale('de');
+
+        $e = new HttpException(404);
+        $this->assertSame('Not Found', $e->getTitle());
     }
 
     public function test_getDetail()
@@ -75,12 +82,12 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame('Detail', $e->getDetail());
 
         $e = new HttpException(404, 'message.http.404.detail');
-        $this->assertSame('ご指定のページが見つかりません。TOPページから再度やり直して下さい。', $e->getDetail());
+        $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $e->getDetail());
 
         App::setLocale('en');
 
         $e = new HttpException(404, 'message.http.404.detail');
-        $this->assertSame('The specified page can not be found. Please try again from the TOP page.', $e->getDetail());
+        $this->assertSame('The page could not be found. The specified URL is incorrect, or the page may have already been deleted / moved.', $e->getDetail());
     }
 
     public function test_problem()
@@ -90,7 +97,7 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertInstanceOf(ProblemResponse::class, $responce);
         $this->assertSame([
             'status' => 404,
-            'title'  => 'Not Found',
+            'title'  => '指定のページが見つかりません',
             'type'   => 'about:blank',
             'detail' => 'Detail'
         ], $responce->getProblem());

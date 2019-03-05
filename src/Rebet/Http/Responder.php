@@ -107,18 +107,20 @@ class Responder
     }
 
     /**
-     * Create Problem Details (RFC7807 Problem Details for HTTP APIs) Response
+     * Create Problem Response (RFC7807 Problem Details for HTTP APIs).
+     *
      * Note: 'detail' and 'additional' can be set by method chain.
      * Note: You must be set the 'type' of URI reference that identifies the problem type when you want to contain the additional data.
+     * Note: When the type is TYPE_HTTP_STATUS(='about:blank') then the title SHOULD be the same as the recommended HTTP status phrase, although it MAY be localized.
      *
      * @param int $status of HTTP response
-     * @param string|null $type of problem (default: 'about:blank')
-     * @param string|null $title of problem (default: HTTP status label)
+     * @param string|null $title of problem or full transration key (default: HTTP status label)
+     * @param string|null $type of problem (default: TYPE_HTTP_STATUS)
      * @param array $headers of HTTP response (default: [])
      * @param int $encoding_options of JSON encode (default: 0)
      */
-    public static function problem(int $status, ?string $type = null, ?string $title = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
+    public static function problem(int $status, ?string $title = null, ?string $type = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
     {
-        return new ProblemResponse($status, $type, $title, $headers, $encoding_options);
+        return new ProblemResponse($status, $title, $type, $headers, $encoding_options);
     }
 }

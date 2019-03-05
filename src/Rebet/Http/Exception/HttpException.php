@@ -45,8 +45,8 @@ class HttpException extends RuntimeException implements ProblemRespondable
     {
         $this->status = $status;
         $this->detail = Translator::get($detail) ?? $detail ;
-        $this->title  = Translator::get($title) ?? $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
-        $message      = $detail ? "{$this->status} {$this->title}: {$detail}" : "{$this->status} {$this->title}" ;
+        $this->title  = Translator::get($title) ?? $title ?? Translator::get("message.http.{$status}.title") ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
+        $message      = $detail ? "{$this->status} {$this->title}: {$this->detail}" : "{$this->status} {$this->title}" ;
         parent::__construct($message, $previous);
     }
 
@@ -82,11 +82,9 @@ class HttpException extends RuntimeException implements ProblemRespondable
 
     /**
      * {@inheritDoc}
-     *
-     * @todo Fix version of URI on official release or move the spec document to new repository.
      */
     public function problem() : ProblemResponse
     {
-        return Responder::problem($this->status, null, $this->title)->detail($this->detail);
+        return Responder::problem($this->status, $this->title)->detail($this->detail);
     }
 }

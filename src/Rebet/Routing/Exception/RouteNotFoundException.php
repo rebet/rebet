@@ -5,6 +5,7 @@ use Rebet\Common\Exception\RuntimeException;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
+use Rebet\Translation\Translator;
 
 /**
  * Route Not Found Exception Class
@@ -31,6 +32,6 @@ class RouteNotFoundException extends RuntimeException implements ProblemResponda
      */
     public function problem() : ProblemResponse
     {
-        return Responder::problem(404)->detail($this->getMessage());
+        return Responder::problem(404)->detail(Translator::get('message.http.404.detail') ?? $this->getMessage());
     }
 }

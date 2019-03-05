@@ -324,8 +324,8 @@ class Request extends SymfonyRequest
     {
         $request_path = $this->getRequestPath(true);
         $session      = $this->session();
-        $this->request->add($session->loadInheritData('input', $request_path, []));
-        View::share('errors', $session->loadInheritData('errors', $request_path, []));
+        $this->request->add($session->loadInheritData('input', $request_path));
+        View::share('errors', $session->loadInheritData('errors', $request_path));
         return $this;
     }
 

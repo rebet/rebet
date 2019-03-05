@@ -70,7 +70,7 @@ abstract class FallbackHandler
      */
     protected function makeProblem(int $status, Request $request, \Throwable $e) : ProblemResponse
     {
-        return Responder::problem($status)->detail($e->getMessage());
+        return Responder::problem($status)->detail(Translator::get("message.http.{$status}.detail") ?? $e->getMessage());
     }
 
     /**
@@ -116,8 +116,8 @@ abstract class FallbackHandler
      */
     protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Translator::get("message.fallbacks.{$status}.title") ?? $title ;
-        $detail = Translator::get("message.fallbacks.{$status}.detail") ?? $detail ;
+        $title  = Translator::get("message.http.{$status}.title") ?? $title ;
+        $detail = Translator::get("message.http.{$status}.detail") ?? $detail ;
 
         $view = View::of("/fallbacks/{$status}");
         if ($view->exists()) {

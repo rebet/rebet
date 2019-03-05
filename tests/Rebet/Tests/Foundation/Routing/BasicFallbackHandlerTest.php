@@ -11,6 +11,7 @@ use Rebet\Log\Handler\StderrHandler;
 use Rebet\Log\LogLevel;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
 
@@ -46,6 +47,8 @@ class BasicFallbackHandlerTest extends RebetTestCase
 
     public function test_handle_web()
     {
+        App::setLocale('de');
+        Translator::setFallbackLocale('de');
         $request = $this->createRequestMock('/');
         $handler = new BasicFallbackHandler();
         Config::application([
@@ -96,6 +99,7 @@ class BasicFallbackHandlerTest extends RebetTestCase
 
     public function test_handle_json()
     {
+        App::setLocale('en');
         $request = $this->createJsonRequestMock('/');
         $handler = new BasicFallbackHandler();
         Config::application([
@@ -112,7 +116,7 @@ class BasicFallbackHandlerTest extends RebetTestCase
             ],
             function () use ($handler, $request) {
                 $response = $handler->handle($request, AuthenticateException::by('Authentication failed'));
-                $this->assertSame('application/json', $response->getHeader('Content-Type'));
+                $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
                 $this->assertSame('{"status":403,"title":"Forbidden","type":"about:blank","detail":"Authentication failed"}', $response->getContent());
             }
         );
@@ -125,8 +129,8 @@ class BasicFallbackHandlerTest extends RebetTestCase
             ],
             function () use ($handler, $request) {
                 $response = $handler->handle($request, RouteNotFoundException::by('Route not found'));
-                $this->assertSame('application/json', $response->getHeader('Content-Type'));
-                $this->assertSame('{"status":404,"title":"Not Found","type":"about:blank","detail":"Route not found"}', $response->getContent());
+                $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
+                $this->assertSame('{"status":404,"title":"Custom Not Found","type":"about:blank","detail":"The page could not be found. The specified URL is incorrect, or the page may have already been deleted \/ moved."}', $response->getContent());
             }
         );
 
@@ -138,7 +142,7 @@ class BasicFallbackHandlerTest extends RebetTestCase
             ],
             function () use ($handler, $request) {
                 $response = $handler->handle($request, ConfigNotDefineException::by('unit test'));
-                $this->assertSame('application/json', $response->getHeader('Content-Type'));
+                $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
                 $this->assertSame('{"status":500,"title":"Internal Server Error","type":"about:blank","detail":"unit test"}', $response->getContent());
             }
         );

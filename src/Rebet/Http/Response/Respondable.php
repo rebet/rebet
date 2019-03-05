@@ -1,7 +1,9 @@
 <?php
 namespace Rebet\Http\Response;
 
+use Rebet\Common\Arrays;
 use Rebet\Http\Response;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 /**
  * Respondable trait
@@ -17,11 +19,16 @@ trait Respondable
      * Get a header from the Response.
      *
      * @param string $key
+     * @param bool $first (default: false)
      * @return string|array|null
      */
-    public function getHeader(string $key)
+    public function getHeader(string $key, $first = false)
     {
-        return $this->headers->get($key);
+        $values = $this->headers->get($key, null, $first);
+        if ($values === null || Arrays::count($values) === 0) {
+            return null;
+        }
+        return is_array($values) && count($values) === 1 ? $values[0] : $values ;
     }
 
     /**
@@ -34,6 +41,7 @@ trait Respondable
      */
     public function setHeader(string $key, $values, bool $replace = true) : Response
     {
+        // new HeaderBag
         $this->headers->set($key, $values, $replace);
         return $this;
     }
