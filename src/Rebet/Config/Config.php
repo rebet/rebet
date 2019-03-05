@@ -2,13 +2,13 @@
 namespace Rebet\Config;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\OverrideOption;
 use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Exception\ConfigNotDefineException;
-use Rebet\Common\Strings;
-use Rebet\Common\DotAccessDelegator;
 
 /**
  * Config Class
@@ -137,7 +137,7 @@ class Config
      *
      * Note:
      *  - Unused library configuration settings that have not yet been loaded are not included.
-     * 
+     *
      * @return string
      */
     public static function dump(string ...$sections) : string
@@ -178,15 +178,15 @@ class Config
         $compiled = static::$config[Layer::LIBRARY][$section] ?? [];
         foreach ([Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] as $layer) {
             if (isset(static::$config[$layer][$section])) {
-                $config = static::$config[$layer][$section];
+                $config   = static::$config[$layer][$section];
                 $compiled = Arrays::override(
-                    $compiled, 
-                    $config, 
-                    static::$option[$layer][$section] ?? [], 
-                    OverrideOption::PREPEND, 
-                    function($base, $diff, $option, $default_array_override_option) {
-                        if($base instanceof DotAccessDelegator || $diff instanceof DotAccessDelegator) {
-                            return static::promise(function() use($base, $diff, $option, $default_array_override_option) {
+                    $compiled,
+                    $config,
+                    static::$option[$layer][$section] ?? [],
+                    OverrideOption::PREPEND,
+                    function ($base, $diff, $option, $default_array_override_option) {
+                        if ($base instanceof DotAccessDelegator || $diff instanceof DotAccessDelegator) {
+                            return static::promise(function () use ($base, $diff, $option, $default_array_override_option) {
                                 $base = $base instanceof DotAccessDelegator ? $base->get() : $base ;
                                 $diff = $diff instanceof DotAccessDelegator ? $diff->get() : $diff ;
                                 return Arrays::override($base, $diff, $option, $default_array_override_option);

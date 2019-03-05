@@ -8,8 +8,6 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
-use Rebet\Translation\Translator;
-use Rebet\Translation\FileDictionary;
 
 class BuiltinValidationsTest extends RebetTestCase
 {

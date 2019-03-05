@@ -26,7 +26,7 @@ trait Guardable
      */
     public function authenticator(?string $name = null)
     {
-        if($name === null) {
+        if ($name === null) {
             return $this->authenticator;
         }
         $this->authenticator = $name;

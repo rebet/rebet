@@ -380,7 +380,7 @@ EOS
         $errors = [];
 
         $this->assertSame(
-<<<EOS
+            <<<EOS
 ---
 name has not error---
 email has not error---
@@ -454,7 +454,7 @@ EOS
         $errors = [];
 
         $this->assertSame(
-<<<EOS
+            <<<EOS
 ---
 #333---
 ---

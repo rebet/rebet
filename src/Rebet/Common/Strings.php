@@ -425,7 +425,7 @@ class Strings
             return 'null';
         }
         if (is_string($value)) {
-            if(Strings::contains($value, "\n")) {
+            if (Strings::contains($value, "\n")) {
                 return '"""'."\n".static::indent($value, ' ', 2)."\n".'"""'."\n";
             }
             return $value;
@@ -448,7 +448,7 @@ class Strings
                 return (string)$json;
             }
         }
-        if(is_array($value) && empty($value)) {
+        if (is_array($value) && empty($value)) {
             return "[]";
         }
         if (Arrays::accessible($value) || $value instanceof \Traversable) {

@@ -40,7 +40,7 @@ class Password
      */
     public static function hash(?string $password, ?int $algorithm = null, ?array $options = null) : ?string
     {
-        if($password === null) {
+        if ($password === null) {
             return null;
         }
         $algorithm = $algorithm ?? static::config('algorithm');
@@ -70,7 +70,7 @@ class Password
      */
     public static function needsRehash(?string $hash, ?int $algorithm = null, ?array $options = null) : bool
     {
-        if($hash === null) {
+        if ($hash === null) {
             return false;
         }
         $algorithm = $algorithm ?? static::config('algorithm');

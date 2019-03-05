@@ -218,8 +218,8 @@ class Arrays
      */
     public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null)
     {
-        if($handler) {
-            if($value = $handler($base, $diff, $option, $default_array_override_option)) {
+        if ($handler) {
+            if ($value = $handler($base, $diff, $option, $default_array_override_option)) {
                 return $value;
             }
         }

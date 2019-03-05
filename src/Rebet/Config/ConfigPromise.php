@@ -2,8 +2,6 @@
 namespace Rebet\Config;
 
 use Rebet\Common\DotAccessDelegator;
-use Rebet\Common\Callback;
-use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 
 /**
@@ -77,7 +75,7 @@ class ConfigPromise implements DotAccessDelegator
      */
     public function __toString()
     {
-        if($this->is_evaluated) {
+        if ($this->is_evaluated) {
             return Strings::toString($this->evaluated_value);
         }
         return "<Promise: ".($this->only_once ? "once" : "dynamic").'>';

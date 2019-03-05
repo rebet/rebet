@@ -3,8 +3,8 @@ namespace Rebet\Tests\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Channel;
+use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Tests\RebetTestCase;
 

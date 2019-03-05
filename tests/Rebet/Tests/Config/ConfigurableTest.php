@@ -5,8 +5,6 @@ use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\Layer;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Common\Strings;
-use Rebet\DateTime\DateTime;
 
 class ConfigurableTest extends RebetTestCase
 {
@@ -205,10 +203,10 @@ class ConfigurableTest extends RebetTestCase
         ]);
 
         $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
-        $this->assertSame('mysql' , ConfigurableTest_MockChildInherit::config('driver'));
+        $this->assertSame('mysql', ConfigurableTest_MockChildInherit::config('driver'));
         $this->assertSame('oracle', ConfigurableTest_MockChildShare::config('driver'));
         $this->assertSame('sqlite', ConfigurableTest_MockChildOverride::config('driver'));
-        $this->assertSame('pgsql' , ConfigurableTest_MockChildHide::config('driver'));
+        $this->assertSame('pgsql', ConfigurableTest_MockChildHide::config('driver'));
 
         Config::application([
             ConfigurableTest_MockChildShare::class => [
@@ -216,11 +214,11 @@ class ConfigurableTest extends RebetTestCase
             ]
         ]);
 
-        $this->assertSame('oracle' , ConfigurableTest_Mock::config('driver'));
-        $this->assertSame('mysql'  , ConfigurableTest_MockChildInherit::config('driver'));
+        $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
+        $this->assertSame('mysql', ConfigurableTest_MockChildInherit::config('driver'));
         $this->assertSame('mariadb', ConfigurableTest_MockChildShare::config('driver'));
-        $this->assertSame('sqlite' , ConfigurableTest_MockChildOverride::config('driver'));
-        $this->assertSame('pgsql'  , ConfigurableTest_MockChildHide::config('driver'));
+        $this->assertSame('sqlite', ConfigurableTest_MockChildOverride::config('driver'));
+        $this->assertSame('pgsql', ConfigurableTest_MockChildHide::config('driver'));
 
         $this->assertSame('localhost', ConfigurableTest_Mock::config('host'));
         $this->assertSame('localhost', ConfigurableTest_MockChildShare::config('host'));
@@ -233,7 +231,7 @@ class ConfigurableTest extends RebetTestCase
 
         $this->assertSame('192.168.1.1', ConfigurableTest_Mock::config('host'));
         $this->assertSame('192.168.1.1', ConfigurableTest_MockChildShare::config('host'));
-        $this->assertSame('oracle' , ConfigurableTest_Mock::config('driver'));
+        $this->assertSame('oracle', ConfigurableTest_Mock::config('driver'));
         $this->assertSame('mariadb', ConfigurableTest_MockChildShare::config('driver'));
     }
 

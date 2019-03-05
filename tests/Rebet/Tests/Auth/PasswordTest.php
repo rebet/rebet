@@ -1,11 +1,8 @@
 <?php
 namespace Rebet\Tests\Auth;
 
-use Rebet\Auth\BasicAuth;
-use Rebet\Common\System;
-
-use Rebet\Tests\RebetTestCase;
 use Rebet\Auth\Password;
+use Rebet\Tests\RebetTestCase;
 
 class PasswordTest extends RebetTestCase
 {
@@ -54,5 +51,4 @@ class PasswordTest extends RebetTestCase
         $this->assertTrue(Password::needsRehash($hash, PASSWORD_BCRYPT, ['cost' => 6]));
         $this->assertFalse(Password::needsRehash(null, PASSWORD_BCRYPT, ['cost' => 6]));
     }
-    
 }

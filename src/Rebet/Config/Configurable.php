@@ -69,14 +69,14 @@ trait Configurable
      *         'new_key'        => 'new_value',
      *     ]);
      * }
-     * 
+     *
      * // Share the setting with specified class
      * public static function defaultConfig() {
      *     return static::shareConfigWith(parent::class, [
      *         'default_format' => 'Y-m-d',
      *     ]);
      * }
-     * 
+     *
      * @return array|string
      */
     abstract public static function defaultConfig() ;
@@ -90,7 +90,7 @@ trait Configurable
      * (The settings between subclass and parent class is completely different)
      *
      * @see self::shareConfigWith()
-     * 
+     *
      * @param string $class
      * @param array $diff (default: [])
      * @return array
@@ -108,16 +108,16 @@ trait Configurable
      * Note:
      * It overrides the setting based on the final setting of the given class.
      * It means the upper layer settings of given class weaker than the diff settings.
-     * 
+     *
      * @see self::copyConfigFrom()
-     * 
+     *
      * @param string $class
      * @param array $diff (default: [])
      * @return ConfigPromise
      */
     protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
     {
-        return Config::promise(function() use($class, $diff) { return Arrays::override($class::config(), $diff, [], OverrideOption::PREPEND); }, false);
+        return Config::promise(function () use ($class, $diff) { return Arrays::override($class::config(), $diff, [], OverrideOption::PREPEND); }, false);
     }
 
     /**

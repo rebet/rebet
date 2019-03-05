@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Tests\Auth;
 
+use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
+use Rebet\Auth\Guard\SessionGuard;
+use Rebet\Auth\Provider\ArrayProvider;
+use Rebet\Common\Reflector;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\Common\Mock\Bank;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Auth\Guard\SessionGuard;
-use Rebet\Auth\Provider\ArrayProvider;
-use Rebet\Auth\Auth;
-use Rebet\Common\Reflector;
 
 class AuthUserTest extends RebetTestCase
 {
@@ -287,5 +287,5 @@ class AuthUserTest extends RebetTestCase
             $this->assertSame(2, $user->user_id);
             $this->assertSame(2, Reflector::get($user->raw(), 'user_id'));
         }
-    }    
+    }
 }
