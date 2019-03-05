@@ -3,6 +3,7 @@ namespace Rebet\Foundation;
 
 use Rebet\Common\Path;
 use Rebet\Config\Config;
+use Rebet\Config\ConfigPromise;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Translation\FileDictionary;
@@ -249,9 +250,9 @@ class App
      *  4. default
      *
      * @param array $case
-     * @return mixed
+     * @return ConfigPromise
      */
-    public static function when(array $case)
+    public static function when(array $case) : ConfigPromise
     {
         return Config::promise(function () use ($case) {
             $channel = App::getChannel();
