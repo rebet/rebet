@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
+use Rebet\Common\Strings;
+use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Http\Session\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
@@ -37,7 +39,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     public function with(array $input) : self
     {
-        Session::current()->saveInheritData('input', $input, $this->getTargetUrl());
+        Session::current()->saveInheritData('input', $input, $this->getTargetUrlWithoutRoutePrefix());
         return $this;
     }
 
@@ -51,7 +53,17 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     public function errors(array $errors) : self
     {
-        Session::current()->saveInheritData('errors', $errors, $this->getTargetUrl());
+        Session::current()->saveInheritData('errors', $errors, $this->getTargetUrlWithoutRoutePrefix());
         return $this;
+    }
+
+    /**
+     * Get the redirect target url without route prefix.
+     *
+     * @return string
+     */
+    protected function getTargetUrlWithoutRoutePrefix() : string
+    {
+        return Strings::ltrim($this->getTargetUrl(), Request::current()->getRoutePrefix(), 1);
     }
 }
