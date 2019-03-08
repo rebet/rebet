@@ -3,7 +3,6 @@ namespace Rebet\Tests\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
@@ -11,8 +10,6 @@ use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 class BladeTest extends RebetTestCase
 {
-    private $root;
-
     /**
      * @var Rebet\View\Engine\Blade\Blade
      */
@@ -21,13 +18,9 @@ class BladeTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'cache' => [],
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'cache' => [],
+        ]);
 
         $this->blade = new Blade([
             'view_path'  => App::path('/resources/views/blade'),

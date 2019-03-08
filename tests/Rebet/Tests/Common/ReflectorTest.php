@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
@@ -12,10 +11,9 @@ use Rebet\Tests\RebetTestCase;
 
 class ReflectorTest extends RebetTestCase
 {
-    private $root        = null;
     private $array       = null;
     private $map         = null;
-    private $objectect   = null;
+    private $object      = null;
     private $transparent = null;
     private $accessible  = null;
 
@@ -75,13 +73,9 @@ class ReflectorTest extends RebetTestCase
         $this->accessible->public_parent = new ReflectorTest_Accessible();
         $this->accessible->setPrivateParent(new ReflectorTest_Accessible());
 
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'dummy.txt' => 'dummy'
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'dummy.txt' => 'dummy'
+        ]);
     }
 
     public function test_instantiate()

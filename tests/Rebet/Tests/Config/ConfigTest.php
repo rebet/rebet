@@ -176,7 +176,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#database is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.database is blank or not define.
      */
     public function test_get_blank()
     {
@@ -186,7 +186,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#undfine is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.undfine is blank or not define.
      */
     public function test_get_undfine()
     {
@@ -196,7 +196,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.
      */
     public function test_get_frameworkOrverrideBlank()
     {
@@ -214,7 +214,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.
      */
     public function test_get_applicationOrverrideBlank()
     {
@@ -232,7 +232,7 @@ class ConfigTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock#driver is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.
      */
     public function test_get_runtimeOrverrideBlank()
     {

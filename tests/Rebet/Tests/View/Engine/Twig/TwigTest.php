@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\View\Engine\Twig;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Foundation\App;
 
 use Rebet\Tests\RebetTestCase;
@@ -9,8 +8,6 @@ use Rebet\View\Engine\Twig\Twig;
 
 class TwigTest extends RebetTestCase
 {
-    private $root;
-
     /**
      * @var Rebet\View\Engine\Twig\Twig
      */
@@ -19,13 +16,9 @@ class TwigTest extends RebetTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'cache' => [],
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'cache' => [],
+        ]);
 
         $this->twig = new Twig([
             'template_dir' => App::path('/resources/views/twig'),

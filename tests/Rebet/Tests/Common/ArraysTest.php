@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Arrays;
 use Rebet\Common\Callback;
 use Rebet\Common\OverrideOption;
@@ -14,17 +13,11 @@ use Rebet\Tests\RebetTestCase;
 
 class ArraysTest extends RebetTestCase
 {
-    private $root = null;
-
     public function setUp()
     {
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'dummy.txt' => 'dummy'
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'dummy.txt' => 'dummy'
+        ]);
     }
 
     public function test_random()

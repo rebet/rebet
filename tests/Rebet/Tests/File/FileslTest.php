@@ -1,41 +1,34 @@
 <?php
 namespace Rebet\Tests\File;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\File\Exception\ZipArchiveException;
 use Rebet\File\Files;
 use Rebet\Tests\RebetTestCase;
 
 class FilesTest extends RebetTestCase
 {
-    private $root;
-
     public function setUp()
     {
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'public' => [
-                    'css' => [
-                        'normalize.css'   => 'This is normalize.css',
-                        'application.css' => 'This is application.css',
-                    ],
-                    'img' => [
-                        // empty directory
-                    ],
-                    'js' => [
-                        'application.js' => 'This is application.js',
-                        'underscore'     => [
-                            'underscore.min.js' => 'This is underscore.min.js'
-                        ]
-                    ],
-                    'index.html' => 'This is index.html',
-                    'robot.txt'  => '', // empty file
+        $this->vfs([
+            'public' => [
+                'css' => [
+                    'normalize.css'   => 'This is normalize.css',
+                    'application.css' => 'This is application.css',
                 ],
-                'var' => [],
+                'img' => [
+                    // empty directory
+                ],
+                'js' => [
+                    'application.js' => 'This is application.js',
+                    'underscore'     => [
+                        'underscore.min.js' => 'This is underscore.min.js'
+                    ]
+                ],
+                'index.html' => 'This is index.html',
+                'robot.txt'  => '', // empty file
             ],
-            $this->root
-        );
+            'var' => [],
+        ]);
     }
 
     public function test_removeDir()

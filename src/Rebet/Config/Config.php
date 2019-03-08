@@ -408,7 +408,7 @@ class Config
         static::setup($section);
         $value = Reflector::get(static::$compiled[$section] ?? null, $key);
         if ($required && Utils::isBlank($value)) {
-            throw ConfigNotDefineException::by("Required config {$section}".($key ? "#{$key}" : "")." is blank or not define.");
+            throw ConfigNotDefineException::by("Required config {$section}".($key ? ".{$key}" : "")." is blank or not define.");
         }
         return $value ?? $default;
     }

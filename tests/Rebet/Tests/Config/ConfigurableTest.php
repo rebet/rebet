@@ -68,7 +68,7 @@ class ConfigurableTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock#database is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.
      */
     public function test_config_blank()
     {
@@ -78,7 +78,7 @@ class ConfigurableTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock#database is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.
      */
     public function test_config_blankInStatic()
     {
@@ -88,7 +88,7 @@ class ConfigurableTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock#database is blank or not define.
+     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.
      */
     public function test_config_blankInMember()
     {

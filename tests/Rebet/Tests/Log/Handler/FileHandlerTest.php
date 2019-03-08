@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Log\Handler;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Config\Config;
 
 use Rebet\DateTime\DateTime;
@@ -13,7 +12,6 @@ use Rebet\Tests\RebetTestCase;
 
 class FileHandlerTest extends RebetTestCase
 {
-    private $root;
     private $context;
     private $handler;
     private $file_path;
@@ -32,15 +30,11 @@ class FileHandlerTest extends RebetTestCase
 
         $this->context = new LogContext(DateTime::now(), LogLevel::TRACE(), null);
         $suffix        = $this->context->now->format(FileHandler::config('log_file_suffix'));
-        $this->root    = vfsStream::setup();
-        vfsStream::create(
-            [
-                'logs' => [
-                    'application.log'.$suffix => '',
-                ],
+        $this->vfs([
+            'logs' => [
+                'application.log'.$suffix => '',
             ],
-            $this->root
-        );
+        ]);
 
         $this->handler   = new FileHandler();
         $this->file_path = FileHandler::config('log_file_path').$suffix;

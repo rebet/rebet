@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Foundation\View\Engine;
 
-use org\bovigo\vfs\vfsStream;
-
 use Rebet\Foundation\App;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
@@ -10,8 +8,6 @@ use Rebet\View\Engine\Engine;
 
 abstract class EngineCustomizerTestCase extends RebetTestCase
 {
-    private $root;
-
     private $engine;
 
     abstract protected function createEngine() : Engine;
@@ -20,13 +16,9 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
     {
         parent::setUp();
         $this->signout();
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'cache' => [],
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'cache' => [],
+        ]);
 
         $this->engine = $this->createEngine();
     }

@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Routing;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Common\Namespaces;
 
 use Rebet\Config\Config;
@@ -49,13 +48,9 @@ class RouterTest extends RebetTestCase
             ],
         ]);
 
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'cache' => [],
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'cache' => [],
+        ]);
 
         Router::clear();
         Router::rules('web')->routing(function () {

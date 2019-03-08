@@ -1,9 +1,11 @@
 <?php
 namespace Rebet\Tests;
 
+use org\bovigo\vfs\vfsStream;
+
+
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
-
-
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
@@ -120,6 +122,11 @@ abstract class RebetTestCase extends TestCase
             $spend = (microtime(true) - self::$start_at);
             printf(" ... Time: %f [ms]\n", $spend * 1000);
         }
+    }
+
+    protected function vfs(array $structure) : vfsStreamDirectory
+    {
+        return vfsStream::setup('root', null, $structure);
     }
 
     protected function assertSameStderr($expects, callable $test)

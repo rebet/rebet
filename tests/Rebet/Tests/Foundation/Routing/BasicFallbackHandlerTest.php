@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Foundation\Routing;
 
-use org\bovigo\vfs\vfsStream;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Config\Config;
 use Rebet\Config\Exception\ConfigNotDefineException;
@@ -17,18 +16,12 @@ use Rebet\View\View;
 
 class BasicFallbackHandlerTest extends RebetTestCase
 {
-    private $root;
-
     public function setUp()
     {
         parent::setUp();
-        $this->root = vfsStream::setup();
-        vfsStream::create(
-            [
-                'cache' => [],
-            ],
-            $this->root
-        );
+        $this->vfs([
+            'cache' => [],
+        ]);
         Config::application([
             View::class => [
                 'engine' => Blade::class,
