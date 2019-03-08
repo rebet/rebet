@@ -130,6 +130,16 @@ class FlashBag implements SessionBagInterface
     }
 
     /**
+     * Peek the all attibutes.
+     *
+     * @return array
+     */
+    public function peekAll() : array
+    {
+        return $this->attributes;
+    }
+
+    /**
      * Get the all attibutes.
      *
      * @return array

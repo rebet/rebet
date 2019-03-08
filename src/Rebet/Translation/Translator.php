@@ -205,8 +205,8 @@ class Translator
         $replacement = Stream::of($replacement, true)->sortKeys(SORT_DESC, Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; }))->return();
         $delimiter   = static::grammar($group, 'delimiter', ', ', $locale);
         foreach ($replacement as $key => $value) {
-            $value     = is_array($value) ? implode($delimiter, $value) : $value ;
-            $sentence  = str_replace(':'.$key, $value, $sentence);
+            $value    = is_array($value) ? implode($delimiter, $value) : $value ;
+            $sentence = str_replace(':'.$key, $value, $sentence);
         }
 
         return $sentence;
