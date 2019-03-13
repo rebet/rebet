@@ -108,6 +108,7 @@ abstract class RebetTestCase extends TestCase
         Event::clear();
         Translator::clear();
         Cookie::clear();
+        Session::clear();
         StderrCapture::clear();
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http\Session\Storage;
 
+use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 /**
@@ -13,5 +14,31 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
  */
 class ArraySessionStorage extends MockArraySessionStorage
 {
-    // Currently, there is nothing to extends
+    /**
+     * Create array session storage for unit test
+     *
+     * @param string $name
+     * @param MetadataBag|null $metadata_bag (default: null)
+     */
+    public function __construct(string $name = 'MOCKSESSID', ?MetadataBag $metadata_bag = null)
+    {
+        $this->name = $name;
+        $this->setMetadataBag($metadata_bag ?? new MetadataBag('_rebet_meta'));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function regenerate($destroy = false, $lifetime = null)
+    {
+        if (!$this->started) {
+            $this->start();
+        }
+
+        if ($destroy) {
+            $this->clear();
+        }
+
+        return parent::regenerate($destroy, $lifetime);
+    }
 }

@@ -39,12 +39,13 @@ class FallbackRedirectExceptionTest extends RebetTestCase
 
     public function test_redirect()
     {
+        $session = new Session();
+        $session->start();
         $e = FallbackRedirectException::by('test')->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
 
         $responce = $e->redirect();
         $this->assertInstanceOf(RedirectResponse::class, $responce);
         $this->assertSame('/redirect/path', $responce->getTargetUrl());
-        $session = Session::current();
         $this->assertSame(['name' => 'rebet'], $session->loadInheritData('input', '/redirect/path'));
         $this->assertSame(['name' => ['failed']], $session->loadInheritData('errors', '/redirect/path'));
     }

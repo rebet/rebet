@@ -8,7 +8,7 @@ use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Rebet\Http\Session\Storage\SessionStorage;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 /**
  * Session Class
@@ -57,6 +57,17 @@ class Session
     }
 
     /**
+     * Clear the session.
+     */
+    public static function clear() : void
+    {
+        if (static::$current) {
+            static::$current->storage->clear();
+            static::$current = null;
+        }
+    }
+
+    /**
      * Get the current (latest instantiate) session instance.
      */
     public static function current() : ?self
@@ -80,7 +91,7 @@ class Session
      *
      * @param string $name
      * @param mixed $default
-     * @return void
+     * @return mixed
      */
     public function get(string $name, $default = null)
     {
@@ -92,18 +103,19 @@ class Session
      *
      * @param string $name
      * @param mixed $value
-     * @return void
+     * @return self
      */
-    public function set(string $name, $value)
+    public function set(string $name, $value) : self
     {
         $this->attribute()->set($name, $value);
+        return $this;
     }
 
     /**
      * Remove the value from attribute session bag.
      *
      * @param string $name
-     * @return void
+     * @return mixed
      */
     public function remove(string $name)
     {
@@ -202,53 +214,70 @@ class Session
      * This method is generally not required for real sessions as
      * the session will be automatically saved at the end of
      * code execution.
+     *
+     * @return self
      */
-    public function save() : void
+    public function save() : self
     {
         $this->storage->save();
+        return $this;
     }
 
     /**
-     * Get the session ID.
+     * Get and Set the session ID.
      *
-     * @return string
+     * @param string|null $id (default: null)
+     * @return string|self
      */
-    public function getId() : string
+    public function id(?string $id = null)
     {
-        return $this->storage->getId();
-    }
-
-    /**
-     * Set the session ID.
-     *
-     * @param string $id
-     * @return void
-     */
-    public function setId(string $id) : void
-    {
+        if ($id === null) {
+            return $this->storage->getId();
+        }
         if ($this->storage->getId() !== $id) {
             $this->storage->setId($id);
         }
+        return $this;
     }
 
     /**
-     * Get the CSRF token value.
+     * Peek the CSRF token value.
+     * Note: without scope then token will be fixed, with scope then token will be one time token.
      *
-     * @return string
+     * @param mixed ...$scope
+     * @return string|null
      */
-    public function token() : string
+    public function token(...$scope) : ?string
     {
-        return $this->attribute()->get('_token');
+        return empty($scope) ? $this->attribute()->get('_token') : $this->flash()->peek('_token:'.implode(':', $scope));
     }
 
     /**
-     * Regenerate the CSRF token value.
+     * Generate the CSRF token value and set it to session.
+     * Note: without scope then token will be fixed, with scope then token will be one time token.
      *
-     * @return void
+     * @param mixed ...$scope
+     * @return string of generated token
      */
-    public function regenerateToken()
+    public function generateToken(...$scope) : string
     {
-        $this->attribute()->set('_token', Securities::randomCode(40));
+        $token = Securities::randomCode(40);
+        empty($scope) ? $this->attribute()->set('_token', $token) : $this->flash()->set('_token:'.implode(':', $scope), $token) ;
+        return $token;
+    }
+
+    /**
+     * Verify the CSRF token value.
+     * Note: without scope then token will be fixed, with scope then token will be one time token.
+     *
+     * @param string|null $token
+     * @param mixed ...$scope
+     * @return bool
+     */
+    public function verifyToken(?string $token, ...$scope) : bool
+    {
+        $expect = empty($scope) ? $this->attribute()->get('_token') : $this->flash()->get('_token:'.implode(':', $scope));
+        return $token === null || $expect == null ? false : hash_equals($token, $expect);
     }
 
     /**
@@ -280,12 +309,13 @@ class Session
      */
     public function loadInheritData(string $name, string $request_path, $default = []) : array
     {
-        $flash = $this->flash();
+        $flash   = $this->flash();
+        $inherit = [];
         foreach ($flash->get("_inherit_{$name}", []) as $key => [$wildcard, $data]) {
             if (Strings::wildmatch($request_path, $wildcard)) {
-                return $data;
+                $inherit = array_merge($inherit, $data);
             }
         }
-        return $default;
+        return empty($inherit) ? $default : $inherit ;
     }
 }
