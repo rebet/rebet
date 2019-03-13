@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Foundation\View\Engine;
 
 use Rebet\Foundation\App;
+use Rebet\Http\Session\Session;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Engine;
@@ -23,7 +24,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $this->engine = $this->createEngine();
     }
 
-    public function test_render_env()
+    public function test_tag_env()
     {
         App::setEnv('unittest');
         $this->assertSame(
@@ -49,14 +50,14 @@ EOS
         );
     }
 
-    public function test_render_prefix()
+    public function test_tag_prefix()
     {
         $this->assertSame('/controller/action/arg1', $this->engine->render('custom/prefix'));
         $this->assertSame('/controller/action/arg1', $this->engine->render('custom/prefix', ['prefix' => null]));
         $this->assertSame('/rebet/controller/action/arg1', $this->engine->render('custom/prefix', ['prefix' => '/rebet']));
     }
 
-    public function test_render_role()
+    public function test_tag_role()
     {
         $this->assertSame(
             <<<EOS
@@ -109,7 +110,7 @@ EOS
         );
     }
 
-    public function test_render_can()
+    public function test_tag_can()
     {
         $user          = new User();
         $user->user_id = 2;
@@ -181,7 +182,7 @@ EOS
         );
     }
 
-    public function test_render_field()
+    public function test_tag_field()
     {
         $this->assertSame(
             <<<EOS
@@ -195,7 +196,7 @@ EOS
         );
     }
 
-    public function test_render_errors()
+    public function test_tag_errors()
     {
         $errors = [];
 
@@ -265,7 +266,7 @@ EOS
         );
     }
 
-    public function test_render_error()
+    public function test_tag_error()
     {
         $errors = [];
 
@@ -367,7 +368,7 @@ EOS
         );
     }
 
-    public function test_render_iferror()
+    public function test_tag_iferror()
     {
         $errors = [];
 
@@ -441,7 +442,7 @@ EOS
         );
     }
 
-    public function test_render_e()
+    public function test_tag_e()
     {
         $errors = [];
 
@@ -511,7 +512,7 @@ EOS
         );
     }
 
-    public function test_render_input()
+    public function test_tag_input()
     {
         $input = [];
 
@@ -571,6 +572,37 @@ test@rebet.local
 EOS
             ,
             $this->engine->render('custom/input', ['input' => $input])
+        );
+    }
+
+    public function test_tag_csrf_token()
+    {
+        $session = new Session();
+        $session->start();
+
+        $fixed_token          = $session->generateToken();
+        $user_edit_token      = $session->generateToken('user', 'edit');
+        $article_edit_1_token = $session->generateToken('article', 'edit', 1);
+        $article_edit_2_token = $session->generateToken('article', 'edit', 2);
+
+        $actual         = $this->engine->render('custom/csrf_token', ['article_id' => 1]);
+        $direct_1_token = $session->token('direct', 1);
+        $this->assertSame(
+            <<<EOS
+{$fixed_token}{$user_edit_token}{$article_edit_1_token}{$direct_1_token}
+EOS
+            ,
+            $actual
+        );
+
+        $actual         = $this->engine->render('custom/csrf_token', ['article_id' => 2]);
+        $direct_2_token = $session->token('direct', 2);
+        $this->assertSame(
+            <<<EOS
+{$fixed_token}{$user_edit_token}{$article_edit_2_token}{$direct_2_token}
+EOS
+            ,
+            $actual
         );
     }
 }

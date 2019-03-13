@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http\Session;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Securities;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
@@ -244,25 +245,27 @@ class Session
      * Peek the CSRF token value.
      * Note: without scope then token will be fixed, with scope then token will be one time token.
      *
-     * @param mixed ...$scope
+     * @param mixed ...$scopes
      * @return string|null
      */
-    public function token(...$scope) : ?string
+    public function token(...$scopes) : ?string
     {
-        return empty($scope) ? $this->attribute()->get('_token') : $this->flash()->peek('_token:'.implode(':', $scope));
+        $key = static::createTokenKey(...$scopes);
+        return empty($scopes) ? $this->attribute()->get($key) : $this->flash()->peek($key);
     }
 
     /**
      * Generate the CSRF token value and set it to session.
      * Note: without scope then token will be fixed, with scope then token will be one time token.
      *
-     * @param mixed ...$scope
+     * @param mixed ...$scopes
      * @return string of generated token
      */
-    public function generateToken(...$scope) : string
+    public function generateToken(...$scopes) : string
     {
         $token = Securities::randomCode(40);
-        empty($scope) ? $this->attribute()->set('_token', $token) : $this->flash()->set('_token:'.implode(':', $scope), $token) ;
+        $key   = static::createTokenKey(...$scopes);
+        empty($scopes) ? $this->attribute()->set($key, $token) : $this->flash()->set($key, $token) ;
         return $token;
     }
 
@@ -271,13 +274,50 @@ class Session
      * Note: without scope then token will be fixed, with scope then token will be one time token.
      *
      * @param string|null $token
-     * @param mixed ...$scope
+     * @param mixed ...$scopes
      * @return bool
      */
-    public function verifyToken(?string $token, ...$scope) : bool
+    public function verifyToken(?string $token, ...$scopes) : bool
     {
-        $expect = empty($scope) ? $this->attribute()->get('_token') : $this->flash()->get('_token:'.implode(':', $scope));
+        $key    = static::createTokenKey(...$scopes);
+        $expect = empty($scopes) ? $this->attribute()->get($key) : $this->flash()->get($key);
         return $token === null || $expect == null ? false : hash_equals($token, $expect);
+    }
+
+    /**
+     * Create token key from given scope.
+     *
+     * @param mixed ...$scopes
+     * @return string
+     * @throws LogicException when token scope contains ':'.
+     */
+    public static function createTokenKey(...$scopes) : string
+    {
+        if (empty($scopes)) {
+            return '_token';
+        }
+        foreach ($scopes as $scope) {
+            if (Strings::contains("{$scope}", ':')) {
+                throw LogicException::by("Invalid token scope name '{$scope}' found. Token scope can not contains ':'.");
+            }
+        }
+        return '_token:'.implode(':', $scopes);
+    }
+
+    /**
+     * Analyze token scope from given key.
+     *
+     * @param string $key
+     * @return array
+     * @throws LogicException when invalid token key was given.
+     */
+    public static function analyzeTokenScope(string $key) : array
+    {
+        if (!Strings::startsWith($key, '_token')) {
+            throw LogicException::by("Invalid token key '{$key}' was given. Token key must be starts with '_token'.");
+        }
+        $scopes = Strings::trim(Strings::ltrim($key, '_token', 1), ':');
+        return empty($scopes) ? [] : explode(':', $scopes) ;
     }
 
     /**

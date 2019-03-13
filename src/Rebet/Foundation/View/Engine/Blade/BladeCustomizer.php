@@ -3,6 +3,7 @@ namespace Rebet\Foundation\View\Engine\Blade;
 
 use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
+use Rebet\Http\Session\Session;
 use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
@@ -216,5 +217,35 @@ class BladeCustomizer
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
         }, ');', '$input ?? null');
+
+        // ------------------------------------------------
+        // [csrf_token] Output csrf token value
+        // ------------------------------------------------
+        // Params:
+        //   $scope : mixed - if the scope is given then token become one time token.
+        // Usage:
+        //   @csrf_token
+        //   @csrf_token('user', 'edit')
+        //   @csrf_token('article', 'edit', $article->article_id)
+        $blade->code('csrf_token', 'echo(', function (...$scope) {
+            $session = Session::current();
+            return htmlspecialchars($session->token(...$scope) ?? $session->generateToken(...$scope)) ;
+        }, ');');
+
+        // ------------------------------------------------
+        // [csrf_field] Output csrf token hidden field tag
+        // ------------------------------------------------
+        // Params:
+        //   $scope : mixed - if the scope is given then token become one time token.
+        // Usage:
+        //   @csrf_field
+        //   @csrf_field('user', 'edit')
+        //   @csrf_field('article', 'edit', $article->article_id)
+        $blade->code('csrf_field', 'echo(', function (...$scope) {
+            $session = Session::current();
+            $key     = Session::createTokenKey(...$scope);
+            $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
+            return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
+        }, ');');
     }
 }

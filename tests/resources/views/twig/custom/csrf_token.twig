@@ -1,0 +1,4 @@
+{% csrf_token %}
+{% csrf_token for 'user', 'edit' %}
+{% csrf_token for 'article', 'edit', article_id %}
+{% csrf_token for 'direct', article_id %}

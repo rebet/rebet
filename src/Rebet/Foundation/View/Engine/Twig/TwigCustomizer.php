@@ -3,6 +3,7 @@ namespace Rebet\Foundation\View\Engine\Twig;
 
 use Rebet\Auth\Auth;
 use Rebet\Foundation\App;
+use Rebet\Http\Session\Session;
 use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Environment\Environment;
@@ -222,5 +223,35 @@ class TwigCustomizer
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
         }, ');', ['input']);
+
+        // ------------------------------------------------
+        // [csrf_token] Output csrf token value
+        // ------------------------------------------------
+        // Params:
+        //   $scope : mixed - if the scope is given then token become one time token.
+        // Usage:
+        //   {% csrf_token %}
+        //   {% csrf_token for 'user', 'edit' %}
+        //   {% csrf_token for 'article', 'edit', article.article_id %}
+        $twig->code('csrf_token', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+            $session = Session::current();
+            return htmlspecialchars($session->token(...$scope) ?? $session->generateToken(...$scope)) ;
+        }, ');');
+
+        // ------------------------------------------------
+        // [csrf_field] Output csrf token hidden field tag
+        // ------------------------------------------------
+        // Params:
+        //   $scope : mixed - if the scope is given then token become one time token.
+        // Usage:
+        //   {% csrf_field %}
+        //   {% csrf_field for 'user', 'edit' %}
+        //   {% csrf_field for 'article', 'edit', article.article_id %}
+        $twig->code('csrf_field', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+            $session = Session::current();
+            $key     = Session::createTokenKey(...$scope);
+            $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
+            return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
+        }, ');');
     }
 }

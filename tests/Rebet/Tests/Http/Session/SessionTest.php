@@ -188,6 +188,42 @@ class SessionTest extends RebetTestCase
         $this->assertSame('new_Id', $session->id());
     }
 
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Invalid token scope name 'invalid:name' found. Token scope can not contains ':'.
+     */
+    public function test_createTokenKey_invalidScopeName()
+    {
+        Session::createTokenKey('invalid:name');
+        $this->fail('Never execute.');
+    }
+
+    public function test_createTokenKey()
+    {
+        $this->assertSame('_token', Session::createTokenKey());
+        $this->assertSame('_token:article', Session::createTokenKey('article'));
+        $this->assertSame('_token:article:edit', Session::createTokenKey('article', 'edit'));
+        $this->assertSame('_token:article:edit:1', Session::createTokenKey('article', 'edit', 1));
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Invalid token key 'invalid:name' was given. Token key must be starts with '_token'.
+     */
+    public function test_analyzeTokenScope_invalidKeyName()
+    {
+        Session::analyzeTokenScope('invalid:name');
+        $this->fail('Never execute.');
+    }
+
+    public function test_analyzeTokenScope()
+    {
+        $this->assertSame([], Session::analyzeTokenScope('_token'));
+        $this->assertSame(['article'], Session::analyzeTokenScope('_token:article'));
+        $this->assertSame(['article', 'edit'], Session::analyzeTokenScope('_token:article:edit'));
+        $this->assertSame(['article', 'edit', '1'], Session::analyzeTokenScope('_token:article:edit:1'));
+    }
+
     public function test_tokenAndGenerateTokenAndVerifyToken()
     {
         $session = new Session();
