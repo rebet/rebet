@@ -605,4 +605,41 @@ EOS
             $actual
         );
     }
+
+    public function test_tag_csrf_field()
+    {
+        $session = new Session();
+        $session->start();
+
+        $fixed_token              = $session->generateToken();
+        $fixed_token_key          = Session::createTokenKey();
+        $user_edit_token          = $session->generateToken('user', 'edit');
+        $user_edit_token_key      = Session::createTokenKey('user', 'edit');
+        $article_edit_1_token     = $session->generateToken('article', 'edit', 1);
+        $article_edit_1_token_key = Session::createTokenKey('article', 'edit', 1);
+        $article_edit_2_token     = $session->generateToken('article', 'edit', 2);
+        $article_edit_2_token_key = Session::createTokenKey('article', 'edit', 2);
+
+        $actual             = $this->engine->render('custom/csrf_field', ['article_id' => 1]);
+        $direct_1_token     = $session->token('direct', 1);
+        $direct_1_token_key = Session::createTokenKey('direct', 1);
+        $this->assertSame(
+            <<<EOS
+<input type="hidden" name="{$fixed_token_key}" value="{$fixed_token}" /><input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" /><input type="hidden" name="{$article_edit_1_token_key}" value="{$article_edit_1_token}" /><input type="hidden" name="{$direct_1_token_key}" value="{$direct_1_token}" />
+EOS
+            ,
+            $actual
+        );
+
+        $actual             = $this->engine->render('custom/csrf_field', ['article_id' => 2]);
+        $direct_2_token     = $session->token('direct', 2);
+        $direct_2_token_key = Session::createTokenKey('direct', 2);
+        $this->assertSame(
+            <<<EOS
+<input type="hidden" name="{$fixed_token_key}" value="{$fixed_token}" /><input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" /><input type="hidden" name="{$article_edit_2_token_key}" value="{$article_edit_2_token}" /><input type="hidden" name="{$direct_2_token_key}" value="{$direct_2_token}" />
+EOS
+            ,
+            $actual
+        );
+    }
 }
