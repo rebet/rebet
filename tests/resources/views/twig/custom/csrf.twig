@@ -1,0 +1,4 @@
+{% csrf %}
+{% csrf for 'user', 'edit' %}
+{% csrf for 'article', 'edit', article_id %}
+{% csrf for 'direct', article_id %}

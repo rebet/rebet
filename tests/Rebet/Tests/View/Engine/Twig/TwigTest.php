@@ -45,31 +45,4 @@ EOS
             $this->twig->render('welcome', ['name' => 'Samantha'])
         );
     }
-
-    public function test_render_customizer()
-    {
-        // Register 'env' extention in App::initFrameworkConfig()
-        App::setEnv('unittest');
-        $this->assertSame(
-            <<<EOS
-unittest
-unittest or local
-Not production.
-
-EOS
-            ,
-            $this->twig->render('custom/env')
-        );
-
-        App::setEnv('local');
-        $this->assertSame(
-            <<<EOS
-unittest or local
-Not production.
-
-EOS
-            ,
-            $this->twig->render('custom/env')
-        );
-    }
 }

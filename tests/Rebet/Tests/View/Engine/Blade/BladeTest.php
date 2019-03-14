@@ -6,7 +6,6 @@ use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
-use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 class BladeTest extends RebetTestCase
 {
@@ -44,6 +43,18 @@ class BladeTest extends RebetTestCase
     {
         $this->assertSame(
             <<<EOS
+Hello, Samantha.
+EOS
+            ,
+            $this->blade->render('welcome', ['name' => 'Samantha'])
+        );
+    }
+
+    public function dataBuiltins() : array
+    {
+        return [
+            [
+                <<<EOS
 Title:
 Unit Test
 Section:
@@ -54,94 +65,44 @@ Content:
     This is content.
 
 EOS
-            ,
-            $this->blade->render('child')
-        );
-
-        $this->assertSame(
-            <<<EOS
+                , 'builtin/child'
+                , []
+            ],
+            [
+                <<<EOS
 Component Test
 * Forbidden *
 -----
 You are not allowed to access this resource!
 EOS
-            ,
-            $this->blade->render('component')
-        );
-
-        $this->assertSame(
-            <<<EOS
+                , 'builtin/component'
+                , []
+            ],
+            [
+                <<<EOS
 Component Args Test
 * Forbidden *
 -----
 You are not allowed to access this resource!
 EOS
-            ,
-            $this->blade->render('component-args')
-        );
-
-        $this->assertSame(
-            <<<EOS
-Hello, Samantha.
-EOS
-            ,
-            $this->blade->render('welcome', ['name' => 'Samantha'])
-        );
-
-        $this->assertSame(
-            <<<EOS
+                , 'builtin/component-args'
+                , []
+            ],
+            [
+                <<<EOS
 var app = [1,2,3];
 EOS
-            ,
-            $this->blade->render('json', ['array' => [1, 2, 3]])
-        );
+                , 'builtin/json'
+                , ['array' => [1, 2, 3]]
+            ],
+        ];
     }
 
-    public function test_render_directive()
+    /**
+     * @dataProvider dataBuiltins
+     */
+    public function test_render_builtin(string $expect, string $name, array $args = [])
     {
-        $this->blade = new Blade([
-            'view_path'   => App::path('/resources/views/blade'),
-            'cache_path'  => 'vfs://root/cache',
-        ], true);
-        Blade::customize(function (BladeCompiler $blade) {
-            $blade->directive('hello', function ($word) {
-                return "Hello {$word}!";
-            });
-        });
-
-        $this->assertSame(
-            <<<EOS
-Hello World!
-EOS
-            ,
-            $this->blade->render('hello')
-        );
-    }
-
-    public function test_render_customizer_env()
-    {
-        // Register 'env' custom directive in App::initFrameworkConfig()
-        App::setEnv('unittest');
-        $this->assertSame(
-            <<<EOS
-unittest
-unittest or local
-Not production.
-
-EOS
-            ,
-            $this->blade->render('custom/env')
-        );
-
-        App::setEnv('local');
-        $this->assertSame(
-            <<<EOS
-unittest or local
-Not production.
-
-EOS
-            ,
-            $this->blade->render('custom/env')
-        );
+        $this->assertSame($expect, $this->blade->render($name, $args));
     }
 }

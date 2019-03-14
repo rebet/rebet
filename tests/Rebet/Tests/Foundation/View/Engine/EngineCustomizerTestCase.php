@@ -9,7 +9,7 @@ use Rebet\View\Engine\Engine;
 
 abstract class EngineCustomizerTestCase extends RebetTestCase
 {
-    private $engine;
+    protected $engine;
 
     abstract protected function createEngine() : Engine;
 
@@ -606,7 +606,7 @@ EOS
         );
     }
 
-    public function test_tag_csrf_field()
+    public function test_tag_csrf()
     {
         $session = new Session();
         $session->start();
@@ -620,7 +620,7 @@ EOS
         $article_edit_2_token     = $session->generateToken('article', 'edit', 2);
         $article_edit_2_token_key = Session::createTokenKey('article', 'edit', 2);
 
-        $actual             = $this->engine->render('custom/csrf_field', ['article_id' => 1]);
+        $actual             = $this->engine->render('custom/csrf', ['article_id' => 1]);
         $direct_1_token     = $session->token('direct', 1);
         $direct_1_token_key = Session::createTokenKey('direct', 1);
         $this->assertSame(
@@ -631,7 +631,7 @@ EOS
             $actual
         );
 
-        $actual             = $this->engine->render('custom/csrf_field', ['article_id' => 2]);
+        $actual             = $this->engine->render('custom/csrf', ['article_id' => 2]);
         $direct_2_token     = $session->token('direct', 2);
         $direct_2_token_key = Session::createTokenKey('direct', 2);
         $this->assertSame(

@@ -24,10 +24,17 @@ class BladeCustomizer
     protected static $field = null;
 
     /**
-     * define costom directives for Rebet.
+     * Define costom directives for Rebet.
+     *
+     * @param BladeCompiler $blade
      */
     public static function customize(BladeCompiler $blade) : void
     {
+        // ------------------------------------------------
+        // Disable laravel blade built-in directives that not use in Rebet
+        // ------------------------------------------------
+        static::disable($blade);
+
         // ------------------------------------------------
         // [env/envnot] Check current environment
         // ------------------------------------------------
@@ -233,19 +240,31 @@ class BladeCustomizer
         }, ');');
 
         // ------------------------------------------------
-        // [csrf_field] Output csrf token hidden field tag
+        // [csrf] Output csrf token hidden field tag
         // ------------------------------------------------
         // Params:
         //   $scope : mixed - if the scope is given then token become one time token.
         // Usage:
-        //   @csrf_field
-        //   @csrf_field('user', 'edit')
-        //   @csrf_field('article', 'edit', $article->article_id)
-        $blade->code('csrf_field', 'echo(', function (...$scope) {
+        //   @csrf
+        //   @csrf('user', 'edit')
+        //   @csrf('article', 'edit', $article->article_id)
+        $blade->code('csrf', 'echo(', function (...$scope) {
             $session = Session::current();
             $key     = Session::createTokenKey(...$scope);
             $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
             return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
         }, ');');
+    }
+
+    /**
+     * Disable laravel directives what not use in Rebet.
+     *
+     * @param BladeCompiler $blade
+     * @return void
+     */
+    protected static function disable(BladeCompiler $blade) : void
+    {
+        $blade->disable('auth', "Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
+        $blade->disable('guest', "Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");
     }
 }

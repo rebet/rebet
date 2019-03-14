@@ -2,6 +2,7 @@
 namespace Rebet\View\Engine\Blade\Compiler;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
+use Rebet\Common\Exception\LogicException;
 
 /**
  * Blade Compilera Class
@@ -45,7 +46,7 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param string $binds (default: null)
      * @return void
      */
-    public function code($name, string $open, callable $callback, string $close, string $binds = null) : void
+    public function code(string $name, string $open, callable $callback, string $close, string $binds = null) : void
     {
         $this->codes[$name] = $callback;
         $this->directive($name, function ($expression) use ($name, $open, $close, $binds) {
@@ -118,5 +119,24 @@ class BladeCompiler extends LaravelBladeCompiler
                 : "<?php elseif (! \Illuminate\Support\Facades\Blade::check('{$name}'{$expression})): ?>";
             }
         );
+    }
+
+    /**
+     * Disable laravel directives what not use in Rebet.
+     *
+     * @param string $name
+     * @param callable|string $thrower function(){ return/throw new XxxxException(); } or a error message for LogicException
+     * @return void
+     */
+    public function disable(string $name, $thrower) : void
+    {
+        try {
+            $thrown = is_string($thrower) ? LogicException::by($thrower) : $thrower() ;
+        } catch (\Exception $e) {
+            $thrown = $e;
+        }
+        $this->directive($name, function ($expression) use ($thrown) {
+            throw $thrown;
+        });
     }
 }

@@ -15,4 +15,22 @@ class BladeCustomizerTest extends EngineCustomizerTestCase
             'cache_path' => 'vfs://root/cache',
         ], true);
     }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.
+     */
+    public function test_disabled_tag_auth()
+    {
+        $this->engine->render('disabled/auth');
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.
+     */
+    public function test_disabled_tag_guest()
+    {
+        $this->engine->render('disabled/guest');
+    }
 }

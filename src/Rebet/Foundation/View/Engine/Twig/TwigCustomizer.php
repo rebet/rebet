@@ -239,15 +239,15 @@ class TwigCustomizer
         }, ');');
 
         // ------------------------------------------------
-        // [csrf_field] Output csrf token hidden field tag
+        // [csrf] Output csrf token hidden field tag
         // ------------------------------------------------
         // Params:
         //   $scope : mixed - if the scope is given then token become one time token.
         // Usage:
-        //   {% csrf_field %}
-        //   {% csrf_field for 'user', 'edit' %}
-        //   {% csrf_field for 'article', 'edit', article.article_id %}
-        $twig->code('csrf_field', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+        //   {% csrf %}
+        //   {% csrf for 'user', 'edit' %}
+        //   {% csrf for 'article', 'edit', article.article_id %}
+        $twig->code('csrf', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
             $session = Session::current();
             $key     = Session::createTokenKey(...$scope);
             $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;

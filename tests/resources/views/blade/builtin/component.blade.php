@@ -1,5 +1,5 @@
 Component Test
-@component('alert')
+@component('builtin/alert')
 @slot('title')
 Forbidden
 @endslot
