@@ -264,6 +264,23 @@ class SessionTest extends RebetTestCase
         $session->saveInheritData('input', ['d' => 'D'], ['/blog/register', '/blog/copy']);
     }
 
+    public function test_initReusableToken()
+    {
+        $session = new Session();
+        $this->assertSame(null, $session->token());
+
+        $token = $session->initReusableToken();
+        $this->assertSame($token, $session->token());
+
+        $session->initReusableToken();
+        $this->assertSame($token, $session->token());
+
+        $new_token = $session->generateToken();
+        $this->assertSame($new_token, $session->token());
+        $this->assertSame($new_token, $session->initReusableToken());
+        $this->assertSame($new_token, $session->token());
+    }
+
     public function test_saveAndLoadInheritData()
     {
         $session = new Session();

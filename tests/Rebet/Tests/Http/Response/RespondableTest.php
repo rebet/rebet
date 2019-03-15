@@ -32,4 +32,9 @@ class RespondableTest extends RebetTestCase
         $this->assertSame(['b', 'c'], $response->getHeader('X-Test'));
         $this->assertSame('b', $response->getHeader('X-Test', true));
     }
+
+    // public function test_getCookie()
+    // {
+    //     $response = new BasicResponse();
+    // }
 }

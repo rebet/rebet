@@ -243,7 +243,7 @@ class Session
 
     /**
      * Peek the CSRF token value.
-     * Note: without scope then token will be fixed, with scope then token will be one time token.
+     * Note: without scope then token will be reusable, with scope then token will be one time token.
      *
      * @param mixed ...$scopes
      * @return string|null
@@ -256,7 +256,7 @@ class Session
 
     /**
      * Generate the CSRF token value and set it to session.
-     * Note: without scope then token will be fixed, with scope then token will be one time token.
+     * Note: without scope then token will be reusable, with scope then token will be one time token.
      *
      * @param mixed ...$scopes
      * @return string of generated token
@@ -270,8 +270,23 @@ class Session
     }
 
     /**
+     * Generate the reusable (not one time) CSRF token value when the token still not set.
+     * If the token already set, then just return it.
+     *
+     * @return string
+     */
+    public function initReusableToken() : string
+    {
+        $token = $this->token();
+        if (empty($token)) {
+            $token = $this->generateToken();
+        }
+        return $token;
+    }
+
+    /**
      * Verify the CSRF token value.
-     * Note: without scope then token will be fixed, with scope then token will be one time token.
+     * Note: without scope then token will be reusable, with scope then token will be one time token.
      *
      * @param string|null $token
      * @param mixed ...$scopes

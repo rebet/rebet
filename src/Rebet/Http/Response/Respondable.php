@@ -45,4 +45,25 @@ trait Respondable
         $this->headers->set($key, $values, $replace);
         return $this;
     }
+
+    /**
+     * Get the cookie of given key.
+     *
+     * @param string $key
+     * @param boolean $first (default: true)
+     * @return Cookie|array|null
+     */
+    public function getCookie(string $key, bool $first = true)
+    {
+        $cookies = [];
+        foreach ($this->headers->getCookies() as $cookie) {
+            if ($cookie->getName() === $key) {
+                if ($first) {
+                    return $cookie;
+                }
+                $cookies[] = $cookie;
+            }
+        }
+        return empty($cookies) ? null : $cookies ;
+    }
 }

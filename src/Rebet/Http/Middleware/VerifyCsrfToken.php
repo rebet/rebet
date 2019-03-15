@@ -30,7 +30,7 @@ class VerifyCsrfToken
      *
      * @var bool
      */
-    protected $is_support_xsrf = true;
+    protected $is_support_xsrf;
 
     /**
      * The XSRF-TOKEN cookie life time.
@@ -43,10 +43,10 @@ class VerifyCsrfToken
      * Create Verify Csrf Token Middleware
      *
      * @param array $excludes (default: [])
-     * @param bool $is_support_xsrf (default: true)
+     * @param bool $is_support_xsrf (default: false)
      * @param int|string|null $xsrf_lifetime (default: depend on configure 'Rebet\Http\Cookie.expire')
      */
-    public function __construct(array $excludes = [], bool $is_support_xsrf = true, $xsrf_lifetime = null)
+    public function __construct(array $excludes = [], bool $is_support_xsrf = false, $xsrf_lifetime = null)
     {
         $this->excludes        = $excludes;
         $this->is_support_xsrf = $is_support_xsrf;
@@ -62,11 +62,14 @@ class VerifyCsrfToken
      */
     public function handle(Request $request, \Closure $next) : Response
     {
+        $request->session()->initReusableToken();
+
         if ($this->verifyToken($request)) {
+            $response = $next($request);
             if ($this->is_support_xsrf) {
-                Cookie::set('XSRF-TOKEN', Nets::encodeBase64Url(Securities::encrypt($request->session()->token())), $this->xsrf_lifetime);
+                $response->headers->setCookie(Cookie::create('XSRF-TOKEN', Nets::encodeBase64Url(Securities::encrypt($request->session()->token())), $this->xsrf_lifetime));
             }
-            return $next($request);
+            return $response;
         }
 
         throw TokenMismatchException::by("CSRF token mismatch.");
@@ -86,11 +89,8 @@ class VerifyCsrfToken
         }
 
         // Determine if the request has a URI that should pass through CSRF verification.
-        $request_path = $request->getRequestPath();
-        foreach ($this->excludes as $exclude) {
-            if (Strings::wildmatch($request_path, $exclude)) {
-                return true;
-            }
+        if (Strings::wildmatch($request->getRequestPath(), $this->excludes)) {
+            return true;
         }
 
         // Verify the token
@@ -119,7 +119,7 @@ class VerifyCsrfToken
         }
 
         foreach ($request->input() as $key => $value) {
-            if (Strings::startsWith($key, '_token')) {
+            if (Strings::startsWith($key, '_token:')) {
                 return [$key, $value];
             }
         }
