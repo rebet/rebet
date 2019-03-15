@@ -39,6 +39,5 @@ class PathTest extends RebetTestCase
     public function test_normalizePath_invalid()
     {
         $this->assertSame('app', Path::normalize('c:/invalid/../../path'));
-        $this->fail("Never execute.");
     }
 }

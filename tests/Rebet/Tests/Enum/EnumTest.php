@@ -186,7 +186,6 @@ class EnumTest extends RebetTestCase
     public function test_maps_invalid()
     {
         Gender::maps('invalid');
-        $this->fail("Never execute.");
     }
 
     public function test_fieldOf()
@@ -213,7 +212,6 @@ class EnumTest extends RebetTestCase
     public function test_fieldOf_invalid()
     {
         $this->assertNull(Gender::fieldOf('invalid', 1));
-        $this->fail("Never execute.");
     }
 
     public function test_valueOf()
@@ -320,7 +318,6 @@ class EnumTest extends RebetTestCase
     public function test_listOf_invalid()
     {
         $this->assertNull(Gender::listOf('invalid'));
-        $this->fail("Never execute.");
     }
 
     public function test_values()
@@ -499,7 +496,6 @@ class EnumTest extends RebetTestCase
     public function test_nextOf_invalid()
     {
         $this->assertNull(Gender::listOf('invalid'));
-        $this->fail("Never execute.");
     }
 
     public function test_nextValues()

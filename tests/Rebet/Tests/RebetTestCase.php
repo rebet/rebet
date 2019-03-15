@@ -204,11 +204,11 @@ abstract class RebetTestCase extends TestCase
         return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
     }
 
-    protected function createRequestMock($path, $roles = null, $channel = 'web') : Request
+    protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET') : Request
     {
         $session = new Session();
         $session->start();
-        $request = Request::create($path);
+        $request = Request::create($path, $method);
         $request->setRebetSession($session);
         $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
         $request->route->roles(...((array)$roles));
@@ -216,11 +216,11 @@ abstract class RebetTestCase extends TestCase
         return $request;
     }
 
-    protected function createJsonRequestMock($path, $roles = null, $channel = 'api') : Request
+    protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET') : Request
     {
         $session = new Session();
         $session->start();
-        $request = Request::create($path);
+        $request = Request::create($path, $method);
         $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $request->headers->set('Accept', '*/*');
         $request->setRebetSession($session);

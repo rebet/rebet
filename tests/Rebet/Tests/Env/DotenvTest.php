@@ -20,7 +20,6 @@ class DotenvTest extends RebetTestCase
     public function test_init_notfound()
     {
         $dotenv = Dotenv::init(__DIR__);
-        $this->fail("Never execute.");
     }
 
     /**

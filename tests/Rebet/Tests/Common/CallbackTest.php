@@ -116,7 +116,6 @@ class CallbackTest extends RebetTestCase
     {
         $test = Callback::test(null, '<=>', 12);
         $test(10);
-        $this->fail('Never execute.');
     }
 
     /**

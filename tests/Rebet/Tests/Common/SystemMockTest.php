@@ -33,7 +33,6 @@ class SystemMockTest extends RebetTestCase
     public function test_exit()
     {
         System::exit('Exit message');
-        $this->fail('Never execute.');
     }
 
     /**
@@ -43,7 +42,6 @@ class SystemMockTest extends RebetTestCase
     public function test_die()
     {
         System::die('Die message');
-        $this->fail('Never execute.');
     }
 
     public function test_header_rawArges()

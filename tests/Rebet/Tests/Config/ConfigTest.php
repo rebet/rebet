@@ -181,7 +181,6 @@ class ConfigTest extends RebetTestCase
     public function test_get_blank()
     {
         Config::get(ConfigTest_Mock::class, 'database');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -191,7 +190,6 @@ class ConfigTest extends RebetTestCase
     public function test_get_undfine()
     {
         Config::get(ConfigTest_Mock::class, 'undfine');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -209,7 +207,6 @@ class ConfigTest extends RebetTestCase
         ]);
 
         Config::get(ConfigTest_Mock::class, 'driver');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -227,7 +224,6 @@ class ConfigTest extends RebetTestCase
         ]);
 
         Config::get(ConfigTest_Mock::class, 'driver');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -245,7 +241,6 @@ class ConfigTest extends RebetTestCase
         ]);
 
         Config::get(ConfigTest_Mock::class, 'driver');
-        $this->fail("Never execute.");
     }
 
     public function test_get_optionNothing()
@@ -688,7 +683,6 @@ class ConfigTest extends RebetTestCase
 
         $this->assertTrue(Config::has(ConfigTest_Mock::class, 'array'));
         Config::has(ConfigTest_Mock::class, 'array.1');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -698,7 +692,6 @@ class ConfigTest extends RebetTestCase
     public function test_has_digitKeyAccessOnly()
     {
         Config::has(ConfigTest_Mock::class, '1');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -708,7 +701,6 @@ class ConfigTest extends RebetTestCase
     public function test_has_digitKeyAccessMiddle()
     {
         Config::has(ConfigTest_Mock::class, 'driver.123.dummy');
-        $this->fail("Never execute.");
     }
 
     public function test_get_promise()

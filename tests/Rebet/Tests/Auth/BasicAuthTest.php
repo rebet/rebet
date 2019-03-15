@@ -21,7 +21,6 @@ class BasicAuthTest extends RebetTestCase
     {
         try {
             BasicAuth::authenticate(['id' => 'password']);
-            $this->fail('Never executed.');
         } finally {
             $headers = System::headers_list();
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);
@@ -48,7 +47,6 @@ class BasicAuthTest extends RebetTestCase
             $_SERVER['PHP_AUTH_USER'] = 'id';
             $_SERVER['PHP_AUTH_PW']   = 'invalid';
             $id                       = BasicAuth::authenticate(['id' => 'password']);
-            $this->fail('No Exception');
         } finally {
             $headers = System::headers_list();
             $this->assertContains('HTTP/1.0 401 Unauthorized', $headers);

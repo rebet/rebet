@@ -185,7 +185,6 @@ class RouterTest extends RebetTestCase
         Router::match('GET', '/get', function () {
             return 'Content: /get';
         });
-        $this->fail('Never execute.');
     }
 
     /**
@@ -197,7 +196,6 @@ class RouterTest extends RebetTestCase
         Router::default(function () {
             return 'default route.';
         });
-        $this->fail('Never execute.');
     }
 
     public function test_routing_root()
@@ -228,7 +226,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_get_invalidMethod()
     {
         $response = Router::handle(Request::create('/get', 'POST'));
-        $this->fail('Never execute.');
     }
 
     public function test_routing_post()
@@ -343,7 +340,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_parameterRequierdNothing()
     {
         $response = Router::handle(Request::create('/parameter/requierd'));
-        $this->fail('Never execute.');
     }
 
     /**
@@ -353,7 +349,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_parameterRequierdNothing2()
     {
         $response = Router::handle(Request::create('/parameter/requierd/'));
-        $this->fail('Never execute.');
     }
 
     public function test_routing_parameterOption()
@@ -402,7 +397,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_parameterOptionInvalidWhere()
     {
         $response = Router::handle(Request::create('/parameter/where/abc'));
-        $this->fail('Never execute.');
     }
 
     /**
@@ -412,7 +406,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_parameterOptionInvalidConvert()
     {
         $response = Router::handle(Request::create('/parameter/convert/enum/3'));
-        $this->fail('Never execute.');
     }
 
     public function test_routing_jsonArray()
@@ -439,7 +432,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_methodPrivateCall()
     {
         $response = Router::handle(Request::create('/method/private-call'));
-        $this->fail("Never execute.");
     }
 
     public function test_routing_methodPrivateCallAccessible()
@@ -454,7 +446,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_methodProtectedCall()
     {
         $response = Router::handle(Request::create('/method/protected-call'));
-        $this->fail("Never execute.");
     }
 
     public function test_routing_methodProtectedCallAccessible()
@@ -479,7 +470,6 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: withParam - 123', $response->getContent());
 
         $response = Router::handle(Request::create('/method/with-param/'));
-        $this->fail('Never execute.');
     }
 
     /**
@@ -492,7 +482,6 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: withParam - 123', $response->getContent());
 
         $response = Router::handle(Request::create('/method/with-param/where/abc'));
-        $this->fail('Never execute.');
     }
 
     /**
@@ -502,7 +491,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_methodWithMissmatchParam()
     {
         $response = Router::handle(Request::create('/method/with-param/missmatch/123'));
-        $this->fail('Never execute.');
     }
 
     public function test_routing_methodWithOptionalParam()
@@ -607,7 +595,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_viewNotFound()
     {
         $response = Router::handle(Request::create('/view/not-found/John'));
-        $this->fail('Never execute');
     }
 
     public function test_routing_controllerNamespaceShort()
@@ -659,7 +646,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerAnnotationChannelReject()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-channel-api'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -669,7 +655,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerAnnotationMethodReject()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-method-get', 'POST'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -679,7 +664,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerAnnotationWhereReject()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-where/123'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -689,7 +673,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerAnnotationClassWhereReject()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-class-where/abc'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -699,7 +682,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerAnnotationNotRouting()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-not-routing'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -709,7 +691,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerUndefinedAction()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/undefined-action'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -719,7 +700,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerPrivateCall()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/private-call'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -729,7 +709,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerProtectedCall()
     {
         $response = Router::handle(Request::create('/controller/namespace/short/protected-call'));
-        $this->fail("Never Execute.");
     }
 
     public function test_routing_controllerNamespaceNest()
@@ -772,7 +751,6 @@ class RouterTest extends RebetTestCase
     public function test_routing_controllerWhereReject()
     {
         $response = Router::handle(Request::create('/controller/where/with-param/ABC'));
-        $this->fail("Never Execute.");
     }
 
     public function test_routing_defaultConventionalRoute()
@@ -857,7 +835,6 @@ class RouterTest extends RebetTestCase
         });
 
         $response = Router::handle(Request::create('/top/with-param/ABC'));
-        $this->fail("Never Execute.");
     }
 
     /**
@@ -872,7 +849,6 @@ class RouterTest extends RebetTestCase
         });
 
         $response = Router::handle(Request::create('/router-test/with-param/ABC'));
-        $this->fail("Never Execute.");
     }
 
     public function test_routing_defaultConventionalRouteAccessible()
@@ -901,7 +877,6 @@ class RouterTest extends RebetTestCase
         });
 
         $response = Router::handle(Request::create('/router-test/annotation-alias-only'));
-        $this->fail("Never Execute.");
     }
 
     public function test_routing_defaultConventionalRouteAlias()

@@ -76,7 +76,6 @@ class CookieTest extends RebetTestCase
     {
         $this->setProperty(Request::class, 'current', null);
         Cookie::has('key');
-        $this->fail("Never execute.");
     }
 
     public function test_has()
@@ -95,7 +94,6 @@ class CookieTest extends RebetTestCase
     {
         $this->setProperty(Request::class, 'current', null);
         Cookie::get('key');
-        $this->fail("Never execute.");
     }
 
     public function test_get()

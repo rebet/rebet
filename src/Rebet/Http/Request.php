@@ -393,4 +393,17 @@ class Request extends SymfonyRequest
         $wants      = $acceptable[0] ?? null;
         return count($acceptable) === 0 || ($wants === '*/*' || $wants === '*');
     }
+
+    /**
+     * Get header values.
+     *
+     * @param string $key
+     * @param mixed $default (default: null)
+     * @param boolean $first (default: true)
+     * @return string|string[]|null
+     */
+    public function header(string $key, $default = null, bool $first = true)
+    {
+        return $this->headers->get($key, $default, $first);
+    }
 }

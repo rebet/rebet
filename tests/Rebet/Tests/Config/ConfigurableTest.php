@@ -73,7 +73,6 @@ class ConfigurableTest extends RebetTestCase
     public function test_config_blank()
     {
         ConfigurableTest_Mock::config('database');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -83,7 +82,6 @@ class ConfigurableTest extends RebetTestCase
     public function test_config_blankInStatic()
     {
         ConfigurableTest_Mock::configInStatic('database');
-        $this->fail("Never execute.");
     }
 
     /**
@@ -94,7 +92,6 @@ class ConfigurableTest extends RebetTestCase
     {
         $mock = new ConfigurableTest_Mock();
         $mock->configInMember('database');
-        $this->fail("Never execute.");
     }
 
     public function test_config_extends()

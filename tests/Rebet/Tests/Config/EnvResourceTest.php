@@ -97,6 +97,5 @@ class EnvResourceTest extends RebetTestCase
     public function test_load_notfound()
     {
         EnvResource::load($this->resources, 'test', 'unittest', 'txt');
-        $this->fail("Never execute.");
     }
 }

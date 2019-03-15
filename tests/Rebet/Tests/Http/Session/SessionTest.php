@@ -195,7 +195,6 @@ class SessionTest extends RebetTestCase
     public function test_createTokenKey_invalidScopeName()
     {
         Session::createTokenKey('invalid:name');
-        $this->fail('Never execute.');
     }
 
     public function test_createTokenKey()
@@ -213,7 +212,6 @@ class SessionTest extends RebetTestCase
     public function test_analyzeTokenScope_invalidKeyName()
     {
         Session::analyzeTokenScope('invalid:name');
-        $this->fail('Never execute.');
     }
 
     public function test_analyzeTokenScope()

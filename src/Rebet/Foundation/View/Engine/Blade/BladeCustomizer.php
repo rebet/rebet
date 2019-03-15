@@ -266,5 +266,6 @@ class BladeCustomizer
     {
         $blade->disable('auth', "Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
         $blade->disable('guest', "Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");
+        // @inject
     }
 }

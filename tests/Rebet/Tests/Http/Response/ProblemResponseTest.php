@@ -64,7 +64,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_invalidType()
     {
         $response = (new ProblemResponse(404))->additional('foo', 'bar');
-        $this->fail('Never execute.');
     }
 
     /**
@@ -74,7 +73,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_reservedWord_status()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('status', 200);
-        $this->fail('Never execute.');
     }
 
     /**
@@ -84,7 +82,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_array_reservedWord_status()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['status' => 200]);
-        $this->fail('Never execute.');
     }
 
     /**
@@ -94,7 +91,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_reservedWord_title()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('title', 'new');
-        $this->fail('Never execute.');
     }
 
     /**
@@ -104,7 +100,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_array_reservedWord_title()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['title' => 'new']);
-        $this->fail('Never execute.');
     }
 
     /**
@@ -114,7 +109,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_reservedWord_detail()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('detail', 'new');
-        $this->fail('Never execute.');
     }
 
     /**
@@ -124,7 +118,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_array_reservedWord_detail()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['detail' => 'new']);
-        $this->fail('Never execute.');
     }
 
     /**
@@ -134,7 +127,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_reservedWord_instance()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('instance', 'new');
-        $this->fail('Never execute.');
     }
 
     /**
@@ -144,7 +136,6 @@ class ProblemResponseTest extends RebetTestCase
     public function test_additional_array_reservedWord_instance()
     {
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['instance' => 'new']);
-        $this->fail('Never execute.');
     }
 
     public function test_additional()
