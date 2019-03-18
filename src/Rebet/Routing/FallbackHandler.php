@@ -4,6 +4,7 @@ namespace Rebet\Routing;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
+use Rebet\Http\Exception\TokenMismatchException;
 use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Request;
@@ -93,7 +94,8 @@ abstract class FallbackHandler
             case $e instanceof AuthenticateException:
                 $response = $this->makeView(403, null, $e->getMessage(), $request, $e);
                 break;
-            case $e instanceof RouteNotFoundException:
+            case $e instanceof RouteNotFoundException: // Do not break.
+            case $e instanceof TokenMismatchException:
                 $response = $this->makeView(404, null, $e->getMessage(), $request, $e);
                 break;
             default:
