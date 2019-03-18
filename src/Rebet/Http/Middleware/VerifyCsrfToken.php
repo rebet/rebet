@@ -111,8 +111,8 @@ class VerifyCsrfToken
     protected function getTokenFrom(Request $request) : array
     {
         $token = $request->input('_token')
-              ?: $request->header('X-CSRF-TOKEN')
-              ?: ($this->is_support_xsrf ? Securities::decrypt(Nets::decodeBase64Url($request->header('X-XSRF-TOKEN') ?? '')) : null)
+              ?: $request->getHeader('X-CSRF-TOKEN')
+              ?: ($this->is_support_xsrf ? Securities::decrypt(Nets::decodeBase64Url($request->getHeader('X-XSRF-TOKEN') ?? '')) : null)
               ;
         if ($token) {
             return ['_token', $token];

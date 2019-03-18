@@ -93,13 +93,13 @@ class HttpExceptionTest extends RebetTestCase
     public function test_problem()
     {
         $e        = new HttpException(404, 'Detail');
-        $responce = $e->problem();
-        $this->assertInstanceOf(ProblemResponse::class, $responce);
+        $response = $e->problem();
+        $this->assertInstanceOf(ProblemResponse::class, $response);
         $this->assertSame([
             'status' => 404,
             'title'  => '指定のページが見つかりません',
             'type'   => 'about:blank',
             'detail' => 'Detail'
-        ], $responce->getProblem());
+        ], $response->getProblem());
     }
 }

@@ -1084,4 +1084,15 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([1], Arrays::mode([1, 2, 3, 4, 1, 4, 5, 1]));
         $this->assertSame([4], Arrays::mode([['no' => 1], ['no' => 2], ['no' => 3], ['no' => 4], ['no' => 4], ['no' => 5]], 'no'));
     }
+
+    public function test_peel()
+    {
+        $this->assertNull(Arrays::peel(null));
+        $this->assertNull(Arrays::peel([]));
+        $this->assertSame(1, Arrays::peel([1]));
+        $this->assertSame(1, Arrays::peel(['a' => 1]));
+        $this->assertSame(['a' => 1, 'b' => 2], Arrays::peel(['a' => 1, 'b' => 2]));
+        $this->assertSame(1, Arrays::peel(new \ArrayObject([1])));
+        $this->assertNull(Arrays::peel(new \ArrayObject([])));
+    }
 }

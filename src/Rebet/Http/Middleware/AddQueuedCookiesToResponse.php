@@ -24,10 +24,10 @@ class AddQueuedCookiesToResponse
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        $responce = $next($request);
+        $response = $next($request);
         foreach (Cookie::queued() as $cookie) {
-            $responce->headers->setCookie($cookie);
+            $response->setCookie($cookie);
         }
-        return $responce;
+        return $response;
     }
 }

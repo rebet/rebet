@@ -2,8 +2,9 @@
 namespace Rebet\Http\Response;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Strings;
+use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Response;
-use Symfony\Component\HttpFoundation\HeaderBag;
 
 /**
  * Respondable trait
@@ -20,15 +21,11 @@ trait Respondable
      *
      * @param string $key
      * @param bool $first (default: false)
-     * @return string|array|null
+     * @return string|string[]|null
      */
     public function getHeader(string $key, $first = false)
     {
-        $values = $this->headers->get($key, null, $first);
-        if ($values === null || Arrays::count($values) === 0) {
-            return null;
-        }
-        return is_array($values) && count($values) === 1 ? $values[0] : $values ;
+        return Arrays::peel($this->headers->get($key, null, $first));
     }
 
     /**
@@ -36,34 +33,48 @@ trait Respondable
      *
      * @param string $key
      * @param array|string $values
-     * @param boolean $replace
+     * @param boolean $replace (default: true)
      * @return self
      */
     public function setHeader(string $key, $values, bool $replace = true) : Response
     {
-        // new HeaderBag
         $this->headers->set($key, $values, $replace);
         return $this;
     }
 
     /**
-     * Get the cookie of given key.
+     * Get the cookie of given name.
      *
-     * @param string $key
-     * @param boolean $first (default: true)
+     * @param string $name
+     * @param string|null $path can contains shell's wildcard (default: '*')
+     * @param string|null $domain can contains shell's wildcard (default: '*')
      * @return Cookie|array|null
      */
-    public function getCookie(string $key, bool $first = true)
+    public function getCookie(string $name, ?string $path = '*', ?string $domain = '*')
     {
+        $path    = Cookie::convertPath($path);
         $cookies = [];
         foreach ($this->headers->getCookies() as $cookie) {
-            if ($cookie->getName() === $key) {
-                if ($first) {
-                    return $cookie;
-                }
+            if (
+                    $cookie->getName() === $name
+                    && ($cookie->getPath() === $path || Strings::wildmatch($cookie->getPath() ?? '', $path))
+                    && ($cookie->getDomain() === $domain || Strings::wildmatch($cookie->getDomain() ?? '', $domain))
+                ) {
                 $cookies[] = $cookie;
             }
         }
-        return empty($cookies) ? null : $cookies ;
+        return Arrays::peel($cookies);
+    }
+
+    /**
+     * Set the cookie.
+     *
+     * @param Cookie $cookie
+     * @return Response
+     */
+    public function setCookie(Cookie $cookie) : Response
+    {
+        $this->headers->setCookie($cookie);
+        return $this;
     }
 }

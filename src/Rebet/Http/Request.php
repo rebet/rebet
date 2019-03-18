@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Http;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Http\Cookie\Cookie;
@@ -398,12 +399,25 @@ class Request extends SymfonyRequest
      * Get header values.
      *
      * @param string $key
-     * @param mixed $default (default: null)
-     * @param boolean $first (default: true)
+     * @param boolean $first (default: false)
      * @return string|string[]|null
      */
-    public function header(string $key, $default = null, bool $first = true)
+    public function getHeader(string $key, bool $first = false)
     {
-        return $this->headers->get($key, $default, $first);
+        return Arrays::peel($this->headers->get($key, null, $first));
+    }
+
+    /**
+     * Set a header on the Response.
+     *
+     * @param string $key
+     * @param array|string $values
+     * @param boolean $replace (default: true)
+     * @return self
+     */
+    public function setHeader(string $key, $values, bool $replace = true) : self
+    {
+        $this->headers->set($key, $values, $replace);
+        return $this;
     }
 }

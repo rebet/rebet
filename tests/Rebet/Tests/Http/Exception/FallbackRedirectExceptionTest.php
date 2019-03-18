@@ -43,9 +43,9 @@ class FallbackRedirectExceptionTest extends RebetTestCase
         $session->start();
         $e = FallbackRedirectException::by('test')->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
 
-        $responce = $e->redirect();
-        $this->assertInstanceOf(RedirectResponse::class, $responce);
-        $this->assertSame('/redirect/path', $responce->getTargetUrl());
+        $response = $e->redirect();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/redirect/path', $response->getTargetUrl());
         $this->assertSame(['name' => 'rebet'], $session->loadInheritData('input', '/redirect/path'));
         $this->assertSame(['name' => ['failed']], $session->loadInheritData('errors', '/redirect/path'));
     }
@@ -54,9 +54,9 @@ class FallbackRedirectExceptionTest extends RebetTestCase
     {
         $e = FallbackRedirectException::by('test')->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
 
-        $responce = $e->problem();
-        $this->assertInstanceOf(ProblemResponse::class, $responce);
-        $this->assertSame(['name' => 'rebet'], $responce->getProblem('input'));
-        $this->assertSame(['name' => ['failed']], $responce->getProblem('errors'));
+        $response = $e->problem();
+        $this->assertInstanceOf(ProblemResponse::class, $response);
+        $this->assertSame(['name' => 'rebet'], $response->getProblem('input'));
+        $this->assertSame(['name' => ['failed']], $response->getProblem('errors'));
     }
 }

@@ -1033,4 +1033,27 @@ class Arrays
         $count  = end($counts);
         return array_keys(static::where($counts, function ($v) use ($count) { return $v === $count; }));
     }
+
+    /**
+     * Peel the array blanket if the given array contains less equal one item.
+     *
+     * @param mixed $array
+     * @return mixed
+     */
+    public static function peel($array)
+    {
+        if (!static::accessible($array)) {
+            return $array;
+        }
+        $count = static::count($array);
+        if ($count === 0) {
+            return null;
+        }
+        if ($count === 1) {
+            foreach ($array as $item) {
+                return $item;
+            }
+        }
+        return $array;
+    }
 }

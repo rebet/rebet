@@ -28,9 +28,9 @@ class StartSession
         $session->start();
         $request->setRebetSession($session);
 
-        $responce = $next($request);
+        $response = $next($request);
 
-        return $responce;
+        return $response;
     }
 
     /**

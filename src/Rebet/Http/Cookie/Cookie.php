@@ -2,6 +2,7 @@
 namespace Rebet\Http\Cookie;
 
 use Rebet\Common\Exception\LogicException;
+use Rebet\Common\Strings;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
@@ -64,18 +65,34 @@ class Cookie extends SymfonyCookie
      */
     public function __construct(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null)
     {
-        $path_converter = static::config('path');
         parent::__construct(
             $name,
             $value,
             $expire ?? static::config('expire'),
-            is_callable($path_converter) ? call_user_func($path_converter, $path ?? '') : ($path ?? $path_converter),
+            static::convertPath($path),
             $domain ?? static::config('domain', false),
             $secure ?? static::config('secure'),
             $http_only ?? static::config('http_only'),
             $raw ?? static::config('raw'),
             $samesite ?? static::config('samesite', false)
         );
+    }
+
+    /**
+     * Convert the given path using configure Rebet\Http\Cookie.path converter.
+     * Note: Defaultly, the path converter will prepend a route prefix to the given path if it is necessary.
+     * Note: If you want to use fixed path then give the path starts with '@'. It will be returned the given path without '@' as it is.
+     *
+     * @param string|null $path
+     * @return string
+     */
+    public static function convertPath(?string $path) : string
+    {
+        if (Strings::startsWith($path, '@')) {
+            return Strings::ltrim($path, '@', 1);
+        }
+        $path_converter = static::config('path');
+        return is_callable($path_converter) ? call_user_func($path_converter, $path ?? '') : ($path ?? $path_converter) ;
     }
 
     /**

@@ -16,13 +16,13 @@ class TokenMismatchExceptionTest extends RebetTestCase
     public function test_problem()
     {
         $e        = new TokenMismatchException('Message');
-        $responce = $e->problem();
-        $this->assertInstanceOf(ProblemResponse::class, $responce);
+        $response = $e->problem();
+        $this->assertInstanceOf(ProblemResponse::class, $response);
         $this->assertSame([
             'status' => 400,
             'title'  => 'Bad Request',
             'type'   => 'about:blank',
             'detail' => 'Message',
-        ], $responce->getProblem());
+        ], $response->getProblem());
     }
 }
