@@ -31,7 +31,6 @@ class AddQueuedCookiesToResponseTest extends RebetTestCase
             [
                 new Cookie('key', 'value'),
                 new Cookie('test', 'unit'),
-                new Cookie('_beacon', '1'),
             ],
             $response->headers->getCookies()
         );

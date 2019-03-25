@@ -71,7 +71,7 @@ class SessionGuard implements Guard
             return;
         }
 
-        $session = $request->getSession();
+        $session = $request->session();
         $session->set($this->toSessionKey('id'), $user->id);
         $provider = $user->provider();
         if ($remember && $provider->supportRememberToken()) {
@@ -92,7 +92,7 @@ class SessionGuard implements Guard
             if ($provider->supportRememberToken()) {
                 $provider->removeRememberToken($request->cookies->get(static::COOKIE_KEY_REMEMBER));
             }
-            $request->getSession()->remove($this->toSessionKey('id'));
+            $request->session()->remove($this->toSessionKey('id'));
             Cookie::remove(static::COOKIE_KEY_REMEMBER);
         }
         return Responder::redirect($redirect_to);
@@ -103,7 +103,7 @@ class SessionGuard implements Guard
      */
     public function authenticate(Request $request, AuthProvider $provider) : AuthUser
     {
-        $session = $request->getSession();
+        $session = $request->session();
         $id      = $session->get($this->toSessionKey('id'));
         $user    = $provider->findById($id);
         if ($user) {

@@ -25,6 +25,7 @@ use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\ArraySessionStorage;
 use Rebet\Routing\Route\ClosureRoute;
+use Rebet\Routing\Router;
 use Rebet\Tests\Common\Mock\Address;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Translation\Translator;
@@ -204,29 +205,31 @@ abstract class RebetTestCase extends TestCase
         return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
     }
 
-    protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET') : Request
+    protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET', $prefix = '') : Request
     {
-        $session = new Session();
+        Router::setCurrentChannel($channel);
+        $session = Session::current() ?? new Session();
         $session->start();
         $request = Request::create($path, $method);
-        $request->setRebetSession($session);
+        $request->session($session);
         $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
         $request->route->roles(...((array)$roles));
-        $request->channel = $channel;
+        $request->route->prefix = $prefix;
         return $request;
     }
 
-    protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET') : Request
+    protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET', $prefix = '') : Request
     {
-        $session = new Session();
+        Router::setCurrentChannel($channel);
+        $session = Session::current() ?? new Session();
         $session->start();
         $request = Request::create($path, $method);
         $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $request->headers->set('Accept', '*/*');
-        $request->setRebetSession($session);
+        $request->session($session);
         $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
         $request->route->roles(...((array)$roles));
-        $request->channel = $channel;
+        $request->route->prefix = $prefix;
         return $request;
     }
 

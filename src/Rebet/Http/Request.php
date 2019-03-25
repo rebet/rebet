@@ -1,18 +1,20 @@
 <?php
 namespace Rebet\Http;
 
+use PHPUnit\Framework\MockObject\BadMethodCallException;
 use Rebet\Common\Arrays;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
-use Rebet\Http\Cookie\Cookie;
+use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
+use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Session\Session;
 use Rebet\Routing\Router;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
 use Rebet\View\View;
-use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Request Class
@@ -39,22 +41,6 @@ class Request extends SymfonyRequest
     public $route = null;
 
     /**
-     * The channel of this request incoming
-     *
-     * @see SetChannelToRequest Middleware
-     * @var string
-     */
-    public $channel = null;
-
-    /**
-     * Can the client use cookie
-     * Note: This flag does not guarantee the correctness of being unusable because it is always false at first access.
-     *
-     * @var boolean
-     */
-    public $can_use_cookie = false;
-
-    /**
      * {@inheritdoc}
      *
      * @param array                $query      The GET parameters
@@ -69,11 +55,16 @@ class Request extends SymfonyRequest
     {
         parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
         static::$current = $this;
-        if ($this->cookies->has('_beacon')) {
-            $this->can_use_cookie = true;
-        } else {
-            Cookie::set('_beacon', '1');
-        }
+    }
+
+    /**
+     * Clear the current request.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$current = null;
     }
 
     /**
@@ -90,7 +81,7 @@ class Request extends SymfonyRequest
      * Validate input data by given rules.
      *
      * @param string $crud
-     * @param string|Rule|array $rules
+     * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
      * @param string $fallback_url
      * @return ValidData
      */
@@ -148,9 +139,7 @@ class Request extends SymfonyRequest
     public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
     {
         parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
-        if (!empty($files)) {
-            $this->files = new FileBag($this->convertUploadedFiles($this->files->all()));
-        }
+        $this->files = new FileBag($this->files->all());
     }
 
     /**
@@ -160,65 +149,71 @@ class Request extends SymfonyRequest
     {
         $duplicate = parent::duplicate($query, $request, $attributes, $cookies, $files, $server);
         if ($files !== null) {
-            $duplicate->files = new FileBag($this->convertUploadedFiles($duplicate->files->all()));
+            $duplicate->files = new FileBag($duplicate->files->all());
         }
         return $duplicate;
     }
 
     /**
-     * Convert the given array of Symfony UploadedFiles to Rebet UploadedFiles.
+     * This method is unspported in Rebet.
+     * You can use session() method to set the session instead.
      *
-     * @param array $files
-     * @return array
-     */
-    protected function convertUploadedFiles(array $files) : array
-    {
-        return array_map(function ($file) {
-            return is_array($file) ? $this->convertUploadedFiles($file) : UploadedFile::valueOf($file);
-        }, $files);
-    }
-
-    /**
-     * Set the Rebet Session for the request.
-     *
-     * @param Session $session
-     * @return self
-     */
-    public function setRebetSession(Session $session) : self
-    {
-        $this->session = $session;
-        return $this;
-    }
-
-    /**
-     * Get the session for the request
-     *
-     * @return Session
-     * @throws BadMethodCallException
+     * @see Request::session()
+     * @deprecated Not unspported in Rebet.
+     * @throws BadMethodCallException when the method was called.
      */
     public function getSession()
     {
-        $session = $this->session;
-        if (is_callable($session)) {
-            $this->setSession($session = $session());
-        }
-
-        if (null === $session) {
-            throw new \BadMethodCallException('Session has not been set');
-        }
-
-        return $session;
+        throw new BadMethodCallException("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
     }
 
     /**
-     * Get the session for the request (alias of getSession())
+     * This method is unspported in Rebet.
+     * You can use session() method to set the session instead.
      *
-     * @return Session
+     * @see Request::session()
+     * @deprecated Not unspported in Rebet.
+     * @throws BadMethodCallException when the method was called.
+     */
+    public function setSession(SessionInterface $session)
+    {
+        throw new BadMethodCallException("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
+    }
+
+    /**
+     * This method is unspported in Rebet.
+     * You can use session() method to set the session instead.
+     *
+     * @see Request::session()
+     * @deprecated Not unspported in Rebet.
+     * @throws BadMethodCallException when the method was called.
+     */
+    public function setSessionFactory(callable $factory)
+    {
+        throw new BadMethodCallException("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
+    }
+
+    /**
+     * Get/Set the session for the request.
+     *
+     * @param Session|callable|null $session (default: null)
+     * @return Session|self
      * @throws BadMethodCallException
      */
-    public function session() : Session
+    public function session($session = null)
     {
-        return $this->getSession();
+        if ($session === null) {
+            $this->session = is_callable($this->session) ? call_user_func($this->session) : $this->session ;
+
+            if (null === $this->session) {
+                throw new \BadMethodCallException('Session has not been set');
+            }
+
+            return $this->session;
+        }
+
+        $this->session = $session;
+        return $this;
     }
 
     /**
@@ -274,14 +269,15 @@ class Request extends SymfonyRequest
     /**
      * Save the request data to session with given name.
      *
+     * @see self::replay()
      * @param string $name
      * @return self
      */
     public function saveAs(string $name) : self
     {
         $this->session()->flash()->set("_request_{$name}", [
-            'uri'  => $this->getRequestUri(),
-            'post' => $this->request->all(),
+            'uri'   => $this->getRequestUri(),
+            'input' => $this->input(),
         ]);
         return $this;
     }
@@ -304,13 +300,13 @@ class Request extends SymfonyRequest
      * @param array $append_query
      * @param integer $status
      * @param array $headers
-     * @return Response|null
+     * @return RedirectResponse|null
      */
-    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?Response
+    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?RedirectResponse
     {
         if ($this->isSaved($name)) {
             $saved = $this->session()->flash()->get("_request_{$name}");
-            return Responder::redirect('@'.$saved['uri'], $append_query, $status, $headers, $this)->with($saved['post'] ?? []);
+            return Responder::redirect('@'.$saved['uri'], $append_query, $status, $headers, $this)->with($saved['input'] ?? []);
         }
         return null;
     }
@@ -360,7 +356,7 @@ class Request extends SymfonyRequest
     public function wantsJson()
     {
         $acceptable = $this->getAcceptableContentTypes();
-        return Strings::contains($acceptable[0] ?? null, ['/json', '+json']);
+        return Strings::contains($acceptable[0] ?? null, ['/json', '+json'], 1);
     }
 
     /**
@@ -380,7 +376,7 @@ class Request extends SymfonyRequest
      */
     public function isPjax()
     {
-        return $this->headers->get('X-PJAX') == true;
+        return $this->getHeader('X-PJAX', true) == true || $this->query->get('_pjax') == true ;
     }
 
     /**

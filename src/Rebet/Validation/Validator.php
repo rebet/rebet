@@ -63,7 +63,7 @@ class Validator
      * Validate the data by given crud type rules.
      *
      * @param string $crud
-     * @param array|string|Rule $rules
+     * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
      * @return ValidData|null
      */
     public function validate(string $crud, $rules) : ?ValidData

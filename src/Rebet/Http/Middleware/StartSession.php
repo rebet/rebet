@@ -26,7 +26,7 @@ class StartSession
     {
         $session = new Session();
         $session->start();
-        $request->setRebetSession($session);
+        $request->session($session);
 
         $response = $next($request);
 

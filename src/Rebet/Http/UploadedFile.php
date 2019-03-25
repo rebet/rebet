@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http;
 
-use Symfony\Component\HttpFoundation\UploadedFile as SymfonyUploadedFile;
+use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 
 /**
  * Uploa dedFile Class

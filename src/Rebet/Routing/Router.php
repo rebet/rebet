@@ -8,7 +8,6 @@ use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
-use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
@@ -37,7 +36,28 @@ class Router
         return [
             'middlewares'              => [],
             'default_fallback_handler' => null,
+            'current_channel'          => null,
         ];
+    }
+
+    /**
+     * Get the current channel (inflow route/application invoke interface) like web, api, console.
+     *
+     * @return string
+     */
+    public static function getCurrentChannel() : string
+    {
+        return self::config('current_channel');
+    }
+
+    /**
+     * Set the current channel (inflow route/application invoke interface) like web, api, console.
+     *
+     * @param string $current_channel
+     */
+    public static function setCurrentChannel(string $current_channel) : void
+    {
+        self::setConfig(['current_channel' => $current_channel]);
     }
 
     /**
@@ -374,7 +394,7 @@ class Router
             $route            = static::findRoute($request);
             static::$current  = $route;
             static::$pipeline = (new Pipeline())->through(array_merge(
-                static::config('middlewares.'.App::getChannel(), false, []),
+                static::config('middlewares.'.static::getCurrentChannel(), false, []),
                 $route->middlewares()
             ))->then($route);
             return static::$pipeline->send($request);
@@ -532,13 +552,6 @@ class Router
     protected $channel = null;
 
     /**
-     * Skip routing rules setting.
-     *
-     * @var boolean
-     */
-    protected $skip = false;
-
-    /**
      * The prefix path for this rules.
      *
      * @var string
@@ -572,7 +585,16 @@ class Router
     protected function __construct(string $channel)
     {
         $this->channel = $channel;
-        $this->skip    = $channel !== App::getChannel();
+    }
+
+    /**
+     * Skip routing rules setting.
+     *
+     * @return boolean
+     */
+    protected function skip() : bool
+    {
+        return $this->channel !== static::getCurrentChannel();
     }
 
     /**
@@ -647,7 +669,7 @@ class Router
      */
     public function routing(callable $callback) : self
     {
-        if ($this->skip) {
+        if ($this->skip()) {
             return $this;
         }
         static::$rules = $this;
@@ -666,7 +688,7 @@ class Router
      */
     public function fallback(callable $action)
     {
-        if ($this->skip) {
+        if ($this->skip()) {
             return $this;
         }
         static::$fallback[$this->prefix] = $action;

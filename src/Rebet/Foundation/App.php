@@ -6,6 +6,7 @@ use Rebet\Config\Config;
 use Rebet\Config\ConfigPromise;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Routing\Router;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
@@ -54,6 +55,13 @@ class App
             //---------------------------------------------
             DateTime::class => [
                 'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
+            ],
+
+            //---------------------------------------------
+            // Routing Configure
+            //---------------------------------------------
+            Router::class => [
+                'current_channel' => Config::refer(App::class, 'channel'),
             ],
 
             //---------------------------------------------

@@ -14,6 +14,7 @@ use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
+use Rebet\Routing\Router;
 use Rebet\Translation\Translator;
 
 /**
@@ -89,7 +90,7 @@ class Auth
     public static function attempt(Request $request, $signin_id, string $password, $precondition = null, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
-        $auth     = $authenticator ?? ($route ? $route->auth() : null) ?? $request->channel ;
+        $auth     = $authenticator ?? ($route ? $route->auth() : null) ?? Router::getCurrentChannel() ;
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
         $user     = $provider->findByCredentials($signin_id, $password, $precondition);
 
@@ -164,7 +165,7 @@ class Auth
     public static function authenticate(Request $request) : ?Response
     {
         $route    = $request->route;
-        $auth     = ($route ? $route->auth() : null) ?? $request->channel;
+        $auth     = ($route ? $route->auth() : null) ?? Router::getCurrentChannel() ;
         $guard    = static::configInstantiate("authenticator.{$auth}.guard")->authenticator($auth);
         $provider = static::configInstantiate("authenticator.{$auth}.provider")->authenticator($auth);
 
