@@ -540,6 +540,24 @@ class Router
         return null;
     }
 
+    /**
+     * Activate prefix to the Router.
+     *
+     * @param string $prefix
+     * @return string return the given prefix as it is.
+     */
+    public static function activatePrefix(string $prefix) : string
+    {
+        if (empty($prefix)) {
+            return $prefix;
+        }
+        if (!in_array($prefix, static::$prefixes)) {
+            static::$prefixes[] = $prefix;
+            usort(static::$prefixes, Callback::compare('mb_strlen', true));
+        }
+        return $prefix;
+    }
+
     // ====================================================
     // Router instance for Routing Rules Build
     // ====================================================
@@ -610,18 +628,14 @@ class Router
 
     /**
      * Set the prefix path for this rules.
-     * If the primary prefix is not set then set the given prefix to primary prefix.
+     * If the given prefix is not activated the prefix will activate.
      *
      * @param string $prefix
      * @return self
      */
     public function prefix(string $prefix) : self
     {
-        $this->prefix = Path::normalize($prefix);
-        if (!in_array($this->prefix, static::$prefixes)) {
-            static::$prefixes[] = $this->prefix;
-            usort(static::$prefixes, Callback::compare('mb_strlen', true));
-        }
+        $this->prefix = static::activatePrefix(Path::normalize($prefix));
         return $this;
     }
 

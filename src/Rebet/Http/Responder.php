@@ -118,6 +118,7 @@ class Responder
      * @param string|null $type of problem (default: TYPE_HTTP_STATUS)
      * @param array $headers of HTTP response (default: [])
      * @param int $encoding_options of JSON encode (default: 0)
+     * @return ProblemResponse
      */
     public static function problem(int $status, ?string $title = null, ?string $type = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
     {

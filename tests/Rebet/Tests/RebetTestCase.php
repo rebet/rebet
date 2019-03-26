@@ -43,8 +43,8 @@ abstract class RebetTestCase extends TestCase
     {
         System::initMock();
         Config::clear();
-        App::initFrameworkConfig();
         App::setRoot(__DIR__.'/../../');
+        App::initFrameworkConfig();
         $users = [
             ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'        , 'signin_id' => 'admin'        , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
             ['user_id' => 2, 'role' => 'user' , 'name' => 'User'         , 'signin_id' => 'user'         , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
@@ -88,7 +88,7 @@ abstract class RebetTestCase extends TestCase
                 ],
                 'policies' => [
                     User::class => [
-                        '@before' => function (AuthUser $user) { return $user->is('admin'); },
+                        '@before' => function (AuthUser $user, $target, string $action) { return $user->is('admin'); },
                         'update'  => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
                         'create'  => function (AuthUser $user) { return $user->is('editable'); },
                     ],
@@ -110,6 +110,7 @@ abstract class RebetTestCase extends TestCase
         Translator::clear();
         Cookie::clear();
         Session::clear();
+        Router::clear();
         StderrCapture::clear();
     }
 
@@ -208,6 +209,7 @@ abstract class RebetTestCase extends TestCase
     protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET', $prefix = '') : Request
     {
         Router::setCurrentChannel($channel);
+        Router::activatePrefix($prefix);
         $session = Session::current() ?? new Session();
         $session->start();
         $request = Request::create($path, $method);

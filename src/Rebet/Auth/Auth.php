@@ -228,19 +228,19 @@ class Auth
     /**
      * [Authorization] Check the policy.
      *
-     * 1st: Check the policies of '@before' action for target object or class.
+     * 1st: Check the policies of '@before' action for target object or class (prepend $action as first $extras argument).
      * 2nd: Check the policies of given action for target object or class.
      *
      * @param AuthUser $user
      * @param string $action
      * @param string|object $target can be use @ namespace alias
      * @param mixed ...$extras
-     * @return boolean|null
+     * @return boolean
      */
     public static function policy(AuthUser $user, string $action, $target, ...$extras) : bool
     {
         $target = Namespaces::resolve($target);
-        return static::_policy($user, '@before', $target, $extras) || static::_policy($user, $action, $target, $extras);
+        return static::_policy($user, '@before', $target, array_merge([$action], $extras)) || static::_policy($user, $action, $target, $extras);
     }
 
     /**
@@ -250,7 +250,7 @@ class Auth
      * @param string $action
      * @param string|object $target
      * @param array $extras (default: [])
-     * @return boolean|null
+     * @return boolean
      */
     protected static function _policy(AuthUser $user, string $action, $target, array $extras = []) : bool
     {
