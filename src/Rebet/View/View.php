@@ -22,7 +22,8 @@ class View implements Renderable
     public static function defaultConfig()
     {
         return [
-            'engine' => null,
+            'engine'        => null,
+            'eof_line_feed' => EofLineFeed::TRIM()
         ];
     }
 
@@ -59,7 +60,7 @@ class View implements Renderable
      *
      * @var Engine
      */
-    public $engine = null;
+    protected $engine = null;
 
     /**
      * View data.
@@ -67,6 +68,13 @@ class View implements Renderable
      * @var array
      */
     protected $data = [];
+
+    /**
+     * EOF line feed processing.
+     *
+     * @var EofLineFeed
+     */
+    protected $eof = null;
 
     /**
      * Create a view of given name.
@@ -160,6 +168,18 @@ class View implements Renderable
     }
 
     /**
+     * Set EOF line feed processer.
+     *
+     * @param EofLineFeed $processer
+     * @return self
+     */
+    public function eof(EofLineFeed $processer) : self
+    {
+        $this->eof = $processer;
+        return $this;
+    }
+
+    /**
      * Get the string contents of the view.
      *
      * @return string
@@ -169,8 +189,9 @@ class View implements Renderable
     {
         $changer = $this->changer;
         $name    = $changer ? $changer($this->name) : $this->name;
+        $eof     = $this->eof ?? static::config('eof_line_feed');
         try {
-            return $this->engine->render($name, $this->data);
+            return $eof->process($this->engine->render($name, $this->data));
         } catch (\Throwable $e) {
             throw ViewRenderFailedException::by("The view {$name} render failed because of exception occurred.")->caused($e);
         }

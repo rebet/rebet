@@ -6,6 +6,7 @@ use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
+use Rebet\View\EofLineFeed;
 
 class BladeTest extends RebetTestCase
 {
@@ -46,7 +47,7 @@ class BladeTest extends RebetTestCase
 Hello, Samantha.
 EOS
             ,
-            $this->blade->render('welcome', ['name' => 'Samantha'])
+            EofLineFeed::TRIM()->process($this->blade->render('welcome', ['name' => 'Samantha']))
         );
     }
 
@@ -63,7 +64,6 @@ Section:
     - Sub Section
 Content:
     This is content.
-
 EOS
                 , 'builtin/child'
                 , []
@@ -103,6 +103,6 @@ EOS
      */
     public function test_render_builtin(string $expect, string $name, array $args = [])
     {
-        $this->assertSame($expect, $this->blade->render($name, $args));
+        $this->assertSame($expect, EofLineFeed::TRIM()->process($this->blade->render($name, $args)));
     }
 }

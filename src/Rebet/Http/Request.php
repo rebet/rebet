@@ -263,7 +263,7 @@ class Request extends SymfonyRequest
      */
     public function getUserAgent() : UserAgent
     {
-        return new UserAgent($this->headers->get('User-Agent'));
+        return UserAgent::valueOf($this->headers->get('User-Agent')) ;
     }
 
     /**

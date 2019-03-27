@@ -6,6 +6,7 @@ use Rebet\Http\Session\Session;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Engine;
+use Rebet\View\EofLineFeed;
 
 abstract class EngineCustomizerTestCase extends RebetTestCase
 {
@@ -24,6 +25,11 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $this->engine = $this->createEngine();
     }
 
+    protected function render(string $name, array $args = []) : ?string
+    {
+        return EofLineFeed::TRIM()->process($this->engine->render($name, $args));
+    }
+
     public function test_tag_env()
     {
         App::setEnv('unittest');
@@ -32,10 +38,9 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 unittest
 unittest or local
 Not production.
-
 EOS
             ,
-            $this->engine->render('custom/env')
+            $this->render('custom/env')
         );
 
         App::setEnv('local');
@@ -43,18 +48,17 @@ EOS
             <<<EOS
 unittest or local
 Not production.
-
 EOS
             ,
-            $this->engine->render('custom/env')
+            $this->render('custom/env')
         );
     }
 
     public function test_tag_prefix()
     {
-        $this->assertSame('/controller/action/arg1', $this->engine->render('custom/prefix'));
-        $this->assertSame('/controller/action/arg1', $this->engine->render('custom/prefix', ['prefix' => null]));
-        $this->assertSame('/rebet/controller/action/arg1', $this->engine->render('custom/prefix', ['prefix' => '/rebet']));
+        $this->assertSame('/controller/action/arg1', $this->render('custom/prefix'));
+        $this->assertSame('/controller/action/arg1', $this->render('custom/prefix', ['prefix' => null]));
+        $this->assertSame('/rebet/controller/action/arg1', $this->render('custom/prefix', ['prefix' => '/rebet']));
     }
 
     public function test_tag_role()
@@ -62,10 +66,9 @@ EOS
         $this->assertSame(
             <<<EOS
 Guest
-
 EOS
             ,
-            $this->engine->render('custom/role')
+            $this->render('custom/role')
         );
 
         $request = $this->createRequestMock('/');
@@ -76,10 +79,9 @@ EOS
 user
 admin or user
 Not Guest.
-
 EOS
             ,
-            $this->engine->render('custom/role')
+            $this->render('custom/role')
         );
         $this->signout();
 
@@ -90,10 +92,9 @@ user
 user and editable
 admin or user
 Not Guest.
-
 EOS
             ,
-            $this->engine->render('custom/role')
+            $this->render('custom/role')
         );
         $this->signout();
 
@@ -103,10 +104,9 @@ EOS
 admin
 admin or user
 Not Guest.
-
 EOS
             ,
-            $this->engine->render('custom/role')
+            $this->render('custom/role')
         );
     }
 
@@ -119,10 +119,9 @@ EOS
             <<<EOS
 can not update user
 Can not create an address when the user is guest or the addresses count greater equal 5.
-
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user, 'addresses' => []])
+            $this->render('custom/can', ['user' => $user, 'addresses' => []])
         );
 
         $request = $this->createRequestMock('/');
@@ -132,10 +131,9 @@ EOS
             <<<EOS
 can update user
 Can create an address when the addresses count less than 5.
-
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user, 'addresses' => []])
+            $this->render('custom/can', ['user' => $user, 'addresses' => []])
         );
         $this->signout();
 
@@ -147,10 +145,9 @@ can create user(absolute class name 1)
 can create user(absolute class name 2)
 can create user(relative class name)
 Can create an address when the addresses count less than 5.
-
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user, 'addresses' => []])
+            $this->render('custom/can', ['user' => $user, 'addresses' => []])
         );
         $this->signout();
 
@@ -162,10 +159,9 @@ can create user(absolute class name 1)
 can create user(absolute class name 2)
 can create user(relative class name)
 Can create an address when the addresses count less than 5.
-
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4]])
+            $this->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4]])
         );
 
         $this->assertSame(
@@ -175,10 +171,9 @@ can create user(absolute class name 1)
 can create user(absolute class name 2)
 can create user(relative class name)
 Can not create an address when the user is guest or the addresses count greater equal 5.
-
 EOS
             ,
-            $this->engine->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4, 5]])
+            $this->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4, 5]])
         );
     }
 
@@ -189,10 +184,9 @@ EOS
 [1] ;
 [2] name;
 [3] ;
-
 EOS
             ,
-            $this->engine->render('custom/field')
+            $this->render('custom/field')
         );
     }
 
@@ -203,10 +197,9 @@ EOS
         $this->assertSame(
             <<<EOS
 Has not any error.
-
 EOS
             ,
-            $this->engine->render('custom/errors', ['errors' => $errors])
+            $this->render('custom/errors', ['errors' => $errors])
         );
 
         $errors = [
@@ -220,10 +213,9 @@ EOS
 Has some error.
 Has some error about 'name'.
 Has some error about 'name' (Under field of 'email').
-
 EOS
             ,
-            $this->engine->render('custom/errors', ['errors' => $errors])
+            $this->render('custom/errors', ['errors' => $errors])
         );
 
         $errors = [
@@ -237,10 +229,9 @@ EOS
 Has some error.
 Has some error about 'email'.
 Has some error about 'email' (Under field of 'email').
-
 EOS
             ,
-            $this->engine->render('custom/errors', ['errors' => $errors])
+            $this->render('custom/errors', ['errors' => $errors])
         );
 
         $errors = [
@@ -259,10 +250,9 @@ Has some error about 'name'.
 Has some error about 'email'.
 Has some error about 'email' (Under field of 'email').
 Has some error about 'name' (Under field of 'email').
-
 EOS
             ,
-            $this->engine->render('custom/errors', ['errors' => $errors])
+            $this->render('custom/errors', ['errors' => $errors])
         );
     }
 
@@ -277,10 +267,9 @@ EOS
 ---
 ---
 ---
-
 EOS
             ,
-            $this->engine->render('custom/error', ['errors' => $errors])
+            $this->render('custom/error', ['errors' => $errors])
         );
 
         $errors = [
@@ -302,10 +291,9 @@ EOS
 ---
 ---
 ---
-
 EOS
             ,
-            $this->engine->render('custom/error', ['errors' => $errors])
+            $this->render('custom/error', ['errors' => $errors])
         );
 
         $errors = [
@@ -328,10 +316,9 @@ EOS
  * The email field is required.
  * The email may not be greater than 255 characters.
 =====
-
 EOS
             ,
-            $this->engine->render('custom/error', ['errors' => $errors])
+            $this->render('custom/error', ['errors' => $errors])
         );
 
         $errors = [
@@ -361,10 +348,9 @@ EOS
 =====
  * The email field is required.
 =====
-
 EOS
             ,
-            $this->engine->render('custom/error', ['errors' => $errors])
+            $this->render('custom/error', ['errors' => $errors])
         );
     }
 
@@ -381,7 +367,7 @@ email has not error---
 email has not error in field
 EOS
             ,
-            $this->engine->render('custom/iferror', ['errors' => $errors])
+            $this->render('custom/iferror', ['errors' => $errors])
         );
 
         $errors = [
@@ -399,7 +385,7 @@ email has not error---
 email has not error in field
 EOS
             ,
-            $this->engine->render('custom/iferror', ['errors' => $errors])
+            $this->render('custom/iferror', ['errors' => $errors])
         );
 
         $errors = [
@@ -417,7 +403,7 @@ email has error in field---
 email has error in field
 EOS
             ,
-            $this->engine->render('custom/iferror', ['errors' => $errors])
+            $this->render('custom/iferror', ['errors' => $errors])
         );
 
         $errors = [
@@ -438,7 +424,7 @@ email has error in field---
 email has error in field
 EOS
             ,
-            $this->engine->render('custom/iferror', ['errors' => $errors])
+            $this->render('custom/iferror', ['errors' => $errors])
         );
     }
 
@@ -451,10 +437,9 @@ EOS
 ---
 #333---
 ---
-
 EOS
             ,
-            $this->engine->render('custom/e', ['errors' => $errors])
+            $this->render('custom/e', ['errors' => $errors])
         );
 
         $errors = [
@@ -468,10 +453,9 @@ EOS
 is-danger---
 red---
 ---
-
 EOS
             ,
-            $this->engine->render('custom/e', ['errors' => $errors])
+            $this->render('custom/e', ['errors' => $errors])
         );
 
         $errors = [
@@ -488,7 +472,7 @@ is-danger---
 is-danger
 EOS
             ,
-            $this->engine->render('custom/e', ['errors' => $errors])
+            $this->render('custom/e', ['errors' => $errors])
         );
 
         $errors = [
@@ -508,7 +492,7 @@ is-danger---
 is-danger
 EOS
             ,
-            $this->engine->render('custom/e', ['errors' => $errors])
+            $this->render('custom/e', ['errors' => $errors])
         );
     }
 
@@ -525,7 +509,7 @@ default---
 default
 EOS
             ,
-            $this->engine->render('custom/input', ['input' => $input])
+            $this->render('custom/input', ['input' => $input])
         );
 
         $input = [
@@ -540,7 +524,7 @@ default---
 default
 EOS
             ,
-            $this->engine->render('custom/input', ['input' => $input])
+            $this->render('custom/input', ['input' => $input])
         );
 
         $input = [
@@ -555,7 +539,7 @@ test@rebet.local---
 test@rebet.local
 EOS
             ,
-            $this->engine->render('custom/input', ['input' => $input])
+            $this->render('custom/input', ['input' => $input])
         );
 
         $input = [
@@ -571,7 +555,7 @@ test@rebet.local---
 test@rebet.local
 EOS
             ,
-            $this->engine->render('custom/input', ['input' => $input])
+            $this->render('custom/input', ['input' => $input])
         );
     }
 
@@ -585,7 +569,7 @@ EOS
         $article_edit_1_token = $session->generateToken('article', 'edit', 1);
         $article_edit_2_token = $session->generateToken('article', 'edit', 2);
 
-        $actual         = $this->engine->render('custom/csrf_token', ['article_id' => 1]);
+        $actual         = $this->render('custom/csrf_token', ['article_id' => 1]);
         $direct_1_token = $session->token('direct', 1);
         $this->assertSame(
             <<<EOS
@@ -595,7 +579,7 @@ EOS
             $actual
         );
 
-        $actual         = $this->engine->render('custom/csrf_token', ['article_id' => 2]);
+        $actual         = $this->render('custom/csrf_token', ['article_id' => 2]);
         $direct_2_token = $session->token('direct', 2);
         $this->assertSame(
             <<<EOS
@@ -620,7 +604,7 @@ EOS
         $article_edit_2_token     = $session->generateToken('article', 'edit', 2);
         $article_edit_2_token_key = Session::createTokenKey('article', 'edit', 2);
 
-        $actual             = $this->engine->render('custom/csrf', ['article_id' => 1]);
+        $actual             = $this->render('custom/csrf', ['article_id' => 1]);
         $direct_1_token     = $session->token('direct', 1);
         $direct_1_token_key = Session::createTokenKey('direct', 1);
         $this->assertSame(
@@ -631,7 +615,7 @@ EOS
             $actual
         );
 
-        $actual             = $this->engine->render('custom/csrf', ['article_id' => 2]);
+        $actual             = $this->render('custom/csrf', ['article_id' => 2]);
         $direct_2_token     = $session->token('direct', 2);
         $direct_2_token_key = Session::createTokenKey('direct', 2);
         $this->assertSame(
