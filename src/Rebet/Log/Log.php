@@ -6,23 +6,23 @@ use Rebet\DateTime\DateTime;
 use Rebet\Pipeline\Pipeline;
 
 /**
- * ロガー クラス
+ * Log Class
  *
- * 任意のハンドラとミドルウェアを組み合わせてログ出力を行います。
+ * Log output by combining arbitrary handler and middleware.
  *
- * パッケージで用意済みのハンドラ＆ミドルウェアには下記のものがあります。
- * ※これらのハンドラ及びミドルウェアは順次追加していきます。
+ * The handlers & middleware prepared in the package are as follows.
+ * Note: These handlers and middleware will be added sequentially.
  *
- * ハンドラ
+ * Handlers
  * --------------------
- * @see \Rebet\Log\Handler\StderrHandler::class （ライブラリデフォルト）
+ * @see \Rebet\Log\Handler\StderrHandler::class (Liblary Default)
  * @see \Rebet\Log\Handler\FileHandler::class
  *
- * ミドルウェア（ライブラリデフォルト：無指定）
+ * Middlewares (Liblary Default: Not use)
  * --------------------
  * @see \Rebet\Log\Middleware\WebDisplay::class
  *
- * @todo 各種ハンドラ＆ミドルウェア追加
+ * @todo Add various handlers & middleware
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -49,17 +49,18 @@ class Log
     }
 
     /**
-     * ログミドルウェアパイプライン
+     * Log middleware pipeline
+     *
      * @var Rebet\Pipeline\Pipeline
      */
     private static $pipeline = null;
 
     /**
-     * TRACE レベルログを出力します。
+     * Output TRACE level log.
      *
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     public static function trace($message, array $var = [], $error = null) : void
@@ -68,11 +69,11 @@ class Log
     }
 
     /**
-     * DEBUG レベルログを出力します。
+     * Output DEBUG level log.
      *
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     public static function debug($message, array $var = [], $error = null) : void
@@ -81,11 +82,11 @@ class Log
     }
 
     /**
-     * INFO レベルログを出力します。
+     * Output INFO level log.
      *
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     public static function info($message, array $var = [], $error = null) : void
@@ -94,11 +95,11 @@ class Log
     }
 
     /**
-     * WARN レベルログを出力します。
+     * Output WARN level log.
      *
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     public static function warn($message, array $var = [], $error = null) : void
@@ -107,11 +108,11 @@ class Log
     }
 
     /**
-     * ERROR レベルログを出力します。
+     * Output ERROR level log.
      *
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     public static function error($message, array $var = [], $error = null) : void
@@ -120,11 +121,11 @@ class Log
     }
 
     /**
-     * FATAL レベルログを出力します。
+     * Output FATAL level log.
      *
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     public static function fatal($message, array $var = [], $error = null) : void
@@ -133,15 +134,15 @@ class Log
     }
 
     /**
-     * メモリ使用量を出力します。
+     * Output memory usage.
      *
-     * @todo ミドルウェア化すべきか？
+     * @todo Should it be middleware?
      *
-     * @param string $message   ログメッセージ（デフォルト: 空文字）
-     * @param int    $decimals  メモリ[MB]の小数点桁数（デフォルト: 2）
+     * @param string $message (default: '')
+     * @param int $decimals (default: 2)
      * @return void
      */
-    public static function memory(string $message = '', int $decimals = 2)
+    public static function memory(string $message = '', int $decimals = 2) : void
     {
         $current = number_format(memory_get_usage() / 1048576, $decimals);
         $peak    = number_format(memory_get_peak_usage() / 1048576, $decimals);
@@ -151,13 +152,13 @@ class Log
     }
 
     /**
-     * ロガーを初期化します。
+     * Initialize the logger.
      *
      * @param callable|null $handler function(LogContext $log):string|array|null or any handler class uses LogHandleable trait.
      * @param array|null $middlewares
      * @return void
      */
-    public static function init(?callable $handler = null, ?array $middlewares = null)
+    public static function init(?callable $handler = null, ?array $middlewares = null) : void
     {
         self::terminate();
         self::$pipeline = (new Pipeline())
@@ -167,11 +168,11 @@ class Log
     }
 
     /**
-     * ロガーをシャットダウンします。
+     * Terminate the logger
      *
      * @return void
      */
-    public static function terminate()
+    public static function terminate() : void
     {
         if (self::$pipeline !== null) {
             Log::$pipeline->invoke('terminate');
@@ -180,12 +181,12 @@ class Log
     }
 
     /**
-     * ログを出力します。
+     * Output a log.
      *
-     * @param LogLevel $level ログレベル
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
+     * @param LogLevel $level
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
      * @return void
      */
     private static function log(LogLevel $level, $message, array $var = [], $error = null) : void
@@ -197,9 +198,9 @@ class Log
     }
 
     /**
-     * エラーハンドラー用のエラーハンドル
+     * Error handle for error handler
      *
-     * @param array $error error_get_last 形式の配列
+     * @param array $error array of error_get_last()
      * @return void
      */
     public static function errorHandle(array $error) : void
@@ -208,12 +209,12 @@ class Log
     }
 }
 
-// エラーハンドラ登録
+// Error handler registration
 set_error_handler(function ($errno, $errstr, $errfile, $errline) {
     Log::errorHandle(['type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline]);
 });
 
-// シャットダウンハンドラ登録
+// Shutdown handler registration
 register_shutdown_function(function () {
     $error = error_get_last();
     if ($error) {

@@ -4,7 +4,7 @@ namespace Rebet\Log\Formatter;
 use Rebet\Log\LogContext;
 
 /**
- * ログフォーマッタ インターフェース
+ * Log Formatter Interface
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -14,10 +14,10 @@ use Rebet\Log\LogContext;
 interface LogFormatter
 {
     /**
-     * ログをフォーマットします。
+     * Format log using given log context.
      *
-     * @param LogContext $log ログコンテキスト
-     * @return string|array 整形済みログ情報
+     * @param LogContext $log context
+     * @return string|array formatted log info
      */
     public function format(LogContext $log) ;
 }

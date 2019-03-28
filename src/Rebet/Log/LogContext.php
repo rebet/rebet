@@ -4,7 +4,7 @@ namespace Rebet\Log;
 use Rebet\DateTime\DateTIme;
 
 /**
- * ログコンテキスト クラス
+ * Log Context Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -24,7 +24,7 @@ class LogContext
     public $level;
 
     /**
-     * @var mixed
+     * @var string|array
      */
     public $message;
 
@@ -44,14 +44,14 @@ class LogContext
     public $extra;
 
     /**
-     * ログコンテキストを構築します。
+     * Create a log context.
      *
-     * @param DateTime $now 現在時刻
-     * @param LogLevel $level ログレベル
-     * @param mixed $message ログ内容
-     * @param array $var 変数（デフォルト：[]）
-     * @param \Throwable|array $error 例外 or error_get_last 形式配列（デフォルト：null）
-     * @param array $extra エキストラ情報（デフォルト：[]）
+     * @param DateTime $now
+     * @param LogLevel $level
+     * @param mixed $message
+     * @param array $var (default: [])
+     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
+     * @param array $extra infomation (default: [])
      */
     public function __construct(DateTime $now, LogLevel $level, $message, array $var = [], $error = null, array $extra = [])
     {
