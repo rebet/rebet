@@ -531,6 +531,11 @@ class ReflectorTest extends RebetTestCase
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['1'], Reflector::toArgs($reflection->getParameters(), ['convert' => '1']));
         $this->assertSame([1], Reflector::toArgs($reflection->getParameters(), ['convert' => '1'], true));
+
+        $function   = function (int ...$convert) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame(['1', '2', '3'], Reflector::toArgs($reflection->getParameters(), ['convert' => ['1', '2', '3']]));
+        $this->assertSame([1, 2, 3], Reflector::toArgs($reflection->getParameters(), ['convert' => ['1', '2', '3']], true));
     }
 
     public function test_convert_array()
