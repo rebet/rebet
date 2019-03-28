@@ -446,6 +446,93 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::typeOf($object, \stdClass::class));
     }
 
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Parameter 'mixed' is requierd.
+     */
+    public function test_toArgs_error()
+    {
+        $function = function ($mixed) { return; };
+        $rf   = new \ReflectionFunction($function);
+        $args = Reflector::toArgs($rf->getParameters(), []);
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Parameter 'nullable' is requierd.
+     */
+    public function test_toArgs_errorNullable()
+    {
+        $function = function (?int $nullable) { return; };
+        $rf       = new \ReflectionFunction($function);
+        $args     = Reflector::toArgs($rf->getParameters(), []);
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Parameter gender(=3) can not convert to Rebet\Tests\Mock\Gender.
+     */
+    public function test_toArgs_errorConvert()
+    {
+        $function = function (Gender $gender) { return; };
+        $rf       = new \ReflectionFunction($function);
+        $this->assertSame([Gender::MALE()], Reflector::toArgs($rf->getParameters(), ['gender' => 1], true));
+
+        Reflector::toArgs($rf->getParameters(), ['gender' => 3], true);
+    }
+
+    public function test_toArgs()
+    {
+        $function   = function () { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame([], Reflector::toArgs($reflection->getParameters(), []));
+
+        $function   = function (string ...$variadic) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame([], Reflector::toArgs($reflection->getParameters(), []));
+
+        $function   = function (string $optional = 'default') { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame(['default'], Reflector::toArgs($reflection->getParameters(), []));
+
+        $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame(
+            ['a', 'b', 'c', 'd', 'e'],
+            Reflector::toArgs($reflection->getParameters(), [
+                'mixed'    => 'a',
+                'string'   => 'b',
+                'nullable' => 'c',
+                'optional' => 'd',
+                'variadic' => 'e',
+            ])
+        );
+        $this->assertSame(
+            ['a', 'b', 'c', 'd', 'e'],
+            Reflector::toArgs($reflection->getParameters(), [
+                'nullable' => 'c',
+                'string'   => 'b',
+                'mixed'    => 'a',
+                'optional' => 'd',
+                'variadic' => 'e',
+            ])
+        );
+        $this->assertSame(
+            ['a', 'b', null, 'default', 'e', 'f', 'g'],
+            Reflector::toArgs($reflection->getParameters(), [
+                'mixed'    => 'a',
+                'string'   => 'b',
+                'nullable' => null,
+                'variadic' => ['e', 'f', 'g'],
+            ])
+        );
+
+        $function   = function (int $convert) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame(['1'], Reflector::toArgs($reflection->getParameters(), ['convert' => '1']));
+        $this->assertSame([1], Reflector::toArgs($reflection->getParameters(), ['convert' => '1'], true));
+    }
+
     public function test_convert_array()
     {
         $type = 'array';

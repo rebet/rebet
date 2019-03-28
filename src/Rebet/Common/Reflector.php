@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use Rebet\Common\Exception\LogicException;
+
 /**
  * Reflector Class
  *
@@ -29,10 +31,12 @@ class Reflector
      *       => Instantiate the target class with a constructor without arguments
      *
      *  array :
-     *     [{ClassName}::{factoryMathod}, arg1, arg2, ... ]
+     *     [{ClassName}::{factoryMathod} => [arg1, arg2, ...]]
      *       ⇒ Instantiate the target class with a factory method with arguments
-     *     [{ClassName}, arg1, arg2, ... ]
+     *     [{ClassName} => [arg1, arg2, ... ]]
      *       ⇒ Instantiate the target class with a constructor with arguments
+     *
+     *     NOTE: This setting can be recursively
      *
      *  brank : (= null, '', [])
      *       ⇒ return null
@@ -605,6 +609,51 @@ class Reflector
         $method = new \ReflectionMethod($object, $method);
         $method->setAccessible($accessible);
         return $method->invoke(is_object($object) ? $object : null, ...$args);
+    }
+
+    /**
+     * Convert to args array from given map using parameter name as key.
+     *
+     * @param \ReflectionParameter[] $parameters of target function/method/constructor.
+     * @param array $map using parameter name as key.
+     * @param bool $type_convert (default: false)
+     * @return array
+     */
+    public static function toArgs(array $parameters, array $map, bool $type_convert = false) : array
+    {
+        $args = [];
+        foreach ($parameters as $parameter) {
+            $name          = $parameter->name;
+            $type          = static::getTypeHint($parameter);
+            $is_optional   = $parameter->isOptional();
+            $is_variadic   = $parameter->isVariadic();
+            $is_nullable   = $parameter->allowsNull();
+            $is_defined    = array_key_exists($name, $map);
+            $default_value = $is_optional && !$is_variadic ? $parameter->getDefaultValue() : ($is_variadic ? [] : null) ;
+            $value         = $map[$name] ?? $default_value ;
+            if (!$is_optional && (!$is_defined || (!$is_nullable && $value === null))) {
+                throw LogicException::by("Parameter '{$name}' is requierd.");
+            }
+
+            if ($type_convert) {
+                $converter = function ($value) use ($type, $name) {
+                    $converted = static::convert($value, $type) ;
+                    if ($value !== null && $converted === null) {
+                        throw LogicException::by("Parameter {$name}(={$value}) can not convert to {$type}.");
+                    }
+                    return $converted;
+                };
+            } else {
+                $converter = function ($value) { return $value; } ;
+            }
+
+            if ($is_variadic) {
+                $args = array_merge($args, array_map($converter, (array)$value));
+            } else {
+                $args[] = $converter($value);
+            }
+        }
+        return $args;
     }
 
     /**
