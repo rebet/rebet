@@ -31,12 +31,10 @@ class Reflector
      *       => Instantiate the target class with a constructor without arguments
      *
      *  array :
-     *     [{ClassName}::{factoryMathod} => [arg1, arg2, ...]]
+     *     [{ClassName}::{factoryMathod}, arg1, arg2, ...]
      *       ⇒ Instantiate the target class with a factory method with arguments
-     *     [{ClassName} => [arg1, arg2, ... ]]
+     *     [{ClassName}, arg1, arg2, ...]
      *       ⇒ Instantiate the target class with a constructor with arguments
-     *
-     *     NOTE: This setting can be recursively
      *
      *  brank : (= null, '', [])
      *       ⇒ return null
@@ -229,7 +227,7 @@ class Reflector
      *
      * @param  array|object|null $object
      * @param  int|string $key You can use dot notation
-     * @param  bool $accessible
+     * @param  bool $accessible (default: false) ... Valid only for objects
      * @return bool
      */
     public static function has($object, $key, bool $accessible = false)
@@ -600,8 +598,8 @@ class Reflector
      *
      * @param string|object $object
      * @param string $method
-     * @param array $args
-     * @param boolean $accessible
+     * @param array $args (default: [])
+     * @param boolean $accessible (default: false)
      * @return mixed
      */
     public static function invoke($object, string $method, array $args = [], bool $accessible = false)
