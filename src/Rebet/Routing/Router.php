@@ -18,6 +18,7 @@ use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Route\RedirectRoute;
 use Rebet\Routing\Route\Route;
 use Rebet\Routing\Route\ViewRoute;
+use Rebet\Common\Arrays;
 
 /**
  * Router Class
@@ -553,7 +554,7 @@ class Router
         }
         if (!in_array($prefix, static::$prefixes)) {
             static::$prefixes[] = $prefix;
-            usort(static::$prefixes, Callback::compare('mb_strlen', true));
+            static::$prefixes   = Arrays::sort(static::$prefixes, SORT_DESC, Callback::compareLength());
         }
         return $prefix;
     }

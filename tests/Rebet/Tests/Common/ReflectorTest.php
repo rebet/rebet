@@ -87,7 +87,21 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('default', Reflector::instantiate(ReflectorTest_Mock::class)->value);
         $this->assertSame('via getInstance()', Reflector::instantiate(ReflectorTest_Mock::class. '::getInstance')->value);
         $this->assertSame('arg', Reflector::instantiate([ReflectorTest_Mock::class, 'arg'])->value);
+        $this->assertSame('arg', Reflector::instantiate(['mock' => ReflectorTest_Mock::class, 'value' => 'arg'], 'mock')->value);
+        $this->assertSame('after', Reflector::instantiate([
+            'mock'   => ReflectorTest_Mock::class,
+            '@after' => function($mock){
+                $mock->value = 'after';
+                return $mock;
+            }
+        ], 'mock')->value);
         $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class. '::build', 'arg'])->value);
+        $this->assertSame('arg via build()', Reflector::instantiate(['factory' => ReflectorTest_Mock::class. '::build', 'value' => 'arg'], 'factory')->value);
+        $this->assertSame('arg via build() after', Reflector::instantiate([
+            'factory' => ReflectorTest_Mock::class.'::build',
+            'value'   => 'arg',
+            '@after'  => function($mock){ $mock->value .= ' after'; return $mock; }
+        ], 'factory')->value);
         $this->assertSame(123, Reflector::instantiate(123));
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
     }
@@ -375,6 +389,64 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('protected', Reflector::invoke($this->accessible, 'callStaticProtected', [], true));
         $this->assertSame('private', Reflector::invoke($this->accessible, 'callStaticPrivate', [], true));
         $this->assertSame('public - 123', Reflector::invoke($this->accessible, 'callPublicWithArgs', [123]));
+        $this->assertSame('public - 123', Reflector::invoke($this->accessible, 'callPublicWithArgs', ['arg' => 123]));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['gender' => Gender::MALE(), 'age' => 20]));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['gender' => 1, 'age' => '20'], false, true));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['age' => '20', 'gender' => 1], false, true));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
+    }
+
+    public function test_evaluate()
+    {
+        $function = function(){ return 'foo'; };
+        $this->assertSame('foo', Reflector::evaluate($function));
+
+        $function = function($val = 'default'){ return $val; };
+        $this->assertSame('default', Reflector::evaluate($function));
+        $this->assertSame(123, Reflector::evaluate($function, [123]));
+
+        $function = function(string $val = 'default'){ return $val; };
+        $this->assertSame('123', Reflector::evaluate($function, [123], true));
+
+        $function = function(Gender $gender = null, int $age = 20){ return "{$age} years old ".($gender ?? Gender::MALE()); };
+        $this->assertSame('20 years old 男性', Reflector::evaluate($function));
+        $this->assertSame('20 years old 女性', Reflector::evaluate($function, [Gender::FEMALE()]));
+        $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => Gender::FEMALE(), 'age' => 18]));
+        $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => 2, 'age' => 18], true));
+        $this->assertSame('18 years old 男性', Reflector::evaluate($function, ['age' => 18]));
+    }
+
+    public function test_create()
+    {
+        $instance = Reflector::create(ReflectorTest_CreateDefault::class);
+        $this->assertInstanceOf(ReflectorTest_CreateDefault::class, $instance);
+        $this->assertSame('Foo', $instance->foo);
+        $this->assertSame('Bar', $instance->bar);
+
+        $instance = Reflector::create(ReflectorTest_CreateDefault::class, ['FOO']);
+        $this->assertInstanceOf(ReflectorTest_CreateDefault::class, $instance);
+        $this->assertSame('FOO', $instance->foo);
+        $this->assertSame('Bar', $instance->bar);
+
+        $instance = Reflector::create(ReflectorTest_CreateDefault::class, ['bar' => 'BAR']);
+        $this->assertInstanceOf(ReflectorTest_CreateDefault::class, $instance);
+        $this->assertSame('Foo', $instance->foo);
+        $this->assertSame('BAR', $instance->bar);
+
+        $instance = Reflector::create(ReflectorTest_CreateExtends::class);
+        $this->assertInstanceOf(ReflectorTest_CreateExtends::class, $instance);
+        $this->assertSame('Foo', $instance->foo);
+        $this->assertSame('Bar', $instance->bar);
+
+        $instance = Reflector::create(ReflectorTest_CreateExtends::class, ['foo']);
+        $this->assertInstanceOf(ReflectorTest_CreateExtends::class, $instance);
+        $this->assertSame('foo', $instance->foo);
+        $this->assertSame('Bar', $instance->bar);
+
+        $instance = Reflector::create(ReflectorTest_CreateExtends::class, ['bar' => 'BAR']);
+        $this->assertInstanceOf(ReflectorTest_CreateExtends::class, $instance);
+        $this->assertSame('Foo', $instance->foo);
+        $this->assertSame('BAR', $instance->bar);
     }
 
     public function test_typeOf()
@@ -536,6 +608,156 @@ class ReflectorTest extends RebetTestCase
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['1', '2', '3'], Reflector::toArgs($reflection->getParameters(), ['convert' => ['1', '2', '3']]));
         $this->assertSame([1, 2, 3], Reflector::toArgs($reflection->getParameters(), ['convert' => ['1', '2', '3']], true));
+    }
+
+    public function test_toNamedArgs()
+    {
+        $function   = function () { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
+        $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
+
+        $function   = function (string ...$variadic) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
+        $this->assertSame(['variadic' => [1]], Reflector::toNamedArgs($reflection->getParameters(), [1]));
+        $this->assertSame(['variadic' => [1, 2, 3]], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
+        $this->assertSame(['variadic' => [[1, 2, 3]]], Reflector::toNamedArgs($reflection->getParameters(), [[1, 2, 3]]));
+
+        $function   = function (string $optional = 'default') { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
+        $this->assertSame(['optional' => 1], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
+
+        $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame(
+            [
+                'mixed'    => 'a',
+            ],
+            Reflector::toNamedArgs($reflection->getParameters(), ['a'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 'a',
+                'string'   => 'b',
+                'nullable' => 'c',
+            ],
+            Reflector::toNamedArgs($reflection->getParameters(), ['a', 'b', 'c'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 'a',
+                'string'   => 'b',
+                'nullable' => 'c',
+                'optional' => 'd',
+                'variadic' => ['e'],
+            ],
+            Reflector::toNamedArgs($reflection->getParameters(), ['a', 'b', 'c', 'd', 'e'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 'a',
+                'string'   => null,
+                'nullable' => null,
+                'optional' => 'd',
+                'variadic' => ['e', 'f', 'g'],
+            ],
+            Reflector::toNamedArgs($reflection->getParameters(), ['a', null, null, 'd', 'e', 'f', 'g'])
+        );
+    }
+
+    public function test_mergeArgs()
+    {
+        $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $parameters = $reflection->getParameters();
+        $this->assertSame([], Reflector::mergeArgs($parameters, [], []));
+        $this->assertSame(['mixed' => 1], Reflector::mergeArgs($parameters, [1], []));
+        $this->assertSame(['mixed' => 1], Reflector::mergeArgs($parameters, [], [1]));
+        $this->assertSame(
+            [
+                'mixed'    => 'A',
+                'string'   => 'B',
+                'nullable' => 'c',
+            ],
+            Reflector::mergeArgs($parameters, ['a', 'b', 'c'], ['A', 'B'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 'A',
+                'string'   => 'B',
+                'nullable' => 'C',
+            ],
+            Reflector::mergeArgs($parameters, ['a', 'b'], ['A', 'B', 'C'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 'a',
+                'string'   => 'B',
+                'nullable' => 'c',
+            ],
+            Reflector::mergeArgs($parameters, ['a', 'b', 'c'], ['string' => 'B'])
+        );
+        $this->assertSame(
+            [
+                'string'   => 'b',
+                'mixed'    => 'A',
+            ],
+            Reflector::mergeArgs($parameters, ['string' => 'b'], ['A'])
+        );
+        $this->assertSame(
+            [
+                'string'   => 'B',
+                'mixed'    => 'A',
+                'nullable' => 'C',
+            ],
+            Reflector::mergeArgs($parameters, ['string' => 'b'], ['A', 'B', 'C'])
+        );
+        $this->assertSame(
+            [
+                'string'   => 'B',
+            ],
+            Reflector::mergeArgs($parameters, ['string' => 'b'], ['string' => 'B'])
+        );
+        $this->assertSame(
+            [
+                'string'   => 'B',
+                'nullable' => 'c',
+                'optional' => 'D',
+            ],
+            Reflector::mergeArgs($parameters, ['string' => 'b', 'nullable' => 'c'], ['string' => 'B', 'optional' => 'D'])
+        );
+        $this->assertSame(
+            [
+                'string'   => 2,
+                'mixed'    => 1,
+                'nullable' => 3,
+                'optional' => 4,
+                'variadic' => [5, 6, 7],
+            ],
+            Reflector::mergeArgs($parameters, ['string' => 'b'], [1, 2, 3, 4, 5, 6, 7])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 1,
+                'string'   => 'B',
+                'nullable' => 3,
+                'optional' => 4,
+                'variadic' => [5, 6, 7],
+            ],
+            Reflector::mergeArgs($parameters, [1, 2, 3, 4, 5, 6, 7], ['string' => 'B'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 1,
+                'string'   => 'B',
+                'nullable' => 3,
+                'optional' => 4,
+                'variadic' => ['E', 'F'],
+            ],
+            Reflector::mergeArgs($parameters, [1, 2, 3, 4, 5, 6, 7], ['string' => 'B', 'variadic' => ['E', 'F']])
+        );
     }
 
     public function test_convert_array()
@@ -945,6 +1167,11 @@ class ReflectorTest_Accessible
     {
         return 'public - '.$arg;
     }
+
+    public function callPublicWithTypeHintingArgs(Gender $gender, int $age)
+    {
+        return "public - {$age} years old {$gender}";
+    }
 }
 class ReflectorTest_TraitParent
 {
@@ -952,4 +1179,19 @@ class ReflectorTest_TraitParent
 }
 class ReflectorTest_TraitChild extends ReflectorTest_TraitParent
 {
+}
+class ReflectorTest_CreateDefault
+{
+    public $foo;
+    public $bar;
+
+    public function __construct(string $foo = 'Foo', string $bar = 'Bar')
+    {
+        $this->foo = $foo;
+        $this->bar = $bar;
+    }
+}
+class ReflectorTest_CreateExtends extends ReflectorTest_CreateDefault
+{
+    // No definistion
 }

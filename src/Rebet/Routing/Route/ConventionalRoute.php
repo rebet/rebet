@@ -248,7 +248,11 @@ class ConventionalRoute extends Route
                 break;
             }
             $value = array_shift($args);
-            $regex = $wheres[$name] ?: $this->wheres[$name] ?: null ;
+
+            $regex = $wheres[$name] ?? null ;
+            $regex = $regex ?: $this->wheres[$name] ?? null;
+            $regex = $regex ?: null;
+
             if ($regex && !preg_match($regex, $value)) {
                 throw RouteNotFoundException::by("{$this} not found. Routing parameter '{$name}' value '{$value}' not match {$regex}.");
             }

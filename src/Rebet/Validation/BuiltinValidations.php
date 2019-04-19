@@ -1077,7 +1077,7 @@ class BuiltinValidations extends Validations
                         $distance = 0;
 
                         for ($i = 0 ; $i < $word_length ; $i++) {
-                            $distance += ($matches["o{$i}"][0] ?: false) ? 1 : 0 ;
+                            $distance += ($matches["o{$i}"][0] ?? null ?: false) ? 1 : 0 ;
                         }
                         if ($distance <= $tolerance) {
                             $hit_ng_word = $hit_word;

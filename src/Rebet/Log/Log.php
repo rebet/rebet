@@ -1,28 +1,56 @@
 <?php
 namespace Rebet\Log;
 
+use Monolog\Handler\StreamHandler;
+use PHPUnit\Runner\Exception;
+use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
-use Rebet\DateTime\DateTime;
-use Rebet\Pipeline\Pipeline;
+use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
+use Rebet\Log\Driver\Monolog\MonologDriver;
+use Rebet\Log\Driver\Monolog\StderrDriver;
+use Rebet\Log\Driver\NullDriver;
+use Rebet\Log\Driver\StackDriver;
 
 /**
  * Log Class
  *
- * Log output by combining arbitrary handler and middleware.
+ * Output a log by specifying any driver for each channel definition.
+ * The driver MUST be implements PSR-3 LoggerInterface.
+ * Rebet uses Seldaek/monolog as the default log driver.
  *
- * The handlers & middleware prepared in the package are as follows.
+ * The driver used for Rebet logging can be specified by the following definition.
+ *
+ *     Log::class => [
+ *         'channels' => [
+ *              'channel_name' => [
+ *                  'driver'     => Driver::class, // PSR-3 LoggerInterface implementation class
+ *                  'arg_name_1' => value_1, // Constructor argument name and value for 'driver' class.
+ *                  (snip)                   // If the argument has default value (or variadic), then the parameter can be optional.
+ *                  'arg_name_n' => value_n, // Also, you don't have to worry about the order of parameter definition.
+ *              ],
+ *         ]
+ *     ]
+ *
+ * If it is difficult to build a driver with simple constructor parameter specification, you can build a driver by specifying a factory method.
+ *
+ *     Log::class => [
+ *         'channels' => [
+ *              'channel_name' => [
+ *                  'driver' => function() { ... Build any log driver here ... } , // Return PSR-3 LoggerInterface implementation class
+ *              ],
+ *         ]
+ *     ]
+ *
+ * Based on this specification, Rebet provides several Monolog extension driver classes that simplify driver construction.
+ * The drivers prepared in the package are as follows.
  * Note: These handlers and middleware will be added sequentially.
  *
- * Handlers
+ * Drivers
  * --------------------
- * @see \Rebet\Log\Handler\StderrHandler::class (Liblary Default)
- * @see \Rebet\Log\Handler\FileHandler::class
- *
- * Middlewares (Liblary Default: Not use)
- * --------------------
- * @see \Rebet\Log\Middleware\WebDisplay::class
- *
- * @todo Add various handlers & middleware
+ * @see \Rebet\Log\Driver\NullDriver::class
+ * @see \Rebet\Log\Driver\StackDriver::class
+ * @see \Rebet\Log\Driver\Monolog\MonologDriver::class
+ * @see \Rebet\Log\Driver\Monolog\StderrDriver::class (Liblary Default)
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -36,10 +64,24 @@ class Log
     public static function defaultConfig()
     {
         return [
-            'log_handler'     => \Rebet\Log\Handler\StderrHandler::class,
-            'log_middlewares' => [],
+            'channels' => [
+                'default' => [
+                    'driver' => StderrDriver::class,
+                    'name'   => 'default',
+                    'level'  => LogLevel::DEBUG,
+                ],
+            ],
+            'default_channel' => 'default',
+            'fallback_log'    => STDERR,
         ];
     }
+
+    /**
+     * Log channels
+     *
+     * @var Logger[]
+     */
+    protected static $channels = null;
 
     /**
      * No instantiation
@@ -49,94 +91,182 @@ class Log
     }
 
     /**
-     * Log middleware pipeline
+     * Get the logger for given channel.
      *
-     * @var Rebet\Pipeline\Pipeline
+     * @param string $channel when the null given return the default channel logger (default: null)
+     * @return Logger
      */
-    private static $pipeline = null;
-
-    /**
-     * Output TRACE level log.
-     *
-     * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
-     * @return void
-     */
-    public static function trace($message, array $var = [], $error = null) : void
+    public static function channel(?string $channel = null) : Logger
     {
-        self::log(LogLevel::TRACE(), $message, $var, $error);
+        $channel = $channel ?? static::config('default_channel', false, 'default');
+        $logger  = static::$channels[$channel] ?? null;
+        if ($logger !== null) {
+            return $logger;
+        }
+
+        $conf = static::config("channels.{$channel}", false);
+        if ($conf === null) {
+            static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger. Undefined configure 'Rebet\Log\Log.channels.{$channel}'.");
+            return new Logger(new NullDriver());
+        }
+        if (!isset($conf['driver'])) {
+            static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger. Driver is undefined.");
+            return new Logger(new NullDriver());
+        }
+        $driver = $conf['driver'];
+        $logger = new Logger(is_callable($driver) ? call_user_func($driver, $channel) : Reflector::create($driver, $conf)) ;
+
+        static::$channels[$channel] = $logger;
+        return $logger;
     }
 
     /**
-     * Output DEBUG level log.
+     * Get the stacked logger using given channels.
      *
-     * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
-     * @return void
+     * @param string ...$channels
+     * @return Logger
      */
-    public static function debug($message, array $var = [], $error = null) : void
+    public static function stack(string ...$channels) : Logger
     {
-        self::log(LogLevel::DEBUG(), $message, $var, $error);
+        return new Logger(new StackDriver($channels));
     }
 
     /**
-     * Output INFO level log.
+     * Get the fallback logger.
      *
-     * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
-     * @return void
+     * @return Logger
      */
-    public static function info($message, array $var = [], $error = null) : void
+    protected static function fallbackLogger() : Logger
     {
-        self::log(LogLevel::INFO(), $message, $var, $error);
+        $handler = new StreamHandler(static::config('fallback_log', false, STDERR));
+        $handler->setFormatter(MonologDriver::formatter(TextFormatter::class));
+        return new Logger(new MonologDriver('rebet', LogLevel::DEBUG, [$handler]));
     }
 
     /**
-     * Output WARN level log.
+     * Output EMERGENCY level log.
+     * System is unusable.
      *
      * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
      * @return void
      */
-    public static function warn($message, array $var = [], $error = null) : void
+    public static function emergency($message, array $context = [], $exception = null) : void
     {
-        self::log(LogLevel::WARN(), $message, $var, $error);
+        static::log(LogLevel::EMERGENCY, $message, $context, $exception);
+    }
+
+    /**
+     * Output ALERT level log.
+     * Action must be taken immediately.
+     *
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
+     *
+     * @param mixed $message
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
+     * @return void
+     */
+    public static function alert($message, array $context = [], $exception = null) : void
+    {
+        static::log(LogLevel::ALERT, $message, $context, $exception);
+    }
+
+    /**
+     * Output CRITICAL level log.
+     * Critical conditions.
+     *
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param mixed $message
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
+     * @return void
+     */
+    public static function critical($message, array $context = [], $exception = null) : void
+    {
+        static::log(LogLevel::CRITICAL, $message, $context, $exception);
     }
 
     /**
      * Output ERROR level log.
+     * Runtime errors that do not require immediate action but should typically be logged and monitored.
      *
      * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
      * @return void
      */
-    public static function error($message, array $var = [], $error = null) : void
+    public static function error($message, array $context = [], $exception = null) : void
     {
-        self::log(LogLevel::ERROR(), $message, $var, $error);
+        static::log(LogLevel::ERROR, $message, $context, $exception);
     }
 
     /**
-     * Output FATAL level log.
+     * Output WARNING level log.
+     * Exceptional occurrences that are not errors.
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
      *
      * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
      * @return void
      */
-    public static function fatal($message, array $var = [], $error = null) : void
+    public static function warning($message, array $context = [], $exception = null) : void
     {
-        self::log(LogLevel::FATAL(), $message, $var, $error);
+        static::log(LogLevel::WARNING, $message, $context, $exception);
+    }
+
+    /**
+     * Output NOTICE level log.
+     * Normal but significant events.
+     *
+     * @param mixed $message
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
+     * @return void
+     */
+    public static function notice($message, array $context = [], $exception = null) : void
+    {
+        static::log(LogLevel::NOTICE, $message, $context, $exception);
+    }
+
+    /**
+     * Output INFO level log.
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param mixed $message
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
+     * @return void
+     */
+    public static function info($message, array $context = [], $exception = null) : void
+    {
+        static::log(LogLevel::INFO, $message, $context, $exception);
+    }
+
+    /**
+     * Output DEBUG level log.
+     * Detailed debug information.
+     *
+     * @param mixed $message
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
+     * @return void
+     */
+    public static function debug($message, array $context = [], $exception = null) : void
+    {
+        static::log(LogLevel::DEBUG, $message, $context, $exception);
     }
 
     /**
      * Output memory usage.
-     *
-     * @todo Should it be middleware?
      *
      * @param string $message (default: '')
      * @param int $decimals (default: 2)
@@ -148,77 +278,32 @@ class Log
         $peak    = number_format(memory_get_peak_usage() / 1048576, $decimals);
         $message = empty($message) ? "" : "{$message} : " ;
         $message = $message."Memory {$current} MB / Peak Memory {$peak} MB";
-        self::log(LogLevel::INFO(), $message);
-    }
-
-    /**
-     * Initialize the logger.
-     *
-     * @param callable|null $handler function(LogContext $log):string|array|null or any handler class uses LogHandleable trait.
-     * @param array|null $middlewares
-     * @return void
-     */
-    public static function init(?callable $handler = null, ?array $middlewares = null) : void
-    {
-        self::terminate();
-        self::$pipeline = (new Pipeline())
-            ->through($middlewares ?? self::config('log_middlewares', false, []))
-            ->then($handler ?? self::configInstantiate('log_handler'))
-            ;
-    }
-
-    /**
-     * Terminate the logger
-     *
-     * @return void
-     */
-    public static function terminate() : void
-    {
-        if (self::$pipeline !== null) {
-            Log::$pipeline->invoke('terminate');
-            Log::$pipeline->getDestination()->terminate();
-        }
+        static::log(LogLevel::DEBUG, $message);
     }
 
     /**
      * Output a log.
      *
-     * @param LogLevel $level
+     * @param string $level
      * @param mixed $message
-     * @param array $var (default: [])
-     * @param \Throwable|array $error exception or array of error_get_last() (default: null)
+     * @param array $context (default: [])
+     * @param \Throwable $exception (default: null)
      * @return void
      */
-    private static function log(LogLevel $level, $message, array $var = [], $error = null) : void
+    public static function log(string $level, $message, array $context = [], $exception = null) : void
     {
-        if (self::$pipeline === null) {
-            self::init();
-        }
-        self::$pipeline->send(new LogContext(DateTime::now(), $level, $message, $var, $error));
-    }
-
-    /**
-     * Error handle for error handler
-     *
-     * @param array $error array of error_get_last()
-     * @return void
-     */
-    public static function errorHandle(array $error) : void
-    {
-        self::log(LogLevel::errorTypeOf($error['type']), "{$error['message']} ({$error['file']}:{$error['line']})", [], $error);
+        static::channel()->log($level, $message, $context, $exception);
     }
 }
 
 // Error handler registration
-set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-    Log::errorHandle(['type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline]);
+set_error_handler(function ($severity, $message, $file, $line) {
+    Log::log(LogLevel::errorTypeOf($severity), LogLevel::errorTypeLabel($severity)." : {$message} in {$file}:{$line}");
 });
 
 // Shutdown handler registration
 register_shutdown_function(function () {
-    $error = error_get_last();
-    if ($error) {
-        Log::errorHandle($error);
+    if ($error = error_get_last()) {
+        Log::log(LogLevel::errorTypeOf($error['type']), LogLevel::errorTypeLabel($error['type']).' : '.$error['message'].' in '.$error['file'].':'.$error['line']);
     }
-    Log::terminate();
 });

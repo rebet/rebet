@@ -8,8 +8,8 @@ use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Path;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
-use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\DateTime\Exception\DateTimeFormatException;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 
@@ -818,7 +818,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $format = $format ?? $this->default_format ;
 
-        $length_comparator   = Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
+        $length_comparator   = Callback::compareLength();
         $localized_templates = Arrays::sortKeys(Translator::grammar('datetime', 'formats', []), SORT_DESC, $length_comparator);
         foreach ($localized_templates as $key => $template) {
             if (Strings::contains($format, $key)) {

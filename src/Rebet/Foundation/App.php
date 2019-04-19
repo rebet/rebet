@@ -11,6 +11,7 @@ use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
+use Rebet\Log\Log;
 
 /**
  * Application Config Class
@@ -55,6 +56,13 @@ class App
             //---------------------------------------------
             DateTime::class => [
                 'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
+            ],
+
+            //---------------------------------------------
+            // Logging Configure
+            //---------------------------------------------
+            Log::class => [
+                'default_channel' => Config::refer(App::class, 'channel', 'default'),
             ],
 
             //---------------------------------------------

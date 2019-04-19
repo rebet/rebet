@@ -141,13 +141,11 @@ class Utils
      *     {$_(CONSTANT)} text
      * EOS;
      *
-     * @return \Closure function($value):mixed
+     * @return \Closure function($value) : mixed
      */
     public static function heredocImplanter() : \Closure
     {
-        return function ($s) {
-            return $s;
-        };
+        return Callback::echoBack();
     }
 
     /**

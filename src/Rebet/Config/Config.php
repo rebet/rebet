@@ -143,7 +143,7 @@ class Config
     public static function dump(string ...$sections) : string
     {
         static::all(); // Load the library configuration via ConfigReferrer by call all() method once.
-        return Strings::toString(static::all(...$sections));
+        return Strings::stringify(static::all(...$sections));
     }
 
     /**

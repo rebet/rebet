@@ -67,7 +67,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         $request     = $this->createRequestMock($path, null, 'web', $method);
         $token       = $request->session()->generateToken(...$scope);
         $token       = $token_match ? $token : "X-{$token}" ;
-        $key         = $scope_match ? Session::createTokenKey(...$scope) : Session::createTokenKey(array_merge($scope, ['mismatch'])) ;
+        $key         = $scope_match ? Session::createTokenKey(...$scope) : Session::createTokenKey(...array_merge($scope, ['mismatch'])) ;
         $request->request->set($key, $token);
 
         try {

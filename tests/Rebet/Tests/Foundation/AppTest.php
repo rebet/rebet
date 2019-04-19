@@ -127,6 +127,7 @@ class AppTest extends RebetTestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test_getEnv_envLoad()
     {

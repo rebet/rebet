@@ -122,6 +122,9 @@ class CodeTokenParser extends AbstractTokenParser
 
         $repeatable = false;
         $current    = current($separators);
+        if ($current === false) {
+            return false;
+        }
         if (Strings::endsWith($current, '*')) {
             $current    = Strings::rtrim($current, '*', 1);
             $repeatable = true;

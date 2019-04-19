@@ -6,13 +6,12 @@ use Rebet\Config\Config;
 use Rebet\Config\Exception\ConfigNotDefineException;
 use Rebet\Foundation\App;
 use Rebet\Foundation\Routing\BasicFallbackHandler;
-use Rebet\Log\Handler\StderrHandler;
-use Rebet\Log\LogLevel;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
+use Rebet\Log\Log;
 
 class BasicFallbackHandlerTest extends RebetTestCase
 {
@@ -44,50 +43,33 @@ class BasicFallbackHandlerTest extends RebetTestCase
         Translator::setFallbackLocale('de');
         $request = $this->createRequestMock('/');
         $handler = new BasicFallbackHandler();
-        Config::application([
-            StderrHandler::class => [
-                'log_level' => LogLevel::TRACE(),
-            ],
-        ]);
 
-        $this->assertContainsStderr(
-            [
-                '[TRACE]',
-                'HTTP 403 Forbidden occurred.',
-                'Rebet\Auth\Exception\AuthenticateException: Authentication failed in',
-            ],
-            function () use ($handler, $request) {
-                $response = $handler->handle($request, AuthenticateException::by('Authentication failed'));
-                $this->assertContains('<span class="status">403</span>Forbidden', $response->getContent());
-                $this->assertContains('Authentication failed', $response->getContent());
-            }
-        );
+        $response = $handler->handle($request, AuthenticateException::by('Authentication failed'));
+        $this->assertContains('<span class="status">403</span>Forbidden', $response->getContent());
+        $this->assertContains('Authentication failed', $response->getContent());
+        $driver = Log::channel()->driver();
+        $this->assertTrue($driver->hasDebugRecords());
+        $log = $driver->formatted();
+        $this->assertContains('HTTP 403 Forbidden occurred.', $log);
+        $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
+ 
+        $response = $handler->handle($request, RouteNotFoundException::by('Route not found'));
+        $this->assertContains('<span class="status">404</span>Not Found', $response->getContent());
+        $this->assertContains('Route not found', $response->getContent());
+        $driver = Log::channel()->driver();
+        $this->assertTrue($driver->hasDebugRecords());
+        $log = $driver->formatted();
+        $this->assertContains('HTTP 404 Not Found occurred.', $log);
+        $this->assertContains('Rebet\Routing\Exception\RouteNotFoundException: Route not found in', $log);
 
-        $this->assertContainsStderr(
-            [
-                '[TRACE]',
-                'HTTP 404 Not Found occurred.',
-                'Rebet\Routing\Exception\RouteNotFoundException: Route not found in',
-            ],
-            function () use ($handler, $request) {
-                $response = $handler->handle($request, RouteNotFoundException::by('Route not found'));
-                $this->assertContains('<span class="status">404</span>Not Found', $response->getContent());
-                $this->assertContains('Route not found', $response->getContent());
-            }
-        );
-
-        $this->assertContainsStderr(
-            [
-                '[ERROR]',
-                'HTTP 500 Internal Server Error occurred.',
-                'Rebet\Config\Exception\ConfigNotDefineException: unit test in',
-            ],
-            function () use ($handler, $request) {
-                $response = $handler->handle($request, ConfigNotDefineException::by('unit test'));
-                $this->assertContains('<span class="status">500</span>Internal Server Error', $response->getContent());
-                $this->assertContains('unit test', $response->getContent());
-            }
-        );
+        $response = $handler->handle($request, ConfigNotDefineException::by('unit test'));
+        $this->assertContains('<span class="status">500</span>Internal Server Error', $response->getContent());
+        $this->assertContains('unit test', $response->getContent());
+        $driver = Log::channel()->driver();
+        $this->assertTrue($driver->hasErrorRecords());
+        $log = $driver->formatted();
+        $this->assertContains('HTTP 500 Internal Server Error occurred.', $log);
+        $this->assertContains('Rebet\Config\Exception\ConfigNotDefineException: unit test in', $log);
     }
 
     public function test_handle_json()
@@ -95,49 +77,32 @@ class BasicFallbackHandlerTest extends RebetTestCase
         App::setLocale('en');
         $request = $this->createJsonRequestMock('/');
         $handler = new BasicFallbackHandler();
-        Config::application([
-            StderrHandler::class => [
-                'log_level' => LogLevel::TRACE(),
-            ],
-        ]);
 
-        $this->assertContainsStderr(
-            [
-                '[TRACE]',
-                'HTTP 403 Forbidden occurred.',
-                'Rebet\Auth\Exception\AuthenticateException: Authentication failed in',
-            ],
-            function () use ($handler, $request) {
-                $response = $handler->handle($request, AuthenticateException::by('Authentication failed'));
-                $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
-                $this->assertSame('{"status":403,"title":"Forbidden","type":"about:blank","detail":"Authentication failed"}', $response->getContent());
-            }
-        );
+        $response = $handler->handle($request, AuthenticateException::by('Authentication failed'));
+        $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
+        $this->assertSame('{"status":403,"title":"Forbidden","type":"about:blank","detail":"Authentication failed"}', $response->getContent());
+        $driver = Log::channel()->driver();
+        $this->assertTrue($driver->hasDebugRecords());
+        $log = $driver->formatted();
+        $this->assertContains('HTTP 403 Forbidden occurred.', $log);
+        $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
 
-        $this->assertContainsStderr(
-            [
-                '[TRACE]',
-                'HTTP 404 Not Found occurred.',
-                'Rebet\Routing\Exception\RouteNotFoundException: Route not found in',
-            ],
-            function () use ($handler, $request) {
-                $response = $handler->handle($request, RouteNotFoundException::by('Route not found'));
-                $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
-                $this->assertSame('{"status":404,"title":"Custom Not Found","type":"about:blank","detail":"The page could not be found. The specified URL is incorrect, or the page may have already been deleted \/ moved."}', $response->getContent());
-            }
-        );
+        $response = $handler->handle($request, RouteNotFoundException::by('Route not found'));
+        $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
+        $this->assertSame('{"status":404,"title":"Custom Not Found","type":"about:blank","detail":"The page could not be found. The specified URL is incorrect, or the page may have already been deleted \/ moved."}', $response->getContent());
+        $driver = Log::channel()->driver();
+        $this->assertTrue($driver->hasDebugRecords());
+        $log = $driver->formatted();
+        $this->assertContains('HTTP 403 Forbidden occurred.', $log);
+        $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
 
-        $this->assertContainsStderr(
-            [
-                '[ERROR]',
-                'HTTP 500 Internal Server Error occurred.',
-                'Rebet\Config\Exception\ConfigNotDefineException: unit test in',
-            ],
-            function () use ($handler, $request) {
-                $response = $handler->handle($request, ConfigNotDefineException::by('unit test'));
-                $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
-                $this->assertSame('{"status":500,"title":"Internal Server Error","type":"about:blank","detail":"unit test"}', $response->getContent());
-            }
-        );
+        $response = $handler->handle($request, ConfigNotDefineException::by('unit test'));
+        $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
+        $this->assertSame('{"status":500,"title":"Internal Server Error","type":"about:blank","detail":"unit test"}', $response->getContent());
+        $driver = Log::channel()->driver();
+        $this->assertTrue($driver->hasErrorRecords());
+        $log = $driver->formatted();
+        $this->assertContains('HTTP 500 Internal Server Error occurred.', $log);
+        $this->assertContains('Rebet\Config\Exception\ConfigNotDefineException: unit test in', $log);
     }
 }

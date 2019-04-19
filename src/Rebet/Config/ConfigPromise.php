@@ -76,7 +76,7 @@ class ConfigPromise implements DotAccessDelegator
     public function __toString()
     {
         if ($this->is_evaluated) {
-            return Strings::toString($this->evaluated_value);
+            return Strings::stringify($this->evaluated_value);
         }
         return "<Promise: ".($this->only_once ? "once" : "dynamic").'>';
     }

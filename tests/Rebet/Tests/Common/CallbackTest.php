@@ -209,14 +209,14 @@ class CallbackTest extends RebetTestCase
     }
 
     /**
-     * @dataProvider dataToStrings
+     * @dataProvider dataStringifis
      */
-    public function test_toString($expect, $callable, $verbose)
+    public function test_stringify($expect, $callable, $verbose)
     {
-        $this->assertSame($expect, Callback::toString($callable, $verbose));
+        $this->assertSame($expect, Callback::stringify($callable, $verbose));
     }
 
-    public function dataToStrings() : array
+    public function dataStringifis() : array
     {
         return [
             ['mb_strlen($str, $encoding)', 'mb_strlen', true ],
@@ -241,5 +241,20 @@ class CallbackTest extends RebetTestCase
             ['Rebet\Tests\Common\CallbackTest::{closure}(Rebet\Tests\Mock\Gender $g) : Rebet\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
             ['CallbackTest::{closure}($g)'                                                             , function (Gender $g) : Enum { return $g; } , false],
         ];
+    }
+
+    public function test_echoBack()
+    {
+        $echo_back = Callback::echoBack();
+        $value     = 'foo';
+        $this->assertSame($value, $echo_back($value));
+    }
+
+    public function test_compareLength()
+    {
+        $comparator = Callback::compareLength();
+        $this->assertSame(-1, $comparator('123', '1234'));
+        $this->assertSame(0, $comparator('123', '123'));
+        $this->assertSame(1, $comparator('1234', '123'));
     }
 }

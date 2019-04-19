@@ -21,48 +21,6 @@ class Reflector
     }
 
     /**
-     * Instantiate based on the definition object.
-     * The definition objects that instance creation can deal with are as follows.
-     *
-     *  string :
-     *     {ClassName}::{factoryMathod}
-     *       => Instantiate the target class with a factory method without arguments
-     *     {ClassName}
-     *       => Instantiate the target class with a constructor without arguments
-     *
-     *  array :
-     *     [{ClassName}::{factoryMathod}, arg1, arg2, ...]
-     *       ⇒ Instantiate the target class with a factory method with arguments
-     *     [{ClassName}, arg1, arg2, ...]
-     *       ⇒ Instantiate the target class with a constructor with arguments
-     *
-     *  brank : (= null, '', [])
-     *       ⇒ return null
-     *
-     *  other : (= already instantiated)
-     *       ⇒ return input value
-     *
-     * @param mixed $config
-     * @return mixed
-     */
-    public static function instantiate($config)
-    {
-        if (Utils::isBlank($config)) {
-            return null;
-        }
-        if (is_string($config)) {
-            [$class, $method] = Strings::split($config, '::', 2);
-            return empty($method) ? new $class() : $class::$method() ;
-        }
-        if (is_array($config)) {
-            $class_config     = array_shift($config);
-            [$class, $method] = Strings::split($class_config, '::', 2);
-            return empty($method) ? new $class(...$config) : $class::$method(...$config) ;
-        }
-        return $config;
-    }
-
-    /**
      * Get value from an array or object using "dot" notation.
      *
      * ex)
@@ -114,7 +72,7 @@ class Reflector
             return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
         }
 
-        if (!property_exists($object, $current)) {
+        if (is_scalar($object) || !property_exists($object, $current)) {
             return $default;
         }
         $rp = new \ReflectionProperty($object, $current);
@@ -247,7 +205,7 @@ class Reflector
             }
             $nest_obj = $object[$current];
         } else {
-            if (!property_exists($object, $current)) {
+            if (is_scalar($object) || !property_exists($object, $current)) {
                 return false;
             }
             $rp = new \ReflectionProperty($object, $current);
@@ -594,41 +552,26 @@ class Reflector
     }
 
     /**
-     * Invoke a method given object
-     *
-     * @param string|object $object
-     * @param string $method
-     * @param array $args (default: [])
-     * @param boolean $accessible (default: false)
-     * @return mixed
-     */
-    public static function invoke($object, string $method, array $args = [], bool $accessible = false)
-    {
-        $method = new \ReflectionMethod($object, $method);
-        $method->setAccessible($accessible);
-        return $method->invoke(is_object($object) ? $object : null, ...$args);
-    }
-
-    /**
-     * Convert to args array from given map using parameter name as key.
+     * Convert to args array from given ordered or named values list.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array $map using parameter name as key.
+     * @param array $values that ordered or named.
      * @param bool $type_convert (default: false)
      * @return array
      */
-    public static function toArgs(array $parameters, array $map, bool $type_convert = false) : array
+    public static function toArgs(array $parameters, array $values, bool $type_convert = false) : array
     {
-        $args = [];
-        foreach ($parameters as $parameter) {
-            $name          = $parameter->name;
+        $orderd = Arrays::isSequential($values);
+        $args   = [];
+        foreach ($parameters as $i => $parameter) {
+            $name          = $parameter->name ;
             $type          = static::getTypeHint($parameter);
             $is_optional   = $parameter->isOptional();
             $is_variadic   = $parameter->isVariadic();
             $is_nullable   = $parameter->allowsNull();
-            $is_defined    = array_key_exists($name, $map);
+            $is_defined    = array_key_exists($orderd ? $i : $name, $values);
             $default_value = $is_optional && !$is_variadic ? $parameter->getDefaultValue() : ($is_variadic ? [] : null) ;
-            $value         = $map[$name] ?? $default_value ;
+            $value         = $values[$orderd ? $i : $name] ?? $default_value ;
             if (!$is_optional && (!$is_defined || (!$is_nullable && $value === null))) {
                 throw LogicException::by("Parameter '{$name}' is requierd.");
             }
@@ -652,6 +595,155 @@ class Reflector
             }
         }
         return $args;
+    }
+
+    /**
+     * Convert to named args array from given ordered args list.
+     *
+     * @param \ReflectionParameter[] $parameters of target function/method/constructor.
+     * @param array $values that ordered or named.
+     * @return array that named args map
+     */
+    public static function toNamedArgs(array $parameters, array $values) : array
+    {
+        if (!Arrays::isSequential($values)) {
+            return $values;
+        }
+
+        $args = [];
+        foreach ($parameters as $parameter) {
+            if (empty($values)) {
+                break;
+            }
+            if($parameter->isVariadic()) {
+                $args[$parameter->name] = $values;
+                break;
+            }
+            $args[$parameter->name] = array_shift($values);
+        }
+        return $args;
+    }
+
+    /**
+     * Merge two ordered or named args array to one named args.
+     *
+     * @param \ReflectionParameter[] $parameters of target function/method/constructor.
+     * @param array $defaults that ordered or named default args.
+     * @param array $args that ordered or named.
+     * @return array
+     */
+    public static function mergeArgs(array $parameters, array $defaults, array $args) : array
+    {
+        return array_merge(
+            static::toNamedArgs($parameters, $defaults),
+            static::toNamedArgs($parameters, $args)
+        );
+    }
+
+    /**
+     * Invoke a method of given object/class
+     * If the given args contains '@after' callback `function($returned) { ... }` then invoke the callback with invoked return value.
+     *
+     * @param string|object $object
+     * @param string $method
+     * @param array $args that ordered or named (default: [])
+     * @param boolean $accessible (default: false)
+     * @param boolean $type_convert (default: false)
+     * @return mixed
+     */
+    public static function invoke($object, string $method, array $args = [], bool $accessible = false, bool $type_convert = false)
+    {
+        $method = new \ReflectionMethod($object, $method);
+        $method->setAccessible($accessible);
+        $after  = \Closure::fromCallable(static::remove($args, '@after') ?? Callback::echoBack());
+        return $after($method->invoke(is_object($object) ? $object : null, ...static::toArgs($method->getParameters(), $args, $type_convert)));
+    }
+
+    /**
+     * Evaluate a given function
+     * If the given args contains '@after' callback `function($returned) { ... }` then invoke the callback with invoked return value.
+     *
+     * @param callable $function
+     * @param array $args that ordered or named (default: [])
+     * @param boolean $type_convert (default: false)
+     * @return mixed
+     */
+    public static function evaluate(callable $function, array $args = [], bool $type_convert = false)
+    {
+        $function = new \ReflectionFunction($function);
+        $after    = \Closure::fromCallable(static::remove($args, '@after') ?? Callback::echoBack());
+        return $after($function->invoke(...static::toArgs($function->getParameters(), $args, $type_convert)));
+    }
+
+    /**
+     * Create a new instance of given class.
+     * If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
+     *
+     * @param string $class
+     * @param array $args that ordered or named (default: [])
+     * @param bool $type_convert (default: false)
+     * @return mixed
+     */
+    public static function create(string $class, array $args = [], bool $type_convert = false)
+    {
+        $rc          = new \ReflectionClass($class);
+        $constractor = $rc->getConstructor();
+        $after       = \Closure::fromCallable(static::remove($args, '@after') ?? Callback::echoBack());
+        return $after($rc->newInstanceArgs(static::toArgs($constractor ? $constractor->getParameters() : [], $args, $type_convert)));
+    }
+
+    /**
+     * Instantiate based on the definition object.
+     * The definition objects that instance creation can deal with are as follows.
+     *
+     *  string :
+     *     {ClassName}::{factoryMathod}
+     *       => Instantiate the target class with a factory method without arguments
+     *     {ClassName}
+     *       => Instantiate the target class with a constructor without arguments
+     *
+     *  ordered array :
+     *     [{ClassName}::{factoryMathod}, arg1, arg2, ...]
+     *       ⇒ Instantiate the target class with a factory method with arguments
+     *     [{ClassName}, arg1, arg2, ...]
+     *       ⇒ Instantiate the target class with a constructor with arguments
+     *     NOTE:
+     *         If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
+     *
+     *  named array :
+     *     ['key_name' => {ClassName}::{factoryMathod}, 'arg1' => value1, 'arg2' => value2, ...]
+     *       ⇒ Instantiate the target class with a factory method with arguments
+     *     ['key_name' => {ClassName}, 'arg1' => value1, 'arg2' => value2, ...]
+     *       ⇒ Instantiate the target class with a constructor with arguments
+     *     NOTE:
+     *         If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
+     *
+     *  brank : (= null, '', [])
+     *       ⇒ return null
+     *
+     *  other : (= already instantiated)
+     *       ⇒ return input value
+     *
+     * @param mixed $config
+     * @param string|null $key name for named array instantiation (default: null)
+     * @return mixed
+     */
+    public static function instantiate($config, ?string $key = null)
+    {
+        if (Utils::isBlank($config)) {
+            return null;
+        }
+        if (is_string($config)) {
+            [$class, $method] = Strings::split($config, '::', 2);
+            return empty($method) ? new $class() : $class::$method() ;
+        }
+        if (is_array($config)) {
+            $class_config     = static::remove($config, $key ?? 0);
+            [$class, $method] = Strings::split($class_config, '::', 2);
+            $config           = array_merge($config);
+            return empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config) ;
+        }
+        return $config;
     }
 
     /**

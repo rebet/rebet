@@ -29,6 +29,8 @@ use Rebet\Routing\Router;
 use Rebet\Tests\Common\Mock\Address;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Translation\Translator;
+use Rebet\Log\Log;
+use Rebet\Log\Driver\Monolog\TestDriver;
 
 /**
  * RebetTestCase Class
@@ -58,6 +60,13 @@ abstract class RebetTestCase extends TestCase
                 'locale'    => 'ja',
                 'resources' => [
                     'i18n' => App::path('/resources/i18n'),
+                ],
+            ],
+            Log::class => [
+                'channels' => [
+                    'default' => [
+                        'driver' => TestDriver::class,
+                    ],
                 ],
             ],
             Namespaces::class => [

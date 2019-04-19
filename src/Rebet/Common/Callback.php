@@ -14,6 +14,11 @@ use Rebet\Common\Exception\LogicException;
 class Callback
 {
     /**
+     * @var array
+     */
+    protected static $cache = [];
+
+    /**
      * No instantiation
      */
     private function __construct()
@@ -89,7 +94,7 @@ class Callback
      * @param bool $verbose (default: true)
      * @return string
      */
-    public static function toString(callable $callback, bool $verbose = true) : string
+    public static function stringify(callable $callback, bool $verbose = true) : string
     {
         $reflector = new \ReflectionFunction(\Closure::fromCallable($callback));
         $class     = $reflector->getClosureScopeClass();
@@ -132,5 +137,25 @@ class Callback
         }
 
         return $string;
+    }
+
+    /**
+     * Return the echo back closure.
+     *
+     * @return \Closure
+     */
+    public static function echoBack() : \Closure
+    {
+        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = function($value) { return $value; };
+    }
+
+    /**
+     * Return the string length comparator.
+     *
+     * @return \Closure
+     */
+    public static function compareLength() : \Closure
+    {
+        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; });
     }
 }

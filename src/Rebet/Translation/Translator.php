@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Translation;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Callback;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
@@ -202,10 +203,10 @@ class Translator
             return $sentence;
         }
 
-        $replacement = Stream::of($replacement, true)->sortKeys(SORT_DESC, Callback::compare(function ($key) { return $key ? mb_strlen($key) : 0 ; }))->return();
+        $replacement = Stream::of($replacement, true)->sortKeys(SORT_DESC, Callback::compareLength())->return();
         $delimiter   = static::grammar($group, 'delimiter', ', ', $locale);
         foreach ($replacement as $key => $value) {
-            $value    = is_array($value) ? implode($delimiter, $value) : $value ;
+            $value    = is_array($value) ? implode($delimiter, Arrays::flatten($value)) : $value ;
             $sentence = str_replace(':'.$key, $value, $sentence);
         }
 

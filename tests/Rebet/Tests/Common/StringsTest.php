@@ -3,6 +3,10 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Common\Strings;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Foundation\App;
+use Rebet\Tests\Mock\ToStringStub;
+use Rebet\DateTime\DateTime;
+use Rebet\Tests\Mock\JsonSerializableStub;
 
 class StringsTest extends RebetTestCase
 {
@@ -265,4 +269,151 @@ class StringsTest extends RebetTestCase
 
         $this->assertSame(['1', '-'], Strings::split('1', ',', 2, '-'));
     }
+
+    public function dataStringifis() : array
+    {
+        parent::setUp();
+        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+        return [
+            ['null', null],
+            ['single line text', 'single line text'],
+            [
+<<<EOS
+array:1 [
+    0 => single line text in array
+]
+EOS
+                , ['single line text in array']
+            ],
+            [
+<<<EOS
+multi
+line
+text
+EOS
+                , "multi\nline\ntext"
+            ],
+            [
+<<<EOS
+array:1 [
+    0 => """
+        multi
+        line
+        text
+        in
+        array
+    """
+]
+EOS
+                , ["multi\nline\ntext\nin\narray"]
+            ],
+            ['123', 123],
+            ['123.456', 123.456],
+            ['1', true],
+            ['*stream*', fopen(App::path('/resources/image/72x72.png'), 'r')],
+            ['2010-10-20 10:20:30', DateTime::now()],
+            ['2010-10-20 10:20:30', new \DateTime('2010-10-20 10:20:30')],
+            ['2010-10-20 10:20:30', new \DateTimeImmutable('2010-10-20 10:20:30')],
+            ['Rebet\Tests\Mock\ToStringStub : single line', new ToStringStub('single line')],
+            [
+<<<EOS
+array:1 [
+    0 => Rebet\Tests\Mock\ToStringStub : single line text in array
+]
+EOS
+                , [new ToStringStub('single line text in array')]
+            ],
+            [
+<<<EOS
+Rebet\Tests\Mock\ToStringStub : """
+    multi
+    line
+    text
+"""
+EOS
+                , new ToStringStub("multi\nline\ntext")
+            ],
+            [
+<<<EOS
+array:1 [
+    0 => Rebet\Tests\Mock\ToStringStub : """
+        multi
+        line
+        text
+        in
+        array
+    """
+]
+EOS
+                , [new ToStringStub("multi\nline\ntext\nin\narray")]
+            ],
+            ['Rebet\Tests\Common\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function($a, ?int $b, string $c = 'default') : ?bool { return true; }],
+            ['Rebet\Tests\Mock\JsonSerializableStub : 123', new JsonSerializableStub(123)],
+            ['Rebet\Tests\Mock\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
+            [
+<<<EOS
+Rebet\Tests\Mock\JsonSerializableStub : array:1 [
+    a => A
+]
+EOS
+                , new JsonSerializableStub(['a' => 'A'])
+            ],
+            ['[]', []],
+            [
+<<<EOS
+array:3 [
+    0 => 1,
+    1 => 2,
+    2 => 3
+]
+EOS
+                , [1, 2, 3]
+            ],
+            [
+<<<EOS
+array:3 [
+    a => A,
+    b => B,
+    c => C
+]
+EOS
+                , ['a' => 'A', 'b' => 'B', 'c' => 'C']
+            ],
+            [
+<<<EOS
+array:2 [
+    0 => 1,
+    1 => array:2 [
+        0 => 2,
+        1 => array:1 [
+            0 => 3
+        ]
+    ]
+]
+EOS
+                , [1, [2, [3]]]
+            ],
+            [
+<<<EOS
+ArrayObject:3 [
+    0 => 1,
+    1 => 2,
+    2 => 3
+]
+EOS
+                , new \ArrayObject([1, 2, 3])
+            ],
+            ['<instance of Rebet\Tests\Common\StringsTest_Mock>', new StringsTest_Mock()],
+       ];
+    }
+
+    /**
+     * @dataProvider dataStringifis
+     */
+    public function test_stringify($expect, $value)
+    {
+        $this->assertSame($expect, Strings::stringify($value));
+    }
 }
+
+class StringsTest_Mock {}

@@ -2,6 +2,7 @@
 namespace Rebet\Common;
 
 use Rebet\Common\Exception\LogicException;
+use Rebet\DateTime\DateTime;
 
 /**
  * Strings Utility Class
@@ -419,14 +420,26 @@ class Strings
      * @param mixed $value
      * @return string
      */
-    public static function toString($value) : string
+    public static function stringify($value) : string
+    {
+        return static::_stringify($value, false);
+    }
+
+    /**
+     * Convert value to string.
+     *
+     * @param mixed $value
+     * @param bool $is_nested
+     * @return string
+     */
+    protected static function _stringify($value, bool $is_nested) : string
     {
         if ($value === null) {
             return 'null';
         }
         if (is_string($value)) {
-            if (Strings::contains($value, "\n")) {
-                return '"""'."\n".static::indent($value, ' ', 2)."\n".'"""'."\n";
+            if ($is_nested && Strings::contains($value, "\n")) {
+                return '"""'."\n".static::indent($value, '    ')."\n".'"""';
             }
             return $value;
         }
@@ -436,17 +449,22 @@ class Strings
         if (is_resource($value)) {
             return '*'.get_resource_type($value).'*';
         }
+        if($value instanceof \DateTimeInterface) {
+            return $value->format(DateTime::config('default_format'));
+        }
         if (method_exists($value, '__toString')) {
-            return $value->__toString();
+            $class = get_class($value);
+            $value = $value->__toString();
+            if (Strings::contains($value, "\n")) {
+                return $class.' : """'."\n".static::indent($value, '    ')."\n".'"""';
+            }
+            return $class.' : '.$value;
         }
         if (is_callable($value)) {
-            return Callback::toString($value);
+            return Callback::stringify($value);
         }
         if (is_object($value) && $value instanceof \JsonSerializable) {
-            $json = $value->jsonSerialize();
-            if (is_scalar($json)) {
-                return (string)$json;
-            }
+            return get_class($value)." : ".static::_stringify($value->jsonSerialize(), true) ;
         }
         if (is_array($value) && empty($value)) {
             return "[]";
@@ -455,17 +473,14 @@ class Strings
             $describes = '';
             $count     = 0;
             foreach ($value as $k => $v) {
-                $describes .= "\n".static::indent("{$k} => ".static::toString($v).", ", ' ', 4);
+                $describes .= "\n".static::indent("{$k} => ".static::_stringify($v, true).",", '    ');
                 $count++;
             }
-            return (Reflector::getType($value) ?? 'unkown').":{$count} [".static::rtrim($describes, ', ')."\n]";
+            return (Reflector::getType($value) ?? 'unkown').":{$count} [".static::rtrim($describes, ',')."\n]";
         }
 
-        $class         = new \ReflectionClass($value);
-        $namespace     = $class->getNamespaceName();
-        $namespace_cut = static::rbtrim($namespace, '\\');
-        $namespace     = $namespace === $namespace_cut ? $namespace : "..\\{$namespace_cut}" ;
-        return '<instance of '.$namespace.'\\'.$class->getShortName().'>';
+        $class = get_class($value);
+        return "<instance of {$class}>";
     }
 
     /**

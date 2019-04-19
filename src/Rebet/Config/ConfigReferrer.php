@@ -68,6 +68,6 @@ class ConfigReferrer implements DotAccessDelegator
      */
     public function __toString()
     {
-        return "<Referrer: {$this->section}.{$this->key} (default: ".Strings::toString($this->default).")>";
+        return "<Referrer: {$this->section}.{$this->key} (default: ".Strings::stringify($this->default).")>";
     }
 }
