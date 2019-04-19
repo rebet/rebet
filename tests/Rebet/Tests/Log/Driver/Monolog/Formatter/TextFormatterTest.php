@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
-use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
-use Rebet\Tests\RebetTestCase;
 use Psr\Log\LogLevel;
 use Rebet\DateTime\DateTime;
+use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
+use Rebet\Tests\RebetTestCase;
 
 class TextFormatterTest extends RebetTestCase
 {
@@ -22,11 +22,11 @@ class TextFormatterTest extends RebetTestCase
     public function dataFormats() : array
     {
         return [
-            ["2010-10-20 10:20:30.123456 [web.DEBUG] Log Message.\n"],
-            ["2010-10-20 10:20:30.123456 [web.INFO] Log Message.\n", ['level_name' => 'INFO']],
+            ["2010-10-20 10:20:30.123456 web [DEBUG] Log Message.\n"],
+            ["2010-10-20 10:20:30.123456 web [INFO] Log Message.\n", ['level_name' => 'INFO']],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message.
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
 ====== [  CONTEXT  ] ======
 == array:1 [
 ==     foo => FOO
@@ -35,23 +35,23 @@ EOS
                 , ['context' => ['foo' => 'FOO']]
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message. <FOO>
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO>
 EOS
                 , ['context' => ['foo' => 'FOO']]
-                , "{datetime} [{channel}.{level_name}] {message} <{context.foo}>{context}{extra}{exception}\n"
+                , "{datetime} {channel} [{level_name}] {message} <{context.foo}>{context}{extra}{exception}\n"
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message. <FOO><>
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO><>
 EOS
                 , ['context' => ['foo' => 'FOO']]
-                , "{datetime} [{channel}.{level_name}] {message} <{context.foo}><{context.bar}>{context}{extra}{exception}\n"
+                , "{datetime} {channel} [{level_name}] {message} <{context.foo}><{context.bar}>{context}{extra}{exception}\n"
             ],
 
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message.
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
 ------ [   EXTRA   ] ------
 -- array:1 [
 --     foo => FOO
@@ -60,30 +60,30 @@ EOS
                 , ['extra' => ['foo' => 'FOO']]
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message. <FOO>
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO>
 EOS
                 , ['extra' => ['foo' => 'FOO']]
-                , "{datetime} [{channel}.{level_name}] {message} <{extra.foo}>{context}{extra}{exception}\n"
+                , "{datetime} {channel} [{level_name}] {message} <{extra.foo}>{context}{extra}{exception}\n"
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message. <FOO><>
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message. <FOO><>
 EOS
                 , ['extra' => ['foo' => 'FOO']]
-                , "{datetime} [{channel}.{level_name}] {message} <{extra.foo}><{extra.bar}>{context}{extra}{exception}\n"
+                , "{datetime} {channel} [{level_name}] {message} <{extra.foo}><{extra.bar}>{context}{extra}{exception}\n"
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message.
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
 ****** [ EXCEPTION ] ******
 ** Exception: Test Exception in 
 EOS
                 , ['exception' => new \Exception("Test Exception")]
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message.
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
 ====== [  CONTEXT  ] ======
 == array:1 [
 ==     foo => FOO
@@ -96,14 +96,14 @@ EOS
 ** Exception: Test Exception in 
 EOS
                 , [
-                    'context' => ['foo' => 'FOO'],
-                    'extra' => ['bar' => 'BAR'],
+                    'context'   => ['foo' => 'FOO'],
+                    'extra'     => ['bar' => 'BAR'],
                     'exception' => new \Exception("Test Exception")
                 ]
             ],
             [
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] array:1 [
+                <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] array:1 [
     foo => FOO
 ]
 EOS
@@ -111,12 +111,12 @@ EOS
                     'message' => ['foo' => 'FOO'],
                 ]
             ],
-            ["2010年10月20日(水) 10:20:30.123456 [web.DEBUG] Log Message.\n", [], null, [
+            ["2010年10月20日(水) 10:20:30.123456 web [DEBUG] Log Message.\n", [], null, [
                 '{datetime}'  => function (DateTime $val) { return $val->format('Xddd Xttt'); },
             ]],
         ];
     }
-    
+
     /**
      * @dataProvider dataFormats
      */
@@ -159,12 +159,13 @@ EOS
             ],
         ];
         $this->assertSame(
-<<<EOS
-2010-10-20 10:20:30.123456 [web.DEBUG] Log Message 1.
-2010-10-20 10:20:31.987654 [web.INFO] Log Message 2.
+            <<<EOS
+2010-10-20 10:20:30.123456 web [DEBUG] Log Message 1.
+2010-10-20 10:20:31.987654 web [INFO] Log Message 2.
 
 EOS
-            , $formatter->formatBatch($records)
+            ,
+            $formatter->formatBatch($records)
         );
     }
 }
