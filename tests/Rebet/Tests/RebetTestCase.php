@@ -24,13 +24,13 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\ArraySessionStorage;
+use Rebet\Log\Driver\Monolog\TestDriver;
+use Rebet\Log\Log;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Router;
 use Rebet\Tests\Common\Mock\Address;
 use Rebet\Tests\Common\Mock\User;
 use Rebet\Translation\Translator;
-use Rebet\Log\Log;
-use Rebet\Log\Driver\Monolog\TestDriver;
 
 /**
  * RebetTestCase Class

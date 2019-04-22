@@ -6,12 +6,12 @@ use Rebet\Config\Config;
 use Rebet\Config\ConfigPromise;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Log\Log;
 use Rebet\Routing\Router;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
-use Rebet\Log\Log;
 
 /**
  * Application Config Class
@@ -249,7 +249,7 @@ class App
     /**
      * Set the current entry point name.
      *
-     * @param string $entry_point エントリポイント名
+     * @param string $entry_point
      */
     public static function setEntryPoint(string $entry_point) : void
     {
