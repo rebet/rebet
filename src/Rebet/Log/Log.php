@@ -72,7 +72,7 @@ class Log
                 ],
             ],
             'default_channel' => 'default',
-            'fallback_log'    => STDERR ?? 'php://stderr',
+            'fallback_log'    => defined('STDERR') ? STDERR : 'php://stderr',
         ];
     }
 
