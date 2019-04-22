@@ -72,7 +72,7 @@ class Log
                 ],
             ],
             'default_channel' => 'default',
-            'fallback_log'    => STDERR,
+            'fallback_log'    => STDERR ?? 'php://stderr',
         ];
     }
 
@@ -138,7 +138,7 @@ class Log
      */
     protected static function fallbackLogger() : Logger
     {
-        $handler = new StreamHandler(static::config('fallback_log', false, STDERR));
+        $handler = new StreamHandler(static::config('fallback_log', false, 'php://stderr'));
         $handler->setFormatter(MonologDriver::formatter(TextFormatter::class));
         return new Logger(new MonologDriver('rebet', LogLevel::DEBUG, [$handler]));
     }

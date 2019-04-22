@@ -16,6 +16,10 @@ class StderrDriverTest extends RebetTestCase
         $this->assertInstanceOf(ProcessIdProcessor::class, $driver->popProcessor());
         $handler = $driver->popHandler();
         $this->assertInstanceOf(StreamHandler::class, $handler);
-        $this->assertSame(STDERR, $handler->getStream());
+        if (defined('STDERR')) {
+            $this->assertSame(STDERR, $handler->getStream());
+        } else {
+            $this->assertSame('php://stderr', $handler->getUrl());
+        }
     }
 }

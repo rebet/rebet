@@ -36,7 +36,7 @@ class StderrDriver extends MonologDriver
      */
     public function __construct(string $name, string $level, string $format = null, string $datetime_format = null, bool $bubble = true)
     {
-        $handler = new StreamHandler(STDERR, $level, $bubble, null, false);
+        $handler = new StreamHandler(STDERR ?? 'php://stderr', $level, $bubble, null, false);
         $handler->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
         parent::__construct($name, $level, [$handler]);
     }
