@@ -65,6 +65,8 @@ class FilesTest extends RebetTestCase
         } else {
             try {
                 Files::zip('vfs://root/public', 'vfs://root/var/public.zip');
+                $zip = file_get_contents('vfs://root/var/public.zip');
+                $this->assertNotFalse($zip);
             } catch (\ErrorException $e) {
                 $this->assertSame(
                     'ZipArchive::close(): Failure to create temporary file: No such file or directory',
