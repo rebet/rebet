@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
-use Psr\Log\LogLevel;
+use Monolog\Logger as MonologLogger;
 use Rebet\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Tests\RebetTestCase;
@@ -125,8 +125,8 @@ EOS
         $record = array_merge([
             'message'    => 'Log Message.',
             'context'    => [],
-            'level'      => LogLevel::DEBUG,
-            'level_name' => 'DEBUG',
+            'level'      => MonologLogger::DEBUG,
+            'level_name' => MonologLogger::getLevelName($record['level'] ?? MonologLogger::DEBUG),
             'channel'    => 'web',
             'datetime'   => DateTime::now()->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
             'extra'      => [],
@@ -142,8 +142,8 @@ EOS
             [
                 'message'    => 'Log Message 1.',
                 'context'    => [],
-                'level'      => LogLevel::DEBUG,
-                'level_name' => 'DEBUG',
+                'level'      => MonologLogger::DEBUG,
+                'level_name' => MonologLogger::getLevelName(MonologLogger::DEBUG),
                 'channel'    => 'web',
                 'datetime'   => DateTime::createDateTime('2010-10-20 10:20:30.123456')->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
                 'extra'      => [],
@@ -151,8 +151,8 @@ EOS
             [
                 'message'    => 'Log Message 2.',
                 'context'    => [],
-                'level'      => LogLevel::INFO,
-                'level_name' => 'INFO',
+                'level'      => MonologLogger::INFO,
+                'level_name' => MonologLogger::getLevelName(MonologLogger::INFO),
                 'channel'    => 'web',
                 'datetime'   => DateTime::createDateTime('2010-10-20 10:20:31.987654')->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
                 'extra'      => [],

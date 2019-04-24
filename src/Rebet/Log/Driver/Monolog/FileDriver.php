@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Log\Driver\Monolog;
 
-use Monolog\Handler\BrowserConsoleHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Rebet\Common\Arrays;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
+use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 
 /**
  * File Driver Class
@@ -63,18 +63,15 @@ class FileDriver extends MonologDriver
         ?string $datetime_format     = null,
         bool $bubble                 = true
     ) {
-        $handler = new RotatingFileHandler($filename, $max_files, $level, $bubble, $file_permission, $use_locking);
-        $handler->setFilenameFormat($filename_format, $filename_date_format);
-        $handler->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
-        $handlers = [$handler];
+        $rfh = new RotatingFileHandler($filename, $max_files, $level, $bubble, $file_permission, $use_locking);
+        $rfh->setFilenameFormat($filename_format, $filename_date_format);
+        $rfh->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
+        $handlers = [$rfh];
 
         if ($with_browser_console) {
-            $bch = new BrowserConsoleHandler($level, $bubble);
-            $bch->setFormatter(static::formatter(TextFormatter::class, Arrays::compact([
-                'format'          => str_replace(['{channel}', '{level_name}'], ['[[{channel}]]{macro: autolabel}', '[[{level_name}]]{font-weight: bold}'], $format),
-                'datetime_format' => $datetime_format
-            ])));
-            $handlers[] = $bch;
+            $sbch = new SimpleBrowserConsoleHandler($level, $bubble);
+            $sbch->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
+            $handlers[] = $sbch;
         }
 
         parent::__construct($name, $level, $handlers);

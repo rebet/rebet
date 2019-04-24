@@ -2,7 +2,6 @@
 namespace Rebet\Log;
 
 use Monolog\Handler\StreamHandler;
-use PHPUnit\Runner\Exception;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;

@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Log\Driver\Monolog;
 
-use Monolog\Handler\BrowserConsoleHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Rebet\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\FileDriver;
+use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
 
@@ -36,7 +36,7 @@ class FileDriverTest extends RebetTestCase
         $handlers = $driver->getHandlers();
         $this->assertSame(2, count($handlers));
         $this->assertInstanceOf(RotatingFileHandler::class, $handlers[0] ?? null);
-        $this->assertInstanceOf(BrowserConsoleHandler::class, $handlers[1] ?? null);
+        $this->assertInstanceOf(SimpleBrowserConsoleHandler::class, $handlers[1] ?? null);
 
         $driver->debug('TEST');
 
