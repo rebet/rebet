@@ -54,7 +54,7 @@ class AnnotatedClass
     /**
      * Get class annotations
      *
-     * @return array [@Annotation, ...]
+     * @return array [Annotation, ...]
      */
     public function annotations() : array
     {
@@ -65,7 +65,7 @@ class AnnotatedClass
      * Get class annotation
      *
      * @param string $annotation
-     * @return mixed @Annotation
+     * @return mixed Annotation
      */
     public function annotation(string $annotation)
     {

@@ -3,7 +3,7 @@ namespace Rebet\Tests\Enum;
 
 use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
 
@@ -69,7 +69,7 @@ class EnumTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid enum const. Rebet\Tests\Mock\Gender::INVALID is not defined.
+     * @expectedExceptionMessage Invalid enum const. Rebet\Tests\Mock\Enum\Gender::INVALID is not defined.
      */
     public function test_callStatic_undefine()
     {
@@ -181,7 +181,7 @@ class EnumTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
+     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
      */
     public function test_maps_invalid()
     {
@@ -207,7 +207,7 @@ class EnumTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
+     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
      */
     public function test_fieldOf_invalid()
     {
@@ -313,7 +313,7 @@ class EnumTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
+     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
      */
     public function test_listOf_invalid()
     {
@@ -491,7 +491,7 @@ class EnumTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Gender->invalid is not exists.
+     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
      */
     public function test_nextOf_invalid()
     {

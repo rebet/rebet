@@ -166,9 +166,9 @@ abstract class Route
     /**
      * Get the method annotation accessor for this route.
      *
-     * @return AnnotatedMethod
+     * @return AnnotatedMethod|null
      */
-    public function getAnnotatedMethod() : AnnotatedMethod
+    public function getAnnotatedMethod() : ?AnnotatedMethod
     {
         return $this->route_action ? $this->route_action->getAnnotatedMethod() : null ;
     }

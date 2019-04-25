@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Mock;
+namespace Rebet\Tests\Mock\Enum;
 
 use Rebet\Enum\Enum;
 

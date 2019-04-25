@@ -6,7 +6,7 @@ use Rebet\Http\Response;
 use Rebet\Routing\RouteAction;
 
 /**
- * ClosureRoute class
+ * Closure Route class
  *
  * @package   Rebet
  * @author    github.com/rain-noise

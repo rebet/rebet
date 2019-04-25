@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Auth\Annotation;
+namespace Rebet\Tests\Routing\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Auth\Annotation\Role;
-use Rebet\Tests\Mock\AnnotatedStub;
+use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
 class RoleTest extends RebetTestCase

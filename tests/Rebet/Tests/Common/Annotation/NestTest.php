@@ -4,7 +4,7 @@ namespace Rebet\Tests\Common\Annotation;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Common\Annotation\Nest;
 use Rebet\Tests\Common\Mock\User;
-use Rebet\Tests\Mock\AnnotatedStub;
+use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
 class NestTest extends RebetTestCase

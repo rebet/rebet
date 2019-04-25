@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Routing\Nest;
+namespace Rebet\Tests\Mock\Different;
 
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Controller;
@@ -7,10 +7,10 @@ use Rebet\Routing\Controller;
 /**
  * @Channel("web")
  */
-class NestController extends Controller
+class DifferentNamespaceController extends Controller
 {
     public function foo()
     {
-        return 'Nest: foo';
+        return 'Different: foo';
     }
 }

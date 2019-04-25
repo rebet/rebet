@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Mock;
+namespace Rebet\Tests\Mock\Stub;
 
 class JsonSerializableStub implements \JsonSerializable
 {

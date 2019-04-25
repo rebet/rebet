@@ -4,7 +4,7 @@ namespace Rebet\Tests\Common;
 use Rebet\Common\Callback;
 use Rebet\Config\Layer;
 use Rebet\Enum\Enum;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 
 class CallbackTest extends RebetTestCase
@@ -238,7 +238,7 @@ class CallbackTest extends RebetTestCase
             ['Rebet\Tests\Common\CallbackTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
             ['CallbackTest::{closure}(&$a, &...$s)'                                , function (array &$a, string &...$s) { }, false],
 
-            ['Rebet\Tests\Common\CallbackTest::{closure}(Rebet\Tests\Mock\Gender $g) : Rebet\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
+            ['Rebet\Tests\Common\CallbackTest::{closure}(Rebet\Tests\Mock\Enum\Gender $g) : Rebet\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
             ['CallbackTest::{closure}($g)'                                                             , function (Gender $g) : Enum { return $g; } , false],
         ];
     }

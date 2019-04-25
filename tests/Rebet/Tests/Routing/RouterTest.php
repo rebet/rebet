@@ -9,16 +9,14 @@ use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
-use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Controller;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Router;
-use Rebet\Tests\Mock\DifferentNamespaceController;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Different\DifferentNamespaceController;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
@@ -33,7 +31,7 @@ class RouterTest extends RebetTestCase
         Config::application([
             Namespaces::class => [
                 'aliases' => [
-                    '@controller' => '\\Rebet\\Tests\\Routing',
+                    '@controller' => '\\Rebet\\Tests\\Mock\\Controller',
                 ],
             ],
             Router::class => [
@@ -138,20 +136,20 @@ class RouterTest extends RebetTestCase
                 return View::of('welcome')->with(['name' => 'Samantha']);
             });
 
-            Router::get('/method/private-call', 'RouterTestController::privateCall');
-            Router::get('/method/private-call-accessible', 'RouterTestController::privateCall')->accessible(true);
-            Router::get('/method/protected-call', 'RouterTestController::protectedCall');
-            Router::get('/method/protected-call-accessible', 'RouterTestController::protectedCall')->accessible(true);
-            Router::get('/method/public-call', 'RouterTestController::publicCall');
-            Router::get('/method/with-param/{id}', 'RouterTestController::withParam');
-            Router::get('/method/with-param/where/{id}', 'RouterTestController::withParam')->where('id', '/^[0-9]+$/');
-            Router::get('/method/with-param/missmatch/{bad_name}', 'RouterTestController::withParam');
-            Router::get('/method/with-optional-param/{id?}', 'RouterTestController::withOptionalParam');
-            Router::get('/method/with-multi-param/{from}/to/{to}', 'RouterTestController::withMultiParam');
-            Router::get('/method/with-multi-param/invert/{from}/to/{to}', 'RouterTestController::withMultiInvertParam');
-            Router::get('/method/with-convert-enum-param/{gender}', 'RouterTestController::withConvertEnumParam');
+            Router::get('/method/private-call', 'TestController::privateCall');
+            Router::get('/method/private-call-accessible', 'TestController::privateCall')->accessible(true);
+            Router::get('/method/protected-call', 'TestController::protectedCall');
+            Router::get('/method/protected-call-accessible', 'TestController::protectedCall')->accessible(true);
+            Router::get('/method/public-call', 'TestController::publicCall');
+            Router::get('/method/with-param/{id}', 'TestController::withParam');
+            Router::get('/method/with-param/where/{id}', 'TestController::withParam')->where('id', '/^[0-9]+$/');
+            Router::get('/method/with-param/missmatch/{bad_name}', 'TestController::withParam');
+            Router::get('/method/with-optional-param/{id?}', 'TestController::withOptionalParam');
+            Router::get('/method/with-multi-param/{from}/to/{to}', 'TestController::withMultiParam');
+            Router::get('/method/with-multi-param/invert/{from}/to/{to}', 'TestController::withMultiInvertParam');
+            Router::get('/method/with-convert-enum-param/{gender}', 'TestController::withConvertEnumParam');
             Router::get('/method/namespace/nest', 'Nest\\NestController::foo');
-            Router::get('/method/namespace/different', 'Rebet\\Tests\\Mock\\DifferentNamespaceController::foo');
+            Router::get('/method/namespace/different', 'Rebet\\Tests\\Mock\\Different\\DifferentNamespaceController::foo');
 
             Router::redirect('/redirect', '/destination');
             Router::redirect('/redirect/with-param/replace/{id}', '/destination/{id}');
@@ -168,11 +166,11 @@ class RouterTest extends RebetTestCase
             Router::view('/view/with-param/{name}', 'welcome');
             Router::view('/view/not-found/{name}', 'not-found');
 
-            Router::controller('/controller/namespace/short', 'RouterTestController');
+            Router::controller('/controller/namespace/short', 'TestController');
             Router::controller('/controller/namespace/nest', 'Nest\\NestController');
             Router::controller('/controller/namespace/different', DifferentNamespaceController::class);
-            Router::controller('/controller/accessble', 'RouterTestController')->accessible(true);
-            Router::controller('/controller/where', 'RouterTestController')->where('id', '/^[a-z]*$/');
+            Router::controller('/controller/accessble', 'TestController')->accessible(true);
+            Router::controller('/controller/where', 'TestController')->where('id', '/^[a-z]*$/');
         });
     }
 
@@ -401,7 +399,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} where [] not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Gender.
+     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} where [] not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
      */
     public function test_routing_parameterOptionInvalidConvert()
     {
@@ -641,7 +639,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.
      */
     public function test_routing_controllerAnnotationChannelReject()
     {
@@ -650,7 +648,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationMethodGet not found. Routing method 'POST' not allowed.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.
      */
     public function test_routing_controllerAnnotationMethodReject()
     {
@@ -659,7 +657,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.
      */
     public function test_routing_controllerAnnotationWhereReject()
     {
@@ -668,7 +666,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.
      */
     public function test_routing_controllerAnnotationClassWhereReject()
     {
@@ -677,7 +675,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::annotationNotRouting ] is not routing.
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationNotRouting ] is not routing.
      */
     public function test_routing_controllerAnnotationNotRouting()
     {
@@ -686,7 +684,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::undefinedAction ] not exists.
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::undefinedAction ] not exists.
      */
     public function test_routing_controllerUndefinedAction()
     {
@@ -695,7 +693,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::privateCall ] not accessible.
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::privateCall ] not accessible.
      */
     public function test_routing_controllerPrivateCall()
     {
@@ -704,7 +702,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::protectedCall ] not accessible.
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::protectedCall ] not accessible.
      */
     public function test_routing_controllerProtectedCall()
     {
@@ -746,7 +744,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_controllerWhereReject()
     {
@@ -760,43 +758,43 @@ class RouterTest extends RebetTestCase
             Router::default(ConventionalRoute::class);
         });
 
-        $response = Router::handle(Request::create('/router-test/public-call'));
+        $response = Router::handle(Request::create('/test/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-param/123'));
+        $response = Router::handle(Request::create('/test/with-param/123'));
         $this->assertSame('Controller: withParam - 123', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-optional-param/abc'));
+        $response = Router::handle(Request::create('/test/with-optional-param/abc'));
         $this->assertSame('Controller: withOptionalParam - abc', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-optional-param/'));
+        $response = Router::handle(Request::create('/test/with-optional-param/'));
         $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-optional-param'));
+        $response = Router::handle(Request::create('/test/with-optional-param'));
         $this->assertSame('Controller: withOptionalParam - default', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-multi-param/1/10'));
+        $response = Router::handle(Request::create('/test/with-multi-param/1/10'));
         $this->assertSame('Controller: withMultiParam - 1 to 10', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-multi-invert-param/1/10'));
+        $response = Router::handle(Request::create('/test/with-multi-invert-param/1/10'));
         $this->assertSame('Controller: withMultiInvertParam - 10 to 1', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-convert-enum-param/1'));
+        $response = Router::handle(Request::create('/test/with-convert-enum-param/1'));
         $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/annotation-method-get'));
+        $response = Router::handle(Request::create('/test/annotation-method-get'));
         $this->assertSame('Controller: annotationMethodGet', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/annotation-where/abc'));
+        $response = Router::handle(Request::create('/test/annotation-where/abc'));
         $this->assertSame('Controller: annotationWhere - abc', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/annotation-class-where/123'));
+        $response = Router::handle(Request::create('/test/annotation-class-where/123'));
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/'));
+        $response = Router::handle(Request::create('/test/'));
         $this->assertSame('Controller: index', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test'));
+        $response = Router::handle(Request::create('/test'));
         $this->assertSame('Controller: index', $response->getContent());
 
         $response = Router::handle(Request::create('/'));
@@ -813,19 +811,19 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/top/with-param/abc'));
         $this->assertSame('Top: withParam - abc', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/with-param/abc'));
+        $response = Router::handle(Request::create('/test/with-param/abc'));
         $this->assertSame('Controller: withParam - abc', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/annotation-where/ABC'));
+        $response = Router::handle(Request::create('/test/annotation-where/ABC'));
         $this->assertSame('Controller: annotationWhere - ABC', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/annotation-class-where/123'));
+        $response = Router::handle(Request::create('/test/annotation-class-where/123'));
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
     }
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_defaultConventionalRouteWhereRejectTop()
     {
@@ -839,7 +837,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Routing\RouterTestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
+     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
      */
     public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
     {
@@ -848,7 +846,7 @@ class RouterTest extends RebetTestCase
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
         });
 
-        $response = Router::handle(Request::create('/router-test/with-param/ABC'));
+        $response = Router::handle(Request::create('/test/with-param/ABC'));
     }
 
     public function test_routing_defaultConventionalRouteAccessible()
@@ -858,16 +856,16 @@ class RouterTest extends RebetTestCase
             Router::default(ConventionalRoute::class)->accessible(true);
         });
 
-        $response = Router::handle(Request::create('/router-test/private-call'));
+        $response = Router::handle(Request::create('/test/private-call'));
         $this->assertSame('Controller: privateCall', $response->getContent());
 
-        $response = Router::handle(Request::create('/router-test/protected-call'));
+        $response = Router::handle(Request::create('/test/protected-call'));
         $this->assertSame('Controller: protectedCall', $response->getContent());
     }
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Routing\RouterTestController::annotationAliasOnly ] accespt only alias access.
+     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationAliasOnly ] accespt only alias access.
      */
     public function test_routing_defaultConventionalRouteAliasOnly()
     {
@@ -876,7 +874,7 @@ class RouterTest extends RebetTestCase
             Router::default(ConventionalRoute::class);
         });
 
-        $response = Router::handle(Request::create('/router-test/annotation-alias-only'));
+        $response = Router::handle(Request::create('/test/annotation-alias-only'));
     }
 
     public function test_routing_defaultConventionalRouteAlias()
@@ -884,10 +882,10 @@ class RouterTest extends RebetTestCase
         Router::clear();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->aliases([
-                '/alias'       => '/router-test/annotation-alias-only',
-                '/param'       => '/router-test/with-param',
-                '/one-to'      => '/router-test/with-multi-param/1',
-                '/annotation/' => '/router-test/annotation-',
+                '/alias'       => '/test/annotation-alias-only',
+                '/param'       => '/test/with-param',
+                '/one-to'      => '/test/with-multi-param/1',
+                '/annotation/' => '/test/annotation-',
                 '/foo/bar'     => '/top',
             ]);
         });
@@ -926,8 +924,8 @@ class RouterTest extends RebetTestCase
         Router::clear();
         Router::rules('web')->prefix('/prefix')->routing(function () {
             Router::get('/get', function () { return 'Content: /prefix/get'; });
-            Router::get('/method/public-call', 'RouterTestController::publicCall');
-            Router::controller('/controller/namespace/short', 'RouterTestController');
+            Router::get('/method/public-call', 'TestController::publicCall');
+            Router::controller('/controller/namespace/short', 'TestController');
             Router::default(ConventionalRoute::class);
         })->fallback(function (Request $request, \Throwable $e) {
             return Responder::toResponse('fallback prefix');
@@ -958,122 +956,9 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/prefix/controller/namespace/short/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
 
-        $response = Router::handle(Request::create('/prefix/router-test/public-call-non'));
+        $response = Router::handle(Request::create('/prefix/test/public-call-non'));
         $this->assertSame('fallback prefix', $response->getContent());
-        $response = Router::handle(Request::create('/prefix/router-test/public-call'));
+        $response = Router::handle(Request::create('/prefix/test/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
-    }
-}
-
-/**
- * @Channel("web")
- * @Where({"user_id": "/^[0-9]+$/"})
- */
-class RouterTestController extends Controller
-{
-    public function index()
-    {
-        return 'Controller: index';
-    }
-
-    private function privateCall()
-    {
-        return 'Controller: privateCall';
-    }
-
-    protected function protectedCall()
-    {
-        return 'Controller: protectedCall';
-    }
-
-    public function publicCall()
-    {
-        return 'Controller: publicCall';
-    }
-
-    public function withParam($id)
-    {
-        return "Controller: withParam - {$id}";
-    }
-
-    public function withOptionalParam($id = 'default')
-    {
-        return "Controller: withOptionalParam - {$id}";
-    }
-
-    public function withMultiParam($from, $to)
-    {
-        return "Controller: withMultiParam - {$from} to {$to}";
-    }
-
-    public function withMultiInvertParam($to, $from)
-    {
-        return "Controller: withMultiInvertParam - {$from} to {$to}";
-    }
-
-    public function withConvertEnumParam(Gender $gender)
-    {
-        return "Controller: withConvertEnumParam - {$gender}";
-    }
-
-    /**
-     * @Channel("api")
-     */
-    public function annotationChannelApi()
-    {
-        return 'Controller: annotationChannelApi';
-    }
-
-    /**
-     * @Method("GET")
-     */
-    public function annotationMethodGet()
-    {
-        return 'Controller: annotationMethodGet';
-    }
-
-    /**
-     * @Where({"id": "/^[a-zA-Z]+$/"})
-     */
-    public function annotationWhere($id)
-    {
-        return "Controller: annotationWhere - {$id}";
-    }
-
-    public function annotationClassWhere($user_id)
-    {
-        return "Controller: annotationClassWhere - {$user_id}";
-    }
-
-    /**
-     * @NotRouting
-     */
-    public function annotationNotRouting()
-    {
-        return "Controller: annotationNotRouting";
-    }
-
-    /**
-     * @AliasOnly
-     */
-    public function annotationAliasOnly()
-    {
-        return "Controller: annotationAliasOnly";
-    }
-}
-
-/**
- * @Channel("web")
- */
-class TopController extends Controller
-{
-    public function index()
-    {
-        return 'Top: index';
-    }
-
-    public function withParam($id)
-    {
-        return "Top: withParam - {$id}";
     }
 }

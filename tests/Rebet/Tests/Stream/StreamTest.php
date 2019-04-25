@@ -3,7 +3,7 @@ namespace Rebet\Tests\Stream;
 
 use Rebet\DateTime\DateTime;
 use Rebet\Stream\Stream;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 
 class StreamTest extends RebetTestCase

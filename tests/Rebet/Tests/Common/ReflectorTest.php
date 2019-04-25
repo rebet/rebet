@@ -4,9 +4,9 @@ namespace Rebet\Tests\Common;
 use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
-use Rebet\Tests\Mock\Gender;
-use Rebet\Tests\Mock\JsonSerializableStub;
-use Rebet\Tests\Mock\ToArrayStub;
+use Rebet\Tests\Mock\Enum\Gender;
+use Rebet\Tests\Mock\Stub\JsonSerializableStub;
+use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 
 class ReflectorTest extends RebetTestCase
@@ -90,7 +90,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('arg', Reflector::instantiate(['mock' => ReflectorTest_Mock::class, 'value' => 'arg'], 'mock')->value);
         $this->assertSame('after', Reflector::instantiate([
             'mock'   => ReflectorTest_Mock::class,
-            '@after' => function($mock){
+            '@after' => function ($mock) {
                 $mock->value = 'after';
                 return $mock;
             }
@@ -100,7 +100,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('arg via build() after', Reflector::instantiate([
             'factory' => ReflectorTest_Mock::class.'::build',
             'value'   => 'arg',
-            '@after'  => function($mock){ $mock->value .= ' after'; return $mock; }
+            '@after'  => function ($mock) { $mock->value .= ' after'; return $mock; }
         ], 'factory')->value);
         $this->assertSame(123, Reflector::instantiate(123));
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
@@ -398,17 +398,17 @@ class ReflectorTest extends RebetTestCase
 
     public function test_evaluate()
     {
-        $function = function(){ return 'foo'; };
+        $function = function () { return 'foo'; };
         $this->assertSame('foo', Reflector::evaluate($function));
 
-        $function = function($val = 'default'){ return $val; };
+        $function = function ($val = 'default') { return $val; };
         $this->assertSame('default', Reflector::evaluate($function));
         $this->assertSame(123, Reflector::evaluate($function, [123]));
 
-        $function = function(string $val = 'default'){ return $val; };
+        $function = function (string $val = 'default') { return $val; };
         $this->assertSame('123', Reflector::evaluate($function, [123], true));
 
-        $function = function(Gender $gender = null, int $age = 20){ return "{$age} years old ".($gender ?? Gender::MALE()); };
+        $function = function (Gender $gender = null, int $age = 20) { return "{$age} years old ".($gender ?? Gender::MALE()); };
         $this->assertSame('20 years old 男性', Reflector::evaluate($function));
         $this->assertSame('20 years old 女性', Reflector::evaluate($function, [Gender::FEMALE()]));
         $this->assertSame('18 years old 女性', Reflector::evaluate($function, ['gender' => Gender::FEMALE(), 'age' => 18]));
@@ -542,7 +542,7 @@ class ReflectorTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Parameter gender(=3) can not convert to Rebet\Tests\Mock\Gender.
+     * @expectedExceptionMessage Parameter gender(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
      */
     public function test_toArgs_errorConvert()
     {

@@ -4,7 +4,7 @@ namespace Rebet\Tests\Validation;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;

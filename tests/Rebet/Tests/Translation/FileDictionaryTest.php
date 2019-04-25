@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Translation;
 
 use Rebet\Foundation\App;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\FileDictionary;
 

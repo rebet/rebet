@@ -7,6 +7,10 @@ namespace Rebet\Common\Annotation;
  * If the default value of the target property is an array, then nested as a list of object,
  * otherwise it is nested as a single object.
  *
+ * USAGE:
+ *  - @Nest(BankEntity::class) with `public $bank = null;` for single object nest ($bank is instance of Bank).
+ *  - @Nest(BankEntity::class) with `public $bank = [];` for multiple object nest ($bank is array of Bank).
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

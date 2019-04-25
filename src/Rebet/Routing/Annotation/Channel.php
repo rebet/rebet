@@ -4,6 +4,12 @@ namespace Rebet\Routing\Annotation;
 /**
  * Channel Annotation
  *
+ * USAGE:
+ *  - @Channel("web")           ... same as @Channel(allow="web")
+ *  - @Channel({"web", "api"})  ... same as @Channel(allow={"web","api"})
+ *  - @Channel(rejects="web")
+ *  - @Channel(rejects={"web". "api"})
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -15,39 +21,30 @@ namespace Rebet\Routing\Annotation;
 final class Channel
 {
     /**
-     * @var array
+     * @var array of allow channels
      */
-    public $allows;
+    public $allows = [];
 
     /**
-     * @var array
+     * @var array of reject channels
      */
-    public $rejects;
-
-    /**
-     * Constructor.
-     *
-     * @param array $values value or [allows, rejects]
-     */
-    public function __construct(array $values)
-    {
-        $this->allows  = (array)($values['allows'] ?? $values['value']) ;
-        $this->rejects = empty($this->allows) ? (array)($values['rejects']) : [] ;
-    }
+    public $rejects = [];
 
     /**
      * Check acceptable the given channel.
+     * NOTE: If an allow list is configured, the reject list will be ignored.
      *
      * @param string $channel
      * @return boolean
      */
     public function allow(string $channel) : bool
     {
-        return empty($this->rejects) ? in_array($channel, $this->allows) : !in_array($channel, $this->rejects) ;
+        return !empty($this->allows) ? in_array($channel, $this->allows) : !in_array($channel, $this->rejects) ;
     }
 
     /**
      * Check acceptable the given channel.
+     * NOTE: If an allow list is configured, the reject list will be ignored.
      *
      * @param string $channel
      * @return boolean

@@ -1,24 +1,24 @@
 <?php
-namespace Rebet\Tests\Auth\Annotation;
+namespace Rebet\Tests\Routing\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Auth\Annotation\Authenticator;
+use Rebet\Routing\Annotation\Where;
 use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
-class AuthenticatorTest extends RebetTestCase
+class WhereTest extends RebetTestCase
 {
     public function test_annotation()
     {
-        $annotation = Authenticator::class;
+        $annotation = Where::class;
         $ac         = new AnnotatedClass(AnnotatedStub::class);
 
         $a = $ac->annotation($annotation);
         $this->assertInstanceOf($annotation, $a);
-        $this->assertSame('a', $a->name);
+        $this->assertSame(["id" => "[0-9]+"], $a->wheres);
 
         $a = $ac->method('annotations')->annotation($annotation);
         $this->assertInstanceOf($annotation, $a);
-        $this->assertSame('b', $a->name);
+        $this->assertSame(["seq" => "[0-9]+", "code" => "[a-zA-Z]+"], $a->wheres);
     }
 }

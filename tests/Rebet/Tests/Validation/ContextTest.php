@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;

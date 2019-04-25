@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Validation\Mock;
 
 use Rebet\Common\Strings;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
 use Rebet\Validation\Valid;

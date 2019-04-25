@@ -4,11 +4,11 @@ namespace Rebet\Tests\Common;
 use Rebet\Common\Arrays;
 use Rebet\Common\Callback;
 use Rebet\Common\OverrideOption;
-use Rebet\Tests\Mock\CountableStub;
-use Rebet\Tests\Mock\Gender;
-use Rebet\Tests\Mock\IteratorAggregateStub;
-use Rebet\Tests\Mock\JsonSerializableStub;
-use Rebet\Tests\Mock\ToArrayStub;
+use Rebet\Tests\Mock\Enum\Gender;
+use Rebet\Tests\Mock\Stub\CountableStub;
+use Rebet\Tests\Mock\Stub\IteratorAggregateStub;
+use Rebet\Tests\Mock\Stub\JsonSerializableStub;
+use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 
 class ArraysTest extends RebetTestCase

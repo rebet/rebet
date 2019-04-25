@@ -4,6 +4,11 @@ namespace Rebet\Auth\Annotation;
 /**
  * Role Annotation
  *
+ * USAGE:
+ *  - @Role("all")
+ *  - @Role("user")
+ *  - @Role({"user", "admin"})
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -15,17 +20,7 @@ namespace Rebet\Auth\Annotation;
 final class Role
 {
     /**
-     * @var array
+     * @var array of acceptable role names
      */
-    public $names;
-
-    /**
-     * Constructor.
-     *
-     * @param array $values
-     */
-    public function __construct(array $values)
-    {
-        $this->names = (array)($values['value']);
-    }
+    public $names = [];
 }

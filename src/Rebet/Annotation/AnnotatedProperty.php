@@ -67,7 +67,7 @@ class AnnotatedProperty
     /**
      * Get property annotations
      *
-     * @return mixed @Annotation
+     * @return mixed Annotation
      */
     public function annotations() : array
     {
@@ -81,7 +81,7 @@ class AnnotatedProperty
      *
      * @param string $annotation
      * @param bool $check_declaring_class
-     * @return mixed @Annotation
+     * @return mixed Annotation
      */
     public function annotation(string $annotation, bool $check_declaring_class = true)
     {

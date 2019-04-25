@@ -70,7 +70,7 @@ class FileDriver extends MonologDriver
 
         if ($with_browser_console) {
             $sbch = new SimpleBrowserConsoleHandler($level, $bubble);
-            $sbch->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
+            $sbch->setFormatter($rfh->getFormatter());
             $handlers[] = $sbch;
         }
 

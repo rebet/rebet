@@ -4,6 +4,9 @@ namespace Rebet\Routing\Annotation;
 /**
  * Alias Only Annotation
  *
+ * USAGE:
+ *  - @AliasOnly
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

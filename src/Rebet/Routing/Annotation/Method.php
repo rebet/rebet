@@ -4,6 +4,12 @@ namespace Rebet\Routing\Annotation;
 /**
  * Method Annotation
  *
+ * USAGE:
+ *  - @Method("GET")            ... same as @Method(allow="GET")
+ *  - @Method({"GET", "POST"})  ... same as @Method(allow={"GET","POST"})
+ *  - @Method(rejects="GET")
+ *  - @Method(rejects={"GET". "POST"})
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -15,30 +21,18 @@ namespace Rebet\Routing\Annotation;
 final class Method
 {
     /**
-     * @var array
-     * @Enum({"GET","HEAD","POST","PUT","PATCH","DELETE","OPTIONS"})
+     * @var array of allow HTTP methods GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS.
      */
-    public $allows;
+    public $allows = [];
 
     /**
-     * @var array
-     * @Enum({"GET","HEAD","POST","PUT","PATCH","DELETE","OPTIONS"})
+     * @var array of reject HTTP methods GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS.
      */
-    public $rejects;
-
-    /**
-     * Constructor.
-     *
-     * @param array $values value or [allows, rejects]
-     */
-    public function __construct(array $values)
-    {
-        $this->allows  = (array)($values['allows'] ?? $values['value']) ;
-        $this->rejects = empty($this->allows) ? (array)($values['rejects']) : [] ;
-    }
+    public $rejects = [];
 
     /**
      * Check acceptable the given method.
+     * NOTE: If an allow list is configured, the reject list will be ignored.
      *
      * @param string $method
      * @return boolean
@@ -46,11 +40,12 @@ final class Method
     public function allow(string $method) : bool
     {
         $method = strtoupper($method);
-        return empty($this->rejects) ? in_array($method, $this->allows) : !in_array($method, $this->rejects) ;
+        return !empty($this->allows) ? in_array($method, $this->allows) : !in_array($method, $this->rejects) ;
     }
 
     /**
      * Check acceptable the given method.
+     * NOTE: If an allow list is configured, the reject list will be ignored.
      *
      * @param string $method
      * @return boolean

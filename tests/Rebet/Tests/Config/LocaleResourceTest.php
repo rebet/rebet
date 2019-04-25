@@ -3,7 +3,7 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Config\LocaleResource;
 use Rebet\Foundation\App;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 
 class LocaleResourceTest extends RebetTestCase

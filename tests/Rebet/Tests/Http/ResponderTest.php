@@ -9,7 +9,7 @@ use Rebet\Http\Response\JsonResponse;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Response\StreamedResponse;
-use Rebet\Tests\Mock\Gender;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
