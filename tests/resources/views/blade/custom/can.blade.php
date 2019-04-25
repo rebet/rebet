@@ -4,10 +4,10 @@ can update user
 @cannot('update', $user)
 can not update user
 @endcannot
-@can('create', 'Rebet\\Tests\\Common\\Mock\\User')
+@can('create', 'Rebet\\Tests\\Mock\\User')
 can create user(absolute class name 1)
 @endcan
-@can('create', '\\Rebet\\Tests\\Common\\Mock\\User')
+@can('create', '\\Rebet\\Tests\\Mock\\User')
 can create user(absolute class name 2)
 @endcan
 @can('create', '@mock\\User')

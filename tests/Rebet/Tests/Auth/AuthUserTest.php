@@ -7,8 +7,8 @@ use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Common\Reflector;
 use Rebet\DateTime\DateTime;
-use Rebet\Tests\Common\Mock\Bank;
-use Rebet\Tests\Common\Mock\User;
+use Rebet\Tests\Mock\Bank;
+use Rebet\Tests\Mock\User;
 use Rebet\Tests\RebetTestCase;
 
 class AuthUserTest extends RebetTestCase

@@ -9,7 +9,7 @@ use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\Where;
-use Rebet\Tests\Common\Mock\User; // Use for Annotation
+use Rebet\Tests\Mock\User; // Use for Annotation
 
 /**
  * @Authenticator("a")

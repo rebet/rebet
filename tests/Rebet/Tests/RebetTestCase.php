@@ -28,8 +28,8 @@ use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Log;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Router;
-use Rebet\Tests\Common\Mock\Address;
-use Rebet\Tests\Common\Mock\User;
+use Rebet\Tests\Mock\Address;
+use Rebet\Tests\Mock\User;
 use Rebet\Translation\Translator;
 
 /**
@@ -71,7 +71,8 @@ abstract class RebetTestCase extends TestCase
             ],
             Namespaces::class => [
                 'aliases' => [
-                    '@mock' => 'Rebet\\Tests\\Common\\Mock',
+                    '@mock'       => 'Rebet\\Tests\\Mock',
+                    '@controller' => '@mock\\Controller',
                 ],
             ],
             Session::class => [

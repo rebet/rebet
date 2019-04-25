@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Common;
 
 use Rebet\Http\Request;
-use Rebet\Tests\Common\Mock\Address;
-use Rebet\Tests\Common\Mock\Bank;
-use Rebet\Tests\Common\Mock\User;
+use Rebet\Tests\Mock\Address;
+use Rebet\Tests\Mock\Bank;
+use Rebet\Tests\Mock\User;
 use Rebet\Tests\RebetTestCase;
 
 class PopuratableTest extends RebetTestCase

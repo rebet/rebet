@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Common\Mock;
+namespace Rebet\Tests\Mock;
 
 use Rebet\Common\Annotation\Nest;
 use Rebet\Common\Popuratable;

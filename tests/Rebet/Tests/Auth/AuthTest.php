@@ -14,9 +14,9 @@ use Rebet\Event\Event;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
-use Rebet\Tests\Common\Mock\Address;
-use Rebet\Tests\Common\Mock\Bank;
-use Rebet\Tests\Common\Mock\User;
+use Rebet\Tests\Mock\Address;
+use Rebet\Tests\Mock\Bank;
+use Rebet\Tests\Mock\User;
 use Rebet\Tests\RebetTestCase;
 
 class AuthTest extends RebetTestCase

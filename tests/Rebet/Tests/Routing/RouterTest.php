@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Routing;
 
-use Rebet\Common\Namespaces;
-
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
@@ -29,11 +27,6 @@ class RouterTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         App::setChannel('web');
         Config::application([
-            Namespaces::class => [
-                'aliases' => [
-                    '@controller' => '\\Rebet\\Tests\\Mock\\Controller',
-                ],
-            ],
             Router::class => [
                 'middlewares!' => [],
             ],
