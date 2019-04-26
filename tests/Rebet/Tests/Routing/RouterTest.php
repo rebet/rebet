@@ -212,7 +212,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /get where [] not found. Invalid method POST given.
+     * @expectedExceptionMessage Route: [GET|HEAD] /get not found. Invalid method POST given.
      */
     public function test_routing_get_invalidMethod()
     {
@@ -392,7 +392,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} where [] not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
+     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
      */
     public function test_routing_parameterOptionInvalidConvert()
     {
@@ -477,7 +477,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} where [] not found. Routing parameter 'id' is requierd.
+     * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} not found. Routing parameter 'id' is requierd.
      */
     public function test_routing_methodWithMissmatchParam()
     {
@@ -812,6 +812,20 @@ class RouterTest extends RebetTestCase
 
         $response = Router::handle(Request::create('/test/annotation-class-where/123'));
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
+    }
+
+    /**
+     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
+     * @expectedExceptionMessage Route not found : Controller [ Rebet\Tests\Mock\Controller\InvalidController ] can not instantiate.
+     */
+    public function test_routing_defaultConventionalRouteNotFound()
+    {
+        Router::clear();
+        Router::rules('web')->routing(function () {
+            Router::default(ConventionalRoute::class);
+        });
+
+        $response = Router::handle(Request::create('/invalid'));
     }
 
     /**

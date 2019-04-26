@@ -61,6 +61,6 @@ class RedirectRoute extends ClosureRoute
      */
     public function __toString()
     {
-        return parent::__toString()." redirect to {$this->destination}({$this->status})";
+        return parent::__toString()." redirect to {$this->destination} (status: {$this->status})";
     }
 }

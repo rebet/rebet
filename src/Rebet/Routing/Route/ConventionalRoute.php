@@ -6,7 +6,6 @@ use Rebet\Common\Namespaces;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
-use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Inflection\Inflector;
@@ -17,6 +16,7 @@ use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
+use Rebet\Routing\Router;
 
 /**
  * Conventional Route class
@@ -279,8 +279,8 @@ class ConventionalRoute extends Route
         $route_action = new RouteAction($this, $method, $this->controller);
 
         $channel = $route_action->annotation(Channel::class);
-        if (!$channel || $channel->reject(App::getChannel())) {
-            throw RouteNotFoundException::by("{$this} not found. Routing channel '".App::getChannel()."' not allowed or not annotated channel meta info.");
+        if (!$channel || $channel->reject(Router::getCurrentChannel())) {
+            throw RouteNotFoundException::by("{$this} not found. Routing channel '".Router::getCurrentChannel()."' not allowed or not annotated channel meta info.");
         }
 
         $method = $route_action->annotation(Method::class);

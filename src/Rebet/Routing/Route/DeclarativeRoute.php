@@ -41,8 +41,10 @@ abstract class DeclarativeRoute extends Route
      */
     public function __toString()
     {
-        $rc = new \ReflectionClass($this);
-        return $rc->getShortName().": [".join('|', $this->methods)."] {$this->uri} where ".json_encode($this->wheres);
+        $rc     = new \ReflectionClass($this);
+        $where  = empty($this->wheres) ? '' : ' where '.json_encode($this->wheres);
+        $method = empty($this->methods) ? '[ALL]' : "[".join('|', $this->methods)."]" ;
+        return $rc->getShortName().": {$method} {$this->uri}{$where}";
     }
 
     /**

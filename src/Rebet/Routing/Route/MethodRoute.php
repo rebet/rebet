@@ -37,6 +37,8 @@ class MethodRoute extends DeclarativeRoute
     protected $controller = null;
 
     /**
+     * Accessible to non public member action(method).
+     *
      * @var boolean
      */
     protected $accessible = false;
@@ -60,7 +62,7 @@ class MethodRoute extends DeclarativeRoute
     }
 
     /**
-     * 実行可能な RouteAction を作成します。
+     * Cleate a route action for this route.
      *
      * @param Request $request
      * @return RouteAction
@@ -79,7 +81,7 @@ class MethodRoute extends DeclarativeRoute
     }
 
     /**
-     * シャットダウン処理を行います。
+     * Terminate the route.
      *
      * @param Request $request
      * @param Response $response
@@ -91,7 +93,7 @@ class MethodRoute extends DeclarativeRoute
     }
 
     /**
-     * 非公開メソッドへのアクセス制御を設定します。
+     * Set access control to non public contorller methods.
      *
      * @param boolean $accessible
      * @return self

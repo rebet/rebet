@@ -104,4 +104,9 @@ class TestController extends Controller
     {
         return "Controller: annotationAliasOnly";
     }
+
+    public static function staticCall()
+    {
+        return "Controller: staticCall";
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Auth\Annotation\Authenticator;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;

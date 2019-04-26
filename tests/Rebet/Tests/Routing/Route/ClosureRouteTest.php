@@ -13,7 +13,7 @@ class ClosureRouteTest extends RebetTestCase
         $this->assertInstanceOf(ClosureRoute::class, new ClosureRoute(['GET'], '/', function () { return 'Hello World.'; }));
     }
 
-    public function test_createRouteAction()
+    public function test_routing()
     {
         $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $request = $this->createRequestMock('/foo');
@@ -21,6 +21,19 @@ class ClosureRouteTest extends RebetTestCase
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Hello World.', $response->getContent());
+
+        $route   = new ClosureRoute(['GET'], '/foo/{id}/{code?}', function (int $id, ?string $code = null) { return "id: {$id}, code: {$code}"; });
+        $request = $this->createRequestMock('/foo/123');
+        $this->assertTrue($route->match($request));
+        $response = $route->handle($request);
+        $this->assertInstanceOf(BasicResponse::class, $response);
+        $this->assertSame("id: 123, code: ", $response->getContent());
+
+        $request = $this->createRequestMock('/foo/123/abc');
+        $this->assertTrue($route->match($request));
+        $response = $route->handle($request);
+        $this->assertInstanceOf(BasicResponse::class, $response);
+        $this->assertSame("id: 123, code: abc", $response->getContent());
     }
 
     public function test_terminate()

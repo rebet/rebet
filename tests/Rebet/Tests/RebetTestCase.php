@@ -216,7 +216,7 @@ abstract class RebetTestCase extends TestCase
         return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
     }
 
-    protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET', $prefix = '') : Request
+    protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET', $prefix = '', $route = null) : Request
     {
         Router::setCurrentChannel($channel);
         Router::activatePrefix($prefix);
@@ -224,7 +224,7 @@ abstract class RebetTestCase extends TestCase
         $session->start();
         $request = Request::create($path, $method);
         $request->session($session);
-        $request->route = new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
+        $request->route = $route ?? new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
         $request->route->roles(...((array)$roles));
         $request->route->prefix = $prefix;
         return $request;
