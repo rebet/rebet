@@ -44,8 +44,8 @@ class HttpException extends RuntimeException implements ProblemRespondable
     public function __construct(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null)
     {
         $this->status = $status;
-        $this->detail = Translator::get($detail) ?? $detail ;
-        $this->title  = Translator::get($title) ?? $title ?? Translator::get("message.http.{$status}.title") ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
+        $this->detail($detail);
+        $this->title($title);
         $status_label = $title ? $this->title : "{$this->status} {$this->title}" ;
         $message      = $detail ? "{$status_label}: {$this->detail}" : $status_label ;
         parent::__construct($message, $previous);
@@ -62,6 +62,18 @@ class HttpException extends RuntimeException implements ProblemRespondable
     }
 
     /**
+     * Set HTTP error title.
+     *
+     * @param string|null $title or full transration key (default: Basic HTTP status label)
+     * @return self
+     */
+    public function title(?string $title) : self
+    {
+        $this->title = Translator::get($title) ?? $title ?? Translator::get("message.http.{$this->status}.title") ?? HttpStatus::reasonPhraseOf($this->status) ?? 'Unknown Error';
+        return $this;
+    }
+
+    /**
      * Get HTTP error title.
      *
      * @return string
@@ -69,6 +81,18 @@ class HttpException extends RuntimeException implements ProblemRespondable
     public function getTitle() : string
     {
         return $this->title;
+    }
+
+    /**
+     * Set HTTP error detail.
+     *
+     * @param string|null $detail message or full transration key (default: null)
+     * @return self
+     */
+    public function detail(?string $detail) : self
+    {
+        $this->detail = Translator::get($detail) ?? $detail ;
+        return $this;
     }
 
     /**

@@ -89,7 +89,8 @@ abstract class FallbackHandler
                 $response = $e->redirect();
                 break;
             case $e instanceof HttpException:
-                $response = $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
+                $reason_phrase = HttpStatus::reasonPhraseOf($e->getStatus());
+                $response      = $this->makeView($e->getStatus(), $reason_phrase === $e->getTitle() ? null : $e->getTitle(), $e->getDetail(), $request, $e);
                 break;
             case $e instanceof AuthenticateException:
                 $response = $this->makeView(403, null, $e->getMessage(), $request, $e);
@@ -108,6 +109,9 @@ abstract class FallbackHandler
 
     /**
      * Create a error page view response for given HTTP status code.
+     *
+     * If the view of "/fallbacks/{$status}" is exists, then will be used it.
+     * Otherwise, will be created default view by makeDefaultView().
      *
      * @param integer $status
      * @param string|null $title
@@ -136,6 +140,9 @@ abstract class FallbackHandler
 
     /**
      * Create a default error page view response using given HTTP status code.
+     *
+     * If the view of "/fallbacks/default" is exists, then will be used it.
+     * Otherwise, will be created framework default view.
      *
      * @param integer $status
      * @param string|null $title
@@ -174,7 +181,7 @@ abstract class FallbackHandler
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css"> 
+    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
     <style type="text/css">
     <!--

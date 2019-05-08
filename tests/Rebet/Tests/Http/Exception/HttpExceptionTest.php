@@ -47,6 +47,15 @@ class HttpExceptionTest extends RebetTestCase
         $this->assertSame(500, $e->getStatus());
     }
 
+    public function test_title()
+    {
+        $e = HttpException::by(404)->title('Title');
+        $this->assertSame('Title', $e->getTitle());
+
+        $e = HttpException::by(404)->title('message.http.404.title');
+        $this->assertSame('指定のページが見つかりません', $e->getTitle());
+    }
+
     public function test_getTitle()
     {
         $e = new HttpException(404);
@@ -71,6 +80,15 @@ class HttpExceptionTest extends RebetTestCase
 
         $e = new HttpException(404);
         $this->assertSame('Not Found', $e->getTitle());
+    }
+
+    public function test_detail()
+    {
+        $e = HttpException::by(404)->detail('Detail');
+        $this->assertSame('Detail', $e->getDetail());
+
+        $e = HttpException::by(404)->detail('message.http.404.detail');
+        $this->assertSame('ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。', $e->getDetail());
     }
 
     public function test_getDetail()

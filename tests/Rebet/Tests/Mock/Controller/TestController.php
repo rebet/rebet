@@ -1,6 +1,10 @@
 <?php
 namespace Rebet\Tests\Mock\Controller;
 
+use Rebet\Auth\Annotation\Authenticator;
+use Rebet\Auth\Annotation\Role;
+use Rebet\Http\Request;
+use Rebet\Http\Response;
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
@@ -15,6 +19,21 @@ use Rebet\Tests\Mock\Enum\Gender;
  */
 class TestController extends Controller
 {
+    public $before_count = 0;
+    public $after_count  = 0;
+
+    public function before(Request $request) : Request
+    {
+        $this->before_count++;
+        return $request;
+    }
+
+    public function after(Request $request, Response $response) : Response
+    {
+        $this->after_count++;
+        return $response;
+    }
+
     public function index()
     {
         return 'Controller: index';
@@ -95,6 +114,22 @@ class TestController extends Controller
     public function annotationNotRouting()
     {
         return "Controller: annotationNotRouting";
+    }
+
+    /**
+     * @Role("user")
+     */
+    public function annotationRoleUser()
+    {
+        return "Controller: annotationRoleUser";
+    }
+
+    /**
+     * @Authenticator("api")
+     */
+    public function annotationAuthenticatorApi()
+    {
+        return "Controller: annotationAuthenticatorApi";
     }
 
     /**

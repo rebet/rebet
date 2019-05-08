@@ -17,7 +17,7 @@ use Rebet\View\View;
 class ViewRoute extends ClosureRoute
 {
     /**
-     * Create a redirect route
+     * Create a view route
      *
      * @param string $uri
      * @param string $name
@@ -25,8 +25,7 @@ class ViewRoute extends ClosureRoute
      */
     public function __construct(string $uri, string $name, array $args = [])
     {
-        $self = $this;
-        parent::__construct([], $uri, function (Request $request) use ($self, $name, $args) {
+        parent::__construct([], $uri, function (Request $request) use ($name, $args) {
             $view = View::of($name);
             if (!$view->exists()) {
                 throw RouteNotFoundException::by("View route [{$name}] not found. An exception occurred while processing the view.");

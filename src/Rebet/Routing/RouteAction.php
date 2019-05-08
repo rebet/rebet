@@ -21,9 +21,7 @@ use Rebet\Routing\Route\Route;
 class RouteAction
 {
     /**
-     * Route of this action
-     *
-     * @var Route
+     * @var Route of this action
      */
     private $route = null;
 
@@ -53,7 +51,7 @@ class RouteAction
      *
      * @param Route $route
      * @param \ReflectionFunction|\ReflectionMethod $reflector
-     * @param $mixed $instance
+     * @param mixed $instance
      */
     public function __construct(Route $route, $reflector, $instance = null)
     {
@@ -128,9 +126,9 @@ class RouteAction
     /**
      * Get method annotation accessor of this route action.
      *
-     * @return AnnotatedMethod
+     * @return AnnotatedMethod|null
      */
-    public function getAnnotatedMethod() : AnnotatedMethod
+    public function getAnnotatedMethod() : ?AnnotatedMethod
     {
         return $this->annotated_method;
     }
@@ -139,7 +137,7 @@ class RouteAction
      * Get given annotation of this route action.
      *
      * @param string $annotation
-     * @return void
+     * @return mixed
      */
     public function annotation(string $annotation)
     {
