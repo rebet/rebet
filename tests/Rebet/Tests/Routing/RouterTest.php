@@ -1,12 +1,16 @@
 <?php
 namespace Rebet\Tests\Routing;
 
+use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Foundation\App;
+use Rebet\Http\Middleware\EmptyStringToNull;
+use Rebet\Http\Middleware\TrimStrings;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
+use Rebet\Http\Response;
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\Where;
@@ -167,6 +171,38 @@ class RouterTest extends RebetTestCase
         });
     }
 
+    public function test_getCurrentChannel()
+    {
+        $this->assertSame('web', Router::getCurrentChannel());
+        App::setChannel('api');
+        $this->assertSame('api', Router::getCurrentChannel());
+        App::setChannel('console');
+        $this->assertSame('console', Router::getCurrentChannel());
+    }
+
+    public function test_setCurrentChannel()
+    {
+        $this->assertSame('web', Router::getCurrentChannel());
+        Router::setCurrentChannel('api');
+        $this->assertSame('api', Router::getCurrentChannel());
+        App::setChannel('console');
+        $this->assertSame('api', Router::getCurrentChannel());
+    }
+
+    /**
+     * @expectedException Rebet\Routing\Exception\RouteNotFoundException
+     * @expectedExceptionMessage Route GET / not found.
+     */
+    public function test_clear()
+    {
+        $response = Router::handle(Request::create('/'));
+        $this->assertSame(200, $response->getStatusCode());
+
+        Router::clear();
+
+        $response = Router::handle(Request::create('/'));
+    }
+
     /**
      * @expectedException Rebet\Common\Exception\LogicException
      * @expectedExceptionMessage Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().
@@ -313,6 +349,17 @@ class RouterTest extends RebetTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.
+     */
+    public function test_routing_invalidMatch()
+    {
+        Router::rules('web')->routing(function () {
+            Router::match(['GET', 'HEAD', 'POST'], '/match/invlid-action', null);
+        });
     }
 
     public function test_routing_parameterRequierd()
@@ -967,5 +1014,103 @@ class RouterTest extends RebetTestCase
         $this->assertSame('fallback prefix', $response->getContent());
         $response = Router::handle(Request::create('/prefix/test/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
+
+        Router::clear();
+        Config::application([
+            Router::class => [
+                'default_fallback_handler' => function (Request $request, \Throwable $e) {
+                    return Responder::toResponse('fallback default');
+                }
+            ]
+        ]);
+
+        $response = Router::handle(Request::create('/'));
+        $this->assertSame('fallback default', $response->getContent());
+    }
+
+    public function test_terminate()
+    {
+        Router::clear();
+        $middleware = new RouterTest_TerminatableMiddleware();
+        Router::rules('web')->routing(function () use ($middleware) {
+            Router::default(ConventionalRoute::class)->middlewares($middleware);
+        });
+        $request    = Request::create('/test/index');
+        $response   = Router::handle($request);
+        $controller = Reflector::get($request->route, 'controller', null, true);
+        $this->assertSame(0, $controller->terminate_count);
+        $this->assertSame(0, $middleware->terminate_count);
+        Router::terminate($request, $response);
+        $this->assertSame(1, $controller->terminate_count);
+        $this->assertSame(1, $middleware->terminate_count);
+    }
+
+    public function test_current()
+    {
+        $this->assertNull(Router::current());
+        $request  = Request::create('/get');
+        $response = Router::handle($request);
+        $route    = Router::current();
+        $this->assertSame($request->route, $route);
+    }
+
+    public function test_getPrefixFrom()
+    {
+        Router::rules('web')->prefix('/foo');
+        Router::rules('web')->prefix('/bar');
+        $this->assertSame(null, Router::getPrefixFrom('/'));
+        $this->assertSame('/foo', Router::getPrefixFrom('/foo'));
+        $this->assertSame('/foo', Router::getPrefixFrom('/foo/'));
+        $this->assertSame('/foo', Router::getPrefixFrom('/foo/baz'));
+        $this->assertSame(null, Router::getPrefixFrom('/foobar'));
+        $this->assertSame(null, Router::getPrefixFrom('/baz'));
+        $this->assertSame('/bar', Router::getPrefixFrom('/bar'));
+    }
+
+    public function test_activatePrefix()
+    {
+        $this->assertSame(null, Router::getPrefixFrom('/foo/bar'));
+        $this->assertSame('/foo', Router::activatePrefix('/foo'));
+        $this->assertSame('/foo', Router::getPrefixFrom('/foo/bar'));
+    }
+
+    public function test_rules()
+    {
+        $this->assertSame('web', Reflector::get(Router::rules('web'), 'channel', null, true));
+    }
+
+    public function test_prefix()
+    {
+        $this->assertSame('/prefix', Reflector::get(Router::rules('web')->prefix('/prefix'), 'prefix', null, true));
+    }
+
+    public function test_middlewares()
+    {
+        $this->assertSame([EmptyStringToNull::class, TrimStrings::class], Reflector::get(Router::rules('web')->middlewares(EmptyStringToNull::class, TrimStrings::class), 'middlewares', null, true));
+    }
+
+    public function test_roles()
+    {
+        $this->assertSame(['user', 'admin'], Reflector::get(Router::rules('web')->roles('user', 'admin'), 'roles', null, true));
+    }
+
+    public function test_auth()
+    {
+        $this->assertSame('web', Reflector::get(Router::rules('web')->auth('web'), 'auth', null, true));
+    }
+}
+
+class RouterTest_TerminatableMiddleware
+{
+    public $terminate_count = 0;
+
+    public function handle(Request $request, \Closure $next) : Response
+    {
+        return $next($request);
+    }
+
+    public function terminate(Request $request, Response $response)
+    {
+        $this->terminate_count++;
     }
 }

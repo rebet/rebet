@@ -57,6 +57,19 @@ abstract class Controller
     }
 
     /**
+     * Perform terminate processing of the controller.
+     * Please override with subclass if necessary.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return void
+     */
+    public function terminate(Request $request, Response $response) : void
+    {
+        // Do nothing.
+    }
+
+    /**
      * Validate input data by given rules.
      *
      * @param string $crud

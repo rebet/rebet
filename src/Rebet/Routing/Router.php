@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Routing;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Callback;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Path;
@@ -18,7 +19,6 @@ use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Route\RedirectRoute;
 use Rebet\Routing\Route\Route;
 use Rebet\Routing\Route\ViewRoute;
-use Rebet\Common\Arrays;
 
 /**
  * Router Class
@@ -244,7 +244,7 @@ class Router
         } elseif (is_callable($action)) {
             $route = new ClosureRoute($methods, $uri, $action);
         } else {
-            throw LogicException::by("Invalid action type for declarative routing.");
+            throw LogicException::by("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.");
         }
 
         return static::addRoute($route);
@@ -422,8 +422,9 @@ class Router
         foreach (static::$fallback as $prefix => $fallback) {
             if ($prefix === '') {
                 $root_fallback = $fallback;
+                continue;
             }
-            if (Strings::startsWith($request_uri, "{$prefix}/")) {
+            if (Strings::startsWith($request_uri, "{$prefix}/") || $request_uri === $prefix) {
                 return $fallback($request, $e);
             }
         }
@@ -487,8 +488,9 @@ class Router
             foreach (static::$default_route as $prefix => $route) {
                 if ($prefix === '' && $route->match($request)) {
                     $default = $route;
+                    continue;
                 }
-                if (Strings::startsWith($request_uri, "{$prefix}/") && $route->match($request)) {
+                if ((Strings::startsWith($request_uri, "{$prefix}/") || $request_uri === $prefix) && $route->match($request)) {
                     return $route;
                 }
             }
@@ -534,7 +536,7 @@ class Router
     public static function getPrefixFrom(string $request_path) : ?string
     {
         foreach (static::$prefixes as $prefix) {
-            if (Strings::startsWith($request_path, "{$prefix}/")) {
+            if (Strings::startsWith($request_path, "{$prefix}/") || $request_path === $prefix) {
                 return $prefix;
             }
         }

@@ -19,8 +19,9 @@ use Rebet\Tests\Mock\Enum\Gender;
  */
 class TestController extends Controller
 {
-    public $before_count = 0;
-    public $after_count  = 0;
+    public $before_count    = 0;
+    public $after_count     = 0;
+    public $terminate_count = 0;
 
     public function before(Request $request) : Request
     {
@@ -32,6 +33,11 @@ class TestController extends Controller
     {
         $this->after_count++;
         return $response;
+    }
+
+    public function terminate(Request $request, Response $response) : void
+    {
+        $this->terminate_count++;
     }
 
     public function index()
