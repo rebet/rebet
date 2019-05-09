@@ -43,8 +43,8 @@ class LocaleResource
 
         $resource = [];
         foreach ($loading_path as $path) {
-            foreach (array_unique([$locale, Strings::latrim($locale, '_')]) as $locale) {
-                if (file_exists($resource_path = "{$path}/{$locale}/{$base_name}.{$suffix}")) {
+            foreach (array_unique([$locale, Strings::latrim($locale, '_')]) as $search_locale) {
+                if (file_exists($resource_path = "{$path}/{$search_locale}/{$base_name}.{$suffix}")) {
                     break;
                 }
             }

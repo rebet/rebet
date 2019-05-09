@@ -19,6 +19,12 @@ class DateTimeZoneTest extends RebetTestCase
         $this->assertSame("UTC", $rebet2->getName());
     }
 
+    public function test_valueOf()
+    {
+        $rebet  = DateTimeZone::valueOf("UTC");
+        $this->assertSame("UTC", $rebet->getName());
+    }
+
     public function test_toString()
     {
         $rebet = new DateTimeZone("UTC");

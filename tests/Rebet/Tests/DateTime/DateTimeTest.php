@@ -1,12 +1,15 @@
 <?php
 namespace Rebet\Tests\DateTime;
 
+use Rebet\Common\Path;
 use Rebet\Common\Strings;
 use Rebet\Config\Config;
+use Rebet\Config\Resource;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
 use Rebet\DateTime\DayOfWeek;
 use Rebet\DateTime\Month;
+use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
 
@@ -1008,64 +1011,120 @@ class DateTimeTest extends RebetTestCase
     public function dataFormatExtendeds()
     {
         $this->setUp();
-        DateTime::setTestNow('2010-10-20 10:20:30.123456');
+        DateTime::setTestNow('2010-10-20 13:20:30.123456');
         $now = DateTime::now();
 
         return [
-            ['en', '2010-10-20(x3) 10:20:30', $now, 'Y-m-d(\xw) H:i:s'],
-            ['en', '2010-10-20(x33) 10:20:30', $now, 'Y-m-d(\xww) H:i:s'],
-            ['en', '2010-10-20(x333) 10:20:30', $now, 'Y-m-d(\xwww) H:i:s'],
-            ['en', '2010-10-20(xw) 10:20:30', $now, 'Y-m-d(x\w) H:i:s'],
+            ['en', '2010-10-20(x3) 13:20:30', $now, 'Y-m-d(\xw) H:i:s'],
+            ['en', '2010-10-20(x33) 13:20:30', $now, 'Y-m-d(\xww) H:i:s'],
+            ['en', '2010-10-20(x333) 13:20:30', $now, 'Y-m-d(\xwww) H:i:s'],
+            ['en', '2010-10-20(xw) 13:20:30', $now, 'Y-m-d(x\w) H:i:s'],
 
             // en
-            ['en', '2010-10-20(We) 10:20:30', $now, 'Y-m-d(xw) H:i:s'],
-            ['en', '2010-10-20(Wed) 10:20:30', $now, 'Y-m-d(xww) H:i:s'],
-            ['en', '2010-10-20(Wednesday) 10:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+            ['en', '2010-10-20(We) 13:20:30', $now, 'Y-m-d(xw) H:i:s'],
+            ['en', '2010-10-20(Wed) 13:20:30', $now, 'Y-m-d(xww) H:i:s'],
+            ['en', '2010-10-20(Wednesday) 13:20:30', $now, 'Y-m-d(xwww) H:i:s'],
 
-            ['en', '2010-Oct-20 10:20:30', $now, 'Y-xmm-d H:i:s'],
-            ['en', '2010-October-20 10:20:30', $now, 'Y-xmmm-d H:i:s'],
+            ['en', '2010-Oct-20 13:20:30', $now, 'Y-xmm-d H:i:s'],
+            ['en', '2010-October-20 13:20:30', $now, 'Y-xmmm-d H:i:s'],
 
             ['en', '2010-10-20 am 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
             ['en', '2010-10-20 AM 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
             ['en', '2010-10-20 pm 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
             ['en', '2010-10-20 PM 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
 
-            ['en', '10:20', $now, 'Xt'],
-            ['en', '10:20:30', $now, 'Xtt'],
-            ['en', '10:20:30.123456', $now, 'Xttt'],
+            ['en', '13:20', $now, 'Xt'],
+            ['en', '13:20:30', $now, 'Xtt'],
+            ['en', '13:20:30.123456', $now, 'Xttt'],
             ['en', '20/10/2010', $now, 'Xd'],
             ['en', '20 October 2010', $now, 'Xdd'],
             ['en', 'Wednesday, 20 October 2010', $now, 'Xddd'],
-            ['en', 'Wednesday, 20 October 2010 10:20:30', $now, 'Xddd Xtt'],
-            ['en', 'Wednesday, 20 October 2010 10:20:30 UTC [AM]', $now, 'Xddd Xtt e [xA]'],
+            ['en', 'Wednesday, 20 October 2010 13:20:30', $now, 'Xddd Xtt'],
+            ['en', 'Wednesday, 20 October 2010 13:20:30 UTC [PM]', $now, 'Xddd Xtt e [xA]'],
 
             // ja
-            ['ja', '2010-10-20(水) 10:20:30', $now, 'Y-m-d(xw) H:i:s'],
-            ['ja', '2010-10-20(水) 10:20:30', $now, 'Y-m-d(xww) H:i:s'],
-            ['ja', '2010-10-20(水曜日) 10:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(xw) H:i:s'],
+            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(xww) H:i:s'],
+            ['ja', '2010-10-20(水曜日) 13:20:30', $now, 'Y-m-d(xwww) H:i:s'],
 
-            ['ja', '2010-10月-20 10:20:30', $now, 'Y-xmm-d H:i:s'],
-            ['ja', '2010-10月-20 10:20:30', $now, 'Y-xmmm-d H:i:s'],
+            ['ja', '2010-10月-20 13:20:30', $now, 'Y-xmm-d H:i:s'],
+            ['ja', '2010-10月-20 13:20:30', $now, 'Y-xmmm-d H:i:s'],
 
             ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
             ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
             ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
             ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
 
-            ['ja', '10:20', $now, 'Xt'],
-            ['ja', '10:20:30', $now, 'Xtt'],
-            ['ja', '10:20:30.123456', $now, 'Xttt'],
+            ['ja', '13:20', $now, 'Xt'],
+            ['ja', '13:20:30', $now, 'Xtt'],
+            ['ja', '13:20:30.123456', $now, 'Xttt'],
             ['ja', '2010/10/20', $now, 'Xd'],
             ['ja', '2010年10月20日', $now, 'Xdd'],
             ['ja', '2010年10月20日(水)', $now, 'Xddd'],
-            ['ja', '2010年10月20日(水) 10:20:30', $now, 'Xddd Xtt'],
-            ['ja', '2010年10月20日(水) 10:20:30 UTC [午前]', $now, 'Xddd Xtt e [xA]'],
+            ['ja', '2010年10月20日(水) 13:20:30', $now, 'Xddd Xtt'],
+            ['ja', '2010年10月20日(水) 13:20:30 UTC [午後]', $now, 'Xddd Xtt e [xA]'],
 
 
-            ['non', '2010-10-20(We) 10:20:30', $now, 'Y-m-d(xw) H:i:s'],
-            ['non', '2010-10-20(Wed) 10:20:30', $now, 'Y-m-d(xww) H:i:s'],
-            ['non', '2010-10-20(Wednesday) 10:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+            ['non', '2010-10-20(We) 13:20:30', $now, 'Y-m-d(xw) H:i:s'],
+            ['non', '2010-10-20(Wed) 13:20:30', $now, 'Y-m-d(xww) H:i:s'],
+            ['non', '2010-10-20(Wednesday) 13:20:30', $now, 'Y-m-d(xwww) H:i:s'],
         ];
+    }
+
+    public function test_i18n()
+    {
+        $i18n_dir = Path::normalize(App::path('../src/Rebet/DateTime/i18n'));
+        $locales  = array_diff(scandir($i18n_dir), ['.', '..']);
+        $datetime = new DateTime('2019-01-06 13:20:30.123456', 'UTC');
+        foreach ($locales as $locale) {
+            Translator::setLocale($locale);
+            $resource = Resource::load('php', "{$i18n_dir}/{$locale}/datetime.php");
+
+            foreach ([
+                'label'       => 'xmmm',
+                'label_short' => 'xmm',
+            ] as $key => $format) {
+                foreach ($resource[Month::class][$key] as $month => $label) {
+                    if ($month === 0) {
+                        continue;
+                    }
+                    $test_at = $datetime->addMonth($month - 1);
+                    $this->assertSame($label, $test_at->format($format));
+                }
+            }
+
+            foreach ([
+                'label'       => 'xwww',
+                'label_short' => 'xww',
+                'label_min'   => 'xw',
+            ] as $key => $format) {
+                foreach ($resource[DayOfWeek::class][$key] as $day_of_week => $label) {
+                    $test_at = $datetime->addDay($day_of_week);
+                    $this->assertSame($label, $test_at->format($format));
+                }
+            }
+
+            $meridiem = $resource['@meridiem'] ?? null;
+            $this->assertNotNull($meridiem);
+            foreach (range(0, 23) as $hour) {
+                $test_at = $datetime->addHour($hour);
+                $this->assertSame($meridiem($test_at, true), $test_at->format('xA'), "{$test_at} in {$locale}");
+                $this->assertSame($meridiem($test_at, false), $test_at->format('xa'), "{$test_at} in {$locale}");
+            }
+
+            $formats = $resource['@formats'];
+            $this->assertFalse(empty($formats));
+            foreach ($formats as $localized_format => $real_format) {
+                foreach (range(0, 3) as $month) {
+                    foreach (range(0, 3) as $day_of_week) {
+                        foreach (range(0, 23, 3) as $hour) {
+                            $test_at = $datetime->addMonth($month)->addDay($day_of_week)->addHour($hour);
+                            $this->assertSame($test_at->format($real_format), $test_at->format($localized_format), "{$localized_format} => {$real_format} at {$test_at} in {$locale}");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public function test_age()
