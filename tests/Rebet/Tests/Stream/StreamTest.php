@@ -631,6 +631,24 @@ EOS
 
         $this->assertSame([1, 2, 3, 0, 0], $this->array->arrayPad(5, 0)->return());
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid escape type [xml] given. The type must be html or url
+     */
+    public function test_filters_escapeError()
+    {
+        $this->string->escape('xml');
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Apply datetime filter failed. The origin type 'Closure' can not convert to Rebet\DateTime\DateTime.
+     */
+    public function test_filters_convertError()
+    {
+        $this->callable->datetime('Y/m/d');
+    }
 }
 
 class StreamTest_DestructiveMock
