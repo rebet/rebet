@@ -628,7 +628,7 @@ class RouterTest extends RebetTestCase
 
     /**
      * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage View route [not-found] not found. An exception occurred while processing the view.
+     * @expectedExceptionMessage View route [not-found] (possible: not-found) not found. An exception occurred while processing the view.
      */
     public function test_routing_viewNotFound()
     {

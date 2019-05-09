@@ -52,7 +52,7 @@ class ViewSelector
      *
      * @param Request|null $request (default: Request::current())
      * @param AuthUser|null $user (default: Auth::user())
-     * @param callable|null $changer function($view_name, $request, $user):string to return changed view name (default: depend on configure)
+     * @param callable|null $changer function(string $view_name, Request $request, AuthUser $user):string|string[] to return changed view name (default: depend on configure)
      */
     public function __construct(?Request $request = null, ?AuthUser $user = null, ?callable $changer = null)
     {

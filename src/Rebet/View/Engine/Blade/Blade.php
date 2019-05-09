@@ -38,6 +38,16 @@ class Blade implements Engine
     }
 
     /**
+     * Clear Blade view container.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        Container::setInstance(new Container()) ;
+    }
+
+    /**
      * It provides the Blade engine components to the globally container if 'view' component not exists.
      *
      * @param array $view_path

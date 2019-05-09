@@ -187,14 +187,19 @@ class View implements Renderable
      */
     public function render() : string
     {
-        $changer = $this->changer;
-        $name    = $changer ? $changer($this->name) : $this->name;
-        $eof     = $this->eof ?? static::config('eof_line_feed');
-        try {
-            return $eof->process($this->engine->render($name, $this->data));
-        } catch (\Throwable $e) {
-            throw ViewRenderFailedException::by("The view {$name} render failed because of exception occurred.")->caused($e);
+        $names = $this->getPossibleNames();
+        $eof   = $this->eof ?? static::config('eof_line_feed');
+        foreach ($names as $name) {
+            if ($this->engine->exists($name)) {
+                try {
+                    return $eof->process($this->engine->render($name, $this->data));
+                } catch (\Throwable $e) {
+                    throw ViewRenderFailedException::by("The view [{$this->name}] (actual: {$name}) render failed because of exception occurred.")->caused($e);
+                }
+            }
         }
+
+        throw ViewRenderFailedException::by("The view [{$this->name}] (possible: ".join(', ', $names).") render failed because of all of view templates not exists.");
     }
 
     /**
@@ -204,6 +209,22 @@ class View implements Renderable
      */
     public function exists() : bool
     {
-        return $this->engine->exists($this->name);
+        foreach ($this->getPossibleNames() as $name) {
+            if ($this->engine->exists($name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get possible names that provided by changer.
+     *
+     * @return string[]
+     */
+    public function getPossibleNames() : array
+    {
+        $changer = $this->changer;
+        return (array)($changer ? $changer($this->name) : $this->name);
     }
 }
