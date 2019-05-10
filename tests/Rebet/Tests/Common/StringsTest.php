@@ -414,8 +414,19 @@ EOS
     {
         $this->assertSame($expect, Strings::stringify($value));
     }
+
+    public function test_traceToString()
+    {
+        $mock  = new StringsTest_Mock();
+        $trace = $mock->getTrace();
+        $this->assertContains('Rebet\Tests\Common\StringsTest_Mock::getTrace()', Strings::traceToString($trace));
+    }
 }
 
 class StringsTest_Mock
 {
+    public function getTrace($options = DEBUG_BACKTRACE_PROVIDE_OBJECT, int $limit = 0) : array
+    {
+        return debug_backtrace($options, $limit);
+    }
 }

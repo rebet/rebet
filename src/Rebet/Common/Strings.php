@@ -449,7 +449,7 @@ class Strings
         if (is_resource($value)) {
             return '*'.get_resource_type($value).'*';
         }
-        if($value instanceof \DateTimeInterface) {
+        if ($value instanceof \DateTimeInterface) {
             return $value->format(DateTime::config('default_format'));
         }
         if (method_exists($value, '__toString')) {
@@ -487,88 +487,21 @@ class Strings
      * Convert debug_backtrace to string.
      *
      * @param array $trace
-     * @param boolean $withArgs (default: false)
      * @return string
      */
-    public static function traceToString(array $trace, bool $withArgs = false) : string
+    public static function traceToString(array $trace) : string
     {
         $trace = array_reverse($trace);
-        array_pop($trace); // Remove self method stack
-        array_walk($trace, function (&$value, $key) use ($withArgs) {
+        array_walk($trace, function (&$value, $key) {
             $value = "#{$key} ".
             (empty($value['file']) ? "" : " ".$value['file']."(".$value['line']."): ").
             (empty($value['class']) ? "" : $value['class']."::").
             $value['function'].
-            ($withArgs && !empty($value['args']) ? '('.static::argsToString($value['args']).')' : "()")
+            "()"
             ;
         });
 
         return empty($trace) ? "" : join("\n", $trace) ;
-    }
-
-    /**
-     * Convert args to string.
-     *
-     * @param mixed $args
-     * @param integer $length (default: 20)
-     * @param string $ellipsis (default: '...')
-     * @return string
-     */
-    public static function argsToString($args, int $length = 20, string $ellipsis = '...') : string
-    {
-        $args      = (array)$args;
-        $describes = '';
-        foreach ($args as $key => $arg) {
-            $describes .= static::argToString($arg, $length, $ellipsis).", ";
-        }
-        return static::rtrim($describes, ', ');
-    }
-
-    /**
-     * Convert arg to string.
-     *
-     * @param mixed $arg
-     * @param integer $length (default: 20)
-     * @param string $ellipsis (default: '...')
-     * @param bool $array_scanning (default: true)
-     * @return string
-     */
-    protected static function argToString($arg, int $length = 20, string $ellipsis = '...', bool $array_scanning = true) : string
-    {
-        if ($arg === null) {
-            return 'null';
-        }
-        if (is_string($arg)) {
-            return static::clip($arg, $length, $ellipsis);
-        }
-        if (is_scalar($arg)) {
-            return static::clip((string)$arg, $length, $ellipsis);
-        }
-        if (is_resource($arg)) {
-            return static::clip('*'.get_resource_type($arg).'*', $length, $ellipsis);
-        }
-        if (method_exists($arg, '__toString')) {
-            return static::clip($arg->__toString(), $length, $ellipsis);
-        }
-        if (is_object($arg) && $arg instanceof \JsonSerializable) {
-            $json = $arg->jsonSerialize();
-            if (is_scalar($json)) {
-                return static::clip((string)$json, $length, $ellipsis);
-            }
-        }
-        if (is_array($arg) && $array_scanning) {
-            $describes = '';
-            foreach ($arg as $key => $value) {
-                $describes .= "{$key} => ".static::clip(static::argToString($value, $length, $ellipsis, false), $length, $ellipsis).", ";
-            }
-            return '['.static::rtrim($describes, ', ').']';
-        }
-
-        $class         = new \ReflectionClass($arg);
-        $namespace     = $class->getNamespaceName();
-        $namespace_cut = static::rbtrim($namespace, '\\');
-        $namespace     = $namespace === $namespace_cut ? $namespace : "..\\{$namespace_cut}" ;
-        return $namespace.'\\'.$class->getShortName();
     }
 
     /**
