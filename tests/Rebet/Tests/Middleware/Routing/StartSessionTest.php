@@ -1,11 +1,11 @@
 <?php
-namespace Rebet\Tests\Http\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
-use Rebet\Http\Middleware\StartSession;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Session\Session;
+use Rebet\Middleware\Routing\StartSession;
 use Rebet\Tests\RebetTestCase;
 
 class StartSessionTest extends RebetTestCase

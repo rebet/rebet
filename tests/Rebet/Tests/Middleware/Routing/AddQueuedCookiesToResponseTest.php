@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Http\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
 use Rebet\Http\Cookie\Cookie;
-use Rebet\Http\Middleware\AddQueuedCookiesToResponse;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Middleware\Routing\AddQueuedCookiesToResponse;
 use Rebet\Tests\RebetTestCase;
 
 class AddQueuedCookiesToResponseTest extends RebetTestCase

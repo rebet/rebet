@@ -89,6 +89,17 @@ class View implements Renderable
     }
 
     /**
+     * Clear the global share valiables and view valiable composers.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$share    = [];
+        static::$composer = [];
+    }
+
+    /**
      * Create a view
      *
      * @param string $name

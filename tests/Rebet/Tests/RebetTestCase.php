@@ -31,6 +31,8 @@ use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Address;
 use Rebet\Tests\Mock\User;
 use Rebet\Translation\Translator;
+use Rebet\View\Engine\Twig\Node\CodeNode;
+use Rebet\View\View;
 
 /**
  * RebetTestCase Class
@@ -117,10 +119,13 @@ abstract class RebetTestCase extends TestCase
         ]);
         Enum::clear();
         Event::clear();
-        Translator::clear();
         Cookie::clear();
+        Request::clear();
         Session::clear();
         Router::clear();
+        Translator::clear();
+        CodeNode::clear();
+        View::clear();
         StderrCapture::clear();
     }
 

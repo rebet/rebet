@@ -1,32 +1,33 @@
 <?php
-namespace Rebet\Http\Middleware;
+namespace Rebet\Middleware\Routing;
 
-use Rebet\Http\Input;
+use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\Stream\Stream;
-use Rebet\View\View;
 
 /**
- * [Routing Middleware] Set Request Input Data To View Class
+ * [Routing Middleware] Add Queued Cookies To Response Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class SetRequestInputDataToView
+class AddQueuedCookiesToResponse
 {
     /**
-     * Handle Set Request Input Data To View Middleware.
+     * Handle Add Queued Cookies To Response Middleware.
      *
      * @param Request $request
      * @param \Closure $next
-     * @return void
+     * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        View::share('input', Stream::promise(function () use ($request) { return $request->input(); }));
-        return $next($request);
+        $response = $next($request);
+        foreach (Cookie::queued() as $cookie) {
+            $response->setCookie($cookie);
+        }
+        return $response;
     }
 }

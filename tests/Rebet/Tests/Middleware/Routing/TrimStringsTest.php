@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Http\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
-use Rebet\Http\Middleware\TrimStrings;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Middleware\Routing\TrimStrings;
 use Rebet\Tests\RebetTestCase;
 
 class TrimStringsTest extends RebetTestCase

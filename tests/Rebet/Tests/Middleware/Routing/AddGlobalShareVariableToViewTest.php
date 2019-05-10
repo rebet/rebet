@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Routing\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
-use Rebet\Routing\Middleware\AddGlobalShareVariableToView;
+use Rebet\Middleware\Routing\AddGlobalShareVariableToView;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\View;
 

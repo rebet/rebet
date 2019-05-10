@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Http\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
-use Rebet\Http\Middleware\RestoreInheritData;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Middleware\Routing\RestoreInheritData;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\View;
 

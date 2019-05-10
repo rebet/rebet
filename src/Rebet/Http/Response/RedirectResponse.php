@@ -64,6 +64,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      */
     protected function getTargetUrlWithoutRoutePrefix() : string
     {
-        return Strings::ltrim($this->getTargetUrl(), Request::current()->getRoutePrefix(), 1);
+        $request = Request::current();
+        return Strings::ltrim($this->getTargetUrl(), $request ? $request->getRoutePrefix() : '', 1);
     }
 }

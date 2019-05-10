@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Http\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
-use Rebet\Http\Middleware\SetRequestInputDataToView;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Middleware\Routing\SetRequestInputDataToView;
 use Rebet\Stream\Stream;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\View;

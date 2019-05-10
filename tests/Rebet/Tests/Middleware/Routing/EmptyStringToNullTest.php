@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Http\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
-use Rebet\Http\Middleware\EmptyStringToNull;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Middleware\Routing\EmptyStringToNull;
 use Rebet\Tests\RebetTestCase;
 
 class EmptyStringToNullTest extends RebetTestCase

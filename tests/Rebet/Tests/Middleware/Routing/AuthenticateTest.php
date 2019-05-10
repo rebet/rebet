@@ -1,11 +1,11 @@
 <?php
-namespace Rebet\Tests\Auth\Middleware;
+namespace Rebet\Tests\Middleware\Routing;
 
 use Rebet\Auth\Auth;
-use Rebet\Auth\Middleware\Authenticate;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\RedirectResponse;
+use Rebet\Middleware\Routing\Authenticate;
 use Rebet\Tests\RebetTestCase;
 
 class AuthenticateTest extends RebetTestCase
