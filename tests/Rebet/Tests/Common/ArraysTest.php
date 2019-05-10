@@ -1095,4 +1095,14 @@ class ArraysTest extends RebetTestCase
         $this->assertSame(1, Arrays::peel(new \ArrayObject([1])));
         $this->assertNull(Arrays::peel(new \ArrayObject([])));
     }
+
+    public function test_implode()
+    {
+        $this->assertNull(Arrays::implode(null));
+        $this->assertSame('', Arrays::implode([]));
+        $this->assertSame('1, 2, 3', Arrays::implode([1, 2, 3]));
+        $this->assertSame('1／2／3', Arrays::implode([1, 2, 3], '／'));
+        $this->assertSame('1, 2, 3', Arrays::implode(new \ArrayObject([1, 2, 3])));
+        $this->assertNull(Arrays::implode(Gender::MALE()));
+    }
 }

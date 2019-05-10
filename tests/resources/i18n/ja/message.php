@@ -1,6 +1,8 @@
 <?php
 return [
-    '@errors' => [
+    '@full_name' => ':last_name :first_name',
+    '@delimiter' => '／',
+    '@errors'    => [
         'class' => 'is-danger',
         'color' => ['red', '#333'],
     ],
@@ -10,5 +12,7 @@ return [
             'title'  => '指定のページが見つかりません',
             'detail' => 'ご指定のページは見つかりませんでした。ご指定のURLが間違っているか、既にページが削除／移動された可能性があります。',
         ]
-    ]
+    ],
+
+    'welcome' => 'ようこそ、:name様',
 ];

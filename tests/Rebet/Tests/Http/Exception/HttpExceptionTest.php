@@ -5,7 +5,6 @@ use Rebet\Foundation\App;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
 
 class HttpExceptionTest extends RebetTestCase
 {
@@ -75,9 +74,7 @@ class HttpExceptionTest extends RebetTestCase
         $e = new HttpException(404, null, 'message.http.404.title');
         $this->assertSame('Custom Not Found', $e->getTitle());
 
-        App::setLocale('de');
-        Translator::setFallbackLocale('de');
-
+        App::setLocale('de', 'de');
         $e = new HttpException(404);
         $this->assertSame('Not Found', $e->getTitle());
     }

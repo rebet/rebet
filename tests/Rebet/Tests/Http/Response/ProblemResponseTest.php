@@ -5,7 +5,6 @@ use Rebet\Foundation\App;
 use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
 
 class ProblemResponseTest extends RebetTestCase
 {
@@ -33,11 +32,11 @@ class ProblemResponseTest extends RebetTestCase
         $response = new ProblemResponse(404);
         $this->assertSame('Custom Not Found', $response->getProblem('title'));
 
-        App::setLocale('de');
+        App::setLocale('de', 'en');
         $response = new ProblemResponse(404);
         $this->assertSame('Custom Not Found', $response->getProblem('title'));
 
-        Translator::setFallbackLocale('de');
+        App::setLocale('de', 'de');
         $response = new ProblemResponse(404);
         $this->assertSame('Not Found', $response->getProblem('title'));
     }

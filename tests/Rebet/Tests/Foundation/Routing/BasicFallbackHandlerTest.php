@@ -6,12 +6,11 @@ use Rebet\Config\Config;
 use Rebet\Config\Exception\ConfigNotDefineException;
 use Rebet\Foundation\App;
 use Rebet\Foundation\Routing\BasicFallbackHandler;
+use Rebet\Log\Log;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
-use Rebet\Log\Log;
 
 class BasicFallbackHandlerTest extends RebetTestCase
 {
@@ -39,8 +38,7 @@ class BasicFallbackHandlerTest extends RebetTestCase
 
     public function test_handle_web()
     {
-        App::setLocale('de');
-        Translator::setFallbackLocale('de');
+        App::setLocale('de', 'de');
         $request = $this->createRequestMock('/');
         $handler = new BasicFallbackHandler();
 
@@ -52,7 +50,7 @@ class BasicFallbackHandlerTest extends RebetTestCase
         $log = $driver->formatted();
         $this->assertContains('HTTP 403 Forbidden occurred.', $log);
         $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
- 
+
         $response = $handler->handle($request, RouteNotFoundException::by('Route not found'));
         $this->assertContains('<span class="status">404</span>Not Found', $response->getContent());
         $this->assertContains('Route not found', $response->getContent());

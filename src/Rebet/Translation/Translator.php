@@ -95,11 +95,15 @@ class Translator
      * Set locale by given locale
      *
      * @param string $locale (default: null)
+     * @param string|null $fallback_locale if null given then do nothing (default: null)
      * @return string|null
      */
-    public static function setLocale(string $locale) : void
+    public static function setLocale(string $locale, ?string $fallback_locale = null) : void
     {
         static::setConfig(['locale' => $locale]);
+        if ($fallback_locale !== null) {
+            self::setConfig(['fallback_locale' => $fallback_locale]);
+        }
     }
 
     /**
@@ -110,17 +114,6 @@ class Translator
     public static function getFallbackLocale() : string
     {
         return static::config('fallback_locale');
-    }
-
-    /**
-     * Set fallback locale by given locale
-     *
-     * @param string $fallback_locale
-     * @return void
-     */
-    public static function setFallbackLocale(string $fallback_locale) : void
-    {
-        static::setConfig(['fallback_locale' => $fallback_locale]);
     }
 
     /**
@@ -181,19 +174,18 @@ class Translator
         $locale   = $locale ?? static::config('locale');
         $sentence = static::dictionary()->sentence($group, $key, array_unique([$locale, static::config('fallback_locale')]), $selector, $recursive);
 
-        return static::replace($group, $sentence, $replacement, $locale);
+        return static::replace($sentence, $replacement, static::grammar($group, 'delimiter', ', ', $locale));
     }
 
     /**
      * Replace the placeholder in translation text by given replacement.
      *
-     * @param string $group
      * @param string|null $sentence
-     * @param array $replacement (default: [])
-     * @param string|null $locale (default: null)
+     * @param array $replacement
+     * @param string $delimiter for join array to string (default: ', ')
      * @return string|null
      */
-    public static function replace(string $group, ?string $sentence, array $replacement = [], ?string $locale = null) : ?string
+    public static function replace(?string $sentence, array $replacement, string $delimiter = ', ') : ?string
     {
         if ($sentence === null) {
             return null;
@@ -204,10 +196,8 @@ class Translator
         }
 
         $replacement = Stream::of($replacement, true)->sortKeys(SORT_DESC, Callback::compareLength())->return();
-        $delimiter   = static::grammar($group, 'delimiter', ', ', $locale);
         foreach ($replacement as $key => $value) {
-            $value    = is_array($value) ? implode($delimiter, Arrays::flatten($value)) : $value ;
-            $sentence = str_replace(':'.$key, $value, $sentence);
+            $sentence = str_replace(':'.$key, Arrays::implode($value, $delimiter) ?? $value, $sentence);
         }
 
         return $sentence;

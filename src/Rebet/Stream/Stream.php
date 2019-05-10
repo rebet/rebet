@@ -37,7 +37,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
                         'every', 'groupBy', 'union', 'min', 'max', 'sort', 'sortBy', 'sortKeys', 'sum', 'avg',
-                        'median', 'mode'
+                        'median', 'mode', 'implode'
                     ],
                 ],
                 'customs' => [
@@ -55,7 +55,6 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'datetime' => function (DateTime $value, string $format) { return $value->format($format); },
                     'text'     => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
                     'explode'  => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                    'implode'  => function (array $value, string $delimiter) { return implode($delimiter, $value); },
                     'replace'  => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
                     'lower'    => function (string $value) { return strtolower($value); },
                     'upper'    => function (string $value) { return strtoupper($value); },

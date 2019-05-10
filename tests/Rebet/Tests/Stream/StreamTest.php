@@ -428,6 +428,12 @@ class StreamTest extends RebetTestCase
         $this->assertNull($this->null->indent('> ')->return());
         $this->assertSame("> Hello\n> Rebet", $this->text->indent('> ')->return());
 
+        // Arrays::implode
+        $this->assertSame('1, 2, 3', $this->array->implode()->return());
+        $this->assertSame('1／2／3', $this->array->implode('／')->return());
+        $this->assertSame('[1, 2, 3]', $this->array->implode()->text('[%s]')->return());
+
+
         // default
         $this->assertSame('(null)', $this->null->_('default', '(null)')->return());
         $this->assertSame(123, $this->int->_('default', '(null)')->return());
@@ -488,13 +494,6 @@ class StreamTest extends RebetTestCase
         $this->assertSame(['Hello', 'Rebet'], $this->string->_('explode', ' ')->return());
 
         $this->assertSame(['Hello', 'Rebet'], $this->string->explode(' ')->return());
-
-        // implode
-        $this->assertNull($this->null->_('implode', ',')->return());
-        $this->assertSame('1, 2, 3', $this->array->_('implode', ', ')->return());
-
-        $this->assertSame('1, 2, 3', $this->array->implode(', ')->return());
-        $this->assertSame('[1, 2, 3]', $this->array->implode(', ')->text('[%s]')->return());
 
         // replace
         $this->assertNull($this->null->_('replace', '/Hello/', 'Good by')->return());

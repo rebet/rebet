@@ -1056,4 +1056,24 @@ class Arrays
         }
         return $array;
     }
+
+    /**
+     * Join the given array elements to string using given delimiter.
+     *
+     * @param array|\Traversable $array
+     * @param string $delimiter (default: ', ')
+     * @return string|null return null when other than array or \Traversable given as array.
+     */
+    public static function implode($array, string $delimiter = ', ') : ?string
+    {
+        if (!is_array($array) && !($array instanceof \Traversable)) {
+            return null;
+        }
+
+        $string = '';
+        foreach ($array as $value) {
+            $string .= "{$value}{$delimiter}";
+        }
+        return Strings::rtrim($string, $delimiter, 1);
+    }
 }

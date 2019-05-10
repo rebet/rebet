@@ -215,7 +215,7 @@ class Context
         if (Strings::startsWith($key, '@')) {
             $message = Strings::lcut($key, 1);
         } else {
-            $message = Translator::replace('validation', $this->message($key), $replace) ?? Translator::get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
+            $message = Translator::replace($this->message($key), $replace, Translator::grammar('validation', 'delimiter', ', ')) ?? Translator::get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
         }
 
         $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = $message;
