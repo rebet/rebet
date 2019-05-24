@@ -1115,9 +1115,9 @@ class DateTimeTest extends RebetTestCase
             $formats = $resource['@formats'];
             $this->assertFalse(empty($formats));
             foreach ($formats as $localized_format => $real_format) {
-                foreach (range(0, 3) as $month) {
-                    foreach (range(0, 3) as $day_of_week) {
-                        foreach (range(0, 23, 3) as $hour) {
+                foreach (range(0, 2) as $month) {
+                    foreach (range(0, 2) as $day_of_week) {
+                        foreach (range(0, 23, 4) as $hour) {
                             $test_at = $datetime->addMonth($month)->addDay($day_of_week)->addHour($hour);
                             $this->assertSame($test_at->format($real_format), $test_at->format($localized_format), "{$localized_format} => {$real_format} at {$test_at} in {$locale}");
                         }

@@ -128,5 +128,6 @@ return [
     "Accepted"                      => ":attributeに同意して下さい。",
     "CorrelatedRequired"            => ":attributeの内、少なくとも:at_least項目を入力して下さい。",
     "CorrelatedUnique"              => ":attributeには異なる値を入力して下さい。:duplicate が重複しています。",
+    "FileSize"                      => ":attributeのファイルサイズは:maxバイト以下にして下さい。",
 
 ];

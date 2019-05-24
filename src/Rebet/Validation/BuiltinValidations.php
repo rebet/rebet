@@ -6,12 +6,12 @@ use Rebet\Common\Path;
 use Rebet\Common\Strings;
 use Rebet\Common\System;
 use Rebet\Common\Utils;
-use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Stream\Stream;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
+use Rebet\Common\Unit;
 
 /**
  * BuiltinValidations Class
@@ -43,7 +43,7 @@ class BuiltinValidations extends Validations
                     'ambiguous_patterns' => [
                         "^" => "^",
                         "$" => "$",
-                        // @todo 同位系の列挙 https://ja.wikipedia.org/wiki/A
+                        // @todo 同位系の列挙 https://ja.wikipedia.org/wiki/A https://en.wikipedia.org/wiki/A
                         "a" => "([aAꜸꜹꜺꜻꜼꜽꜲꜳⱯɐⱭɑɒẚÁáÀàĂăẮắẰằẴẵẲẳÂâẤấẦầẪẫẨẩǍǎÅåǺǻÄäǞǟÃãȦȧǠǡĄąĄ̈ą̈ĀāẢảȀȁȂȃẠạẶặẬậḀḁȺⱥᶏǼǽǢǣᶐΛａＡⒶⓐ🄰🅐🅰@＠🄐⒜])",
                         "b" => "([bBƄƅÞþẞßʙḂḃḄḅḆḇɃƀᵬᶀƁɓƂƃｂＢⒷⓑ🄱🅑🅱])",
                         "c" => "([cCƆɔↃↄꜾꜿĈĉČčĊċÇçḈḉȻȼƇƈɕｃＣⒸⓒ🄲🅒🅲©])",
@@ -82,8 +82,8 @@ class BuiltinValidations extends Validations
                         "9" => "([9９⑨⓽❾➈➒㊈九玖])",
                         'ア' => '([アｱ㋐あァｧぁ])',
                         'イ' => '([イｲ㋑㋼いィｨぃヰゐ])',
-                        'ウ' => '([ウｳ㋒うゥｩぅヱゑ])',
-                        'エ' => '([エｴ㋓㋽えェｪぇ])',
+                        'ウ' => '([ウｳ㋒うゥｩぅ])',
+                        'エ' => '([エｴ㋓㋽えェｪぇヱゑ])',
                         'オ' => '([オｵ㋔おォｫぉ])',
                         'カ' => '([カｶ㋕かヵゕ])',
                         'キ' => '([キｷ㋖き])',
@@ -1399,7 +1399,7 @@ class BuiltinValidations extends Validations
     }
 
     /**
-     * Correlation Unique Validation
+     * Correlation Required Validation
      *
      * @param Context $c
      * @param array $fields
@@ -1431,6 +1431,26 @@ class BuiltinValidations extends Validations
             'attribute' => $correlations->pluck('label')->return(),
             'duplicate' => $correlations->where(function ($row) use ($duplicate) { return in_array(Context::isBlank($row['value']) ? '' : $row['value'], $duplicate, true); })->pluck('label')->return(),
         ]) ;
+    }
+
+    /**
+     *  File Size Validation
+     *
+     * @param Context $c
+     * @param string|int| $size
+     * @param integer $precision
+     * @return boolean
+     */
+    public function validationFileSize(Context $c, $size, int $precision = 2) : bool
+    {
+        if ($c->blank()) {
+            return true;
+        }
+        $unit = Unit::of(Unit::STORAGE_PREFIX);
+        $size = $unit->parse($size);
+        return $size->gte($c->value->getSize()) ? true : $c->appendError('FileSize', [
+            'max' => $unit->convert($size, null, $precision)
+        ]);
     }
 }
 

@@ -2,9 +2,9 @@
 namespace Rebet\Stream;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Decimal;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Json;
-use Rebet\Common\Math;
 use Rebet\Common\Reflector;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
@@ -30,7 +30,6 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             'filter' => [
                 'delegaters' => [
                     Reflector::class => ['convert'],
-                    Math::class      => ['floor', 'round', 'ceil', 'format' => 'number'],
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
                     Strings::class   => ['lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'mbtrim' => 'trim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch', 'split'],
                     Arrays::class    => [
@@ -58,6 +57,11 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'replace'  => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
                     'lower'    => function (string $value) { return strtolower($value); },
                     'upper'    => function (string $value) { return strtoupper($value); },
+                    'decimal'  => function ($value) { return $value === null ? null : Decimal::of($value); },
+                    'floor'    => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->floor($precision); },
+                    'round'    => function ($value, int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES) { return $value === null ? null : Decimal::of($value)->round($precision, $guard_digits, $precision_type); },
+                    'ceil'     => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->ceil($precision); },
+                    'number'   => function ($value, int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',') { return $value === null ? null : Decimal::of($value)->round($precision)->format($omit_zero, $decimal_point, $thousands_separator); },
                     'dump'     => function ($value) { return print_r($value, true); },
                     'invoke'   => function ($value, ...$args) { return call_user_func($value, ...$args); },
                     'equals'   => function ($value, $other) { return $value == $other; },

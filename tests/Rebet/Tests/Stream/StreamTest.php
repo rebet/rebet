@@ -365,44 +365,46 @@ class StreamTest extends RebetTestCase
 
         $this->assertSame('123', $this->int->convert('string')->return());
 
-        // Math::format => number
+        // format => number
         $this->assertNull($this->null->_('number')->return());
         $this->assertSame('123', $this->int->_('number')->return());
         $this->assertSame('1,235', $this->float->_('number')->return());
+        $this->assertSame('1,235', $this->float->_('number', 0)->return());
         $this->assertSame('1,234.6', $this->float->_('number', 1)->return());
         $this->assertSame('1,234.57', $this->float->_('number', 2)->return());
         $this->assertSame('1,234.568', $this->float->_('number', 3)->return());
         $this->assertSame('1,234.5678', $this->float->_('number', 4)->return());
         $this->assertSame('1,234.56780', $this->float->_('number', 5)->return());
-        $this->assertSame('1234.57', $this->float->_('number', 2, '.', '')->return());
-        $this->assertSame('1 234,57', $this->float->_('number', 2, ',', ' ')->return());
+        $this->assertSame('1,234.5678', $this->float->_('number', 5, true)->return());
+        $this->assertSame('1234.57', $this->float->_('number', 2, false, '.', '')->return());
+        $this->assertSame('1 234,57', $this->float->_('number', 2, false, ',', ' ')->return());
 
-        // Math::floor
-        $this->assertNull($this->null->_('floor')->return());
-        $this->assertSame('1234', $this->float->_('floor')->return());
-        $this->assertSame('1234.56', $this->float->_('floor', 2)->return());
-        $this->assertSame('1200', $this->float->_('floor', -2)->return());
+        // floor
+        $this->assertNull($this->null->_('floor')->value()->return());
+        $this->assertSame('1234', $this->float->_('floor')->value()->return());
+        $this->assertSame('1234.56', $this->float->_('floor', 2)->value()->return());
+        $this->assertSame('1200', $this->float->_('floor', -2)->value()->return());
 
-        $this->assertSame('1234', $this->float->floor()->return());
-        $this->assertSame('1234.56', $this->float->floor(2)->return());
+        $this->assertSame('1234', $this->float->floor()->value()->return());
+        $this->assertSame('1234.56', $this->float->floor(2)->value()->return());
 
-        // Math::round
-        $this->assertNull($this->null->_('round')->return());
-        $this->assertSame('1235', $this->float->_('round')->return());
-        $this->assertSame('1234.57', $this->float->_('round', 2)->return());
-        $this->assertSame('1200', $this->float->_('round', -2)->return());
+        // round
+        $this->assertNull($this->null->_('round')->value()->return());
+        $this->assertSame('1235', $this->float->_('round')->value()->return());
+        $this->assertSame('1234.57', $this->float->_('round', 2)->value()->return());
+        $this->assertSame('1200', $this->float->_('round', -2)->value()->return());
 
-        $this->assertSame('1235', $this->float->round()->return());
-        $this->assertSame('1234.57', $this->float->round(2)->return());
+        $this->assertSame('1235', $this->float->round()->value()->return());
+        $this->assertSame('1234.57', $this->float->round(2)->value()->return());
 
-        // Math::ceil
-        $this->assertNull($this->null->_('ceil')->return());
-        $this->assertSame('1235', $this->float->_('ceil')->return());
-        $this->assertSame('1234.57', $this->float->_('ceil', 2)->return());
-        $this->assertSame('1300', $this->float->_('ceil', -2)->return());
+        // ceil
+        $this->assertNull($this->null->_('ceil')->value()->return());
+        $this->assertSame('1235', $this->float->_('ceil')->value()->return());
+        $this->assertSame('1234.57', $this->float->_('ceil', 2)->value()->return());
+        $this->assertSame('1300', $this->float->_('ceil', -2)->value()->return());
 
-        $this->assertSame('1235', $this->float->ceil()->return());
-        $this->assertSame('1234.57', $this->float->ceil(2)->return());
+        $this->assertSame('1235', $this->float->ceil()->value()->return());
+        $this->assertSame('1234.57', $this->float->ceil(2)->value()->return());
 
         // Utils::isBlank
         $this->assertTrue($this->null->isBlank());

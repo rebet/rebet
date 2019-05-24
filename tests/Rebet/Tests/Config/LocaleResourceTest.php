@@ -5,6 +5,7 @@ use Rebet\Config\LocaleResource;
 use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Validation\Kind;
 
 class LocaleResourceTest extends RebetTestCase
 {
@@ -29,6 +30,13 @@ class LocaleResourceTest extends RebetTestCase
                     2 => '女性',
                 ],
             ],
+            Kind::class => [
+                'label' => [
+                    1 => '整合性チェック',
+                    2 => '依存性チェック',
+                    3 => 'その他',
+                ],
+            ]
         ], $resources);
 
         $resources = LocaleResource::load(App::path('/resources/i18n'), 'de', 'enum');
@@ -52,6 +60,13 @@ class LocaleResourceTest extends RebetTestCase
                     2 => '女性',
                 ],
             ],
+            Kind::class => [
+                'label' => [
+                    1 => '整合性チェック',
+                    2 => '依存性チェック',
+                    3 => 'その他',
+                ],
+            ]
         ], $resources);
 
         $this->assertSame(

@@ -406,6 +406,14 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals(300, Arrays::last($array));
     }
 
+    public function test_find()
+    {
+        $array = ['a' => 100, 'b' => 200, 'c' => 300];
+        $this->assertEquals('b', Arrays::find($array, function ($value) {
+            return $value >= 150;
+        }));
+    }
+
     public function test_first()
     {
         $array = [100, 200, 300];
@@ -1014,63 +1022,63 @@ class ArraysTest extends RebetTestCase
     public function test_sum()
     {
         $this->assertNull(Arrays::sum(null));
-        $this->assertSame('0', Arrays::sum([]));
-        $this->assertSame('55', Arrays::sum(range(1, 10)));
-        $this->assertSame('55', Arrays::sum(range(1, 10), function ($x) { return $x; }));
-        $this->assertSame('88', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
-        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
-        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; }));
-        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4]));
-        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4], function ($v) { return $v; }));
+        $this->assertSame('0', Arrays::sum([])->value());
+        $this->assertSame('55', Arrays::sum(range(1, 10))->value());
+        $this->assertSame('55', Arrays::sum(range(1, 10), function ($x) { return $x; })->value());
+        $this->assertSame('88', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age')->value());
+        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; })->value());
+        $this->assertSame('58', Arrays::sum([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; })->value());
+        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4])->value());
+        $this->assertSame('10', Arrays::sum([1, 2, 3, null, 4], function ($v) { return $v; })->value());
 
         $this->assertFalse(0.3 == array_sum([0.1, 0.2]));
-        $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2]));
-        $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2], null, true));
+        $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2])->value());
+        $this->assertTrue(0.3 == Arrays::sum([0.1, 0.2], null, true)->value());
 
         $data = array_fill(0, 10000, 0.1);
         $this->assertFalse(1000 == array_sum($data));
-        $this->assertFalse(1000 == Arrays::sum($data));
-        $this->assertTrue(1000 == Arrays::sum($data, null, true));
+        $this->assertFalse(1000 == Arrays::sum($data)->value());
+        $this->assertTrue(1000 == Arrays::sum($data, null, true)->value());
     }
 
     public function test_avg()
     {
         $this->assertNull(Arrays::avg(null));
         $this->assertNull(Arrays::avg([]));
-        $this->assertSame('5.5', Arrays::avg(range(1, 10)));
-        $this->assertSame('5.5', Arrays::avg(range(1, 10), function ($x) { return $x; }));
-        $this->assertSame('22', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
-        $this->assertSame('14.5', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
-        $this->assertSame('29', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; }));
-        $this->assertSame('2', Arrays::avg([1, 2, 3, null, 4]));
-        $this->assertSame('2.5', Arrays::avg([1, 2, 3, null, 4], function ($v) { return $v; }));
+        $this->assertSame('5.5', Arrays::avg(range(1, 10))->value());
+        $this->assertSame('5.5', Arrays::avg(range(1, 10), function ($x) { return $x; })->value());
+        $this->assertSame('22', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age')->value());
+        $this->assertSame('14.5', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; })->value());
+        $this->assertSame('29', Arrays::avg([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; })->value());
+        $this->assertSame('2', Arrays::avg([1, 2, 3, null, 4])->value());
+        $this->assertSame('2.5', Arrays::avg([1, 2, 3, null, 4], function ($v) { return $v; })->value());
 
         $this->assertFalse(0.15 == array_sum([0.1, 0.2]) / 2);
-        $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2]));
-        $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2], null, true));
+        $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2])->value());
+        $this->assertTrue(0.15 == Arrays::avg([0.1, 0.2], null, true)->value());
 
         $data = array_fill(0, 10000, 0.1);
         $this->assertFalse(0.1 == array_sum($data) / 10000);
-        $this->assertFalse(0.1 == Arrays::avg($data));
-        $this->assertTrue(0.1 == Arrays::avg($data, null, true));
+        $this->assertFalse(0.1 == Arrays::avg($data)->value());
+        $this->assertTrue(0.1 == Arrays::avg($data, null, true)->value());
     }
 
     public function test_median()
     {
         $this->assertNull(Arrays::median(null));
         $this->assertNull(Arrays::median([]));
-        $this->assertSame('5.5', Arrays::median(range(1, 10)));
-        $this->assertSame('5.5', Arrays::median(range(1, 10), function ($x) { return $x; }));
-        $this->assertSame('22.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age'));
-        $this->assertSame('18', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18], ['age' => 9]], 'age'));
-        $this->assertSame('13.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; }));
-        $this->assertSame('29', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; }));
-        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4]));
-        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4], function ($v) { return $v; }));
+        $this->assertSame('5.5', Arrays::median(range(1, 10))->value());
+        $this->assertSame('5.5', Arrays::median(range(1, 10), function ($x) { return $x; })->value());
+        $this->assertSame('22.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], 'age')->value());
+        $this->assertSame('18', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18], ['age' => 9]], 'age')->value());
+        $this->assertSame('13.5', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : 0 ; })->value());
+        $this->assertSame('29', Arrays::median([['age' => 12], ['age' => 27], ['age' => 31], ['age' => 18]], function ($v) { return $v['age'] > 20 ? $v['age'] : null ; })->value());
+        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4])->value());
+        $this->assertSame('2.5', Arrays::median([1, 2, 3, null, 4], function ($v) { return $v; })->value());
 
         $this->assertFalse(0.15 == array_sum([0.1, 0.2]) / 2);
-        $this->assertTrue(0.15 == Arrays::median([0.1, 0.2]));
-        $this->assertTrue(0.15 == Arrays::median([0.1, 0.2], null, true));
+        $this->assertTrue(0.15 == Arrays::median([0.1, 0.2])->value());
+        $this->assertTrue(0.15 == Arrays::median([0.1, 0.2], null, true)->value());
     }
 
     public function test_mode()

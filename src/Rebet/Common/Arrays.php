@@ -465,11 +465,32 @@ class Arrays
     }
 
     /**
+     * Return the key in an array passing a given truth test.
+     *
+     * @param  array|null  $array
+     * @param  callable  $callback
+     * @param  mixed  $default (default: null)
+     * @return mixed
+     */
+    public static function find($array, callable $callback, $default = null)
+    {
+        if ($array === null) {
+            return static::value($default);
+        }
+        foreach ($array as $key => $value) {
+            if (call_user_func($callback, $value, $key)) {
+                return $key;
+            }
+        }
+        return static::value($default);
+    }
+
+    /**
      * Return the first element in an array passing a given truth test.
      *
      * @param  array|null  $array
      * @param  callable|null  $callback
-     * @param  mixed  $default
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     public static function first($array, callable $callback = null, $default = null)
@@ -948,22 +969,22 @@ class Arrays
      * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
-     * @return string|null
+     * @return Decimal|null
      */
-    public static function sum(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?string
+    public static function sum(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?Decimal
     {
         if ($array === null) {
             return null;
         }
 
         if ($retriever === null && !$arbitrary_precision) {
-            return (string)array_sum($array);
+            return Decimal::of(array_sum($array));
         }
 
         $retriever = Callback::retriever($retriever);
-        return (string)static::reduce($array, function ($carry, $item) use ($retriever, $arbitrary_precision, $precision) {
-            return $arbitrary_precision ? Math::add($carry, (string)($retriever($item) ?? '0'), $precision) : $carry + ($retriever($item) ?? 0) ;
-        }, '0');
+        return Decimal::of(static::reduce($array, function ($carry, $item) use ($retriever, $arbitrary_precision, $precision) {
+            return $arbitrary_precision ? Decimal::of($carry)->add($retriever($item) ?? '0', $precision) : $carry + ($retriever($item) ?? 0) ;
+        }, '0'));
     }
 
     /**
@@ -974,9 +995,9 @@ class Arrays
      * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
-     * @return string|null
+     * @return Decimal|null
      */
-    public static function avg(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?string
+    public static function avg(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?Decimal
     {
         if (empty($array)) {
             return null;
@@ -985,7 +1006,7 @@ class Arrays
         $counter   = $retriever === null ? null : function ($v) use ($retriever) { return call_user_func($retriever, $v) !== null; };
         $sum       = static::sum($array, $retriever, $arbitrary_precision, $precision);
         $count     = static::count($array, $counter);
-        return (string)($arbitrary_precision ? Math::div($sum, $count, $precision) : $sum / $count) ;
+        return $sum->div($count, $precision) ;
     }
 
     /**
@@ -995,9 +1016,9 @@ class Arrays
      * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @param bool $arbitrary_precision (default: false)
      * @param int|null $precision for arbitrary precision (default: null)
-     * @return string|null
+     * @return Decimal|null
      */
-    public static function median(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?string
+    public static function median(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?Decimal
     {
         if (empty($array)) {
             return null;
@@ -1010,7 +1031,7 @@ class Arrays
         }
         $middle = (int) ($count / 2);
         if ($count % 2) {
-            return (string)$array[$middle];
+            return Decimal::of($array[$middle]);
         }
         return static::avg([$array[$middle - 1], $array[$middle]], null, $arbitrary_precision, $precision);
     }

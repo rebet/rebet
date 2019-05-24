@@ -8,6 +8,7 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
+use Rebet\Http\UploadedFile;
 
 class BuiltinValidationsTest extends RebetTestCase
 {
@@ -1238,8 +1239,24 @@ EOS
                 ]
             ]],
 
-
-
+            // --------------------------------------------
+            // Valid::FILE_SIZE
+            // --------------------------------------------
+            [[
+                'name'  => 'FileSize',
+                'data'  => [
+                    'null'   => null, 
+                    'banner' => new UploadedFile(App::path('/resources/image/72x72.png'), 'name'),
+                ],
+                'tests' => [
+                    ['null'  , ['1M' ], true  , []],
+                    ['null'  , [5000 ], true  , []],
+                    ['banner', ['1M' ], true  , []],
+                    ['banner', ['1K' ], true  , []],
+                    ['banner', [500  ], true  , []],
+                    ['banner', ['300'], false , ['banner' => ["The Banner file size may not be greater than 300 bytes."]]],
+                ]
+            ]],
         ];
     }
 }

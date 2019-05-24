@@ -160,6 +160,6 @@ return [
     "Accepted"                      => "The :attribute must be accepted.",
     "CorrelatedRequired"            => "The :attribute are required at least :at_least.",
     "CorrelatedUnique"              => "The :attribute must be entered a different value. The :duplicate have duplicated.",
-
+    "FileSize"                      => "The :attribute file size may not be greater than :max bytes.",
 
 ];

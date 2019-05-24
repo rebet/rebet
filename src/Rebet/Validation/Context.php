@@ -345,7 +345,7 @@ class Context
         if (!is_string($value) || !Strings::startsWith($value, ':')) {
             return [
                 $value instanceof Enum ? $value->value : $value,
-                $value instanceof Enum ? $value->translate('label', Translator::getLocale()) : $value,
+                $value instanceof Enum ? $value->translate('label') : $value,
             ];
         }
         $field = Strings::lcut($value, 1);

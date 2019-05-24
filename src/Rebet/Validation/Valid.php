@@ -909,4 +909,19 @@ class Valid
      *   Selector    - none
      */
     const CORRELATED_UNIQUE = 'CorrelatedUnique:';
+
+    /**
+     * File Size Validation.
+     * It checks the uploaded file size.
+     * NOTE: The size can be use SI prefix unit like 'k', 'M', 'G'.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_SIZE, size] (precision: 2)
+     *   - ['CU', Valid::FILE_SIZE, size, precision]
+     * message)
+     *   Key         - FileSize
+     *   Placeholder - :attribute, :size
+     *   Selector    - none
+     */
+    const FILE_SIZE = 'FileSize:';
 }
