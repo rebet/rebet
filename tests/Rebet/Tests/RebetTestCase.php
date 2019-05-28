@@ -24,6 +24,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\ArraySessionStorage;
+use Rebet\Http\UploadedFile;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Log;
 use Rebet\Routing\Route\ClosureRoute;
@@ -248,6 +249,14 @@ abstract class RebetTestCase extends TestCase
         $request->route->roles(...((array)$roles));
         $request->route->prefix = $prefix;
         return $request;
+    }
+
+    protected function createUploadedFileMock(string $name, string $mime_type)
+    {
+        $stub = $this->createMock(UploadedFile::class);
+        $stub->expects($this->any())->method('getClientOriginalName')->willReturn($name);
+        $stub->expects($this->any())->method('getMimeType')->willReturn($mime_type);
+        return $stub;
     }
 
     protected function signin(Request $request = null, string $signin_id = 'user@rebet.local', string $password = 'user') : Request

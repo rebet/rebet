@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Validation;
 
+use Rebet\Common\Unit;
+
 /**
  * Valid Class
  *
@@ -913,15 +915,200 @@ class Valid
     /**
      * File Size Validation.
      * It checks the uploaded file size.
-     * NOTE: The size can be use SI prefix unit like 'k', 'M', 'G'.
+     * NOTE: The max can be use Unit::STORAGE_PREFIX like 'K', 'M', 'G', etc.
      *
      * ex)
-     *   - ['CU', Valid::FILE_SIZE, size] (precision: 2)
-     *   - ['CU', Valid::FILE_SIZE, size, precision]
+     *   - ['CU', Valid::FILE_SIZE, max] (precision: 2)
+     *   - ['CU', Valid::FILE_SIZE, max, precision]
      * message)
-     *   Key         - FileSize
-     *   Placeholder - :attribute, :size
+     *   Key         - FileSize, FileSize@List
+     *   Placeholder - :attribute, :max, :file_name, :size
      *   Selector    - none
+     *
+     * @see Unit::STORAGE_PREFIX
      */
     const FILE_SIZE = 'FileSize:';
+
+    /**
+     * File Name Match Validation.
+     * It checks the uploaded file name pattern.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_NAME_MATCH, pattern]
+     * message)
+     *   Key         - FileNameMatch, FileNameMatch@List
+     *   Placeholder - :attribute, :pattern, :file_name
+     *   Selector    - none
+     */
+    const FILE_NAME_MATCH = 'FileNameMatch:';
+
+    /**
+     * File Suffix Match Validation.
+     * It checks the uploaded file suffix pattern.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_SUFFIX_MATCH, pattern]
+     * message)
+     *   Key         - FileSuffixMatch, FileSuffixMatch@List
+     *   Placeholder - :attribute, :pattern, :file_name, :suffix
+     *   Selector    - none
+     */
+    const FILE_SUFFIX_MATCH = 'FileSuffixMatch:';
+
+    /**
+     * File Mime Type Match Validation.
+     * It checks the uploaded file mime type pattern.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_MIME_TYPE_MATCH, pattern]
+     * message)
+     *   Key         - FileMimeTypeMatch, FileMimeTypeMatch@List
+     *   Placeholder - :attribute, :pattern, :file_name, :mime_type
+     *   Selector    - none
+     */
+    const FILE_MIME_TYPE_MATCH = 'FileMimeTypeMatch:';
+
+    /**
+     * File Type Images Validation.
+     * It checks the uploaded file mime type is 'image/*'.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_TYPE_IMAGES]
+     * message)
+     *   Key         - FileTypeImages, FileTypeImages@List
+     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Selector    - none
+     */
+    const FILE_TYPE_IMAGES = 'FileTypeImages:';
+
+    /**
+     * File Type Web Images Validation.
+     * It checks the uploaded file mime type is 'image/(jpe?g|gif|png|webp|svg\+xml|x-icon)'.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_TYPE_WEB_IMAGES]
+     * message)
+     *   Key         - FileTypeWebImages, FileTypeWebImages@List
+     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Selector    - none
+     */
+    const FILE_TYPE_WEB_IMAGES = 'FileTypeWebImages:';
+
+    /**
+     * File Type Csv Validation.
+     * It checks the uploaded file mime type is 'text/csv'.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_TYPE_CSV]
+     * message)
+     *   Key         - FileTypeCsv, FileTypeCsv@List
+     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Selector    - none
+     */
+    const FILE_TYPE_CSV = 'FileTypeCsv:';
+
+    /**
+     * File Type Zip Validation.
+     * It checks the uploaded file mime type is 'application/zip'.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_TYPE_ZIP]
+     * message)
+     *   Key         - FileTypeZip, FileTypeZip@List
+     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Selector    - none
+     */
+    const FILE_TYPE_ZIP = 'FileTypeZip:';
+
+    /**
+     * File Image Max Width Validation.
+     * It checks the uploaded file width greater equal max.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_MAX_WIDTH, max]
+     * message)
+     *   Key         - FileImageMaxWidth, FileImageMaxWidth@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :max
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_MAX_WIDTH = 'FileImageMaxWidth:';
+
+    /**
+     * File Image Width Validation.
+     * It checks the uploaded file width equal size.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_WIDTH, size]
+     * message)
+     *   Key         - FileImageWidth, FileImageWidth@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :size
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_WIDTH = 'FileImageWidth:';
+
+    /**
+     * File Image Min Width Validation.
+     * It checks the uploaded file width less equal min.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_MIN_WIDTH, min]
+     * message)
+     *   Key         - FileImageMinWidth, FileImageMinWidth@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :min
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_MIN_WIDTH = 'FileImageMinWidth:';
+
+    /**
+     * File Image Max Height Validation.
+     * It checks the uploaded file height greater equal max.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_MAX_HEIGHT, max]
+     * message)
+     *   Key         - FileImageMaxHeight, FileImageMaxHeight@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :max
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_MAX_HEIGHT = 'FileImageMaxHeight:';
+
+    /**
+     * File Image Height Validation.
+     * It checks the uploaded file height equal size.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_HEIGHT, size]
+     * message)
+     *   Key         - FileImageHeight, FileImageHeight@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :size
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_HEIGHT = 'FileImageHeight:';
+
+    /**
+     * File Image Min Height Validation.
+     * It checks the uploaded file height less equal min.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_MIN_HEIGHT, min]
+     * message)
+     *   Key         - FileImageMinHeight, FileImageMinHeight@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :min
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_MIN_HEIGHT = 'FileImageMinHeight:';
+
+    /**
+     * File Image Aspect Ratio Validation.
+     * It checks the uploaded file aspect ratio is given ratio.
+     *
+     * ex)
+     *   - ['CU', Valid::FILE_IMAGE_ASPECT_RATIO, width_ratio, height_ratio] (precision: 2)
+     *   - ['CU', Valid::FILE_IMAGE_ASPECT_RATIO, width_ratio, height_ratio, precision]
+     * message)
+     *   Key         - FileImageAspectRatio, FileImageAspectRatio@List
+     *   Placeholder - :attribute, :file_name, :width, :height, :width_ratio, :height_ration, :precision
+     *   Selector    - 'area' or 'no-area'
+     */
+    const FILE_IMAGE_ASPECT_RATIO = 'FileImageAspectRatio:';
 }

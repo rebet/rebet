@@ -29,28 +29,14 @@ class BuiltinValidationsTest extends RebetTestCase
         $this->assertInstanceOf(BuiltinValidations::class, $validations);
     }
 
-    /**
-     * @dataProvider dataValidationMethods
-     */
-    public function test_validationMethods(array $record) : void
-    {
-        extract($record);
-        $errors = [];
-        foreach ($tests as $i => [$field, $args, $expect_valid, $expect_errors]) {
-            $c = new Context('C', $data, $errors, []);
-            $c->initBy($field);
-            $errors  = [];
-            $valid   = $this->validations->validate($name, $c, ...$args);
-            $message = "Failed [NAME: {$name} IDX: {$i} FIELD: {$field}]";
-            $this->assertSame($expect_valid, $valid, "{$message} result '{$valid}' failed.");
-            $this->assertSame($expect_errors, $errors, "{$message} error messages unmatched.");
-        }
-    }
-
     public function dataValidationMethods() : array
     {
         $this->setUp();
-        $ng_word_file = App::path('/resources/validation/ng_word.txt');
+        $ng_word_file      = App::path('/resources/validation/ng_word.txt');
+        $image_72x72_png   = new UploadedFile(App::path('/resources/image/72x72.png'), '72x72.png');
+        $image_120x60_png  = new UploadedFile(App::path('/resources/image/120x60.png'), '120x60.png');
+        $image_160x240_png = new UploadedFile(App::path('/resources/image/160x240.png'), '160x240.png');
+        $text_env          = new UploadedFile(App::path('/resources/.env.unittest'), 'env.txt');
 
         return [
             // --------------------------------------------
@@ -1245,18 +1231,451 @@ EOS
             [[
                 'name'  => 'FileSize',
                 'data'  => [
-                    'null'   => null, 
-                    'banner' => new UploadedFile(App::path('/resources/image/72x72.png'), 'name'),
+                    'null'    => null, 
+                    'banner'  => $image_72x72_png,
+                    'banners' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                    ]
                 ],
                 'tests' => [
-                    ['null'  , ['1M' ], true  , []],
-                    ['null'  , [5000 ], true  , []],
-                    ['banner', ['1M' ], true  , []],
-                    ['banner', ['1K' ], true  , []],
-                    ['banner', [500  ], true  , []],
-                    ['banner', ['300'], false , ['banner' => ["The Banner file size may not be greater than 300 bytes."]]],
+                    ['null'   , ['1M' ], true  , []],
+                    ['null'   , [5000 ], true  , []],
+                    ['banner' , ['1M' ], true  , []],
+                    ['banner' , ['1K' ], true  , []],
+                    ['banner' , [500  ], true  , []],
+                    ['banner' , ['300'], false , ['banner' => ["The Banner file size may not be greater than 300 bytes."]]],
+                    ['banners', [500  ], true  , []],
+                    ['banners', [400  ], false , ['banners' => [
+                        "The file size of '72x72.png' (454 bytes) in Banners may not be greater than 400 bytes.",
+                        "The file size of '160x240.png' (430 bytes) in Banners may not be greater than 400 bytes.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_NAME_MATCH
+            // --------------------------------------------
+            [[
+                'name'  => 'FileNameMatch',
+                'data'  => [
+                    'null'    => null, 
+                    'banner'  => $image_72x72_png,
+                    'banners' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        new UploadedFile(App::path('/resources/image/160x240.png'), 'invalid.png'),
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , ['/^[0-9]+x[0-9]+\.png$/'], true  , []],
+                    ['banner' , ['/^[0-9]+x[0-9]+\.png$/'], true  , []],
+                    ['banner' , ['/^[0-9]+_[0-9]+\.png$/'], false , ['banner' => ["The Banner file name format is invalid."]]],
+                    ['banners', ['/^.*\.png$/'           ], true  , []],
+                    ['banners', ['/^[0-9]+x[0-9]+\.png$/'], false , ['banners' => [
+                        "The file name of 'invalid.png' in Banners format is invalid.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_SUFFIX_MATCH
+            // --------------------------------------------
+            [[
+                'name'  => 'FileSuffixMatch',
+                'data'  => [
+                    'null'    => null, 
+                    'banner'  => $image_72x72_png,
+                    'banners' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        new UploadedFile(App::path('/resources/image/160x240.png'), 'invalid.jpg'),
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , ['/^png|gif$/'      ], true  , []],
+                    ['banner' , ['/^png|gif$/'      ], true  , []],
+                    ['banner' , ['/^jpe?g$/'        ], false , ['banner' => ["The Banner file suffix is invalid."]]],
+                    ['banners', ['/^png|gif|jpe?g$/'], true  , []],
+                    ['banners', ['/^png|gif$/'      ], false , ['banners' => [
+                        "The file suffix of 'invalid.jpg' in Banners is invalid.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_MIME_TYPE_MATCH
+            // --------------------------------------------
+            [[
+                'name'  => 'FileMimeTypeMatch',
+                'data'  => [
+                    'null'    => null,
+                    'banner'  => $image_72x72_png,
+                    'banners' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , ['/^image\/.+$/'     ], true  , []],
+                    ['banner' , ['/^image\/.+$/'     ], true  , []],
+                    ['banner' , ['/^image\/jpe?g$/'  ], false , ['banner' => ["The Banner file mime type 'image/png' is invalid."]]],
+                    ['banners', ['/^image|text\/.*$/'], true  , []],
+                    ['banners', ['/^image\/.+$/'     ], false , ['banners' => [
+                        "The file mime type of 'env.txt' (text/plain) in Banners is invalid.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_TYPE_IMAGES
+            // --------------------------------------------
+            [[
+                'name'  => 'FileTypeImages',
+                'data'  => [
+                    'null'    => null,
+                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'images'  => [
+                        $this->createUploadedFileMock('foo.png', 'image/png'),
+                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
+                        $this->createUploadedFileMock('bar.JPG', 'image/JPEG'),
+                    ],
+                    'mixed'  => [
+                        $this->createUploadedFileMock('foo.png', 'image/png'),
+                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
+                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , [], true  , []],
+                    ['png'    , [], true  , []],
+                    ['csv'    , [], false , ['csv' => ["The Csv file type (text/csv) must be images."]]],
+                    ['zip'    , [], false , ['zip' => ["The Zip file type (application/zip) must be images."]]],
+                    ['images' , [], true  , []],
+                    ['mixed'  , [], false , ['mixed' => [
+                        "The file type of 'baz.xml' (text/xml) in Mixed must be images.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_TYPE_WEB_IMAGES
+            // --------------------------------------------
+            [[
+                'name'  => 'FileTypeWebImages',
+                'data'  => [
+                    'null'    => null,
+                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'images'  => [
+                        $this->createUploadedFileMock('foo.png', 'image/png'),
+                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
+                        $this->createUploadedFileMock('bar.JPG', 'image/JPEG'),
+                    ],
+                    'mixed'  => [
+                        $this->createUploadedFileMock('foo.png', 'image/png'),
+                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
+                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , [], true  , []],
+                    ['png'    , [], true  , []],
+                    ['csv'    , [], false , ['csv' => ["The Csv file type (text/csv) must be common web images like jpeg, gif and png."]]],
+                    ['zip'    , [], false , ['zip' => ["The Zip file type (application/zip) must be common web images like jpeg, gif and png."]]],
+                    ['images' , [], false , ['images' => [
+                        "The file type of 'bar.bmp' (image/bmp) in Images must be common web images like jpeg, gif and png.",
+                    ]]],
+                    ['mixed'  , [], false , ['mixed' => [
+                        "The file type of 'bar.bmp' (image/bmp) in Mixed must be common web images like jpeg, gif and png.",
+                        "The file type of 'baz.xml' (text/xml) in Mixed must be common web images like jpeg, gif and png.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_TYPE_CSV
+            // --------------------------------------------
+            [[
+                'name'  => 'FileTypeCsv',
+                'data'  => [
+                    'null'    => null,
+                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'mixed'  => [
+                        $this->createUploadedFileMock('foo.png', 'image/png'),
+                        $this->createUploadedFileMock('bar.csv', 'text/csv'),
+                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , [], true  , []],
+                    ['png'    , [], false , ['png' => ["The Png file type (image/png) must be Comma-Separated Values (csv) file."]]],
+                    ['csv'    , [], true  , []],
+                    ['zip'    , [], false , ['zip' => ["The Zip file type (application/zip) must be Comma-Separated Values (csv) file."]]],
+                    ['mixed'  , [], false , ['mixed' => [
+                        "The file type of 'foo.png' (image/png) in Mixed must be Comma-Separated Values (csv) file.",
+                        "The file type of 'baz.xml' (text/xml) in Mixed must be Comma-Separated Values (csv) file.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_TYPE_ZIP
+            // --------------------------------------------
+            [[
+                'name'  => 'FileTypeZip',
+                'data'  => [
+                    'null'    => null,
+                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'mixed'  => [
+                        $this->createUploadedFileMock('foo.png', 'image/png'),
+                        $this->createUploadedFileMock('bar.zip', 'application/zip'),
+                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                    ]
+                ],
+                'tests' => [
+                    ['null'   , [], true  , []],
+                    ['png'    , [], false , ['png' => ["The Png file type (image/png) must be Zip archived file."]]],
+                    ['csv'    , [], false , ['csv' => ["The Csv file type (text/csv) must be Zip archived file."]]],
+                    ['zip'    , [], true  , []],
+                    ['mixed'  , [], false , ['mixed' => [
+                        "The file type of 'foo.png' (image/png) in Mixed must be Zip archived file.",
+                        "The file type of 'baz.xml' (text/xml) in Mixed must be Zip archived file.",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_MAX_WIDTH
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageMaxWidth',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [ 73], true  , []],
+                    ['png'   , [ 73], true  , []],
+                    ['png'   , [ 72], true  , []],
+                    ['png'   , [ 71], false , ['png'   => ["The Png may not be greater than 71 width."]]],
+                    ['text'  , [ 71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [120], false , ['mixed' => [
+                        "The '160x240.png' in Mixed may not be greater than 120 width.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_WIDTH
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageWidth',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [ 73], true  , []],
+                    ['png'   , [ 73], false , ['png'   => ["The Png must be 73 width."]]],
+                    ['png'   , [ 72], true  , []],
+                    ['png'   , [ 71], false , ['png'   => ["The Png must be 71 width."]]],
+                    ['text'  , [ 71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [120], false , ['mixed' => [
+                        "The '72x72.png' in Mixed must be 120 width.",
+                        "The '160x240.png' in Mixed must be 120 width.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_MIN_WIDTH
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageMinWidth',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [ 73], true  , []],
+                    ['png'   , [ 73], false , ['png'   => ["The Png may not be less than 73 width."]]],
+                    ['png'   , [ 72], true  , []],
+                    ['png'   , [ 71], true  , []],
+                    ['text'  , [ 71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [120], false , ['mixed' => [
+                        "The '72x72.png' in Mixed may not be less than 120 width.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_MAX_HEIGHT
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageMaxHeight',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [73], true  , []],
+                    ['png'   , [73], true  , []],
+                    ['png'   , [72], true  , []],
+                    ['png'   , [71], false , ['png'   => ["The Png may not be greater than 71 height."]]],
+                    ['text'  , [71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [72], false , ['mixed' => [
+                        "The '160x240.png' in Mixed may not be greater than 72 height.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_HEIGHT
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageHeight',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [73], true  , []],
+                    ['png'   , [73], false , ['png'   => ["The Png must be 73 height."]]],
+                    ['png'   , [72], true  , []],
+                    ['png'   , [71], false , ['png'   => ["The Png must be 71 height."]]],
+                    ['text'  , [71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [72], false , ['mixed' => [
+                        "The '120x60.png' in Mixed must be 72 height.",
+                        "The '160x240.png' in Mixed must be 72 height.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
+                ]
+            ]],
+
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_MIN_HEIGHT
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageMinHeight',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [73], true  , []],
+                    ['png'   , [73], false , ['png'   => ["The Png may not be less than 73 height."]]],
+                    ['png'   , [72], true  , []],
+                    ['png'   , [71], true  , []],
+                    ['text'  , [71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [72], false , ['mixed' => [
+                        "The '120x60.png' in Mixed may not be less than 72 height.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
+                ]
+            ]],
+            
+            // --------------------------------------------
+            // Valid::FILE_IMAGE_ASPECT_RATIO
+            // --------------------------------------------
+            [[
+                'name'  => 'FileImageAspectRatio',
+                'data'  => [
+                    'null'  => null,
+                    'png'   => $image_72x72_png,
+                    'text'  => $text_env,
+                    'mixed' => [
+                        $image_72x72_png,
+                        $image_120x60_png,
+                        $image_160x240_png,
+                        $text_env,
+                    ]
+                ],
+                'tests' => [
+                    ['null'  , [16, 9], true  , []],
+                    ['png'   , [16, 9], false , ['png'   => ["The Png aspect ratio must be '16:9'."]]],
+                    ['png'   , [ 1, 1], true  , []],
+                    ['text'  , [ 1, 1], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['mixed' , [ 2, 1], false , ['mixed' => [
+                        "The '72x72.png' in Mixed aspect ratio must be '2:1'.",
+                        "The '160x240.png' in Mixed aspect ratio must be '2:1'.",
+                        "The 'env.txt' in Mixed must have area (width and height).",
+                    ]]],
                 ]
             ]],
         ];
+    }
+
+    /**
+     * @dataProvider dataValidationMethods
+     */
+    public function test_validationMethods(array $record) : void
+    {
+        extract($record);
+        $errors = [];
+        foreach ($tests as $i => [$field, $args, $expect_valid, $expect_errors]) {
+            $c = new Context('C', $data, $errors, []);
+            $c->initBy($field);
+            $errors  = [];
+            $valid   = $this->validations->validate($name, $c, ...$args);
+            $message = "Failed [NAME: {$name} IDX: {$i} FIELD: {$field}]";
+            $this->assertSame($expect_valid, $valid, "{$message} result '{$valid}' failed.");
+            $this->assertSame($expect_errors, $errors, "{$message} error messages unmatched.");
+        }
     }
 }

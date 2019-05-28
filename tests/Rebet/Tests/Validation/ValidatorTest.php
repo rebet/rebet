@@ -4,6 +4,7 @@ namespace Rebet\Tests\Validation;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
+use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
@@ -41,21 +42,10 @@ class ValidatorTest extends RebetTestCase
         $this->assertInstanceOf(Validator::class, $validator);
     }
 
-    /**
-     * @dataProvider dataValidationInvoke
-     */
-    public function test_validateInvoke(array $data, array $rule, bool $expect_valid)
-    {
-        App::setLocale('en');
-        $validator    = new Validator($data);
-        $valid_data   = $validator->validate('C', ['target' => ['rule' => [$rule]]]);
-        $valid_errors = $validator->errors();
-        $this->assertSame($expect_valid, !is_null($valid_data));
-    }
-
     public function dataValidationInvoke() : array
     {
         $this->setUp();
+        $image_72x72_png = new UploadedFile(App::path('/resources/image/72x72.png'), '72x72.png');
         return [
             // Valid::IF
             [['target' => 1], ['C', Valid::IF, 'target', 1, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
@@ -236,6 +226,65 @@ class ValidatorTest extends RebetTestCase
             // Valid::CORRELATED_UNIQUE
             [['target' => '', 'foo' => 1, 'bar' => 2], ['C', Valid::CORRELATED_UNIQUE, ['foo', 'bar']], true ],
             [['target' => '', 'foo' => 1, 'bar' => 1], ['C', Valid::CORRELATED_UNIQUE, ['foo', 'bar']], false],
+            // Valid::FILE_SIZE
+            [['target' => $image_72x72_png], ['C', Valid::FILE_SIZE, 500], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_SIZE, 300], false],
+            // Valid::FILE_NAME_MATCH
+            [['target' => $image_72x72_png                                                    ], ['C', Valid::FILE_NAME_MATCH, '/^\d+x\d+\.png$/'], true ],
+            [['target' => new UploadedFile(App::path('/resources/image/72x72.png'), 'foo.png')], ['C', Valid::FILE_NAME_MATCH, '/^\d+x\d+\.png$/'], false],
+            // Valid::FILE_SUFFIX_MATCH
+            [['target' => $image_72x72_png], ['C', Valid::FILE_SUFFIX_MATCH, '/^png$/'  ], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_SUFFIX_MATCH, '/^jpe?g$/'], false],
+            // Valid::FILE_MIME_TYPE_MATCH
+            [['target' => $image_72x72_png], ['C', Valid::FILE_MIME_TYPE_MATCH, '/^image\/.*$/'], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_MIME_TYPE_MATCH, '/^text\/.*$/'], false],
+            // Valid::FILE_TYPE_IMAGES
+            [['target' => $this->createUploadedFileMock('foo.png', 'image/png')], ['C', Valid::FILE_TYPE_IMAGES], true ],
+            [['target' => $this->createUploadedFileMock('foo.csv', 'text/csv') ], ['C', Valid::FILE_TYPE_IMAGES], false],
+            // Valid::FILE_TYPE_WEB_IMAGES
+            [['target' => $this->createUploadedFileMock('foo.png', 'image/png')], ['C', Valid::FILE_TYPE_WEB_IMAGES], true ],
+            [['target' => $this->createUploadedFileMock('foo.bmp', 'image/bmp')], ['C', Valid::FILE_TYPE_WEB_IMAGES], false],
+            // Valid::FILE_TYPE_CSV
+            [['target' => $this->createUploadedFileMock('foo.csv', 'text/csv')], ['C', Valid::FILE_TYPE_CSV], true ],
+            [['target' => $this->createUploadedFileMock('foo.xml', 'text/xml')], ['C', Valid::FILE_TYPE_CSV], false],
+            // Valid::FILE_TYPE_ZIP
+            [['target' => $this->createUploadedFileMock('foo.zip', 'application/zip')], ['C', Valid::FILE_TYPE_ZIP], true ],
+            [['target' => $this->createUploadedFileMock('foo.xml', 'application/xml')], ['C', Valid::FILE_TYPE_ZIP], false],
+            // Valid::FILE_IMAGE_MAX_WIDTH
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MAX_WIDTH, 73], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MAX_WIDTH, 71], false],
+            // Valid::FILE_IMAGE_WIDTH
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_WIDTH, 72], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_WIDTH, 71], false],
+            // Valid::FILE_IMAGE_MIN_WIDTH
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MIN_WIDTH, 71], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MIN_WIDTH, 73], false],
+            // Valid::FILE_IMAGE_MAX_HEIGHT
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MAX_HEIGHT, 73], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MAX_HEIGHT, 71], false],
+            // Valid::FILE_IMAGE_HEIGHT
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_HEIGHT, 72], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_HEIGHT, 71], false],
+            // Valid::FILE_IMAGE_MIN_HEIGHT
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MIN_HEIGHT, 71], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MIN_HEIGHT, 73], false],
+            // Valid::FILE_IMAGE_ASPECT_RATIO
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_ASPECT_RATIO, 1, 1], true ],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_ASPECT_RATIO, 2, 1], false],
+
+
         ];
+    }
+
+    /**
+     * @dataProvider dataValidationInvoke
+     */
+    public function test_validateInvoke(array $data, array $rule, bool $expect_valid)
+    {
+        App::setLocale('en');
+        $validator    = new Validator($data);
+        $valid_data   = $validator->validate('C', ['target' => ['rule' => [$rule]]]);
+        $valid_errors = $validator->errors();
+        $this->assertSame($expect_valid, !is_null($valid_data));
     }
 }

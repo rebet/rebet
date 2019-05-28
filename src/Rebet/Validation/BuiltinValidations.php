@@ -12,6 +12,8 @@ use Rebet\Stream\Stream;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\Common\Unit;
+use Rebet\Http\UploadedFile;
+use Rebet\Common\Decimal;
 
 /**
  * BuiltinValidations Class
@@ -570,11 +572,11 @@ class BuiltinValidations extends Validations
         }
         $valid         = true;
         $error_indices = $c->extra('error_indices') ?? [];
-        foreach ((array)$c->value as $i => $value) {
+        foreach (Arrays::toArray($c->value) as $i => $value) {
             if (!$c->isQuiet() && !$kind->equals(Kind::OTHER()) && ($error_indices[$i] ?? false)) {
                 continue;
             }
-            if (!$test($value)) {
+            if (!$test($value, $replacement)) {
                 $replacement['nth']   = $c->ordinalize($i + 1);
                 $replacement['value'] = $value;
                 $valid                = $c->appendError($messsage_key.(is_array($c->value) ? '@List' : ''), $replacement, $selector ? $selector($value) : null);
@@ -1437,21 +1439,321 @@ class BuiltinValidations extends Validations
      *  File Size Validation
      *
      * @param Context $c
-     * @param string|int| $size
+     * @param string|int| $max
      * @param integer $precision
      * @return boolean
      */
-    public function validationFileSize(Context $c, $size, int $precision = 2) : bool
+    public function validationFileSize(Context $c, $max, int $precision = 2) : bool
     {
         if ($c->blank()) {
             return true;
         }
         $unit = Unit::of(Unit::STORAGE_PREFIX);
-        $size = $unit->parse($size);
-        return $size->gte($c->value->getSize()) ? true : $c->appendError('FileSize', [
-            'max' => $unit->convert($size, null, $precision)
-        ]);
+        $max  = $unit->parse($max);
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function (UploadedFile $value, array &$replacement) use ($max, $unit, $precision) {
+                $size                     = $value->getSize();
+                $replacement['file_name'] = $value->getClientOriginalName();
+                $replacement['size']      = $unit->convert($size, null, $precision);
+                return $max->gte($size);
+            },
+            'FileSize',
+            [
+                'max' => $unit->convert($max, null, $precision)
+            ]
+        );
     }
+
+    /**
+     * File Name Match Validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @return boolean
+     */
+    public function validationFileNameMatch(Context $c, string $pattern) : bool
+    {
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function (UploadedFile $value, array &$replacement) use ($pattern) {
+                $replacement['file_name'] = ($file_name = $value->getClientOriginalName());
+                return preg_match($pattern, $file_name);
+            },
+            'FileNameMatch',
+            ['pattern' => $pattern]
+        );
+    }
+
+    /**
+     * File Suffix Match Validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @return boolean
+     */
+    public function validationFileSuffixMatch(Context $c, string $pattern) : bool
+    {
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function (UploadedFile $value, array &$replacement) use ($pattern) {
+                $replacement['file_name'] = $value->getClientOriginalName();
+                $replacement['suffix']    = ($suffix = $value->getClientOriginalExtension());
+                return preg_match($pattern, $suffix);
+            },
+            'FileSuffixMatch',
+            ['pattern' => $pattern]
+        );
+    }
+
+    /**
+     * Handle File Mime Type validation.
+     * If you use this handler then you have to define @List message key too.
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @param callable $selector function($value):mixed (default: null)
+     * @return boolean
+     */
+    protected function handleFileMimeType(Context $c, string $pattern, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    {
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function (UploadedFile $value, array &$replacement) use ($pattern) {
+                $replacement['file_name'] = $value->getClientOriginalName();
+                $replacement['mime_type'] = ($mime_type = $value->getMimeType());
+                return preg_match($pattern, $mime_type);
+            },
+            $messsage_key,
+            $replacement,
+            $selector
+        );
+    }
+
+    /**
+     * File Mime Type Match Validation
+     *
+     * @param Context $c
+     * @param string $pattern
+     * @return boolean
+     */
+    public function validationFileMimeTypeMatch(Context $c, string $pattern) : bool
+    {
+        return $this->handleFileMimeType($c, $pattern, 'FileMimeTypeMatch', ['pattern' => $pattern]);
+    }
+
+    /**
+     * File Type Images Validation
+     * It checks the mime type of file is 'image/*'.
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationFileTypeImages(Context $c) : bool
+    {
+        return $this->handleFileMimeType($c, '/^image\/.+$/iu', 'FileTypeImages');
+    }
+
+    /**
+     * File Type Web Images Validation
+     * It checks the mime type of file is 'image/(jpe?g|gif|png|webp|svg\+xml|x-icon)'.
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationFileTypeWebImages(Context $c) : bool
+    {
+        return $this->handleFileMimeType($c, '/^image\/(jpe?g|gif|png|webp|svg\+xml|x-icon)$/iu', 'FileTypeWebImages');
+    }
+
+    /**
+     * File Type Csv Validation
+     * It checks the mime type of file is 'text/csv'.
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationFileTypeCsv(Context $c) : bool
+    {
+        return $this->handleFileMimeType($c, '/^text\/csv$/iu', 'FileTypeCsv');
+    }
+
+    /**
+     * File Type Zip Validation
+     * It checks the mime type of file is 'application/zip'.
+     *
+     * @param Context $c
+     * @return boolean
+     */
+    public function validationFileTypeZip(Context $c) : bool
+    {
+        return $this->handleFileMimeType($c, '/^application\/zip$/iu', 'FileTypeZip');
+    }
+
+    /**
+     * Handle File Image Area validation.
+     * If you use this handler then you have to define @List message key too.
+     *
+     * @param Context $c
+     * @param callable $test function(int $width, int $height) : bool
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @return boolean
+     */
+    protected function handleFileImageArea(Context $c, callable $test, string $messsage_key, array $replacement = []) : bool
+    {
+        return $this->handleListableValue(
+            $c,
+            Kind::OTHER(),
+            function (UploadedFile $value, array &$replacement) use ($test) {
+                $replacement['file_name'] = $value->getClientOriginalName();
+                if(!$value->hasArea()) {
+                    return false;
+                }
+                $replacement['width']  = ($width  = $value->getWidth());
+                $replacement['height'] = ($height = $value->getHeight());
+                return $test($width, $height);
+            },
+            $messsage_key,
+            $replacement,
+            function(UploadedFile $value) { return $value->hasArea() ? 'area' : 'no-area' ; }
+        );
+    }
+
+    /**
+     * File Image Max Width Validation
+     *
+     * @param Context $c
+     * @param int $max width
+     * @return boolean
+     */
+    public function validationFileImageMaxWidth(Context $c, int $max) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($max) { return $width <= $max; },
+            'FileImageMaxWidth',
+            ['max' => $max]
+        );
+    }
+
+    /**
+     * File Image Width Validation
+     *
+     * @param Context $c
+     * @param int $size
+     * @return boolean
+     */
+    public function validationFileImageWidth(Context $c, int $size) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($size) { return $width === $size; },
+            'FileImageWidth',
+            ['size' => $size]
+        );
+    }
+
+    /**
+     * File Image Min Width Validation
+     *
+     * @param Context $c
+     * @param int $min width
+     * @return boolean
+     */
+    public function validationFileImageMinWidth(Context $c, int $min) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($min) { return $width >= $min; },
+            'FileImageMinWidth',
+            ['min' => $min]
+        );
+    }
+
+    /**
+     * File Image Max Height Validation
+     *
+     * @param Context $c
+     * @param int $max height
+     * @return boolean
+     */
+    public function validationFileImageMaxHeight(Context $c, int $max) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($max) { return $height <= $max; },
+            'FileImageMaxHeight',
+            ['max' => $max]
+        );
+    }
+
+    /**
+     * File Image Height Validation
+     *
+     * @param Context $c
+     * @param int $size
+     * @return boolean
+     */
+    public function validationFileImageHeight(Context $c, int $size) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($size) { return $height === $size; },
+            'FileImageHeight',
+            ['size' => $size]
+        );
+    }
+
+    /**
+     * File Image Min Height Validation
+     *
+     * @param Context $c
+     * @param int $min height
+     * @return boolean
+     */
+    public function validationFileImageMinHeight(Context $c, int $min) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($min) { return $height >= $min; },
+            'FileImageMinHeight',
+            ['min' => $min]
+        );
+    }
+
+    /**
+     * File Image Aspect Ratio Validation
+     *
+     * @param Context $c
+     * @param int $width
+     * @param int $height
+     * @param int $precision (default: 2)
+     * @return boolean
+     */
+    public function validationFileImageAspectRatio(Context $c, int $width_ratio, int $height_ratio, int $precision = 2) : bool
+    {
+        return $this->handleFileImageArea(
+            $c,
+            function(int $width, int $height) use ($width_ratio, $height_ratio, $precision) {
+                return Decimal::of($width_ratio)->div($height_ratio, $precision)->eq(Decimal::of($width)->div($height, $precision));
+            },
+            'FileImageAspectRatio',
+            [
+                'width_ratio'  => $width_ratio,
+                'height_ratio' => $height_ratio,
+                'precision'    => $precision,
+            ]
+        );
+    }
+
+
 }
 
 // ---------------------------------------------------------

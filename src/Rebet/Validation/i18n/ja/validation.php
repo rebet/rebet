@@ -128,6 +128,77 @@ return [
     "Accepted"                      => ":attributeに同意して下さい。",
     "CorrelatedRequired"            => ":attributeの内、少なくとも:at_least項目を入力して下さい。",
     "CorrelatedUnique"              => ":attributeには異なる値を入力して下さい。:duplicate が重複しています。",
-    "FileSize"                      => ":attributeのファイルサイズは:maxバイト以下にして下さい。",
+    "FileSize"                      => ":attributeのファイルサイズは:maxB以下にして下さい。",
+    "FileSize@List"                 => ":attributeのファイル「:file_name」(:sizeB)のサイズは:maxB以下にして下さい。",
+    "FileNameMatch"                 => ":attributeのファイル名書式が正しくありません。",
+    "FileNameMatch@List"            => ":attributeのファイル「:file_name」のファイル名書式が正しくありません。",
+    "FileSuffixMatch"               => ":attributeのファイル拡張子が正しくありません。",
+    "FileSuffixMatch@List"          => ":attributeのファイル「:file_name」のファイル拡張子が正しくありません。",
+    "FileMimeTypeMatch"             => ":attributeのファイル形式(:mime_type)が正しくありません。",
+    "FileMimeTypeMatch@List"        => ":attributeのファイル「:file_name」のファイル形式(:mime_type)が正しくありません。",
+    "FileTypeImages"                => ":attributeのファイル(:mime_type)は画像でなければなりません。",
+    "FileTypeImages@List"           => ":attributeのファイル「:file_name」(:mime_type)は画像でなければなりません。",
+    "FileTypeWebImages"             => ":attributeのファイル(:mime_type)は一般的なWEB画像(jpeg/gif/png)でなければなりません。",
+    "FileTypeWebImages@List"        => ":attributeのファイル「:file_name」(:mime_type)は一般的なWEB画像(jpeg/gif/png)でなければなりません。",
+    "FileTypeCsv"                   => ":attributeのファイル(:mime_type)はCSV(カンマ区切り)ファイルでなければなりません。",
+    "FileTypeCsv@List"              => ":attributeのファイル「:file_name」(:mime_type)はCSV(カンマ区切り)ファイルでなければなりません。",
+    "FileTypeZip"                   => ":attributeのファイル(:mime_type)はZIP圧縮ファイルでなければなりません。",
+    "FileTypeZip@List"              => ":attributeのファイル「:file_name」(:mime_type)はZIP圧縮ファイルでなければなりません。",
+    "FileImageMaxWidth"             => [
+        "{area}    :attributeは幅を:max以下にして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMaxWidth@List"        => [
+        "{area}    :attributeの「:file_name」は幅を:max以下にして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageWidth"                => [
+        "{area}    :attributeは幅を:maxにして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageWidth@List"           => [
+        "{area}    :attributeの「:file_name」は幅を:maxにして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMinWidth"             => [
+        "{area}    :attributeは幅を:min以上にして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMinWidth@List"        => [
+        "{area}    :attributeの「:file_name」は幅を:min以上にして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMaxHeight"            => [
+        "{area}    :attributeは高さを:max以下にして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMaxHeight@List"       => [
+        "{area}    :attributeの「:file_name」は高さを:max以下にして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageHeight"               => [
+        "{area}    :attributeは高さを:maxにして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageHeight@List"          => [
+        "{area}    :attributeの「:file_name」は高さを:maxにして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMinHeight"            => [
+        "{area}    :attributeは高さを:min以上にして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageMinHeight@List"       => [
+        "{area}    :attributeの「:file_name」は高さを:min以上にして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageAspectRatio"          => [
+        "{area}    :attributeの縦横比は :width_ratio::height_ratio にして下さい。",
+        "{no-area} :attributeは面積(幅と高さ)を持っていなければなりません。",
+    ],
+    "FileImageAspectRatio@List"     => [
+        "{area}    :attributeの「:file_name」の縦横比は :width_ratio::height_ratio にして下さい。",
+        "{no-area} :attributeの「:file_name」は面積(幅と高さ)を持っていなければなりません。",
+    ],
 
 ];

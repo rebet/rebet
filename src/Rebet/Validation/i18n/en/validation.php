@@ -161,5 +161,76 @@ return [
     "CorrelatedRequired"            => "The :attribute are required at least :at_least.",
     "CorrelatedUnique"              => "The :attribute must be entered a different value. The :duplicate have duplicated.",
     "FileSize"                      => "The :attribute file size may not be greater than :max bytes.",
+    "FileSize@List"                 => "The file size of ':file_name' (:size bytes) in :attribute may not be greater than :max bytes.",
+    "FileNameMatch"                 => "The :attribute file name format is invalid.",
+    "FileNameMatch@List"            => "The file name of ':file_name' in :attribute format is invalid.",
+    "FileSuffixMatch"               => "The :attribute file suffix is invalid.",
+    "FileSuffixMatch@List"          => "The file suffix of ':file_name' in :attribute is invalid.",
+    "FileMimeTypeMatch"             => "The :attribute file mime type ':mime_type' is invalid.",
+    "FileMimeTypeMatch@List"        => "The file mime type of ':file_name' (:mime_type) in :attribute is invalid.",
+    "FileTypeImages"                => "The :attribute file type (:mime_type) must be images.",
+    "FileTypeImages@List"           => "The file type of ':file_name' (:mime_type) in :attribute must be images.",
+    "FileTypeWebImages"             => "The :attribute file type (:mime_type) must be common web images like jpeg, gif and png.",
+    "FileTypeWebImages@List"        => "The file type of ':file_name' (:mime_type) in :attribute must be common web images like jpeg, gif and png.",
+    "FileTypeCsv"                   => "The :attribute file type (:mime_type) must be Comma-Separated Values (csv) file.",
+    "FileTypeCsv@List"              => "The file type of ':file_name' (:mime_type) in :attribute must be Comma-Separated Values (csv) file.",
+    "FileTypeZip"                   => "The :attribute file type (:mime_type) must be Zip archived file.",
+    "FileTypeZip@List"              => "The file type of ':file_name' (:mime_type) in :attribute must be Zip archived file.",
+    "FileImageMaxWidth"             => [
+        "{area}    The :attribute may not be greater than :max width.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageMaxWidth@List"        => [
+        "{area}    The ':file_name' in :attribute may not be greater than :max width.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
+    "FileImageWidth"                => [
+        "{area}    The :attribute must be :size width.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageWidth@List"           => [
+        "{area}    The ':file_name' in :attribute must be :size width.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
+    "FileImageMinWidth"             => [
+        "{area}    The :attribute may not be less than :min width.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageMinWidth@List"        => [
+        "{area}    The ':file_name' in :attribute may not be less than :min width.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
+    "FileImageMaxHeight"             => [
+        "{area}    The :attribute may not be greater than :max height.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageMaxHeight@List"        => [
+        "{area}    The ':file_name' in :attribute may not be greater than :max height.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
+    "FileImageHeight"                => [
+        "{area}    The :attribute must be :size height.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageHeight@List"           => [
+        "{area}    The ':file_name' in :attribute must be :size height.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
+    "FileImageMinHeight"             => [
+        "{area}    The :attribute may not be less than :min height.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageMinHeight@List"        => [
+        "{area}    The ':file_name' in :attribute may not be less than :min height.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
+    "FileImageAspectRatio"           => [
+        "{area}    The :attribute aspect ratio must be ':width_ratio::height_ratio'.",
+        "{no-area} The :attribute must have area (width and height).",
+    ],
+    "FileImageAspectRatio@List"      => [
+        "{area}    The ':file_name' in :attribute aspect ratio must be ':width_ratio::height_ratio'.",
+        "{no-area} The ':file_name' in :attribute must have area (width and height).",
+    ],
 
 ];
