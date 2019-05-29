@@ -28,7 +28,7 @@ abstract class Rule
      */
     public function hasCustomValidation(string $name) : bool
     {
-        return method_exists($this, "validate{$name}");
+        return method_exists($this, "validation{$name}");
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class Rule
      */
     public function validate(string $name, Context $context, ...$args) : bool
     {
-        $method = "validate{$name}";
+        $method = "validation{$name}";
         return $this->$method($context, ...$args);
     }
 }

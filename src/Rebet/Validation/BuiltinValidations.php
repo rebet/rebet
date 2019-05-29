@@ -18,8 +18,6 @@ use Rebet\Common\Decimal;
 /**
  * BuiltinValidations Class
  *
- * @todo Implement around Upload File validations.
- *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -550,7 +548,7 @@ class BuiltinValidations extends Validations
      */
     public function validationRegex(Context $c, string $pattern, string $selector = null) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), $pattern, 'Regex', ['pattern' => $pattern], $selector);
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), $pattern, 'Regex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -573,7 +571,7 @@ class BuiltinValidations extends Validations
         $valid         = true;
         $error_indices = $c->extra('error_indices') ?? [];
         foreach (Arrays::toArray($c->value) as $i => $value) {
-            if (!$c->isQuiet() && !$kind->equals(Kind::OTHER()) && ($error_indices[$i] ?? false)) {
+            if (!$c->isQuiet() && !$kind->equals(Kind::INDEPENDENTLY()) && ($error_indices[$i] ?? false)) {
                 continue;
             }
             if (!$test($value, $replacement)) {
@@ -625,7 +623,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNotRegex(Context $c, string $pattern, string $selector = null) : bool
     {
-        return $this->handleNotRegex($c, Kind::OTHER(), $pattern, 'NotRegex', ['pattern' => $pattern], $selector);
+        return $this->handleNotRegex($c, Kind::INDEPENDENTLY(), $pattern, 'NotRegex', ['pattern' => $pattern], $selector);
     }
 
     /**
@@ -665,7 +663,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function ($value) use ($max) {
                 return mb_strlen($value) <= $max;
             },
@@ -685,7 +683,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function ($value) use ($min) {
                 return mb_strlen($value) >= $min;
             },
@@ -705,7 +703,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function ($value) use ($length) {
                 return mb_strlen($value) === $length;
             },
@@ -749,88 +747,100 @@ class BuiltinValidations extends Validations
     }
 
     /**
+     * Handle Number validation.
+     * If you use this handler then you have to define @List message key too.
+     *
+     * @param Context $c
+     * @param int|float|string|Decimal $number
+     * @param int|null $precision (default: null)
+     * @param callable $test function(Decimal $value, Decimal $number, ?int $precision):bool
+     * @param string $messsage_key
+     * @param array $replacement (default: [])
+     * @return boolean
+     */
+    protected function handleNumber(Context $c, $number, ?int $precision = null, callable $test, string $messsage_key, array $replacement = []) : bool
+    {
+        [$number, $number_label]  = $c->resolve($number);
+        $replacement['number']    = $number_label instanceof Decimal ? $number_label->format(true) : $number_label ;
+        $replacement['precision'] = $precision;
+
+        $valid  = $this->validationNumber($c);
+        $valid &= $this->handleListableValue(
+            $c,
+            Kind::TYPE_DEPENDENT_CHECK(),
+            function ($value) use ($number, $precision, $test) {
+                return $test(Decimal::of($value), Decimal::of($number), $precision);
+            },
+            $messsage_key,
+            $replacement,
+            function($value) use ($precision) { return $precision ?? 'auto' ; }
+        );
+        return $valid;
+    }
+
+    /**
      * Number Less Than Validation
      *
      * @param Context $c
-     * @param int|float|string $number
-     * @param int $decimal (default: 0)
+     * @param int|float|string|Decimal $number
+     * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberLessThan(Context $c, $number, int $decimal = 0) : bool
+    public function validationNumberLessThan(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($value, $number, $decimal) === -1; }, 'NumberLessThan');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lt($number, $precision); },'NumberLessThan');
     }
 
     /**
      * Number Less Than Or Equal Validation
      *
      * @param Context $c
-     * @param int|float|string $number
-     * @param int $decimal (default: 0)
+     * @param int|float|string|Decimal $number
+     * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberLessThanOrEqual(Context $c, $number, int $decimal = 0) : bool
+    public function validationNumberLessThanOrEqual(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($value, $number, $decimal) !== 1; }, 'NumberLessThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lte($number, $precision); },'NumberLessThanOrEqual');
     }
 
     /**
-     * Handle Number validation.
-     * If you use this handler then you have to define @List message key too.
+     * Number Equal Validation
      *
      * @param Context $c
-     * @param int|float|string $number
-     * @param int $decimal (default: 0)
-     * @param callable $test function(string $value, string $number, int $decimal):bool
-     * @param string $messsage_key
-     * @param array $replacement (default: [])
-     * @param callable $selector function($value):mixed (default: null)
+     * @param int|float|string|Decimal $number
+     * @param int|null $precision (default: null)
      * @return boolean
      */
-    protected function handleNumber(Context $c, $number, int $decimal = 0, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    public function validationNumberEqual(Context $c, $number, ?int $precision = null) : bool
     {
-        [$number, $number_label] = $c->resolve($number);
-        $replacement['number']   = $number_label;
-        $replacement['decimal']  = $decimal;
-
-        $valid  = $decimal === 0 ? $this->validationInteger($c) : $this->validationFloat($c, $decimal) ;
-        $valid &= $this->handleListableValue(
-            $c,
-            Kind::TYPE_DEPENDENT_CHECK(),
-            function ($value) use ($number, $decimal, $test) {
-                return $test((string)$value, (string)$number, $decimal);
-            },
-            $messsage_key,
-            $replacement,
-            $selector
-        );
-        return $valid;
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->eq($number, $precision); },'NumberEqual');
     }
 
     /**
      * Number Greater Than Validation
      *
      * @param Context $c
-     * @param int|float|string $number
-     * @param int $decimal (default: 0)
+     * @param int|float|string|Decimal $number
+     * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberGreaterThan(Context $c, $number, int $decimal = 0) : bool
+    public function validationNumberGreaterThan(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($number, $value, $decimal) === -1; }, 'NumberGreaterThan');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->gt($number, $precision); }, 'NumberGreaterThan');
     }
 
     /**
      * Number Greater Than Or Equal Validation
      *
      * @param Context $c
-     * @param int|float|string $number
-     * @param int $decimal (default: 0)
+     * @param int|float|string|Decimal $number
+     * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberGreaterThanOrEqual(Context $c, $number, int $decimal = 0) : bool
+    public function validationNumberGreaterThanOrEqual(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $decimal, function ($value, $number, $decimal) { return bccomp($number, $value, $decimal) !== 1; }, 'NumberGreaterThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->gte($number, $precision); }, 'NumberGreaterThanOrEqual');
     }
 
     /**
@@ -942,7 +952,7 @@ class BuiltinValidations extends Validations
      */
     public function validationDigit(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[0-9]+$/u", 'Digit');
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[0-9]+$/u", 'Digit');
     }
 
     /**
@@ -953,7 +963,7 @@ class BuiltinValidations extends Validations
      */
     public function validationAlpha(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z]+$/u", 'Alpha');
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[a-zA-Z]+$/u", 'Alpha');
     }
 
     /**
@@ -964,7 +974,7 @@ class BuiltinValidations extends Validations
      */
     public function validationAlphaDigit(Context $c) : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9]+$/u", 'AlphaDigit');
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[a-zA-Z0-9]+$/u", 'AlphaDigit');
     }
 
     /**
@@ -976,7 +986,7 @@ class BuiltinValidations extends Validations
      */
     public function validationAlphaDigitMark(Context $c, string $mark = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ ') : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[a-zA-Z0-9".preg_quote($mark, '/')."]+$/u", 'AlphaDigitMark', ['mark' => $mark]);
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[a-zA-Z0-9".preg_quote($mark, '/')."]+$/u", 'AlphaDigitMark', ['mark' => $mark]);
     }
 
     /**
@@ -988,7 +998,7 @@ class BuiltinValidations extends Validations
      */
     public function validationHiragana(Context $c, string $extra = '') : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[\p{Hiragana}ー".preg_quote($extra, '/')."]+$/u", 'Hiragana', ['extra' => $extra]);
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[\p{Hiragana}ー".preg_quote($extra, '/')."]+$/u", 'Hiragana', ['extra' => $extra]);
     }
 
     /**
@@ -1000,7 +1010,7 @@ class BuiltinValidations extends Validations
      */
     public function validationKana(Context $c, string $extra = '') : bool
     {
-        return $this->handleRegex($c, Kind::OTHER(), "/^[ァ-ヾ".preg_quote($extra, '/')."]+$/u", 'Kana', ['extra' => $extra]);
+        return $this->handleRegex($c, Kind::INDEPENDENTLY(), "/^[ァ-ヾ".preg_quote($extra, '/')."]+$/u", 'Kana', ['extra' => $extra]);
     }
 
     /**
@@ -1016,7 +1026,7 @@ class BuiltinValidations extends Validations
         $dependences = [];
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function ($value) use ($encode, &$dependences) {
                 $org         = $value;
                 $conv        = mb_convert_encoding(mb_convert_encoding($value, $encode, 'UTF-8'), 'UTF-8', $encode);
@@ -1060,7 +1070,7 @@ class BuiltinValidations extends Validations
         $hit_ng_word = null;
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$hit_ng_word) {
                 $length = mb_strlen($text);
                 foreach ($ng_words as $ng_word) {
@@ -1452,7 +1462,7 @@ class BuiltinValidations extends Validations
         $max  = $unit->parse($max);
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($max, $unit, $precision) {
                 $size                     = $value->getSize();
                 $replacement['file_name'] = $value->getClientOriginalName();
@@ -1477,7 +1487,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = ($file_name = $value->getClientOriginalName());
                 return preg_match($pattern, $file_name);
@@ -1498,7 +1508,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 $replacement['suffix']    = ($suffix = $value->getClientOriginalExtension());
@@ -1524,7 +1534,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 $replacement['mime_type'] = ($mime_type = $value->getMimeType());
@@ -1610,7 +1620,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleListableValue(
             $c,
-            Kind::OTHER(),
+            Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($test) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 if(!$value->hasArea()) {

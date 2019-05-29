@@ -370,7 +370,7 @@ class Valid
      *   Placeholder - :attribute, :self, :nth, :value
      *   Selector    - none
      */
-    const NUMBER = 'Number:';
+    const NUMBER = 'Number:!';
 
     /**
      * Integer Validation.
@@ -403,68 +403,80 @@ class Valid
     /**
      * Number Less Than Validation.
      * It checks the value number will less than given number.
-     * This validation use Valid::INTEGER or Valid::FLOAT validation for type consistency check.
-     * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
+     * This validation use Valid::NUMBER validation for type consistency check.
      *
      * ex)
-     *   - ['CU', Valid::NUMBER_LESS_THAN, number] (decimal: 0)
-     *   - ['CU', Valid::NUMBER_LESS_THAN, number, decimal]
+     *   - ['CU', Valid::NUMBER_LESS_THAN, number] (precision: null)
+     *   - ['CU', Valid::NUMBER_LESS_THAN, number, precision]
      *   - ['CU', Valid::NUMBER_LESS_THAN, ':field', (snip)]
      * message)
      *   Key         - NumberLessThan, NumberLessThan@List
-     *   Placeholder - :attribute, :self, :number, :decimal, :nth, :value
-     *   Selector    - none
+     *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
+     *   Selector    - 'auto' or given precision
      */
     const NUMBER_LESS_THAN = 'NumberLessThan:';
 
     /**
      * Number Less Than Or Equal Validation.
      * It checks the value number will less than or equal given number.
-     * This validation use Valid::INTEGER or Valid::FLOAT validation for type consistency check.
-     * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
+     * This validation use Valid::NUMBER validation for type consistency check.
      *
      * ex)
-     *   - ['CU', Valid::NUMBER_LESS_THAN_OR_EQUAL, number] (decimal: 0)
-     *   - ['CU', Valid::NUMBER_LESS_THAN_OR_EQUAL, number, decimal]
+     *   - ['CU', Valid::NUMBER_LESS_THAN_OR_EQUAL, number] (precision: null)
+     *   - ['CU', Valid::NUMBER_LESS_THAN_OR_EQUAL, number, precision]
      *   - ['CU', Valid::NUMBER_LESS_THAN_OR_EQUAL, ':field', (snip)]
      * message)
      *   Key         - NumberLessThanOrEqual, NumberLessThanOrEqual@List
-     *   Placeholder - :attribute, :self, :number, :decimal, :nth, :value
-     *   Selector    - none
+     *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
+     *   Selector    - 'auto' or given precision
      */
     const NUMBER_LESS_THAN_OR_EQUAL = 'NumberLessThanOrEqual:';
 
     /**
-     * Number Greater Than Validation.
-     * It checks the value number will greater than or equal given min number.
-     * This validation use Valid::INTEGER or Valid::FLOAT validation for type consistency check.
-     * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
+     * Number Equal Validation.
+     * It checks the value will equal given number in specific precision.
+     * This validation use Valid::NUMBER validation for type consistency check.
      *
      * ex)
-     *   - ['CU', Valid::NUMBER_GREATER_THAN, number] (decimal: 0)
-     *   - ['CU', Valid::NUMBER_GREATER_THAN, number, decimal]
+     *   - ['CU', Valid::NUMBER_EQUAL, number] (precision: null)
+     *   - ['CU', Valid::NUMBER_EQUAL, number, precision]
+     *   - ['CU', Valid::NUMBER_EQUAL, ':field', (snip)]
+     * message)
+     *   Key         - NumberEqual, NumberEqual@List
+     *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
+     *   Selector    - 'auto' or given precision
+     */
+    const NUMBER_EQUAL = 'NumberEqual:';
+
+    /**
+     * Number Greater Than Validation.
+     * It checks the value number will greater than or equal given min number.
+     * This validation use Valid::NUMBER validation for type consistency check.
+     *
+     * ex)
+     *   - ['CU', Valid::NUMBER_GREATER_THAN, number] (precision: null)
+     *   - ['CU', Valid::NUMBER_GREATER_THAN, number, precision]
      *   - ['CU', Valid::NUMBER_GREATER_THAN, ':field', (snip)]
      * message)
      *   Key         - NumberGreaterThan, NumberGreaterThan@List
-     *   Placeholder - :attribute, :self, :number, :decimal, :nth, :value
-     *   Selector    - none
+     *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
+     *   Selector    - 'auto' or given precision
      */
     const NUMBER_GREATER_THAN = 'NumberGreaterThan:';
 
     /**
      * Number Greater Than Or Equal Validation.
      * It checks the value number will greater than or equal given min number.
-     * This validation use Valid::INTEGER or Valid::FLOAT validation for type consistency check.
-     * If a given decimal is 0 then use Valid::INTEGER validation, otherwise use Valid::FLOAT validation.
+     * This validation use Valid::NUMBER validation for type consistency check.
      *
      * ex)
-     *   - ['CU', Valid::NUMBER_GREATER_THAN_OR_EQUAL, number] (decimal: 0)
-     *   - ['CU', Valid::NUMBER_GREATER_THAN_OR_EQUAL, number, decimal]
+     *   - ['CU', Valid::NUMBER_GREATER_THAN_OR_EQUAL, number] (precision: null)
+     *   - ['CU', Valid::NUMBER_GREATER_THAN_OR_EQUAL, number, precision]
      *   - ['CU', Valid::NUMBER_GREATER_THAN_OR_EQUAL, ':field', (snip)]
      * message)
      *   Key         - NumberGreaterThanOrEqual, NumberGreaterThanOrEqual@List
-     *   Placeholder - :attribute, :self, :number, :decimal, :nth, :value
-     *   Selector    - none
+     *   Placeholder - :attribute, :self, :number, :precision, :nth, :value
+     *   Selector    - 'auto' or given precision
      */
     const NUMBER_GREATER_THAN_OR_EQUAL = 'NumberGreaterThanOrEqual:';
 

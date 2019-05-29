@@ -508,20 +508,19 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , [':bar'], false, ['foo'    => ["The Foo must be less than Bar."]]],
                     ['bar'    , [10    ], true , []],
                     ['baz'    , [10    ], false, ['baz'    => ["The Baz must be less than 10."]]],
-                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
-                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux must be less than 10."]]],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be less than 10."]]],
+                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux must be less than 10 with precision up to 1 decimal places."]]],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be integer.",
-                        "The 5th Foobar (3.5) must be integer.",
+                        "The 1st Foobar (abc) must be number.",
                         "The 2nd Foobar (10) must be less than 10.",
                         "The 4th Foobar (123) must be less than 10.",
                     ]]],
                     ['foobar' , [10, 1 ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
-                        "The 2nd Foobar (10) must be less than 10.",
-                        "The 4th Foobar (123) must be less than 10.",
+                        "The 1st Foobar (abc) must be number.",
+                        "The 2nd Foobar (10) must be less than 10 with precision up to 1 decimal places.",
+                        "The 4th Foobar (123) must be less than 10 with precision up to 1 decimal places.",
                     ]]],
                 ]
             ]],
@@ -539,21 +538,58 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , [':bar'], false, ['foo'    => ["The Foo may not be greater than Bar."]]],
                     ['bar'    , [10    ], true , []],
                     ['baz'    , [10    ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
-                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
-                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux may not be greater than 10."]]],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['qux'    , [10    ], false, ['qux'    => ["The Qux may not be greater than 10."]]],
+                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux may not be greater than 10 with precision up to 1 decimal places."]]],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be integer.",
-                        "The 5th Foobar (3.5) must be integer.",
+                        "The 1st Foobar (abc) must be number.",
                         "The 4th Foobar (123) may not be greater than 10.",
                     ]]],
                     ['foobar' , [10, 1 ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
-                        "The 4th Foobar (123) may not be greater than 10.",
+                        "The 1st Foobar (abc) must be number.",
+                        "The 4th Foobar (123) may not be greater than 10 with precision up to 1 decimal places.",
                     ]]],
                 ]
             ]],
+
+            // --------------------------------------------
+            // Valid::NUMBER_EQUAL
+            // --------------------------------------------
+            [[
+                'name'  => 'NumberEqual',
+                'data'  => ['null' => null, 'foo' => '10', 'bar' => '-11', 'baz' => '10.1', 'qux' => '10.123', 'quux' => 'abc', 'foobar' => ['abc', '10', '10.3', '3.5']],
+                'tests' => [
+                    ['nothing', [10         ], true , []],
+                    ['null'   , [10         ], true , []],
+                    ['foo'    , [10         ], true , []],
+                    ['foo'    , [':bar'     ], false, ['foo'    => ["The Foo must be equal Bar."]]],
+                    ['bar'    , [-11        ], true , []],
+                    ['baz'    , [10         ], false, ['baz'    => ["The Baz must be equal 10."]]],
+                    ['baz'    , [10, 0      ], true , []],
+                    ['baz'    , [10, 1      ], false, ['baz'    => ["The Baz must be equal 10 with precision up to 1 decimal places."]]],
+                    ['qux'    , ['10.124'   ], false, ['qux'    => ["The Qux must be equal 10.124."]]],
+                    ['qux'    , ['10.124', 3], false, ['qux'    => ["The Qux must be equal 10.124 with precision up to 3 decimal places."]]],
+                    ['qux'    , ['10.124', 2], true , []],
+                    ['quux'   , [10         ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1      ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['foobar' , [10         ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be number.",
+                        "The 3rd Foobar (10.3) must be equal 10.",
+                        "The 4th Foobar (3.5) must be equal 10.",
+                    ]]],
+                    ['foobar' , [10, 0      ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be number.",
+                        "The 4th Foobar (3.5) must be equal 10 with precision up to 0 decimal places.",
+                    ]]],
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be number.",
+                        "The 3rd Foobar (10.3) must be equal 10 with precision up to 1 decimal places.",
+                        "The 4th Foobar (3.5) must be equal 10 with precision up to 1 decimal places.",
+                    ]]],
+                ]
+            ]],
+
 
             // --------------------------------------------
             // Valid::NUMBER_GREATER_THAN
@@ -568,21 +604,21 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , [':baz'], false, ['foo'    => ["The Foo must be greater than Baz."]]],
                     ['bar'    , [10    ], false, ['bar'    => ["The Bar must be greater than 10."]]],
                     ['baz'    , [10    ], true , []],
-                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10    ], true , []],
                     ['qux'    , [10, 1 ], true , []],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be integer.",
-                        "The 5th Foobar (3.5) must be integer.",
-                        "The 2nd Foobar (10) must be greater than 10.",
-                        "The 3rd Foobar (2) must be greater than 10.",
-                    ]]],
-                    ['foobar' , [10, 1 ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
+                        "The 1st Foobar (abc) must be number.",
                         "The 2nd Foobar (10) must be greater than 10.",
                         "The 3rd Foobar (2) must be greater than 10.",
                         "The 5th Foobar (3.5) must be greater than 10.",
+                    ]]],
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be number.",
+                        "The 2nd Foobar (10) must be greater than 10 with precision up to 1 decimal places.",
+                        "The 3rd Foobar (2) must be greater than 10 with precision up to 1 decimal places.",
+                        "The 5th Foobar (3.5) must be greater than 10 with precision up to 1 decimal places.",
                     ]]],
                 ]
             ]],
@@ -600,19 +636,19 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['foo'    , [':baz'], false, ['foo'    => ["The Foo must be at least Baz."]]],
                     ['bar'    , [10    ], false, ['bar'    => ["The Bar must be at least 10."]]],
                     ['baz'    , [10    ], true , []],
-                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be integer."]]],
+                    ['qux'    , [10    ], true , []],
                     ['qux'    , [10, 1 ], true , []],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be integer."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be real number (up to 1 decimal places)."]]],
+                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be integer.",
-                        "The 5th Foobar (3.5) must be integer.",
-                        "The 3rd Foobar (2) must be at least 10.",
-                    ]]],
-                    ['foobar' , [10, 1 ], false, ['foobar' => [
-                        "The 1st Foobar (abc) must be real number (up to 1 decimal places).",
+                        "The 1st Foobar (abc) must be number.",
                         "The 3rd Foobar (2) must be at least 10.",
                         "The 5th Foobar (3.5) must be at least 10.",
+                    ]]],
+                    ['foobar' , [10, 1 ], false, ['foobar' => [
+                        "The 1st Foobar (abc) must be number.",
+                        "The 3rd Foobar (2) must be at least 10 with precision up to 1 decimal places.",
+                        "The 5th Foobar (3.5) must be at least 10 with precision up to 1 decimal places.",
                     ]]],
                 ]
             ]],

@@ -58,14 +58,46 @@ return [
     "Integer@List"                  => ":nth番目の:attribute(:value)は整数で入力して下さい。",
     "Float"                         => ":attributeは実数(小数点:scale桁まで)で入力して下さい。",
     "Float@List"                    => ":nth番目の:attribute(:value)は実数(小数点:scale桁まで)で入力して下さい。",
-    "NumberLessThan"                => ":attributeは:number未満で入力して下さい。",
-    "NumberLessThan@List"           => ":nth番目の:attribute(:value)は:number未満で入力して下さい。",
-    "NumberLessThanOrEqual"         => ":attributeは:number以下で入力して下さい。",
-    "NumberLessThanOrEqual@List"    => ":nth番目の:attribute(:value)は:number以下で入力して下さい。",
-    "NumberGreaterThan"             => ":attributeは:numberより上で入力して下さい。",
-    "NumberGreaterThan@List"        => ":nth番目の:attribute(:value)は:numberより上で入力して下さい。",
-    "NumberGreaterThanOrEqual"      => ":attributeは:number以上で入力して下さい。",
-    "NumberGreaterThanOrEqual@List" => ":nth番目の:attribute(:value)は:number以上で入力して下さい。",
+    "NumberLessThan"                => [
+        "{auto} :attributeは:number未満で入力して下さい。",
+        "{*}    :attributeは:number未満(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberLessThan@List"           => [
+        "{auto} :nth番目の:attribute(:value)は:number未満で入力して下さい。",
+        "{*}    :nth番目の:attribute(:value)は:number未満(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberLessThanOrEqual"         => [
+        "{auto} :attributeは:number以下で入力して下さい。",
+        "{*}    :attributeは:number以下(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberLessThanOrEqual@List"    => [
+        "{auto} :nth番目の:attribute(:value)は:number以下で入力して下さい。",
+        "{*}    :nth番目の:attribute(:value)は:number以下(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberEqual"                   => [
+        "{auto} :attributeは:numberを入力して下さい。",
+        "{*}    :attributeは:number(小数点以下:precision桁までの精度)を入力して下さい。",
+    ],
+    "NumberEqual@List"              => [
+        "{auto} :nth番目の:attribute(:value)は:numberを入力して下さい。",
+        "{*}    :nth番目の:attribute(:value)は:number(小数点以下:precision桁までの精度)を入力して下さい。",
+    ],
+    "NumberGreaterThan"             => [
+        "{auto} :attributeは:numberより上で入力して下さい。",
+        "{*}    :attributeは:numberより上(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberGreaterThan@List"        => [
+        "{auto} :nth番目の:attribute(:value)は:numberより上で入力して下さい。",
+        "{*}    :nth番目の:attribute(:value)は:numberより上(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberGreaterThanOrEqual"      => [
+        "{auto} :attributeは:number以上で入力して下さい。",
+        "{*}    :attributeは:number以上(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
+    "NumberGreaterThanOrEqual@List" => [
+        "{auto} :nth番目の:attribute(:value)は:number以上で入力して下さい。",
+        "{*}    :nth番目の:attribute(:value)は:number以上(小数点以下:precision桁までの精度)で入力して下さい。",
+    ],
     "Email"                         => ":attributeはメールアドレス形式で入力して下さい。",
     "Email@List"                    => ":nth番目の:attribute(:value)はメールアドレス形式で入力して下さい。",
     "Url"                           => [

@@ -255,6 +255,6 @@ class FileDictionary implements Dictionary
             }
             return null;
         }
-        return $condition === '*' || in_array($selector, explode(',', $condition)) ? $value : null;
+        return $condition === '*' || in_array($selector, explode(',', $condition), true) ? $value : null;
     }
 }

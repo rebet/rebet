@@ -74,14 +74,46 @@ return [
     "Integer@List"                  => "The :nth :attribute (:value) must be integer.",
     "Float"                         => "The :attribute must be real number (up to :decimal decimal places).",
     "Float@List"                    => "The :nth :attribute (:value) must be real number (up to :decimal decimal places).",
-    "NumberLessThan"                => "The :attribute must be less than :number.",
-    "NumberLessThan@List"           => "The :nth :attribute (:value) must be less than :number.",
-    "NumberLessThanOrEqual"         => "The :attribute may not be greater than :number.",
-    "NumberLessThanOrEqual@List"    => "The :nth :attribute (:value) may not be greater than :number.",
-    "NumberGreaterThan"             => "The :attribute must be greater than :number.",
-    "NumberGreaterThan@List"        => "The :nth :attribute (:value) must be greater than :number.",
-    "NumberGreaterThanOrEqual"      => "The :attribute must be at least :number.",
-    "NumberGreaterThanOrEqual@List" => "The :nth :attribute (:value) must be at least :number.",
+    "NumberLessThan"                => [
+        "{auto} The :attribute must be less than :number.",
+        "{*}    The :attribute must be less than :number with precision up to :precision decimal places.",
+    ],
+    "NumberLessThan@List"           => [
+        "{auto} The :nth :attribute (:value) must be less than :number.",
+        "{*}    The :nth :attribute (:value) must be less than :number with precision up to :precision decimal places.",
+    ],
+    "NumberLessThanOrEqual"         => [
+        "{auto} The :attribute may not be greater than :number.",
+        "{*}    The :attribute may not be greater than :number with precision up to :precision decimal places.",
+    ],
+    "NumberLessThanOrEqual@List"    => [
+        "{auto} The :nth :attribute (:value) may not be greater than :number.",
+        "{*}    The :nth :attribute (:value) may not be greater than :number with precision up to :precision decimal places.",
+    ],
+    "NumberEqual"                   => [
+        "{auto} The :attribute must be equal :number.",
+        "{*}    The :attribute must be equal :number with precision up to :precision decimal places.",
+    ],
+    "NumberEqual@List"              => [
+        "{auto} The :nth :attribute (:value) must be equal :number.",
+        "{*}    The :nth :attribute (:value) must be equal :number with precision up to :precision decimal places.",
+    ],
+    "NumberGreaterThan"             => [
+        "{auto} The :attribute must be greater than :number.",
+        "{*}    The :attribute must be greater than :number with precision up to :precision decimal places.",
+    ],
+    "NumberGreaterThan@List"        => [
+        "{auto} The :nth :attribute (:value) must be greater than :number.",
+        "{*}    The :nth :attribute (:value) must be greater than :number with precision up to :precision decimal places.",
+    ],
+    "NumberGreaterThanOrEqual"      => [
+        "{auto} The :attribute must be at least :number.",
+        "{*}    The :attribute must be at least :number with precision up to :precision decimal places.",
+    ],
+    "NumberGreaterThanOrEqual@List" => [
+        "{auto} The :nth :attribute (:value) must be at least :number.",
+        "{*}    The :nth :attribute (:value) must be at least :number with precision up to :precision decimal places.",
+    ],
     "Email"                         => "The :attribute must be a valid email address.",
     "Email@List"                    => "The :nth :attribute (:value) must be a valid email address.",
     "Url"                           => [

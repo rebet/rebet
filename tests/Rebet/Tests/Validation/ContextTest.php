@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use Rebet\Foundation\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
@@ -88,7 +89,7 @@ class ContextTest extends RebetTestCase
         ];
     }
 
-    public function test_cunstract()
+    public function test___cunstract()
     {
         $c = new Context(
             'C',
@@ -158,6 +159,19 @@ class ContextTest extends RebetTestCase
         $this->assertTrue($c->hasError('other'));
     }
 
+    public function test_isQuietAndQuiet()
+    {
+        $c = new Context(
+            'C',
+            ['name' => 'John Smith'],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $this->assertFalse($c->isQuiet());
+        $this->assertInstanceOf(Context::class, $c->quiet(true));
+        $this->assertTrue($c->isQuiet());
+    }
+
     public function test_blank()
     {
         $c = new Context(
@@ -173,6 +187,28 @@ class ContextTest extends RebetTestCase
 
         $c->initBy('dummy');
         $this->assertTrue($c->blank());
+    }
+
+    public function test_isBlank()
+    {
+        $this->assertSame(true, Context::isBlank(null));
+        $this->assertSame(true, Context::isBlank(''));
+        $this->assertSame(true, Context::isBlank([]));
+        $this->assertSame(false, Context::isBlank(0));
+    }
+
+    public function test_count()
+    {
+        $c = new Context(
+            'C',
+            ['name' => 'John Smith', 'empty_array' => [], 'array' => [1, 2, 3]],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $c->initBy('name');
+        $this->assertSame(1, $c->count());
+        $this->assertSame(0, $c->count('empty_array'));
+        $this->assertSame(3, $c->count('array'));
     }
 
     public function test_appendError()
@@ -473,6 +509,30 @@ class ContextTest extends RebetTestCase
         );
     }
 
+    public function test_ordinalize()
+    {
+        App::setLocale('en');
+        $c = new Context(
+            'C',
+            ['name' => 'John Smith'],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $this->assertSame('1st', $c->ordinalize(1));
+    }
+
+    public function test_grammar()
+    {
+        App::setLocale('en');
+        $c = new Context(
+            'C',
+            ['name' => 'John Smith'],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $this->assertSame(', ', $c->grammar('delimiter'));
+    }
+
     public function test_crud()
     {
         $c = new Context(
@@ -482,6 +542,42 @@ class ContextTest extends RebetTestCase
             ['name' => $this->rule_set['name']]
         );
         $this->assertSame('C', $c->crud());
+    }
+
+    public function test_parent()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'   => 'John Smith',
+                'nested' => [
+                    'name' => 'Bob Smith',
+                ],
+            ],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $nest = $c->initBy('nested')->nest();
+        $this->assertSame(null, $c->parent());
+        $this->assertSame($c, $nest->parent());
+    }
+
+    public function test_hasParent()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'   => 'John Smith',
+                'nested' => [
+                    'name' => 'Bob Smith',
+                ],
+            ],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $nest = $c->initBy('nested')->nest();
+        $this->assertSame(false, $c->hasParent());
+        $this->assertSame(true, $nest->hasParent());
     }
 
     public function test_nest()
@@ -606,5 +702,24 @@ class ContextTest extends RebetTestCase
         $this->assertSame('3-2-1, Baz town, Foo city', $n1->value);
         $this->assertSame('住所', $n1->label);
         $this->assertSame('送付先郵便番号', $n1->label('zip'));
+    }
+
+    public function test_setExtra()
+    {
+        $c = new Context(
+            'C',
+            [
+                'name'     => 'John Smith',
+                'birthday' => '2010-01-23',
+            ],
+            $this->errors,
+            ['name' => $this->rule_set['name']]
+        );
+        $c->initBy('name');
+        $c->setExtra('key', 'value');
+        $this->assertSame('value', $c->extra('key'));
+
+        $c->initBy('birthday');
+        $this->assertSame(null, $c->extra('key'));
     }
 }
