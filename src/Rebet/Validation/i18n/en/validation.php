@@ -10,6 +10,7 @@
 return [
     "@delimiter"                    => ", ",
     "@nested_attribute_format"      => ":attribute :nested_attribute",
+    "ConvertFailed"                 => "The value of :attribute could not be converted correctly.",
 
     "Required"                      => "The :attribute field is required.",
     "RequiredIf"                    => [

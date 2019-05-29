@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'foo'                      => 'フー',
+
     'translate'                => '翻訳',
     'outer_nest_define'        => 'ネストの外で定義',
     'nested'                   => 'ネスト',

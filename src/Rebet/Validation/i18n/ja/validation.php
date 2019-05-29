@@ -10,6 +10,7 @@
 return [
     "@delimiter"                    => "／",
     "@nested_attribute_format"      => ":attributeの:nested_attribute",
+    "ConvertFailed"                 => ":attributeの値を正しく変換できませんでした。",
 
     "Required"                      => ":attributeを入力して下さい。",
     "RequiredIf"                    => ":otherが:valueの場合は:attributeを入力して下さい。",

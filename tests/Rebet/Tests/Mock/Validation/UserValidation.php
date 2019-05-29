@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Validation\Mock;
+namespace Rebet\Tests\Mock\Validation;
 
 use Rebet\Common\Strings;
 use Rebet\Tests\Mock\Enum\Gender;
@@ -9,8 +9,7 @@ use Rebet\Validation\Valid;
 
 class UserValidation extends Rule
 {
-    // Validation ルール定義
-    // 仕様策定中
+    // Validation rules
     public function rules() : array
     {
         return [
@@ -34,7 +33,7 @@ class UserValidation extends Rule
                     ['CU', Valid::REQUIRED],
                     ['CU', Valid::EMAIL],
                     ['CU', Valid::IF_NOT_ERROR, 'then' => [
-                        ['CU', 'MailAddressExists'] // カスタム Validation の実行
+                        ['CU', 'MailAddressExists'] // Invoke custom validation
                     ]],
                 ]
             ],
@@ -58,7 +57,7 @@ class UserValidation extends Rule
                 'label' => 'アバター画像',
                 'rule'  => [
                     ['CU', Valid::FILE_SIZE, '2M'],
-                    ['CU', Valid::FILE_WEB_IMAGE_SUFFIX]
+                    ['CU', Valid::FILE_TYPE_WEB_IMAGES]
                 ],
             ],
             'gender' => [
@@ -81,8 +80,15 @@ class UserValidation extends Rule
                 'convert' => DateTime::class
             ],
             'bank' => [
-                'label' => '口座情報',
+                'label' => '銀行',
                 'nest'  => [
+                    'name' => [
+                        'label' => ':parent名',
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                            ['CU', Valid::MAX_LENGTH, 20],
+                        ],
+                    ]
                 ],
             ],
             'shipping_addresses' => [
@@ -119,7 +125,7 @@ class UserValidation extends Rule
         ];
     }
 
-    // カスタム Validation の定義
+    // Define Custom Validation
     protected function validationMailAddressExists(Context $c) : bool
     {
         if ($c->blank()) {

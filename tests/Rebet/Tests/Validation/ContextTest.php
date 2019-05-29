@@ -634,7 +634,7 @@ class ContextTest extends RebetTestCase
         $this->assertTrue($n1->hasParent());
         $this->assertSame($c, $n1->parent());
         $this->assertSame('Sample Bank', $n1->value);
-        $this->assertSame('銀行名', $n1->label);
+        $this->assertSame('振込先の銀行名', $n1->label);
         $this->assertSame('123', $n1->value('branch.code'));
         $this->assertSame('振込先：支店コード', $n1->label('branch.code'));
 
@@ -648,7 +648,7 @@ class ContextTest extends RebetTestCase
         );
         $this->assertSame('振込先：支店', $n1->label);
         $this->assertSame('Sample Bank', $n1->value('bank_name'));
-        $this->assertSame('銀行名', $n1->label('bank_name'));
+        $this->assertSame('振込先の銀行名', $n1->label('bank_name'));
 
         $n2 = $n1->nest();
         $n2->initBy('code');
@@ -682,11 +682,11 @@ class ContextTest extends RebetTestCase
         $this->assertSame('1230001', $n1->value);
         $this->assertSame('送付先郵便番号', $n1->label);
         $this->assertSame('1-2-3, Foo town, Bar city', $n1->value('address'));
-        $this->assertSame('住所', $n1->label('address'));
+        $this->assertSame('送付先の住所', $n1->label('address'));
 
         $n1->initBy('address');
         $this->assertSame('1-2-3, Foo town, Bar city', $n1->value);
-        $this->assertSame('住所', $n1->label);
+        $this->assertSame('送付先の住所', $n1->label);
         $this->assertSame('送付先郵便番号', $n1->label('zip'));
 
         $n1 = $c->nest(1);
@@ -696,11 +696,11 @@ class ContextTest extends RebetTestCase
         $this->assertSame('3210003', $n1->value);
         $this->assertSame('送付先郵便番号', $n1->label);
         $this->assertSame('3-2-1, Baz town, Foo city', $n1->value('address'));
-        $this->assertSame('住所', $n1->label('address'));
+        $this->assertSame('送付先の住所', $n1->label('address'));
 
         $n1->initBy('address');
         $this->assertSame('3-2-1, Baz town, Foo city', $n1->value);
-        $this->assertSame('住所', $n1->label);
+        $this->assertSame('送付先の住所', $n1->label);
         $this->assertSame('送付先郵便番号', $n1->label('zip'));
     }
 

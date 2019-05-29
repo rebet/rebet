@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use Rebet\Tests\Mock\Validation\UserValidation;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tests\Validation\Mock\UserValidation;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
 

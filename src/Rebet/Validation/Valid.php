@@ -934,7 +934,7 @@ class Valid
      *   - ['CU', Valid::FILE_SIZE, max, precision]
      * message)
      *   Key         - FileSize, FileSize@List
-     *   Placeholder - :attribute, :max, :file_name, :size
+     *   Placeholder - :attribute, :max, :nth, :value, :file_name, :size
      *   Selector    - none
      *
      * @see Unit::STORAGE_PREFIX
@@ -949,7 +949,7 @@ class Valid
      *   - ['CU', Valid::FILE_NAME_MATCH, pattern]
      * message)
      *   Key         - FileNameMatch, FileNameMatch@List
-     *   Placeholder - :attribute, :pattern, :file_name
+     *   Placeholder - :attribute, :pattern, :nth, :value, :file_name
      *   Selector    - none
      */
     const FILE_NAME_MATCH = 'FileNameMatch:';
@@ -962,7 +962,7 @@ class Valid
      *   - ['CU', Valid::FILE_SUFFIX_MATCH, pattern]
      * message)
      *   Key         - FileSuffixMatch, FileSuffixMatch@List
-     *   Placeholder - :attribute, :pattern, :file_name, :suffix
+     *   Placeholder - :attribute, :pattern, :nth, :value, :file_name, :suffix
      *   Selector    - none
      */
     const FILE_SUFFIX_MATCH = 'FileSuffixMatch:';
@@ -975,7 +975,7 @@ class Valid
      *   - ['CU', Valid::FILE_MIME_TYPE_MATCH, pattern]
      * message)
      *   Key         - FileMimeTypeMatch, FileMimeTypeMatch@List
-     *   Placeholder - :attribute, :pattern, :file_name, :mime_type
+     *   Placeholder - :attribute, :pattern, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
     const FILE_MIME_TYPE_MATCH = 'FileMimeTypeMatch:';
@@ -988,7 +988,7 @@ class Valid
      *   - ['CU', Valid::FILE_TYPE_IMAGES]
      * message)
      *   Key         - FileTypeImages, FileTypeImages@List
-     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
     const FILE_TYPE_IMAGES = 'FileTypeImages:';
@@ -1001,7 +1001,7 @@ class Valid
      *   - ['CU', Valid::FILE_TYPE_WEB_IMAGES]
      * message)
      *   Key         - FileTypeWebImages, FileTypeWebImages@List
-     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
     const FILE_TYPE_WEB_IMAGES = 'FileTypeWebImages:';
@@ -1014,7 +1014,7 @@ class Valid
      *   - ['CU', Valid::FILE_TYPE_CSV]
      * message)
      *   Key         - FileTypeCsv, FileTypeCsv@List
-     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
     const FILE_TYPE_CSV = 'FileTypeCsv:';
@@ -1027,7 +1027,7 @@ class Valid
      *   - ['CU', Valid::FILE_TYPE_ZIP]
      * message)
      *   Key         - FileTypeZip, FileTypeZip@List
-     *   Placeholder - :attribute, :file_name, :mime_type
+     *   Placeholder - :attribute, :nth, :value, :file_name, :mime_type
      *   Selector    - none
      */
     const FILE_TYPE_ZIP = 'FileTypeZip:';
@@ -1040,7 +1040,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_MAX_WIDTH, max]
      * message)
      *   Key         - FileImageMaxWidth, FileImageMaxWidth@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :max
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :max
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_MAX_WIDTH = 'FileImageMaxWidth:';
@@ -1053,7 +1053,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_WIDTH, size]
      * message)
      *   Key         - FileImageWidth, FileImageWidth@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :size
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :size
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_WIDTH = 'FileImageWidth:';
@@ -1066,7 +1066,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_MIN_WIDTH, min]
      * message)
      *   Key         - FileImageMinWidth, FileImageMinWidth@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :min
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :min
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_MIN_WIDTH = 'FileImageMinWidth:';
@@ -1079,7 +1079,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_MAX_HEIGHT, max]
      * message)
      *   Key         - FileImageMaxHeight, FileImageMaxHeight@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :max
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :max
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_MAX_HEIGHT = 'FileImageMaxHeight:';
@@ -1092,7 +1092,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_HEIGHT, size]
      * message)
      *   Key         - FileImageHeight, FileImageHeight@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :size
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :size
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_HEIGHT = 'FileImageHeight:';
@@ -1105,7 +1105,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_MIN_HEIGHT, min]
      * message)
      *   Key         - FileImageMinHeight, FileImageMinHeight@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :min
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :min
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_MIN_HEIGHT = 'FileImageMinHeight:';
@@ -1119,7 +1119,7 @@ class Valid
      *   - ['CU', Valid::FILE_IMAGE_ASPECT_RATIO, width_ratio, height_ratio, precision]
      * message)
      *   Key         - FileImageAspectRatio, FileImageAspectRatio@List
-     *   Placeholder - :attribute, :file_name, :width, :height, :width_ratio, :height_ration, :precision
+     *   Placeholder - :attribute, :nth, :value, :file_name, :width, :height, :width_ratio, :height_ration, :precision
      *   Selector    - 'area' or 'no-area'
      */
     const FILE_IMAGE_ASPECT_RATIO = 'FileImageAspectRatio:';

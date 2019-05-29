@@ -76,6 +76,13 @@ class Context
     private $rules = [];
 
     /**
+     * Nested attribute auto format or not.
+     *
+     * @var boolean
+     */
+    private $nested_attribute_auto_format = true;
+
+    /**
      * The parent context if this is nested context.
      *
      * @var Context
@@ -110,13 +117,15 @@ class Context
      * @param array $data
      * @param array $errors
      * @param array $rules
+     * @param bool $nested_attribute_auto_format (default: true)
      */
-    public function __construct(string $crud, array $data, array &$errors, array $rules)
+    public function __construct(string $crud, array $data, array &$errors, array $rules, bool $nested_attribute_auto_format = true)
     {
-        $this->crud   = $crud;
-        $this->data   = $data;
-        $this->errors = &$errors;
-        $this->rules  = $rules;
+        $this->crud                         = $crud;
+        $this->data                         = $data;
+        $this->errors                       = &$errors;
+        $this->rules                        = $rules;
+        $this->nested_attribute_auto_format = $nested_attribute_auto_format;
     }
 
     /**
@@ -206,6 +215,10 @@ class Context
      */
     public function appendError(string $key, array $replace = [], $selector = null) : bool
     {
+        if ($this->isQuiet()) {
+            return false;
+        }
+
         $replace['attribute'] = $replace['attribute'] ?? $this->label;
         $replace['self']      = $replace['self'] ?? $this->value;
         $replace['selector']  = $selector;
@@ -257,7 +270,7 @@ class Context
     {
         $label = $this->labelTranslate("{$this->prefix}{$field}");
         if ($label) {
-            return $label;
+            return $this->parent ? $this->formatNestedAttributeLabel($label, $this->parent->label)  : $label ;
         }
         $parent = '';
         $rule   = $this->rules;
@@ -268,7 +281,23 @@ class Context
             $rule   = $rule[$parts]['nests'] ?? $rule[$parts]['nest'] ?? [];
         }
 
-        return $label;
+        return $this->parent ? $this->formatNestedAttributeLabel($label, $this->parent->label)  : $label ;
+    }
+
+    /**
+     * Format nested attribute label name using 'validation.@nested_attribute_format' grammer when the format was define.
+     *
+     * @param string $label
+     * @param string $parent_label
+     * @return string
+     */
+    protected function formatNestedAttributeLabel(string $label, string $parent_label) : string
+    {
+        if (!$this->nested_attribute_auto_format) {
+            return $label;
+        }
+        $nested_attribute_format = $this->grammar('nested_attribute_format');
+        return empty($nested_attribute_format) || Strings::contains($label, $parent_label) ? $label : str_replace([':attribute', ':nested_attribute'], [$parent_label, $label], $nested_attribute_format) ;
     }
 
     /**
@@ -361,9 +390,8 @@ class Context
     public function pluckNested(?string $nested_field) : array
     {
         if ($nested_field) {
-            $nested_label = $this->label("{$this->field}.{$nested_field}");
-            $label        = Strings::contains($nested_label, $this->label) ? $nested_label : str_replace([':attribute', ':nested_attribute'], [$this->label, $nested_label], $this->grammar('nested_attribute_format', ':nested_attribute')) ;
-            $list         = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array)$this->value);
+            $label = $this->formatNestedAttributeLabel($this->label("{$this->field}.{$nested_field}"), $this->label);
+            $list  = array_map(function ($value) use ($nested_field) { return Reflector::get($value, $nested_field); }, (array)$this->value);
             return [$list, $label];
         }
 

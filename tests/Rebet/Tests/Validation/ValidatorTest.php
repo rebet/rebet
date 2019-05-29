@@ -6,11 +6,14 @@ use Rebet\DateTime\DateTime;
 use Rebet\Foundation\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
+use Rebet\Tests\Mock\Validation\BarValidation;
+use Rebet\Tests\Mock\Validation\FooValidation;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
 use Rebet\Validation\Validator;
+use Rebet\Validation\ValidData;
 
 class ValidatorTest extends RebetTestCase
 {
@@ -27,8 +30,8 @@ class ValidatorTest extends RebetTestCase
                     'Ok' => function (Context $c) {
                         return true;
                     },
-                    'Ng' => function (Context $c) {
-                        $c->appendError("@The {$c->label} is NG.");
+                    'Ng' => function (Context $c, ?string $message = null) {
+                        $c->appendError($message ?? "@The {$c->label} is NG.");
                         return false;
                     },
                 ]
@@ -38,8 +41,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_cunstract()
     {
-        $validator = new Validator([]);
-        $this->assertInstanceOf(Validator::class, $validator);
+        $this->assertInstanceOf(Validator::class, new Validator([]));
     }
 
     public function dataValidationInvoke() : array
@@ -139,6 +141,9 @@ class ValidatorTest extends RebetTestCase
             // Valid::NUMBER_LESS_THAN_OR_EQUAL
             [['target' => 1], ['C', Valid::NUMBER_LESS_THAN_OR_EQUAL, 2], true ],
             [['target' => 3], ['C', Valid::NUMBER_LESS_THAN_OR_EQUAL, 2], false],
+            // Valid::NUMBER_EQUAL
+            [['target' => 1], ['C', Valid::NUMBER_EQUAL, 1], true ],
+            [['target' => 3], ['C', Valid::NUMBER_EQUAL, 1], false],
             // Valid::NUMBER_GREATER_THAN
             [['target' => 1], ['C', Valid::NUMBER_GREATER_THAN, 2], false],
             [['target' => 3], ['C', Valid::NUMBER_GREATER_THAN, 2], true ],
@@ -284,7 +289,482 @@ class ValidatorTest extends RebetTestCase
         App::setLocale('en');
         $validator    = new Validator($data);
         $valid_data   = $validator->validate('C', ['target' => ['rule' => [$rule]]]);
-        $valid_errors = $validator->errors();
+        // $valid_errors = $validator->errors();
         $this->assertSame($expect_valid, !is_null($valid_data));
+    }
+
+    public function test_validate_argsTypeCheck()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'FOO', 'bar' => 'BAR']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED]
+                ]
+            ]
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame(null, $valid_data->bar);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED]
+                ]
+            ],
+            'bar' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED]
+                ]
+            ]
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame('BAR', $valid_data->bar);
+
+        $valid_data = $validator->validate('C', [
+            [
+                'foo' => [
+                    'rule'  => [
+                        ['C', Valid::REQUIRED]
+                    ]
+                ]
+            ],
+            [
+                'bar' => [
+                    'rule'  => [
+                        ['C', Valid::REQUIRED]
+                    ]
+                ]
+            ],
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame('BAR', $valid_data->bar);
+
+        $valid_data = $validator->validate('C', FooValidation::class);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame(null, $valid_data->bar);
+
+        $valid_data = $validator->validate('C', [FooValidation::class, BarValidation::class]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame('BAR', $valid_data->bar);
+
+        $valid_data = $validator->validate('C', new FooValidation());
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame(null, $valid_data->bar);
+
+        $valid_data = $validator->validate('C', [new FooValidation(), new BarValidation()]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+        $this->assertSame('BAR', $valid_data->bar);
+    }
+
+    public function test_validate_beforeFilter()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'foo']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'before' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                    ['C', Valid::REGEX, '/^[A-Z]+$/'],
+                ]
+            ]
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+    }
+
+    public function test_validate_afterFilter()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'foo']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                    ['C', Valid::ALPHA],
+                ],
+                'after' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
+            ]
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame('FOO', $valid_data->foo);
+    }
+
+    public function test_validate_convert()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => '2001-01-01']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                    ['C', Valid::DATETIME],
+                ],
+                'convert' => DateTime::class,
+            ]
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertInstanceOf(DateTime::class, $valid_data->foo);
+        $this->assertSame('2001/01/01', $valid_data->foo->format('Y/m/d'));
+    }
+
+    public function test_validate_convertWithValidationError()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'fooo-01-01']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                    ['C', Valid::DATETIME],
+                ],
+                'convert' => DateTime::class,
+            ]
+        ]);
+        $this->assertNull($valid_data);
+    }
+
+    public function test_validate_convertWithConvertError()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => '2001-01-01']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                    ['C', Valid::DATETIME],
+                ],
+                'convert' => Gender::class,
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The value of Foo could not be converted correctly."]], $validator->errors());
+    }
+
+    public function test_validate_quiet()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'abc']);
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::NUMBER.'?'],
+                ]
+            ]
+        ]);
+        $this->assertNotNull($valid_data);
+        $this->assertSame([], $validator->errors());
+    }
+
+    public function test_validate_quietThenElse()
+    {
+        App::setLocale('en');
+        $rule = [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::NUMBER.'?', 'then' => [
+                        ['C', Valid::NUMBER_GREATER_THAN, 100]
+                    ], 'else' => [
+                        ['C', Valid::REGEX, '/^[A-Z]+$/']
+                    ]],
+                ]
+            ]
+        ];
+
+        $validator  = new Validator(['foo' => 'abc']);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo format is invalid."]], $validator->errors());
+
+        $validator  = new Validator(['foo' => '99']);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo must be greater than 100."]], $validator->errors());
+    }
+
+    public function test_validate_then()
+    {
+        App::setLocale('en');
+        $rule = [
+            'foo' => [
+                'rule'  => [
+                    ['C', 'Number', 'then' => [['C', Valid::NUMBER_GREATER_THAN, 100]], 'else' => [['C', 'Ng']]],
+                ]
+            ]
+        ];
+
+        $validator  = new Validator(['foo' => 'abc']);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo must be number.", "The Foo is NG."]], $validator->errors());
+
+        $validator  = new Validator(['foo' => '99']);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo must be greater than 100."]], $validator->errors());
+    }
+
+    public function test_validate_existOnError()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'abc']);
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', 'Number'],
+                    ['C', 'Ng'],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo must be number.", "The Foo is NG."]], $validator->errors());
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', 'Number:!'], // with '!' option
+                    ['C', 'Ng'],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo must be number."]], $validator->errors());
+    }
+
+    public function test_validate_duplicatedMessage()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => 'abc']);
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', 'Ng', '@Error message 1.'],
+                    ['C', 'Ng', '@Error message 2.'],
+                    ['C', 'Ng', '@Error message 1.'],
+                    ['C', 'Ng', '@Error message 3.'],
+                    ['C', 'Ng', '@Error message 3.'],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["Error message 1.", "Error message 2.", "Error message 3."]], $validator->errors()); // The same message is not duplicated
+    }
+    
+    public function test_validate_typeConsistencyCheck()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => ['abc', 99]]);
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', 'Number'],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The 1st Foo (abc) must be number."]], $validator->errors());
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::NUMBER_GREATER_THAN, 100]
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The 1st Foo (abc) must be number.", "The 2nd Foo (99) must be greater than 100."]], $validator->errors());
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', 'Number'],
+                    ['C', Valid::NUMBER_GREATER_THAN, 100]
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The 1st Foo (abc) must be number.", "The 2nd Foo (99) must be greater than 100."]], $validator->errors());
+    }
+    
+    public function test_validate_inlineLabelAndI18n()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['foo' => null]);
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Foo field is required."]], $validator->errors());
+
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'label' => 'Custom Foo', // Inline labels are a convenient way to specify labels when internationalization is not required
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["The Custom Foo field is required."]], $validator->errors());
+
+        App::setLocale('ja');
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'label' => 'Custom Foo',
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                ]
+            ]
+        ]);
+        $this->assertNull($valid_data);
+        $this->assertSame(['foo' => ["フーを入力して下さい。"]], $validator->errors()); // 'i18n/{locale}/attribute.php' transration settings take precedence over inline labels
+    }
+
+    public function test_validate_nest()
+    {
+        App::setLocale('en');
+        $rule = [
+            'bank' => [
+                'rule'  => [
+                    ['CU', Valid::REQUIRED],
+                ],
+                'nest' => [
+                    'name' => [
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                            ['CU', Valid::MAX_LENGTH, 20],
+                        ],
+                    ]
+                ],
+            ],
+        ];
+
+        $validator  = new Validator(['bank' => []]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank' => ["The Bank field is required."], 'bank.name' => ["The Bank Name field is required."]], $validator->errors());
+
+        $validator  = new Validator(['bank' => ['name' => null]]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank.name' => ["The Bank Name field is required."]], $validator->errors());
+
+        $validator  = new Validator(['bank' => ['name' => 'bank name']]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNotNull($valid_data);
+        $this->assertInstanceOf(ValidData::class, $valid_data->bank);
+        $this->assertSame('bank name', $valid_data->bank->name);
+
+        $rule = [
+            'bank' => [
+                'label' => 'BANK',
+                'nest'  => [
+                    'name' => [
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ]
+                ],
+            ],
+        ];
+        $validator  = new Validator(['bank' => []]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank.name' => ["The BANK Name field is required."]], $validator->errors());
+
+        $rule = [
+            'bank' => [
+                'label' => 'BANK',
+                'nest'  => [
+                    'name'  => [
+                        'label' => 'Custom Name',
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ]
+                ],
+            ],
+        ];
+        $validator  = new Validator(['bank' => []]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank.name' => ["The BANK Custom Name field is required."]], $validator->errors());
+
+        $rule = [
+            'bank' => [
+                'label' => 'BANK',
+                'nest'  => [
+                    'name'  => [
+                        'label' => 'Custom :parent Name',
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ]
+                ],
+            ],
+        ];
+        $validator  = new Validator(['bank' => []]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank.name' => ["The Custom BANK Name field is required."]], $validator->errors());
+
+
+        Validator::setNestedAttributeAutoFormat(false);
+
+        $rule = [
+            'bank' => [
+                'label' => 'BANK',
+                'nest'  => [
+                    'name'  => [
+                        'label' => 'Custom Name',
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ]
+                ],
+            ],
+        ];
+        $validator  = new Validator(['bank' => []]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank.name' => ["The Custom Name field is required."]], $validator->errors());
+
+        $rule = [
+            'bank' => [
+                'label' => 'BANK',
+                'nest'  => [
+                    'name'  => [
+                        'label' => 'Custom :parent Name',
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ]
+                ],
+            ],
+        ];
+        $validator  = new Validator(['bank' => []]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame(['bank.name' => ["The Custom BANK Name field is required."]], $validator->errors());
     }
 }

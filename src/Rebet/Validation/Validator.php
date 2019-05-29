@@ -22,7 +22,8 @@ class Validator
     public static function defaultConfig()
     {
         return [
-            'validations' => BuiltinValidations::class,
+            'validations'                  => BuiltinValidations::class,
+            'nested_attribute_auto_format' => true,
         ];
     }
 
@@ -48,6 +49,17 @@ class Validator
     protected $errors = [];
 
     /**
+     * Set nested attribute label auto format or not.
+     *
+     * @param boolean $nested_attribute_auto_format
+     * @return void
+     */
+    public static function setNestedAttributeAutoFormat(bool $nested_attribute_auto_format) : void
+    {
+        static::setConfig(['nested_attribute_auto_format' => $nested_attribute_auto_format]);
+    }
+
+    /**
      * Create a new Validator instance.
      *
      * @param array $data
@@ -68,7 +80,6 @@ class Validator
      */
     public function validate(string $crud, $rules) : ?ValidData
     {
-        $rules = (array)$rules;
         if (!Arrays::isSequential($rules)) {
             $rules = [$rules];
         }
@@ -83,7 +94,7 @@ class Validator
             }
 
             $errors       = [];
-            $context      = new Context($crud, $this->data, $errors, $rule);
+            $context      = new Context($crud, $this->data, $errors, $rule, static::config('nested_attribute_auto_format'));
             $valid_data   = Arrays::override($valid_data, $this->_validate($context, $rule, $spot));
             $this->errors = array_merge($this->errors, $errors);
         }
@@ -141,7 +152,7 @@ class Validator
             if ($convert) {
                 $converted = Reflector::convert($data, $convert);
                 if (is_null($converted) && !is_null($data)) {
-                    $context->appendError('', ['convert' => $convert]); // @todo 要実装
+                    $context->appendError('ConvertFailed', ['convert' => $convert]);
                 }
                 $data = $converted;
             }
