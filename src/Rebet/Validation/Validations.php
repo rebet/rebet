@@ -28,7 +28,7 @@ abstract class Validations
      * Add custom validation to validations.
      *
      * @param string $name
-     * @param \Closure $validation
+     * @param \Closure $validation function(Context $c [, args1 [, args2 [, ...]]]) : bool
      * @return void
      */
     public static function register(string $name, \Closure $validation) : void

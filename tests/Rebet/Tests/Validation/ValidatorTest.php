@@ -520,7 +520,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => ["The Foo must be greater than 100."]], $validator->errors());
     }
 
-    public function test_validate_existOnError()
+    public function test_validate_exitOnError()
     {
         App::setLocale('en');
         $validator  = new Validator(['foo' => 'abc']);
@@ -766,5 +766,205 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', $rule);
         $this->assertNull($valid_data);
         $this->assertSame(['bank.name' => ["The Custom BANK Name field is required."]], $validator->errors());
+    }
+
+    public function test_validate_nests()
+    {
+        App::setLocale('en');
+        $rule = [
+            'shipping_addresses' => [
+                'label' => 'Shipping',
+                'rule'  => [
+                    ['CU', Valid::REQUIRED],
+                    ['CU', Valid::MAX_COUNT.'!', 3],
+                ],
+                'nests' => [
+                    'zip' => [
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ],
+                    'address' => [
+                        'rule'  => [
+                            ['CU', Valid::REQUIRED],
+                        ],
+                    ],
+                ]
+            ],
+        ];
+
+        $validator  = new Validator(['shipping_addresses' => [
+            ['zip' => '9990071', 'address' => null],
+            ['zip' => null, 'address' => 'Address to home'],
+        ]]);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame([
+            'shipping_addresses.0.address' => [
+                "The Shipping Address field is required."
+            ],
+            'shipping_addresses.1.zip' => [
+                "The Shipping Zip field is required."
+            ],
+        ], $validator->errors());
+    }
+
+    public function test_validate_crud()
+    {
+        App::setLocale('en');
+        $rule = [
+            'foo'     => ['rule'  => [['C' , 'Ng']]],
+            'bar'     => ['rule'  => [[ 'U', 'Ng']]],
+            'baz'     => ['rule'  => [['CU', 'Ng']]],
+            'qux'     => ['rule'  => [['C' , 'Ok:?',
+                'then' => [['C', 'Ng', '@C ok then C ng'],['U', 'Ng', '@C ok then U ng']],
+                'else' => [['C', 'Ng', '@C ok else C ng'],['U', 'Ng', '@C ok else U ng']],
+            ]]],
+            'quxx'    => ['rule'  => [['U' , 'Ok:?',
+                'then' => [['C', 'Ng', '@U ok then C ng'],['U', 'Ng', '@U ok then U ng']],
+                'else' => [['C', 'Ng', '@U ok else C ng'],['U', 'Ng', '@U ok else U ng']],
+            ]]],
+            'parent'  => [
+                'rule' => [['C', 'Ng']],
+                'nest' => [
+                    'foo' => ['rule'  => [['C' , 'Ng']]],
+                    'bar' => ['rule'  => [[ 'U', 'Ng']]],
+                    'baz' => ['rule'  => [['CU', 'Ng']]],
+                    'qux'     => ['rule'  => [['C' , 'Ok:?',
+                        'then' => [['C', 'Ng', '@C ok then C ng'],['U', 'Ng', '@C ok then U ng']],
+                        'else' => [['C', 'Ng', '@C ok else C ng'],['U', 'Ng', '@C ok else U ng']],
+                    ]]],
+                    'children' => [
+                        'rule'  => [['U', 'Ng']],
+                        'nests' => [
+                            'foo' => ['rule'  => [['C' , 'Ng']]],
+                            'bar' => ['rule'  => [[ 'U', 'Ng']]],
+                            'baz' => ['rule'  => [['CU', 'Ng']]],
+                        ]
+                    ],
+                ],
+            ],
+            'parents' => [
+                'rule'  => [['U', 'Ng']],
+                'nests' => [
+                    'foo'    => ['rule'  => [['C' , 'Ng']]],
+                    'bar'    => ['rule'  => [[ 'U', 'Ng']]],
+                    'baz'    => ['rule'  => [['CU', 'Ng']]],
+                    'quxx'   => ['rule'  => [[ 'U' , 'Ok:?',
+                        'then' => [['C', 'Ng', '@U ok then C ng'],['U', 'Ng', '@U ok then U ng']],
+                        'else' => [['C', 'Ng', '@U ok else C ng'],['U', 'Ng', '@U ok else U ng']],
+                    ]]],
+                    'child' => [
+                        'nest' => [
+                            'foo' => ['rule'  => [['C' , 'Ng']]],
+                            'bar' => ['rule'  => [[ 'U', 'Ng']]],
+                            'baz' => ['rule'  => [['CU', 'Ng']]],
+                        ],
+                    ],
+                ]
+            ],
+        ];
+        $data = [
+            'foo'    => 'foo',
+            'bar'    => 'bar',
+            'baz'    => 'baz',
+            'qux'    => 'qux',
+            'quxx'   => 'quxx',
+            'parent' => [
+                'foo'      => 'foo',
+                'bar'      => 'bar',
+                'baz'      => 'baz',
+                'qux'      => 'qux',
+                'children' => [
+                    ['foo' => 'foo', 'bar' => 'bar', 'baz' => 'baz'],
+                ],
+            ],
+            'parents' => [
+                [
+                    'foo'   => 'foo',
+                    'bar'   => 'bar',
+                    'baz'   => 'baz',
+                    'quxx'  => 'quxx',
+                    'child' => [
+                        'foo' => 'foo',
+                        'bar' => 'bar',
+                        'baz' => 'baz'
+                    ]
+                ],
+            ],
+        ];
+
+        $validator  = new Validator($data);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame([
+            'foo'                   => ["The Foo is NG."],
+            'baz'                   => ["The Baz is NG."],
+            'qux'                   => ["C ok then C ng"],
+
+            'parent'                => ["The Parent is NG."],
+            'parent.foo'            => ["The Parent Foo is NG."],
+            'parent.baz'            => ["The Parent Baz is NG."],
+            'parent.qux'            => ["C ok then C ng"],
+            'parent.children.0.foo' => ["The Parent Children Foo is NG."],
+            'parent.children.0.baz' => ["The Parent Children Baz is NG."],
+
+            'parents.0.foo'         => ["The Parents Foo is NG."],
+            'parents.0.baz'         => ["The Parents Baz is NG."],
+            'parents.0.child.foo'   => ["The Parents Child Foo is NG."],
+            'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
+        ], $validator->errors());
+
+        $validator  = new Validator($data);
+        $valid_data = $validator->validate('U', $rule);
+        $this->assertNull($valid_data);
+        $this->assertSame([
+            'bar'                   => ["The Bar is NG."],
+            'baz'                   => ["The Baz is NG."],
+            'quxx'                  => ["U ok then U ng"],
+
+            'parent.bar'            => ["The Parent Bar is NG."],
+            'parent.baz'            => ["The Parent Baz is NG."],
+            'parent.children'       => ["The Parent Children is NG."],
+            'parent.children.0.bar' => ["The Parent Children Bar is NG."],
+            'parent.children.0.baz' => ["The Parent Children Baz is NG."],
+
+            'parents'               => ["The Parents is NG."],
+            'parents.0.bar'         => ["The Parents Bar is NG."],
+            'parents.0.baz'         => ["The Parents Baz is NG."],
+            'parents.0.quxx'        => ["U ok then U ng"],
+            'parents.0.child.bar'   => ["The Parents Child Bar is NG."],
+            'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
+        ], $validator->errors());
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Invalid rules format. A 'rule/then/else' list item should be array.
+     */
+    public function test_validate_invalidFormatThen()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['type' => 1]);
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => ['C', Valid::IF, 'type', 1, 'then' => 'invalid format'],
+            ]
+        ]);
+    }
+
+    /**
+     * @expectedException Rebet\Common\Exception\LogicException
+     * @expectedExceptionMessage Invalid rules format. A 'rule/then/else' list item should be array.
+     */
+    public function test_validate_invalidFormatElse()
+    {
+        App::setLocale('en');
+        $validator  = new Validator(['type' => 1]);
+        $valid_data = $validator->validate('C', [
+            'foo' => [
+                'rule'  => ['C', Valid::IF, 'type', 2, 'else' => 'invalid format'],
+            ]
+        ]);
     }
 }

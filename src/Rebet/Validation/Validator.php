@@ -74,6 +74,8 @@ class Validator
     /**
      * Validate the data by given crud type rules.
      *
+     * @todo Need to consider whether an argument should contains $nested_attribute_auto_format.
+     *
      * @param string $crud
      * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
      * @return ValidData|null
@@ -84,17 +86,19 @@ class Validator
             $rules = [$rules];
         }
 
-        $valid_data = new ValidData();
+        $valid_data                   = new ValidData();
+        $nested_attribute_auto_format = null;
         foreach ($rules as $rule) {
             $rule = is_string($rule) ? Reflector::instantiate($rule) : $rule ;
             $spot = null;
             if ($rule instanceof Rule) {
-                $spot = $rule;
-                $rule = $rule->rules();
+                $nested_attribute_auto_format = $nested_attribute_auto_format ?? $rule->nestedAttributeAutoFormat();
+                $spot                         = $rule;
+                $rule                         = $rule->rules();
             }
 
             $errors       = [];
-            $context      = new Context($crud, $this->data, $errors, $rule, static::config('nested_attribute_auto_format'));
+            $context      = new Context($crud, $this->data, $errors, $rule, $nested_attribute_auto_format ?? static::config('nested_attribute_auto_format'));
             $valid_data   = Arrays::override($valid_data, $this->_validate($context, $rule, $spot));
             $this->errors = array_merge($this->errors, $errors);
         }
@@ -177,9 +181,6 @@ class Validator
      */
     protected function validateRules(Context $context, array $rules, ?Rule $spot_validations) : void
     {
-        if (!is_array($rules)) {
-            throw LogicException::by("Invalid rules format. A 'rule/then/else' list should be array.");
-        }
         foreach ($rules as $rule) {
             if (!is_array($rule)) {
                 throw LogicException::by("Invalid rules format. A 'rule/then/else' list item should be array.");

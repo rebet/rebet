@@ -24,7 +24,7 @@ abstract class Rule
      * Check the rule has custom validation of given name.
      *
      * @param string $name
-     * @return boolean
+     * @return bool
      */
     public function hasCustomValidation(string $name) : bool
     {
@@ -37,11 +37,22 @@ abstract class Rule
      * @param string $name
      * @param Context $context
      * @param mixed ...$args
-     * @return boolean
+     * @return bool
      */
     public function validate(string $name, Context $context, ...$args) : bool
     {
         $method = "validation{$name}";
         return $this->$method($context, ...$args);
+    }
+
+    /**
+     * Get the nested attribute auto format setting for this rule.
+     * This method always return 'null' for using configure setting, so if you need to control auto format each by rule then override the method.
+     *
+     * @return bool|null
+     */
+    public function nestedAttributeAutoFormat() : ?bool
+    {
+        return null;
     }
 }

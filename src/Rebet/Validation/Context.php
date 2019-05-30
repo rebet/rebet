@@ -69,6 +69,13 @@ class Context
     private $errors = [];
 
     /**
+     * Error key prefix of validation errors
+     *
+     * @var string
+     */
+    private $error_prefix = '';
+
+    /**
      * Validation label settings
      *
      * @var array
@@ -222,16 +229,15 @@ class Context
         $replace['attribute'] = $replace['attribute'] ?? $this->label;
         $replace['self']      = $replace['self'] ?? $this->value;
         $replace['selector']  = $selector;
-        $prefix               = is_null($this->key) ? $this->prefix : "{$this->prefix}.{$this->key}" ;
 
         $message = null;
         if (Strings::startsWith($key, '@')) {
-            $message = Strings::lcut($key, 1);
+            $message = Translator::replace(Strings::lcut($key, 1), $replace, Translator::grammar('validation', 'delimiter', ', '));
         } else {
-            $message = Translator::replace($this->message($key), $replace, Translator::grammar('validation', 'delimiter', ', ')) ?? Translator::get("validation.{$prefix}{$this->field}.{$key}", $replace, $selector) ;
+            $message = Translator::replace($this->message($key), $replace, Translator::grammar('validation', 'delimiter', ', ')) ?? Translator::get("validation.{$this->prefix}{$this->field}.{$key}", $replace, $selector) ;
         }
 
-        $this->errors[$this->field ? "{$prefix}{$this->field}" : 'global'][] = $message;
+        $this->errors[$this->field ? "{$this->error_prefix}{$this->field}" : 'global'][] = $message;
         return false;
     }
 
@@ -479,16 +485,17 @@ class Context
      */
     public function nest($key = null) : self
     {
-        $nested         = clone $this;
-        $nested->prefix = "{$this->prefix}{$this->field}.";
-        $nested->data   = !is_null($key) ? $this->data[$this->field][$key] : $this->data[$this->field] ;
-        $nested->key    = $key;
-        $nested->parent = $this;
-        $nested->filed  = null;
-        $nested->lavel  = null;
-        $nested->value  = null;
-        $nested->quiet  = false;
-        $nested->extra  = [];
+        $nested               = clone $this;
+        $nested->prefix       = "{$this->prefix}{$this->field}.";
+        $nested->data         = !is_null($key) ? $this->data[$this->field][$key] : $this->data[$this->field] ;
+        $nested->key          = $key;
+        $nested->error_prefix = "{$this->error_prefix}{$this->field}.".(!is_null($key) ? "{$key}." : "");
+        $nested->parent       = $this;
+        $nested->filed        = null;
+        $nested->lavel        = null;
+        $nested->value        = null;
+        $nested->quiet        = false;
+        $nested->extra        = [];
         return $nested;
     }
 
