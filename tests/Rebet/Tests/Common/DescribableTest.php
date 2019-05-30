@@ -62,6 +62,15 @@ class DescribableTest extends RebetTestCase
         $this->assertNull($this->dest_array['private'] ?? null);
     }
 
+    public function test_describe()
+    {
+        $dest_a = $this->src->describe(DescribableTest_MockA::class);
+        $this->assertSame('foo', $dest_a->foo);
+        $this->assertSame('bar', $dest_a->bar);
+        $this->assertSame('protected', Reflector::get($dest_a, 'protected', null, true));
+        $this->assertSame('private', Reflector::get($dest_a, 'private', null, true));
+    }
+
     public function test_inject_optionIncludes()
     {
         $this->src->inject($this->dest_a, ['includes' => ['bar']]);

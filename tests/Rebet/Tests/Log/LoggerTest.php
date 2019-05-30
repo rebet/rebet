@@ -98,4 +98,13 @@ class LoggerTest extends RebetTestCase
         $this->assertTrue($logger->driver()->hasErrorRecords());
         $this->assertInstanceOf(\Exception::class, $logger->driver()->getRecords()[0]['context']['exception'] ?? null);
     }
+
+    public function test_memory()
+    {
+        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $this->assertFalse($logger->driver()->hasDebugRecords());
+        $logger->memory('message');
+        $this->assertTrue($logger->driver()->hasDebugRecords());
+        $this->assertContains('Peak Memory', $logger->driver()->formatted());
+    }
 }

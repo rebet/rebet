@@ -30,6 +30,7 @@ class NamespacesTest extends RebetTestCase
 
     public function test_resolve()
     {
+        $this->assertSame(null, Namespaces::resolve(null));
         $this->assertSame('HelloWorld', Namespaces::resolve('HelloWorld'));
         $this->assertSame('App\\Rebet\\HelloWorld', Namespaces::resolve('App\\Rebet\\HelloWorld'));
         $this->assertSame('App\\Rebet\\HelloWorld', Namespaces::resolve('\\App\\Rebet\\HelloWorld'));

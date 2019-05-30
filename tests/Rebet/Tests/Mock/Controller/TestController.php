@@ -19,6 +19,13 @@ use Rebet\Tests\Mock\Enum\Gender;
  */
 class TestController extends Controller
 {
+    public static $latest = null;
+
+    public function __construct()
+    {
+        static::$latest = $this;
+    }
+
     public $before_count    = 0;
     public $after_count     = 0;
     public $terminate_count = 0;

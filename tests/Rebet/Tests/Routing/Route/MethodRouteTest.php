@@ -3,6 +3,7 @@ namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Route\MethodRoute;
+use Rebet\Tests\Mock\Controller\TestController;
 use Rebet\Tests\RebetTestCase;
 
 class MethodRouteTest extends RebetTestCase
@@ -51,5 +52,16 @@ class MethodRouteTest extends RebetTestCase
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Controller: privateCall', $response->getContent());
+    }
+
+    public function test_terminate()
+    {
+        $route   = new MethodRoute(['GET'], '/foo', 'TestController::index');
+        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $this->assertTrue($route->match($request));
+        $response = $route->handle($request);
+        $this->assertSame(0, TestController::$latest->terminate_count);
+        $route->terminate($request, $response);
+        $this->assertSame(1, TestController::$latest->terminate_count);
     }
 }
