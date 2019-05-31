@@ -25,6 +25,19 @@ class EnvironmentTest extends RebetTestCase
         $this->compiler = new Compiler($this->env);
     }
 
+    public function test_raw()
+    {
+        $this->env->raw('hello', "echo('Hello');");
+        $source   = '{% hello %}';
+        $expect   = <<<EOS
+echo('Hello');
+EOS
+        ;
+        $stream   = $this->env->tokenize(new Source($source, ''));
+        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
+        $this->assertSame($expect, $src);
+    }
+
     public function test_code()
     {
         $this->env->code('hello', null, [], 'echo(', function ($name = 'everyone') { return "Hello {$anme}."; }, ');');

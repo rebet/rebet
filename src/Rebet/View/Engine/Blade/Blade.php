@@ -61,9 +61,6 @@ class Blade implements Engine
             $app = Container::setInstance(new Container()) ;
         } else {
             $app = Container::getInstance() ?? Container::setInstance(new Container()) ;
-            if ($app->has('view')) {
-                return;
-            }
         }
 
         $app->bind('files', function () {

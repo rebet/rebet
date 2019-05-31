@@ -8,6 +8,11 @@ use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
+use Rebet\View\View;
+use Rebet\View\Engine\Blade\Blade;
+use Rebet\Foundation\App;
+use Rebet\Config\Config;
+use Rebet\Stream\Stream;
 
 class ReflectorTest extends RebetTestCase
 {
@@ -156,6 +161,10 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('ab', Reflector::get($this->transparent, 'a.b'));
         $this->assertSame('ac', Reflector::get($this->transparent, 'a.c'));
         $this->assertSame('b', Reflector::get($this->transparent, 'b'));
+
+        $name = Stream::of('Bob');
+        $view = (object)['data' => ['name' => $name]];
+        $this->assertSame($name, Reflector::get($view, 'data.name', null, true));
     }
 
     public function test_has()

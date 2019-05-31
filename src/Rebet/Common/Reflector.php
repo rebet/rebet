@@ -2,6 +2,7 @@
 namespace Rebet\Common;
 
 use Rebet\Common\Exception\LogicException;
+use Rebet\Stream\Stream;
 
 /**
  * Reflector Class
@@ -100,7 +101,8 @@ class Reflector
             $object === null ||
             \is_scalar($object) ||
             \is_resource($object) ||
-            (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess))
+            (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess)) ||
+            $object instanceof Stream
         ) {
             return $object;
         }
@@ -615,7 +617,7 @@ class Reflector
             if (empty($values)) {
                 break;
             }
-            if($parameter->isVariadic()) {
+            if ($parameter->isVariadic()) {
                 $args[$parameter->name] = $values;
                 break;
             }

@@ -52,20 +52,20 @@ class BladeCompiler extends LaravelBladeCompiler
         $this->directive($name, function ($expression) use ($name, $open, $close, $binds) {
             $expression = empty($expression) ? '' : ", {$expression}" ;
             return $binds
-                ? "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}', {$binds}{$expression}) {$close} ?>"
-                : "<?php {$open} \Illuminate\Support\Facades\Blade::call('{$name}'{$expression}) {$close} ?>"
+                ? "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', {$binds}{$expression}) {$close} ?>"
+                : "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}'{$expression}) {$close} ?>"
                 ;
         });
     }
 
     /**
-     * Call the codes closuer.
+     * Execute the codes closuer.
      *
      * @param string $name
      * @param array $parameters
      * @return bool
      */
-    public function call($name, ...$parameters)
+    public function execute($name, ...$parameters)
     {
         return call_user_func($this->codes[$name], ...$parameters);
     }
@@ -128,15 +128,11 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param callable|string $thrower function(){ return/throw new XxxxException(); } or a error message for LogicException
      * @return void
      */
-    public function disable(string $name, $thrower) : void
+    public function disable(string $name, $thrower = null) : void
     {
-        try {
-            $thrown = is_string($thrower) ? LogicException::by($thrower) : $thrower() ;
-        } catch (\Exception $e) {
-            $thrown = $e;
-        }
-        $this->directive($name, function ($expression) use ($thrown) {
-            throw $thrown;
+        $thrower = $thrower ?? "The '{$name}' directive is not supported in Rebet." ;
+        $this->directive($name, function ($expression) use ($thrower) {
+            throw is_string($thrower) ? LogicException::by($thrower) : $thrower() ;
         });
     }
 }

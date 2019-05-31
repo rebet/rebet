@@ -4,12 +4,13 @@ namespace Rebet\Tests\View\Engine\Twig;
 use Rebet\Foundation\App;
 
 use Rebet\Tests\RebetTestCase;
+use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Engine\Twig\Twig;
 
 class TwigTest extends RebetTestCase
 {
     /**
-     * @var Rebet\View\Engine\Twig\Twig
+     * @var Twig
      */
     private $twig;
 
@@ -43,6 +44,20 @@ Hello, Samantha.
 EOS
             ,
             $this->twig->render('welcome', ['name' => 'Samantha'])
+        );
+    }
+
+    public function test_customize()
+    {
+        Twig::customize(function (Environment $env) {
+            $env->raw('hello', "echo('Hello');");
+        });
+        $this->assertSame(
+            <<<EOS
+Hello
+EOS
+            ,
+            $this->twig->render('hello')
         );
     }
 }

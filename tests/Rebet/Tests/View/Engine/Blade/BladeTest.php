@@ -1,17 +1,19 @@
 <?php
 namespace Rebet\Tests\View\Engine\Blade;
 
-use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
+use Illuminate\Container\Container;
 
+use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
+use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 use Rebet\View\EofLineFeed;
 
 class BladeTest extends RebetTestCase
 {
     /**
-     * @var Rebet\View\Engine\Blade\Blade
+     * @var Blade
      */
     private $blade;
 
@@ -26,6 +28,21 @@ class BladeTest extends RebetTestCase
             'view_path'  => App::path('/resources/views/blade'),
             'cache_path' => 'vfs://root/cache',
         ], true);
+    }
+
+    public function test_clear()
+    {
+        $this->assertNotNull(Container::getInstance()['view'] ?? null);
+        $this->blade->clear();
+        $this->assertNull(Container::getInstance()['view'] ?? null);
+    }
+
+    public function test_provide()
+    {
+        $old_compiler = $this->blade->compiler();
+        $this->blade->provide([App::path('/resources/views/blade')], 'vfs://root/cache', true);
+        $new_compiler = $this->blade->compiler();
+        $this->assertNotSame($old_compiler, $new_compiler);
     }
 
     public function test_compiler()
@@ -104,5 +121,13 @@ EOS
     public function test_render_builtin(string $expect, string $name, array $args = [])
     {
         $this->assertSame($expect, EofLineFeed::TRIM()->process($this->blade->render($name, $args)));
+    }
+
+    public function test_customize()
+    {
+        Blade::customize(function (BladeCompiler $compiler) {
+            $compiler->code('hello', 'echo(', function () { return 'Hello'; }, ');');
+        });
+        $this->assertSame('Hello', $this->blade->compiler()->execute('hello'));
     }
 }
