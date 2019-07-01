@@ -44,7 +44,7 @@ abstract class RebetTestCase extends TestCase
 {
     private static $start_at;
 
-    public function setUp()
+    protected function setUp()
     {
         System::initMock();
         Config::clear();

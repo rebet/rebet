@@ -2,25 +2,29 @@
 namespace Rebet\Tests\Mock;
 
 use Rebet\Common\Annotation\Nest;
-use Rebet\Common\Popuratable;
+use Rebet\Database\Annotation\Unmap;
+use Rebet\Database\Entity;
 
-class User
+class User extends Entity
 {
-    use Popuratable;
-
     public $user_id;
+    public $name;
+    public $gender;
+    public $birthday;
     public $email;
     public $role;
-    public $name;
-    public $birthday;
+    public $created_at;
+    public $updated_at;
 
     /**
      * @Nest(Bank::class)
+     * @Unmap
      */
     public $bank = null;
 
     /**
      * @Nest(Address::class)
+     * @Unmap
      */
     public $shipping_addresses = [];
 

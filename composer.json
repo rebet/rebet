@@ -27,6 +27,7 @@
 	"require-dev": {
         "illuminate/view": "^5.7",
         "mikey179/vfsstream": "^1.6",
+        "phpunit/dbunit": "^4.0",
         "phpunit/phpunit": "^7.3.0",
         "twig/twig": "^2.5"
     },

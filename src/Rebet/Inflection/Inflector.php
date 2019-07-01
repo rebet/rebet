@@ -307,7 +307,7 @@ class Inflector
     }
 
     /**
-     * Converts a word into the format for a Rebet singular promary key name.
+     * Converts a word into the format for a Rebet singular primary key name.
      * Converts 'ClassName' to 'class_name_id' and 'table_names' to 'table_name_id'.
      *
      * @param string $word

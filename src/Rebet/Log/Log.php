@@ -23,9 +23,9 @@ use Rebet\Log\Driver\StackDriver;
  *         'channels' => [
  *              'channel_name' => [
  *                  'driver'     => Driver::class, // PSR-3 LoggerInterface implementation class
- *                  'arg_name_1' => value_1, // Constructor argument name and value for 'driver' class.
- *                  (snip)                   // If the argument has default value (or variadic), then the parameter can be optional.
- *                  'arg_name_n' => value_n, // Also, you don't have to worry about the order of parameter definition.
+ *                  'arg_name_1' => value_1,       // Constructor argument name and value for 'driver' class.
+ *                  (snip)                         // If the argument has default value (or variadic), then the parameter can be optional.
+ *                  'arg_name_n' => value_n,       // Also, you don't have to worry about the order of parameter definition.
  *              ],
  *         ]
  *     ]

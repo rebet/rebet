@@ -41,6 +41,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
+                    'isNull'   => function ($value) { return $value === null; },
                     'nvl'      => function ($value, $default) { return $value ?? $default; },
                     'default'  => function ($value, $default) { return $value ?? $default; },
                     'escape'   => function (string $value, string $type = 'html') {
