@@ -119,7 +119,7 @@ EOS;
             $this->markTestSkipped("There is no MySQL database for test environment : {$e}");
             return;
         }
-        $db->execute("DROP TABLE native_types;");
+        $db->execute("DROP TABLE IF EXISTS native_types;");
         $dml = <<<EOS
             CREATE TABLE IF NOT EXISTS native_types (
                 type_tinyint            TINYINT,
