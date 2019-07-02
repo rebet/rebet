@@ -6,6 +6,9 @@ services:
   - mysql
   - postgresql
 
+addons:
+  postgresql: "11"
+
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
