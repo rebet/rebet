@@ -361,7 +361,7 @@ class Database
      */
     public function lastInsertId(?string $name = null) : string
     {
-        // @todo set default seq name when the db is PGSQL
+        // @todo set default seq name when the db is PGSQL (tablename_colname_seq)
         return $this->driver->lastInsertId($name);
     }
 

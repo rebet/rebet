@@ -23,16 +23,30 @@ class BuiltinConverterTest extends RebetDatabaseTestCase
                         'driver'   => self::$pdo,
                     ],
 
-                    // CREATE DATABASE rebet_unittest DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
+                    // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
                     'mysql' => [
                         'driver'   => PdoDriver::class,
-                        'dsn'      => 'mysql:host=localhost;dbname=rebet_unittest;charset=utf8mb4',
+                        'dsn'      => 'mysql:host=localhost;dbname=rebet_test;charset=utf8mb4',
                         'user'     => 'root',
                         'password' => '',
                         'options'  => [
                             \PDO::ATTR_AUTOCOMMIT => false,
                         ],
                         // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; }
+                    ],
+
+                    // CREATE DATABASE rebet_test WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
+                    // pg_hba.conf:
+                    //   host    all     postgres             127.0.0.1/32            trust
+                    //   host    all     postgres             ::1/128                 trust
+                    'pgsql' => [
+                        'driver'   => PdoDriver::class,
+                        'dsn'      => "pgsql:host=localhost;dbname=rebet_test;options='--client_encoding=UTF8'",
+                        'user'     => 'postgres',
+                        'password' => '',
+                        'options'  => [],
+                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; }
+                        'emulated_sql_log' => false,
                     ],
                 ]
             ]
@@ -48,66 +62,67 @@ class BuiltinConverterTest extends RebetDatabaseTestCase
     public function test_toPhpType_sqlite()
     {
         try {
-            $dml = <<<EOS
-                CREATE TABLE IF NOT EXISTS native_types (
-                    type_integer INTEGER,
-                    type_text TEXT,
-                    type_none NONE,
-                    type_real REAL,
-                    type_numeric NUMERIC,
-                    type_tinyint TINYINT(3),   -- INTEGER
-                    type_varchar VARCHAR(10),  -- TEXT
-                    type_blob BLOB,            -- NONE
-                    type_float FLOAT,          -- REAL
-                    type_decimal DECIMAL(5,2), -- NUMERIC
-                    type_boolean BOOLEAN,      -- NUMERIC
-                    type_date DATE,            -- NUMERIC
-                    type_datetime DATETIME,    -- NUMERIC
-                    type_null                  -- NULL
-                );
-EOS;
             $db = Dao::db('sqlite');
-            $db->execute($dml);
-            $db->execute("INSERT INTO native_types VALUES (:values)", [ 'values' => [
-                1,
-                'a',
-                'noen',
-                12.34,
-                '1.2',
-                1,
-                'varchar',
-                'blob',
-                123.45,
-                '1e-2',
-                true,
-                '2010-01-02',
-                '2010-01-02 10:20:30',
-                null
-            ]]);
-            $stmt = $db->query('SELECT * FROM native_types');
-            $meta = $stmt->meta();
-            $rs   = $stmt->first();
-            foreach ([
-                'type_integer'  => ['integer', 'int'   ],
-                'type_text'     => ['string' , 'string'],
-                'type_none'     => ['string' , 'string'],
-                'type_real'     => ['double' , 'float' ],
-                'type_numeric'  => ['double' , 'float' ],
-                'type_tinyint'  => ['integer', 'int'   ],
-                'type_varchar'  => ['string' , 'string'],
-                'type_blob'     => ['string' , 'string'],
-                'type_float'    => ['double' , 'float' ],
-                'type_decimal'  => ['double' , 'float' ],
-                'type_boolean'  => ['integer', 'int'   ],
-                'type_date'     => ['string' , 'string'],
-                'type_datetime' => ['string' , 'string'],
-                'type_null'     => ['null'   , null    ]
-            ] as $col => [$native_type, $php_type]) {
-                $this->assertSame($native_type, $meta[$col]['native_type'] ?? null, "Failed {$col} => {$native_type}");
-                $this->assertSame($php_type, Reflector::getType($rs->$col));
-            }
         } catch (\Exception $e) {
             $this->markTestSkipped("There is no SQLite database for test environment : {$e}");
+            return;
+        }
+        $dml = <<<EOS
+            CREATE TABLE IF NOT EXISTS native_types (
+                type_integer INTEGER,
+                type_text TEXT,
+                type_none NONE,
+                type_real REAL,
+                type_numeric NUMERIC,
+                type_tinyint TINYINT(3),   -- INTEGER
+                type_varchar VARCHAR(10),  -- TEXT
+                type_blob BLOB,            -- NONE
+                type_float FLOAT,          -- REAL
+                type_decimal DECIMAL(5,2), -- NUMERIC
+                type_boolean BOOLEAN,      -- NUMERIC
+                type_date DATE,            -- NUMERIC
+                type_datetime DATETIME,    -- NUMERIC
+                type_null                  -- NULL
+            );
+EOS;
+        $db->execute($dml);
+        $db->execute("INSERT INTO native_types VALUES (:values)", [ 'values' => [
+            1,
+            'a',
+            'noen',
+            12.34,
+            '1.2',
+            1,
+            'varchar',
+            'blob',
+            123.45,
+            '1e-2',
+            true,
+            '2010-01-02',
+            '2010-01-02 10:20:30',
+            null
+        ]]);
+        $stmt = $db->query('SELECT * FROM native_types');
+        $meta = $stmt->meta();
+        $rs   = $stmt->first();
+        foreach ([
+            'type_integer'  => ['integer', 'int'   ],
+            'type_text'     => ['string' , 'string'],
+            'type_none'     => ['string' , 'string'],
+            'type_real'     => ['double' , 'float' ],
+            'type_numeric'  => ['double' , 'float' ],
+            'type_tinyint'  => ['integer', 'int'   ],
+            'type_varchar'  => ['string' , 'string'],
+            'type_blob'     => ['string' , 'string'],
+            'type_float'    => ['double' , 'float' ],
+            'type_decimal'  => ['double' , 'float' ],
+            'type_boolean'  => ['integer', 'int'   ],
+            'type_date'     => ['string' , 'string'],
+            'type_datetime' => ['string' , 'string'],
+            'type_null'     => ['null'   , null    ]
+        ] as $col => [$native_type, $php_type]) {
+            $this->assertSame($native_type, $meta[$col]['native_type'] ?? null, "Failed {$col} => {$native_type}");
+            $this->assertSame($php_type, Reflector::getType($rs->$col));
         }
     }
 
@@ -271,6 +286,186 @@ EOS;
             'type_geometrycollection' => ['GEOMETRY',   'string'],
             'type_geometry_null'      => ['GEOMETRY',    null],
             'type_text_null'          => ['BLOB',        null],
+        ] as $col => [$native_type, $php_type]) {
+            $meta_native_type = $meta[$col]['native_type'] ?? null;
+            $this->assertSame($native_type, $meta_native_type, "Failed {$col} => {$native_type} actual {$meta_native_type}");
+            $this->assertSame($php_type, Reflector::getType($rs->$col), "Failed {$col} => {$native_type} actual {$meta_native_type} {$rs->$col}");
+        }
+    }
+
+    public function test_toPhpType_pgsql()
+    {
+        try {
+            $db = Dao::db('pgsql');
+        } catch (\Exception $e) {
+            $this->markTestSkipped("There is no PostgreSQL database for test environment : {$e}");
+            return;
+        }
+        $db->execute("DROP TABLE IF EXISTS native_types;");
+        $dml = <<<EOS
+            CREATE TABLE IF NOT EXISTS native_types (
+                type_smallint          SMALLINT,
+                type_integer           INTEGER,
+                type_bigint            BIGINT,
+
+                type_real              REAL,
+                type_double_precision  DOUBLE PRECISION,
+
+                type_numeric           NUMERIC(5, 2),
+
+                type_money             MONEY,
+
+                type_smallserial       SMALLSERIAL,
+                type_serial            SERIAL,
+                type_bigserial         BIGSERIAL,
+
+                type_bit               BIT(3),
+                type_bit_over_64       BIT(65),
+                type_bit_varying       BIT VARYING (3),
+
+                type_boolean           BOOLEAN,
+
+                type_uuid              UUID,
+
+                type_character         CHARACTER(20),
+                type_character_varying CHARACTER VARYING (20),
+                type_text              TEXT,
+
+                type_bytea             BYTEA,
+
+                type_cidr              CIDR,
+                type_inet              INET,
+                type_macaddr           MACADDR,
+
+                type_date              DATE,
+                type_timestamp         TIMESTAMP,
+                type_timestamp_with_tz TIMESTAMP WITH TIME ZONE,
+                type_time              TIME,
+                type_time_with_tz      TIME WITH TIME ZONE,
+
+                type_interval          INTERVAL,
+                type_interval_hour     INTERVAL HOUR,
+
+                type_json              JSON,
+                type_jsonb             JSONB,
+                type_xml               XML,
+
+                type_box               BOX,
+                type_circle            CIRCLE,
+                type_line              LINE,
+                type_lseg              LSEG,
+                type_path_close        PATH,
+                type_path_open         PATH,
+                type_point             POINT,
+                type_polygon           POLYGON,
+                type_pg_lsn            PG_LSN,
+
+                type_tsquery           TSQUERY,
+                type_tsvector          TSVECTOR,
+                type_txid_snapshot     TXID_SNAPSHOT,
+
+                type_text_null         TEXT
+            );
+EOS;
+        $db->execute($dml);
+        $db->begin();
+        $db->execute("INSERT INTO native_types VALUES (:values)", ['values' => [
+            1,                                                                                  // type_smallint
+            1,                                                                                  // type_integer
+            1,                                                                                  // type_bigint
+            123.45,                                                                             // type_real
+            123.45,                                                                             // type_double_precision
+            123.45,                                                                             // type_numeric
+            123.45,                                                                             // type_money
+            ['nextval(?)', 'native_types_type_smallserial_seq'],                                // type_smallserial
+            ['nextval(?)', 'native_types_type_serial_seq'],                                     // type_serial
+            ['nextval(?)', 'native_types_type_bigserial_seq'],                                  // type_bigserial
+            '111',                                                                              // type_bit
+            '11111111111111111111111111111111111111111111111111111111111111111',                // type_bit_over_64
+            '111',                                                                              // type_bit_varying
+            true,                                                                               // type_boolean
+            '{a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11}',                                           // type_uuid
+            'abc',                                                                              // type_character
+            'abc',                                                                              // type_character_varying
+            'abc',                                                                              // type_text
+            'abc',                                                                              // type_bytea
+            '192.168.1.0/24',                                                                   // type_cidr
+            '192.168.1.0/24',                                                                   // type_inet
+            '08:00:2b:01:02:03',                                                                // type_macaddr
+            '2010-01-02',                                                                       // type_date
+            '2010-01-02 10:20:30',                                                              // type_timestamp
+            '2010-01-02 10:20:30 JST',                                                          // type_timestamp_with_tz
+            '10:20:30',                                                                         // type_time
+            '10:20:30 JST',                                                                     // type_time_with_tz
+            '1 day',                                                                            // type_interval
+            '1 hour',                                                                           // type_interval_hour
+            '{"name":"John", "tags":["PHP","Rebet"]}',                                          // type_json
+            '{"name":"John", "tags":["PHP","Rebet"]}',                                          // type_jsonb
+            ['XMLPARSE(CONTENT ?)', '<book><title>Manual</title><author>John</author></book>'], // type_xml
+            '((0,0),(1,1))',                                                                    // type_box
+            '<(0,0),1>',                                                                        // type_circle
+            '((0,0),(1,1))',                                                                    // type_line
+            '((0,0),(1,1))',                                                                    // type_lseg
+            '((0,0),(0,1),(1,1),(1,0),(0,0))',                                                  // type_path_close
+            '[(0,0),(0,1),(1,1),(1,0)]',                                                        // type_path_open
+            '(0,1)',                                                                            // type_point
+            '((0,0),(0,1),(1,1),(1,0),(0,0))',                                                  // type_polygon
+            '16/B374D848',                                                                      // type_pg_lsn
+            'fat & rat',                                                                        // type_tsquery
+            'a fat cat sat on a mat and ate a fat rat',                                         // type_tsvector
+            ['txid_current_snapshot()'],                                                        // type_txid_snapshot
+            null                                                                                // type_text_null
+        ]]);
+        $db->commit();
+        $stmt = $db->query('SELECT * FROM native_types');
+        $meta = $stmt->meta();
+        $rs   = $stmt->first();
+        foreach ([
+            'type_smallint'          => ['int2'         , 'int'],
+            'type_integer'           => ['int4'         , 'int'],
+            'type_bigint'            => ['int8'         , 'int'],
+            'type_real'              => ['float4'       , 'float'],
+            'type_double_precision'  => ['float8'       , 'float'],
+            'type_numeric'           => ['numeric'      , Decimal::class],
+            'type_money'             => ['money'        , 'string'],
+            'type_smallserial'       => ['int2'         , 'int'],
+            'type_serial'            => ['int4'         , 'int'],
+            'type_bigserial'         => ['int8'         , 'int'],
+            'type_bit'               => ['bit'          , 'int'],
+            'type_bit_over_64'       => ['bit'          , 'string'],
+            'type_bit_varying'       => ['varbit'       , 'int'],
+            'type_boolean'           => ['bool'         , 'bool'],
+            'type_uuid'              => ['uuid'         , 'string'],
+            'type_character'         => ['bpchar'       , 'string'],
+            'type_character_varying' => ['varchar'      , 'string'],
+            'type_text'              => ['text'         , 'string'],
+            'type_bytea'             => ['bytea'        , 'resource'],
+            'type_cidr'              => ['cidr'         , 'string'],
+            'type_inet'              => ['inet'         , 'string'],
+            'type_macaddr'           => ['macaddr'      , 'string'],
+            'type_date'              => ['date'         , Date::class],
+            'type_timestamp'         => ['timestamp'    , DateTime::class],
+            'type_timestamp_with_tz' => ['timestamptz'  , DateTime::class],
+            'type_time'              => ['time'         , 'string'],
+            'type_time_with_tz'      => ['timetz'       , 'string'],
+            'type_interval'          => ['interval'     , 'string'],
+            'type_interval_hour'     => ['interval'     , 'string'],
+            'type_json'              => ['json'         , 'array'],
+            'type_jsonb'             => ['jsonb'        , 'array'],
+            'type_xml'               => ['xml'          , \SimpleXMLElement::class],
+            'type_box'               => ['box'          , 'string'],
+            'type_circle'            => ['circle'       , 'string'],
+            'type_line'              => ['line'         , 'string'],
+            'type_lseg'              => ['lseg'         , 'string'],
+            'type_path_open'         => ['path'         , 'string'],
+            'type_path_close'        => ['path'         , 'string'],
+            'type_point'             => ['point'        , 'string'],
+            'type_polygon'           => ['polygon'      , 'string'],
+            'type_pg_lsn'            => ['pg_lsn'       , 'string'],
+            'type_tsquery'           => ['tsquery'      , 'string'],
+            'type_tsvector'          => ['tsvector'     , 'string'],
+            'type_txid_snapshot'     => ['txid_snapshot', 'string'],
+            'type_text_null'         => ['text'         , null],
         ] as $col => [$native_type, $php_type]) {
             $meta_native_type = $meta[$col]['native_type'] ?? null;
             $this->assertSame($native_type, $meta_native_type, "Failed {$col} => {$native_type} actual {$meta_native_type}");

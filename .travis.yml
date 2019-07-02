@@ -2,10 +2,15 @@ language: php
 php:
   - 7.1
 
+services:
+  - mysql
+  - postgresql
+
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
-  - mysql -uroot -e "CREATE DATABASE rebet_unittest DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
+  - mysql -uroot -e "CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
+  - psql -c 'CREATE DATABASE rebet_test;' -U postgres
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml

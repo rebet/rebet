@@ -66,7 +66,9 @@ class BuiltinConverter implements Converter
             case 'var_string':       // mysql
             case 'text':             // pgsql, dblib
             case 'varchar':          // pgsql, dblib
+            case 'bpchar':           // pgsql
             case 'uuid':             // pgsql
+            case 'pg_lsn':           // pgsql
             case 'nvarchar':         // dblib
             case 'char':             // dblib
             case 'ntext':            // dblib
@@ -84,7 +86,6 @@ class BuiltinConverter implements Converter
             case 'int4':             // pgsql
             case 'int8':             // pgsql
             case 'varbit':           // pgsql
-            case 'pg_lsn':           // pgsql
             case 'uniqueidentifier': // dblib
             case 'binary':           // dblib
             case 'tinyint':          // dblib
@@ -125,29 +126,31 @@ class BuiltinConverter implements Converter
             case 'datetime':         // mysql, dblib
             case 'datetime2':        // dblib
             case 'smalldatetime':    // dblib
-            case 'timestamptz':      // pgsql
                 return $value === '0000-00-00 00:00:00' ? null : DateTime::createFromFormat('Y-m-d H:i:s', $value) ;
 
-            case 'set':              // mysql (It not works currently because of mysql PDO return 'string' for SET column)
-                return explode(',', $value);
+            case 'timestamptz':      // pgsql
+                return DateTime::createFromFormat('Y-m-d H:i:sT', $value) ;
 
-            case 'enum':             // mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
-                return (string)$value;
+            // case 'set':              // mysql (It not works currently because of mysql PDO return 'string' for SET column)
+            //     return explode(',', $value);
+
+            // case 'enum':             // mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
+            //     return (string)$value;
 
             case 'xml':              // pgsql, dblib
                 return new \SimpleXMLElement($value);
 
             case 'json':             // pgsql
-                return json_decode($value);
-
             case 'jsonb':            // pgsql
-                return $value;
+                return json_decode($value, true);
 
             case 'time':             // mysql, pgsql, dblib
             case 'timetz':           // pgsql
             case 'datetimeoffset':   // dblib
             case 'interval':         // pgsql
             case 'tinterval':        // pgsql
+                // @todo Implements Time and Interval class and incorporate
+                return (string)$value;
 
             case 'geometry':         // mysql, dblib
             case 'box':              // pgsql
@@ -157,24 +160,19 @@ class BuiltinConverter implements Converter
             case 'path':             // pgsql
             case 'point':            // pgsql
             case 'polygon':          // pgsql
+                // @todo Select and incorporate geometry library
+                return (string)$value;
 
             case 'cidr':             // pgsql (IPv4 or IPv6)
             case 'inet':             // pgsql (Host address of IPv4 or IPv6)
             case 'macaddr':          // pgsql
             case 'macaddr8':         // pgsql
+                return (string)$value;
 
             case 'money':            // dblib, pgsql
             case 'smallmoney':       // dblib
-
-            case 'image':            // dblib
-
-            case 'sql_variant':      // dblib
-
-            case 'tsquery':          // pgsql
-            case 'tsvector':         // pgsql
-            case 'gtsvector':        // pgsql
-
-            case 'txid_snapshot':    // pgsql
+                // @todo Should we remove the currency unit and return a Decimal class, or should we implement a Money class that extended Decimal
+                return (string)$value;
 
             case 'bytea':            // pgsql
             case 'tiny_blob':        // mysql
@@ -182,6 +180,18 @@ class BuiltinConverter implements Converter
             case 'long_blob':        // mysql
             case 'blob':             // mysql, sqlite
             case 'varbinary':        // dblib
+            case 'image':            // dblib
+                return $value;
+
+            case 'tsquery':          // pgsql
+            case 'tsvector':         // pgsql
+            case 'gtsvector':        // pgsql
+                return (string)$value;
+
+            case 'txid_snapshot':    // pgsql
+                return (string)$value;
+
+            case 'sql_variant':      // dblib
             case 'unknown':          // ALL (dblib)
                 return $value;
         }

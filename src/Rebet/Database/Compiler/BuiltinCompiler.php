@@ -57,10 +57,14 @@ class BuiltinCompiler implements Compiler
             if (is_array($v)) {
                 [$function, $v] = $v;
             }
-            $unfold_key          = "{$key}__{$index}";
-            $params[$unfold_key] = $db->convertToPdo($v);
-            $unfold_keys[]       = str_replace('?', $unfold_key, $function);
-            $index++;
+            if (Strings::contains($function, '?')) {
+                $unfold_key          = "{$key}__{$index}";
+                $params[$unfold_key] = $db->convertToPdo($v);
+                $unfold_keys[]       = str_replace('?', $unfold_key, $function);
+                $index++;
+            } else {
+                $unfold_keys[] = $function;
+            }
         }
         return [join(', ', $unfold_keys), $params];
     }
