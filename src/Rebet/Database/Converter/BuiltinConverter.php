@@ -27,15 +27,16 @@ class BuiltinConverter implements Converter
             $value = $value->value;
         }
 
+        $driver_name = $db->driverName();
         switch (true) {
             case $value instanceof PdoParameter:       return $value;
             case $value === null:                      return new PdoParameter(null, \PDO::PARAM_NULL);
-            case is_bool($value):                      return $db->driverName() === 'mysql' ? new PdoParameter($value ? 1 : 0, \PDO::PARAM_INT) : new PdoParameter($value, \PDO::PARAM_BOOL);
+            case is_bool($value):                      return $driver_name === 'mysql' ? new PdoParameter($value ? 1 : 0, \PDO::PARAM_INT) : new PdoParameter($value, \PDO::PARAM_BOOL);
             case is_int($value):                       return new PdoParameter($value, \PDO::PARAM_INT);
             case is_float($value):                     return new PdoParameter($value, \PDO::PARAM_STR);
             case is_resource($value):                  return new PdoParameter($value, \PDO::PARAM_LOB);
             case $value instanceof Date:               return new PdoParameter($value->format("Y-m-d"), \PDO::PARAM_STR);
-            case $value instanceof \DateTimeInterface: return new PdoParameter($value->format("Y-m-d H:i:s"), \PDO::PARAM_STR);
+            case $value instanceof \DateTimeInterface: return new PdoParameter($value->format($driver_name === 'pgsql' ? "Y-m-d H:i:sT" : "Y-m-d H:i:s"), \PDO::PARAM_STR);
             case $value instanceof Decimal:            return new PdoParameter($value->normalize()->format(true, '.', ''), \PDO::PARAM_STR);
         }
 

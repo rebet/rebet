@@ -394,9 +394,9 @@ EOS;
             '08:00:2b:01:02:03',                                                                // type_macaddr
             '2010-01-02',                                                                       // type_date
             '2010-01-02 10:20:30',                                                              // type_timestamp
-            '2010-01-02 10:20:30 JST',                                                          // type_timestamp_with_tz
+            '2010-01-02 10:20:30+09',                                                           // type_timestamp_with_tz
             '10:20:30',                                                                         // type_time
-            '10:20:30 JST',                                                                     // type_time_with_tz
+            '10:20:30+09',                                                                      // type_time_with_tz
             '1 day',                                                                            // type_interval
             '1 hour',                                                                           // type_interval_hour
             '{"name":"John", "tags":["PHP","Rebet"]}',                                          // type_json

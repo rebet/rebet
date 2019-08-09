@@ -31,6 +31,16 @@ trait Arrayable
     }
 
     /**
+     * It checks that items not exists.
+     *
+     * @return boolean
+     */
+    public function empty() : bool
+    {
+        return empty($this->container());
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function count()

@@ -101,9 +101,9 @@ class Statement implements \IteratorAggregate
      * Get all result set data as given class object list.
      *
      * @param string $class (default: 'stdClass')
-     * @return array|object[]
+     * @return ResultSet
      */
-    public function all(string $class = 'stdClass') : array
+    public function all(string $class = 'stdClass') : ResultSet
     {
         $rs   = [];
         $meta = $this->meta();
@@ -120,7 +120,7 @@ class Statement implements \IteratorAggregate
             }
             $rs[] = $dto;
         }
-        return $rs;
+        return new ResultSet($rs);
     }
 
     /**
@@ -154,9 +154,9 @@ class Statement implements \IteratorAggregate
      *
      * @param string $column
      * @param string|null $type name of convert to type
-     * @return array
+     * @return ResultSet
      */
-    public function allOf(string $column, ?string $type = null) : array
+    public function allOf(string $column, ?string $type = null) : ResultSet
     {
         $rs   = [];
         $meta = $this->meta();
@@ -165,7 +165,7 @@ class Statement implements \IteratorAggregate
             $rs[] = $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
 
-        return $rs;
+        return new ResultSet($rs);
     }
 
     /**

@@ -418,9 +418,9 @@ class Database
      * @param string $sql
      * @param array $params (default: [])
      * @param string $class (default: 'stdClass')
-     * @return array of given class instance
+     * @return ResultSet of given class instance
      */
-    public function select(string $sql, array $params = [], string $class = 'stdClass') : array
+    public function select(string $sql, array $params = [], string $class = 'stdClass') : ResultSet
     {
         return $this->query($sql, $params)->all($class);
     }
@@ -445,9 +445,9 @@ class Database
      * @param string $sql
      * @param array $params (default: [])
      * @param string|null $type name of convert to type (default: null)
-     * @return array
+     * @return ResultSet
      */
-    public function extract(string $column, string $sql, array $params = [], ?string $type = null) : array
+    public function extract(string $column, string $sql, array $params = [], ?string $type = null) : ResultSet
     {
         return $this->query($sql, $params)->allOf($column, $type);
     }
