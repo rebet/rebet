@@ -898,7 +898,7 @@ class Decimal
      */
     public function toInt() : int
     {
-        return intval($this->format(false, ".", ""));
+        return intval($this->value());
     }
 
     /**
@@ -909,6 +909,6 @@ class Decimal
      */
     public function toFloat() : float
     {
-        return floatval($this->format(false, ".", ""));
+        return floatval($this->value());
     }
 }

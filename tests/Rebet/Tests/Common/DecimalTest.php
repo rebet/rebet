@@ -72,7 +72,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(0, Decimal::of('1.234e3')->scale());
         $this->assertSame(3, Decimal::of('1.234')->scale());
         $this->assertSame(3, Decimal::of('1e-3')->scale());
-        
+
         $result = Decimal::of('1')->div('3');
         $this->assertSame(5, $result->scale());
         $this->assertSame(1, $result->scale(false));
@@ -163,7 +163,7 @@ class DecimalTest extends RebetTestCase
             $this->assertTrue($float->$formula()->isDirty());
         }
 
-        foreach(['add', 'sub', 'mul', 'div', 'pow', 'mod'] as $formula) {
+        foreach (['add', 'sub', 'mul', 'div', 'pow', 'mod'] as $formula) {
             $this->assertFalse($string->$formula($string)->isDirty());
             $this->assertFalse($string->$formula($int)->isDirty());
             $this->assertTrue($string->$formula($float)->isDirty());
@@ -276,42 +276,42 @@ class DecimalTest extends RebetTestCase
     public function dataConstructs() : array
     {
         return [
-            ['0'                         ,1  , '0'                        ],
-            ['3'                         ,1  , '03'                       ],
-            ['0.3'                       ,1  , '00.3'                     ],
-            ['123'                       ,3  , '123'                      ],
-            ['123.45'                    ,5  , '123.45'                   ],
-            ['123.45'                    ,5  , '+123.45'                  ],
-            ['-123.45'                   ,5  , '-123.45'                  ],
-            ['123.450'                   ,6  , '123.450'                  ],
-            ['1000'                      ,1  , '1e3'                      ],
-            ['1000'                      ,1  , '1E3'                      ],
-            ['1000'                      ,1  , '1E+3'                     ],
-            ['1000'                      ,2  , '1.0e3'                    ],
-            ['1000.0'                    ,5  , '1.0000e3'                 ],
-            ['1230'                      ,3  , '1.23e3'                   ],
-            ['1234.5'                    ,5  , '1.2345e3'                 ],
-            ['-1000'                     ,1  , '-1e3'                     ],
-            ['-1230'                     ,3  , '-1.23e3'                  ],
-            ['-1234.5'                   ,5  , '-1.2345e3'                ],
-            ['0.001'                     ,1  , '1e-3'                     ],
-            ['0.001'                     ,1  , '1E-3'                     ],
-            ['0.0010'                    ,2  , '1.0e-3'                   ],
-            ['-0.001'                    ,1  , '-1e-3'                    ],
-            ['0.001'                     ,1  , '+1e-3'                    ],
-            ['0.00123'                   ,3  , '1.23e-3'                  ],
-            ['1.000'                     ,4  , '1000e-3'                  ],
-            ['1.230'                     ,4  , '1230e-3'                  ],
-            ['12.30'                     ,4  , '1230e-2'                  ],
-            ['1000000000000000000000000' ,1  , '1e24'                     ], // yotta
-            ['0.000000000000000000000001',1  , '1e-24'                    ], // yocto
-            ['1208925819614629174706176' ,25 , bcpow('2', '80')           ], // yobi
-            ['12345'                     ,5  , '12,345'                   ],
-            ['1234567.89'                ,9  , '1,234,567.89'             ],
-            ['1234567.89'                ,9  , '1 234 567,89'  , ',' , ' '],
-            ['12.300'                    ,5  , '1,230.0e-2'               ],
-            ['1234'                      ,2  , '1,234 (2 sf)'             ],
-            ['1.23456'                   ,3  , '1.23456 (3 sf)'           ],
+            ['0'                         , 1  , '0'                        ],
+            ['3'                         , 1  , '03'                       ],
+            ['0.3'                       , 1  , '00.3'                     ],
+            ['123'                       , 3  , '123'                      ],
+            ['123.45'                    , 5  , '123.45'                   ],
+            ['123.45'                    , 5  , '+123.45'                  ],
+            ['-123.45'                   , 5  , '-123.45'                  ],
+            ['123.450'                   , 6  , '123.450'                  ],
+            ['1000'                      , 1  , '1e3'                      ],
+            ['1000'                      , 1  , '1E3'                      ],
+            ['1000'                      , 1  , '1E+3'                     ],
+            ['1000'                      , 2  , '1.0e3'                    ],
+            ['1000.0'                    , 5  , '1.0000e3'                 ],
+            ['1230'                      , 3  , '1.23e3'                   ],
+            ['1234.5'                    , 5  , '1.2345e3'                 ],
+            ['-1000'                     , 1  , '-1e3'                     ],
+            ['-1230'                     , 3  , '-1.23e3'                  ],
+            ['-1234.5'                   , 5  , '-1.2345e3'                ],
+            ['0.001'                     , 1  , '1e-3'                     ],
+            ['0.001'                     , 1  , '1E-3'                     ],
+            ['0.0010'                    , 2  , '1.0e-3'                   ],
+            ['-0.001'                    , 1  , '-1e-3'                    ],
+            ['0.001'                     , 1  , '+1e-3'                    ],
+            ['0.00123'                   , 3  , '1.23e-3'                  ],
+            ['1.000'                     , 4  , '1000e-3'                  ],
+            ['1.230'                     , 4  , '1230e-3'                  ],
+            ['12.30'                     , 4  , '1230e-2'                  ],
+            ['1000000000000000000000000' , 1  , '1e24'                     ], // yotta
+            ['0.000000000000000000000001', 1  , '1e-24'                    ], // yocto
+            ['1208925819614629174706176' , 25 , bcpow('2', '80')           ], // yobi
+            ['12345'                     , 5  , '12,345'                   ],
+            ['1234567.89'                , 9  , '1,234,567.89'             ],
+            ['1234567.89'                , 9  , '1 234 567,89'  , ',' , ' '],
+            ['12.300'                    , 5  , '1,230.0e-2'               ],
+            ['1234'                      , 2  , '1,234 (2 sf)'             ],
+            ['1.23456'                   , 3  , '1.23456 (3 sf)'           ],
         ];
     }
 
@@ -963,16 +963,15 @@ class DecimalTest extends RebetTestCase
             ['100.00', '1.0000e2'],
             ['100', '1.0000e2', true],
             ['0.000000000001', '1e-12'],
-       ];
+        ];
     }
-    
+
     /**
      * @dataProvider dataFormats
      */
     public function test_format($expect, $value, $omit_zero = false, $decimal_point = '.', $thousands_separator = ',')
     {
         $this->assertSame($expect, Decimal::of($value)->format($omit_zero, $decimal_point, $thousands_separator));
-        
     }
 
     public function test_min()
@@ -987,5 +986,25 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('3', Decimal::max('1', '1.02', '1.1', '03', '1e-3')->value());
         $this->assertSame('3', Decimal::max(['1', '1.02', '1.1', '03', '1e-3'])->value());
         $this->assertSame('999999999999999983222785', Decimal::max('999999999999999983222784', '999999999999999983222783', '999999999999999983222785')->value());
+    }
+
+    public function test_toInt()
+    {
+        $this->assertSame(1, Decimal::of('1')->toInt());
+        $this->assertSame(123, Decimal::of('123')->toInt());
+        $this->assertSame(123, Decimal::of('123.45')->toInt());
+        $this->assertSame(123, Decimal::of('123.98')->toInt());
+        $this->assertSame(-123, Decimal::of('-123.98')->toInt());
+        $this->assertSame(PHP_INT_MAX, Decimal::of(PHP_INT_MAX)->toInt());
+        $this->assertSame(PHP_INT_MAX, Decimal::of(PHP_INT_MAX)->add(1)->toInt());
+    }
+
+    public function test_toFloat()
+    {
+        $this->assertSame(1.0, Decimal::of('1')->toFloat());
+        $this->assertSame(123.0, Decimal::of('123')->toFloat());
+        $this->assertSame(123.45, Decimal::of('123.45')->toFloat());
+        $this->assertSame(123.98, Decimal::of('123.98')->toFloat());
+        $this->assertSame(-123.98, Decimal::of('-123.98')->toFloat());
     }
 }
