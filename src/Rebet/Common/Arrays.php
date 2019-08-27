@@ -105,16 +105,19 @@ class Arrays
     /**
      * Pluck an array of values from an array.
      * # You can use dot access of Reflector::get() in $key_field and $value_field.
+     * # You can use Closure of function($i, $k, $v) { ... } for extract key and value. ($i: index number of array, $k: key of array, $v: value of array)
      *
      * ex)
-     * $user_ids   = Arrays::pluck($users, 'user_id'  , null     ); //=> [21, 35, 43, ...]
-     * $user_names = Arrays::pluck($users, 'name'     , 'user_id'); //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
-     * $user_banks = Arrays::pluck($users, 'bank.name', 'user_id'); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
-     * $user_map   = Arrays::pluck($users, null       , 'user_id'); //=> [21 => <User object>, 35 => <User object>, 43 => <User object>, ...]
+     * $user_ids   = Arrays::pluck($users, 'user_id'                                                 , null                                        ); //=> [21, 35, 43, ...]
+     * $user_ids   = Arrays::pluck($users, 'user_id'                                                 , function($i, $k, $v) { return "user_{$i}"; }); //=> ['user_1' => 21, 'user_2' => 35, 'user_3' => 43, ...]
+     * $user_names = Arrays::pluck($users, 'name'                                                    , 'user_id'                                   ); //=> [21 => 'John', 35 => 'David', 43 => 'Linda', ...]
+     * $user_banks = Arrays::pluck($users, 'bank.name'                                               , 'user_id'                                   ); //=> [21 => 'City', 35 => 'JPMorgan', 43 => 'Montreal', ...]
+     * $user_map   = Arrays::pluck($users, null                                                      , 'user_id'                                   ); //=> [21 => <User object>, 35 => <User object>, 43 => <User object>, ...]
+     * $user_map   = Arrays::pluck($users, function($i, $k, $v) { return "{$v->name}($v->user_id)"; }, 'user_id'                                   ); //=> [21 => 'John(21)', 35 => 'David(35)', 43 => 'Linda(43)', ...]
      *
      * @param array|null $list
-     * @param int|string|null $key_field Field name / index as key of extracted data (It becomes serial number array when blank is specified)
-     * @param int|string|null $value_field Field name / index as the value of extracted data (Row element itself is targeted when blank is specified)
+     * @param int|string|Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
+     * @param int|string|Closure|null $key_field Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
      * @return array
      * @see Reflector::get()
      */
@@ -125,8 +128,10 @@ class Arrays
         }
         $plucks = [];
         $i      = 0;
-        foreach ($list as $row) {
-            $plucks[Utils::isBlank($key_field) ? $i++ : Reflector::get($row, $key_field)] = Utils::isBlank($value_field) ? $row : Reflector::get($row, $value_field);
+        foreach ($list as $key => $row) {
+            $k          = Utils::isBlank($key_field)   ? $i   : ($key_field   instanceof \Closure ? call_user_func($key_field, $i, $key, $row)   : Reflector::get($row, $key_field));
+            $plucks[$k] = Utils::isBlank($value_field) ? $row : ($value_field instanceof \Closure ? call_user_func($value_field, $i, $key, $row) : Reflector::get($row, $value_field));
+            $i++;
         }
         return $plucks;
     }
@@ -1096,5 +1101,22 @@ class Arrays
             $string .= "{$value}{$delimiter}";
         }
         return Strings::rtrim($string, $delimiter, 1);
+    }
+
+    /**
+     * Pop the last [key, value] from given array.
+     *
+     * @param array $array
+     * @return array ['key' => key, 'value' => value]
+     */
+    public static function pop(array &$array) : array
+    {
+        if (empty($array)) {
+            return ['key' => null, 'value' => null];
+        }
+        $key   = end(array_keys($array));
+        $value = $array[$key];
+        unset($array[$key]);
+        return ['key' => $key, 'value' => $value];
     }
 }

@@ -40,4 +40,15 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     {
         return $this->items;
     }
+
+    /**
+     * Reverse the items order.
+     *
+     * @return self
+     */
+    public function reverse() : self
+    {
+        $this->items = array_reverse($this->items);
+        return $this;
+    }
 }

@@ -35,11 +35,11 @@ class Paginator extends ResultSet
     public $page_size;
 
     /**
-     * Cursor point data
+     * Next page count that confirmed to be exists
      *
-     * @var array|null
+     * @var int
      */
-    public $cursor;
+    protected $next_page_count;
 
     /**
      * Last page number
@@ -68,7 +68,7 @@ class Paginator extends ResultSet
      * @param mixed $items can be arrayable
      * @param int $page_size
      */
-    protected function __construct($items, int $page_size, ?int $page = null, ?long $total = null, ?array $cursor)
+    protected function __construct($items, int $page_size, ?int $page = null, ?long $total = null, ?int $next_page_count = null)
     {
         parent::__construct($items);
 

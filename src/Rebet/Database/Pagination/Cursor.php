@@ -1,102 +1,164 @@
 <?php
 namespace Rebet\Database\Pagination;
 
+use Rebet\Common\Arrayable;
 use Rebet\Common\Reflector;
+use Rebet\Common\Unit;
+use Rebet\Config\Configurable;
+use Rebet\DateTime\DateTime;
 
 /**
  * Cursor Class
+ *
+ * The cursor always points first item of given page.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Cursor
+class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
-    private const COLUMN = 0;
-    private const ORDER  = 1;
-    private const VALUE  = 2;
+    use Configurable, Arrayable;
+
+    public static function defaultConfig()
+    {
+        return [
+            'storage'  => null,
+            'lifetime' => '1h',
+        ];
+    }
 
     /**
      * Cursor pointed data
      *
-     * @var array of [[col, asc|desc, $value], ... ]
+     * @var array of [col => $value, ... ]
      */
     protected $cursor = [];
 
     /**
-     * Cursor direction.
+     * Pager of this cursor
      *
-     * @var string 'prev' or 'next'
+     * @var Pager
      */
-    protected $direction;
+    protected $pager;
 
     /**
-     * Should be include cursor pointed data or not.
+     * Next page count that confirmed to be exists
      *
-     * @var bool (default: true)
+     * @var int|null
      */
-    protected $include = true;
+    protected $next_page_count;
+
+    /**
+     * Cursor created at
+     *
+     * @var DateTime
+     */
+    protected $create_at;
 
     /**
      * Create Cursor instance.
      *
-     * @param string $direction 'prev' or 'next'
-     * @param array $orders of [[col, asc|desc, $value], ...]
+     * @param Pager $pager
+     * @param array $cursor of [col => $value, ... ]
+     * @param int|null $next_page_count that confirmed to be exists
      */
-    protected function __construct(string $direction, array $orders)
+    public function __construct(Pager $pager, array $cursor, ?int $next_page_count)
     {
-        $this->direction = $direction;
-        $this->cursor    = $orders;
+        $this->pager           = $pager;
+        $this->cursor          = $cursor;
+        $this->next_page_count = $next_page_count;
+        $this->create_at       = DateTime::now();
     }
 
     /**
-     * Create cursor pointed given next row data.
-     *
-     * @param mixed $row
-     * @param bool $include (default: true)
-     * @return self
+     * {@inheritDoc}
      */
-    public static function next(array ...$orders) : self
+    protected function &container() : array
     {
-        return new static('next', $orders);
+        return $this->cursor;
     }
 
     /**
-     * Create cursor pointed given prev row data.
+     * Create given pages cursor using given column orders and cursor pointed data.
      *
-     * @param mixed $row
-     * @param bool $include (default: false)
+     * @param OrderBy|array $order_by
+     * @param Pager $pager
+     * @param object|array $data of cursor poitned
+     * @param int $next_page_count that confirmed to be exists
      * @return self
      */
-    public static function prev(array ...$orders) : self
+    public static function create($order_by, Pager $pager, $data, ?int $next_page_count) : self
     {
-        return new static('prev', $orders);
-    }
-
-    /**
-     * Set include cursor pointed data or not.
-     *
-     * @param boolean $include (default: true)
-     * @return self
-     */
-    public function include(bool $include = true) : self
-    {
-        $this->include = $include;
-        return $this;
-    }
-
-    /**
-     * Bind cursor data using given data.
-     *
-     * @param mixed $data
-     * @return self
-     */
-    public function bind($data) : self
-    {
-        foreach ($this->cursor as &$cursor) {
-            $cursor[Cursor::VALUE] = $cursor[Cursor::VALUE] ?? Reflector::get($data, $cursor[Cursor::COLUMN]);
+        $cursor = [];
+        foreach ($order_by as $col => $order) {
+            $cursor[$col] = Reflector::get($data, $col);
         }
+        return new static($pager, $cursor, $next_page_count);
+    }
+
+    /**
+     * It checks this cursor was expired or not.
+     *
+     * @return bool
+     */
+    public function expired() : bool
+    {
+        $lifetime = Unit::of(Unit::TIME)->parse(static::config('lifetime', false, 0), 'ms')->toInt();
+        if ($lifetime === 0) {
+            return false;
+        }
+        return $this->create_at->addMilli($lifetime) < DateTime::now() ;
+    }
+
+    /**
+     * Get the pager of cursor.
+     *
+     * @return Pager
+     */
+    public function pager() : Pager
+    {
+        return $this->pager;
+    }
+
+    /**
+     * Get next page count that confirmed to be exists.
+     *
+     * @return int|null
+     */
+    public function nextPageCount() : ?int
+    {
+        return $this->next_page_count;
+    }
+
+    /**
+     * Save the cursor to strage.
+     *
+     * @param CursorStorage|null $strage (default: depend on configured)
+     * @return self
+     */
+    public function save(?CursorStorage $strage = null) : self
+    {
+        if (!$this->pager->useCursor()) {
+            return $this;
+        }
+        $strage = $strage ?? static::configInstantiate('strage') ;
+        $strage->save($this->pager->cursor(), $this);
         return $this;
+    }
+
+    /**
+     * Load the cursor from strage.
+     *
+     * @param string $name of cursor
+     * @param CursorStorage|null $strage (default: depend on configured)
+     * @return self|null
+     */
+    public static function load(string $name, ?CursorStorage $strage = null) : ?self
+    {
+        $strage = $strage ?? static::configInstantiate('strage') ;
+        $cursor = $strage->load($name);
+        return $cursor->expired() ? null : $cursor ;
     }
 }

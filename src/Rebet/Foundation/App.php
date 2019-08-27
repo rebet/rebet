@@ -5,7 +5,11 @@ use Rebet\Common\Path;
 use Rebet\Config\Config;
 use Rebet\Config\ConfigPromise;
 use Rebet\Config\Configurable;
+use Rebet\Database\Pagination\Cursor;
+use Rebet\Database\Pagination\Pager;
 use Rebet\DateTime\DateTime;
+use Rebet\Foundation\Database\Pagination\Storage\SessionCursorStorage;
+use Rebet\Http\Request;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
 use Rebet\Translation\FileDictionary;
@@ -70,6 +74,20 @@ class App
             //---------------------------------------------
             Router::class => [
                 'current_channel' => Config::refer(App::class, 'channel'),
+            ],
+
+            //---------------------------------------------
+            // Database Pagination Configure
+            //---------------------------------------------
+            Pager::class => [
+                'resolver' => function (Pager $pager) {
+                    $request = Request::current();
+                    return $pager->page($request->get('page') ?? 1)->size($request->get('page_size') ?? Pager::config('default_page_size'));
+                }
+            ],
+
+            Cursor::class => [
+                'storage' => SessionCursorStorage::class,
             ],
 
             //---------------------------------------------

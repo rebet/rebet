@@ -102,6 +102,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([], Arrays::pluck(null, 'user_id'));
         $this->assertSame([], Arrays::pluck([], 'user_id'));
         $this->assertSame([21, 35, 43], Arrays::pluck($list, 'user_id'));
+        $this->assertSame(['user_0' => 21, 'user_1' => 35, 'user_2' => 43], Arrays::pluck($list, 'user_id', function($i, $key, $row){ return "user_{$i}"; }));
         $this->assertSame([21 => 'John', 35 => 'David', 43 => 'Linda'], Arrays::pluck($list, 'name', 'user_id'));
         $this->assertSame(
             [
@@ -110,6 +111,14 @@ class ArraysTest extends RebetTestCase
                 43 => ['user_id' => 43, 'name' => 'Linda']
             ],
             Arrays::pluck($list, null, 'user_id')
+        );
+        $this->assertSame(
+            [
+                21 => 'John(21)',
+                35 => 'David(35)',
+                43 => 'Linda(43)'
+            ],
+            Arrays::pluck($list, function($i, $key, $row){ return "{$row['name']}({$row['user_id']})"; }, 'user_id')
         );
     }
 
@@ -1112,5 +1121,18 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('1／2／3', Arrays::implode([1, 2, 3], '／'));
         $this->assertSame('1, 2, 3', Arrays::implode(new \ArrayObject([1, 2, 3])));
         $this->assertNull(Arrays::implode(Gender::MALE()));
+    }
+
+    public function test_pop()
+    {
+        $array = ['a' => 'A', 'b' => 'B', 'c' => 'C'];
+        $this->assertSame(['key' => 'c', 'value' => 'C'], Arrays::pop($array));
+        $this->assertSame(['a' => 'A', 'b' => 'B'], $array);
+        $this->assertSame(['key' => 'b', 'value' => 'B'], Arrays::pop($array));
+        $this->assertSame(['a' => 'A'], $array);
+        $this->assertSame(['key' => 'a', 'value' => 'A'], Arrays::pop($array));
+        $this->assertSame([], $array);
+        $this->assertSame(['key' => null, 'value' => null], Arrays::pop($array));
+        $this->assertSame([], $array);
     }
 }

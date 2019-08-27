@@ -15,6 +15,8 @@ use Rebet\Common\Namespaces;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
+use Rebet\Database\Pagination\Cursor;
+use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
@@ -80,6 +82,9 @@ abstract class RebetTestCase extends TestCase
             ],
             Session::class => [
                 'storage' => ArraySessionStorage::class,
+            ],
+            Cursor::class => [
+                'storage' => ArrayCursorStorage::class,
             ],
             Auth::class => [
                 'authenticator' => [

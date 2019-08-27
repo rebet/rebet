@@ -13,6 +13,9 @@ use Rebet\Database\Event\Deleting;
 use Rebet\Database\Event\Updated;
 use Rebet\Database\Event\Updating;
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Database\Pagination\Cursor;
+use Rebet\Database\Pagination\Pager;
+use Rebet\Database\Pagination\Paginator;
 use Rebet\DateTime\DateTime;
 use Rebet\Event\Event;
 
@@ -381,7 +384,7 @@ class Database
             if (!$stmt) {
                 throw DatabaseException::from($this->driver->errorInfo(), $sql);
             }
-            return new Statement($stmt, $this);
+            return new Statement($this, $stmt);
         } catch (\PDOException $e) {
             throw DatabaseException::from($e, $sql);
         }
@@ -391,12 +394,15 @@ class Database
      * Executes an SQL statement, returning a result set as a Statement object.
      *
      * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param Pager|null $pager (default: null)
+     * @param Cursor|null $cursor (default: null)
      * @return Statement
      */
-    public function query(string $sql, $params = []) : Statement
+    public function query(string $sql, $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
-        [$sql, $params] = $this->compiler->compile($this, $sql, $params);
+        [$sql, $params] = $this->compiler->compile($this, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
         return $this->prepare($sql)->execute($params);
     }
 
@@ -409,20 +415,40 @@ class Database
      */
     public function execute(string $sql, $params = []) : int
     {
-        return $this->query($sql, $params)->affectedRows();
+        return $this->query($sql, null, $params)->affectedRows();
     }
 
     /**
      * Execute given SQL and get the result (N rows and M columns).
      *
      * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
      * @param string $class (default: 'stdClass')
      * @return ResultSet of given class instance
      */
-    public function select(string $sql, array $params = [], string $class = 'stdClass') : ResultSet
+    public function select(string $sql, $order_by = null, array $params = [], string $class = 'stdClass') : ResultSet
     {
-        return $this->query($sql, $params)->all($class);
+        return $this->query($sql, $order_by, $params)->all($class);
+    }
+
+    /**
+     * Execute given SQL and get the result as paginator (N rows and M columns).
+     *
+     * @param string $sql
+     * @param OrderBy|array $order_by
+     * @param Pager $pager
+     * @param array $params (default: [])
+     * @param string $class (default: 'stdClass')
+     * @param string $count_optimised_sql must have 'count' column (default: null)
+     * @return Paginator
+     */
+    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], string $class = 'stdClass', ?string $count_optimised_sql = null) : Paginator
+    {
+        $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
+        $total    = $pager->needTotal() ? ($count_optimised_sql ? $this->get('count', $count_optimised_sql, $params) : $this->count($sql, $params)) : null ;
+        $order_by = OrderBy::valueOf($order_by);
+        return $this->compiler()->paging($this, $this->query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
     }
 
     /**
@@ -435,7 +461,7 @@ class Database
      */
     public function find(string $sql, array $params = [], string $class = 'stdClass')
     {
-        return $this->query($sql, $params)->first($class);
+        return $this->query($sql, null, $params)->first($class);
     }
 
     /**
@@ -449,7 +475,7 @@ class Database
      */
     public function extract(string $column, string $sql, array $params = [], ?string $type = null) : ResultSet
     {
-        return $this->query($sql, $params)->allOf($column, $type);
+        return $this->query($sql, null, $params)->allOf($column, $type);
     }
 
     /**
@@ -463,7 +489,7 @@ class Database
      */
     public function get(string $column, string $sql, array $params = [], ?string $type = null)
     {
-        return $this->query($sql, $params)->firstOf($column, $type);
+        return $this->query($sql, null, $params)->firstOf($column, $type);
     }
 
     /**
@@ -501,7 +527,7 @@ class Database
      */
     public function each(callable $callback, string $sql, array $params = [], string $class = 'stdClass') : void
     {
-        $this->query($sql, $params)->each($callback, $class);
+        $this->query($sql, null, $params)->each($callback, $class);
     }
 
     /**

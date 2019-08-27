@@ -889,4 +889,26 @@ class Decimal
         }
         return $max;
     }
+
+    /**
+     * Convert the decimal to int type.
+     * NOTE: The result of this method may contain rounding errors.
+     *
+     * @return int
+     */
+    public function toInt() : int
+    {
+        return intval($this->format(false, ".", ""));
+    }
+
+    /**
+     * Convert the decimal to float type.
+     * NOTE: The result of this method may contain rounding errors.
+     *
+     * @return float
+     */
+    public function toFloat() : float
+    {
+        return floatval($this->format(false, ".", ""));
+    }
 }

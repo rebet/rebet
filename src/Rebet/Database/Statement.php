@@ -16,29 +16,29 @@ use Rebet\Database\Exception\DatabaseException;
 class Statement implements \IteratorAggregate
 {
     /**
-     * PDO statement instance.
-     *
-     * @var \PDOStatement
-     */
-    protected $stmt = null;
-
-    /**
      * Database of this statement.
      *
      * @var Database
      */
-    protected $db = null;
+    protected $db;
 
     /**
-     * Create database instance using given driver.
+     * PDO statement instance.
      *
-     * @param PDOStatement $stmt
-     * @param Database $db
+     * @var \PDOStatement
      */
-    public function __construct(\PDOStatement $stmt, Database $db)
+    protected $stmt;
+
+    /**
+     * Create statement instance.
+     *
+     * @param Database $db
+     * @param PDOStatement $stmt
+     */
+    public function __construct(Database $db, \PDOStatement $stmt)
     {
-        $this->stmt = $stmt;
         $this->db   = $db;
+        $this->stmt = $stmt;
     }
 
     /**
@@ -98,6 +98,31 @@ class Statement implements \IteratorAggregate
     }
 
     /**
+     * Convert statment result set row to given class.
+     *
+     * @param mixed $row
+     * @param string $class
+     * @param array|null $meta info of this statement for performance in loop (default: null)
+     * @param AnnotatedClass|null $ac annotated class of given class for performance in loop (default: null)
+     * @return void
+     */
+    protected function convert($row, string $class, ?array $meta = null, ?AnnotatedClass $ac = null)
+    {
+        $meta = $meta ?? $this->meta();
+        $ac   = $ac ?? new AnnotatedClass($class);
+        $dto  = new $class();
+        foreach ($row as $column => $value) {
+            $am           = $ac->property($column);
+            $type         = $am ? $am->annotation(Type::class) : null ;
+            $dto->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
+        }
+        if ($dto instanceof Entity) {
+            $dto->origin(clone $dto);
+        }
+        return $dto;
+    }
+
+    /**
      * Get all result set data as given class object list.
      *
      * @param string $class (default: 'stdClass')
@@ -109,16 +134,7 @@ class Statement implements \IteratorAggregate
         $meta = $this->meta();
         $ac   = new AnnotatedClass($class);
         foreach ($this->stmt as $row) {
-            $dto = new $class();
-            foreach ($row as $column => $value) {
-                $am           = $ac->property($column);
-                $type         = $am ? $am->annotation(Type::class) : null ;
-                $dto->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
-            }
-            if ($dto instanceof Entity) {
-                $dto->origin(clone $dto);
-            }
-            $rs[] = $dto;
+            $rs[] = $this->convert($row, $class, $meta, $ac);
         }
         return new ResultSet($rs);
     }
@@ -134,18 +150,8 @@ class Statement implements \IteratorAggregate
         $meta = $this->meta();
         $ac   = new AnnotatedClass($class);
         foreach ($this->stmt as $row) {
-            $dto = new $class();
-            foreach ($row as $column => $value) {
-                $am           = $ac->property($column);
-                $type         = $am ? $am->annotation(Type::class) : null ;
-                $dto->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
-            }
-            if ($dto instanceof Entity) {
-                $dto->origin(clone $dto);
-            }
-            return $dto;
+            return $this->convert($row, $class, $meta, $ac);
         }
-
         return null;
     }
 
@@ -160,11 +166,9 @@ class Statement implements \IteratorAggregate
     {
         $rs   = [];
         $meta = $this->meta();
-
         foreach ($this->stmt as $row) {
             $rs[] = $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
-
         return new ResultSet($rs);
     }
 
@@ -178,11 +182,9 @@ class Statement implements \IteratorAggregate
     public function firstOf(string $column, ?string $type = null)
     {
         $meta = $this->meta();
-
         foreach ($this->stmt as $row) {
             return $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
-
         return null;
     }
 
@@ -219,11 +221,7 @@ class Statement implements \IteratorAggregate
         $meta = $this->meta();
         $ac   = new AnnotatedClass($class);
         foreach ($this->stmt as $row) {
-            $dto = new $class();
-            foreach ($row as $column => $value) {
-                $dto->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $ac->property($column)->annotation(Type::class)->value ?? null);
-            }
-            if (call_user_func($callback, $dto) === false) {
+            if (call_user_func($callback, $this->convert($row, $class, $meta, $ac)) === false) {
                 break;
             }
         }
