@@ -182,7 +182,7 @@ class BuiltinCompiler implements Compiler
         $rs          = $is_forward ? $stmt->all($class) : $stmt->all($class)->reverse() ;
         $cursor_data = null;
         $count       = 0;
-        foreach ($stmt as $row) {
+        foreach ($rs as $row) {
             if ($count < $page_size) {
                 $items[] = $row;
             }
@@ -228,35 +228,4 @@ class BuiltinCompiler implements Compiler
         }
         return [join(', ', $unfold_keys), $params];
     }
-
-    // /**
-    //  * Create next cursor SQL where.
-    //  *
-    //  * @param bool $include the cursor data.
-    //  * @param array $expression map for order.
-    //  * @return array [string $where, array $value_map]
-    //  */
-    // protected function build(bool $include, array $expression) : array
-    // {
-    //     $where  = " AND (1 <> 1";
-    //     $cursor = $this->cursor;
-    //     do {
-    //         $where .= " OR (";
-    //         $last   = array_pop($cursor);
-    //         $i      = 0;
-    //         foreach ($cursor as [$col, $order, $value]) {
-    //             $where .= "{$col} = :cursor__{$i} AND ";
-    //             $i++;
-    //         }
-
-    //         $expression  = $expression[$last[Cursor::ORDER]];
-    //         $expression .= $include ? '=' : '' ;
-    //         $include     = false;
-
-    //         $where .= "{$last[Cursor::COLUMN]} {$expression} :cursor__{$i}";
-    //         $where .= ")";
-    //     } while (empty($cursor));
-    //     $where .= ")";
-    //     return [$where, Arrays::pluck($this->cursor, Cursor::VALUE, function ($i, $k, $v) { return "cursor__{$i}"; })];
-    // }
 }

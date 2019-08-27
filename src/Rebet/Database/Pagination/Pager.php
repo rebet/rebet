@@ -198,39 +198,4 @@ class Pager
             && $this->cursor === $pager->cursor
             ;
     }
-
-    /**
-     * Get offset count from given cursor (or first page) to this pager.
-     *
-     * @param Cursor|null $cursor (default: null)
-     * @return int
-     */
-    public function offset(?Cursor $cursor = null) : int
-    {
-        if ($cursor === null || !$this->verify($cursor->pager())) {
-            return $this->size * ($this->page - 1);
-        }
-        $is_backward = $this->page < $cursor->pager()->page ;
-        $distance    = abs($this->page - $cursor->pager()->page);
-        return $is_backward ? 0 : $this->size * $distance ;
-    }
-
-    /**
-     * Get limit count based on given cursor (or offset from first page) for this pager (include next side pages).
-     *
-     * @param Cursor|null $cursor (default: null)
-     * @return int
-     */
-    public function limit(?Cursor $cursor = null) : int
-    {
-        $base_limit      = $this->size;
-        $next_side_count = max($this->each_side, $this->each_side * 2 + 1 - $this->page) - 1;
-        $next_side_limit = $this->need_total ? 0 : $this->size * $next_side_count ;
-        if ($cursor === null || !$this->verify($cursor->pager())) {
-            return $base_limit + $next_side_limit + 1;
-        }
-        $is_backward    = $this->page < $cursor->pager()->page ;
-        $distance_limit = $this->size * abs($this->page - $cursor->pager()->page);
-        return $is_backward ? $distance_limit + 1 : $base_limit + $distance_limit + $next_side_limit + 1 ;
-    }
 }
