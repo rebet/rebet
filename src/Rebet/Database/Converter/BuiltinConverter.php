@@ -36,7 +36,7 @@ class BuiltinConverter implements Converter
             case is_float($value):                     return new PdoParameter($value, \PDO::PARAM_STR);
             case is_resource($value):                  return new PdoParameter($value, \PDO::PARAM_LOB);
             case $value instanceof Date:               return new PdoParameter($value->format("Y-m-d"), \PDO::PARAM_STR);
-            case $value instanceof \DateTimeInterface: return new PdoParameter($value->format($driver_name === 'pgsql' ? "Y-m-d H:i:sT" : "Y-m-d H:i:s"), \PDO::PARAM_STR);
+            case $value instanceof \DateTimeInterface: return new PdoParameter($value->format($driver_name === 'pgsql' ? "Y-m-d H:i:sO" : "Y-m-d H:i:s"), \PDO::PARAM_STR);
             case $value instanceof Decimal:            return new PdoParameter($value->normalize()->format(true, '.', ''), \PDO::PARAM_STR);
         }
 

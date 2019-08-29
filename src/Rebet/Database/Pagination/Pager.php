@@ -20,7 +20,7 @@ class Pager
     {
         return [
             'default_page_size'  => 10,
-            'default_each_side'  => 1,
+            'default_each_side'  => 0,
             'default_need_total' => false,
             'resolver'           => null,   // function(Pager $pager) : Pager { ... }
         ];
@@ -71,11 +71,11 @@ class Pager
      * @param bool|null $need_total (default: depend on configure)
      * @param string|null $cursor name (default: null for do not use cursor)
      */
-    protected function __construct(int $page, ?int $size = null, ?int $each_side = null, ?bool $need_total = null, ?string $cursor = null)
+    public function __construct(int $page, ?int $size = null, ?int $each_side = null, ?bool $need_total = null, ?string $cursor = null)
     {
         $this->page       = max(1, $page);
         $this->size       = max(1, $size ?? static::config('default_page_size'));
-        $this->each_side  = max(1, $each_side ?? static::config('default_each_side'));
+        $this->each_side  = max(0, $each_side ?? static::config('default_each_side'));
         $this->need_total = $need_total ?? static::config('default_need_total');
         $this->cursor     = $cursor;
     }
@@ -83,7 +83,7 @@ class Pager
     /**
      * Create pager using configured resolver.
      *
-     * @return self
+     * @return Pager
      */
     public static function resolve() : self
     {
@@ -95,9 +95,9 @@ class Pager
      * Get and Set count of items per page.
      *
      * @param int|null $size of page (null for get count of items per page)
-     * @var self|int
+     * @var Pager|int
      */
-    public function size(?int $size = null) : int
+    public function size(?int $size = null)
     {
         return $this->getset('size', $size);
     }
@@ -106,7 +106,7 @@ class Pager
      * Get and Set current page number
      *
      * @param int|null $page number (null for get current page number)
-     * @var self|int
+     * @var Pager|int
      */
     public function page(?int $page = null)
     {
@@ -117,7 +117,7 @@ class Pager
      * Get and Set each side page count for this pager.
      *
      * @param int|null $each_side page count (null for get each side page count)
-     * @var self|int
+     * @var Pager|int
      */
     public function eachSide(?int $each_side = null)
     {
@@ -128,7 +128,7 @@ class Pager
      * Get and Set need total count or not.
      *
      * @param bool|null $need_total or not (null for get need total)
-     * @var self|bool
+     * @var Pager|bool
      */
     public function needTotal(?bool $need_total = null)
     {
@@ -139,7 +139,7 @@ class Pager
      * Get and Set cursor name
      *
      * @param string|null $name of cursor (null for get cursor name)
-     * @var self|string|null
+     * @var Pager|string|null
      */
     public function cursor(?string $name = null)
     {
@@ -160,7 +160,7 @@ class Pager
      * Create next page pager
      *
      * @param int $step (default: 1)
-     * @return self
+     * @return Pager
      */
     public function next(int $step = 1) : self
     {
@@ -173,7 +173,7 @@ class Pager
      * Create prev page pager
      *
      * @param int $step (default: 1)
-     * @return self
+     * @return Pager
      */
     public function prev(int $step = 1) : self
     {

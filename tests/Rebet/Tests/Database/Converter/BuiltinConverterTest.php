@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Database\Driver;
+namespace Rebet\Tests\Database\Converter;
 
 use PHPUnit\DbUnit\DataSet\ArrayDataSet;
 use Rebet\Common\Decimal;

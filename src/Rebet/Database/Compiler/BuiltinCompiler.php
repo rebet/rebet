@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Compiler;
 
+use PHPSQLParser\PHPSQLParser;
 use Rebet\Common\Arrays;
 use Rebet\Common\Strings;
 use Rebet\Database\Database;
@@ -13,6 +14,16 @@ use Rebet\Database\Statement;
 
 /**
  * Builtin Compiler Class
+ *
+ * This compiler will support cursor pagination.
+ * However, in order to use it correctly, the following conditions must be met:
+ *
+ *  1. App of primary key element must be included in the 'Order By' conditions.
+ *  2. All of 'Order By' columns must be included in SELECT phrase.
+ *  3. All of 'Order By' columns must be able to access in WHERE (or HAVING) phrase.
+ *  4．If the SQL top level WHERE (or HAVING) contains an OR, it must be enclosed in parenthes.
+ *     ex) NG: SELECT * FROM user WHERE foo = 1 OR bar = 2
+ *         OK: SELECT * FROM user WHERE (foo = 1 OR bar = 2)
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -43,7 +54,7 @@ class BuiltinCompiler implements Compiler
         }
 
         if ($order_by) {
-            $cursor = $cursor && !$cursor->expired() && $cursor->pager()->verify($pager) ? $cursor : null ;
+            $cursor = $this->verify($pager, $cursor);
 
             if ($cursor === null) {
                 $order_sql = $this->compileOrderBy($db, $order_by);
@@ -52,17 +63,20 @@ class BuiltinCompiler implements Compiler
                 if ($pager) {
                     $offset = $this->offset($pager);
                     $limit  = $this->limit($pager);
-                    $sql    = "{$sql} OFFSET {$offset} LIMIT {$limit}";
+                    $sql    = "{$sql} LIMIT {$limit} OFFSET {$offset}";
                 }
             } else {
-                $is_backward              = $pager->page() < $cursor->pager()->page() ;
-                $order_by                 = $is_backward ? $order_by->reverse() : $order_by ;
+                $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
+                $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
+                $order_by                 = $forward_feed || $near_by_first ? $order_by : $order_by->reverse() ;
                 $order_sql                = $this->compileOrderBy($db, $order_by);
-                [$cursor_sql, $pdo_param] = $this->compileCursor($db, $order_by, $cursor, $is_backward);
+                [$cursor_sql, $pdo_param] = $this->compileCursor($db, $order_by, $cursor, $forward_feed, $near_by_first);
                 $pdo_params               = array_merge($pdo_params, $pdo_param);
-                $offset                   = $this->offset($pager, $cursor);
-                $limit                    = $this->limit($pager, $cursor);
-                $sql                      = "SELECT * FROM ({$sql}) AS T WHERE {$cursor_sql} ORDER BY {$order_sql} OFFSET {$offset} LIMIT {$limit}";
+                $offset                   = $this->offset($pager, $cursor, $forward_feed, $near_by_first);
+                $limit                    = $this->limit($pager, $cursor, $forward_feed, $near_by_first);
+                $parser                   = new PHPSQLParser($sql);
+                $sql                      = isset($parser->parsed['WHERE']) || isset($parser->parsed['HAVING']) ? "{$sql} AND ({$cursor_sql})" : "{$sql} WHERE {$cursor_sql}" ;
+                $sql                      = "{$sql} ORDER BY {$order_sql} LIMIT {$limit} OFFSET {$offset}";
             }
         }
 
@@ -70,49 +84,63 @@ class BuiltinCompiler implements Compiler
     }
 
     /**
+     * Verify that we should be use cursor or not by the pager and cursor state.
+     *
+     * @param Pager $pager
+     * @param Cursor|null $cursor
+     * @return Cursor|null
+     */
+    protected function verify(?Pager $pager, ?Cursor $cursor) : ?Cursor
+    {
+        return $cursor && !$cursor->expired() && $cursor->pager()->verify($pager) ? $cursor : null ;
+    }
+
+    /**
      * Get offset count from given cursor (or first page) to given pager.
      *
      * @param Pager $page
-     * @param Cursor|null $cursor (default: null)
+     * @param Cursor|null $cursor
+     * @param bool $forward_feed
+     * @param bool $near_by_first
      * @return int
      */
-    protected function offset(Pager $pager, ?Cursor $cursor = null) : int
+    protected function offset(Pager $pager, ?Cursor $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
     {
         $page = $pager->page();
         $size = $pager->size();
-        if ($cursor === null || !$pager->verify($cursor->pager())) {
+        if ($near_by_first || $cursor === null || !$pager->verify($cursor->pager())) {
             return $size * ($page - 1);
         }
         $cursor_page = $cursor->pager()->page();
-        $is_backward = $page < $cursor_page ;
         $distance    = abs($page - $cursor_page);
-        return $is_backward ? 0 : $size * $distance ;
+        return $forward_feed ? $size * $distance : $size * ($distance - 1) ;
     }
 
     /**
      * Get limit count based on given cursor (or offset from first page) for given pager (include next side pages).
      *
-     * @param Cursor|null $cursor (default: null)
+     * @param Pager $pager
+     * @param Cursor|null $cursor
+     * @param bool $forward_feed
+     * @param bool $near_by_first
      * @return int
      */
-    protected function limit(Pager $pager, ?Cursor $cursor = null) : int
+    protected function limit(Pager $pager, ?Cursor $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
     {
         $page            = $pager->page();
         $size            = $pager->size();
         $each_side       = $pager->eachSide();
         $base_limit      = $size;
-        $next_side_count = max($each_side, $each_side * 2 + 1 - $page) - 1;
-        $next_side_limit = $pager->need_total ? 0 : $size * $next_side_count ;
-        if ($cursor === null || !$pager->verify($cursor->pager())) {
+        $next_side_count = $each_side === 0 ? 1 : max($each_side, $each_side * 2 - $page + 1);
+        $next_side_limit = $pager->needTotal() ? 0 : $size * ($next_side_count - 1) ;
+        if ($near_by_first || $cursor === null || !$pager->verify($cursor->pager())) {
             return $base_limit + $next_side_limit + 1;
         }
         $cursor_page = $cursor->pager()->page();
-        $is_backward = $page < $cursor_page ;
         if ($cursor_page - $page + $cursor->nextPageCount() >= $each_side) {
             $next_side_limit = 0;
         }
-        $distance_limit = $size * abs($page - $cursor_page);
-        return $is_backward ? $distance_limit + 1 : $base_limit + $distance_limit + $next_side_limit + 1 ;
+        return $forward_feed ? $base_limit + $next_side_limit + 1 : $base_limit + 1 ;
     }
 
     /**
@@ -125,8 +153,8 @@ class BuiltinCompiler implements Compiler
     protected function compileOrderBy(Database $db, OrderBy $order_by) : string
     {
         $order = [];
-        foreach ($order_by as $col => $order) {
-            $order[] = "{$col} {$order}";
+        foreach ($order_by as $col => $asc_desc) {
+            $order[] = "{$col} {$asc_desc}";
         }
         return implode(', ', $order);
     }
@@ -137,34 +165,34 @@ class BuiltinCompiler implements Compiler
      * @param Database $db
      * @param OrderBy $order_by
      * @param Cursor $cursor
-     * @param boolean $is_backward
+     * @param bool $forward_feed
+     * @param bool $near_by_first
      * @return array of [$where, $pdo_params]
      */
-    protected function compileCursor(Database $db, OrderBy $order_by, Cursor $cursor, bool $is_backward) : array
+    protected function compileCursor(Database $db, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
     {
-        $expressions = $is_backward ? ['ASC' => '<', 'DESC' => '>'] : ['ASC' => '>', 'DESC' => '<'] ;
-        $include     = true;
+        $expressions = $forward_feed && !$near_by_first ? ['ASC' => '>', 'DESC' => '<'] : ['ASC' => '<', 'DESC' => '>'] ;
+        $first       = true;
 
-        $where  = " AND (1 <> 1";
-        $cursor = array_keys($cursor->toArray());
+        $where       = "";
+        $cursor_cols = array_keys($cursor->toArray());
         do {
-            $where .= " OR (";
-            $last   = array_pop($cursor);
+            $where .= $first ? "(" : " OR (" ;
+            $last   = array_pop($cursor_cols);
             $i      = 0;
-            foreach ($cursor as $col) {
+            foreach ($cursor_cols as $col) {
                 $where .= "{$col} = :cursor__{$i} AND ";
                 $i++;
             }
 
             $expression  = $expressions[$order_by[$last]];
-            $expression .= $include ? '=' : '' ;
-            $include     = false;
+            $expression .= $first ? '=' : '' ;
+            $first       = false;
 
             $where .= "{$last} {$expression} :cursor__{$i}";
             $where .= ")";
-        } while (empty($cursor));
-        $where .= ")";
-        return [$where, Arrays::pluck($cursor, function ($i, $k, $v) use ($db) { return $db->convertToPdo($v); }, function ($i, $k, $v) { return "cursor__{$i}"; })];
+        } while (!empty($cursor_cols));
+        return [$where, Arrays::pluck($cursor->toArray(), function ($i, $k, $v) use ($db) { return $db->convertToPdo($v); }, function ($i, $k, $v) { return ":cursor__{$i}"; })];
     }
 
     /**
@@ -172,16 +200,16 @@ class BuiltinCompiler implements Compiler
      */
     public function paging(Database $db, Statement $stmt, ?OrderBy $order_by = null, Pager $pager, ?Cursor $cursor = null, ?int $total = null, string $class = 'stdClass') : Paginator
     {
-        $cursor = $cursor && !$cursor->expired() && $cursor->pager()->verify($pager) ? $cursor : null ;
+        $cursor = $this->verify($pager, $cursor);
 
-        $items       = [];
-        $page        = $pager->page();
-        $page_size   = $pager->size();
-        $use_curosr  = $pager->useCursor();
-        $is_forward  = !$cursor || $page >= $cursor->pager()->page() ;
-        $rs          = $is_forward ? $stmt->all($class) : $stmt->all($class)->reverse() ;
-        $cursor_data = null;
-        $count       = 0;
+        $items         = [];
+        $page          = $pager->page();
+        $page_size     = $pager->size();
+        $use_curosr    = $pager->useCursor();
+        $forward_feed  = !$cursor || $page >= $cursor->pager()->page() ;
+        $rs            = $forward_feed ? $stmt->all($class) : $stmt->all($class)->reverse() ;
+        $cursor_data   = null;
+        $count         = 0;
         foreach ($rs as $row) {
             if ($count < $page_size) {
                 $items[] = $row;

@@ -19,6 +19,7 @@
 	"require": {
         "php": "^7.1",
         "doctrine/annotations": "^1.6",
+        "greenlion/php-sql-parser": "^4.3",
         "monolog/monolog": "^1.24",
         "piwik/device-detector": "^3.11",
         "symfony/http-foundation": "^4.1",

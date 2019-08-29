@@ -4,6 +4,11 @@ namespace Rebet\Tests\Mock\Stub;
 use Rebet\Auth\Annotation\Authenticator;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Common\Annotation\Nest;
+use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Annotation\Table;
+use Rebet\Database\Annotation\Type;
+use Rebet\Database\Annotation\Unmap;
+use Rebet\DateTime\DateTime; // Use for Annotation
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
@@ -18,11 +23,15 @@ use Rebet\Tests\Mock\User; // Use for Annotation
  * @Channel("web")
  * @Method({"GET","PUT"})
  * @Where({"id": "[0-9]+"})
+ * @Table("table_name")
  */
 class AnnotatedStub
 {
     /**
      * @Nest(User::class)
+     * @PrimaryKey
+     * @Type(DateTime::class)
+     * @Unmap
      */
     public $annotations;
 
