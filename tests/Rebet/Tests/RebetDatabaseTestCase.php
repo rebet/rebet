@@ -1,15 +1,13 @@
 <?php
 namespace Rebet\Tests;
 
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\Operation\Composite;
-use PHPUnit\DbUnit\Operation\Factory;
-use PHPUnit\DbUnit\Operation\Operation;
-use PHPUnit\DbUnit\TestCaseTrait;
+use Exception;
+use Rebet\Common\Arrays;
 use Rebet\Config\Config;
 use Rebet\Database\Dao;
+use Rebet\Database\Database;
 use Rebet\Database\Driver\PdoDriver;
+use Rebet\Database\Pagination\Pager;
 
 /**
  * Rebet Database Test Case Class
@@ -18,86 +16,110 @@ use Rebet\Database\Driver\PdoDriver;
  */
 abstract class RebetDatabaseTestCase extends RebetTestCase
 {
-    use TestCaseTrait;
+    protected static $sqlite = null;
 
-    protected static $pdo = null;
-
-    private $connection = null;
-
-    final public function getConnection()
+    protected function setUp() : void
     {
-        if ($this->connection === null) {
-            if (self::$pdo == null) {
-                self::$pdo = new PdoDriver('sqlite::memory:');
-            }
-            $this->connection = $this->createDefaultDBConnection(self::$pdo, ':memory:');
-            Config::application([
-                Dao::class => [
-                    'dbs' => [
-                        'main' => [
-                            'driver' => self::$pdo,
-                            'dsn'    => 'sqlite::memory:',
-                        ]
+        parent::setUp();
+        if (self::$sqlite == null) {
+            self::$sqlite = new PdoDriver('sqlite::memory:');
+        }
+        Config::application([
+            Dao::class => [
+                'dbs' => [
+                    'sqlite' => [
+                        'driver'   => self::$sqlite,
+                        'dsn'      => 'sqlite::memory:',
+                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
+                        // 'emulated_sql_log' => false,
+                    ],
+
+                    // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
+                    'mysql' => [
+                        'driver'   => PdoDriver::class,
+                        'dsn'      => 'mysql:host=localhost;dbname=rebet_test;charset=utf8mb4',
+                        'user'     => 'root',
+                        'password' => '',
+                        'options'  => [
+                            \PDO::ATTR_AUTOCOMMIT => false,
+                        ],
+                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
+                        // 'emulated_sql_log' => false,
+                    ],
+
+                    // CREATE DATABASE rebet_test WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
+                    // pg_hba.conf:
+                    //   host    all     postgres             127.0.0.1/32            trust
+                    //   host    all     postgres             ::1/128                 trust
+                    'pgsql' => [
+                        'driver'   => PdoDriver::class,
+                        'dsn'      => "pgsql:host=localhost;dbname=rebet_test;options='--client_encoding=UTF8'",
+                        'user'     => 'postgres',
+                        'password' => '',
+                        'options'  => [],
+                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
+                        // 'emulated_sql_log' => false,
                     ],
                 ]
-            ]);
-        }
-
-        return $this->connection;
-    }
-
-    protected function getSetUpOperation()
-    {
-        return new Composite([
-            new class($this) implements Operation {
-                private $test_case;
-
-                public function __construct($test_case)
-                {
-                    $this->test_case = $test_case;
-                }
-
-                public function execute(Connection $connection, IDataSet $dataSet)
-                {
-                    foreach ($this->test_case->getSchemaSet() as $table => $ddl) {
-                        $connection->getConnection()->query($ddl);
-                    }
-
-                    foreach ($dataSet as $table_name => $table) {
-                        $connection->getConnection()->query("CREATE TABLE IF NOT EXISTS {$table_name}(". join(',', $table->getTableMetaData()->getColumns()).");");
-                    }
-                }
-            },
-            Factory::TRUNCATE(),
-            Factory::INSERT()
+            ],
+            Pager::class => [
+                'resolver' => function (Pager $pager) { return $pager; }
+            ]
         ]);
-    }
 
-    protected function getTearDownOperation()
-    {
-        return new class($this) implements Operation {
-            private $test_case;
-
-            public function __construct($test_case)
-            {
-                $this->test_case = $test_case;
+        foreach (array_keys(Dao::config('dbs')) as $db_name) {
+            try {
+                $db = Dao::db($db_name);
+            } catch (Exception $e) {
+                // Skip not ready
+                continue;
             }
 
-            public function execute(Connection $connection, IDataSet $dataSet)
-            {
-                foreach ($this->test_case->getSchemaSet() as $table => $ddl) {
-                    $connection->getConnection()->query("DROP TABLE IF EXISTS {$table};");
-                }
+            $tables = $this->tables($db_name);
+            foreach ($tables as $table_name => $dml) {
+                $db->execute("DROP TABLE IF EXISTS {$table_name}");
+                $db->execute($dml);
 
-                foreach ($dataSet->getTableNames() as $table) {
-                    $connection->getConnection()->query("DROP TABLE IF EXISTS {$table};");
+                $records = $this->records($db_name, $table_name);
+                foreach ($records as $record) {
+                    if (Arrays::isSequential($record)) {
+                        $db->execute("INSERT INTO {$table_name} VALUES (:values)", ['values' => $record]);
+                    } else {
+                        $db->execute("INSERT INTO {$table_name} (". join(',', array_keys($record)).") VALUES (:values)", ['values' => $record]);
+                    }
                 }
             }
-        };
+        }
     }
 
-    public function getSchemaSet() : array
+    abstract protected function tables(string $db_name) : array;
+
+    abstract protected function records(string $db_name, string $table_name) : array;
+
+    protected function tearDown()
     {
-        return [];
+        foreach (array_keys(Dao::config('dbs')) as $db_name) {
+            try {
+                $db = Dao::db($db_name);
+            } catch (Exception $e) {
+                // Skip not ready
+                continue;
+            }
+
+            $tables = $this->tables($db_name);
+            foreach ($tables as $table_name => $dml) {
+                $db->execute("DROP TABLE IF EXISTS {$table_name}");
+            }
+        }
+    }
+
+    protected function ready(string $db_name) : ?Database
+    {
+        try {
+            return Dao::db($db_name);
+        } catch (\Exception $e) {
+            $this->markTestSkipped("There is no '{$db_name}' database for test environment : {$e}");
+        }
+        return null;
     }
 }

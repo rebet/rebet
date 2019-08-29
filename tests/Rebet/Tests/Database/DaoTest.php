@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use PHPUnit\DbUnit\DataSet\ArrayDataSet;
 use Rebet\Common\Strings;
 use Rebet\Config\Config;
 use Rebet\Database\Dao;
@@ -30,33 +29,36 @@ class DaoTest extends RebetDatabaseTestCase
         ]);
     }
 
-    public function getSchemaSet() : array
+    protected function tables(string $db_name) : array
     {
         return [
-            'users' => <<<EOS
-                CREATE TABLE IF NOT EXISTS users (
-                    user_id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    gender INTEGER NOT NULL,
-                    birthday TEXT NOT NULL,
-                    email TEXT NOT NULL,
-                    role TEXT NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT
-                );
+            'sqlite' => [
+                'users' => <<<EOS
+                    CREATE TABLE IF NOT EXISTS users (
+                        user_id INTEGER PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        gender INTEGER NOT NULL,
+                        birthday TEXT NOT NULL,
+                        email TEXT NOT NULL,
+                        role TEXT NOT NULL,
+                        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TEXT
+                    );
 EOS
-        ];
+
+            ]
+        ][$db_name] ?? [];
     }
 
-    protected function getDataSet()
+    protected function records(string $db_name, string $table_name) : array
     {
-        return new ArrayDataSet([
+        return [
             'users' => [
                 ['user_id' => 1, 'name' => 'John Smith'    , 'gender' => 1, 'birthday' => '1988-01-23', 'email' => 'john@rebet.local', 'role' => 'user'],
                 ['user_id' => 2, 'name' => 'Jane Smith'    , 'gender' => 2, 'birthday' => '1999-11-09', 'email' => 'jane@rebet.local', 'role' => 'user'],
                 ['user_id' => 3, 'name' => 'Robert Baldwin', 'gender' => 1, 'birthday' => '1991-08-14', 'email' => 'bob@rebet.local' , 'role' => 'user'],
             ],
-        ]);
+        ][$table_name] ?? [];
     }
 
     public function test___construct()

@@ -1,12 +1,9 @@
 <?php
 namespace Rebet\Tests\Database\Converter;
 
-use PHPUnit\DbUnit\DataSet\ArrayDataSet;
 use Rebet\Common\Decimal;
 use Rebet\Common\Reflector;
-use Rebet\Config\Config;
 use Rebet\Database\Dao;
-use Rebet\Database\Driver\PdoDriver;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -16,55 +13,22 @@ class BuiltinConverterTest extends RebetDatabaseTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        Config::application([
-            Dao::class => [
-                'dbs' => [
-                    'sqlite' => [
-                        'driver'   => self::$pdo,
-                    ],
-
-                    // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
-                    'mysql' => [
-                        'driver'   => PdoDriver::class,
-                        'dsn'      => 'mysql:host=localhost;dbname=rebet_test;charset=utf8mb4',
-                        'user'     => 'root',
-                        'password' => '',
-                        'options'  => [
-                            \PDO::ATTR_AUTOCOMMIT => false,
-                        ],
-                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; }
-                    ],
-
-                    // CREATE DATABASE rebet_test WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
-                    // pg_hba.conf:
-                    //   host    all     postgres             127.0.0.1/32            trust
-                    //   host    all     postgres             ::1/128                 trust
-                    'pgsql' => [
-                        'driver'   => PdoDriver::class,
-                        'dsn'      => "pgsql:host=localhost;dbname=rebet_test;options='--client_encoding=UTF8'",
-                        'user'     => 'postgres',
-                        'password' => '',
-                        'options'  => [],
-                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; }
-                        'emulated_sql_log' => false,
-                    ],
-                ]
-            ]
-        ]);
     }
 
-    protected function getDataSet()
+    protected function tables(string $db_name) : array
     {
-        return new ArrayDataSet([
-        ]);
+        return [];
+    }
+
+    protected function records(string $db_name, string $table_name) : array
+    {
+        return [];
     }
 
     public function test_toPhpType_sqlite()
     {
-        try {
-            $db = Dao::db('sqlite');
-        } catch (\Exception $e) {
-            $this->markTestSkipped("There is no SQLite database for test environment : {$e}");
+        $db = $this->ready('sqlite');
+        if (!$db) {
             return;
         }
         $dml = <<<EOS

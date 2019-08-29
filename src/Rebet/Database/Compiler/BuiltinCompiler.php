@@ -224,7 +224,7 @@ class BuiltinCompiler implements Compiler
             $delta = $count <= $page_size ? 0 : 1 ;
             Cursor::create($order_by, $pager->next($delta), $cursor_data, $next_page_count - $delta)->save();
         }
-        return new Paginator($items, $page_size, $page, $total, $next_page_count);
+        return new Paginator($items, $pager->eachSide(), $page_size, $page, $total, $next_page_count);
     }
 
     /**

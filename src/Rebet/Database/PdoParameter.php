@@ -59,4 +59,58 @@ class PdoParameter
         }
         return "TYPE({$type})";
     }
+
+    /**
+     * Create string (PDO::PARAM_STR) type parameter.
+     *
+     * @param mixed $value
+     * @return self
+     */
+    public static function str($value) : self
+    {
+        return new static($value, \PDO::PARAM_STR);
+    }
+
+    /**
+     * Create integer (PDO::PARAM_INT) type parameter.
+     *
+     * @param mixed $value
+     * @return self
+     */
+    public static function int($value) : self
+    {
+        return new static($value, \PDO::PARAM_INT);
+    }
+
+    /**
+     * Create boolean (PDO::PARAM_BOOL) type parameter.
+     *
+     * @param mixed $value
+     * @return self
+     */
+    public static function bool($value) : self
+    {
+        return new static($value, \PDO::PARAM_BOOL);
+    }
+
+    /**
+     * Create lob (PDO::PARAM_LOB) type parameter.
+     *
+     * @param mixed $value
+     * @return self
+     */
+    public static function lob($value) : self
+    {
+        return new static($value, \PDO::PARAM_LOB);
+    }
+
+    /**
+     * Create null (PDO::PARAM_NULL) type parameter.
+     *
+     * @return self
+     */
+    public static function null() : self
+    {
+        return new static(null, \PDO::PARAM_NULL);
+    }
 }
