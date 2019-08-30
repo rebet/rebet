@@ -3,6 +3,7 @@ namespace Rebet\Database\Converter;
 
 use Rebet\Common\Decimal;
 use Rebet\Database\Database;
+use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
@@ -24,6 +25,9 @@ class BuiltinConverter implements Converter
     public function toPdoType(Database $db, $value) : PdoParameter
     {
         if ($value instanceof Enum) {
+            $value = $value->value;
+        }
+        if ($value instanceof Expression) {
             $value = $value->value;
         }
 

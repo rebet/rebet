@@ -8,6 +8,7 @@ use Rebet\Database\Compiler\Analysis\Analyzer;
 use Rebet\Database\Compiler\Analysis\BuiltinAnalyzer as RebetBuiltinAnalyzer;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -253,6 +254,9 @@ class BuiltinCompiler implements Compiler
     public function convertParam(Database $db, string $key, $value) : array
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
+        if ($value instanceof Expression) {
+            return [str_replace('?', $key, $value->expression), $value->value === null ? [] : [$key => $db->convertToPdo($value->value)]];
+        }
         if (!is_array($value)) {
             return [$key, [$key => $db->convertToPdo($value)]];
         }
@@ -261,17 +265,18 @@ class BuiltinCompiler implements Compiler
         $params      = [];
         $index       = 0;
         foreach ($value as $v) {
-            $function = '?';
-            if (is_array($v)) {
-                [$function, $v] = $v;
+            $expression = '?';
+            if ($v instanceof Expression) {
+                $expression = $v->expression;
+                $v          = $v->value;
             }
-            if (Strings::contains($function, '?')) {
+            if (Strings::contains($expression, '?')) {
                 $unfold_key          = "{$key}__{$index}";
                 $params[$unfold_key] = $db->convertToPdo($v);
-                $unfold_keys[]       = str_replace('?', $unfold_key, $function);
+                $unfold_keys[]       = str_replace('?', $unfold_key, $expression);
                 $index++;
             } else {
-                $unfold_keys[] = $function;
+                $unfold_keys[] = $expression;
             }
         }
         return [join(', ', $unfold_keys), $params];
