@@ -41,18 +41,6 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
     }
 
     /**
-     * Create cursor from this orders.
-     *
-     * @param integer $page
-     * @param mixed $data
-     * @return Cursor
-     */
-    public function cursor(int $page, $data) : Cursor
-    {
-        return Cursor::create($this, $page, $data);
-    }
-
-    /**
      * Get the reverse order
      *
      * @return self

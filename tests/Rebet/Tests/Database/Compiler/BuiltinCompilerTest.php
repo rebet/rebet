@@ -3,7 +3,6 @@ namespace Rebet\Tests\Database\Compiler;
 
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
-use Rebet\Database\Dao;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -428,6 +427,46 @@ EOS
                 $pager = Pager::resolve()->page(9)->eachSide(5),   // [9] (10) {11} 12 13 14 15
                 Cursor::create($order_by, $pager->next(2), ['user_id' => 21], 4)
             ],
+            [
+                ['sqlite', 'mysql'],
+                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.create_at = :cursor__0 AND article_id >= :cursor__1) OR (A.create_at < :cursor__0)) ORDER BY article_create_at DESC, article_id ASC LIMIT 11 OFFSET 0",
+                [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06'), ':cursor__1' => PdoParameter::int(21)],
+                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
+                $order_by = ['article_create_at' => 'desc', 'article_id' => 'asc'],
+                null,
+                $pager = Pager::resolve()->page(3),   // {[3]} (4)
+                Cursor::create($order_by, $pager, ['article_create_at' => DateTime::now(), 'article_id' => 21], null)
+            ],
+            [
+                ['pgsql'],
+                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.create_at = :cursor__0 AND article_id >= :cursor__1) OR (A.create_at < :cursor__0)) ORDER BY article_create_at DESC, article_id ASC LIMIT 11 OFFSET 0",
+                [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06+0000'), ':cursor__1' => PdoParameter::int(21)],
+                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
+                $order_by = ['article_create_at' => 'desc', 'article_id' => 'asc'],
+                null,
+                $pager = Pager::resolve()->page(3),   // {[3]} (4)
+                Cursor::create($order_by, $pager, ['article_create_at' => DateTime::now(), 'article_id' => 21], null)
+            ],
+            [
+                ['sqlite', 'mysql'],
+                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user WHERE (COALESCE(update_at,create_at) = :cursor__0 AND user_id >= :cursor__1) OR (COALESCE(update_at,create_at) > :cursor__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
+                [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06'), ':cursor__1' => PdoParameter::int(21)],
+                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user",
+                $order_by = ['change_at' => 'asc', 'user_id' => 'asc'],
+                null,
+                $pager = Pager::resolve()->page(3),   // {[3]} (4)
+                Cursor::create($order_by, $pager, ['change_at' => DateTime::now(), 'user_id' => 21], null)
+            ],
+            [
+                ['pgsql'],
+                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user WHERE (COALESCE(update_at,create_at) = :cursor__0 AND user_id >= :cursor__1) OR (COALESCE(update_at,create_at) > :cursor__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
+                [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06+0000'), ':cursor__1' => PdoParameter::int(21)],
+                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user",
+                $order_by = ['change_at' => 'asc', 'user_id' => 'asc'],
+                null,
+                $pager = Pager::resolve()->page(3),   // {[3]} (4)
+                Cursor::create($order_by, $pager, ['change_at' => DateTime::now(), 'user_id' => 21], null)
+            ],
         ];
     }
 
@@ -440,10 +479,7 @@ EOS
             if (!in_array($db_kind, $target_db_kinds)) {
                 continue;
             }
-            try {
-                $db = Dao::db($db_kind);
-            } catch (\Exception $e) {
-                $this->markTestSkipped("Database '$db_kind' was not ready.");
+            if (!($db = $this->connect($db_kind))) {
                 continue;
             }
             [$compiled_sql, $compiled_params] = $this->compiler->compile($db, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);

@@ -1,9 +1,11 @@
 <?php
 namespace Rebet\Database\Compiler;
 
-use PHPSQLParser\PHPSQLParser;
 use Rebet\Common\Arrays;
 use Rebet\Common\Strings;
+use Rebet\Config\Configurable;
+use Rebet\Database\Compiler\Analysis\Analyzer;
+use Rebet\Database\Compiler\Analysis\BuiltinAnalyzer as RebetBuiltinAnalyzer;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\OrderBy;
@@ -20,8 +22,7 @@ use Rebet\Database\Statement;
  *
  *  1. App of primary key element must be included in the 'Order By' conditions.
  *  2. All of 'Order By' columns must be included in SELECT phrase.
- *  3. All of 'Order By' columns must be able to access in WHERE (or HAVING) phrase.
- *  4．If the SQL top level WHERE (or HAVING) contains an OR, it must be enclosed in parenthes.
+ *  3．If the SQL top level WHERE (or HAVING) contains an OR, it must be enclosed in parenthes.
  *     ex) NG: SELECT * FROM user WHERE foo = 1 OR bar = 2
  *         OK: SELECT * FROM user WHERE (foo = 1 OR bar = 2)
  *
@@ -32,6 +33,15 @@ use Rebet\Database\Statement;
  */
 class BuiltinCompiler implements Compiler
 {
+    use Configurable;
+
+    public static function defaultConfig()
+    {
+        return [
+            'analyzer' => RebetBuiltinAnalyzer::class,
+        ];
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -66,17 +76,22 @@ class BuiltinCompiler implements Compiler
                     $sql    = "{$sql} LIMIT {$limit} OFFSET {$offset}";
                 }
             } else {
+                $analyzer                 = static::config('analyzer')::analyze($db, $sql);
                 $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
                 $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
                 $order_by                 = $forward_feed || $near_by_first ? $order_by : $order_by->reverse() ;
                 $order_sql                = $this->compileOrderBy($db, $order_by);
-                [$cursor_sql, $pdo_param] = $this->compileCursor($db, $order_by, $cursor, $forward_feed, $near_by_first);
+                [$cursor_sql, $pdo_param] = $this->compileCursor($db, $analyzer, $order_by, $cursor, $forward_feed, $near_by_first);
                 $pdo_params               = array_merge($pdo_params, $pdo_param);
                 $offset                   = $this->offset($pager, $cursor, $forward_feed, $near_by_first);
                 $limit                    = $this->limit($pager, $cursor, $forward_feed, $near_by_first);
-                $parser                   = new PHPSQLParser($sql);
-                $sql                      = isset($parser->parsed['WHERE']) || isset($parser->parsed['HAVING']) ? "{$sql} AND ({$cursor_sql})" : "{$sql} WHERE {$cursor_sql}" ;
-                $sql                      = "{$sql} ORDER BY {$order_sql} LIMIT {$limit} OFFSET {$offset}";
+                $sql                      = $analyzer->isUnion() ? "SELECT * FROM ({$sql}) AS T" : $sql ;
+                if ($analyzer->hasGroupBy()) {
+                    $sql = $analyzer->hasHaving() ? "{$sql} AND ({$cursor_sql})" : "{$sql} HAVING {$cursor_sql}" ;
+                } else {
+                    $sql = $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$cursor_sql})" : "{$sql} WHERE {$cursor_sql}" ;
+                }
+                $sql = "{$sql} ORDER BY {$order_sql} LIMIT {$limit} OFFSET {$offset}";
             }
         }
 
@@ -163,24 +178,27 @@ class BuiltinCompiler implements Compiler
      * Compile cursor condition
      *
      * @param Database $db
+     * @param Analyzer $analyzer of sql
      * @param OrderBy $order_by
      * @param Cursor $cursor
      * @param bool $forward_feed
      * @param bool $near_by_first
      * @return array of [$where, $pdo_params]
      */
-    protected function compileCursor(Database $db, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
+    protected function compileCursor(Database $db, Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
     {
         $expressions = $forward_feed && !$near_by_first ? ['ASC' => '>', 'DESC' => '<'] : ['ASC' => '<', 'DESC' => '>'] ;
         $first       = true;
 
-        $where       = "";
-        $cursor_cols = array_keys($cursor->toArray());
+        $where        = "";
+        $cursor_cols  = array_keys($cursor->toArray());
+        $has_group_by = $analyzer->hasGroupBy();
         do {
             $where .= $first ? "(" : " OR (" ;
             $last   = array_pop($cursor_cols);
             $i      = 0;
             foreach ($cursor_cols as $col) {
+                $col    = $has_group_by ? $col : $analyzer->extractAliasSelectColumn($col) ;
                 $where .= "{$col} = :cursor__{$i} AND ";
                 $i++;
             }
@@ -188,6 +206,8 @@ class BuiltinCompiler implements Compiler
             $expression  = $expressions[$order_by[$last]];
             $expression .= $first ? '=' : '' ;
             $first       = false;
+
+            $last = $has_group_by ? $last : $analyzer->extractAliasSelectColumn($last) ;
 
             $where .= "{$last} {$expression} :cursor__{$i}";
             $where .= ")";

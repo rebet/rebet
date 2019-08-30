@@ -3,32 +3,15 @@ namespace Rebet\Tests\Database\Converter;
 
 use Rebet\Common\Decimal;
 use Rebet\Common\Reflector;
-use Rebet\Database\Dao;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinConverterTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void
-    {
-        parent::setUp();
-    }
-
-    protected function tables(string $db_name) : array
-    {
-        return [];
-    }
-
-    protected function records(string $db_name, string $table_name) : array
-    {
-        return [];
-    }
-
     public function test_toPhpType_sqlite()
     {
-        $db = $this->ready('sqlite');
-        if (!$db) {
+        if (!($db = $this->connect('sqlite', true))) {
             return;
         }
         $dml = <<<EOS
@@ -92,10 +75,7 @@ EOS;
 
     public function test_toPhpType_mysql()
     {
-        try {
-            $db = Dao::db('mysql');
-        } catch (\Exception $e) {
-            $this->markTestSkipped("There is no MySQL database for test environment : {$e}");
+        if (!($db = $this->connect('mysql', true))) {
             return;
         }
         $db->execute("DROP TABLE IF EXISTS native_types;");
@@ -259,10 +239,7 @@ EOS;
 
     public function test_toPhpType_pgsql()
     {
-        try {
-            $db = Dao::db('pgsql');
-        } catch (\Exception $e) {
-            $this->markTestSkipped("There is no PostgreSQL database for test environment : {$e}");
+        if (!($db = $this->connect('pgsql', true))) {
             return;
         }
         $db->execute("DROP TABLE IF EXISTS native_types;");

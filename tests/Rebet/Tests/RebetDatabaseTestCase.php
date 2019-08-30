@@ -92,9 +92,15 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         }
     }
 
-    abstract protected function tables(string $db_name) : array;
+    protected function tables(string $db_name) : array
+    {
+        return [];
+    }
 
-    abstract protected function records(string $db_name, string $table_name) : array;
+    protected function records(string $db_name, string $table_name) : array
+    {
+        return [];
+    }
 
     protected function tearDown()
     {
@@ -113,12 +119,14 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         }
     }
 
-    protected function ready(string $db_name) : ?Database
+    protected function connect(string $db, bool $mark_test_skiped = false) : ?Database
     {
         try {
-            return Dao::db($db_name);
+            return Dao::db($db);
         } catch (\Exception $e) {
-            $this->markTestSkipped("There is no '{$db_name}' database for test environment : {$e}");
+            if ($mark_test_skiped) {
+                $this->markTestSkipped("Database '$db' was not ready.");
+            }
         }
         return null;
     }
