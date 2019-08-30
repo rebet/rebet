@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Database\Pagination\Storage;
 
+use Rebet\Database\Pagination\Cursor;
+
 /**
  * Array Cursor Storage Class.
  *
@@ -31,7 +33,7 @@ class ArrayCursorStorage implements CursorStorage
      */
     public function load(string $name) : ?Cursor
     {
-        return static::$cursor[$name] ?? null ;
+        return static::$strage[$name] ?? null ;
     }
 
     /**

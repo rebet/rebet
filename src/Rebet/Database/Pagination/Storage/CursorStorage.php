@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Database\Pagination\Storage;
 
+use Rebet\Database\Pagination\Cursor;
+
 /**
  * Cursor Storage Interface
  *
