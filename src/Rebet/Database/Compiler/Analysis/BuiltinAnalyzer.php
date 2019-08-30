@@ -150,12 +150,7 @@ class BuiltinAnalyzer implements Analyzer
                 return '';
             }
         })->build($parsed);
-        $sql .= (new class extends ReservedBuilder {
-            protected function buildAlias($parsed)
-            {
-                return '';
-            }
-        })->build($parsed);
+        $sql .= (new ReservedBuilder())->build($parsed);
 
         return $sql;
     }

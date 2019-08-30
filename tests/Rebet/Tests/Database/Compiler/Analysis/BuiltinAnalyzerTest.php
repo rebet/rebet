@@ -118,6 +118,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
             ['1', "SELECT 1 as foo FROM users", 'foo'],
             ["'foo'", "SELECT 'foo' as foo FROM users", 'foo'],
             ['now()', "SELECT now() as foo FROM users", 'foo'],
+            ['(1 + 2)', "SELECT (1 + 2) as foo FROM users", 'foo'],
+            ['1 + 2', "SELECT 1 + 2 as foo FROM users", 'foo'],
             ['CURRENT_TIMESTAMP', "SELECT CURRENT_TIMESTAMP as foo FROM users", 'foo'],
             ['COALESCE(update_at,create_at)', "SELECT COALESCE(update_at, create_at) as change_at FROM users", 'change_at'],
             ['COUNT(*)', "SELECT gender, COUNT(*) as count, AVG(age) as average_age FROM users GROUP BY gender", 'count'],
