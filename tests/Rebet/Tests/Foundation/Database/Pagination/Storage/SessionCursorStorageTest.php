@@ -3,11 +3,11 @@ namespace Rebet\Tests\Database;
 
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
-use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\Database\Pagination\Storage\CursorStorage;
+use Rebet\Foundation\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Tests\RebetTestCase;
 
-class ArrayCursorStorageTest extends RebetTestCase
+class SessionCursorStorageTest extends RebetTestCase
 {
     /**
      * @var CursorStorage
@@ -16,12 +16,13 @@ class ArrayCursorStorageTest extends RebetTestCase
 
     protected function setUp()
     {
-        $this->strage = new ArrayCursorStorage();
+        $this->strage = new SessionCursorStorage();
     }
 
     public function test_saveAndLoadAndRemove()
     {
-        $cursor = Cursor::create(['user_id' => 'asc'], new Pager(1), ['user_id' => 12], 3);
+        $request = $this->createRequestMock('/');
+        $cursor  = Cursor::create(['user_id' => 'asc'], new Pager(1), ['user_id' => 12], 3);
         $this->assertNull($this->strage->load('user:search'));
         $this->strage->save('user:search', $cursor);
         $this->assertEquals($cursor, $this->strage->load('user:search'));

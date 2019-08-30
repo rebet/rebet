@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Foundation\Database\Pagination\Storage;
 
+use Rebet\Database\Pagination\Cursor;
+use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\Http\Session\Session;
 
 /**
