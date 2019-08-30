@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Event;
 
+use Rebet\Database\Database;
 use Rebet\Database\Entity;
 
 /**
@@ -14,6 +15,11 @@ use Rebet\Database\Entity;
 class Deleting
 {
     /**
+     * @var Database
+     */
+    public $db;
+
+    /**
      * The entity when before this event occured.
      *
      * @var Entity
@@ -23,10 +29,12 @@ class Deleting
     /**
      * Create an event
      *
+     * @param Database $db
      * @param Entity $old
      */
-    public function __construct(Entity $old)
+    public function __construct(Database $db, Entity $old)
     {
+        $this->db  = $db;
         $this->old = $old;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Event;
 
+use Rebet\Database\Database;
 use Rebet\Database\Entity;
 
 /**
@@ -13,6 +14,11 @@ use Rebet\Database\Entity;
  */
 class Updating implements Saving
 {
+    /**
+     * @var Database
+     */
+    public $db;
+
     /**
      * The entity when before this event occured.
      *
@@ -30,11 +36,13 @@ class Updating implements Saving
     /**
      * Create an event
      *
+     * @param Database $db
      * @param Entity $old
      * @param Entity $new
      */
-    public function __construct(Entity $old, Entity &$new)
+    public function __construct(Database $db, Entity $old, Entity &$new)
     {
+        $this->db  = $db;
         $this->old = $old;
         $this->new = $new;
     }

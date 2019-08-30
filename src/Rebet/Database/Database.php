@@ -538,7 +538,7 @@ class Database
      */
     public function create(Entity $entity) : bool
     {
-        Event::dispatch(new Creating($entity));
+        Event::dispatch(new Creating($this, $entity));
 
         $unmaps  = $entity->unmaps();
         $columns = [];
@@ -565,7 +565,7 @@ class Database
                 $entity->{$primarys[0]} = $this->lastInsertId();
             }
             $entity->origin(clone $entity);
-            Event::dispatch(new Created($entity));
+            Event::dispatch(new Created($this, $entity));
             return true;
         }
 
@@ -604,7 +604,7 @@ class Database
     public function update(Entity $entity) : bool
     {
         $old = $entity->origin();
-        Event::dispatch(new Updating($old, $entity));
+        Event::dispatch(new Updating($this, $old, $entity));
 
         [$where, $params] = $this->buildPrimaryWheresFrom($entity);
         $changes          = $entity->changes();
@@ -628,7 +628,7 @@ class Database
         $affected_rows = $this->execute("UPDATE ".$entity->tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
         if ($affected_rows === 1) {
             $entity->origin(clone $entity);
-            Event::dispatch(new Updated($old, $entity));
+            Event::dispatch(new Updated($this, $old, $entity));
             return true;
         }
 
@@ -654,12 +654,12 @@ class Database
      */
     public function delete(Entity $entity) : bool
     {
-        Event::dispatch(new Deleting($entity));
+        Event::dispatch(new Deleting($this, $entity));
         [$where, $params] = $this->buildPrimaryWheresFrom($entity);
 
         $affected_rows = $this->execute("DELETE FROM ".$entity->tabelName()." WHERE {$where}", $params);
         if ($affected_rows === 1) {
-            Event::dispatch(new Deleted($entity));
+            Event::dispatch(new Deleted($this, $entity));
             return true;
         }
 

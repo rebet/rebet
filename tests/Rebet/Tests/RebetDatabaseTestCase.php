@@ -27,6 +27,13 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         Config::application([
             Dao::class => [
                 'dbs' => [
+                    'main'   => [
+                        'driver'   => self::$sqlite,
+                        'dsn'      => 'sqlite::memory:',
+                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
+                        // 'emulated_sql_log' => false,
+                    ],
+
                     'sqlite' => [
                         'driver'   => self::$sqlite,
                         'dsn'      => 'sqlite::memory:',
@@ -119,7 +126,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         }
     }
 
-    protected function connect(string $db, bool $mark_test_skiped = false) : ?Database
+    protected function connect(?string $db = null, bool $mark_test_skiped = false) : ?Database
     {
         try {
             return Dao::db($db);

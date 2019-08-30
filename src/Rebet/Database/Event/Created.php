@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Event;
 
+use Rebet\Database\Database;
 use Rebet\Database\Entity;
 
 /**
@@ -14,6 +15,11 @@ use Rebet\Database\Entity;
 class Created implements Saved
 {
     /**
+     * @var Database
+     */
+    public $db;
+
+    /**
      * The entity when this event occured.
      *
      * @var Entity
@@ -23,10 +29,12 @@ class Created implements Saved
     /**
      * Create an event
      *
+     * @param Database $db
      * @param Entity $new
      */
-    public function __construct(Entity &$new)
+    public function __construct(Database $db, Entity &$new)
     {
+        $this->db  = $db;
         $this->new = $new;
     }
 }
