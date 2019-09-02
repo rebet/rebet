@@ -448,7 +448,7 @@ class Database
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
         $total    = $pager->needTotal() ? ($count_optimised_sql ? $this->get('count', $count_optimised_sql, $params) : $this->count($sql, $params)) : null ;
         $order_by = OrderBy::valueOf($order_by);
-        return $this->compiler()->paging($this, $this->query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
+        return $this->compiler()->paging($this, $total === 0 ? [] : $this->query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
     }
 
     /**

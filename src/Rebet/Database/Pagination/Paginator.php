@@ -76,21 +76,36 @@ class Paginator extends ResultSet
      * @param mixed $items can be arrayable
      * @param int $page_size
      */
-    protected function __construct($items, int $each_side, int $page_size, ?int $page = null, ?long $total = null, ?int $next_page_count = null)
+
+    /**
+     * Create Paginator instance
+     *
+     * @param mixed $items can be arrayable
+     * @param int $each_side
+     * @param int $page_size
+     * @param int|null $page
+     * @param int|null $total (default: null)
+     * @param int|null $next_page_count (default: null)
+     */
+    public function __construct($items, int $each_side, int $page_size, ?int $page, ?int $total = null, ?int $next_page_count = null)
     {
+        if ($total === null && $next_page_count === null) {
+            throw new \InvalidArgumentException("Invalid paginator arguments. Argument total or next_page_count may not be null at least one.");
+        }
         parent::__construct($items);
 
         $count     = Arrays::count($items);
         $page      = (empty($page) || $page < 1) ? 1 : $page ;
+        $page_size = $page_size < 1 ? 1 : $page_size ;
         $last_page = null;
         if ($total !== null) {
-            $last_page       = floor($total / $page_size) + ($total % $page_size == 0 ? 0 : 1);
+            $last_page       = intval(floor($total / $page_size) + ($total % $page_size == 0 ? 0 : 1));
             $last_page       = $last_page === 0 ? 1 : $last_page ;
             $page            = $last_page < $page ? $last_page : $page ;
             $next_page_count = $last_page - $page;
         }
         $from = $page === 1 && $count === 0 ? 0 : ($page - 1) * $page_size + 1 ;
-        $to   = $from + $count - 1;
+        $to   = $from === 0 ? 0 : $from + $count - 1 ;
 
         $this->each_side       = $each_side;
         $this->total           = $total;
