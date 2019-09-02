@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Database;
+namespace Rebet\Tests\Database\Pagination\Storage;
 
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;

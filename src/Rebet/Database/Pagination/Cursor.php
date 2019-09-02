@@ -64,7 +64,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param array $cursor of [col => $value, ... ]
      * @param int|null $next_page_count that confirmed to be exists
      */
-    public function __construct(Pager $pager, array $cursor, ?int $next_page_count)
+    public function __construct(Pager $pager, array $cursor, ?int $next_page_count = null)
     {
         $this->pager           = $pager;
         $this->cursor          = $cursor;
@@ -133,7 +133,9 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     }
 
     /**
-     * Save the cursor to strage.
+     * Save the cursor to storage.
+     * NOTE: Name of cursor will use pager->curosr setting.
+     *       If the pager->cursor is empty then this method do nothing.
      *
      * @param CursorStorage|null $strage (default: depend on configured)
      * @return self
@@ -143,7 +145,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         if (!$this->pager->useCursor()) {
             return $this;
         }
-        $strage = $strage ?? static::configInstantiate('strage') ;
+        $strage = $strage ?? static::configInstantiate('storage') ;
         $strage->save($this->pager->cursor(), $this);
         return $this;
     }
@@ -157,8 +159,8 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     public static function load(string $name, ?CursorStorage $strage = null) : ?self
     {
-        $strage = $strage ?? static::configInstantiate('strage') ;
+        $strage = $strage ?? static::configInstantiate('storage') ;
         $cursor = $strage->load($name);
-        return $cursor->expired() ? null : $cursor ;
+        return $cursor === null || $cursor->expired() ? null : $cursor ;
     }
 }
