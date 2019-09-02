@@ -16,6 +16,7 @@ use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
 use Rebet\Database\Pagination\Cursor;
+use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
@@ -122,6 +123,9 @@ abstract class RebetTestCase extends TestCase
                     'role' => '@guest',
                 ],
             ],
+            Pager::class => [
+                'resolver' => function (Pager $pager) { return $pager; }
+            ]
         ]);
         Enum::clear();
         Event::clear();

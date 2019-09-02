@@ -7,7 +7,6 @@ use Rebet\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\PdoDriver;
-use Rebet\Database\Pagination\Pager;
 
 /**
  * Rebet Database Test Case Class
@@ -69,9 +68,6 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                     ],
                 ]
             ],
-            Pager::class => [
-                'resolver' => function (Pager $pager) { return $pager; }
-            ]
         ]);
 
         foreach (array_keys(Dao::config('dbs')) as $db_name) {

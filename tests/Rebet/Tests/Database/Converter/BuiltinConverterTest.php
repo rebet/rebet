@@ -3,13 +3,24 @@ namespace Rebet\Tests\Database\Converter;
 
 use Rebet\Common\Decimal;
 use Rebet\Common\Reflector;
+use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Expression;
+use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
+use Rebet\DateTime\DateTimeZone;
+use Rebet\Foundation\App;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinConverterTest extends RebetDatabaseTestCase
 {
+    protected function setUp() : void
+    {
+        parent::setUp();
+        DateTime::setTestNow('2001-02-03 04:05:06');
+    }
+
     public function test_toPhpType_sqlite()
     {
         if (!($db = $this->connect('sqlite', true))) {
@@ -412,6 +423,50 @@ EOS;
             $meta_native_type = $meta[$col]['native_type'] ?? null;
             $this->assertSame($native_type, $meta_native_type, "Failed {$col} => {$native_type} actual {$meta_native_type}");
             $this->assertSame($php_type, Reflector::getType($rs->$col), "Failed {$col} => {$native_type} actual {$meta_native_type} {$rs->$col}");
+        }
+    }
+
+    public function dataToPdoTypes() : array
+    {
+        $this->setUp();
+        $file = fopen(App::path('/resources/image/72x72.png'), 'r');
+        return [
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), PdoParameter::int(1)],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), 1],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('a'), 'a'],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), Gender::MALE()],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('POINT(1 1)'), Expression::of('GeomFromText(?)', 'POINT(1 1)')],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), Expression::of('SUM(?)', 1)],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::null(), null],
+            [['sqlite', 'pgsql'], PdoParameter::bool(true), true],
+            [['mysql'], PdoParameter::int(1), true],
+            [['sqlite', 'pgsql'], PdoParameter::bool(false), false],
+            [['mysql'], PdoParameter::int(0), false],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::lob($file), $file],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('2001-02-03'), Date::today()],
+            [['sqlite', 'mysql'], PdoParameter::str('2001-02-03 04:05:06'), DateTime::now()],
+            [['pgsql'], PdoParameter::str('2001-02-03 04:05:06+0000'), DateTime::now()],
+            [['sqlite', 'mysql'], PdoParameter::str('2001-02-03 04:05:06'), new \DateTime('2001-02-03 04:05:06', new DateTimeZone('Asia/Tokyo'))],
+            [['pgsql'], PdoParameter::str('2001-02-03 04:05:06+0900'), new \DateTime('2001-02-03 04:05:06', new DateTimeZone('Asia/Tokyo'))],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('1234.5678'), new Decimal('1,234.5678')],
+
+        ];
+    }
+
+    /**
+     * @dataProvider dataToPdoTypes
+     */
+    public function test_toPdoType(array $target_db, PdoParameter $expect, $value)
+    {
+        $converter = new BuiltinConverter();
+        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
+            if (!in_array($db_kind, $target_db)) {
+                continue;
+            }
+            if (!($db = $this->connect($db_kind))) {
+                continue;
+            }
+            $this->assertEquals($expect, $converter->toPdoType($db, $value));
         }
     }
 }

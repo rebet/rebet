@@ -34,17 +34,17 @@ class BuiltinConverter implements Converter
         $driver_name = $db->driverName();
         switch (true) {
             case $value instanceof PdoParameter:       return $value;
-            case $value === null:                      return new PdoParameter(null, \PDO::PARAM_NULL);
-            case is_bool($value):                      return $driver_name === 'mysql' ? new PdoParameter($value ? 1 : 0, \PDO::PARAM_INT) : new PdoParameter($value, \PDO::PARAM_BOOL);
-            case is_int($value):                       return new PdoParameter($value, \PDO::PARAM_INT);
-            case is_float($value):                     return new PdoParameter($value, \PDO::PARAM_STR);
-            case is_resource($value):                  return new PdoParameter($value, \PDO::PARAM_LOB);
-            case $value instanceof Date:               return new PdoParameter($value->format("Y-m-d"), \PDO::PARAM_STR);
-            case $value instanceof \DateTimeInterface: return new PdoParameter($value->format($driver_name === 'pgsql' ? "Y-m-d H:i:sO" : "Y-m-d H:i:s"), \PDO::PARAM_STR);
-            case $value instanceof Decimal:            return new PdoParameter($value->normalize()->format(true, '.', ''), \PDO::PARAM_STR);
+            case $value === null:                      return PdoParameter::null();
+            case is_bool($value):                      return $driver_name === 'mysql' ? PdoParameter::int($value ? 1 : 0) : PdoParameter::bool($value);
+            case is_int($value):                       return PdoParameter::int($value);
+            case is_float($value):                     return PdoParameter::str($value);
+            case is_resource($value):                  return PdoParameter::lob($value);
+            case $value instanceof Date:               return PdoParameter::str($value->format("Y-m-d"));
+            case $value instanceof \DateTimeInterface: return PdoParameter::str($value->format($driver_name === 'pgsql' ? "Y-m-d H:i:sO" : "Y-m-d H:i:s"));
+            case $value instanceof Decimal:            return PdoParameter::str($value->normalize()->format(true, '.', ''));
         }
 
-        return new PdoParameter($value, \PDO::PARAM_STR);
+        return PdoParameter::str($value);
     }
 
     /**
