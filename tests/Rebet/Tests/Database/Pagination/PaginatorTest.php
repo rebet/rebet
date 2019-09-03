@@ -156,6 +156,15 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(27, $paginator->to());
     }
 
+    public function test_eachSide()
+    {
+        $paginator = new Paginator([], 0, 10, 1, null, 1);
+        $this->assertSame(0, $paginator->eachSide());
+
+        $paginator = new Paginator([1, 2, 3], 3, 10, 1, null, 1);
+        $this->assertSame(3, $paginator->eachSide());
+    }
+
     public function test_hasNext()
     {
         $paginator = new Paginator([1, 2, 3], 0, 3, 1, null, 0);
@@ -205,5 +214,59 @@ class PaginatorTest extends RebetTestCase
 
         $paginator = new Paginator([1, 2, 3], 0, 3, 1, 10);
         $this->assertSame(true, $paginator->hasLastPage());
+    }
+
+    public function dataEachSidePages() : array
+    {
+        return [
+            [[1]            , 0,  1,    0, null],
+            [[1]            , 0,  1,    1, null],
+            [[1]            , 0,  1,   11, null],
+            [[2]            , 0,  2,   11, null],
+            [[2]            , 0,  3,   11, null],
+            [[1]            , 2,  1,    0, null],
+            [[1]            , 2,  1,    1, null],
+            [[1, 2]         , 2,  1,   11, null],
+            [[1, 2, 3]      , 2,  1,   21, null],
+            [[1, 2, 3, 4]   , 2,  1,   31, null],
+            [[1, 2, 3, 4, 5], 2,  1,   41, null],
+            [[1, 2, 3, 4, 5], 2,  1,   51, null],
+            [[1, 2, 3, 4, 5], 2,  1,   61, null],
+            [[1, 2, 3, 4, 5], 2,  2,   61, null],
+            [[1, 2, 3, 4, 5], 2,  3,   61, null],
+            [[2, 3, 4, 5, 6], 2,  4,   61, null],
+            [[3, 4, 5, 6, 7], 2,  5,   61, null],
+            [[3, 4, 5, 6, 7], 2,  6,   61, null],
+            [[3, 4, 5, 6, 7], 2,  7,   61, null],
+            [[3, 4, 5, 6, 7], 2,  8,   61, null],
+            [[1, 2, 3, 4, 5], 2, -1,   61, null],
+
+            [[1]            , 0,  1, null,    0],
+            [[1]            , 0,  1, null,    1],
+            [[1]            , 0,  1, null,    2],
+            [[2]            , 0,  2, null,    1],
+            [[1]            , 2,  1, null,    0],
+            [[1, 2]         , 2,  1, null,    1],
+            [[1, 2, 3]      , 2,  1, null,    2],
+            [[1, 2, 3, 4]   , 2,  1, null,    3],
+            [[1, 2, 3, 4, 5], 2,  1, null,    4],
+            [[1, 2, 3, 4, 5], 2,  1, null,    5],
+            [[1, 2, 3, 4, 5], 2,  1, null,    6],
+            [[1, 2, 3, 4, 5], 2,  2, null,    5],
+            [[1, 2, 3, 4, 5], 2,  3, null,    4],
+            [[2, 3, 4, 5, 6], 2,  4, null,    3],
+            [[3, 4, 5, 6, 7], 2,  5, null,    2],
+            [[3, 4, 5, 6, 7], 2,  6, null,    1],
+            [[3, 4, 5, 6, 7], 2,  7, null,    0],
+        ];
+    }
+
+    /**
+     * @dataProvider dataEachSidePages
+     */
+    public function test_eachSidePages(array $expect, int $each_side, int $page, ?int $total, ?int $next_page_count = null)
+    {
+        $paginator = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $each_side, 10, $page, $total, $next_page_count);
+        $this->assertEquals($expect, $paginator->eachSidePages());
     }
 }

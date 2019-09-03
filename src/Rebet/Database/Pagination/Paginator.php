@@ -79,6 +79,7 @@ class Paginator extends ResultSet
 
     /**
      * Create Paginator instance
+     * NOTE: Argument total or next_page_count may not be null at least one.
      *
      * @param mixed $items can be arrayable
      * @param int $each_side
@@ -198,6 +199,16 @@ class Paginator extends ResultSet
     }
 
     /**
+     * Get the each_side count settings.
+     *
+     * @return integer|null
+     */
+    public function eachSide() : int
+    {
+        return $this->each_side;
+    }
+
+    /**
      * It checks next page is exist or not
      *
      * @return bool
@@ -214,7 +225,7 @@ class Paginator extends ResultSet
      */
     public function hasPrev() : bool
     {
-        return $this->page !== 1;
+        return $this->page > 1;
     }
 
     /**
@@ -235,5 +246,31 @@ class Paginator extends ResultSet
     public function hasLastPage() : bool
     {
         return $this->last_page !== null;
+    }
+
+    /**
+     * Get page numbers on each sides
+     *
+     * @return array
+     */
+    public function eachSidePages() : array
+    {
+        $start = $this->page - $this->each_side;
+        $end   = $this->page + $this->each_side;
+        if ($start < 1) {
+            $end   = min($end - $start + 1, $this->page + $this->next_page_count);
+            $start = 1;
+        }
+        if ($end - $this->page > $this->next_page_count) {
+            $end   = $this->page + $this->next_page_count;
+            $start = max(1, $start - ($this->each_side - $this->next_page_count));
+        }
+
+        $list = [];
+        for ($i = $start ; $i <= $end ; $i++) {
+            $list[] = $i;
+        }
+
+        return $list;
     }
 }
