@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Database;
 
 use Rebet\Database\OrderBy;
-use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tests\RebetTestCase;
 
-class OrderByTest extends RebetDatabaseTestCase
+class OrderByTest extends RebetTestCase
 {
     public function test___construct()
     {

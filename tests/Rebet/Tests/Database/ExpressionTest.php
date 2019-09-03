@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Database;
 
 use Rebet\Database\Expression;
-use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tests\RebetTestCase;
 
-class ExpressionTest extends RebetDatabaseTestCase
+class ExpressionTest extends RebetTestCase
 {
     public function test___construct()
     {
