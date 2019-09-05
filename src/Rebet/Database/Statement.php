@@ -3,6 +3,7 @@ namespace Rebet\Database;
 
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Database\Annotation\Type;
+use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Exception\DatabaseException;
 
 /**
@@ -83,15 +84,15 @@ class Statement implements \IteratorAggregate
     {
         try {
             foreach ($params as $key => $param) {
-                $param = $param instanceof PdoParameter ? $param : new PdoParameter($param, \PDO::PARAM_STR) ;
+                $param = $param instanceof PdoParameter ? $param : PdoParameter::str($param) ;
                 $this->stmt->bindValue($key, $param->value, $param->type);
             }
 
             if (! $this->stmt->execute()) {
-                throw DatabaseException::from($this->stmt->errorInfo(), ...$this->db->convertForLog($this->stmt->queryString, $params));
+                throw $this->db->exception($this->stmt->errorInfo(), $this->stmt->queryString, $params);
             }
         } catch (\PDOException $e) {
-            throw DatabaseException::from($e, ...$this->db->convertForLog($this->stmt->queryString, $params));
+            throw $this->db->exception($e, $this->stmt->queryString, $params);
         }
         $this->db->log($this->stmt->queryString, $params);
         return $this;

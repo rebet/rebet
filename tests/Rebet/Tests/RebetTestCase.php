@@ -148,7 +148,7 @@ abstract class RebetTestCase extends TestCase
     {
         if (in_array('--debug', $_SERVER['argv'], true)) {
             $spend = (microtime(true) - self::$start_at);
-            printf(" ... Time: %f [ms]\n", $spend * 1000);
+            printf(" ... Time: %f [ms] - ".get_class($this)."\n", $spend * 1000);
         }
     }
 

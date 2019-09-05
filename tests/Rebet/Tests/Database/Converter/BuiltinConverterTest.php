@@ -4,6 +4,7 @@ namespace Rebet\Tests\Database\Converter;
 use Rebet\Common\Decimal;
 use Rebet\Common\Reflector;
 use Rebet\Database\Converter\BuiltinConverter;
+use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
@@ -23,7 +24,7 @@ class BuiltinConverterTest extends RebetDatabaseTestCase
 
     public function test_toPhpType_sqlite()
     {
-        if (!($db = $this->connect('sqlite', true))) {
+        if (!($db = $this->connect('sqlite'))) {
             return;
         }
         $dml = <<<EOS
@@ -87,7 +88,7 @@ EOS;
 
     public function test_toPhpType_mysql()
     {
-        if (!($db = $this->connect('mysql', true))) {
+        if (!($db = $this->connect('mysql'))) {
             return;
         }
         $db->execute("DROP TABLE IF EXISTS native_types;");
@@ -251,7 +252,7 @@ EOS;
 
     public function test_toPhpType_pgsql()
     {
-        if (!($db = $this->connect('pgsql', true))) {
+        if (!($db = $this->connect('pgsql'))) {
             return;
         }
         $db->execute("DROP TABLE IF EXISTS native_types;");
@@ -459,14 +460,11 @@ EOS;
     public function test_toPdoType(array $target_db, PdoParameter $expect, $value)
     {
         $converter = new BuiltinConverter();
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!in_array($db_kind, $target_db)) {
-                continue;
-            }
-            if (!($db = $this->connect($db_kind))) {
-                continue;
+        $this->eachDb(function (Database $db) use ($converter, $target_db, $expect, $value) {
+            if (!in_array($db->name(), $target_db)) {
+                return;
             }
             $this->assertEquals($expect, $converter->toPdoType($db, $value));
-        }
+        });
     }
 }

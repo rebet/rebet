@@ -6,6 +6,7 @@ use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Converter\Converter;
+use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Creating;
@@ -34,8 +35,9 @@ class Database
     public static function defaultConfig()
     {
         return [
-            'compiler'  => BuiltinCompiler::class,
-            'converter' => BuiltinConverter::class,
+            'compiler'    => BuiltinCompiler::class,
+            'converter'   => BuiltinConverter::class,
+            'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
         ];
     }
 
@@ -54,9 +56,23 @@ class Database
     protected $driver = null;
 
     /**
-     * SQL logging handler
+     * Status that logging or not.
      *
-     * @var \Closure|null function(string $db_name, string $sql, array $params = []) {}
+     * @var boolean
+     */
+    protected $debug = false;
+
+    /**
+     * Emulate SQL or not for debug logging.
+     *
+     * @var boolean
+     */
+    protected $emulated_sql_log = true;
+
+    /**
+     * SQL logging handler for debug
+     *
+     * @var \Closure function(string $db_name, string $sql, array $params = []) {}
      */
     protected $log_handler = null;
 
@@ -75,31 +91,26 @@ class Database
     protected $converter = null;
 
     /**
-     * Emulate SQL for logging.
-     *
-     * @var boolean
-     */
-    protected $emulated_sql_log = true;
-
-    /**
      * Create database instance using given driver.
      *
      * @param string $name of this database (alias ​​for classification)
      * @param Driver $driver
+     * @param bool $debug (default: false)
      * @param bool $emulated_sql_log (default: true)
-     * @param callable|null $log_handler function(string $name, string $sql, array $params = []) (default: null)
+     * @param callable|null $log_handler function(string $name, string $sql, array $params = []) (default: depend on configure)
      * @param Converter|null $converter (default: depend on configure)
      * @param Compiler|null $compiler (default: depend on configure)
      */
-    public function __construct(string $name, Driver $driver, bool $emulated_sql_log = true, ?callable $log_handler = null, ?Converter $converter = null, ?Compiler $compiler = null)
+    public function __construct(string $name, Driver $driver, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null, ?Converter $converter = null, ?Compiler $compiler = null)
     {
         $this->name             = $name;
         $this->driver           = $driver;
         $this->driver->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->driver->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         $this->driver->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        $this->debug            = $debug;
         $this->emulated_sql_log = $emulated_sql_log;
-        $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : null ;
+        $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
         $this->converter        = $converter ?? static::configInstantiate('converter');
         $this->compiler         = $compiler ?? static::configInstantiate('compiler');
     }
@@ -178,6 +189,20 @@ class Database
     }
 
     /**
+     * Switch on/off to log output.
+     *
+     * @param bool $debug (default: true)
+     * @param bool|null $emulated_sql_log (default: null for not change)
+     * @return self
+     */
+    public function debug(bool $debug = true, ?bool $emulated_sql_log = null) : self
+    {
+        $this->debug            = $debug;
+        $this->emulated_sql_log = $emulated_sql_log ?? $this->emulated_sql_log;
+        return $this;
+    }
+
+    /**
      * Output SQL log.
      *
      * @param string $sql
@@ -186,26 +211,39 @@ class Database
      */
     public function log(string $sql, array $params = []) : void
     {
-        if ($this->log_handler) {
-            call_user_func($this->log_handler, $this->name, ...$this->convertForLog($sql, $params));
+        if ($this->debug) {
+            call_user_func($this->log_handler, $this->name, ...$this->convertForMessage($sql, $params));
         }
     }
 
     /**
-     * Convert given SQL and params for log output.
+     * Create Database exception from given information.
+     *
+     * @param array|\PDOException $error
+     * @param string|null $sql (default: null)
+     * @param array $param (default: [])
+     * @return DatabaseException
+     */
+    public function exception($error, ?string $sql = null, array $params = []) : DatabaseException
+    {
+        return DatabaseException::from($this, $error, ...$this->convertForMessage($sql, $params));
+    }
+
+    /**
+     * Convert given SQL and params for log output and exception message.
      * This method emulate SQL when emulated_sql_log is true.
      *
      * @param string $sql
      * @param array $params (default: [])
      * @return array [emulated_sql] or [sql, params]
      */
-    public function convertForLog(string $sql, array $params = []) : array
+    protected function convertForMessage(string $sql, array $params = []) : array
     {
-        return $this->emulated_sql_log ? ["/* Emulated SQL */ ".$this->emulate($sql, $params)] : [$sql, $params] ;
+        return $this->emulated_sql_log ? [$this->emulate($sql, $params)] : [$sql, $params] ;
     }
 
     /**
-     * Emulate given SQL for logging.
+     * Emulate given SQL for logging and exception message.
      * You should not use this method other than to emulate sql for log output.
      *
      * @param string $sql
@@ -219,7 +257,7 @@ class Database
             $sql   = preg_replace("/".preg_quote($key, '/')."(?=[^a-zA-Z0-9_]|$)/", $value, $sql);
         }
 
-        return $sql;
+        return "/* Emulated SQL */ ".$sql;
     }
 
     /**
@@ -271,7 +309,7 @@ class Database
     public function begin() : self
     {
         if (!$this->driver->beginTransaction()) {
-            throw DatabaseException::from($this->driver->errorInfo());
+            throw $this->exception($this->driver->errorInfo());
         }
         $this->log("BEGIN");
         return $this;
@@ -287,9 +325,7 @@ class Database
     public function savepoint(string $name) : self
     {
         $sql = "SAVEPOINT {$name}";
-        if (!$this->driver->query($sql)) {
-            throw DatabaseException::from($this->driver->errorInfo(), $sql);
-        }
+        $this->driver->exec($sql);
         $this->log($sql);
         return $this;
     }
@@ -305,9 +341,9 @@ class Database
     public function rollback(?string $savepoint = null, bool $quiet = true) : self
     {
         try {
-            $sql = $savepoint ? "ROLLBACK TO {$savepoint}" : null ;
-            if (!($sql ? $this->driver->query($sql) : $this->driver->rollBack())) {
-                throw DatabaseException::from($this->driver->errorInfo(), $sql);
+            $sql = $savepoint ? "ROLLBACK TO SAVEPOINT {$savepoint}" : null ;
+            if (!($sql ? $this->driver->exec($sql) : $this->driver->rollBack())) {
+                throw $this->exception($this->driver->errorInfo(), $sql);
             }
             $this->log($sql ?? "ROLLBACK");
         } catch (\Exception $e) {
@@ -328,7 +364,7 @@ class Database
     public function commit() : self
     {
         if (!$this->driver->commit()) {
-            throw DatabaseException::from($this->driver->errorInfo());
+            throw $this->exception($this->driver->errorInfo());
         }
         $this->log("COMMIT");
         return $this;
@@ -338,18 +374,18 @@ class Database
      * Start a transaction, execute callback then commit.
      * NOTE: If an exception thrown then rollback.
      *
-     * @param callable $callback
+     * @param \Closure $callback function(Database $db) { ... }
      * @return self
      * @throws \Throwable
      */
-    public function transaction(callable $callback) : self
+    public function transaction(\Closure $callback) : self
     {
         try {
             $this->begin();
-            $callback();
+            $callback($this);
             $this->commit();
-        } catch (Throwable $e) {
-            $this->rollback(null, true);
+        } catch (\Throwable $e) {
+            $this->rollback();
             throw $e;
         }
 
@@ -359,12 +395,11 @@ class Database
     /**
      * Returns the ID of the last inserted row or sequence value of given name
      *
-     * @param string|null $name
+     * @param string|null $name (default: null)
      * @return string
      */
     public function lastInsertId(?string $name = null) : string
     {
-        // @todo set default seq name when the db is PGSQL (tablename_colname_seq)
         return $this->driver->lastInsertId($name);
     }
 
@@ -382,11 +417,11 @@ class Database
                 // \PDO::ATTR_CURSOR             => \PDO::CURSOR_SCROLL,
             ]);
             if (!$stmt) {
-                throw DatabaseException::from($this->driver->errorInfo(), $sql);
+                throw $this->exception($this->driver->errorInfo(), $sql);
             }
             return new Statement($this, $stmt);
         } catch (\PDOException $e) {
-            throw DatabaseException::from($e, $sql);
+            throw $this->exception($e, $sql);
         }
     }
 
@@ -501,7 +536,7 @@ class Database
      */
     public function exists(string $sql, array $params = []) : bool
     {
-        return ! $this->query("{$sql} LIMIT 1", $params)->empty();
+        return ! $this->query("{$sql} LIMIT 1", null, $params)->empty();
     }
 
     /**
@@ -536,33 +571,36 @@ class Database
      * @param Entity $entity
      * @return bool
      */
-    public function create(Entity $entity) : bool
+    public function create(Entity &$entity) : bool
     {
         Event::dispatch(new Creating($this, $entity));
 
-        $unmaps  = $entity->unmaps();
-        $columns = [];
-        $values  = [];
+        if ($entity::CREATED_AT && ($entity->{$entity::CREATED_AT} ?? true)) {
+            $entity->{$entity::CREATED_AT} = DateTime::now();
+        }
+
+        $primarys = $entity::primaryKeys();
+        $unmaps   = $entity::unmaps();
+        $columns  = [];
+        $values   = [];
         foreach ($entity as $column => $value) {
             if (in_array($column, $unmaps)) {
+                continue;
+            }
+            if ($value === null && in_array($column, $primarys)) {
                 continue;
             }
             $columns[] = $column;
             $values[]  = $value;
         }
 
-        if ($entity::CREATED_AT && !isset($columns[$entity::CREATED_AT])) {
-            $now                           = DateTime::now();
-            $columns[]                     = $entity::CREATED_AT;
-            $values[]                      = $now;
-            $entity->{$entity::CREATED_AT} = $now;
-        }
-
-        $affected_rows = $this->execute("INSERT INTO ".$entity->tabelName()." (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
+        $table_name    = $entity::tabelName();
+        $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
         if ($affected_rows === 1) {
-            $primarys = $entity->primaryKeys();
-            if (count($primarys) === 1 && property_exists($entity, $primarys[0]) && !isset($entity->{$primarys[0]})) {
-                $entity->{$primarys[0]} = $this->lastInsertId();
+            $pk = count($primarys) === 1 ? $primarys[0] : null ;
+            if ($pk !== null && !isset($entity->$pk)) {
+                $entity->$pk = $this->lastInsertId();
+                // $entity->$pk = $this->lastInsertId($this->driverName() === 'pgsql' ? "{$table_name}_{$pk}_seq" : null);
             }
             $entity->origin(clone $entity);
             Event::dispatch(new Created($this, $entity));
@@ -580,16 +618,17 @@ class Database
      */
     protected function buildPrimaryWheresFrom(Entity $entity) : array
     {
-        $primarys = $entity->primaryKeys();
+        $class    = get_class($entity);
+        $primarys = $class::primaryKeys();
         if (empty($primarys)) {
-            throw DatabaseException::by("Can not build SQL because of ".get_class($entity)." entity do not have any primary keys.");
+            throw DatabaseException::by("Can not build SQL because of {$class} entity do not have any primary keys.");
         }
 
         $where  = [];
         $params = [];
         foreach ($primarys as $column) {
-            $where[]                = "{$column} = :c\${$column}";
-            $params["c\${$column}"] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
+            $where[]               = "{$column} = :c_{$column}";
+            $params["c_{$column}"] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
         }
 
         return [join(' AND ', $where), $params];

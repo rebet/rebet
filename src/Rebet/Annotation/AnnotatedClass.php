@@ -76,7 +76,7 @@ class AnnotatedClass
      * Get method annotation
      *
      * @param string $method
-     * @return \AnnotatedMethod|null
+     * @return AnnotatedMethod|null
      */
     public function method(string $method) : ?AnnotatedMethod
     {
@@ -87,11 +87,21 @@ class AnnotatedClass
      * Get property annotation
      *
      * @param string $method
-     * @return \AnnotatedMethod|null
+     * @return AnnotatedProperty|null
      */
     public function property(string $property) : ?AnnotatedProperty
     {
         return $this->class->hasProperty($property) ? new AnnotatedProperty($this->class->getProperty($property), $this, $this->reader) : null ;
+    }
+
+    /**
+     * Get property annotations
+     *
+     * @return AnnotatedProperty[]
+     */
+    public function properties() : array
+    {
+        return array_map(function ($v) { return new AnnotatedProperty($v, $this, $this->reader); }, $this->class->getProperties());
     }
 
     /**

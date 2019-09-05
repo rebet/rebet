@@ -3,6 +3,7 @@ namespace Rebet\Tests\Database\Compiler;
 
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
+use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
@@ -45,17 +46,17 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY create_at ASC, user_id DESC",
+                "SELECT * FROM user ORDER BY created_at ASC, user_id DESC",
                 [],
                 "SELECT * FROM user",
-                ['create_at' => 'asc', 'user_id' => 'desc']
+                ['created_at' => 'asc', 'user_id' => 'desc']
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY COALESCE(update_at, create_at) ASC, user_id DESC",
+                "SELECT * FROM user ORDER BY COALESCE(update_at, created_at) ASC, user_id DESC",
                 [],
                 "SELECT * FROM user",
-                ['COALESCE(update_at, create_at)' => 'asc', 'user_id' => 'desc']
+                ['COALESCE(update_at, created_at)' => 'asc', 'user_id' => 'desc']
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
@@ -75,19 +76,19 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT * FROM user WHERE gender = :gender AND create_at > :create_at",
-                [':gender' => PdoParameter::int(1), ':create_at' => PdoParameter::str('2001-02-03 04:05:06')],
-                "SELECT * FROM user WHERE gender = :gender AND create_at > :create_at",
+                "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
+                [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06')],
+                "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
-                ['gender'  => Gender::MALE(), 'create_at' => DateTime::now()]
+                ['gender'  => Gender::MALE(), 'created_at' => DateTime::now()]
             ],
             [
                 ['pgsql'],
-                "SELECT * FROM user WHERE gender = :gender AND create_at > :create_at",
-                [':gender' => PdoParameter::int(1), ':create_at' => PdoParameter::str('2001-02-03 04:05:06+0000')],
-                "SELECT * FROM user WHERE gender = :gender AND create_at > :create_at",
+                "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
+                [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06+0000')],
+                "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
-                ['gender'  => Gender::MALE(), 'create_at' => DateTime::now()]
+                ['gender'  => Gender::MALE(), 'created_at' => DateTime::now()]
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
@@ -348,29 +349,29 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.create_at = :cursor__0 AND article_id >= :cursor__1) OR (A.create_at < :cursor__0)) ORDER BY article_create_at DESC, article_id ASC LIMIT 11 OFFSET 0",
+                "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.created_at = :cursor__0 AND article_id >= :cursor__1) OR (A.created_at < :cursor__0)) ORDER BY article_created_at DESC, article_id ASC LIMIT 11 OFFSET 0",
                 [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06'), ':cursor__1' => PdoParameter::int(21)],
-                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
-                $order_by = ['article_create_at' => 'desc', 'article_id' => 'asc'],
+                "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
+                $order_by = ['article_created_at' => 'desc', 'article_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
-                Cursor::create($order_by, $pager, ['article_create_at' => DateTime::now(), 'article_id' => 21], null)
+                Cursor::create($order_by, $pager, ['article_created_at' => DateTime::now(), 'article_id' => 21], null)
             ],
             [
                 ['pgsql'],
-                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.create_at = :cursor__0 AND article_id >= :cursor__1) OR (A.create_at < :cursor__0)) ORDER BY article_create_at DESC, article_id ASC LIMIT 11 OFFSET 0",
+                "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.created_at = :cursor__0 AND article_id >= :cursor__1) OR (A.created_at < :cursor__0)) ORDER BY article_created_at DESC, article_id ASC LIMIT 11 OFFSET 0",
                 [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06+0000'), ':cursor__1' => PdoParameter::int(21)],
-                "SELECT U.*, A.article_id, A.create_at AS article_create_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
-                $order_by = ['article_create_at' => 'desc', 'article_id' => 'asc'],
+                "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
+                $order_by = ['article_created_at' => 'desc', 'article_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
-                Cursor::create($order_by, $pager, ['article_create_at' => DateTime::now(), 'article_id' => 21], null)
+                Cursor::create($order_by, $pager, ['article_created_at' => DateTime::now(), 'article_id' => 21], null)
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user WHERE (COALESCE(update_at,create_at) = :cursor__0 AND user_id >= :cursor__1) OR (COALESCE(update_at,create_at) > :cursor__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT *, COALESCE(update_at, created_at) as change_at FROM user WHERE (COALESCE(update_at,created_at) = :cursor__0 AND user_id >= :cursor__1) OR (COALESCE(update_at,created_at) > :cursor__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
                 [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06'), ':cursor__1' => PdoParameter::int(21)],
-                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user",
+                "SELECT *, COALESCE(update_at, created_at) as change_at FROM user",
                 $order_by = ['change_at' => 'asc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
@@ -378,9 +379,9 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['pgsql'],
-                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user WHERE (COALESCE(update_at,create_at) = :cursor__0 AND user_id >= :cursor__1) OR (COALESCE(update_at,create_at) > :cursor__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT *, COALESCE(update_at, created_at) as change_at FROM user WHERE (COALESCE(update_at,created_at) = :cursor__0 AND user_id >= :cursor__1) OR (COALESCE(update_at,created_at) > :cursor__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
                 [':cursor__0' => PdoParameter::str('2001-02-03 04:05:06+0000'), ':cursor__1' => PdoParameter::int(21)],
-                "SELECT *, COALESCE(update_at, create_at) as change_at FROM user",
+                "SELECT *, COALESCE(update_at, created_at) as change_at FROM user",
                 $order_by = ['change_at' => 'asc', 'user_id' => 'asc'],
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
@@ -394,17 +395,14 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
      */
     public function test_compile(array $target_db_kinds, string $expect_sql, array $expect_params, string $sql, ?array $order_by = null, ?array $params = null, ?Pager $pager = null, ?Cursor $cursor = null)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!in_array($db_kind, $target_db_kinds)) {
-                continue;
-            }
-            if (!($db = $this->connect($db_kind))) {
-                continue;
+        $this->eachDb(function (Database $db) use ($target_db_kinds, $expect_sql, $expect_params, $sql, $order_by, $params, $pager, $cursor) {
+            if (!in_array($db->name(), $target_db_kinds)) {
+                return;
             }
             [$compiled_sql, $compiled_params] = $this->compiler->compile($db, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-            $this->assertEquals($expect_sql, $compiled_sql, "on DB '{$db_kind}'");
-            $this->assertEquals($expect_params, $compiled_params, "on DB '{$db_kind}'");
-        }
+            $this->assertEquals($expect_sql, $compiled_sql, "on DB '{$db->name()}'");
+            $this->assertEquals($expect_params, $compiled_params, "on DB '{$db->name()}'");
+        });
     }
 
     public function test_paging()
@@ -438,11 +436,8 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
      */
     public function test_convertParam(array $expect, string $key, $value)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!($db = $this->connect($db_kind))) {
-                continue;
-            }
+        $this->eachDb(function (Database $db) use ($expect, $key, $value) {
             $this->assertEquals($expect, $this->compiler->convertParam($db, $key, $value));
-        }
+        });
     }
 }

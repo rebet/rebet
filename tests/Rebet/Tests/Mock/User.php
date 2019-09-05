@@ -3,7 +3,7 @@ namespace Rebet\Tests\Mock;
 
 use Rebet\Common\Annotation\Nest;
 use Rebet\Database\Annotation\Unmap;
-use Rebet\Database\Entity;
+use Rebet\Database\DataModel\Entity;
 
 class User extends Entity
 {

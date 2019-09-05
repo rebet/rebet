@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Compiler\Analysis;
 
 use Rebet\Database\Compiler\Analysis\BuiltinAnalyzer;
+use Rebet\Database\Database;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinAnalyzerTest extends RebetDatabaseTestCase
@@ -21,13 +22,10 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_isUnion(bool $expect, string $sql)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!($db = $this->connect($db_kind))) {
-                continue;
-            }
+        $this->eachDb(function (Database $db) use ($expect, $sql) {
             $analyser = BuiltinAnalyzer::analyze($db, $sql);
             $this->assertSame($expect, $analyser->isUnion());
-        }
+        });
     }
 
     public function dataHasWheres() : array
@@ -35,8 +33,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         return [
             [false , "SELECT * FROM users"],
             [true  , "SELECT * FROM users WHERE gender = 1"],
-            [false , "SELECT * FROM users ORDER BY create_at"],
-            [true  , "SELECT * FROM users WHERE gender = 1 ORDER BY create_at"],
+            [false , "SELECT * FROM users ORDER BY created_at"],
+            [true  , "SELECT * FROM users WHERE gender = 1 ORDER BY created_at"],
             [false , "SELECT * FROM (SELECT * FROM users WHERE gender = 1) AS T"],
             [false , "SELECT (SELECT max(user_id) FROM users WHERE gender = 1) AS max_male_user_id"],
         ];
@@ -47,13 +45,10 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasWhere(bool $expect, string $sql)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!($db = $this->connect($db_kind))) {
-                continue;
-            }
+        $this->eachDb(function (Database $db) use ($expect, $sql) {
             $analyser = BuiltinAnalyzer::analyze($db, $sql);
             $this->assertSame($expect, $analyser->hasWhere());
-        }
+        });
     }
 
     public function dataHasHavings() : array
@@ -61,8 +56,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         return [
             [false , "SELECT * FROM users"],
             [true  , "SELECT * FROM users HAVING gender = 1"],
-            [false , "SELECT * FROM users ORDER BY create_at"],
-            [true  , "SELECT * FROM users HAVING gender = 1 ORDER BY create_at"],
+            [false , "SELECT * FROM users ORDER BY created_at"],
+            [true  , "SELECT * FROM users HAVING gender = 1 ORDER BY created_at"],
             [false , "SELECT * FROM (SELECT * FROM users HAVING gender = 1) AS T"],
             [false , "SELECT (SELECT max(user_id) FROM users HAVING gender = 1) AS max_male_user_id"],
         ];
@@ -73,13 +68,10 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasHaving(bool $expect, string $sql)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!($db = $this->connect($db_kind))) {
-                continue;
-            }
+        $this->eachDb(function (Database $db) use ($expect, $sql) {
             $analyser = BuiltinAnalyzer::analyze($db, $sql);
             $this->assertSame($expect, $analyser->hasHaving());
-        }
+        });
     }
 
     public function dataHasGroupBys() : array
@@ -97,13 +89,10 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasGroupBy(bool $expect, string $sql)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!($db = $this->connect($db_kind))) {
-                continue;
-            }
+        $this->eachDb(function (Database $db) use ($expect, $sql) {
             $analyser = BuiltinAnalyzer::analyze($db, $sql);
             $this->assertSame($expect, $analyser->hasGroupBy());
-        }
+        });
     }
 
     public function dataExtractAliasSelectColumns() : array
@@ -121,11 +110,11 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
             ['(1 + 2)', "SELECT (1 + 2) as foo FROM users", 'foo'],
             ['1 + 2', "SELECT 1 + 2 as foo FROM users", 'foo'],
             ['CURRENT_TIMESTAMP', "SELECT CURRENT_TIMESTAMP as foo FROM users", 'foo'],
-            ['COALESCE(update_at,create_at)', "SELECT COALESCE(update_at, create_at) as change_at FROM users", 'change_at'],
+            ['COALESCE(updated_at,created_at)', "SELECT COALESCE(updated_at, created_at) as change_at FROM users", 'change_at'],
             ['COUNT(*)', "SELECT gender, COUNT(*) as count, AVG(age) as average_age FROM users GROUP BY gender", 'count'],
             ['AVG(age)', "SELECT gender, COUNT(*) as count, AVG(age) as average_age FROM users GROUP BY gender", 'average_age'],
             ["CASE gender WHEN 1 THEN 'male' ELSE 'female' END", "SELECT CASE gender WHEN 1 THEN 'male' ELSE 'female' END as gender_label FROM users", 'gender_label'],
-            ['(SELECT MAX(create_at) AS latest_create_at FROM users AS T WHERE T.birthday = U.birthday)', "SELECT *, (SELECT MAX(create_at) as latest_create_at FROM users AS T WHERE T.birthday = U.birthday) AS latest_create_at FROM users AS U WHERE gender = 1", 'latest_create_at'],
+            ['(SELECT MAX(created_at) AS latest_created_at FROM users AS T WHERE T.birthday = U.birthday)', "SELECT *, (SELECT MAX(created_at) as latest_created_at FROM users AS T WHERE T.birthday = U.birthday) AS latest_created_at FROM users AS U WHERE gender = 1", 'latest_created_at'],
             ['foo', "SELECT 1 as foo FROM bar UNION SELECT 2 as foo FROM baz", 'foo'],
             ['foo', "SELECT 1 as foo FROM bar UNION ALL SELECT 2 as foo FROM baz", 'foo'],
         ];
@@ -136,12 +125,9 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_extractAliasSelectColumn(string $expect, string $sql, string $alias)
     {
-        foreach (['sqlite', 'mysql', 'pgsql'] as $db_kind) {
-            if (!($db = $this->connect($db_kind))) {
-                continue;
-            }
+        $this->eachDb(function (Database $db) use ($expect, $sql, $alias) {
             $analyser = BuiltinAnalyzer::analyze($db, $sql);
             $this->assertSame($expect, $analyser->extractAliasSelectColumn($alias));
-        }
+        });
     }
 }

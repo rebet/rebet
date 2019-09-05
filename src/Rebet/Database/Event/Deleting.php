@@ -2,7 +2,7 @@
 namespace Rebet\Database\Event;
 
 use Rebet\Database\Database;
-use Rebet\Database\Entity;
+use Rebet\Database\DataModel\Entity;
 
 /**
  * Deleting Event Class

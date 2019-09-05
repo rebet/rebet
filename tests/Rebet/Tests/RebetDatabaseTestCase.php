@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests;
 
-use Exception;
 use Rebet\Common\Arrays;
 use Rebet\Config\Config;
 use Rebet\Database\Dao;
@@ -15,11 +14,15 @@ use Rebet\Database\Driver\PdoDriver;
  */
 abstract class RebetDatabaseTestCase extends RebetTestCase
 {
+    protected static $main   = null;
     protected static $sqlite = null;
 
     protected function setUp() : void
     {
         parent::setUp();
+        if (self::$main == null) {
+            self::$main = new PdoDriver('sqlite::memory:');
+        }
         if (self::$sqlite == null) {
             self::$sqlite = new PdoDriver('sqlite::memory:');
         }
@@ -27,17 +30,17 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
             Dao::class => [
                 'dbs' => [
                     'main'   => [
-                        'driver'   => self::$sqlite,
+                        'driver'   => self::$main,
                         'dsn'      => 'sqlite::memory:',
-                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
                         // 'emulated_sql_log' => false,
+                        // 'debug'            => true,
                     ],
 
                     'sqlite' => [
                         'driver'   => self::$sqlite,
                         'dsn'      => 'sqlite::memory:',
-                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
                         // 'emulated_sql_log' => false,
+                        // 'debug'            => true,
                     ],
 
                     // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
@@ -49,8 +52,8 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'options'  => [
                             \PDO::ATTR_AUTOCOMMIT => false,
                         ],
-                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
                         // 'emulated_sql_log' => false,
+                        // 'debug'            => true,
                     ],
 
                     // CREATE DATABASE rebet_test WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
@@ -63,21 +66,29 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'user'     => 'postgres',
                         'password' => '',
                         'options'  => [],
-                        // 'log_handler' => function ($name, $sql, $params =[]) { echo $sql; },
                         // 'emulated_sql_log' => false,
+                        // 'debug'            => true,
                     ],
                 ]
             ],
+            Database::class => [
+                'log_handler' => function (string $db_name, string $sql, array $params = []) {
+                    echo("[{$db_name}] {$sql}\n");
+                    if (!empty($param)) {
+                        echo(Strings::indent("[PARAM]\n".Strings::stringify($params)."\n", '-- '));
+                    }
+                },
+            ],
         ]);
 
+        Dao::clear();
+
         foreach (array_keys(Dao::config('dbs')) as $db_name) {
-            try {
-                $db = Dao::db($db_name);
-            } catch (Exception $e) {
-                // Skip not ready
+            if (!($db = $this->connect($db_name, false))) {
                 continue;
             }
 
+            $db->begin();
             $tables = $this->tables($db_name);
             foreach ($tables as $table_name => $dml) {
                 $db->execute("DROP TABLE IF EXISTS {$table_name}");
@@ -92,7 +103,10 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                     }
                 }
             }
+            $db->commit();
         }
+
+        Dao::clear();
     }
 
     protected function tables(string $db_name) : array
@@ -108,10 +122,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
     protected function tearDown()
     {
         foreach (array_keys(Dao::config('dbs')) as $db_name) {
-            try {
-                $db = Dao::db($db_name);
-            } catch (Exception $e) {
-                // Skip not ready
+            if (!($db = $this->connect($db_name, false))) {
                 continue;
             }
 
@@ -122,7 +133,12 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         }
     }
 
-    protected function connect(?string $db = null, bool $mark_test_skiped = false) : ?Database
+    /**
+     * @param string|null $db
+     * @param boolean $mark_test_skiped
+     * @return Database|null
+     */
+    protected function connect(?string $db = null, bool $mark_test_skiped = true) : ?Database
     {
         try {
             return Dao::db($db);
@@ -132,5 +148,22 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
             }
         }
         return null;
+    }
+
+    protected function eachDb(\Closure $test, string ...$dbs)
+    {
+        $dbs    = empty($dbs) ? array_keys(Dao::config('dbs')) : $dbs ;
+        $skiped = [];
+        foreach ($dbs as $name) {
+            $db = $this->connect($name, false);
+            if ($db === null) {
+                $skiped[] = $name;
+                continue;
+            }
+            $test($db);
+        }
+        if (!empty($skiped)) {
+            $this->markTestSkipped("Database ".implode(", ", $skiped)." was not ready.");
+        }
     }
 }

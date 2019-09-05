@@ -62,8 +62,9 @@ class Dao
                     'user'             => null,
                     'password'         => null,
                     'options'          => [],
-                    'log_handler'      => null, // function(string $db_name, string $sql, array $params = []) : void
+                    'debug'            => false,
                     'emulated_sql_log' => true,
+                    'log_handler'      => null,
                 ],
             ],
             'default_db' => 'main',
@@ -78,10 +79,41 @@ class Dao
     protected static $dbs = null;
 
     /**
+     * Current selected database.
+     *
+     * @var Database
+     */
+    protected static $current = null;
+
+    /**
      * No instantiation
      */
     private function __construct()
     {
+    }
+
+    /**
+     * Crear the Database instance.
+     * NOTE: All existing DB connections will be rolled back.
+     *
+     * @param string|null $name (default: null for all clear)
+     * @return void
+     */
+    public static function clear(?string $name = null) : void
+    {
+        if ($name === null) {
+            foreach (static::$dbs as $db) {
+                $db->rollback();
+            }
+            static::$dbs     = [];
+            static::$current = null;
+        } else {
+            static::$dbs[$name]->rollback();
+            unset(static::$dbs[$name]);
+            if (static::$current !== null && static::$current->name() === $name) {
+                static::$current = null;
+            }
+        }
     }
 
     /**
@@ -95,6 +127,7 @@ class Dao
         $name = $name ?? static::config('default_db');
         $db   = static::$dbs[$name] ?? null;
         if ($db !== null) {
+            static::$current = $db;
             return $db;
         }
 
@@ -109,11 +142,23 @@ class Dao
         $db     = new Database(
             $name,
             is_callable($driver) ? call_user_func($driver, $name) : (is_string($driver) ? Reflector::create($driver, $conf) : $driver),
+            $conf['debug'] ?? false,
             $conf['emulated_sql_log'] ?? true,
             $conf['log_handler'] ?? null
         );
 
         static::$dbs[$name] = $db;
+        static::$current    = $db;
         return $db;
+    }
+
+    /**
+     * Get current selected database.
+     *
+     * @return Database|null
+     */
+    public static function current() : ?Database
+    {
+        return static::$current;
     }
 }

@@ -1,9 +1,10 @@
 <?php
-namespace Rebet\Database;
+namespace Rebet\Database\DataModel;
 
-use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Common\Reflector;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
+use Rebet\Database\Database;
 use Rebet\Inflection\Inflector;
 
 /**
@@ -14,7 +15,7 @@ use Rebet\Inflection\Inflector;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class Entity extends Dto
+abstract class Entity extends DataModel
 {
     /**
      * Data create timestamp field name.
@@ -59,37 +60,19 @@ abstract class Entity extends Dto
     }
 
     /**
-     * Get and Set meta data.
-     *
-     * @param string $name
-     * @param mixed $value
-     * @return mixed
-     */
-    protected function meta(string $name, $value = null)
-    {
-        $class = get_class($this);
-        if ($value === null) {
-            return static::$_meta[$class][$name] ?? null ;
-        }
-
-        static::$_meta[$class][$name] = $value;
-        return $value;
-    }
-
-    /**
      * Get the table name of this entity.
      *
      * @return string
      */
-    public function tabelName() : string
+    public static function tabelName() : string
     {
-        if ($table = $this->meta(__METHOD__)) {
+        if ($table = static::meta(__METHOD__)) {
             return $table;
         }
 
-        $ac    = $this->annotatedClass();
+        $ac    = static::annotatedClass();
         $table = $ac->annotation(Table::class);
-        return $this->meta(__METHOD__, $table ? $table->value : Inflector::tableize($ac->reflector()->getShortName()));
+        return static::meta(__METHOD__, $table ? $table->value : Inflector::tableize($ac->reflector()->getShortName()));
     }
 
     /**
@@ -97,50 +80,20 @@ abstract class Entity extends Dto
      *
      * @return array
      */
-    public function unmaps() : array
+    public static function unmaps() : array
     {
-        if ($unmaps = $this->meta(__METHOD__)) {
+        if ($unmaps = static::meta(__METHOD__)) {
             return $unmaps;
         }
 
-        $unmaps     = [];
-        $ac         = $this->annotatedClass();
-        foreach ($this as $property => $value) {
-            $ap = $ac->property($property);
+        $unmaps = [];
+        $ac     = static::annotatedClass();
+        foreach ($ac->properties() as $ap) {
             if (!$ap->reflector()->isPublic() || $ap->annotation(Unmap::class)) {
-                $unmaps[] = $property;
+                $unmaps[] = $ap->reflector()->getName();
             }
         }
-        return $this->meta(__METHOD__, $unmaps);
-    }
-
-    /**
-     * Get primary keys properties.
-     *
-     * @return array
-     */
-    public function primaryKeys() : array
-    {
-        if ($primary_keys = $this->meta(__METHOD__)) {
-            return $primary_keys;
-        }
-
-        $primary_keys = [];
-        $ac           = $this->annotatedClass();
-        foreach ($this as $property => $value) {
-            if ($ac->property($property)->annotation(PrimaryKey::class)) {
-                $primary_keys[] = $property;
-            }
-        }
-
-        if (empty($primary_keys)) {
-            $pkey = Inflector::primarize($ac->reflector()->getShortName());
-            if (property_exists($this, $pkey)) {
-                $primary_keys[] = $pkey;
-            }
-        }
-
-        return $this->meta(__METHOD__, $primary_keys);
+        return static::meta(__METHOD__, $unmaps);
     }
 
     /**
@@ -151,7 +104,7 @@ abstract class Entity extends Dto
     public function changes() : array
     {
         $changes = [];
-        $unmaps  = $this->unmaps();
+        $unmaps  = static::unmaps();
         foreach ($this as $property => $value) {
             if (in_array($property, $unmaps)) {
                 continue;
@@ -173,7 +126,7 @@ abstract class Entity extends Dto
         if ($this->_origin === null) {
             return true;
         }
-        $unmaps = $this->unmaps();
+        $unmaps = static::unmaps();
         foreach ($this as $property => $value) {
             if (in_array($property, $unmaps)) {
                 continue;
@@ -188,63 +141,85 @@ abstract class Entity extends Dto
     /**
      * It check this entity is exists.
      *
-     * @param string|null $db (default: null)
+     * @param Database|string|null $db (default: null)
      * @return boolean
      */
-    public function exists(?string $db = null) : bool
+    public function exists($db = null) : bool
     {
         $where  = [];
         $params = [];
-        foreach ($this->primaryKeys() as $column) {
-            $where[]                = "{$column} = :c\${$column}";
-            $params["c\${$column}"] = $this->origin() ? $this->origin()->$column : $this->$column ;
+        foreach (static::primaryKeys() as $column) {
+            $where[]         = "{$column} = :{$column}";
+            $params[$column] = $this->origin() ? $this->origin()->$column : $this->$column ;
         }
 
-        return Dao::db($db)->exists("SELECT * FROM ".$this->tabelName()." WHERE ".join(' AND ', $where), $params);
+        return static::db($db)->exists("SELECT * FROM ".static::tabelName()." WHERE ".join(' AND ', $where), $params);
     }
 
     /**
      * Create own data to given name database.
      *
-     * @param string|null $db
+     * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function create(?string $db = null) : bool
+    public function create($db = null) : bool
     {
-        return Dao::db($db)->create($this);
+        return static::db($db)->create($this);
     }
 
     /**
      * Update own changed data to given name database.
      *
-     * @param string|null $db
+     * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function update(?string $db = null) : bool
+    public function update($db = null) : bool
     {
-        return Dao::db($db)->update($this);
+        return static::db($db)->update($this);
     }
 
     /**
      * Save (Create/Update) own changed data to given name database.
      *
-     * @param string|null $db
+     * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function save(?string $db = null) : bool
+    public function save($db = null) : bool
     {
-        return Dao::db($db)->save($this);
+        return static::db($db)->save($this);
     }
 
     /**
      * Delete own changed data to given name database.
-     * @todo support soft delete
      *
-     * @param string|null $db
+     * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function delete(?string $db = null) : bool
+    public function delete($db = null) : bool
     {
-        return Dao::db($db)->delete($this);
+        return static::db($db)->delete($this);
+    }
+
+    /**
+     * Find entity by given primaries
+     *
+     * @param mixed $primaries primary key value or array|object of primary keys
+     * @param bool $for_update (default: false)
+     * @param Database|string|null $db (default: null)
+     * @return self|null
+     */
+    public static function find($primaries, bool $for_update = false, $db = null) : ?self
+    {
+        $where            = [];
+        $params           = [];
+        $primary_keys     = static::primaryKeys();
+        $is_composite_key = count($primary_keys) !== 1 ;
+
+        foreach ($primary_keys as $column) {
+            $where[]         = "{$column} = :{$column}";
+            $params[$column] = $is_composite_key ? Reflector::get($primaries, $column) : $primaries ;
+        }
+
+        return static::db($db)->find("SELECT * FROM ".static::tabelName()." WHERE ".join(' AND ', $where).($for_update ? ' FOR UPDATE' : ''), $params, get_called_class());
     }
 }

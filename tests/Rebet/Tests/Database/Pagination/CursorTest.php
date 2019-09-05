@@ -20,8 +20,8 @@ class CursorTest extends RebetTestCase
         $pager = Pager::resolve()->eachSide(3);
 
         $this->assertEquals(
-            new Cursor($pager, ['create_at' => $now, 'user_id' => 123], $pager->eachSide()),
-            Cursor::create(['create_at' => 'desc', 'user_id' => 'asc'], $pager, ['create_at' => $now, 'user_id' => 123], $pager->eachSide())
+            new Cursor($pager, ['created_at' => $now, 'user_id' => 123], $pager->eachSide()),
+            Cursor::create(['created_at' => 'desc', 'user_id' => 'asc'], $pager, ['created_at' => $now, 'user_id' => 123], $pager->eachSide())
         );
     }
 

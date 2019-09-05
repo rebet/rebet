@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use Rebet\Common\Strings;
-use Rebet\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Driver\PdoDriver;
 use Rebet\Tests\Mock\User;
@@ -13,20 +11,6 @@ class DaoTest extends RebetDatabaseTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        Config::application([
-            Dao::class => [
-                'dbs' => [
-                    'main' => [
-                        'log_handler' => function ($name, $sql, $param = []) {
-                            echo("[DB:{$name}] ".$sql."\n");
-                            if (!empty($param)) {
-                                echo(Strings::indent("[PARAM]\n".Strings::stringify($param)."\n", '-- '));
-                            }
-                        }
-                    ]
-                ]
-            ]
-        ]);
     }
 
     protected function tables(string $db_name) : array

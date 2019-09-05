@@ -55,7 +55,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @var DateTime
      */
-    protected $create_at;
+    protected $created_at;
 
     /**
      * Create Cursor instance.
@@ -69,7 +69,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $this->pager           = $pager;
         $this->cursor          = $cursor;
         $this->next_page_count = $next_page_count;
-        $this->create_at       = DateTime::now();
+        $this->created_at      = DateTime::now();
     }
 
     /**
@@ -109,7 +109,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         if ($lifetime === 0) {
             return false;
         }
-        return $this->create_at->addMilli($lifetime) < DateTime::now() ;
+        return $this->created_at->addMilli($lifetime) < DateTime::now() ;
     }
 
     /**
