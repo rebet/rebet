@@ -3,6 +3,7 @@ namespace Rebet\Tests\Database\Compiler;
 
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
+use Rebet\Common\Arrays;
 use Rebet\Config\Config;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Converter\BuiltinConverter;
@@ -10,7 +11,9 @@ use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\PdoDriver;
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
+use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
@@ -428,61 +431,148 @@ EOS
 
     public function dataQueries() : array
     {
+        $this->setUp();
         return [
             [[1], 'user_id', "SELECT * FROM users WHERE user_id = 1"],
             [[2, 3, 4, 5, 7, 9, 10, 17, 19, 23, 28, 29, 30], 'user_id', "SELECT * FROM users WHERE gender = 1"],
-            [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = 1", ['birthday' => 'desc']],
-            [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()]],
+            [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = 1 ORDER BY birthday DESC"],
+            [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = :gender ORDER BY birthday DESC", ['gender' => Gender::MALE()]],
 
-            [[7, 28, 17, 10]          , 'user_id', "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)],
-            [           [10, 23, 4, 2], 'user_id', "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)->page(2)],
-
-            [[4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 'user_id', "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(2)->eachSide(2)],
-            [         [7, 8, 9, 10, 11, 12, 13], 'user_id', "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)],
-            [         [7, 8, 9, 10]            , 'user_id', "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)->needTotal(true)],
-            // 7,13,20,28,6,17,10,22,26,23,4,31,24,15,2,30,25,21,11,3,14,1,16,5,29,12,9,8,18,19,32,27 : birthday DESC
-            // 30,29,28,23,19,17,10,9,7,5,4,3,2,32,31,27,26,25,24,22,21,20,18,16,15,14,13,12,11,8,6,1 : gender ASC, user_id DESC
+            [[1], 'user_id', "SELECT * FROM users WHERE user_id = :user_id AND user_id = :user_id", ['user_id' => 1]],
+            [[1, 3, 5], 'user_id', "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 3, 5]]],
+            [[1, 3, 5], 'user_id', "SELECT * FROM users WHERE user_id IN (:user_id) AND user_id IN (:user_id)", ['user_id' => [1, 3, 5]]],
         ];
     }
 
     /**
      * @dataProvider dataQueries
      */
-    public function test_query($expect, $col, $sql, $order_by = null, $params = [], $pager = null, $cursor = null)
+    public function test_query($expect, $col, $sql, $params = [])
     {
-        $this->eachDb(function (Database $db) use ($expect, $col, $sql, $order_by, $params, $pager, $cursor) {
-            $rs = $db->query($sql, $order_by, $params, $pager, $cursor)->allOf($col);
+        $this->eachDb(function (Database $db) use ($expect, $col, $sql, $params) {
+            $rs = $db->query($sql, $params)->allOf($col);
             $this->assertSame($expect, $rs->toArray());
         });
     }
 
-    public function test_paginate()
+    public function test_execute()
     {
-        // @todo implement
-        $this->assertTrue(true);
+        $this->eachDb(function (Database $db) {
+            $user = User::find(3);
+            $this->assertSame('Damien Kling', $user->name);
+
+            $this->assertSame(1, $db->execute("UPDATE users SET name = :name WHERE user_id = :user_id", ['name' => 'foo', 'user_id' => 3]));
+
+            $user = User::find(3);
+            $this->assertSame('foo', $user->name);
+
+            $this->assertSame(13, $db->count("SELECT * FROM users WHERE gender = 1"));
+            $this->assertSame(13, $db->execute("UPDATE users SET gender = 2 WHERE gender = 1"));
+            $this->assertSame(0, $db->count("SELECT * FROM users WHERE gender = 1"));
+
+            $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday) VALUES (:values)", [
+                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23')]
+            ]));
+
+            $this->assertSame(1, $db->count("SELECT * FROM users WHERE gender = 1"));
+        });
     }
 
-    // /**
-    //  * @dataProvider dataPagings
-    //  */
-    // public function test_paging(array $target_db_kinds, string $expect_data, array $expect_cursor, array $sql, array $order_by, ?array $params, Pager $pager, ?Cursor $cursor = null)
-    // {
-    //     foreach (array_keys(Dao::config('dbs')) as $db_kind) {
-    //         if (!in_array($db_kind, $target_db_kinds)) {
-    //             continue;
-    //         }
-    //         if (!($db = $this->connect($db_kind))) {
-    //             continue;
-    //         }
+    public function test_select()
+    {
+        DateTime::setTestNow('2019-09-01');
+        $this->eachDb(function (Database $db) {
+            $users = $db->select("SELECT * FROM users WHERE gender = 1");
+            $this->assertEquals([2, 3, 4, 5, 7, 9, 10, 17, 19, 23, 28, 29, 30], Arrays::pluck($users->toArray(), 'user_id'));
 
-    //         if ($cursor) {
-    //             $cursor->save();
-    //         }
-    //         $paginator = $db->paginate($sql, $order_by, $pager, $params);
+            $users = $db->select("SELECT * FROM users WHERE gender = 1", ['user_id' => 'desc']);
+            $this->assertEquals([30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2], Arrays::pluck($users->toArray(), 'user_id'));
 
-    //         // [$compiled_sql, $compiled_params] = $this->compiler->compile($db, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-    //         // $this->assertEquals($expect_sql, $compiled_sql, "on DB '{$db_kind}'");
-    //         // $this->assertEquals($expect_params, $compiled_params, "on DB '{$db_kind}'");
-    //     }
-    // }
+            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()]);
+            $this->assertEquals([30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2], Arrays::pluck($users->toArray(), 'user_id'));
+
+            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()], User::class);
+            $this->assertEquals([17, 32, 4, 11, 37, 6, 7, 34, 3, 31, 11, 26, 16], array_map(function ($v) {
+                $this->assertInstanceOf(User::class, $v);
+                return $v->age();
+            }, $users->toArray()));
+        });
+    }
+
+    public function dataPaginates() : array
+    {
+        $this->setUp();
+        return [
+            // 7, 13, 20, 28, 6, 17, 10, 22, 26, 23, 4, 31, 24, 15, 2, 30, 25, 21, 11, 3, 14, 1, 16, 5, 29, 12, 9, 8, 18, 19, 32, 27 : birthday DESC
+
+            // 7, 28,  17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19 : birthday DESC, gender = 1
+            [ [7, 28, 17]           , null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)],
+            [            [10, 23, 4], null, 1, null, "SELECT * FROM users WHERE gender = :gender", ['birthday' => 'desc'], ['gender' => Gender::MALE()], Pager::resolve()->size(3)->page(2)],
+
+            // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 : user_id ASC
+            [          [4, 5, 6]         , null, 3, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(2)->eachSide(2)],
+            [                   [7, 8, 9], null, 2, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)],
+            [                   [7, 8, 9],   32, 8, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)->needTotal(true)],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [30, 29, 28], null, 1, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(-1)
+            ],
+            [
+                [30, 29, 28], null, 1, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)
+            ],
+            [
+                [            23, 19, 17], null, 1, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(2)
+            ],
+            [
+                [                        10, 9, 7], null, 1, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(3)
+            ],
+            [
+                [                                  5, 4, 3], null, 1, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(4)
+            ],
+            [
+                [                                                                                                      12, 11, 8], null, 1, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(10)
+            ],
+            [
+                [                                                                                                                 6, 1], null, 0, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(11)
+            ],
+            [
+                [], null, 0, null,
+                "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(12)
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataPaginates
+     */
+    public function test_paginate($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params = [], $pager = null, $cursor = null, $class = 'stdClass', $count_optimised_sql = null)
+    {
+        $this->eachDb(function (Database $db) use ($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params, $pager, $cursor, $class, $count_optimised_sql) {
+            if ($cursor) {
+                $cursor->save();
+            }
+            $paginator = $db->paginate($sql, $order_by, $pager, $params, $class, $count_optimised_sql);
+            $this->assertInstanceOf(Paginator::class, $paginator);
+            $this->assertSame($expect_total, $paginator->total());
+            $this->assertSame($expect_next_page_count, $paginator->nextPageCount());
+            $rs = Arrays::pluck($paginator->toArray(), 'user_id');
+            $this->assertSame($expect, $rs);
+            if ($pager->useCursor()) {
+                $next_cursor = Cursor::load($pager->cursor());
+                if ($expect_cursor) {
+                    $this->assertTrue($expect_cursor->equals($next_cursor));
+                } else {
+                    $this->assertNull($next_cursor);
+                }
+            }
+        });
+    }
 }

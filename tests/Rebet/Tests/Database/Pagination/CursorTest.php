@@ -65,4 +65,15 @@ class CursorTest extends RebetTestCase
         $this->assertInstanceOf(Cursor::class, $cursor->save());
         $this->assertEquals(null, Cursor::load(''));
     }
+
+    public function test_equals()
+    {
+        $pager = Pager::resolve()->size(3)->page(5);
+        $a     = new Cursor($pager, ['gender' => 1, 'user_id' => 123], 1);
+        sleep(1);
+        $b     = new Cursor($pager, ['gender' => 1, 'user_id' => 123], 1);
+        $this->assertFalse($a == $b);
+        $this->assertTrue($a->equals($b));
+        $this->assertFalse($a->equals(null));
+    }
 }

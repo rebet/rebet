@@ -163,4 +163,19 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $cursor = $strage->load($name);
         return $cursor === null || $cursor->expired() ? null : $cursor ;
     }
+
+    /**
+     * It checks the cursor equals given other cursor.
+     * This method ignore created_at timestamp for expired check.
+     *
+     * @param Cursor|null $cursor
+     * @return boolean
+     */
+    public function equals(?Cursor $cursor) : bool
+    {
+        return $this->cursor == $cursor->cursor
+            && $this->pager == $cursor->pager
+            && $this->next_page_count == $cursor->next_page_count
+            ;
+    }
 }

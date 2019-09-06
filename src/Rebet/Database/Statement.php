@@ -9,6 +9,8 @@ use Rebet\Database\Exception\DatabaseException;
 /**
  * Statement Class
  *
+ * @todo support fetched data cache and repeatble method call (if need)
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -134,7 +136,7 @@ class Statement implements \IteratorAggregate
         $rs   = [];
         $meta = $this->meta();
         $ac   = new AnnotatedClass($class);
-        foreach ($this->stmt as $row) {
+        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
             $rs[] = $this->convert($row, $class, $meta, $ac);
         }
         return new ResultSet($rs);
@@ -148,12 +150,7 @@ class Statement implements \IteratorAggregate
      */
     public function first(string $class = 'stdClass')
     {
-        $meta = $this->meta();
-        $ac   = new AnnotatedClass($class);
-        foreach ($this->stmt as $row) {
-            return $this->convert($row, $class, $meta, $ac);
-        }
-        return null;
+        return ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) ? $this->convert($row, $class) : null ;
     }
 
     /**
@@ -167,7 +164,7 @@ class Statement implements \IteratorAggregate
     {
         $rs   = [];
         $meta = $this->meta();
-        foreach ($this->stmt as $row) {
+        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
             $rs[] = $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
         return new ResultSet($rs);
@@ -182,11 +179,7 @@ class Statement implements \IteratorAggregate
      */
     public function firstOf(string $column, ?string $type = null)
     {
-        $meta = $this->meta();
-        foreach ($this->stmt as $row) {
-            return $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
-        }
-        return null;
+        return ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) ? $this->db->convertToPhp($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
     }
 
     /**
@@ -197,16 +190,6 @@ class Statement implements \IteratorAggregate
     public function affectedRows() : int
     {
         return $this->stmt->rowCount();
-    }
-
-    /**
-     * It checks the result set has rows or not.
-     *
-     * @return boolean
-     */
-    public function empty() : bool
-    {
-        return $this->stmt->fetch(\PDO::FETCH_ASSOC, \PDO::FETCH_ORI_FIRST) !== false ;
     }
 
     /**
@@ -221,7 +204,7 @@ class Statement implements \IteratorAggregate
     {
         $meta = $this->meta();
         $ac   = new AnnotatedClass($class);
-        foreach ($this->stmt as $row) {
+        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
             if (call_user_func($callback, $this->convert($row, $class, $meta, $ac)) === false) {
                 break;
             }
@@ -235,5 +218,15 @@ class Statement implements \IteratorAggregate
     public function getIterator()
     {
         return $this->stmt;
+    }
+
+    /**
+     * Close this statement.
+     *
+     * @return boolean
+     */
+    public function close() : bool
+    {
+        return $this->stmt->closeCursor();
     }
 }

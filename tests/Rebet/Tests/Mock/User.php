@@ -4,6 +4,7 @@ namespace Rebet\Tests\Mock;
 use Rebet\Common\Annotation\Nest;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
+use Rebet\DateTime\DateTime;
 
 class User extends Entity
 {
@@ -30,6 +31,6 @@ class User extends Entity
 
     public function age() : ?int
     {
-        return $this->birthday ? $this->birthday->age() : null ;
+        return $this->birthday ? DateTime::valueOf($this->birthday)->age() : null ;
     }
 }

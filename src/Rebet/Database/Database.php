@@ -435,10 +435,22 @@ class Database
      * @param Cursor|null $cursor (default: null)
      * @return Statement
      */
-    public function query(string $sql, $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Statement
+    protected function _query(string $sql, $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
         [$sql, $params] = $this->compiler->compile($this, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
         return $this->prepare($sql)->execute($params);
+    }
+
+    /**
+     * Executes an SQL statement, returning a result set as a Statement object.
+     *
+     * @param string $sql
+     * @param array $params (default: [])
+     * @return Statement
+     */
+    public function query(string $sql, $params = []) : Statement
+    {
+        return $this->_query($sql, null, $params);
     }
 
     /**
@@ -450,7 +462,7 @@ class Database
      */
     public function execute(string $sql, $params = []) : int
     {
-        return $this->query($sql, null, $params)->affectedRows();
+        return $this->query($sql, $params)->affectedRows();
     }
 
     /**
@@ -464,7 +476,7 @@ class Database
      */
     public function select(string $sql, $order_by = null, array $params = [], string $class = 'stdClass') : ResultSet
     {
-        return $this->query($sql, $order_by, $params)->all($class);
+        return $this->_query($sql, $order_by, $params)->all($class);
     }
 
     /**
@@ -483,7 +495,7 @@ class Database
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
         $total    = $pager->needTotal() ? ($count_optimised_sql ? $this->get('count', $count_optimised_sql, $params) : $this->count($sql, $params)) : null ;
         $order_by = OrderBy::valueOf($order_by);
-        return $this->compiler()->paging($this, $total === 0 ? [] : $this->query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
+        return $this->compiler()->paging($this, $total === 0 ? [] : $this->_query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
     }
 
     /**
@@ -496,7 +508,7 @@ class Database
      */
     public function find(string $sql, array $params = [], string $class = 'stdClass')
     {
-        return $this->query($sql, null, $params)->first($class);
+        return $this->query($sql, $params)->first($class);
     }
 
     /**
@@ -510,7 +522,7 @@ class Database
      */
     public function extract(string $column, string $sql, array $params = [], ?string $type = null) : ResultSet
     {
-        return $this->query($sql, null, $params)->allOf($column, $type);
+        return $this->query($sql, $params)->allOf($column, $type);
     }
 
     /**
@@ -524,7 +536,7 @@ class Database
      */
     public function get(string $column, string $sql, array $params = [], ?string $type = null)
     {
-        return $this->query($sql, null, $params)->firstOf($column, $type);
+        return $this->query($sql, $params)->firstOf($column, $type);
     }
 
     /**
@@ -536,7 +548,7 @@ class Database
      */
     public function exists(string $sql, array $params = []) : bool
     {
-        return ! $this->query("{$sql} LIMIT 1", null, $params)->empty();
+        return $this->query("{$sql} LIMIT 1", $params)->first() !== null;
     }
 
     /**
@@ -556,13 +568,14 @@ class Database
      *
      * @param callable $callback
      * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
      * @param string $class (default: 'stdClass')
      * @return void
      */
-    public function each(callable $callback, string $sql, array $params = [], string $class = 'stdClass') : void
+    public function each(callable $callback, string $sql, $order_by = null, array $params = [], string $class = 'stdClass') : void
     {
-        $this->query($sql, null, $params)->each($callback, $class);
+        $this->_query($sql, $order_by, $params)->each($callback, $class);
     }
 
     /**

@@ -99,7 +99,7 @@ class Pager
      */
     public function size(?int $size = null)
     {
-        return $this->getset('size', $size);
+        return $this->getset('size', $size === null ? null : max(1, $size));
     }
 
     /**
@@ -110,7 +110,7 @@ class Pager
      */
     public function page(?int $page = null)
     {
-        return $this->getset('page', $page);
+        return $this->getset('page', $page === null ? null : max(1, $page));
     }
 
     /**
@@ -121,7 +121,7 @@ class Pager
      */
     public function eachSide(?int $each_side = null)
     {
-        return $this->getset('each_side', $each_side);
+        return $this->getset('each_side', $each_side === null ? null : max(0, $each_side));
     }
 
     /**
@@ -164,9 +164,8 @@ class Pager
      */
     public function next(int $step = 1) : self
     {
-        $pager       = clone $this;
-        $pager->page = $pager->page + $step ;
-        return $pager;
+        $pager = clone $this;
+        return $pager->page($pager->page + $step);
     }
 
     /**
@@ -177,9 +176,8 @@ class Pager
      */
     public function prev(int $step = 1) : self
     {
-        $pager       = clone $this;
-        $pager->page = max($pager->page - $step, 1);
-        return $pager;
+        $pager = clone $this;
+        return $pager->page($pager->page - $step);
     }
 
     /**

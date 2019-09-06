@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Database\Compiler;
 
-use Rebet\Common\Arrays;
 use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Database\Compiler\Analysis\Analyzer;
@@ -48,7 +47,9 @@ class BuiltinCompiler implements Compiler
      */
     public function compile(Database $db, string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : array
     {
-        $pdo_params = [];
+        // -----------------------------------------------------------------
+        // Check params key format and resolve multi placeholder
+        // -----------------------------------------------------------------
         foreach ($params as $key => $value) {
             if (!preg_match('/[a-zA-Z0-9_]+/', $key)) {
                 throw DatabaseException::by("Invalid SQL query parameter key [ {$key} ], the key must be pattern of /[a-zA-Z0-9_]+/.");
@@ -56,6 +57,23 @@ class BuiltinCompiler implements Compiler
             if (Strings::contains($key, '__')) {
                 throw DatabaseException::by("Invalid SQL query parameter key [ {$key} ], the key may not be contain '__'(combined two underscores).");
             }
+            $holder = ":{$key}";
+            $count  = preg_match_all('/'.$holder.'([^a-zA-Z0-9_]|$)/', $sql);
+            if ($count <= 1) {
+                continue;
+            }
+            for ($i = 0 ; $i < $count ; $i++) {
+                $sql                    = preg_replace('/('.$holder.')([^a-zA-Z0-9_]|$)/', '$1__'.$i.'$2', $sql, 1);
+                $params["{$key}__{$i}"] = $value;
+            }
+            unset($params[$key]);
+        }
+
+        // -----------------------------------------------------------------
+        // Resolve array value placeholder and values convert to PDO params
+        // -----------------------------------------------------------------
+        $pdo_params = [];
+        foreach ($params as $key => $value) {
             $key                   = ":{$key}";
             [$pdo_key, $pdo_param] = $this->convertParam($db, $key, $value);
             $pdo_params            = array_merge($pdo_params, $pdo_param);
@@ -64,6 +82,9 @@ class BuiltinCompiler implements Compiler
             }
         }
 
+        // -----------------------------------------------------------------
+        // Resolve Order By / Pager / Cursor
+        // -----------------------------------------------------------------
         if ($order_by) {
             $cursor = $this->verify($pager, $cursor);
 
@@ -192,28 +213,36 @@ class BuiltinCompiler implements Compiler
         $first       = true;
 
         $where        = "";
+        $params       = [];
         $cursor_cols  = array_keys($cursor->toArray());
         $has_group_by = $analyzer->hasGroupBy();
+        $i            = 0;
         do {
             $where .= $first ? "(" : " OR (" ;
             $last   = array_pop($cursor_cols);
-            $i      = 0;
+            $j      = 0;
             foreach ($cursor_cols as $col) {
-                $col    = $has_group_by ? $col : $analyzer->extractAliasSelectColumn($col) ;
-                $where .= "{$col} = :cursor__{$i} AND ";
-                $i++;
+                $real_col     = $has_group_by ? $col : $analyzer->extractAliasSelectColumn($col) ;
+                $key          = ":cursor__{$i}__{$j}";
+                $params[$key] = $params[":cursor__0__{$j}"] ?? $db->convertToPdo($cursor[$col]);
+
+                $where .= "{$real_col} = {$key} AND ";
+                $j++;
             }
 
             $expression  = $expressions[$order_by[$last]];
             $expression .= $first ? '=' : '' ;
             $first       = false;
 
-            $last = $has_group_by ? $last : $analyzer->extractAliasSelectColumn($last) ;
+            $real_last    = $has_group_by ? $last : $analyzer->extractAliasSelectColumn($last) ;
+            $key          = ":cursor__{$i}__{$j}";
+            $params[$key] = $params[":cursor__0__{$j}"] ?? $db->convertToPdo($cursor[$last]);
 
-            $where .= "{$last} {$expression} :cursor__{$i}";
+            $where .= "{$real_last} {$expression} {$key}";
             $where .= ")";
+            $i++;
         } while (!empty($cursor_cols));
-        return [$where, Arrays::pluck($cursor->toArray(), function ($i, $k, $v) use ($db) { return $db->convertToPdo($v); }, function ($i, $k, $v) { return ":cursor__{$i}"; })];
+        return [$where, $params];
     }
 
     /**
