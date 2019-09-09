@@ -6,6 +6,7 @@ use Rebet\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\PdoDriver;
+use Rebet\Database\Pagination\Cursor;
 
 /**
  * Rebet Database Test Case Class
@@ -107,6 +108,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         }
 
         Dao::clear();
+        Cursor::clear();
     }
 
     protected function tables(string $db_name) : array

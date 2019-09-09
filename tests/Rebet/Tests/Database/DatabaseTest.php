@@ -514,6 +514,8 @@ EOS
             [                   [7, 8, 9], null, 2, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)],
             [                   [7, 8, 9],   32, 8, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(3)->page(3)->eachSide(2)->needTotal(true)],
 
+            [[16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], null, 1, null, "SELECT * FROM users", ['user_id' => 'asc'], [], Pager::resolve()->size(15)->page(2)->eachSide(2)],
+
             //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
             [
                 [30, 29, 28], null, 1, null,
@@ -547,6 +549,435 @@ EOS
                 [], null, 0, null,
                 "SELECT * FROM users", $order_by = ['gender' => 'asc', 'user_id' => 'desc'], [], $pager = Pager::resolve()->size(3)->page(12)
             ],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [30, 29, 28], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(2),
+                    ['gender' => 1, 'user_id' => 23],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(1),
+                null
+            ],
+            [
+                [            23, 19, 17], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(2),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(2),
+                    ['gender' => 1, 'user_id' => 23],
+                    0
+                ),
+            ],
+            [
+                [                                  5, 4, 3], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(5),
+                    ['gender' => 1, 'user_id' => 2],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(4),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    0
+                ),
+            ],
+            [
+                [                                                                                                      12, 11, 8], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(10),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(5),
+                    ['gender' => 1, 'user_id' => 2],
+                    0
+                ),
+            ],
+            [
+                [                                                                                                                 6, 1], null, 0,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [], null, 0,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(12),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [                                                                                                      12, 11, 8], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(10),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [                                                                                          15, 14, 13], null, 2,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(10),
+                    ['gender' => 2, 'user_id' => 12],
+                    1
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(9),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [            23, 19, 17], null, 9,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    8
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->size(3)->page(2),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->size(3)->page(10),
+                    ['gender' => 2, 'user_id' => 12],
+                    1
+                ),
+            ],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [30, 29, 28], null, 4,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
+                    ['gender' => 1, 'user_id' => 23],
+                    3
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(1),
+                null
+            ],
+            [
+                [            23, 19, 17], null, 3,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    2
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
+                    ['gender' => 1, 'user_id' => 23],
+                    3
+                ),
+            ],
+            [
+                [                                  5, 4, 3], null, 2,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(5),
+                    ['gender' => 1, 'user_id' => 2],
+                    1
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(4),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    2
+                ),
+            ],
+            [
+                [                                                                                                      12, 11, 8], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(5),
+                    ['gender' => 1, 'user_id' => 2],
+                    2
+                ),
+            ],
+            [
+                [                                                                                                                 6, 1], null, 0,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [], null, 0,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(12),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [                                                                                                      12, 11, 8], null, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [                                                                                          15, 14, 13], null, 2,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
+                    ['gender' => 2, 'user_id' => 12],
+                    1
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(9),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [            23, 19, 17], null, 9,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    8
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(2),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->eachSide(2)->size(3)->page(10),
+                    ['gender' => 2, 'user_id' => 12],
+                    1
+                ),
+            ],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [30, 29, 28], 32, 10,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
+                    ['gender' => 1, 'user_id' => 23],
+                    9
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(1),
+                null
+            ],
+            [
+                [            23, 19, 17], 32, 9,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    8
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
+                    ['gender' => 1, 'user_id' => 23],
+                    9
+                ),
+            ],
+            [
+                [                                  5, 4, 3], 32, 7,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(5),
+                    ['gender' => 1, 'user_id' => 2],
+                    6
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(4),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    8
+                ),
+            ],
+            [
+                [                                                                                                      12, 11, 8], 32, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(5),
+                    ['gender' => 1, 'user_id' => 2],
+                    6
+                ),
+            ],
+            [
+                [                                                                                                                 6, 1], 32, 0,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [], 32, 0,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(12),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+
+            //   30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2, 32, 31, 27, 26, 25, 24, 22, 21, 20, 18, 16, 15, 14, 13, 12, 11, 8, 6, 1 : gender ASC, user_id DESC
+            [
+                [                                                                                                      12, 11, 8], 32, 1,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [                                                                                          15, 14, 13], 32, 2,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
+                    ['gender' => 2, 'user_id' => 12],
+                    1
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(9),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(11),
+                    ['gender' => 2, 'user_id' => 6],
+                    0
+                ),
+            ],
+            [
+                [            23, 19, 17], 32, 9,
+                Cursor::create(
+                    $order_by = ['gender' => 'asc', 'user_id' => 'desc'],
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(3),
+                    ['gender' => 1, 'user_id' => 10],
+                    8
+                ),
+                "SELECT * FROM users", $order_by, [], Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(2),
+                Cursor::create(
+                    $order_by,
+                    Pager::resolve()->cursor('unittest')->needTotal(true)->eachSide(2)->size(3)->page(10),
+                    ['gender' => 2, 'user_id' => 12],
+                    1
+                ),
+            ],
         ];
     }
 
@@ -556,10 +987,13 @@ EOS
     public function test_paginate($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params = [], $pager = null, $cursor = null, $class = 'stdClass', $count_optimised_sql = null)
     {
         $this->eachDb(function (Database $db) use ($expect, $expect_total, $expect_next_page_count, $expect_cursor, $sql, $order_by, $params, $pager, $cursor, $class, $count_optimised_sql) {
+            Cursor::clear();
             if ($cursor) {
                 $cursor->save();
             }
+            // $db->debug();
             $paginator = $db->paginate($sql, $order_by, $pager, $params, $class, $count_optimised_sql);
+            // $db->debug(false);
             $this->assertInstanceOf(Paginator::class, $paginator);
             $this->assertSame($expect_total, $paginator->total());
             $this->assertSame($expect_next_page_count, $paginator->nextPageCount());
@@ -568,7 +1002,9 @@ EOS
             if ($pager->useCursor()) {
                 $next_cursor = Cursor::load($pager->cursor());
                 if ($expect_cursor) {
-                    $this->assertTrue($expect_cursor->equals($next_cursor));
+                    if (!$expect_cursor->equals($next_cursor)) {
+                        $this->fail("Cursor is not equals to expect.\n".var_export($expect_cursor, true)."\n".var_export($next_cursor, true));
+                    }
                 } else {
                     $this->assertNull($next_cursor);
                 }

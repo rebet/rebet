@@ -101,7 +101,7 @@ class BuiltinCompiler implements Compiler
                 $analyzer                 = static::config('analyzer')::analyze($db, $sql);
                 $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
                 $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
-                $order_by                 = $forward_feed || $near_by_first ? $order_by : $order_by->reverse() ;
+                $order_by                 = $forward_feed ? $order_by : ($near_by_first ? $order_by : $order_by->reverse()) ;
                 $order_sql                = $this->compileOrderBy($db, $order_by);
                 [$cursor_sql, $pdo_param] = $this->compileCursor($db, $analyzer, $order_by, $cursor, $forward_feed, $near_by_first);
                 $pdo_params               = array_merge($pdo_params, $pdo_param);
@@ -209,7 +209,7 @@ class BuiltinCompiler implements Compiler
      */
     protected function compileCursor(Database $db, Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
     {
-        $expressions = $forward_feed && !$near_by_first ? ['ASC' => '>', 'DESC' => '<'] : ['ASC' => '<', 'DESC' => '>'] ;
+        $expressions = $forward_feed ? ['ASC' => '>', 'DESC' => '<'] :  ($near_by_first ? ['ASC' => '<', 'DESC' => '>'] :  ['ASC' => '>', 'DESC' => '<']) ;
         $first       = true;
 
         $where        = "";
@@ -257,7 +257,8 @@ class BuiltinCompiler implements Compiler
         $page_size     = $pager->size();
         $use_curosr    = $pager->useCursor();
         $forward_feed  = !$cursor || $page >= $cursor->pager()->page() ;
-        $rs            = $forward_feed ? $stmt->all($class) : $stmt->all($class)->reverse() ;
+        $near_by_first = !$cursor || $page < abs($cursor->pager()->page() - $page);
+        $rs            = $forward_feed ? $stmt->all($class) : ($near_by_first ? $stmt->all($class) : $stmt->all($class)->reverse()) ;
         $cursor_data   = null;
         $count         = 0;
         foreach ($rs as $row) {
@@ -269,8 +270,15 @@ class BuiltinCompiler implements Compiler
             }
             $count++;
         }
-        $next_page_count = max(max(0, ceil($count / $page_size) - 1), $cursor ? $cursor->pager()->page() - $page + $cursor->nextPageCount() : 0);
-        if ($use_curosr) {
+        if ($pager->needTotal()) {
+            $last_page       = intval(floor($total / $page_size) + ($total % $page_size == 0 ? 0 : 1));
+            $last_page       = $last_page === 0 ? 1 : $last_page ;
+            $page            = $last_page < $page ? $last_page : $page ;
+            $next_page_count = $last_page - $page;
+        } else {
+            $next_page_count = max(max(0, ceil($count / $page_size) - 1), $cursor ? $cursor->pager()->page() - $page + $cursor->nextPageCount() : 0);
+        }
+        if ($use_curosr && $count !== 0) {
             $delta = $count <= $page_size ? 0 : 1 ;
             Cursor::create($order_by, $pager->next($delta), $cursor_data, $next_page_count - $delta)->save();
         }

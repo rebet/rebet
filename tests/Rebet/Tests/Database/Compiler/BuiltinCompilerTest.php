@@ -335,7 +335,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND user_id >= :cursor__0__1) OR (gender < :cursor__1__0) ORDER BY gender ASC, user_id DESC LIMIT 11 OFFSET 10",
+                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND user_id <= :cursor__0__1) OR (gender > :cursor__1__0) ORDER BY gender ASC, user_id DESC LIMIT 11 OFFSET 10",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2)],
                 "SELECT * FROM user",
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
@@ -355,7 +355,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (user_id >= :cursor__0__0) ORDER BY user_id DESC LIMIT 11 OFFSET 10",
+                "SELECT * FROM user WHERE (user_id <= :cursor__0__0) ORDER BY user_id DESC LIMIT 11 OFFSET 10",
                 [':cursor__0__0' => PdoParameter::int(21)],
                 "SELECT * FROM user",
                 $order_by = ['user_id' => 'asc'],

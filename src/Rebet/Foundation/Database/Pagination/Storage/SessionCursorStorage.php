@@ -38,4 +38,12 @@ class SessionCursorStorage implements CursorStorage
     {
         Session::current()->remove($name);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clear() : void
+    {
+        Session::current()->invalidate();
+    }
 }

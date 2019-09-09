@@ -29,5 +29,10 @@ class SessionCursorStorageTest extends RebetTestCase
         $this->assertNull($this->strage->load('article.search'));
         $this->strage->remove('user:search');
         $this->assertNull($this->strage->load('user:search'));
+
+        $this->strage->save('user:search', $cursor);
+        $this->assertEquals($cursor, $this->strage->load('user:search'));
+        $this->strage->clear();
+        $this->assertNull($this->strage->load('user:search'));
     }
 }

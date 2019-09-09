@@ -37,4 +37,11 @@ interface CursorStorage
      * @return void
      */
     public function remove(string $name) : void ;
+
+    /**
+     * Clear the cursor from strage.
+     *
+     * @return void
+     */
+    public function clear() : void ;
 }

@@ -43,4 +43,12 @@ class ArrayCursorStorage implements CursorStorage
     {
         unset(static::$strage[$name]);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clear() : void
+    {
+        static::$strage = [];
+    }
 }

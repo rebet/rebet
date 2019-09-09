@@ -5,6 +5,7 @@ use Rebet\Common\Arrayable;
 use Rebet\Common\Reflector;
 use Rebet\Common\Unit;
 use Rebet\Config\Configurable;
+use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\DateTime\DateTime;
 
 /**
@@ -162,6 +163,29 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $strage = $strage ?? static::configInstantiate('storage') ;
         $cursor = $strage->load($name);
         return $cursor === null || $cursor->expired() ? null : $cursor ;
+    }
+
+    /**
+     * Remove the cursor from strage.
+     *
+     * @param string $name of cursor
+     * @param CursorStorage|null $strage (default: depend on configured)
+     */
+    public static function remove(string $name, ?CursorStorage $strage = null) : void
+    {
+        $strage = $strage ?? static::configInstantiate('storage') ;
+        $strage->remove($name);
+    }
+
+    /**
+     * Clear the cursor from strage.
+     *
+     * @param CursorStorage|null $strage (default: depend on configured)
+     */
+    public static function clear(?CursorStorage $strage = null) : void
+    {
+        $strage = $strage ?? static::configInstantiate('storage') ;
+        $strage->clear();
     }
 
     /**
