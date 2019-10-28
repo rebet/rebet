@@ -67,6 +67,7 @@ class Statement implements \IteratorAggregate
             for ($i = 0 ; $i < $col_count ; $i++) {
                 $column                = $this->stmt->getColumnMeta($i);
                 $meta[$column['name']] = $column;
+                $meta[$i]              = $column;
             }
         } catch (\PDOException $e) {
             return [];
@@ -156,15 +157,15 @@ class Statement implements \IteratorAggregate
     /**
      * Get all of given column data.
      *
-     * @param string $column
+     * @param string|int $column
      * @param string|null $type name of convert to type
      * @return ResultSet
      */
-    public function allOf(string $column, ?string $type = null) : ResultSet
+    public function allOf($column, ?string $type = null) : ResultSet
     {
         $rs   = [];
         $meta = $this->meta();
-        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $this->stmt->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) {
             $rs[] = $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
         return new ResultSet($rs);
@@ -173,13 +174,13 @@ class Statement implements \IteratorAggregate
     /**
      * Get first of given column data.
      *
-     * @param string $column
+     * @param string|int $column
      * @param string|null $type name of convert to type
      * @return mixed
      */
-    public function firstOf(string $column, ?string $type = null)
+    public function firstOf($column, ?string $type = null)
     {
-        return ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) ? $this->db->convertToPhp($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
+        return ($row = $this->stmt->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) ? $this->db->convertToPhp($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
     }
 
     /**

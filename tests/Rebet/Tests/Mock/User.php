@@ -2,14 +2,19 @@
 namespace Rebet\Tests\Mock;
 
 use Rebet\Common\Annotation\Nest;
+use Rebet\Database\Annotation\Type;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
 use Rebet\DateTime\DateTime;
+use Rebet\Tests\Mock\Enum\Gender;
 
 class User extends Entity
 {
     public $user_id;
     public $name;
+    /**
+     * @Type(Gender::class)
+     */
     public $gender;
     public $birthday;
     public $email;

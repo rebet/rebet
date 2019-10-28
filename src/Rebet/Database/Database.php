@@ -487,13 +487,13 @@ class Database
      * @param Pager $pager
      * @param array $params (default: [])
      * @param string $class (default: 'stdClass')
-     * @param string $count_optimised_sql must have 'count' column (default: null)
+     * @param string $count_optimised_sql only have one count total column (default: null)
      * @return Paginator
      */
     public function paginate(string $sql, $order_by, Pager $pager, array $params = [], string $class = 'stdClass', ?string $count_optimised_sql = null) : Paginator
     {
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
-        $total    = $pager->needTotal() ? ($count_optimised_sql ? $this->get('count', $count_optimised_sql, $params) : $this->count($sql, $params)) : null ;
+        $total    = $pager->needTotal() ? ($count_optimised_sql ? $this->get(0, $count_optimised_sql, $params) : $this->count($sql, $params)) : null ;
         $order_by = OrderBy::valueOf($order_by);
         return $this->compiler()->paging($this, $total === 0 ? [] : $this->_query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
     }
@@ -514,13 +514,13 @@ class Database
     /**
      * Execute given SQL and extract the result of given column values (N rows and 1 columns).
      *
-     * @param string $column
+     * @param string|int $column
      * @param string $sql
      * @param array $params (default: [])
      * @param string|null $type name of convert to type (default: null)
      * @return ResultSet
      */
-    public function extract(string $column, string $sql, array $params = [], ?string $type = null) : ResultSet
+    public function extract($column, string $sql, array $params = [], ?string $type = null) : ResultSet
     {
         return $this->query($sql, $params)->allOf($column, $type);
     }
@@ -528,13 +528,13 @@ class Database
     /**
      * Execute given SQL and extract the result of given column values (1 rows and 1 columns).
      *
-     * @param string $column
+     * @param string|int $column
      * @param string $sql
      * @param array $params (default: null)
      * @param string|null $type name of convert to type (default: null)
      * @return mixed or given type
      */
-    public function get(string $column, string $sql, array $params = [], ?string $type = null)
+    public function get($column, string $sql, array $params = [], ?string $type = null)
     {
         return $this->query($sql, $params)->firstOf($column, $type);
     }
@@ -566,7 +566,7 @@ class Database
     /**
      * Execute given SQL and applies the callback function to each row of the result.
      *
-     * @param callable $callback
+     * @param callable $callback function(Class $row) : bool {}
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
