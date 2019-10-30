@@ -2,14 +2,14 @@
 namespace Rebet\Database\Annotation;
 
 /**
- * Type Annotation
+ * PHP Type Annotation
  *
  * Specifies the PHP data type to convert from PDO data.
  *
  * USAGE:
- *  - @Type("int")
- *  - @Type(DateTime::class) // with use Rebet\DateTime\DateTime
- *  - @Type('Rebet\DateTime\DateTime')
+ *  - @PhpType("int")
+ *  - @PhpType(DateTime::class) // with use Rebet\DateTime\DateTime
+ *  - @PhpType('Rebet\DateTime\DateTime')
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -19,7 +19,7 @@ namespace Rebet\Database\Annotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class Type
+final class PhpType
 {
     /**
      * Data type of PHP.

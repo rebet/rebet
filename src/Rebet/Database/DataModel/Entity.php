@@ -220,6 +220,6 @@ abstract class Entity extends DataModel
             $params[$column] = $is_composite_key ? Reflector::get($primaries, $column) : $primaries ;
         }
 
-        return static::db($db)->find("SELECT * FROM ".static::tabelName()." WHERE ".join(' AND ', $where).($for_update ? ' FOR UPDATE' : ''), $params, get_called_class());
+        return static::db($db)->find("SELECT * FROM ".static::tabelName()." WHERE ".join(' AND ', $where).($for_update ? ' FOR UPDATE' : ''), null, $params, get_called_class());
     }
 }

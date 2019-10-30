@@ -4,6 +4,7 @@ namespace Rebet\Tests\Database\Compiler;
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
 use Rebet\Common\Arrays;
+use Rebet\Common\Decimal;
 use Rebet\Config\Config;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Converter\BuiltinConverter;
@@ -1113,12 +1114,17 @@ EOS
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
 
-            $user = $db->find("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 2]);
+            $user = $db->find("SELECT * FROM users WHERE user_id IN (1, 2)", ['user_id' => 'desc']);
             $this->assertInstanceOf(stdClass::class, $user);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
 
-            $user = $db->find("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 3], User::class);
+            $user = $db->find("SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 2]);
+            $this->assertInstanceOf(stdClass::class, $user);
+            $this->assertEquals(2, $user->user_id);
+            $this->assertEquals('Alta Hegmann', $user->name);
+
+            $user = $db->find("SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 3], User::class);
             $this->assertInstanceOf(User::class, $user);
             $this->assertEquals(3, $user->user_id);
             $this->assertEquals('Damien Kling', $user->name);
@@ -1148,19 +1154,22 @@ EOS
             $user_names = $db->extract(1, "SELECT user_id, name FROM users WHERE user_id IN (2, 4, 6)");
             $this->assertSame(['Alta Hegmann', 'Odie Kozey', 'Khalil Hickle'], $user_names->toArray());
 
-            $user_ids = $db->extract("user_id", "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [2, 4, 6]]);
+            $user_ids = $db->extract("user_id", "SELECT * FROM users WHERE user_id IN (:user_id)", [], ['user_id' => [2, 4, 6]]);
             $this->assertSame([2, 4, 6], $user_ids->toArray());
 
-            $user_ids = $db->extract("user_id", "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [2, 4, 6]], 'string');
+            $user_ids = $db->extract("user_id", "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => 'desc'], ['user_id' => [2, 4, 6]]);
+            $this->assertSame([6, 4, 2], $user_ids->toArray());
+
+            $user_ids = $db->extract("user_id", "SELECT * FROM users WHERE user_id IN (:user_id)", [], ['user_id' => [2, 4, 6]], 'string');
             $this->assertSame(['2', '4', '6'], $user_ids->toArray());
 
-            $user_birthdays = $db->extract("birthday", "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [2, 4, 6]], Date::class);
+            $user_birthdays = $db->extract("birthday", "SELECT * FROM users WHERE user_id IN (:user_id)", [], ['user_id' => [2, 4, 6]], Date::class);
             $this->assertEquals([new Date('2003-02-16'), new Date('2008-03-23'), new Date('2013-10-03')], $user_birthdays->toArray());
             foreach ($user_birthdays as $user_birthday) {
                 $this->assertInstanceOf(Date::class, $user_birthday);
             }
 
-            $user_birthdays = $db->extract("birthday", "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [2, 4, 6]], 'string');
+            $user_birthdays = $db->extract("birthday", "SELECT * FROM users WHERE user_id IN (:user_id)", [], ['user_id' => [2, 4, 6]], 'string');
             $this->assertSame(['2003-02-16', '2008-03-23', '2013-10-03'], $user_birthdays->toArray());
         });
     }
@@ -1183,17 +1192,20 @@ EOS
             $user_name = $db->get(1, "SELECT user_id, name FROM users WHERE user_id IN (2, 4, 6)");
             $this->assertSame('Alta Hegmann', $user_name);
 
-            $user_id = $db->get("user_id", "SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 2]);
+            $user_id = $db->get("user_id", "SELECT * FROM users WHERE user_id IN (2, 4, 6)", ['user_id' => 'desc']);
+            $this->assertSame(6, $user_id);
+
+            $user_id = $db->get("user_id", "SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 2]);
             $this->assertSame(2, $user_id);
 
-            $user_id = $db->get("user_id", "SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 2], 'string');
+            $user_id = $db->get("user_id", "SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 2], 'string');
             $this->assertSame('2', $user_id);
 
-            $user_birthday = $db->get("birthday", "SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 2], Date::class);
+            $user_birthday = $db->get("birthday", "SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 2], Date::class);
             $this->assertEquals(new Date('2003-02-16'), $user_birthday);
             $this->assertInstanceOf(Date::class, $user_birthday);
 
-            $user_birthday = $db->get("birthday", "SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 2], 'string');
+            $user_birthday = $db->get("birthday", "SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 2], 'string');
             $this->assertSame('2003-02-16', $user_birthday);
         });
     }
@@ -1223,8 +1235,42 @@ EOS
     {
         $this->eachDb(function (Database $db) {
             $db->each(function (User $user) {
+                $this->assertSame(0, $user->user_id % 2);
+            }, "SELECT * FROM users WHERE user_id % 2 = 0", null, []);
+
+            $db->each(function (User $user) {
                 $this->assertSame(Gender::MALE(), $user->gender);
-            }, "SELECT * FROM users WHERE gender = 1", null, [], User::class);
+            }, "SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()]);
+        });
+    }
+
+    public function test_filter()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertEquals(
+                $db->select("SELECT * FROM users WHERE gender = 1", null, [], User::class),
+                $db->filter(function (User $user) { return $user->gender == Gender::MALE(); }, "SELECT * FROM users")
+            );
+        });
+    }
+
+    public function test_map()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertEquals(
+                $db->select("SELECT * FROM users", ['user_id' => 'asc'], [], User::class)->all(),
+                $db->map(function (User $user) { return $user; }, "SELECT * FROM users", ['user_id' => 'asc'])->all()
+            );
+        });
+    }
+
+    public function test_reduce()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertEquals(
+                Decimal::of($db->get(0, "SELECT SUM(user_id) FROM users")),
+                Decimal::of($db->reduce(function (User $user, $carry) { return $carry + $user->user_id; }, 0, "SELECT * FROM users"))
+            );
         });
     }
 }

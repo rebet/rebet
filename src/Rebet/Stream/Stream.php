@@ -317,9 +317,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             return $this;
         }
         $origin    = $this->origin();
-        $function  = new \ReflectionFunction($filter);
-        $parameter = $function->getParameters()[0] ?? null;
-        $type      = Reflector::getTypeHint($parameter);
+        $type      = Reflector::getTypeHintOf($filter, 0);
         $converted = Reflector::convert($origin, $type);
         $args      = array_map(function ($value) { return static::peel($value); }, $args);
         try {

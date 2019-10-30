@@ -2,7 +2,8 @@
 namespace Rebet\Database;
 
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Database\Annotation\Type;
+use Rebet\Common\Reflector;
+use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Exception\DatabaseException;
 
@@ -117,7 +118,7 @@ class Statement implements \IteratorAggregate
         $dto  = new $class();
         foreach ($row as $column => $value) {
             $am           = $ac->property($column);
-            $type         = $am ? $am->annotation(Type::class) : null ;
+            $type         = $am ? $am->annotation(PhpType::class) : null ;
             $dto->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
         }
         if ($dto instanceof Entity) {
@@ -194,23 +195,85 @@ class Statement implements \IteratorAggregate
     }
 
     /**
-     * Apply given callback function to all result set data as given class object.
+     * Apply given callback function to all result set data.
+     * This function can specify how to receive data in the type hint of the first argument of the callback function.
      * If the callback function return 'false' then immediately exit loop.
      *
      * @param callable $callback function(Class $row) : bool {}
-     * @param string $class (default: 'stdClass')
      * @return self
      */
-    public function each(callable $callback, string $class = 'stdClass') : self
+    public function each(callable $callback) : self
     {
-        $meta = $this->meta();
-        $ac   = new AnnotatedClass($class);
+        $meta  = $this->meta();
+        $class = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
+        $ac    = new AnnotatedClass($class);
         while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
             if (call_user_func($callback, $this->convert($row, $class, $meta, $ac)) === false) {
                 break;
             }
         }
         return $this;
+    }
+
+    /**
+     * Filter the result set using the given callback.
+     * This function can specify how to receive data in the type hint of the first argument of the callback function.
+     *
+     * @param callable $callback function(Class $row) : bool {}
+     * @return ResultSet
+     */
+    public function filter(callable $callback) : ResultSet
+    {
+        $filtered = [];
+        $meta     = $this->meta();
+        $class    = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
+        $ac       = new AnnotatedClass($class);
+        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $item = $this->convert($row, $class, $meta, $ac);
+            if (call_user_func($callback, $item)) {
+                $filtered[] = $item;
+            }
+        }
+        return new ResultSet($filtered);
+    }
+
+    /**
+     * Run a map over each of the items.
+     * This function can specify how to receive data in the type hint of the first argument of the callback function.
+     *
+     * @param callable $callback function(Class $row) : mixed {}
+     * @return ResultSet
+     */
+    public function map(callable $callback) : ResultSet
+    {
+        $map   = [];
+        $meta  = $this->meta();
+        $class = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
+        $ac    = new AnnotatedClass($class);
+        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $map[] = call_user_func($callback, $this->convert($row, $class, $meta, $ac));
+        }
+        return new ResultSet($map);
+    }
+
+    /**
+     * Reduce the result set to a single value.
+     * This function can specify how to receive data in the type hint of the first argument of the reducer function.
+     *
+     * @param callable $reducer function(Class $row, $carry) : mixed {}
+     * @param mixed $initial (default: null)
+     * @return mixed
+     */
+    public function reduce(callable $reducer, $initial = null)
+    {
+        $carry = $initial;
+        $meta  = $this->meta();
+        $class = Reflector::getTypeHintOf($reducer, 0) ?? 'stdClass';
+        $ac    = new AnnotatedClass($class);
+        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $carry = call_user_func($reducer, $this->convert($row, $class, $meta, $ac), $carry);
+        }
+        return $carry;
     }
 
     /**

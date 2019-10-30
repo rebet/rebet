@@ -4,9 +4,9 @@ namespace Rebet\Tests\Mock\Stub;
 use Rebet\Auth\Annotation\Authenticator;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Common\Annotation\Nest;
+use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Annotation\Table;
-use Rebet\Database\Annotation\Type;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\DateTime\DateTime; // Use for Annotation
 use Rebet\Routing\Annotation\AliasOnly;
@@ -30,7 +30,7 @@ class AnnotatedStub
     /**
      * @Nest(User::class)
      * @PrimaryKey
-     * @Type(DateTime::class)
+     * @PhpType(DateTime::class)
      * @Unmap
      */
     public $annotations;

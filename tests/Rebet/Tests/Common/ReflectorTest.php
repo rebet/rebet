@@ -4,15 +4,11 @@ namespace Rebet\Tests\Common;
 use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
+use Rebet\Stream\Stream;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
-use Rebet\View\View;
-use Rebet\View\Engine\Blade\Blade;
-use Rebet\Foundation\App;
-use Rebet\Config\Config;
-use Rebet\Stream\Stream;
 
 class ReflectorTest extends RebetTestCase
 {
@@ -1016,6 +1012,20 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('callable', Reflector::getTypeHint($params[3]));
         $this->assertSame(\Closure::class, Reflector::getTypeHint($params[4]));
         $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHint($params[5]));
+    }
+
+    public function test_getTypeHintOf()
+    {
+        $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {
+        };
+        $this->assertSame(null, Reflector::getTypeHintOf(null, 0));
+        $this->assertSame(null, Reflector::getTypeHintOf($closure, 0));
+        $this->assertSame('int', Reflector::getTypeHintOf($closure, 1));
+        $this->assertSame('string', Reflector::getTypeHintOf($closure, 2));
+        $this->assertSame('callable', Reflector::getTypeHintOf($closure, 3));
+        $this->assertSame(\Closure::class, Reflector::getTypeHintOf($closure, 4));
+        $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHintOf($closure, 5));
+        $this->assertSame(null, Reflector::getTypeHintOf($closure, 6));
     }
 
     public function test_uses()

@@ -502,13 +502,14 @@ class Database
      * Execute given SQL and get the first result (1 rows and M columns).
      *
      * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
      * @param string $class (default: 'stdClass')
      * @return mixed of given class instance
      */
-    public function find(string $sql, array $params = [], string $class = 'stdClass')
+    public function find(string $sql, $order_by = null, array $params = [], string $class = 'stdClass')
     {
-        return $this->query($sql, $params)->first($class);
+        return $this->_query($sql, $order_by, $params)->first($class);
     }
 
     /**
@@ -516,13 +517,14 @@ class Database
      *
      * @param string|int $column
      * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
      * @param string|null $type name of convert to type (default: null)
      * @return ResultSet
      */
-    public function extract($column, string $sql, array $params = [], ?string $type = null) : ResultSet
+    public function extract($column, string $sql, $order_by = null, array $params = [], ?string $type = null) : ResultSet
     {
-        return $this->query($sql, $params)->allOf($column, $type);
+        return $this->_query($sql, $order_by, $params)->allOf($column, $type);
     }
 
     /**
@@ -530,13 +532,14 @@ class Database
      *
      * @param string|int $column
      * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: null)
      * @param string|null $type name of convert to type (default: null)
      * @return mixed or given type
      */
-    public function get($column, string $sql, array $params = [], ?string $type = null)
+    public function get($column, string $sql, $order_by = null, array $params = [], ?string $type = null)
     {
-        return $this->query($sql, $params)->firstOf($column, $type);
+        return $this->_query($sql, $order_by, $params)->firstOf($column, $type);
     }
 
     /**
@@ -560,7 +563,7 @@ class Database
      */
     public function count(string $sql, array $params = []) : int
     {
-        return $this->get('count', "SELECT count(*) AS count FROM ({$sql}) AS T", $params, 'int');
+        return $this->get('count', "SELECT count(*) AS count FROM ({$sql}) AS T", null, $params, 'int');
     }
 
     /**
@@ -570,12 +573,54 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
-     * @param string $class (default: 'stdClass')
      * @return void
      */
-    public function each(callable $callback, string $sql, $order_by = null, array $params = [], string $class = 'stdClass') : void
+    public function each(callable $callback, string $sql, $order_by = null, array $params = []) : void
     {
-        $this->_query($sql, $order_by, $params)->each($callback, $class);
+        $this->_query($sql, $order_by, $params)->each($callback);
+    }
+
+    /**
+     * Execute given SQL then filter the result set using the given callback.
+     *
+     * @param callable $callback function(Class $row) : bool {}
+     * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
+     * @param array $params (default: [])
+     * @return ResultSet
+     */
+    public function filter(callable $callback, string $sql, $order_by = null, array $params = []) : ResultSet
+    {
+        return $this->_query($sql, $order_by, $params)->filter($callback);
+    }
+
+    /**
+     * Execute given SQL then run a map over each of the result set items.
+     *
+     * @param callable $callback function(Class $row) : mixed {}
+     * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
+     * @param array $params (default: [])
+     * @return ResultSet
+     */
+    public function map(callable $callback, string $sql, $order_by = null, array $params = []) : ResultSet
+    {
+        return $this->_query($sql, $order_by, $params)->map($callback);
+    }
+
+    /**
+     * Execute given SQL then reduce the result set to a single value.
+     *
+     * @param callable $reducer function(Class $row, $carry) : mixed {}
+     * @param mixed $initial
+     * @param string $sql
+     * @param OrderBy|array|null $order_by (default: null)
+     * @param array $params (default: [])
+     * @return mixed
+     */
+    public function reduce(callable $reducer, $initial, string $sql, $order_by = null, array $params = [])
+    {
+        return $this->_query($sql, $order_by, $params)->reduce($reducer, $initial);
     }
 
     /**

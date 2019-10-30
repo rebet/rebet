@@ -2,16 +2,16 @@
 namespace Rebet\Tests\Database\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Database\Annotation\Type;
+use Rebet\Database\Annotation\PhpType;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
-class TypeTest extends RebetTestCase
+class PhpTypeTest extends RebetTestCase
 {
     public function test_annotation()
     {
-        $annotation = Type::class;
+        $annotation = PhpType::class;
         $ac         = new AnnotatedClass(AnnotatedStub::class);
 
         $a = $ac->property('annotations')->annotation($annotation);

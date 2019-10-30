@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Mock;
 
 use Rebet\Common\Annotation\Nest;
-use Rebet\Database\Annotation\Type;
+use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
 use Rebet\DateTime\DateTime;
@@ -13,7 +13,7 @@ class User extends Entity
     public $user_id;
     public $name;
     /**
-     * @Type(Gender::class)
+     * @PhpType(Gender::class)
      */
     public $gender;
     public $birthday;

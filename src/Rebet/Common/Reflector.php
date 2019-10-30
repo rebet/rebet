@@ -554,6 +554,23 @@ class Reflector
     }
 
     /**
+     * Get type or class name which is a type hint as a character string from given function parameter.
+     * # If type hint is nothing then return null.
+     *
+     * @param callable|null $function
+     * @param int $param_index
+     * @return string|null
+     */
+    public static function getTypeHintOf(?callable $function, int $param_index) : ?string
+    {
+        if ($function === null) {
+            return null;
+        }
+        $function = new \ReflectionFunction(\Closure::fromCallable($function));
+        return static::getTypeHint($function->getParameters()[$param_index] ?? null);
+    }
+
+    /**
      * Convert to args array from given ordered or named values list.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
