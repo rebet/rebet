@@ -2,6 +2,8 @@
 namespace Rebet\Database\DataModel;
 
 use Rebet\Common\Reflector;
+use Rebet\Database\Annotation\Defaults;
+use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\Database;
@@ -94,6 +96,31 @@ abstract class Entity extends DataModel
             }
         }
         return static::meta(__METHOD__, $unmaps);
+    }
+
+    /**
+     * Get default properties.
+     *
+     * @return array
+     */
+    public static function defaults() : array
+    {
+        if ($defaults = static::meta(__METHOD__)) {
+            return $defaults;
+        }
+
+        $defaults = [];
+        $ac       = static::annotatedClass();
+        foreach ($ac->properties() as $ap) {
+            $default = $ap->annotation(Defaults::class);
+            if ($default) {
+                $key            = $ap->reflector()->getName();
+                $php_type       = $ap->annotation(PhpType::class);
+                $defaults[$key] = [$default->value, $php_type ? $php_type->value : null];
+            }
+        }
+
+        return static::meta(__METHOD__, $defaults);
     }
 
     /**

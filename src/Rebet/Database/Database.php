@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database;
 
+use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
@@ -627,45 +628,58 @@ class Database
      * Create (Insert) given entity data.
      *
      * @param Entity $entity
+     * @param DateTime|null $now (default: null for DateTime::now())
      * @return bool
      */
-    public function create(Entity &$entity) : bool
+    public function create(Entity &$entity, ?DateTime $now = null) : bool
     {
         Event::dispatch(new Creating($this, $entity));
 
-        if ($entity::CREATED_AT && ($entity->{$entity::CREATED_AT} ?? true)) {
-            $entity->{$entity::CREATED_AT} = DateTime::now();
-        }
-
-        $primarys = $entity::primaryKeys();
-        $unmaps   = $entity::unmaps();
-        $columns  = [];
-        $values   = [];
-        foreach ($entity as $column => $value) {
-            if (in_array($column, $unmaps)) {
-                continue;
+        $result = DateTime::freeze(function () use (&$entity) {
+            if ($entity::CREATED_AT && ($entity->{$entity::CREATED_AT} ?? true)) {
+                $entity->{$entity::CREATED_AT} = DateTime::now();
             }
-            if ($value === null && in_array($column, $primarys)) {
-                continue;
-            }
-            $columns[] = $column;
-            $values[]  = $value;
-        }
 
-        $table_name    = $entity::tabelName();
-        $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
-        if ($affected_rows === 1) {
+            $primarys = $entity::primaryKeys();
+            $defaults = $entity::defaults();
+            $unmaps   = $entity::unmaps();
+            $columns  = [];
+            $values   = [];
+            foreach ($entity as $column => $value) {
+                if (in_array($column, $unmaps)) {
+                    continue;
+                }
+                if ($value === null) {
+                    if (in_array($column, $primarys)) {
+                        continue;
+                    }
+                    if ($default = $defaults[$column] ?? null) {
+                        $entity->$column = $value = Reflector::convert(...$default);
+                    }
+                }
+                $columns[] = $column;
+                $values[]  = $value;
+            }
+
+            $table_name    = $entity::tabelName();
+            $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
+            if ($affected_rows !== 1) {
+                return false;
+            }
+
             $pk = count($primarys) === 1 ? $primarys[0] : null ;
             if ($pk !== null && !isset($entity->$pk)) {
                 $entity->$pk = $this->lastInsertId();
-                // $entity->$pk = $this->lastInsertId($this->driverName() === 'pgsql' ? "{$table_name}_{$pk}_seq" : null);
             }
             $entity->origin(clone $entity);
-            Event::dispatch(new Created($this, $entity));
             return true;
+        }, $now);
+
+        if ($result) {
+            Event::dispatch(new Created($this, $entity));
         }
 
-        return false;
+        return $result;
     }
 
     /**

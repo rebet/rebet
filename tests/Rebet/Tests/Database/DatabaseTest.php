@@ -11,6 +11,8 @@ use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\PdoDriver;
+use Rebet\Database\Event\Created;
+use Rebet\Database\Event\Creating;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -18,9 +20,11 @@ use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
+use Rebet\Event\Event;
 use Rebet\Tests\Mock\Article;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\UserWithAnnot;
 use Rebet\Tests\RebetDatabaseTestCase;
 use stdClass;
 
@@ -43,6 +47,8 @@ class DatabaseTest extends RebetDatabaseTestCase
                         name TEXT NOT NULL,
                         gender INTEGER NOT NULL,
                         birthday TEXT NOT NULL,
+                        email TEXT NOT NULL,
+                        role TEXT NOT NULL DEFAULT 'user',
                         created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         updated_at TEXT
                     );
@@ -67,6 +73,8 @@ EOS
                         name TEXT NOT NULL,
                         gender INTEGER NOT NULL,
                         birthday DATE NOT NULL,
+                        email TEXT NOT NULL,
+                        role VARCHAR(6) NOT NULL DEFAULT 'user',
                         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         updated_at DATETIME
                     );
@@ -91,6 +99,8 @@ EOS
                         name TEXT NOT NULL,
                         gender INTEGER NOT NULL,
                         birthday DATE NOT NULL,
+                        email TEXT NOT NULL,
+                        role TEXT NOT NULL DEFAULT 'user',
                         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP
                     );
@@ -115,38 +125,38 @@ EOS
     {
         return [
             'users' => [
-                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08'],
-                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16'],
-                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17'],
-                ['user_id' => 4 , 'name' => 'Odie Kozey'            , 'gender' => 1, 'birthday' => '2008-03-23'],
-                ['user_id' => 5 , 'name' => 'Shea Douglas'          , 'gender' => 1, 'birthday' => '1988-04-01'],
-                ['user_id' => 6 , 'name' => 'Khalil Hickle'         , 'gender' => 2, 'birthday' => '2013-10-03'],
-                ['user_id' => 7 , 'name' => 'Kali Hilll'            , 'gender' => 1, 'birthday' => '2016-08-01'],
-                ['user_id' => 8 , 'name' => 'Kari Kub'              , 'gender' => 2, 'birthday' => '1984-10-21'],
-                ['user_id' => 9 , 'name' => 'Rodger Weimann'        , 'gender' => 1, 'birthday' => '1985-03-21'],
-                ['user_id' => 10, 'name' => 'Nicholaus O\'Conner'   , 'gender' => 1, 'birthday' => '2012-01-29'],
-                ['user_id' => 11, 'name' => 'Troy Smitham'          , 'gender' => 2, 'birthday' => '1996-01-21'],
-                ['user_id' => 12, 'name' => 'Kraig Grant'           , 'gender' => 2, 'birthday' => '1987-01-06'],
-                ['user_id' => 13, 'name' => 'Demarcus Bashirian Jr.', 'gender' => 2, 'birthday' => '2014-12-21'],
-                ['user_id' => 14, 'name' => 'Percy DuBuque'         , 'gender' => 2, 'birthday' => '1990-11-25'],
-                ['user_id' => 15, 'name' => 'Delpha Weber'          , 'gender' => 2, 'birthday' => '2006-01-29'],
-                ['user_id' => 16, 'name' => 'Marquise Waters'       , 'gender' => 2, 'birthday' => '1989-08-26'],
-                ['user_id' => 17, 'name' => 'Jade Stroman'          , 'gender' => 1, 'birthday' => '2013-08-06'],
-                ['user_id' => 18, 'name' => 'Citlalli Jacobs I'     , 'gender' => 2, 'birthday' => '1983-02-09'],
-                ['user_id' => 19, 'name' => 'Dannie Rutherford'     , 'gender' => 1, 'birthday' => '1982-07-07'],
-                ['user_id' => 20, 'name' => 'Dayton Herzog'         , 'gender' => 2, 'birthday' => '2014-11-24'],
-                ['user_id' => 21, 'name' => 'Ms. Zoe Hirthe'        , 'gender' => 2, 'birthday' => '1997-02-27'],
-                ['user_id' => 22, 'name' => 'Kaleigh Kassulke'      , 'gender' => 2, 'birthday' => '2011-01-23'],
-                ['user_id' => 23, 'name' => 'Deron Macejkovic'      , 'gender' => 1, 'birthday' => '2008-06-18'],
-                ['user_id' => 24, 'name' => 'Mr. Aisha Quigley'     , 'gender' => 2, 'birthday' => '2007-08-29'],
-                ['user_id' => 25, 'name' => 'Eugenia Friesen II'    , 'gender' => 2, 'birthday' => '1999-12-19'],
-                ['user_id' => 26, 'name' => 'Wyman Jaskolski'       , 'gender' => 2, 'birthday' => '2010-07-06'],
-                ['user_id' => 27, 'name' => 'Naomi Batz'            , 'gender' => 2, 'birthday' => '1980-03-06'],
-                ['user_id' => 28, 'name' => 'Miss Bud Koepp'        , 'gender' => 1, 'birthday' => '2014-10-22'],
-                ['user_id' => 29, 'name' => 'Ms. Harmon Blick'      , 'gender' => 1, 'birthday' => '1987-03-20'],
-                ['user_id' => 30, 'name' => 'Pinkie Kiehn'          , 'gender' => 1, 'birthday' => '2002-01-06'],
-                ['user_id' => 31, 'name' => 'Harmony Feil'          , 'gender' => 2, 'birthday' => '2007-11-03'],
-                ['user_id' => 32, 'name' => 'River Pagac'           , 'gender' => 2, 'birthday' => '1980-11-20'],
+                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08', 'email' => 'elody@s1.rebet.local' , 'role' => 'user'],
+                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16', 'email' => 'alta_h@s2.rebet.local', 'role' => 'user'],
+                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user'],
+                ['user_id' => 4 , 'name' => 'Odie Kozey'            , 'gender' => 1, 'birthday' => '2008-03-23', 'email' => 'odie.k@s3.rebet.local', 'role' => 'user'],
+                ['user_id' => 5 , 'name' => 'Shea Douglas'          , 'gender' => 1, 'birthday' => '1988-04-01', 'email' => 'shea.d@s4.rebet.local', 'role' => 'user'],
+                ['user_id' => 6 , 'name' => 'Khalil Hickle'         , 'gender' => 2, 'birthday' => '2013-10-03', 'email' => 'khalil@s0.rebet.local', 'role' => 'user'],
+                ['user_id' => 7 , 'name' => 'Kali Hilll'            , 'gender' => 1, 'birthday' => '2016-08-01', 'email' => 'kali_h@s8.rebet.local', 'role' => 'user'],
+                ['user_id' => 8 , 'name' => 'Kari Kub'              , 'gender' => 2, 'birthday' => '1984-10-21', 'email' => 'kari-k@s0.rebet.local', 'role' => 'user'],
+                ['user_id' => 9 , 'name' => 'Rodger Weimann'        , 'gender' => 1, 'birthday' => '1985-03-21', 'email' => 'rodger@s3.rebet.local', 'role' => 'user'],
+                ['user_id' => 10, 'name' => 'Nicholaus O\'Conner'   , 'gender' => 1, 'birthday' => '2012-01-29', 'email' => 'nichol@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 11, 'name' => 'Troy Smitham'          , 'gender' => 2, 'birthday' => '1996-01-21', 'email' => 'troy-s@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 12, 'name' => 'Kraig Grant'           , 'gender' => 2, 'birthday' => '1987-01-06', 'email' => 'kraig@s1.rebet.local' , 'role' => 'user'],
+                ['user_id' => 13, 'name' => 'Demarcus Bashirian Jr.', 'gender' => 2, 'birthday' => '2014-12-21', 'email' => 'demarc@s2.rebet.local', 'role' => 'user'],
+                ['user_id' => 14, 'name' => 'Percy DuBuque'         , 'gender' => 2, 'birthday' => '1990-11-25', 'email' => 'percy@s1.rebet.local' , 'role' => 'user'],
+                ['user_id' => 15, 'name' => 'Delpha Weber'          , 'gender' => 2, 'birthday' => '2006-01-29', 'email' => 'delpha@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 16, 'name' => 'Marquise Waters'       , 'gender' => 2, 'birthday' => '1989-08-26', 'email' => 'marqui@s8.rebet.local', 'role' => 'user'],
+                ['user_id' => 17, 'name' => 'Jade Stroman'          , 'gender' => 1, 'birthday' => '2013-08-06', 'email' => 'jade-s@s8.rebet.local', 'role' => 'user'],
+                ['user_id' => 18, 'name' => 'Citlalli Jacobs I'     , 'gender' => 2, 'birthday' => '1983-02-09', 'email' => 'citlal@s2.rebet.local', 'role' => 'user'],
+                ['user_id' => 19, 'name' => 'Dannie Rutherford'     , 'gender' => 1, 'birthday' => '1982-07-07', 'email' => 'dannie@s7.rebet.local', 'role' => 'user'],
+                ['user_id' => 20, 'name' => 'Dayton Herzog'         , 'gender' => 2, 'birthday' => '2014-11-24', 'email' => 'dayton@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 21, 'name' => 'Ms. Zoe Hirthe'        , 'gender' => 2, 'birthday' => '1997-02-27', 'email' => 'ms.zo@s2.rebet.local' , 'role' => 'user'],
+                ['user_id' => 22, 'name' => 'Kaleigh Kassulke'      , 'gender' => 2, 'birthday' => '2011-01-23', 'email' => 'kaleig@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 23, 'name' => 'Deron Macejkovic'      , 'gender' => 1, 'birthday' => '2008-06-18', 'email' => 'deron@s6.rebet.local' , 'role' => 'user'],
+                ['user_id' => 24, 'name' => 'Mr. Aisha Quigley'     , 'gender' => 2, 'birthday' => '2007-08-29', 'email' => 'mr.ai@s8.rebet.local' , 'role' => 'user'],
+                ['user_id' => 25, 'name' => 'Eugenia Friesen II'    , 'gender' => 2, 'birthday' => '1999-12-19', 'email' => 'eugeni@s2.rebet.local', 'role' => 'user'],
+                ['user_id' => 26, 'name' => 'Wyman Jaskolski'       , 'gender' => 2, 'birthday' => '2010-07-06', 'email' => 'wyman@s7.rebet.local' , 'role' => 'user'],
+                ['user_id' => 27, 'name' => 'Naomi Batz'            , 'gender' => 2, 'birthday' => '1980-03-06', 'email' => 'naomi@s3.rebet.local' , 'role' => 'user'],
+                ['user_id' => 28, 'name' => 'Miss Bud Koepp'        , 'gender' => 1, 'birthday' => '2014-10-22', 'email' => 'missb@s0.rebet.local' , 'role' => 'user'],
+                ['user_id' => 29, 'name' => 'Ms. Harmon Blick'      , 'gender' => 1, 'birthday' => '1987-03-20', 'email' => 'ms.ha@s3.rebet.local' , 'role' => 'user'],
+                ['user_id' => 30, 'name' => 'Pinkie Kiehn'          , 'gender' => 1, 'birthday' => '2002-01-06', 'email' => 'pinkie@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 31, 'name' => 'Harmony Feil'          , 'gender' => 2, 'birthday' => '2007-11-03', 'email' => 'harmon@s1.rebet.local', 'role' => 'user'],
+                ['user_id' => 32, 'name' => 'River Pagac'           , 'gender' => 2, 'birthday' => '1980-11-20', 'email' => 'river@s1.rebet.local' , 'role' => 'user'],
             ],
         ][$table_name] ?? [];
     }
@@ -472,8 +482,8 @@ EOS
             $this->assertSame(13, $db->execute("UPDATE users SET gender = 2 WHERE gender = 1"));
             $this->assertSame(0, $db->count("SELECT * FROM users WHERE gender = 1"));
 
-            $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday) VALUES (:values)", [
-                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23')]
+            $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday, email) VALUES (:values)", [
+                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local']
             ]));
 
             $this->assertSame(1, $db->count("SELECT * FROM users WHERE gender = 1"));
@@ -1271,6 +1281,104 @@ EOS
                 Decimal::of($db->get(0, "SELECT SUM(user_id) FROM users")),
                 Decimal::of($db->reduce(function (User $user, $carry) { return $carry + $user->user_id; }, 0, "SELECT * FROM users"))
             );
+        });
+    }
+
+    public function test_create()
+    {
+        $creating_event_called = false;
+        $created_event_called  = false;
+        Event::listen(function (Creating $event) use (&$creating_event_called) {
+            $creating_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $event->new->body .= ' via creating';
+                    break;
+            }
+        });
+        Event::listen(function (Created $event) use (&$created_event_called) {
+            $created_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $this->assertStringEndsWith(' via creating', $event->new->body);
+                    break;
+            }
+        });
+
+        $this->eachDb(function (Database $db) use (&$creating_event_called, &$created_event_called) {
+            $creating_event_called = false;
+            $created_event_called  = false;
+
+            $this->assertNull(Article::find(1));
+
+            $article = new Article();
+            $article->user_id = 1;
+            $article->subject = 'Test';
+            $article->body    = 'This is test';
+
+            $this->assertFalse($creating_event_called);
+            $this->assertFalse($created_event_called);
+            $this->assertTrue($db->create($article));
+            $this->assertTrue($creating_event_called);
+            $this->assertTrue($created_event_called);
+            $this->assertEquals(1, $article->article_id);
+            $this->assertSame('Test', $article->subject);
+            $this->assertSame('This is test via creating', $article->body);
+
+            // Reset milliseconds to compare with DB data where milliseconds are not stored.
+            $article->created_at = $article->created_at->setMilliMicro(0);
+            $origin = $article->origin();
+            $origin->created_at = $origin->created_at->setMilliMicro(0);
+            $article->origin($origin);
+            $this->assertEquals($article, Article::find(1));
+
+
+            $user = new User();
+            $user->user_id  = 99;
+            $user->name     = 'Foo';
+            $user->gender   = Gender::FEMALE();
+            $user->birthday = new Date('20 years ago');
+            $user->email    = 'foo@bar.local';
+
+            $creating_event_called = false;
+            $created_event_called  = false;
+
+            $this->assertFalse($creating_event_called);
+            $this->assertFalse($created_event_called);
+            $this->assertTrue($db->create($user));
+            $this->assertTrue($creating_event_called);
+            $this->assertTrue($created_event_called);
+            $this->assertSame('user', $user->role);
+
+            // Reset milliseconds to compare with DB data where milliseconds are not stored.
+            $user->created_at = $user->created_at->setMilliMicro(0);
+            $origin = $user->origin();
+            $origin->created_at = $origin->created_at->setMilliMicro(0);
+            // $user->origin($origin);
+            $this->assertEquals($user, User::find(99));
+
+
+            $now = DateTime::now()->setMilliMicro(0);
+            $user = new UserWithAnnot();
+            $user->user_id = 999;
+
+            $creating_event_called = false;
+            $created_event_called  = false;
+
+            $this->assertFalse($creating_event_called);
+            $this->assertFalse($created_event_called);
+            $this->assertTrue($db->create($user, $now));
+            $this->assertTrue($creating_event_called);
+            $this->assertTrue($created_event_called);
+            $this->assertSame('foo', $user->name);
+            $this->assertSame(Gender::FEMALE(), $user->gender);
+            $this->assertEquals($now->modify('20 years ago')->toDate(), $user->birthday);
+            $this->assertSame('foo@bar.local', $user->email);
+            $this->assertSame('user', $user->role);
+            $this->assertEquals($now, $user->created_at);
+            $this->assertEquals($now, $user->updated_at);
+
+            $this->assertEquals($user, UserWithAnnot::find(999));
         });
     }
 }

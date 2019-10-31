@@ -59,6 +59,39 @@ class DateTimeTest extends RebetTestCase
         $this->assertNull(DateTime::getTestNowTimezone());
     }
 
+    public function test_freeze()
+    {
+        DateTime::removeTestNow();
+
+        $now = DateTime::now();
+        usleep(1100);
+        $this->assertNotEquals($now, DateTime::now());
+        usleep(1100);
+        $this->assertNotEquals($now, new DateTime('now'));
+
+        $result = DateTime::freeze(function () {
+            $now = DateTime::now();
+            usleep(1100);
+            $this->assertEquals($now, DateTime::now());
+            usleep(1100);
+            $this->assertEquals($now, new DateTime('now'));
+
+            return 'foo';
+        });
+        $this->assertSame('foo', $result);
+
+        $now    = DateTime::now();
+        $result = DateTime::freeze(function () use ($now) {
+            usleep(1100);
+            $this->assertEquals($now, DateTime::now());
+            usleep(1100);
+            $this->assertEquals($now, new DateTime());
+
+            return new DateTime('now');
+        }, $now);
+        $this->assertEquals($now, $result);
+    }
+
     public function test_construct()
     {
         $date = new DateTime();

@@ -109,6 +109,25 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     }
 
     /**
+     * Freezes the current time in processing within the given callback function and eliminates time fluctuation due to
+     * processing timing that occurs when specifying a relative time such as 'now' or 'days ago' etc.
+     *
+     * @param \Closure $callback
+     * @param DateTime|null $now (default: null for DateTime::now())
+     * @return mixed return value of given callback function as it is
+     */
+    public static function freeze(\Closure $callback, ?DateTime $now = null)
+    {
+        try {
+            $now = $now ?? DateTime::now() ;
+            static::setTestNow($now->format('Y-m-d H:i:s.u'), $now->getTimezone()->getName());
+            return $callback();
+        } finally {
+            static::removeTestNow();
+        }
+    }
+
+    /**
      * Converts the given value to DateTime.
      * This method is an I/F for Reflector::convert().
      *
@@ -812,7 +831,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * Extended format is output only and can not be used with analytic methods such as createFromFormat().
      *
      * @param string|null $format (default: null)
-     * @return void
+     * @return string
      */
     public function format($format = null)
     {
