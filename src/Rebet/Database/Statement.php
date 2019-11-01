@@ -115,16 +115,16 @@ class Statement implements \IteratorAggregate
     {
         $meta = $meta ?? $this->meta();
         $ac   = $ac ?? new AnnotatedClass($class);
-        $dto  = new $class();
+        $dm   = new $class();
         foreach ($row as $column => $value) {
-            $am           = $ac->property($column);
-            $type         = $am ? $am->annotation(PhpType::class) : null ;
-            $dto->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
+            $am          = $ac->property($column);
+            $type        = $am ? $am->annotation(PhpType::class) : null ;
+            $dm->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
         }
-        if ($dto instanceof Entity) {
-            $dto->origin(clone $dto);
+        if ($dm instanceof Entity) {
+            $dm->origin(clone $dm->removeOrigin());
         }
-        return $dto;
+        return $dm;
     }
 
     /**

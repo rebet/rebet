@@ -13,6 +13,10 @@ use Rebet\Database\Database;
 use Rebet\Database\Driver\PdoDriver;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Creating;
+use Rebet\Database\Event\Deleted;
+use Rebet\Database\Event\Deleting;
+use Rebet\Database\Event\Updated;
+use Rebet\Database\Event\Updating;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -1329,7 +1333,6 @@ EOS
             $article->created_at = $article->created_at->setMilliMicro(0);
             $origin = $article->origin();
             $origin->created_at = $origin->created_at->setMilliMicro(0);
-            $article->origin($origin);
             $this->assertEquals($article, Article::find(1));
 
 
@@ -1354,7 +1357,6 @@ EOS
             $user->created_at = $user->created_at->setMilliMicro(0);
             $origin = $user->origin();
             $origin->created_at = $origin->created_at->setMilliMicro(0);
-            // $user->origin($origin);
             $this->assertEquals($user, User::find(99));
 
 
@@ -1379,6 +1381,198 @@ EOS
             $this->assertEquals($now, $user->updated_at);
 
             $this->assertEquals($user, UserWithAnnot::find(999));
+        });
+    }
+
+    public function test_update()
+    {
+        $updating_event_called = false;
+        $updated_event_called  = false;
+        Event::listen(function (Updating $event) use (&$updating_event_called) {
+            $updating_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $event->new->body .= ' via updating';
+                    break;
+            }
+        });
+        Event::listen(function (Updated $event) use (&$updated_event_called) {
+            $updated_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $this->assertStringEndsWith(' via updating', $event->new->body);
+                    break;
+            }
+        });
+
+        $this->eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
+            $article = new Article();
+            $article->user_id = 1;
+            $article->subject = 'Test';
+            $article->body    = 'This is test';
+            $this->assertTrue($article->create());
+
+            $updating_event_called = false;
+            $updated_event_called  = false;
+
+            $article = Article::find(1);
+            $this->assertNull($article->updated_at);
+            $this->assertSame('This is test', $article->body);
+            $this->assertFalse($updating_event_called);
+            $this->assertFalse($updated_event_called);
+
+            $now = DateTime::now()->setMilliMicro(0);
+            $article->body = 'foo';
+            $this->assertTrue($db->update($article, $now));
+            $this->assertEquals($now, $article->updated_at);
+            $this->assertSame('foo via updating', $article->body);
+
+            $this->assertEquals($article, Article::find(1));
+
+
+            $now = DateTime::now()->setMilliMicro(0);
+            $user = User::find(1);
+            $this->assertNull($user->updated_at);
+            $this->assertEquals(Gender::FEMALE(), $user->gender);
+
+            $user->gender = Gender::MALE();
+            $user->name   = 'John Smith';
+            $this->assertTrue($db->update($user, $now));
+            $this->assertEquals($now, $user->updated_at);
+
+            $this->assertEquals($user, User::find(1));
+
+
+            $now = DateTime::now()->setMilliMicro(0);
+            $user = UserWithAnnot::find(2);
+            $this->assertNull($user->updated_at);
+            $this->assertEquals(Gender::MALE(), $user->gender);
+
+            $user->gender = Gender::FEMALE();
+            $user->name   = 'Jane Smith';
+            $this->assertTrue($db->update($user, $now));
+            $this->assertEquals($now, $user->updated_at);
+
+            $this->assertEquals($user, UserWithAnnot::find(2));
+        });
+    }
+
+    public function test_save()
+    {
+        $creating_event_called = false;
+        $created_event_called  = false;
+        Event::listen(function (Creating $event) use (&$creating_event_called) {
+            $creating_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $event->new->body .= ' via creating';
+                    break;
+            }
+        });
+        Event::listen(function (Created $event) use (&$created_event_called) {
+            $created_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $this->assertStringEndsWith(' via creating', $event->new->body);
+                    break;
+            }
+        });
+        $updating_event_called = false;
+        $updated_event_called  = false;
+        Event::listen(function (Updating $event) use (&$updating_event_called) {
+            $updating_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $event->new->body .= ' via updating';
+                    break;
+            }
+        });
+        Event::listen(function (Updated $event) use (&$updated_event_called) {
+            $updated_event_called = true;
+            switch (get_class($event->new)) {
+                case Article::class:
+                    $this->assertStringEndsWith(' via updating', $event->new->body);
+                    break;
+            }
+        });
+
+        $this->eachDb(function (Database $db) use (&$creating_event_called, &$created_event_called, &$updating_event_called, &$updated_event_called) {
+            $creating_event_called = false;
+            $created_event_called  = false;
+            $updating_event_called = false;
+            $updated_event_called  = false;
+
+            $created_at = DateTime::now()->setMilliMicro(0);
+
+            $article = new Article();
+            $article->user_id = 1;
+            $article->subject = 'Test';
+            $article->body    = 'This is test';
+
+            $this->assertFalse($creating_event_called);
+            $this->assertFalse($created_event_called);
+            $this->assertTrue($db->save($article, $created_at));
+            $this->assertTrue($creating_event_called);
+            $this->assertTrue($created_event_called);
+            $this->assertEquals(1, $article->article_id);
+            $this->assertSame('Test', $article->subject);
+            $this->assertSame('This is test via creating', $article->body);
+
+            $this->assertEquals($article, Article::find(1));
+
+
+            $updated_at = DateTime::now()->setMilliMicro(0);
+            $article->subject = 'Test update';
+
+            $this->assertFalse($updating_event_called);
+            $this->assertFalse($updated_event_called);
+            $this->assertTrue($db->save($article, $updated_at));
+            $this->assertTrue($updating_event_called);
+            $this->assertTrue($updated_event_called);
+            $this->assertEquals(1, $article->article_id);
+            $this->assertSame('Test update', $article->subject);
+            $this->assertSame('This is test via creating via updating', $article->body);
+
+            $this->assertEquals($article, Article::find(1));
+        });
+    }
+
+    public function test_delete()
+    {
+        $deleting_event_called = false;
+        $deleted_event_called  = false;
+        Event::listen(function (Deleting $event) use (&$deleting_event_called) {
+            $deleting_event_called = true;
+        });
+        Event::listen(function (Deleted $event) use (&$deleted_event_called) {
+            $deleted_event_called = true;
+        });
+
+        $this->eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
+            $article = new Article();
+            $article->user_id = 1;
+            $article->subject = 'Test';
+            $article->body    = 'This is test';
+            $this->assertTrue($article->create());
+
+            $deleting_event_called = false;
+            $deleted_event_called  = false;
+
+            $this->assertNotNull(Article::find(1));
+            $this->assertFalse($deleting_event_called);
+            $this->assertFalse($deleted_event_called);
+            $this->assertTrue($db->delete($article));
+            $this->assertTrue($deleting_event_called);
+            $this->assertTrue($deleted_event_called);
+            $this->assertNull(Article::find(1));
+
+            $this->assertNotNull($user = User::find(1));
+            $this->assertTrue($db->delete($user));
+            $this->assertNull(User::find(1));
+
+            $this->assertNotNull($user = UserWithAnnot::find(2));
+            $this->assertTrue($db->delete($user));
+            $this->assertNull(UserWithAnnot::find(2));
         });
     }
 }

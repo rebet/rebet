@@ -11,6 +11,7 @@ use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Creating;
+use Rebet\Database\Event\Deleted;
 use Rebet\Database\Event\Deleting;
 use Rebet\Database\Event\Updated;
 use Rebet\Database\Event\Updating;
@@ -671,7 +672,7 @@ class Database
             if ($pk !== null && !isset($entity->$pk)) {
                 $entity->$pk = $this->lastInsertId();
             }
-            $entity->origin(clone $entity);
+            $entity->origin(clone $entity->removeOrigin());
             return true;
         }, $now);
 
@@ -710,11 +711,13 @@ class Database
      * Update given entity changed data.
      *
      * @param Entity $entity
+     * @param DateTime|null $now (default: null for DateTime::now())
      * @return bool
      */
-    public function update(Entity $entity) : bool
+    public function update(Entity &$entity, ?DateTime $now = null) : bool
     {
         $old = $entity->origin();
+        $now = $now ?? DateTime::now();
         Event::dispatch(new Updating($this, $old, $entity));
 
         [$where, $params] = $this->buildPrimaryWheresFrom($entity);
@@ -730,31 +733,31 @@ class Database
         }
 
         if ($entity::UPDATED_AT && !isset($params[$entity::UPDATED_AT])) {
-            $now                           = DateTime::now();
             $sets[]                        = $entity::UPDATED_AT.' = :'.$entity::UPDATED_AT;
             $params[$entity::UPDATED_AT]   = $now;
             $entity->{$entity::UPDATED_AT} = $now;
         }
 
         $affected_rows = $this->execute("UPDATE ".$entity->tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
-        if ($affected_rows === 1) {
-            $entity->origin(clone $entity);
-            Event::dispatch(new Updated($this, $old, $entity));
-            return true;
+        if ($affected_rows !== 1) {
+            return false;
         }
 
-        return false;
+        $entity->origin(clone $entity->removeOrigin());
+        Event::dispatch(new Updated($this, $old, $entity));
+        return true;
     }
 
     /**
      * Save given entity changed data.
      *
      * @param Entity $entity
+     * @param DateTime|null $now (default: null for DateTime::now())
      * @return boolean
      */
-    public function save(Entity $entity) : bool
+    public function save(Entity $entity, ?DateTime $now = null) : bool
     {
-        return $entity->exists($this->name) ? $this->update($entity) : $this->create($entity) ;
+        return $entity->exists($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
     }
 
     /**
@@ -769,11 +772,11 @@ class Database
         [$where, $params] = $this->buildPrimaryWheresFrom($entity);
 
         $affected_rows = $this->execute("DELETE FROM ".$entity->tabelName()." WHERE {$where}", $params);
-        if ($affected_rows === 1) {
-            Event::dispatch(new Deleted($this, $entity));
-            return true;
+        if ($affected_rows !== 1) {
+            return false;
         }
 
-        return false;
+        Event::dispatch(new Deleted($this, $entity));
+        return true;
     }
 }

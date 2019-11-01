@@ -62,6 +62,17 @@ abstract class Entity extends DataModel
     }
 
     /**
+     * Remove original data when fetched.
+     *
+     * @return self
+     */
+    public function removeOrigin() : self
+    {
+        $this->_origin = null;
+        return $this;
+    }
+
+    /**
      * Get the table name of this entity.
      *
      * @return string
