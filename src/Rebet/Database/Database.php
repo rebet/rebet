@@ -235,12 +235,15 @@ class Database
      * Convert given SQL and params for log output and exception message.
      * This method emulate SQL when emulated_sql_log is true.
      *
-     * @param string $sql
+     * @param string|null $sql
      * @param array $params (default: [])
      * @return array [emulated_sql] or [sql, params]
      */
-    protected function convertForMessage(string $sql, array $params = []) : array
+    protected function convertForMessage(?string $sql, array $params = []) : array
     {
+        if ($sql === null) {
+            return [null];
+        }
         return $this->emulated_sql_log ? [$this->emulate($sql, $params)] : [$sql, $params] ;
     }
 

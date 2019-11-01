@@ -73,7 +73,7 @@ class DatabaseException extends RuntimeException
     public static function from(Database $db, $error, ?string $sql = null, array $params = []) : self
     {
         $error_info = is_array($error) ? $error : $error->errorInfo ;
-        $sql_state  = $error_info[0] ?? null ;
+        $sql_state  = $error_info[0] ?? 'UNKOWN' ;
         $code       = $error_info[1] ?? null ;
         $message    = $error_info[2] ?? 'Unkown error occured.' ;
         $driver     = $db->driverName();

@@ -126,16 +126,16 @@ class BuiltinConverter implements Converter
 
             case 'date':             // mysql, pgsql, dblib
             case 'newdate':          // mysql
-                return $value === '0000-00-00' ? null : Date::createFromFormat('!Y-m-d', $value) ;
+                return $value === '0000-00-00' ? null : Date::createDateTime($value, ['Y-m-d']) ;
 
             case 'timestamp':        // mysql, pgsql
             case 'datetime':         // mysql, dblib
             case 'datetime2':        // dblib
             case 'smalldatetime':    // dblib
-                return $value === '0000-00-00 00:00:00' ? null : DateTime::createFromFormat('Y-m-d H:i:s', $value) ;
+                return $value === '0000-00-00 00:00:00' ? null : DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']) ;
 
             case 'timestamptz':      // pgsql
-                return DateTime::createFromFormat('Y-m-d H:i:sT', $value) ;
+                return DateTime::createDateTime($value, ['Y-m-d H:i:sO', 'Y-m-d H:i:sT']) ;
 
             // case 'set':              // mysql (It not works currently because of mysql PDO return 'string' for SET column)
             //     return explode(',', $value);
