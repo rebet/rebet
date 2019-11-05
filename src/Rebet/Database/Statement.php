@@ -185,7 +185,9 @@ class Statement implements \IteratorAggregate
     }
 
     /**
-     * Get the affected rows count of latest SQL.
+     * Get the affected rows count of latest DELETE, INSERT, or UPDATE SQL.
+     * If the last SQL statement was a SELECT statement, some databases may return the number of rows returned by that statement.
+     * However, this behaviour depended on PDO driver is not guaranteed for all databases and should not be relied on for portable applications.
      *
      * @return integer
      */

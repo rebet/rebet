@@ -13,6 +13,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\User;
 use Rebet\Tests\RebetDatabaseTestCase;
+use Traversable;
 
 class StatementTest extends RebetDatabaseTestCase
 {
@@ -355,6 +356,106 @@ EOS
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf(3, 'string');
             $this->assertTrue(is_string($rs));
+        });
+    }
+
+    public function test_affectedRows()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $count    = $stmt->execute()->affectedRows();
+            if ($db->driverName() == 'sqlite') {
+                $this->assertSame(0, $count, 'on DB '.$db->driverName());
+            } else {
+                $this->assertSame(3, $count, 'on DB '.$db->driverName());
+            }
+
+            $pdo_stmt = $db->driver()->prepare("INSERT INTO users VALUES(99, 'foo', 2, '1980-01-02', 'foo@bar.rebet.local', 'user', CURRENT_TIMESTAMP, NULL)");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $count    = $stmt->execute()->affectedRows();
+            $this->assertSame(1, $count);
+
+            $pdo_stmt = $db->driver()->prepare("UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE gender = 1");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $count    = $stmt->execute()->affectedRows();
+            $this->assertSame(2, $count);
+        });
+    }
+
+    public function test_each()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $i = 1;
+            $stmt->execute()->each(function (User $user) use (&$i) {
+                $this->assertEquals($i++, $user->user_id);
+                $this->assertInstanceOf(User::class, $user);
+            });
+
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $stmt->execute()->each(function ($user) {
+                $this->assertEquals(1, $user->user_id);
+                $this->assertInstanceOf('stdClass', $user);
+                return false;
+            });
+        });
+    }
+
+    public function test_filter()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $users    = $stmt->execute()->filter(function (User $user) {
+                return $user->gender == Gender::MALE();
+            });
+            $this->assertSame([2, 3], Arrays::pluck($users->toArray(), 'user_id'));
+        });
+    }
+
+    public function test_map()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $users    = $stmt->execute()->map(function (User $user) {
+                $user->name = $user->gender == Gender::MALE() ? "Mr. {$user->name}" : "Ms. {$user->name}";
+                return $user;
+            });
+            $this->assertSame(['Ms. Elody Bode III', 'Mr. Alta Hegmann', 'Mr. Damien Kling'], Arrays::pluck($users->toArray(), 'name'));
+        });
+    }
+
+    public function test_reduce()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $result   = $stmt->execute()->reduce(function (User $user, $carry) {
+                return $carry + $user->user_id;
+            }, 0);
+            $this->assertSame(6, $result);
+        });
+    }
+
+    public function test_getIterator()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $this->assertInstanceOf(Traversable::class, $stmt->getIterator());
+        });
+    }
+
+    public function test_close()
+    {
+        $this->eachDb(function (Database $db) {
+            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $stmt     = new Statement($db, $pdo_stmt);
+            $this->assertTrue($stmt->execute()->close());
         });
     }
 }
