@@ -120,14 +120,17 @@ class Dao
      * Get the Database for given db name.
      *
      * @param string $name when the null given return the default db Database (default: null)
+     * @param bool $update_current_db (default: true)
      * @return Database
      */
-    public static function db(?string $name = null) : Database
+    public static function db(?string $name = null, bool $update_current_db = true) : Database
     {
         $name = $name ?? static::config('default_db');
         $db   = static::$dbs[$name] ?? null;
         if ($db !== null) {
-            static::$current = $db;
+            if ($update_current_db) {
+                static::$current = $db;
+            }
             return $db;
         }
 
@@ -148,7 +151,9 @@ class Dao
         );
 
         static::$dbs[$name] = $db;
-        static::$current    = $db;
+        if ($update_current_db) {
+            static::$current = $db;
+        }
         return $db;
     }
 

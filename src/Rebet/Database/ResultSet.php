@@ -3,6 +3,7 @@ namespace Rebet\Database;
 
 use Rebet\Common\Arrayable;
 use Rebet\Common\Arrays;
+use Rebet\Database\DataModel\DataModel;
 
 /**
  * Result Set Class
@@ -31,6 +32,11 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     public function __construct($items)
     {
         $this->items = Arrays::toArray($items);
+        foreach ($this->items as $item) {
+            if ($item instanceof DataModel) {
+                $item->belongsResultSet($this);
+            }
+        }
     }
 
     /**
@@ -39,6 +45,22 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     protected function &container() : array
     {
         return $this->items;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        if ($value instanceof DataModel) {
+            $value->belongsResultSet($this);
+        }
+        $brs = &$this->belongsResultSet();
+        if ($offset === null) {
+            $brs[] = $value;
+        } else {
+            $brs[$offset] = $value;
+        }
     }
 
     /**

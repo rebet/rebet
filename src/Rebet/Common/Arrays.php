@@ -1114,7 +1114,8 @@ class Arrays
         if (empty($array)) {
             return ['key' => null, 'value' => null];
         }
-        $key   = end(array_keys($array));
+        $keys  = array_keys($array);
+        $key   = end($keys);
         $value = $array[$key];
         unset($array[$key]);
         return ['key' => $key, 'value' => $value];

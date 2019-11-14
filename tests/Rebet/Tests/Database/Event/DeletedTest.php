@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Database\Event;
 
 use Rebet\Database\Event\Deleted;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class DeletedTest extends RebetDatabaseTestCase

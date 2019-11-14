@@ -1,20 +1,21 @@
 <?php
-namespace Rebet\Tests\Mock;
+namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
 use Rebet\DateTime\DateTime;
 
-class Article extends Entity
+class Group extends Entity
 {
-    public $article_id;
-    public $user_id;
-    public $subject;
-    public $body;
+    public $group_id;
+
+    public $name;
+
     /**
      * @PhpType(DateTime::class)
      */
     public $created_at;
+
     /**
      * @PhpType(DateTime::class)
      */

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Inflection;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
@@ -298,8 +299,9 @@ class Inflector
      * Converts 'ClassName' to 'class_names'.
      *
      * @param string $word
-     * @param string $delimiter
-     * @return string
+     * @param string $replacement (default: '_')
+     * @param string $delimiters (default: ' _-')
+     * @return string|null
      */
     public static function tableize(?string $word, string $replacement = '_', string $delimiters = ' _-') : ?string
     {
@@ -307,12 +309,43 @@ class Inflector
     }
 
     /**
+     * Converts a singular word or two plural words into the format for a Rebet pivot (many to many relation) table name.
+     * Pivot table name will be joined name of two singular table names order by natural.
+     * Converts 'ClassName' to 'class_name' and ['tables', 'others'] to 'other_table'.
+     * NOTE: When the array words given then the words count must be two otherwise return null.
+     *
+     * @param string|array|null $words
+     * @param string $replacement (default: '_')
+     * @param string $delimiters (default: ' _-')
+     * @return string|null
+     */
+    public static function pivotize($word, string $replacement = '_', string $delimiters = ' _-') : ?string
+    {
+        if ($word === null) {
+            return null;
+        }
+
+        if (!is_array($word)) {
+            return static::singularize(static::snakize($word, $replacement, $delimiters));
+        }
+
+        $word = Arrays::compact($word);
+        if (count($word) !== 2) {
+            return null;
+        }
+        return implode('_', array_sort(array_map(function ($value) use ($replacement, $delimiters) {
+            return static::singularize(static::snakize($value, $replacement, $delimiters));
+        }, $word)));
+    }
+
+    /**
      * Converts a word into the format for a Rebet singular primary key name.
      * Converts 'ClassName' to 'class_name_id' and 'table_names' to 'table_name_id'.
      *
      * @param string $word
-     * @param string $delimiter
-     * @return string
+     * @param string $replacement (default: '_')
+     * @param string $delimiters (default: ' _-')
+     * @return string|null
      */
     public static function primarize(?string $word, string $replacement = '_', string $delimiters = ' _-') : ?string
     {
@@ -324,7 +357,7 @@ class Inflector
      * Converts 'table_names' to 'TableName'.
      *
      * @param string|null $word
-     * @param string $delimiters
+     * @param string $delimiters (default: ' _-')
      * @return string|null
      */
     public static function classify(?string $word, string $delimiters = ' _-') : ?string
@@ -337,7 +370,7 @@ class Inflector
      * Converts 'snake_case' to 'SnakeCase'.
      *
      * @param string|null $word
-     * @param string $delimiters
+     * @param string $delimiters (default: ' _-')
      * @return string|null
      */
     public static function pascalize(?string $word, string $delimiters = ' _-') : ?string
@@ -351,7 +384,7 @@ class Inflector
      * Converts 'snake_case' to 'snakeCase'.
      *
      * @param string|null $word
-     * @param string $delimiters
+     * @param string $delimiters (default: ' _-')
      * @return string|null
      */
     public static function camelize(?string $word, string $delimiters = ' _-') : ?string
@@ -364,8 +397,8 @@ class Inflector
      * Converts 'ModelName' to 'model_name'.
      *
      * @param string|null $word
-     * @param string $replacement default '_'
-     * @param string $delimiters default ' _-'
+     * @param string $replacement (default: '_')
+     * @param string $delimiters (default: ' _-')
      * @return string|null
      */
     public static function snakize(?string $word, string $replacement = '_', string $delimiters = ' _-') : ?string
@@ -379,7 +412,7 @@ class Inflector
      * Converts 'ModelName' to 'model-name'.
      *
      * @param string|null $word
-     * @param string $delimiters default ' _-'
+     * @param string $delimiters (default: ' _-')
      * @return string|null
      */
     public static function kebabize(?string $word, string $delimiters = ' _-') : ?string
@@ -393,8 +426,8 @@ class Inflector
      * (Delimiters are replaced by spaces and capitalized following words.)
      *
      * @param string|null $word
-     * @param string $delimiters
-     * @param string $replacement
+     * @param string $replacement (default: ' ')
+     * @param string $delimiters (default: ' _-')
      * @return string|null
      */
     public static function humanize(?string $word, string $replacement = ' ', string $delimiters = ' _-') : ?string
@@ -418,7 +451,7 @@ class Inflector
      * Capitalizes all of the words by PHP's built-in ucwords function.
      *
      * @param string|null $text
-     * @param string $delimiters
+     * @param string $delimiters (default: ' \t\r\n\f\v')
      * @return string|null
      */
     public static function capitalize(?string $text, string $delimiters = " \t\r\n\f\v") : ?string

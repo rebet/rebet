@@ -1,20 +1,20 @@
 <?php
 namespace Rebet\Tests\Common;
 
-use Rebet\Http\Request;
 use Rebet\Tests\Mock\Address;
-use Rebet\Tests\Mock\Bank;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Customer;
+use Rebet\Tests\Mock\Entity\Bank;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Validation\ValidData;
 
-class PopuratableTest extends RebetTestCase
+class PopulatableTest extends RebetTestCase
 {
-    public $request;
+    public $valid_data;
 
     public function setUp()
     {
         parent::setUp();
-        $this->request = Request::create('/test', 'POST', [
+        $this->valid_data = new ValidData([
             'name'               => 'John Smith',
             'altanate_name'      => 'JOHN SMITH',
             'birthday'           => '1987-01-23',
@@ -24,6 +24,11 @@ class PopuratableTest extends RebetTestCase
                 'branch'     => 'FooBranch',
                 'number'     => '1234567',
                 'holder'     => 'John Smith',
+                'location'   => [
+                    'zip'        => '1230003',
+                    'prefecture' => '03',
+                    'address'    => '2171 Scenic Way Springfield, IL 62701',
+                ],
             ],
             'shipping_addresses' => [
                 [
@@ -40,22 +45,114 @@ class PopuratableTest extends RebetTestCase
         ]);
     }
 
-    public function test_popurate()
+    public function test_populate()
     {
-        $user = new User();
-        $user->popurate($this->request->request->all());
+        $customer = new Customer();
+        $customer->populate($this->valid_data);
 
-        $this->assertSame('John Smith', $user->name);
-        $this->assertInstanceOf(Bank::class, $user->bank);
-        $this->assertSame('SampleBank', $user->bank->name);
-        $this->assertInstanceOf(Address::class, $user->shipping_addresses[0]);
-        $this->assertSame('1230001', $user->shipping_addresses[0]->zip);
+        $this->assertSame('John Smith', $customer->name);
+        $this->assertSame('1987-01-23', $customer->birthday);
+        $this->assertNull($customer->bank ?? null);
+        $this->assertNull($customer->bank->location ?? null);
+        $this->assertNull($customer->shipping_addresses ?? null);
     }
 
-    public function test_popurateOptionAlias()
+    public function test_populateOptionEmbeds()
     {
-        $user = new User();
-        $user->popurate($this->request->request->all(), [
+        $customer = new Customer();
+        $customer->populate($this->valid_data, [
+            'embeds' => [
+                Customer::class => [
+                    'bank'               => Bank::class,
+                    'shipping_addresses' => Address::class,
+                ],
+                Bank::class => [
+                    'location' => Address::class,
+                ],
+            ],
+        ]);
+
+        $this->assertSame('John Smith', $customer->name);
+        $this->assertInstanceOf(Bank::class, $customer->bank);
+        $this->assertSame('SampleBank', $customer->bank->name);
+        $this->assertInstanceOf(Address::class, $customer->bank->location);
+        $this->assertSame('1230003', $customer->bank->location->zip);
+        $this->assertInstanceOf(Address::class, $customer->shipping_addresses[0]);
+        $this->assertSame('1230001', $customer->shipping_addresses[0]->zip);
+
+
+        $valid_data = new ValidData([
+            'name'               => 'John Smith',
+            'altanate_name'      => 'JOHN SMITH',
+            'birthday'           => '1987-01-23',
+            'shipping_addresses' => [
+                [
+                    'zip'        => '1230001',
+                    'prefecture' => '01',
+                    'address'    => '1-2-3, Sample street, Test city',
+                    'bank'       => [
+                        'name'       => 'SampleBank',
+                        'branch'     => 'FooBranch',
+                        'number'     => '1234567',
+                        'holder'     => 'John Smith',
+                        'location'   => [
+                            'zip'        => '1230003',
+                            'prefecture' => '03',
+                            'address'    => '2171 Scenic Way Springfield, IL 62701',
+                        ],
+                    ],
+                ],
+                [
+                    'zip'        => '9870002',
+                    'prefecture' => '31',
+                    'address'    => 'Baz bldg 12F, 1-2, Bar street, Foo city',
+                    'bank'       => [
+                        'name'       => 'FooBarBank',
+                        'branch'     => 'BarBranch',
+                        'number'     => '7654321',
+                        'holder'     => 'Jane Smith',
+                    ],
+                ]
+            ],
+        ]);
+        $customer = new Customer();
+        $customer->populate($valid_data, [
+            'embeds' => [
+                Customer::class => [
+                    'shipping_addresses' => Address::class,
+                ],
+                Address::class => [
+                    'bank' => Bank::class,
+                ],
+                Bank::class => [
+                    'location' => Address::class,
+                ],
+            ],
+        ]);
+        $this->assertSame('John Smith', $customer->name);
+        $this->assertInstanceOf(Address::class, $customer->shipping_addresses[0]);
+        $this->assertSame('1230001', $customer->shipping_addresses[0]->zip);
+        $this->assertInstanceOf(Bank::class, $customer->shipping_addresses[0]->bank);
+        $this->assertSame('SampleBank', $customer->shipping_addresses[0]->bank->name);
+        $this->assertInstanceOf(Address::class, $customer->shipping_addresses[0]->bank->location);
+        $this->assertSame('1230003', $customer->shipping_addresses[0]->bank->location->zip);
+
+        $this->assertSame('9870002', $customer->shipping_addresses[1]->zip);
+        $this->assertInstanceOf(Bank::class, $customer->shipping_addresses[1]->bank);
+        $this->assertSame('FooBarBank', $customer->shipping_addresses[1]->bank->name);
+        $this->assertNull($customer->shipping_addresses[1]->bank->location ?? null);
+    }
+
+    public function test_populateOptionAlias()
+    {
+        $customer = new Customer();
+        $customer->populate($this->valid_data, [
+            'embeds' => [
+                Customer::class => [
+                    'bank'               => Bank::class,
+                    'shipping_addresses' => Address::class,
+                ],
+            ],
             'aliases' => [
                 'name' => 'altanate_name',
                 'bank' => [
@@ -64,16 +161,23 @@ class PopuratableTest extends RebetTestCase
             ],
         ]);
 
-        $this->assertSame('JOHN SMITH', $user->name);
-        $this->assertSame('1987-01-23', $user->birthday);
-        $this->assertSame('SB', $user->bank->name);
-        $this->assertSame('31', $user->shipping_addresses[1]->prefecture);
+        $this->assertSame('JOHN SMITH', $customer->name);
+        $this->assertSame('1987-01-23', $customer->birthday);
+        $this->assertSame('SB', $customer->bank->name);
+        $this->assertSame(null, $customer->bank->location ?? null);
+        $this->assertSame('31', $customer->shipping_addresses[1]->prefecture);
     }
 
-    public function test_popurateOptionInclude()
+    public function test_populateOptionInclude()
     {
-        $user = new User();
-        $user->popurate($this->request->request->all(), [
+        $customer = new Customer();
+        $customer->populate($this->valid_data, [
+            'embeds' => [
+                Customer::class => [
+                    'bank'               => Bank::class,
+                    'shipping_addresses' => Address::class,
+                ],
+            ],
             'includes' => [
                 'name',
                 'bank' => [
@@ -82,18 +186,25 @@ class PopuratableTest extends RebetTestCase
             ],
         ]);
 
-        $this->assertSame('John Smith', $user->name);
-        $this->assertNull($user->birthday);
-        $this->assertInstanceOf(Bank::class, $user->bank);
-        $this->assertSame('SampleBank', $user->bank->name);
-        $this->assertNull($user->bank->branch);
-        $this->assertSame([], $user->shipping_addresses);
+        $this->assertSame('John Smith', $customer->name);
+        $this->assertNull($customer->birthday);
+        $this->assertInstanceOf(Bank::class, $customer->bank);
+        $this->assertSame('SampleBank', $customer->bank->name);
+        $this->assertSame(null, $customer->bank->location ?? null);
+        $this->assertNull($customer->bank->branch);
+        $this->assertSame(null, $customer->shipping_addresses);
     }
 
-    public function test_popurateOptionExclude()
+    public function test_populateOptionExclude()
     {
-        $user = new User();
-        $user->popurate($this->request->request->all(), [
+        $customer = new Customer();
+        $customer->populate($this->valid_data, [
+            'embeds' => [
+                Customer::class => [
+                    'bank'               => Bank::class,
+                    'shipping_addresses' => Address::class,
+                ],
+            ],
             'excludes' => [
                 'name',
                 'bank' => [
@@ -102,12 +213,12 @@ class PopuratableTest extends RebetTestCase
             ],
         ]);
 
-        $this->assertNull($user->name);
-        $this->assertSame('1987-01-23', $user->birthday);
-        $this->assertInstanceOf(Bank::class, $user->bank);
-        $this->assertNull($user->bank->name);
-        $this->assertSame('FooBranch', $user->bank->branch);
-        $this->assertInstanceOf(Address::class, $user->shipping_addresses[0]);
-        $this->assertSame('1230001', $user->shipping_addresses[0]->zip);
+        $this->assertNull($customer->name);
+        $this->assertSame('1987-01-23', $customer->birthday);
+        $this->assertInstanceOf(Bank::class, $customer->bank);
+        $this->assertNull($customer->bank->name);
+        $this->assertSame('FooBranch', $customer->bank->branch);
+        $this->assertInstanceOf(Address::class, $customer->shipping_addresses[0]);
+        $this->assertSame('1230001', $customer->shipping_addresses[0]->zip);
     }
 }

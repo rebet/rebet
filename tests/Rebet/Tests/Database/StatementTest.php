@@ -10,8 +10,8 @@ use Rebet\Database\ResultSet;
 use Rebet\Database\Statement;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\Mock\Enum\Gender;
-use Rebet\Tests\Mock\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Traversable;
 
@@ -19,54 +19,7 @@ class StatementTest extends RebetDatabaseTestCase
 {
     protected function tables(string $db_name) : array
     {
-        $db_name = $db_name === 'main' ? 'sqlite' : $db_name ;
-        return [
-            'sqlite' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday TEXT NOT NULL,
-                        email TEXT NOT NULL,
-                        role TEXT NOT NULL DEFAULT 'user',
-                        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TEXT
-                    );
-EOS
-                ,
-            ],
-            'mysql' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday DATE NOT NULL,
-                        email TEXT NOT NULL,
-                        role VARCHAR(6) NOT NULL DEFAULT 'user',
-                        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at DATETIME
-                    );
-EOS
-                ,
-            ],
-            'pgsql' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday DATE NOT NULL,
-                        email TEXT NOT NULL,
-                        role TEXT NOT NULL DEFAULT 'user',
-                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP
-                    );
-EOS
-                ,
-            ],
-        ][$db_name] ?? [];
+        return static::BASIC_TABLES[$db_name === 'main' ? 'sqlite' : $db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array

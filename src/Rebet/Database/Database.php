@@ -436,14 +436,18 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param int|null $limit (default: null)
+     * @param bool $for_update (default: false)
      * @param Pager|null $pager (default: null)
      * @param Cursor|null $cursor (default: null)
      * @return Statement
      */
-    protected function _query(string $sql, $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Statement
+    protected function _query(string $sql, $order_by = null, $params = [], ?int $limit = null, bool $for_update = false, ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
         [$sql, $params] = $this->compiler->compile($this, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-        return $this->prepare($sql)->execute($params);
+        $limit          = $limit && $pager === null ? " LIMIT {$limit}" : "" ;
+        $for_update     = $for_update ? " FOR UPDATE" : "" ;
+        return $this->prepare("{$sql}{$limit}{$for_update}")->execute($params);
     }
 
     /**
@@ -476,12 +480,14 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param int|null $limit (default: null)
+     * @param bool $for_update (default: false)
      * @param string $class (default: 'stdClass')
      * @return ResultSet of given class instance
      */
-    public function select(string $sql, $order_by = null, array $params = [], string $class = 'stdClass') : ResultSet
+    public function select(string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false, string $class = 'stdClass') : ResultSet
     {
-        return $this->_query($sql, $order_by, $params)->all($class);
+        return $this->_query($sql, $order_by, $params, $limit, $for_update)->all($class);
     }
 
     /**
@@ -491,16 +497,17 @@ class Database
      * @param OrderBy|array $order_by
      * @param Pager $pager
      * @param array $params (default: [])
+     * @param bool $for_update (default: false)
      * @param string $class (default: 'stdClass')
-     * @param string $count_optimised_sql only have one count total column (default: null)
+     * @param string $optimised_count_sql only have one count total column (default: null)
      * @return Paginator
      */
-    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], string $class = 'stdClass', ?string $count_optimised_sql = null) : Paginator
+    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', ?string $optimised_count_sql = null) : Paginator
     {
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
-        $total    = $pager->needTotal() ? ($count_optimised_sql ? $this->get(0, $count_optimised_sql, $params) : $this->count($sql, $params)) : null ;
+        $total    = $pager->needTotal() ? ($optimised_count_sql ? $this->get(0, $optimised_count_sql, $params) : $this->count($sql, $params)) : null ;
         $order_by = OrderBy::valueOf($order_by);
-        return $this->compiler()->paging($this, $total === 0 ? [] : $this->_query($sql, $order_by, $params, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
+        return $this->compiler()->paging($this, $total === 0 ? [] : $this->_query($sql, $order_by, $params, null, $for_update, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
     }
 
     /**
@@ -509,12 +516,13 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param bool $for_update (default: false)
      * @param string $class (default: 'stdClass')
      * @return mixed of given class instance
      */
-    public function find(string $sql, $order_by = null, array $params = [], string $class = 'stdClass')
+    public function find(string $sql, $order_by = null, array $params = [], bool $for_update = false, string $class = 'stdClass')
     {
-        return $this->_query($sql, $order_by, $params)->first($class);
+        return $this->_query($sql, $order_by, $params, 1, $for_update)->first($class);
     }
 
     /**
@@ -544,7 +552,7 @@ class Database
      */
     public function get($column, string $sql, $order_by = null, array $params = [], ?string $type = null)
     {
-        return $this->_query($sql, $order_by, $params)->firstOf($column, $type);
+        return $this->_query($sql, $order_by, $params, 1)->firstOf($column, $type);
     }
 
     /**
@@ -578,11 +586,13 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param int|null $limit (default: null)
+     * @param bool $for_update (default: false)
      * @return void
      */
-    public function each(callable $callback, string $sql, $order_by = null, array $params = []) : void
+    public function each(callable $callback, string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false) : void
     {
-        $this->_query($sql, $order_by, $params)->each($callback);
+        $this->_query($sql, $order_by, $params, $limit, $for_update)->each($callback);
     }
 
     /**
@@ -592,11 +602,13 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param int|null $limit (default: null)
+     * @param bool $for_update (default: false)
      * @return ResultSet
      */
-    public function filter(callable $callback, string $sql, $order_by = null, array $params = []) : ResultSet
+    public function filter(callable $callback, string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false) : ResultSet
     {
-        return $this->_query($sql, $order_by, $params)->filter($callback);
+        return $this->_query($sql, $order_by, $params, $limit, $for_update)->filter($callback);
     }
 
     /**
@@ -606,11 +618,13 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param int|null $limit (default: null)
+     * @param bool $for_update (default: false)
      * @return ResultSet
      */
-    public function map(callable $callback, string $sql, $order_by = null, array $params = []) : ResultSet
+    public function map(callable $callback, string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false) : ResultSet
     {
-        return $this->_query($sql, $order_by, $params)->map($callback);
+        return $this->_query($sql, $order_by, $params, $limit, $for_update)->map($callback);
     }
 
     /**
@@ -621,15 +635,17 @@ class Database
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
      * @param array $params (default: [])
+     * @param int|null $limit (default: null)
      * @return mixed
      */
-    public function reduce(callable $reducer, $initial, string $sql, $order_by = null, array $params = [])
+    public function reduce(callable $reducer, $initial, string $sql, $order_by = null, array $params = [], ?int $limit = null)
     {
-        return $this->_query($sql, $order_by, $params)->reduce($reducer, $initial);
+        return $this->_query($sql, $order_by, $params, $limit)->reduce($reducer, $initial);
     }
 
     /**
      * Create (Insert) given entity data.
+     * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
      *
      * @param Entity $entity
      * @param DateTime|null $now (default: null for DateTime::now())
@@ -650,7 +666,7 @@ class Database
             $columns  = [];
             $values   = [];
             foreach ($entity as $column => $value) {
-                if (in_array($column, $unmaps)) {
+                if (in_array($column, $unmaps) || $entity->isDynamicProperty($column)) {
                     continue;
                 }
                 if ($value === null) {
@@ -692,7 +708,7 @@ class Database
      * @param Entity $entity
      * @return array [string $where, array $params]
      */
-    protected function buildPrimaryWheresFrom(Entity $entity) : array
+    public static function buildPrimaryWheresFrom(Entity $entity) : array
     {
         $class    = get_class($entity);
         $primarys = $class::primaryKeys();
@@ -723,13 +739,9 @@ class Database
         $now = $now ?? DateTime::now();
         Event::dispatch(new Updating($this, $old, $entity));
 
-        [$where, $params] = $this->buildPrimaryWheresFrom($entity);
+        [$where, $params] = static::buildPrimaryWheresFrom($entity);
         $changes          = $entity->changes();
-        if (empty($changes)) {
-            return true;
-        }
-
-        $sets = [];
+        $sets             = [];
         foreach ($changes as $column => $value) {
             $sets[]          = "{$column} = :{$column}";
             $params[$column] = $value;
@@ -739,6 +751,8 @@ class Database
             $sets[]                        = $entity::UPDATED_AT.' = :'.$entity::UPDATED_AT;
             $params[$entity::UPDATED_AT]   = $now;
             $entity->{$entity::UPDATED_AT} = $now;
+        } elseif (empty($changes)) {
+            return true;
         }
 
         $affected_rows = $this->execute("UPDATE ".$entity->tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
@@ -772,7 +786,7 @@ class Database
     public function delete(Entity $entity) : bool
     {
         Event::dispatch(new Deleting($this, $entity));
-        [$where, $params] = $this->buildPrimaryWheresFrom($entity);
+        [$where, $params] = static::buildPrimaryWheresFrom($entity);
 
         $affected_rows = $this->execute("DELETE FROM ".$entity->tabelName()." WHERE {$where}", $params);
         if ($affected_rows !== 1) {

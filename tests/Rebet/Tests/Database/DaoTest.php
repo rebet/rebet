@@ -3,7 +3,7 @@ namespace Rebet\Tests\Database;
 
 use Rebet\Database\Dao;
 use Rebet\Database\Driver\PdoDriver;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class DaoTest extends RebetDatabaseTestCase
@@ -56,7 +56,7 @@ EOS
 
     //     // var_dump(Dao::db()->select('select * from users where user_id = :user_id', ['user_id' => 1]));
     //     // $user = new User();
-    //     // $user->popurate(['name' => 'Branden Nieves', 'gender' => 1, 'birthday' => '2002-11-30', 'email' => 'nieves@rebet.local' , 'role' => 'user']);
+    //     // $user->populate(['name' => 'Branden Nieves', 'gender' => 1, 'birthday' => '2002-11-30', 'email' => 'nieves@rebet.local' , 'role' => 'user']);
     //     // Dao::db()->insert($user);
     //     // var_dump(Dao::db()->select('select * from users where gender = :gender', ['gender' => 1]));
 

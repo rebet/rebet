@@ -102,7 +102,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([], Arrays::pluck(null, 'user_id'));
         $this->assertSame([], Arrays::pluck([], 'user_id'));
         $this->assertSame([21, 35, 43], Arrays::pluck($list, 'user_id'));
-        $this->assertSame(['user_0' => 21, 'user_1' => 35, 'user_2' => 43], Arrays::pluck($list, 'user_id', function($i, $key, $row){ return "user_{$i}"; }));
+        $this->assertSame(['user_0' => 21, 'user_1' => 35, 'user_2' => 43], Arrays::pluck($list, 'user_id', function ($i, $key, $row) { return "user_{$i}"; }));
         $this->assertSame([21 => 'John', 35 => 'David', 43 => 'Linda'], Arrays::pluck($list, 'name', 'user_id'));
         $this->assertSame(
             [
@@ -118,7 +118,7 @@ class ArraysTest extends RebetTestCase
                 35 => 'David(35)',
                 43 => 'Linda(43)'
             ],
-            Arrays::pluck($list, function($i, $key, $row){ return "{$row['name']}({$row['user_id']})"; }, 'user_id')
+            Arrays::pluck($list, function ($i, $key, $row) { return "{$row['name']}({$row['user_id']})"; }, 'user_id')
         );
     }
 
@@ -860,6 +860,43 @@ class ArraysTest extends RebetTestCase
                 ],
                 'Role_2' => [
                     40 => ['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2']],
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected_result, $result);
+    }
+
+    public function test_groupByObjects()
+    {
+        $data = [
+            10 => $user_1 = (object)['user' => 1, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_3']],
+            20 => $user_2 = (object)['user' => 2, 'skilllevel' => 1, 'roles' => ['Role_1', 'Role_2']],
+            30 => $user_3 = (object)['user' => 3, 'skilllevel' => 2, 'roles' => ['Role_1'          ]],
+            40 => $user_4 = (object)['user' => 4, 'skilllevel' => 2, 'roles' => ['Role_2'          ]],
+        ];
+
+        $result = Arrays::groupBy($data, ['skilllevel', 'roles'], true);
+
+        $expected_result = [
+            1 => [
+                'Role_1' => [
+                    10 => $user_1,
+                    20 => $user_2,
+                ],
+                'Role_3' => [
+                    10 => $user_1,
+                ],
+                'Role_2' => [
+                    20 => $user_2,
+                ],
+            ],
+            2 => [
+                'Role_1' => [
+                    30 => $user_3,
+                ],
+                'Role_2' => [
+                    40 => $user_4,
                 ],
             ],
         ];

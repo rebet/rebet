@@ -33,7 +33,7 @@ use Rebet\Log\Log;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Address;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Node\CodeNode;
 use Rebet\View\View;

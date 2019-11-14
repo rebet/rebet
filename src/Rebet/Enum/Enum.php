@@ -54,28 +54,28 @@ use Rebet\Translation\Translator;
  *     }
  * }
  *
- * // Anonymous  class extension
+ * // Anonymous class extension
  * abstract class JobOfferCsvFormat extends Enum {
- *     public abstract function convert(array $row) : UserForm ;
+ *     public abstract function convert(array $row) : array ;
  *
  *     protected static function generate() {
  *         return [
  *              new class(1, 'Job Site A') extends JobOfferCsvFormat {
- *                  public function convert(array $row) : UserForm {
- *                      $form = new UserForm();
+ *                  public function convert(array $row) : array {
+ *                      $requests = [];
  *                      (snip)
- *                      $form->name = "{$row[0]} {$row[1]}"; // combine first name and last name column.
+ *                      $requests['name'] = "{$row[0]} {$row[1]}"; // combine first name and last name column.
  *                      (snip)
- *                      return $form;
+ *                      return $requests;
  *                  }
  *              },
  *              new class(2, 'Job Site B') extends JobOfferCsvFormat {
- *                  public function convert(array $row) : UserForm {
- *                      $form = new UserForm();
+ *                  public function convert(array $row) : array {
+ *                      $requests = [];
  *                      (snip)
- *                      $form->name = $row[5]; // just use full name column.
+ *                      $requests['name'] = $row[5]; // just use full name column.
  *                      (snip)
- *                      return $form;
+ *                      return $requests;
  *                  }
  *              }
  *         ];

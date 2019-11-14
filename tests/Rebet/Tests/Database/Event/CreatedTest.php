@@ -3,7 +3,7 @@ namespace Rebet\Tests\Database\Event;
 
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Saved;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class CreatedTest extends RebetDatabaseTestCase

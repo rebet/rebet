@@ -15,6 +15,185 @@ use Rebet\Database\Pagination\Cursor;
  */
 abstract class RebetDatabaseTestCase extends RebetTestCase
 {
+    const BASIC_TABLES = [
+        'sqlite' => [
+            'users' => <<<EOS
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    gender INTEGER NOT NULL,
+                    birthday TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    role TEXT NOT NULL DEFAULT 'user',
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT
+                );
+EOS
+            ,
+            'banks' => <<<EOS
+                CREATE TABLE IF NOT EXISTS banks (
+                    user_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    branch TEXT NOT NULL,
+                    number TEXT NOT NULL,
+                    holder TEXT NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT
+                );
+EOS
+            ,
+            'articles' => <<<EOS
+                CREATE TABLE IF NOT EXISTS articles (
+                    article_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    subject TEXT NOT NULL,
+                    body TEXT NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT
+                );
+EOS
+            ,
+            'groups' => <<<EOS
+                CREATE TABLE IF NOT EXISTS groups (
+                    group_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT
+                );
+EOS
+            ,
+            'group_user' => <<<EOS
+                CREATE TABLE IF NOT EXISTS group_user (
+                    group_id INTEGER,
+                    user_id INTEGER,
+                    position INTEGER NOT NULL DEFAULT 3,
+                    join_on TEXT NOT NULL DEFAULT CURRENT_DATE,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT,
+                    PRIMARY KEY(group_id, user_id)
+                );
+EOS
+            ,
+        ],
+        'mysql' => [
+            'users' => <<<EOS
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    gender INTEGER NOT NULL,
+                    birthday DATE NOT NULL,
+                    email TEXT NOT NULL,
+                    role VARCHAR(6) NOT NULL DEFAULT 'user',
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME
+                );
+EOS
+            ,
+            'banks' => <<<EOS
+                CREATE TABLE IF NOT EXISTS banks (
+                    user_id INTEGER PRIMARY KEY,
+                    name VARCHAR(128) NOT NULL,
+                    branch VARCHAR(128) NOT NULL,
+                    number VARCHAR(7) NOT NULL,
+                    holder VARCHAR(128) NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME
+                );
+EOS
+            ,
+            'articles' => <<<EOS
+                CREATE TABLE IF NOT EXISTS articles (
+                    article_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    user_id INTEGER NOT NULL,
+                    subject VARCHAR(30) NOT NULL,
+                    body TEXT NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME
+                );
+EOS
+            ,
+            'groups' => <<<EOS
+                CREATE TABLE IF NOT EXISTS groups (
+                    groups_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    name TEXT NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME
+                );
+EOS
+            ,
+            'group_user' => <<<EOS
+                CREATE TABLE IF NOT EXISTS group_user (
+                    group_id INTEGER,
+                    user_id INTEGER,
+                    position INTEGER NOT NULL DEFAULT 3,
+                    join_on DATE NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME,
+                    PRIMARY KEY(group_id, user_id)
+                );
+EOS
+            ,
+        ],
+        'pgsql' => [
+            'users' => <<<EOS
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    gender INTEGER NOT NULL,
+                    birthday DATE NOT NULL,
+                    email TEXT NOT NULL,
+                    role TEXT NOT NULL DEFAULT 'user',
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP
+                );
+EOS
+            ,
+            'banks' => <<<EOS
+                CREATE TABLE IF NOT EXISTS banks (
+                    user_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    branch TEXT NOT NULL,
+                    number TEXT NOT NULL,
+                    holder TEXT NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP
+                );
+EOS
+            ,
+            'articles' => <<<EOS
+                CREATE TABLE IF NOT EXISTS articles (
+                    article_id SERIAL,
+                    user_id INTEGER NOT NULL,
+                    subject VARCHAR(30) NOT NULL,
+                    body TEXT NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP
+                );
+EOS
+            ,
+            'groups' => <<<EOS
+                CREATE TABLE IF NOT EXISTS groups (
+                    group_id SERIAL,
+                    name TEXT NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP
+                );
+EOS
+            ,
+            'group_user' => <<<EOS
+                CREATE TABLE IF NOT EXISTS group_user (
+                    group_id INTEGER,
+                    user_id INTEGER,
+                    position INTEGER NOT NULL DEFAULT 3,
+                    join_on Date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP,
+                    PRIMARY KEY(group_id, user_id)
+                );
+EOS
+        ],
+    ];
+
     protected static $main   = null;
     protected static $sqlite = null;
 

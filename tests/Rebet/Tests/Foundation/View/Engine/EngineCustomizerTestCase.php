@@ -3,7 +3,7 @@ namespace Rebet\Tests\Foundation\View\Engine;
 
 use Rebet\Foundation\App;
 use Rebet\Http\Session\Session;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Engine;
 use Rebet\View\EofLineFeed;

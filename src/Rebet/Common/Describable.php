@@ -13,6 +13,27 @@ trait Describable
 {
     /**
      * It copies value to the given dest object.
+     * This method have some options like below,
+     *
+     * [aliases] : Copies property value from different name property and key.
+     * --------------------------------------
+     * 'aliases' => [
+     *     'dest_name' => 'altanate_src_name',
+     * ],
+     *
+     *
+     * [includes] : Copies property value only given includes properties.
+     * --------------------------------------
+     * 'includes' => [
+     *     'name',
+     * ],
+     *
+     *
+     * [excludes] : Copies other than given property value.
+     * --------------------------------------
+     * 'excludes' => [
+     *     'name',
+     * ],
      *
      * @param object $dest
      * @param array $option
@@ -29,6 +50,27 @@ trait Describable
 
     /**
      * It creates the given dest class object and copies own value.
+     * This method have some options like below,
+     *
+     * [aliases] : Copies property value from different name property and key.
+     * --------------------------------------
+     * 'aliases' => [
+     *     'dest_name' => 'altanate_src_name',
+     * ],
+     *
+     *
+     * [includes] : Copies property value only given includes properties.
+     * --------------------------------------
+     * 'includes' => [
+     *     'name',
+     * ],
+     *
+     *
+     * [excludes] : Copies other than given property value.
+     * --------------------------------------
+     * 'excludes' => [
+     *     'name',
+     * ],
      *
      * @param string $class
      * @param array $option

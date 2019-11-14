@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Compiler;
 
+use Rebet\Database\Compiler\Analysis\Analyzer;
 use Rebet\Database\Database;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
@@ -18,6 +19,15 @@ use Rebet\Database\Statement;
  */
 interface Compiler
 {
+    /**
+     * Get SQL analyzer of this Compiler.
+     *
+     * @param Database $db
+     * @param string $sql
+     * @return Analyzer
+     */
+    public function analyzer(Database $db, string $sql) : Analyzer;
+
     /**
      * Compile the given SQL template and params to PDO spec (and return result adjust callback closure).
      *

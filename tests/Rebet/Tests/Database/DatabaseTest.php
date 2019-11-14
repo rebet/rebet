@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Database\Compiler;
+namespace Rebet\Tests\Database;
 
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
@@ -25,10 +25,10 @@ use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
 use Rebet\Event\Event;
-use Rebet\Tests\Mock\Article;
+use Rebet\Tests\Mock\Entity\Article;
 use Rebet\Tests\Mock\Enum\Gender;
-use Rebet\Tests\Mock\User;
-use Rebet\Tests\Mock\UserWithAnnot;
+use Rebet\Tests\Mock\Entity\User;
+use Rebet\Tests\Mock\Entity\UserWithAnnot;
 use Rebet\Tests\RebetDatabaseTestCase;
 use stdClass;
 
@@ -42,87 +42,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
     protected function tables(string $db_name) : array
     {
-        $db_name = $db_name === 'main' ? 'sqlite' : $db_name ;
-        return [
-            'sqlite' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday TEXT NOT NULL,
-                        email TEXT NOT NULL,
-                        role TEXT NOT NULL DEFAULT 'user',
-                        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TEXT
-                    );
-EOS
-                ,
-                'articles' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS articles (
-                        article_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        user_id INTEGER NOT NULL,
-                        subject TEXT NOT NULL,
-                        body TEXT NOT NULL,
-                        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TEXT
-                    );
-EOS
-                ,
-            ],
-            'mysql' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday DATE NOT NULL,
-                        email TEXT NOT NULL,
-                        role VARCHAR(6) NOT NULL DEFAULT 'user',
-                        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at DATETIME
-                    );
-EOS
-                ,
-                'articles' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS articles (
-                        article_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                        user_id INTEGER NOT NULL,
-                        subject VARCHAR(30) NOT NULL,
-                        body TEXT NOT NULL,
-                        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at DATETIME
-                    );
-EOS
-                ,
-            ],
-            'pgsql' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday DATE NOT NULL,
-                        email TEXT NOT NULL,
-                        role TEXT NOT NULL DEFAULT 'user',
-                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP
-                    );
-EOS
-                ,
-                'articles' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS articles (
-                        article_id SERIAL,
-                        user_id INTEGER NOT NULL,
-                        subject VARCHAR(30) NOT NULL,
-                        body TEXT NOT NULL,
-                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP
-                    );
-EOS
-                ,
-            ],
-        ][$db_name] ?? [];
+        return static::BASIC_TABLES[$db_name === 'main' ? 'sqlite' : $db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array
@@ -507,7 +427,7 @@ EOS
             $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()]);
             $this->assertEquals([30, 29, 28, 23, 19, 17, 10, 9, 7, 5, 4, 3, 2], Arrays::pluck($users->toArray(), 'user_id'));
 
-            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()], User::class);
+            $users = $db->select("SELECT * FROM users WHERE gender = :gender", ['user_id' => 'desc'], ['gender' => Gender::MALE()], null, false, User::class);
             $this->assertEquals([17, 32, 4, 11, 37, 6, 7, 34, 3, 31, 11, 26, 16], array_map(function ($v) {
                 $this->assertInstanceOf(User::class, $v);
                 return $v->age();
@@ -1094,7 +1014,7 @@ EOS
                 $cursor->save();
             }
             // $db->debug();
-            $paginator = $db->paginate($sql, $order_by, $pager, $params, $class, $count_optimised_sql);
+            $paginator = $db->paginate($sql, $order_by, $pager, $params, false, $class, $count_optimised_sql);
             foreach ($paginator as $row) {
                 $this->assertInstanceOf($class, $row);
             }
@@ -1138,7 +1058,7 @@ EOS
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
 
-            $user = $db->find("SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 3], User::class);
+            $user = $db->find("SELECT * FROM users WHERE user_id = :user_id", [], ['user_id' => 3], false, User::class);
             $this->assertInstanceOf(User::class, $user);
             $this->assertEquals(3, $user->user_id);
             $this->assertEquals('Damien Kling', $user->name);
@@ -1262,7 +1182,7 @@ EOS
     {
         $this->eachDb(function (Database $db) {
             $this->assertEquals(
-                $db->select("SELECT * FROM users WHERE gender = 1", null, [], User::class),
+                $db->select("SELECT * FROM users WHERE gender = 1", null, [], null, false, User::class),
                 $db->filter(function (User $user) { return $user->gender == Gender::MALE(); }, "SELECT * FROM users")
             );
         });
@@ -1272,7 +1192,7 @@ EOS
     {
         $this->eachDb(function (Database $db) {
             $this->assertEquals(
-                $db->select("SELECT * FROM users", ['user_id' => 'asc'], [], User::class)->all(),
+                $db->select("SELECT * FROM users", ['user_id' => 'asc'], [], null, false, User::class)->all(),
                 $db->map(function (User $user) { return $user; }, "SELECT * FROM users", ['user_id' => 'asc'])->all()
             );
         });
@@ -1330,9 +1250,9 @@ EOS
             $this->assertSame('This is test via creating', $article->body);
 
             // Reset milliseconds to compare with DB data where milliseconds are not stored.
-            $article->created_at = $article->created_at->setMilliMicro(0);
+            $article->created_at = $article->created_at->startsOfSecond();
             $origin = $article->origin();
-            $origin->created_at = $origin->created_at->setMilliMicro(0);
+            $origin->created_at = $origin->created_at->startsOfSecond();
             $this->assertEquals($article, Article::find(1));
 
 
@@ -1354,13 +1274,13 @@ EOS
             $this->assertSame('user', $user->role);
 
             // Reset milliseconds to compare with DB data where milliseconds are not stored.
-            $user->created_at = $user->created_at->setMilliMicro(0);
+            $user->created_at = $user->created_at->startsOfSecond();
             $origin = $user->origin();
-            $origin->created_at = $origin->created_at->setMilliMicro(0);
+            $origin->created_at = $origin->created_at->startsOfSecond();
             $this->assertEquals($user, User::find(99));
 
 
-            $now = DateTime::now()->setMilliMicro(0);
+            $now = DateTime::now()->startsOfSecond();
             $user = new UserWithAnnot();
             $user->user_id = 999;
 
@@ -1378,7 +1298,7 @@ EOS
             $this->assertSame('foo@bar.local', $user->email);
             $this->assertSame('user', $user->role);
             $this->assertEquals($now, $user->created_at);
-            $this->assertEquals($now, $user->updated_at);
+            $this->assertEquals(null, $user->updated_at);
 
             $this->assertEquals($user, UserWithAnnot::find(999));
         });
@@ -1421,7 +1341,7 @@ EOS
             $this->assertFalse($updating_event_called);
             $this->assertFalse($updated_event_called);
 
-            $now = DateTime::now()->setMilliMicro(0);
+            $now = DateTime::now()->startsOfSecond();
             $article->body = 'foo';
             $this->assertTrue($db->update($article, $now));
             $this->assertEquals($now, $article->updated_at);
@@ -1430,7 +1350,7 @@ EOS
             $this->assertEquals($article, Article::find(1));
 
 
-            $now = DateTime::now()->setMilliMicro(0);
+            $now = DateTime::now()->startsOfSecond();
             $user = User::find(1);
             $this->assertNull($user->updated_at);
             $this->assertEquals(Gender::FEMALE(), $user->gender);
@@ -1443,7 +1363,7 @@ EOS
             $this->assertEquals($user, User::find(1));
 
 
-            $now = DateTime::now()->setMilliMicro(0);
+            $now = DateTime::now()->startsOfSecond();
             $user = UserWithAnnot::find(2);
             $this->assertNull($user->updated_at);
             $this->assertEquals(Gender::MALE(), $user->gender);
@@ -1502,7 +1422,7 @@ EOS
             $updating_event_called = false;
             $updated_event_called  = false;
 
-            $created_at = DateTime::now()->setMilliMicro(0);
+            $created_at = DateTime::now()->startsOfSecond();
 
             $article = new Article();
             $article->user_id = 1;
@@ -1521,7 +1441,7 @@ EOS
             $this->assertEquals($article, Article::find(1));
 
 
-            $updated_at = DateTime::now()->setMilliMicro(0);
+            $updated_at = DateTime::now()->startsOfSecond();
             $article->subject = 'Test update';
 
             $this->assertFalse($updating_event_called);

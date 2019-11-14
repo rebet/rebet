@@ -6,9 +6,10 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Common\Reflector;
+use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
-use Rebet\Tests\Mock\Bank;
-use Rebet\Tests\Mock\User;
+use Rebet\Tests\Mock\Entity\Bank;
+use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
 
 class AuthUserTest extends RebetTestCase
@@ -38,7 +39,7 @@ class AuthUserTest extends RebetTestCase
         $user->email    = 'user@rebet.local';
         $user->role     = 'user';
         $user->name     = 'User';
-        $user->birthday = DateTime::createDateTime('1991-02-03')->setDefaultFormat('Y-m-d');
+        $user->birthday = Date::createDateTime('1991-02-03');
 
         $this->object_user_source = $user;
 

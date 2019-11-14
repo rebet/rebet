@@ -45,6 +45,14 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
+    public function analyzer(Database $db, string $sql) : Analyzer
+    {
+        return static::config('analyzer')::analyze($db, $sql);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function compile(Database $db, string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : array
     {
         // -----------------------------------------------------------------
@@ -98,7 +106,7 @@ class BuiltinCompiler implements Compiler
                     $sql    = "{$sql} LIMIT {$limit} OFFSET {$offset}";
                 }
             } else {
-                $analyzer                 = static::config('analyzer')::analyze($db, $sql);
+                $analyzer                 = $this->analyzer($db, $sql);
                 $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
                 $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
                 $order_by                 = $forward_feed ? $order_by : ($near_by_first ? $order_by : $order_by->reverse()) ;

@@ -109,6 +109,30 @@ class InflectorTest extends RebetTestCase
         $this->assertSame('human_readable_cases', Inflector::tableize('human readable case'));
     }
 
+    public function test_pivotize()
+    {
+        $this->assertNull(Inflector::pivotize(null));
+        $this->assertSame('', Inflector::pivotize(''));
+        $this->assertSame('pascal_case', Inflector::pivotize('PascalCase'));
+        $this->assertSame('camel_case', Inflector::pivotize('camelCase'));
+        $this->assertSame('snake_case', Inflector::pivotize('snake_cases'));
+        $this->assertSame('kebab_case', Inflector::pivotize('kebab-cases'));
+        $this->assertSame('human_readable_case', Inflector::pivotize('Human Readable Cases'));
+        $this->assertSame('human_readable_case', Inflector::pivotize('Human readable cases'));
+        $this->assertSame('human_readable_case', Inflector::pivotize('human readable cases'));
+
+        $this->assertNull(Inflector::pivotize([]));
+        $this->assertNull(Inflector::pivotize(['users']));
+        $this->assertNull(Inflector::pivotize(['users', null]));
+        $this->assertNull(Inflector::pivotize(['users', '']));
+        $this->assertNull(Inflector::pivotize(['users', 'groups', 'others']));
+        $this->assertSame('group_user', Inflector::pivotize(['users', 'groups']));
+        $this->assertSame('group_user', Inflector::pivotize(['groups', 'users']));
+        $this->assertSame('camel_case_pascal_case', Inflector::pivotize(['PascalCase', 'camelCase']));
+        $this->assertSame('kebab_case_snake_case', Inflector::pivotize(['snake_cases', 'kebab-cases']));
+        $this->assertSame('human_readable_case_human_readable_case', Inflector::pivotize(['Human Readable Cases', 'human readable cases']));
+    }
+
     public function test_primarize()
     {
         $this->assertNull(Inflector::primarize(null));

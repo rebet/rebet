@@ -18,7 +18,7 @@ trait Getsetable
      * @param mixed $value
      * @return mixed
      */
-    private function getset(string $property, $value)
+    protected function getset(string $property, $value)
     {
         if ($value === null) {
             return $this->{$property};
