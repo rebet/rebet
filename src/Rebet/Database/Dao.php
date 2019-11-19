@@ -103,12 +103,12 @@ class Dao
     {
         if ($name === null) {
             foreach (static::$dbs as $db) {
-                $db->rollback();
+                $db->close();
             }
             static::$dbs     = [];
             static::$current = null;
-        } else {
-            static::$dbs[$name]->rollback();
+        } elseif (isset(static::$dbs[$name])) {
+            static::$dbs[$name]->close();
             unset(static::$dbs[$name]);
             if (static::$current !== null && static::$current->name() === $name) {
                 static::$current = null;

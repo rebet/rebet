@@ -76,13 +76,14 @@ class DatabaseException extends RuntimeException
         $sql_state  = $error_info[0] ?? 'UNKOWN' ;
         $code       = $error_info[1] ?? null ;
         $message    = $error_info[2] ?? 'Unkown error occured.' ;
-        $driver     = $db->driverName();
+        $name       = $db->name();
+        $driver     = $db->closed() ? 'unkown' : $db->driverName() ;
 
         $sql  = empty($sql)    ? '' : "\n--- [SQL] ---\n{$sql}";
         $sql .= empty($params) ? '' : "\n-- [PARAM] --\n".Strings::stringify($params) ;
         $sql .= empty($sql)    ? '' : "\n-------------\n" ;
 
-        $e = static::by("[{$driver}: ".($sql_state ?? '-----').($code ? "({$code})" : "")."] {$message}{$sql}")->db($db)->sqlState($sql_state)->code($code)->appendix($error_info);
+        $e = static::by("[{$name}/{$driver}: ".($sql_state ?? '-----').($code ? "({$code})" : "")."] {$message}{$sql}")->db($db)->sqlState($sql_state)->code($code)->appendix($error_info);
         if ($error instanceof \Throwable) {
             $e->caused($error);
         }

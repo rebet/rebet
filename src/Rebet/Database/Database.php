@@ -3,6 +3,8 @@ namespace Rebet\Database;
 
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
+use Rebet\Database\Analysis\Analyzer;
+use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\Converter\BuiltinConverter;
@@ -19,6 +21,8 @@ use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
+use Rebet\Database\Ransack\BuiltinRansacker;
+use Rebet\Database\Ransack\Ransacker;
 use Rebet\DateTime\DateTime;
 use Rebet\Event\Event;
 
@@ -39,6 +43,8 @@ class Database
         return [
             'compiler'    => BuiltinCompiler::class,
             'converter'   => BuiltinConverter::class,
+            'analyzer'    => BuiltinAnalyzer::class,
+            'ransacker'   => BuiltinRansacker::class,
             'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
         ];
     }
@@ -93,6 +99,13 @@ class Database
     protected $converter = null;
 
     /**
+     * Ransacker of this database.
+     *
+     * @var Ransacker
+     */
+    protected $ransacker = null;
+
+    /**
      * Create database instance using given driver.
      *
      * @param string $name of this database (alias ​​for classification)
@@ -100,21 +113,20 @@ class Database
      * @param bool $debug (default: false)
      * @param bool $emulated_sql_log (default: true)
      * @param callable|null $log_handler function(string $name, string $sql, array $params = []) (default: depend on configure)
-     * @param Converter|null $converter (default: depend on configure)
-     * @param Compiler|null $compiler (default: depend on configure)
      */
-    public function __construct(string $name, Driver $driver, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null, ?Converter $converter = null, ?Compiler $compiler = null)
+    public function __construct(string $name, Driver $driver, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
     {
         $this->name             = $name;
+        $driver->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $driver->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $driver->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $this->driver           = $driver;
-        $this->driver->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->driver->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-        $this->driver->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $this->debug            = $debug;
         $this->emulated_sql_log = $emulated_sql_log;
         $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
-        $this->converter        = $converter ?? static::configInstantiate('converter');
-        $this->compiler         = $compiler ?? static::configInstantiate('compiler');
+        $this->converter        = static::config('converter')::of($this);
+        $this->compiler         = static::config('compiler')::of($this);
+        $this->ransacker        = static::config('ransacker')::of($this);
     }
 
     /**
@@ -135,7 +147,7 @@ class Database
      */
     public function driverName() : string
     {
-        return $this->driver->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        return $this->driver()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 
     /**
@@ -146,7 +158,7 @@ class Database
      */
     public function serverVersion() : string
     {
-        return $this->driver->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        return $this->driver()->getAttribute(\PDO::ATTR_SERVER_VERSION);
     }
 
     /**
@@ -157,7 +169,7 @@ class Database
      */
     public function clientVersion() : string
     {
-        return $this->driver->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+        return $this->driver()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
     }
 
     /**
@@ -167,6 +179,9 @@ class Database
      */
     public function driver() : Driver
     {
+        if ($this->closed()) {
+            throw new DatabaseException("Database [{$this->name}] connection was lost.");
+        }
         return $this->driver;
     }
 
@@ -188,6 +203,28 @@ class Database
     public function converter() : Converter
     {
         return $this->converter;
+    }
+
+    /**
+     * Get SQL analyzer of this database.
+     *
+     * @param string $sql
+     * @return Analyzer
+     */
+    public function analyzer(string $sql) : Analyzer
+    {
+        return static::config('analyzer')::of($this, $sql);
+    }
+
+    /**
+     * Get Ransacker of this database.
+     *
+     * @param string $sql
+     * @return Ransacker
+     */
+    public function ransacker() : Ransacker
+    {
+        return $this->ransacker;
     }
 
     /**
@@ -274,11 +311,11 @@ class Database
      */
     protected function convertToSql($value) : string
     {
-        $param = $value instanceof PdoParameter ? $value : $this->converter->toPdoType($this, $value);
+        $param = $value instanceof PdoParameter ? $value : $this->converter->toPdoType($value);
         if ($param->value === null) {
             return 'NULL';
         }
-        return $this->driver->quote($param->value, $param->type);
+        return $this->driver()->quote($param->value, $param->type);
     }
 
     /**
@@ -289,7 +326,7 @@ class Database
      */
     public function convertToPdo($value) : PdoParameter
     {
-        return $this->converter->toPdoType($this, $value);
+        return $this->converter->toPdoType($value);
     }
 
     /**
@@ -302,7 +339,7 @@ class Database
      */
     public function convertToPhp($value, array $meta = [], ?string $type = null)
     {
-        return $this->converter->toPhpType($this, $value, $meta, $type);
+        return $this->converter->toPhpType($value, $meta, $type);
     }
 
     /**
@@ -313,8 +350,8 @@ class Database
      */
     public function begin() : self
     {
-        if (!$this->driver->beginTransaction()) {
-            throw $this->exception($this->driver->errorInfo());
+        if (!$this->driver()->beginTransaction()) {
+            throw $this->exception($this->driver()->errorInfo());
         }
         $this->log("BEGIN");
         return $this;
@@ -330,7 +367,7 @@ class Database
     public function savepoint(string $name) : self
     {
         $sql = "SAVEPOINT {$name}";
-        $this->driver->exec($sql);
+        $this->driver()->exec($sql);
         $this->log($sql);
         return $this;
     }
@@ -347,8 +384,8 @@ class Database
     {
         try {
             $sql = $savepoint ? "ROLLBACK TO SAVEPOINT {$savepoint}" : null ;
-            if (!($sql ? $this->driver->exec($sql) : $this->driver->rollBack())) {
-                throw $this->exception($this->driver->errorInfo(), $sql);
+            if (!($sql ? $this->driver()->exec($sql) : $this->driver()->rollBack())) {
+                throw $this->exception($this->driver()->errorInfo(), $sql);
             }
             $this->log($sql ?? "ROLLBACK");
         } catch (\Exception $e) {
@@ -368,8 +405,8 @@ class Database
      */
     public function commit() : self
     {
-        if (!$this->driver->commit()) {
-            throw $this->exception($this->driver->errorInfo());
+        if (!$this->driver()->commit()) {
+            throw $this->exception($this->driver()->errorInfo());
         }
         $this->log("COMMIT");
         return $this;
@@ -405,7 +442,7 @@ class Database
      */
     public function lastInsertId(?string $name = null) : string
     {
-        return $this->driver->lastInsertId($name);
+        return $this->driver()->lastInsertId($name);
     }
 
     /**
@@ -417,12 +454,12 @@ class Database
     protected function prepare(string $sql) : Statement
     {
         try {
-            $stmt = $this->driver->prepare($sql, [
+            $stmt = $this->driver()->prepare($sql, [
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                 // \PDO::ATTR_CURSOR             => \PDO::CURSOR_SCROLL,
             ]);
             if (!$stmt) {
-                throw $this->exception($this->driver->errorInfo(), $sql);
+                throw $this->exception($this->driver()->errorInfo(), $sql);
             }
             return new Statement($this, $stmt);
         } catch (\PDOException $e) {
@@ -444,7 +481,7 @@ class Database
      */
     protected function _query(string $sql, $order_by = null, $params = [], ?int $limit = null, bool $for_update = false, ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
-        [$sql, $params] = $this->compiler->compile($this, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
+        [$sql, $params] = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
         $limit          = $limit && $pager === null ? " LIMIT {$limit}" : "" ;
         $for_update     = $for_update ? " FOR UPDATE" : "" ;
         return $this->prepare("{$sql}{$limit}{$for_update}")->execute($params);
@@ -507,7 +544,7 @@ class Database
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
         $total    = $pager->needTotal() ? ($optimised_count_sql ? $this->get(0, $optimised_count_sql, $params) : $this->count($sql, $params)) : null ;
         $order_by = OrderBy::valueOf($order_by);
-        return $this->compiler()->paging($this, $total === 0 ? [] : $this->_query($sql, $order_by, $params, null, $for_update, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
+        return $this->compiler->paging($total === 0 ? [] : $this->_query($sql, $order_by, $params, null, $for_update, $pager, $cursor), $order_by, $pager, $cursor, $total, $class);
     }
 
     /**
@@ -703,6 +740,26 @@ class Database
     }
 
     /**
+     * Append where condition to given SQL.
+     *
+     * @param string $sql
+     * @param array $where
+     * @return string
+     */
+    public function appendWhereTo(string $sql, array $where) : string
+    {
+        if (empty($where)) {
+            return $sql;
+        }
+        $analyzer = $this->analyzer($sql);
+        $where    = implode(' AND ', $where);
+        if ($analyzer->hasGroupBy()) {
+            return $analyzer->hasHaving() ? "{$sql} AND ({$where})" : "{$sql} HAVING {$where}" ;
+        }
+        return $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$where})" : "{$sql} WHERE {$where}" ;
+    }
+
+    /**
      * Build primary where condition and parameters.
      *
      * @param Entity $entity
@@ -795,5 +852,28 @@ class Database
 
         Event::dispatch(new Deleted($this, $entity));
         return true;
+    }
+
+    /**
+     * Close database connection.
+     *
+     * @return void
+     */
+    public function close() : void
+    {
+        if ($this->driver) {
+            $this->rollback();
+            $this->driver = null;
+        }
+    }
+
+    /**
+     * It checks the database connection is closed or not.
+     *
+     * @return boolean
+     */
+    public function closed() : bool
+    {
+        return $this->driver === null;
     }
 }

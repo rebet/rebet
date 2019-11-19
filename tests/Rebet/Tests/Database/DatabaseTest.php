@@ -6,10 +6,12 @@ use PHPUnit\Framework\AssertionFailedError;
 use Rebet\Common\Arrays;
 use Rebet\Common\Decimal;
 use Rebet\Config\Config;
+use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 use Rebet\Database\Driver\PdoDriver;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Creating;
@@ -22,13 +24,14 @@ use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\PdoParameter;
+use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
 use Rebet\Event\Event;
 use Rebet\Tests\Mock\Entity\Article;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\Mock\Entity\UserWithAnnot;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 use stdClass;
 
@@ -103,37 +106,51 @@ class DatabaseTest extends RebetDatabaseTestCase
 
     public function test_serverVersion()
     {
-        foreach (array_keys(Dao::config('dbs')) as $name) {
-            $this->assertRegExp('/[0-9]+\.[0-9]+(\.[0-9]+)?/', Dao::db($name)->serverVersion());
-        }
+        $this->eachDb(function (Database $db) {
+            $this->assertRegExp('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->serverVersion());
+        });
     }
 
     public function test_clientVersion()
     {
-        foreach (array_keys(Dao::config('dbs')) as $name) {
-            $this->assertRegExp('/[0-9]+\.[0-9]+(\.[0-9]+)?/', Dao::db($name)->clientVersion());
-        }
+        $this->eachDb(function (Database $db) {
+            $this->assertRegExp('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->clientVersion());
+        });
     }
 
     public function test_driver()
     {
-        foreach (array_keys(Dao::config('dbs')) as $name) {
-            $this->assertInstanceOf(PdoDriver::class, Dao::db($name)->driver());
-        }
+        $this->eachDb(function (Database $db) {
+            $this->assertInstanceOf(PdoDriver::class, $db->driver());
+        });
     }
 
     public function test_compiler()
     {
-        foreach (array_keys(Dao::config('dbs')) as $name) {
-            $this->assertInstanceOf(BuiltinCompiler::class, Dao::db($name)->compiler());
-        }
+        $this->eachDb(function (Database $db) {
+            $this->assertInstanceOf(BuiltinCompiler::class, $db->compiler());
+        });
     }
 
     public function test_converter()
     {
-        foreach (array_keys(Dao::config('dbs')) as $name) {
-            $this->assertInstanceOf(BuiltinConverter::class, Dao::db($name)->converter());
-        }
+        $this->eachDb(function (Database $db) {
+            $this->assertInstanceOf(BuiltinConverter::class, $db->converter());
+        });
+    }
+
+    public function test_analyzer()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertInstanceOf(BuiltinAnalyzer::class, $db->analyzer("SELECT * FROM users"));
+        });
+    }
+
+    public function test_ransacker()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertInstanceOf(BuiltinRansacker::class, $db->ransacker());
+        });
     }
 
     public function test_logAndDebug()
@@ -1493,6 +1510,22 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertNotNull($user = UserWithAnnot::find(2));
             $this->assertTrue($db->delete($user));
             $this->assertNull(UserWithAnnot::find(2));
+        });
+    }
+
+    public function test_close()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertInstanceOf(Driver::class, $db->driver());
+            $db->close();
+            try {
+                $db->driver();
+                $this->fail('Never execute');
+            } catch (\Exception $e) {
+                $this->assertInstanceOf(DatabaseException::class, $e);
+                $this->assertSame("Database [{$db->name()}] connection was lost.", $e->getMessage());
+            }
+            Dao::clear($db->name());
         });
     }
 }

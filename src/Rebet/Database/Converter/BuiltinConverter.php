@@ -21,9 +21,34 @@ use Rebet\Enum\Enum;
 class BuiltinConverter implements Converter
 {
     /**
+     * Database
+     *
+     * @var Database
+     */
+    protected $db;
+
+    /**
+     * Create Builtin Conpiler of given database.
+     *
+     * @param Database $db
+     */
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public function toPdoType(Database $db, $value) : PdoParameter
+    public static function of(Database $db) : Converter
+    {
+        return new static($db);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toPdoType($value) : PdoParameter
     {
         if ($value instanceof Enum) {
             $value = $value->value;
@@ -32,7 +57,7 @@ class BuiltinConverter implements Converter
             $value = $value->value;
         }
 
-        $driver_name = $db->driverName();
+        $driver_name = $this->db->driverName();
         switch (true) {
             case $value instanceof PdoParameter:       return $value;
             case $value === null:                      return PdoParameter::null();
@@ -56,7 +81,7 @@ class BuiltinConverter implements Converter
      * @see 'pgsql'  native_type from http://gcov.php.net/PHP_7_1/lcov_html/ext/pdo_pgsql/pgsql_statement.c.gcov.php and `SELECT TYPNAME FROM PG_TYPE` results.
      * @see 'dblib'  native_type from http://gcov.php.net/PHP_7_1/lcov_html/ext/pdo_dblib/dblib_stmt.c.gcov.php
      */
-    public function toPhpType(Database $db, $value, array $meta = [], ?string $type = null)
+    public function toPhpType($value, array $meta = [], ?string $type = null)
     {
         if ($value === null) {
             return null;

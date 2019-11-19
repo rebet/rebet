@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Database\Compiler\Analysis;
+namespace Rebet\Database\Analysis;
 
 use PHPSQLParser\builders\ColumnReferenceBuilder;
 use PHPSQLParser\builders\ConstantBuilder;
@@ -50,7 +50,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
-    public static function analyze(Database $db, string $sql) : Analyzer
+    public static function of(Database $db, string $sql) : Analyzer
     {
         return new static($db, $sql);
     }

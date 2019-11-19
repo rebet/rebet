@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Database\Compiler;
 
-use Rebet\Database\Compiler\BuiltinCompiler;
-use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
@@ -15,15 +13,9 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinCompilerTest extends RebetDatabaseTestCase
 {
-    /**
-     * @var Compiler
-     */
-    private $compiler;
-
     protected function setUp() : void
     {
         parent::setUp();
-        $this->compiler = new BuiltinCompiler();
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
@@ -415,7 +407,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             if (!in_array($db->name(), $target_db_kinds)) {
                 return;
             }
-            [$compiled_sql, $compiled_params] = $this->compiler->compile($db, $sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
+            [$compiled_sql, $compiled_params] = $db->compiler()->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
             $this->assertEquals($expect_sql, $compiled_sql, "on DB '{$db->name()}'");
             $this->assertEquals($expect_params, $compiled_params, "on DB '{$db->name()}'");
         });
@@ -453,7 +445,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     public function test_convertParam(array $expect, string $key, $value)
     {
         $this->eachDb(function (Database $db) use ($expect, $key, $value) {
-            $this->assertEquals($expect, $this->compiler->convertParam($db, $key, $value));
+            $this->assertEquals($expect, $db->compiler()->convertParam($key, $value));
         });
     }
 }

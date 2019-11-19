@@ -95,7 +95,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     /**
      * @expectedException Rebet\Database\Exception\DatabaseException
-     * @expectedExceptionMessage [sqlite: UNKOWN] Unkown error occured.
+     * @expectedExceptionMessage [main/sqlite: UNKOWN] Unkown error occured.
      */
     public function test_execute_exception_01()
     {
@@ -109,7 +109,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     /**
      * @expectedException Rebet\Database\Exception\DatabaseException
-     * @expectedExceptionMessage [sqlite: UNKOWN] Unkown error occured.
+     * @expectedExceptionMessage [main/sqlite: UNKOWN] Unkown error occured.
      */
     public function test_execute_exception_02()
     {

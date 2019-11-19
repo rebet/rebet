@@ -1,7 +1,7 @@
 <?php
-namespace Rebet\Tests\Database\Compiler\Analysis;
+namespace Rebet\Tests\Database\Analysis;
 
-use Rebet\Database\Compiler\Analysis\BuiltinAnalyzer;
+use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Database;
 use Rebet\Tests\RebetDatabaseTestCase;
 
@@ -23,7 +23,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     public function test_isUnion(bool $expect, string $sql)
     {
         $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::analyze($db, $sql);
+            $analyser = BuiltinAnalyzer::of($db, $sql);
             $this->assertSame($expect, $analyser->isUnion());
         });
     }
@@ -46,7 +46,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     public function test_hasWhere(bool $expect, string $sql)
     {
         $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::analyze($db, $sql);
+            $analyser = BuiltinAnalyzer::of($db, $sql);
             $this->assertSame($expect, $analyser->hasWhere());
         });
     }
@@ -69,7 +69,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     public function test_hasHaving(bool $expect, string $sql)
     {
         $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::analyze($db, $sql);
+            $analyser = BuiltinAnalyzer::of($db, $sql);
             $this->assertSame($expect, $analyser->hasHaving());
         });
     }
@@ -90,7 +90,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     public function test_hasGroupBy(bool $expect, string $sql)
     {
         $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::analyze($db, $sql);
+            $analyser = BuiltinAnalyzer::of($db, $sql);
             $this->assertSame($expect, $analyser->hasGroupBy());
         });
     }
@@ -126,7 +126,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
     public function test_extractAliasSelectColumn(string $expect, string $sql, string $alias)
     {
         $this->eachDb(function (Database $db) use ($expect, $sql, $alias) {
-            $analyser = BuiltinAnalyzer::analyze($db, $sql);
+            $analyser = BuiltinAnalyzer::of($db, $sql);
             $this->assertSame($expect, $analyser->extractAliasSelectColumn($alias));
         });
     }

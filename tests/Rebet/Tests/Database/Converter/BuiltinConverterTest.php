@@ -3,7 +3,6 @@ namespace Rebet\Tests\Database\Converter;
 
 use Rebet\Common\Decimal;
 use Rebet\Common\Reflector;
-use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
@@ -459,12 +458,11 @@ EOS;
      */
     public function test_toPdoType(array $target_db, PdoParameter $expect, $value)
     {
-        $converter = new BuiltinConverter();
-        $this->eachDb(function (Database $db) use ($converter, $target_db, $expect, $value) {
+        $this->eachDb(function (Database $db) use ($target_db, $expect, $value) {
             if (!in_array($db->name(), $target_db)) {
                 return;
             }
-            $this->assertEquals($expect, $converter->toPdoType($db, $value));
+            $this->assertEquals($expect, $db->converter()->toPdoType($value));
         });
     }
 }

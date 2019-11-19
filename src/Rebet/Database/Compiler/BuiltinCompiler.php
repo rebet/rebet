@@ -2,9 +2,7 @@
 namespace Rebet\Database\Compiler;
 
 use Rebet\Common\Strings;
-use Rebet\Config\Configurable;
-use Rebet\Database\Compiler\Analysis\Analyzer;
-use Rebet\Database\Compiler\Analysis\BuiltinAnalyzer as RebetBuiltinAnalyzer;
+use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Expression;
@@ -33,27 +31,35 @@ use Rebet\Database\Statement;
  */
 class BuiltinCompiler implements Compiler
 {
-    use Configurable;
+    /**
+     * Database
+     *
+     * @var Database
+     */
+    protected $db;
 
-    public static function defaultConfig()
+    /**
+     * Create Builtin Conpiler of given database.
+     *
+     * @param Database $db
+     */
+    public function __construct(Database $db)
     {
-        return [
-            'analyzer' => RebetBuiltinAnalyzer::class,
-        ];
+        $this->db = $db;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function analyzer(Database $db, string $sql) : Analyzer
+    public static function of(Database $db) : Compiler
     {
-        return static::config('analyzer')::analyze($db, $sql);
+        return new static($db);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function compile(Database $db, string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : array
+    public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : array
     {
         // -----------------------------------------------------------------
         // Check params key format and resolve multi placeholder
@@ -83,7 +89,7 @@ class BuiltinCompiler implements Compiler
         $pdo_params = [];
         foreach ($params as $key => $value) {
             $key                   = ":{$key}";
-            [$pdo_key, $pdo_param] = $this->convertParam($db, $key, $value);
+            [$pdo_key, $pdo_param] = $this->convertParam($key, $value);
             $pdo_params            = array_merge($pdo_params, $pdo_param);
             if ($pdo_key !== $key) {
                 $sql = preg_replace("/{$key}(?=[^a-zA-Z0-9_]|$)/", $pdo_key, $sql);
@@ -97,7 +103,7 @@ class BuiltinCompiler implements Compiler
             $cursor = $this->verify($pager, $cursor);
 
             if ($cursor === null) {
-                $order_sql = $this->compileOrderBy($db, $order_by);
+                $order_sql = $this->compileOrderBy($order_by);
                 $sql       = "{$sql} ORDER BY {$order_sql}";
 
                 if ($pager) {
@@ -106,12 +112,12 @@ class BuiltinCompiler implements Compiler
                     $sql    = "{$sql} LIMIT {$limit} OFFSET {$offset}";
                 }
             } else {
-                $analyzer                 = $this->analyzer($db, $sql);
+                $analyzer                 = $this->db->analyzer($sql);
                 $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
                 $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
                 $order_by                 = $forward_feed ? $order_by : ($near_by_first ? $order_by : $order_by->reverse()) ;
-                $order_sql                = $this->compileOrderBy($db, $order_by);
-                [$cursor_sql, $pdo_param] = $this->compileCursor($db, $analyzer, $order_by, $cursor, $forward_feed, $near_by_first);
+                $order_sql                = $this->compileOrderBy($order_by);
+                [$cursor_sql, $pdo_param] = $this->compileCursor($analyzer, $order_by, $cursor, $forward_feed, $near_by_first);
                 $pdo_params               = array_merge($pdo_params, $pdo_param);
                 $offset                   = $this->offset($pager, $cursor, $forward_feed, $near_by_first);
                 $limit                    = $this->limit($pager, $cursor, $forward_feed, $near_by_first);
@@ -191,11 +197,10 @@ class BuiltinCompiler implements Compiler
     /**
      * Compile order by condition
      *
-     * @param Database $db
      * @param OrderBy $order_by
      * @return string
      */
-    protected function compileOrderBy(Database $db, OrderBy $order_by) : string
+    protected function compileOrderBy(OrderBy $order_by) : string
     {
         $order = [];
         foreach ($order_by as $col => $asc_desc) {
@@ -207,7 +212,6 @@ class BuiltinCompiler implements Compiler
     /**
      * Compile cursor condition
      *
-     * @param Database $db
      * @param Analyzer $analyzer of sql
      * @param OrderBy $order_by
      * @param Cursor $cursor
@@ -215,7 +219,7 @@ class BuiltinCompiler implements Compiler
      * @param bool $near_by_first
      * @return array of [$where, $pdo_params]
      */
-    protected function compileCursor(Database $db, Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
+    protected function compileCursor(Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
     {
         $expressions = $forward_feed ? ['ASC' => '>', 'DESC' => '<'] :  ($near_by_first ? ['ASC' => '<', 'DESC' => '>'] :  ['ASC' => '>', 'DESC' => '<']) ;
         $first       = true;
@@ -232,7 +236,7 @@ class BuiltinCompiler implements Compiler
             foreach ($cursor_cols as $col) {
                 $real_col     = $has_group_by ? $col : $analyzer->extractAliasSelectColumn($col) ;
                 $key          = ":cursor__{$i}__{$j}";
-                $params[$key] = $params[":cursor__0__{$j}"] ?? $db->convertToPdo($cursor[$col]);
+                $params[$key] = $params[":cursor__0__{$j}"] ?? $this->db->convertToPdo($cursor[$col]);
 
                 $where .= "{$real_col} = {$key} AND ";
                 $j++;
@@ -244,7 +248,7 @@ class BuiltinCompiler implements Compiler
 
             $real_last    = $has_group_by ? $last : $analyzer->extractAliasSelectColumn($last) ;
             $key          = ":cursor__{$i}__{$j}";
-            $params[$key] = $params[":cursor__0__{$j}"] ?? $db->convertToPdo($cursor[$last]);
+            $params[$key] = $params[":cursor__0__{$j}"] ?? $this->db->convertToPdo($cursor[$last]);
 
             $where .= "{$real_last} {$expression} {$key}";
             $where .= ")";
@@ -256,7 +260,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function paging(Database $db, Statement $stmt, ?OrderBy $order_by = null, Pager $pager, ?Cursor $cursor = null, ?int $total = null, string $class = 'stdClass') : Paginator
+    public function paging(Statement $stmt, ?OrderBy $order_by = null, Pager $pager, ?Cursor $cursor = null, ?int $total = null, string $class = 'stdClass') : Paginator
     {
         $cursor = $this->verify($pager, $cursor);
 
@@ -296,14 +300,14 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function convertParam(Database $db, string $key, $value) : array
+    public function convertParam(string $key, $value) : array
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
         if ($value instanceof Expression) {
-            return [str_replace('?', $key, $value->expression), $value->value === null ? [] : [$key => $db->convertToPdo($value->value)]];
+            return [str_replace('?', $key, $value->expression), $value->value === null ? [] : [$key => $this->db->convertToPdo($value->value)]];
         }
         if (!is_array($value)) {
-            return [$key, [$key => $db->convertToPdo($value)]];
+            return [$key, [$key => $this->db->convertToPdo($value)]];
         }
 
         $unfold_keys = [];
@@ -317,7 +321,7 @@ class BuiltinCompiler implements Compiler
             }
             if (Strings::contains($expression, '?')) {
                 $unfold_key          = "{$key}__{$index}";
-                $params[$unfold_key] = $db->convertToPdo($v);
+                $params[$unfold_key] = $this->db->convertToPdo($v);
                 $unfold_keys[]       = str_replace('?', $unfold_key, $expression);
                 $index++;
             } else {

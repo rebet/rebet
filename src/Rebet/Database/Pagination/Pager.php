@@ -65,13 +65,13 @@ class Pager
     /**
      * Create Pager instance.
      *
-     * @param int $page must be greater equal 1
+     * @param int $page must be greater equal 1 (default: 1)
      * @param int|null $size must be greater equal 1 (default: depend on configure)
      * @param int|null $each_side must be greater equal 1 (default: depend on configure)
      * @param bool|null $need_total (default: depend on configure)
      * @param string|null $cursor name (default: null for do not use cursor)
      */
-    public function __construct(int $page, ?int $size = null, ?int $each_side = null, ?bool $need_total = null, ?string $cursor = null)
+    public function __construct(int $page = 1, ?int $size = null, ?int $each_side = null, ?bool $need_total = null, ?string $cursor = null)
     {
         $this->page       = max(1, $page);
         $this->size       = max(1, $size ?? static::config('default_page_size'));
@@ -88,7 +88,7 @@ class Pager
     public static function resolve() : self
     {
         $resolver = static::config('resolver');
-        return $resolver(new static(1));
+        return $resolver(new static());
     }
 
     /**
