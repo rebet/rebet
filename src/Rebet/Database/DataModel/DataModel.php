@@ -14,6 +14,8 @@ use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
+use Rebet\Database\Ransack\Predicate;
+use Rebet\Database\Ransack\Ransack;
 use Rebet\Database\ResultSet;
 use Rebet\Inflection\Inflector;
 
@@ -231,13 +233,15 @@ abstract class DataModel
      */
     protected static function buildSelectSql(Database $db, array $ransacks = []) : array
     {
-        $where  = [];
-        $params = [];
+        $where     = [];
+        $params    = [];
+        $alises    = static::ransackAliases();
+        $extension = Closure::fromCallable([static::class, 'ransack']);
         foreach ($ransacks as $predicate => $value) {
-            [$expression, $value] = $db->ransacker()->convert($predicate, $value, Closure::fromCallable([static::class, 'ransack'])) ?? [null, $value];
+            [$expression, $new_value] = $db->ransacker()->convert($predicate, $value, $alises, $extension) ?? [null, []];
             if ($expression) {
-                $where[]            = $expression;
-                $params[$predicate] = $value;
+                $where[] = $expression;
+                $params  = array_merge($params, $new_value);
             }
         }
         return [$db->appendWhereTo(static::buildSelectAllSql(), $where), $params];
@@ -284,13 +288,17 @@ abstract class DataModel
      *   return parent::convertCustomRansack($db, $predicate, $value);
      *
      * @param Database $db
-     * @param int|string $predicate
-     * @param mixed $value
+     * @param Ransack $ransack
      * @return array|null
      */
-    protected static function ransack(Database $db, $predicate, $value) : ?array
+    protected static function ransack(Database $db, Ransack $ransack) : ?array
     {
         return null;
+    }
+
+    protected static function ransackAliases() : array
+    {
+        return [];
     }
 
     /**

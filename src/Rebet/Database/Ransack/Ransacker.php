@@ -26,8 +26,9 @@ interface Ransacker
      *
      * @param int|string $predicate
      * @param mixed $value
-     * @param \Closure|null $extention function(Database $db, $predicate, $value) : ?array (default: null)
+     * @param array $alias (default: [])
+     * @param \Closure|null $extention function(Database $db, Ransack $ransack) : ?array (default: null)
      * @return array|null ['where explession', converted value] or null when ignored
      */
-    public function convert($predicate, $value, ?\Closure $extention = null) : ?array;
+    public function convert($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?array;
 }
