@@ -25,7 +25,7 @@ trait Respondable
      */
     public function getHeader(string $key, $first = false)
     {
-        return Arrays::peel($first ? $this->headers->get($key, null) : $this->headers->all($key));
+        return $first ? $this->headers->get($key) : Arrays::peel($this->headers->all($key));
     }
 
     /**
@@ -34,7 +34,7 @@ trait Respondable
      * @param string $key
      * @param array|string $values
      * @param boolean $replace (default: true)
-     * @return self
+     * @return Response
      */
     public function setHeader(string $key, $values, bool $replace = true) : Response
     {

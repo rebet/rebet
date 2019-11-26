@@ -400,7 +400,7 @@ class Request extends SymfonyRequest
      */
     public function getHeader(string $key, bool $first = false)
     {
-        return Arrays::peel($first ? $this->headers->get($key, null) : $this->headers->all($key));
+        return $first ? $this->headers->get($key) : Arrays::peel($this->headers->all($key));
     }
 
     /**
