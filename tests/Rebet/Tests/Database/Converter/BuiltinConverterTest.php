@@ -150,49 +150,49 @@ EOS;
         $db->execute($dml);
         $db->begin();
         $db->execute("INSERT INTO native_types VALUES (:values)", ['values' => [
-            1,                                                                                                       // type_tinyint
-            1,                                                                                                       // type_smallint
-            1,                                                                                                       // type_mediumint
-            1,                                                                                                       // type_int
-            1,                                                                                                       // type_integer
-            1,                                                                                                       // type_bigint
-            true,                                                                                                    // type_bool
-            true,                                                                                                    // type_boolean
-            true,                                                                                                    // type_tinyint_one
-            0b111,                                                                                                   // type_bit
-            123.45,                                                                                                  // type_decimal
-            123.45,                                                                                                  // type_dec
-            123.45,                                                                                                  // type_numeric
-            123.45,                                                                                                  // type_float
-            123.45,                                                                                                  // type_double
-            '2010-01-02',                                                                                            // type_date
-            '2010-01-02 10:20:30',                                                                                   // type_datetime
-            '2010-01-02 10:20:30',                                                                                   // type_timestamp
-            '10:20:30',                                                                                              // type_time
-            2010,                                                                                                    // type_year
-            'abc',                                                                                                   // type_char
-            'abc',                                                                                                   // type_varchar
-            'abc',                                                                                                   // type_binary
-            'abc',                                                                                                   // type_varbinary
-            'abc',                                                                                                   // type_tinyblob
-            'abc',                                                                                                   // type_blob
-            'abc',                                                                                                   // type_mediumblob
-            'abc',                                                                                                   // type_longblob
-            'abc',                                                                                                   // type_tinytext
-            'abc',                                                                                                   // type_text
-            'abc',                                                                                                   // type_mediumtext
-            'b',                                                                                                     // type_enum
-            'a,b',                                                                                                   // type_set
-            Expression::of('GeomFromText(?)', 'POINT(1 1)'),                                                         // type_geometry
-            Expression::of('GeomFromText(?)', 'POINT(1 1)'),                                                         // type_point
-            Expression::of('GeomFromText(?)', 'LINESTRING(0 0,1 1,2 2)'),                                            // type_linestring
-            Expression::of('GeomFromText(?)', 'POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7,5 5))'),           // type_polygon
-            Expression::of('GeomFromText(?)', 'MULTIPOINT(1 1,2 2,3 3)'),                                            // type_multipoint
-            Expression::of('GeomFromText(?)', 'MULTILINESTRING((0 0,1 1,2 2), (0 2,1 1,2 0))'),                      // type_multilinestring
-            Expression::of('GeomFromText(?)', 'MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0)),((5 5,7 5,7 7,5 7, 5 5)))'), // type_multipolygon
-            Expression::of('GeomFromText(?)', 'GEOMETRYCOLLECTION(POINT(1 1),LINESTRING(0 0,1 1,2 2,3 3,4 4))'),     // type_geometrycollection
-            Expression::of('GeomFromText(?)', null),                                                                 // type_geometry_null
-            null,                                                                                                    // type_text_null
+            1,                                                                                                           // type_tinyint
+            1,                                                                                                           // type_smallint
+            1,                                                                                                           // type_mediumint
+            1,                                                                                                           // type_int
+            1,                                                                                                           // type_integer
+            1,                                                                                                           // type_bigint
+            true,                                                                                                        // type_bool
+            true,                                                                                                        // type_boolean
+            true,                                                                                                        // type_tinyint_one
+            0b111,                                                                                                       // type_bit
+            123.45,                                                                                                      // type_decimal
+            123.45,                                                                                                      // type_dec
+            123.45,                                                                                                      // type_numeric
+            123.45,                                                                                                      // type_float
+            123.45,                                                                                                      // type_double
+            '2010-01-02',                                                                                                // type_date
+            '2010-01-02 10:20:30',                                                                                       // type_datetime
+            '2010-01-02 10:20:30',                                                                                       // type_timestamp
+            '10:20:30',                                                                                                  // type_time
+            2010,                                                                                                        // type_year
+            'abc',                                                                                                       // type_char
+            'abc',                                                                                                       // type_varchar
+            'abc',                                                                                                       // type_binary
+            'abc',                                                                                                       // type_varbinary
+            'abc',                                                                                                       // type_tinyblob
+            'abc',                                                                                                       // type_blob
+            'abc',                                                                                                       // type_mediumblob
+            'abc',                                                                                                       // type_longblob
+            'abc',                                                                                                       // type_tinytext
+            'abc',                                                                                                       // type_text
+            'abc',                                                                                                       // type_mediumtext
+            'b',                                                                                                         // type_enum
+            'a,b',                                                                                                       // type_set
+            Expression::of('GeomFromText({val})', 'POINT(1 1)'),                                                         // type_geometry
+            Expression::of('GeomFromText({val})', 'POINT(1 1)'),                                                         // type_point
+            Expression::of('GeomFromText({val})', 'LINESTRING(0 0,1 1,2 2)'),                                            // type_linestring
+            Expression::of('GeomFromText({val})', 'POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7,5 5))'),           // type_polygon
+            Expression::of('GeomFromText({val})', 'MULTIPOINT(1 1,2 2,3 3)'),                                            // type_multipoint
+            Expression::of('GeomFromText({val})', 'MULTILINESTRING((0 0,1 1,2 2), (0 2,1 1,2 0))'),                      // type_multilinestring
+            Expression::of('GeomFromText({val})', 'MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0)),((5 5,7 5,7 7,5 7, 5 5)))'), // type_multipolygon
+            Expression::of('GeomFromText({val})', 'GEOMETRYCOLLECTION(POINT(1 1),LINESTRING(0 0,1 1,2 2,3 3,4 4))'),     // type_geometrycollection
+            Expression::of('GeomFromText({val})', null),                                                                 // type_geometry_null
+            null,                                                                                                        // type_text_null
         ]]);
         $db->commit();
         $stmt = $db->query('SELECT * FROM native_types');
@@ -323,51 +323,51 @@ EOS;
         $db->execute($dml);
         $db->begin();
         $db->execute("INSERT INTO native_types VALUES (:values)", ['values' => [
-            1,                                                                                                // type_smallint
-            1,                                                                                                // type_integer
-            1,                                                                                                // type_bigint
-            123.45,                                                                                           // type_real
-            123.45,                                                                                           // type_double_precision
-            123.45,                                                                                           // type_numeric
-            123.45,                                                                                           // type_money
-            Expression::of('nextval(?)', 'native_types_type_smallserial_seq'),                                // type_smallserial
-            Expression::of('nextval(?)', 'native_types_type_serial_seq'),                                     // type_serial
-            Expression::of('nextval(?)', 'native_types_type_bigserial_seq'),                                  // type_bigserial
-            '111',                                                                                            // type_bit
-            '11111111111111111111111111111111111111111111111111111111111111111',                              // type_bit_over_64
-            '111',                                                                                            // type_bit_varying
-            true,                                                                                             // type_boolean
-            '{a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11}',                                                         // type_uuid
-            'abc',                                                                                            // type_character
-            'abc',                                                                                            // type_character_varying
-            'abc',                                                                                            // type_text
-            'abc',                                                                                            // type_bytea
-            '192.168.1.0/24',                                                                                 // type_cidr
-            '192.168.1.0/24',                                                                                 // type_inet
-            '08:00:2b:01:02:03',                                                                              // type_macaddr
-            '2010-01-02',                                                                                     // type_date
-            '2010-01-02 10:20:30',                                                                            // type_timestamp
-            '2010-01-02 10:20:30+09',                                                                         // type_timestamp_with_tz
-            '10:20:30',                                                                                       // type_time
-            '10:20:30+09',                                                                                    // type_time_with_tz
-            '1 day',                                                                                          // type_interval
-            '1 hour',                                                                                         // type_interval_hour
-            '{"name":"John", "tags":["PHP","Rebet"]}',                                                        // type_json
-            '{"name":"John", "tags":["PHP","Rebet"]}',                                                        // type_jsonb
-            Expression::of('XMLPARSE(CONTENT ?)', '<book><title>Manual</title><author>John</author></book>'), // type_xml
-            '((0,0),(1,1))',                                                                                  // type_box
-            '<(0,0),1>',                                                                                      // type_circle
-            '((0,0),(1,1))',                                                                                  // type_line
-            '((0,0),(1,1))',                                                                                  // type_lseg
-            '((0,0),(0,1),(1,1),(1,0),(0,0))',                                                                // type_path_close
-            '[(0,0),(0,1),(1,1),(1,0)]',                                                                      // type_path_open
-            '(0,1)',                                                                                          // type_point
-            '((0,0),(0,1),(1,1),(1,0),(0,0))',                                                                // type_polygon
-            '16/B374D848',                                                                                    // type_pg_lsn
-            'fat & rat',                                                                                      // type_tsquery
-            'a fat cat sat on a mat and ate a fat rat',                                                       // type_tsvector
-            Expression::of('txid_current_snapshot()'),                                                        // type_txid_snapshot
-            null                                                                                              // type_text_null
+            1,                                                                                                    // type_smallint
+            1,                                                                                                    // type_integer
+            1,                                                                                                    // type_bigint
+            123.45,                                                                                               // type_real
+            123.45,                                                                                               // type_double_precision
+            123.45,                                                                                               // type_numeric
+            123.45,                                                                                               // type_money
+            Expression::of('nextval({val})', 'native_types_type_smallserial_seq'),                                // type_smallserial
+            Expression::of('nextval({val})', 'native_types_type_serial_seq'),                                     // type_serial
+            Expression::of('nextval({val})', 'native_types_type_bigserial_seq'),                                  // type_bigserial
+            '111',                                                                                                // type_bit
+            '11111111111111111111111111111111111111111111111111111111111111111',                                  // type_bit_over_64
+            '111',                                                                                                // type_bit_varying
+            true,                                                                                                 // type_boolean
+            '{a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11}',                                                             // type_uuid
+            'abc',                                                                                                // type_character
+            'abc',                                                                                                // type_character_varying
+            'abc',                                                                                                // type_text
+            'abc',                                                                                                // type_bytea
+            '192.168.1.0/24',                                                                                     // type_cidr
+            '192.168.1.0/24',                                                                                     // type_inet
+            '08:00:2b:01:02:03',                                                                                  // type_macaddr
+            '2010-01-02',                                                                                         // type_date
+            '2010-01-02 10:20:30',                                                                                // type_timestamp
+            '2010-01-02 10:20:30+09',                                                                             // type_timestamp_with_tz
+            '10:20:30',                                                                                           // type_time
+            '10:20:30+09',                                                                                        // type_time_with_tz
+            '1 day',                                                                                              // type_interval
+            '1 hour',                                                                                             // type_interval_hour
+            '{"name":"John", "tags":["PHP","Rebet"]}',                                                            // type_json
+            '{"name":"John", "tags":["PHP","Rebet"]}',                                                            // type_jsonb
+            Expression::of('XMLPARSE(CONTENT {val})', '<book><title>Manual</title><author>John</author></book>'), // type_xml
+            '((0,0),(1,1))',                                                                                      // type_box
+            '<(0,0),1>',                                                                                          // type_circle
+            '((0,0),(1,1))',                                                                                      // type_line
+            '((0,0),(1,1))',                                                                                      // type_lseg
+            '((0,0),(0,1),(1,1),(1,0),(0,0))',                                                                    // type_path_close
+            '[(0,0),(0,1),(1,1),(1,0)]',                                                                          // type_path_open
+            '(0,1)',                                                                                              // type_point
+            '((0,0),(0,1),(1,1),(1,0),(0,0))',                                                                    // type_polygon
+            '16/B374D848',                                                                                        // type_pg_lsn
+            'fat & rat',                                                                                          // type_tsquery
+            'a fat cat sat on a mat and ate a fat rat',                                                           // type_tsvector
+            Expression::of('txid_current_snapshot()'),                                                            // type_txid_snapshot
+            null                                                                                                  // type_text_null
         ]]);
         $db->commit();
         $stmt = $db->query('SELECT * FROM native_types');
@@ -435,8 +435,8 @@ EOS;
             [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), 1],
             [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('a'), 'a'],
             [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), Gender::MALE()],
-            [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('POINT(1 1)'), Expression::of('GeomFromText(?)', 'POINT(1 1)')],
-            [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), Expression::of('SUM(?)', 1)],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::str('POINT(1 1)'), Expression::of('GeomFromText({val})', 'POINT(1 1)')],
+            [['sqlite', 'mysql', 'pgsql'], PdoParameter::int(1), Expression::of('SUM({val}})', 1)],
             [['sqlite', 'mysql', 'pgsql'], PdoParameter::null(), null],
             [['sqlite', 'pgsql'], PdoParameter::bool(true), true],
             [['mysql'], PdoParameter::int(1), true],

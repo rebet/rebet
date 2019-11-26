@@ -24,7 +24,7 @@ class Expression
     /**
      * Create Expression Value instance
      *
-     * @param string $expression template that contains '?' placeholder like 'GeomFromText(?)' or just function like 'now()'
+     * @param string $expression template that contains '{val}' placeholder like 'GeomFromText({val})' or just function like 'now()'
      * @param mixed $value (default: null)
      */
     public function __construct(string $expression, $value = null)
@@ -36,7 +36,7 @@ class Expression
     /**
      * Create Expression
      *
-     * @param string $expression template that contains '?' placeholder like 'GeomFromText(?)' or just function like 'now()'
+     * @param string $expression template that contains '{val}' placeholder like 'GeomFromText({val})' or just function like 'now()'
      * @param mixed $value (default: null)
      * @return self
      */

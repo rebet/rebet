@@ -9,6 +9,9 @@ use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
+use Rebet\Log\Driver\Monolog\StderrDriver;
+use Rebet\Log\Log;
+use Rebet\Log\LogLevel;
 use Rebet\Middleware\Routing\EmptyStringToNull;
 use Rebet\Middleware\Routing\TrimStrings;
 use Rebet\Routing\Annotation\Channel;
@@ -40,6 +43,15 @@ class RouterTest extends RebetTestCase
             Blade::class => [
                 'view_path'  => App::path('/resources/views/blade'),
                 'cache_path' => 'vfs://root/cache',
+            ],
+            Log::class => [
+                'channels' => [
+                    'web' => [
+                        'driver' => StderrDriver::class,
+                        'name'   => 'web',
+                        'level'  => LogLevel::DEBUG,
+                    ],
+                ],
             ],
         ]);
 

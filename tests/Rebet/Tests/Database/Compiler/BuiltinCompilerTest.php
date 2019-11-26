@@ -432,10 +432,10 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                     [':values__0' => PdoParameter::str('serial_seq'), ':values__1' => PdoParameter::str('POINT(1 1)'), ':values__2' => PdoParameter::int(1)]
                 ],
                 'values',
-                [Expression::of('nextval(?)', 'serial_seq'), Expression::of('GeomFromText(?)', 'POINT(1 1)'), Expression::of('now()'), 1]
+                [Expression::of('nextval({val})', 'serial_seq'), Expression::of('GeomFromText({val})', 'POINT(1 1)'), Expression::of('now()'), 1]
             ],
             [['now()', []], 'key', Expression::of('now()')],
-            [['GeomFromText(:key)', [':key' => PdoParameter::str('POINT(1 1)')]], 'key', Expression::of('GeomFromText(?)', 'POINT(1 1)')],
+            [['GeomFromText(:key)', [':key' => PdoParameter::str('POINT(1 1)')]], 'key', Expression::of('GeomFromText({val})', 'POINT(1 1)')],
         ];
     }
 

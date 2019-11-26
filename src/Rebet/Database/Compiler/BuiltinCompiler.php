@@ -304,7 +304,7 @@ class BuiltinCompiler implements Compiler
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
         if ($value instanceof Expression) {
-            return [str_replace('?', $key, $value->expression), $value->value === null ? [] : [$key => $this->db->convertToPdo($value->value)]];
+            return [str_replace('{val}', $key, $value->expression), $value->value === null ? [] : [$key => $this->db->convertToPdo($value->value)]];
         }
         if (!is_array($value)) {
             return [$key, [$key => $this->db->convertToPdo($value)]];
@@ -314,15 +314,15 @@ class BuiltinCompiler implements Compiler
         $params      = [];
         $index       = 0;
         foreach ($value as $v) {
-            $expression = '?';
+            $expression = '{val}';
             if ($v instanceof Expression) {
                 $expression = $v->expression;
                 $v          = $v->value;
             }
-            if (Strings::contains($expression, '?')) {
+            if (Strings::contains($expression, '{val}')) {
                 $unfold_key          = "{$key}__{$index}";
                 $params[$unfold_key] = $this->db->convertToPdo($v);
-                $unfold_keys[]       = str_replace('?', $unfold_key, $expression);
+                $unfold_keys[]       = str_replace('{val}', $unfold_key, $expression);
                 $index++;
             } else {
                 $unfold_keys[] = $expression;

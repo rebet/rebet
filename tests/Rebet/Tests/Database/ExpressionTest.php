@@ -13,9 +13,9 @@ class ExpressionTest extends RebetTestCase
 
     public function test_of()
     {
-        $expression = Expression::of('GeomFromText(?)', 'POINT(1 1)');
+        $expression = Expression::of('GeomFromText({val})', 'POINT(1 1)');
         $this->assertInstanceOf(Expression::class, $expression);
-        $this->assertSame('GeomFromText(?)', $expression->expression);
+        $this->assertSame('GeomFromText({val})', $expression->expression);
         $this->assertSame('POINT(1 1)', $expression->value);
     }
 }

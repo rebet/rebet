@@ -25,7 +25,7 @@ trait Respondable
      */
     public function getHeader(string $key, $first = false)
     {
-        return Arrays::peel($this->headers->get($key, null, $first));
+        return Arrays::peel($first ? $this->headers->get($key, null) : $this->headers->all($key));
     }
 
     /**

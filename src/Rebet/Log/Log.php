@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Log;
 
+use Exception;
 use Monolog\Handler\StreamHandler;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
