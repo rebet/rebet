@@ -238,7 +238,7 @@ abstract class DataModel
         $alises    = static::ransackAliases();
         $extension = Closure::fromCallable([static::class, 'ransack']);
         foreach ($ransacks as $predicate => $value) {
-            [$expression, $new_value] = $db->ransacker()->convert($predicate, $value, $alises, $extension) ?? [null, []];
+            [$expression, $new_value] = $db->ransacker()->resolve($predicate, $value, $alises, $extension) ?? [null, []];
             if ($expression) {
                 $where[] = $expression;
                 $params  = array_merge($params, $new_value);

@@ -8,6 +8,114 @@ use Rebet\Tests\RebetDatabaseTestCase;
 
 class RansackTest extends RebetDatabaseTestCase
 {
+    public function dataResolves() : array
+    {
+        return [
+            [null, 'name'   , null],
+            [null, 'name_eq', ''],
+            [null, 'name_in', []],
+            [
+                [
+                    'age > :age_gt',
+                    ['age_gt' => 0]
+                ],
+                'age_gt' , 0
+            ],
+            [
+                [
+                    '((name = :name_0 AND age > :age_gt_0) OR (name = :name_1 AND age > :age_gt_1))',
+                    ['name_0' => 'foo', 'age_gt_0' => 20, 'name_1' => 'bar', 'age_gt_1' => 18]
+                ],
+                0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]]
+            ],
+            [
+                [
+                    '((((name = :name_0_0) OR (name = :name_0_1)) AND age > :age_gt_0) OR (name = :name_1 AND age > :age_gt_1))',
+                    ['name_0_0' => 'foo', 'name_0_1' => 'bar', 'age_gt_0' => 20, 'name_1' => 'baz', 'age_gt_1' => 18]
+                ],
+                0 , [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]]
+            ],
+            [
+                [
+                    '(((last_name = :name_0_0 OR first_name = :name_0_1) AND age > :age_gt_0) OR ((last_name = :name_1_0 OR first_name = :name_1_1) AND age > :age_gt_1))',
+                    ['name_0_0' => 'foo', 'name_0_1' => 'foo', 'age_gt_0' => 20, 'name_1_0' => 'bar', 'name_1_1' => 'bar', 'age_gt_1' => 18]
+                ],
+                0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
+                ['name' => ['last_name', 'first_name']]
+            ],
+            [
+                [
+                    'age > :age_gt',
+                    ['age_gt' => 20]
+                ],
+                'age_gt' , 20, [],
+                function (Database $db, Ransack $ransack) {
+                    return null;
+                }
+            ],
+            [
+                [
+                    'age > :age_gt',
+                    ['age_gt' => 20]
+                ],
+                'age_gt' , 20, [],
+                function (Database $db, Ransack $ransack) {
+                    return $ransack->convert();
+                }
+            ],
+            [
+                [
+                    'age grater than :age_gt',
+                    ['age_gt' => 20]
+                ],
+                'age_gt' , 20, [],
+                function (Database $db, Ransack $ransack) {
+                    if ($ransack->origin() === 'age_gt') {
+                        return $ransack->convert('{col} grater than {val}');
+                    }
+                    return null;
+                }
+            ],
+            [
+                [
+                    'age grater than :age_gt',
+                    ['age_gt' => 40]
+                ],
+                'age_gt' , 20, [],
+                function (Database $db, Ransack $ransack) {
+                    if ($ransack->origin() === 'age_gt') {
+                        return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
+                    }
+                    return null;
+                }
+            ],
+            [
+                [
+                    'age <> :bar',
+                    ['bar' => 20]
+                ],
+                'age_gt' , 20, [],
+                function (Database $db, Ransack $ransack) {
+                    if ($ransack->origin() === 'age_gt') {
+                        return ['age <> :bar', ['bar' => $ransack->value(true)]];
+                    }
+                    return null;
+                }
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataResolves
+     */
+    public function test_resolve($expect, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null)
+    {
+        $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias, $extension) {
+            $ransack = Ransack::resolve($db, $ransack_predicate, $value, $alias, $extension);
+            $this->assertEquals($expect, $ransack);
+        });
+    }
+
     public function test_analyze()
     {
         $this->eachDb(function (Database $db) {

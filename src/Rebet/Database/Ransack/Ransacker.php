@@ -30,5 +30,5 @@ interface Ransacker
      * @param \Closure|null $extention function(Database $db, Ransack $ransack) : ?array (default: null)
      * @return array|null ['where explession', converted value] or null when ignored
      */
-    public function convert($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?array;
+    public function resolve($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?array;
 }
