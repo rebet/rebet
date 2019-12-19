@@ -56,10 +56,10 @@ use Rebet\Database\Exception\RansackException;
  * |    | *_all    (compound) | String/Array | All compound multiple value join by 'AND' (space separated string to array) | ['body_contains_all' => 'foo bar']      => (body LIKE '%foo%' ESCAPE '|' AND body LIKE '%bar%' ESCAPE '|')
  * +    +---------------------+--------------+-----------------------------------------------------------------------------+------------------------------------------
  * |    | *_{option} (option) | Any          | [any] Custom option by Ransack `options` configure for all convert          | Anything you want
- * |    | *_bin      (option) | String       | [LM ] Binary option depend on configure                                     | ['body_contains_bin'   => 'foo'] => [LM] BINARY body LIKE '%foo%' ESCAPE '|'
- * |    | *_cs       (option) | String       | [ M ] Case sensitive option depend on configure                             | ['body_contains_cs'    => 'foo'] => [M] body COLLATE utf8mb4_bin LIKE '%foo%' ESCAPE '|'
- * |    | *_ci       (option) | String       | [LM ] Case insensitive option depend on configure                           | ['body_contains_ci'    => 'foo'] => [L] body COLLATE nocase LIKE '%foo%' ESCAPE '|', [M] body COLLATE utf8mb4_general_ci LIKE '%foo%' ESCAPE '|'
- * |    | *_fuzzy    (option) | String       | [ M ] Fuzzy option depend on configure                                      | ['body_contains_fuzzy' => 'foo'] => [M] body COLLATE utf8mb4_unicode_ci LIKE '%foo%' ESCAPE '|'
+ * |    | *_bin      (option) | String       | [LM ] Binary option depend on configure                                     | ['body_contains_bin' => 'foo'] => [LM] BINARY body LIKE '%foo%' ESCAPE '|'
+ * |    | *_cs       (option) | String       | [ M ] Case sensitive option depend on configure                             | ['body_contains_cs'  => 'foo'] => [M] body COLLATE utf8mb4_bin LIKE '%foo%' ESCAPE '|'
+ * |    | *_ci       (option) | String       | [LM ] Case insensitive option depend on configure                           | ['body_contains_ci'  => 'foo'] => [L] body COLLATE nocase LIKE '%foo%' ESCAPE '|', [M] body COLLATE utf8mb4_general_ci LIKE '%foo%' ESCAPE '|'
+ * |    | *_fs       (option) | String       | [ M ] Fuzzy search option depend on configure                               | ['body_contains_fs'  => 'foo'] => [M] body COLLATE utf8mb4_unicode_ci LIKE '%foo%' ESCAPE '|'
  * |    | *_len      (option) | String       | [LMP] Length option depend on configure                                     | ['tag_eq_len' => 3    ] => [LP] LENGTH(tag) = 3, [M] CHAR_LENGTH(tag) = 3
  * |    | *_uc       (option) | String       | [LMP] Upper case option depend on configure                                 | ['tag_eq_uc'  => 'FOO'] => [LMP] UPPER(tag) = 'FOO'
  * |    | *_lc       (option) | String       | [LMP] Lower case option depend on configure                                 | ['tag_eq_lc'  => 'foo'] => [LMP] LOWER(tag) = 'foo'
@@ -95,7 +95,7 @@ use Rebet\Database\Exception\RansackException;
  *
  * These definition methods can be used in combination and you can reuse other defined aliases by specifying "@ + alias_name" as follows:
  *
- *  $ransacker->convert('freeword_contains_fuzzy', 'John', ['freeword' => ['@author_name', 'title', 'body'], 'author_name' => "CONCAT(author_first_name, ' ', author_last_name)"]);
+ *  $ransacker->convert('freeword_contains_fs', 'John', ['freeword' => ['@author_name', 'title', 'body'], 'author_name' => "CONCAT(author_first_name, ' ', author_last_name)"]);
  *  # => (CONCAT(author_first_name, ' ', author_last_name) COLLATE utf8mb4_unicode_ci LIKE '%John%' ESCAPE '|' OR title COLLATE utf8mb4_unicode_ci LIKE '%John%' ESCAPE '|' OR body COLLATE utf8mb4_unicode_ci LIKE '%John%' ESCAPE '|')
  *
  * @see https://github.com/activerecord-hackery/ransack
@@ -159,49 +159,49 @@ class Ransack
             ],
             'options' => [
                 'sqlite' => [
-                    'bin'   => 'BINARY {col}',
-                    'ci'    => '{col} COLLATE nocase',
-                    'len'   => 'LENGTH({col})',
-                    'uc'    => 'UPPER({col})',
-                    'lc'    => 'LOWER({col})',
-                    'age'   => "CAST((STRFTIME('%Y%m%d', 'now') - STRFTIME('%Y%m%d', {col})) / 10000 AS int)",
-                    'y'     => "STRFTIME('%Y', {col})",
-                    'm'     => "STRFTIME('%m', {col})",
-                    'd'     => "STRFTIME('%d', {col})",
-                    'h'     => "STRFTIME('%H', {col})",
-                    'i'     => "STRFTIME('%M', {col})",
-                    's'     => "STRFTIME('%S', {col})",
-                    'dow'   => "STRFTIME('%w', {col})",
+                    'bin' => 'BINARY {col}',
+                    'ci'  => '{col} COLLATE nocase',
+                    'len' => 'LENGTH({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => "CAST((STRFTIME('%Y%m%d', 'now') - STRFTIME('%Y%m%d', {col})) / 10000 AS int)",
+                    'y'   => "STRFTIME('%Y', {col})",
+                    'm'   => "STRFTIME('%m', {col})",
+                    'd'   => "STRFTIME('%d', {col})",
+                    'h'   => "STRFTIME('%H', {col})",
+                    'i'   => "STRFTIME('%M', {col})",
+                    's'   => "STRFTIME('%S', {col})",
+                    'dow' => "STRFTIME('%w', {col})",
                 ],
                 'mysql' => [
-                    'bin'   => 'BINARY {col}',
-                    'cs'    => '{col} COLLATE utf8mb4_bin',
-                    'ci'    => '{col} COLLATE utf8mb4_general_ci',
-                    'fuzzy' => '{col} COLLATE utf8mb4_unicode_ci',
-                    'len'   => 'CHAR_LENGTH({col})',
-                    'uc'    => 'UPPER({col})',
-                    'lc'    => 'LOWER({col})',
-                    'age'   => 'TIMESTAMPDIFF(YEAR, {col}, CURRENT_DATE)',
-                    'y'     => 'YEAR({col})',
-                    'm'     => 'MONTH({col})',
-                    'd'     => 'DAY({col})',
-                    'h'     => 'HOUR({col})',
-                    'i'     => 'MINUTE({col})',
-                    's'     => 'SECOND({col})',
-                    'dow'   => 'DAYOFWEEK({col})',
+                    'bin' => 'BINARY {col}',
+                    'cs'  => '{col} COLLATE utf8mb4_bin',
+                    'ci'  => '{col} COLLATE utf8mb4_general_ci',
+                    'fs'  => '{col} COLLATE utf8mb4_unicode_ci',
+                    'len' => 'CHAR_LENGTH({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => 'TIMESTAMPDIFF(YEAR, {col}, CURRENT_DATE)',
+                    'y'   => 'YEAR({col})',
+                    'm'   => 'MONTH({col})',
+                    'd'   => 'DAY({col})',
+                    'h'   => 'HOUR({col})',
+                    'i'   => 'MINUTE({col})',
+                    's'   => 'SECOND({col})',
+                    'dow' => 'DAYOFWEEK({col})',
                 ],
                 'pgsql' => [
-                    'len'   => 'LENGTH({col})',
-                    'uc'    => 'UPPER({col})',
-                    'lc'    => 'LOWER({col})',
-                    'age'   => "DATE_PART('year', AGE({col}))",
-                    'y'     => "DATE_PART('year', {col})",
-                    'm'     => "DATE_PART('month', {col})",
-                    'd'     => "DATE_PART('day', {col})",
-                    'h'     => "DATE_PART('hour', {col})",
-                    'i'     => "DATE_PART('minute', {col})",
-                    's'     => "DATE_PART('second', {col})",
-                    'dow'   => "DATE_PART('dow', {col})",
+                    'len' => 'LENGTH({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => "DATE_PART('year', AGE({col}))",
+                    'y'   => "DATE_PART('year', {col})",
+                    'm'   => "DATE_PART('month', {col})",
+                    'd'   => "DATE_PART('day', {col})",
+                    'h'   => "DATE_PART('hour', {col})",
+                    'i'   => "DATE_PART('minute', {col})",
+                    's'   => "DATE_PART('second', {col})",
+                    'dow' => "DATE_PART('dow', {col})",
                 ],
             ],
         ];
