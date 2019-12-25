@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database;
 
+use Rebet\Common\Arrays;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Database\Analysis\Analyzer;
@@ -11,6 +12,8 @@ use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Converter\Converter;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Driver\Driver;
+use Rebet\Database\Event\BatchUpdated;
+use Rebet\Database\Event\BatchUpdating;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Creating;
 use Rebet\Database\Event\Deleted;
@@ -472,7 +475,7 @@ class Database
      *
      * @param string $sql
      * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param mixed $params can be arrayable (default: [])
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @param Pager|null $pager (default: null)
@@ -484,7 +487,7 @@ class Database
         [$sql, $params] = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
         $limit          = $limit && $pager === null ? " LIMIT {$limit}" : "" ;
         $for_update     = $for_update ? " FOR UPDATE" : "" ;
-        return $this->prepare("{$sql}{$limit}{$for_update}")->execute($params);
+        return $this->prepare("{$sql}{$limit}{$for_update}")->execute(Arrays::toArray($params));
     }
 
     /**
@@ -776,8 +779,8 @@ class Database
         $where  = [];
         $params = [];
         foreach ($primarys as $column) {
-            $where[]               = "{$column} = :c_{$column}";
-            $params["c_{$column}"] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
+            $where[]         = "{$column} = :{$column}";
+            $params[$column] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
         }
 
         return [join(' AND ', $where), $params];
@@ -800,8 +803,9 @@ class Database
         $changes          = $entity->changes();
         $sets             = [];
         foreach ($changes as $column => $value) {
-            $sets[]          = "{$column} = :{$column}";
-            $params[$column] = $value;
+            $key          = "v_{$column}";
+            $sets[]       = "{$column} = :{$key}";
+            $params[$key] = $value;
         }
 
         if ($entity::UPDATED_AT && !isset($params[$entity::UPDATED_AT])) {
@@ -812,7 +816,7 @@ class Database
             return true;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$entity->tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
+        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -835,7 +839,7 @@ class Database
     }
 
     /**
-     * Delete given entity changed data.
+     * Delete given entity data.
      *
      * @param Entity $entity
      * @return bool
@@ -852,6 +856,39 @@ class Database
 
         Event::dispatch(new Deleted($this, $entity));
         return true;
+    }
+
+    /**
+     * Update table using ransack conditions.
+     *
+     * @param string $entity class name
+     * @param array $changes
+     * @param mixed $ransack conditions that arrayable
+     * @param array $alias (default: [])
+     * @param DateTime|null $now (default: null)
+     * @return int affected row count
+     */
+    public function updates(string $entity, array $changes, $ransack, array $alias = [], ?DateTime $now = null) : int
+    {
+        $now = $now ?? DateTime::now();
+        Event::dispatch(new BatchUpdating($this, $entity, $changes, $ransack, $now));
+        if ($entity::UPDATED_AT) {
+            $changes[$entity::UPDATED_AT] = $changes[$entity::UPDATED_AT] ?? $now ;
+        }
+
+        $sets             = [];
+        [$where, $params] = $this->ransacker->build($ransack, $alias);
+        foreach ($changes as $column => $value) {
+            $key          = "v_{$column}";
+            $sets[]       = "{$column} = :{$key}";
+            $params[$key] = $value;
+        }
+
+        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
+        if ($affected_rows !== 0) {
+            Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
+        }
+        return $affected_rows;
     }
 
     /**

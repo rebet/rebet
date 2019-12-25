@@ -13,6 +13,8 @@ use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Driver\PdoDriver;
+use Rebet\Database\Event\BatchUpdated;
+use Rebet\Database\Event\BatchUpdating;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Creating;
 use Rebet\Database\Event\Deleted;
@@ -1510,6 +1512,48 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertNotNull($user = UserWithAnnot::find(2));
             $this->assertTrue($db->delete($user));
             $this->assertNull(UserWithAnnot::find(2));
+        });
+    }
+
+    public function test_updates()
+    {
+        $updating_event_called = false;
+        $updated_event_called  = false;
+        Event::listen(function (BatchUpdating $event) use (&$updating_event_called) {
+            $updating_event_called = true;
+        });
+        Event::listen(function (BatchUpdated $event) use (&$updated_event_called) {
+            $updated_event_called = true;
+        });
+
+        $this->eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
+            $updating_event_called = false;
+            $updated_event_called  = false;
+
+            $this->assertFalse($updating_event_called);
+            $this->assertFalse($updated_event_called);
+            $this->assertEquals(0, $db->updates(User::class, ['name' => 'foo'], ['user_id' => 9999]));
+            $this->assertTrue($updating_event_called);
+            $this->assertFalse($updated_event_called);
+
+            $now  = DateTime::now();
+            $user = User::find(1);
+            $updating_event_called = false;
+            $updated_event_called  = false;
+            $this->assertFalse($updating_event_called);
+            $this->assertFalse($updated_event_called);
+            $this->assertEquals('Elody Bode III', $user->name);
+            $this->assertEquals(null, $user->updated_at);
+            $this->assertEquals(3, $db->updates(User::class, ['name' => 'foo'], ['user_id_lteq' => 3], [], $now));
+            $this->assertTrue($updating_event_called);
+            $this->assertTrue($updated_event_called);
+            foreach ([1, 2, 3] as $user_id) {
+                $user = User::find($user_id);
+                $this->assertEquals('foo', $user->name);
+                $this->assertEquals($now, $user->updated_at);
+            }
+            $user = User::find(4);
+            $this->assertEquals('Odie Kozey', $user->name);
         });
     }
 

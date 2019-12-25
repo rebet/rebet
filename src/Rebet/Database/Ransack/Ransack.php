@@ -79,23 +79,23 @@ use Rebet\Database\Exception\RansackException;
  *       However, this is reversed for some predicates such as `_null` and` _blank`.
  *       For details, check the predicates setting in the Ransack class.
  *
- *  $ransacker->convert('name_contains', 'John', ['name' => ['first_name', 'last_name']]);
+ *  $ransack->convert('name_contains', 'John', ['name' => ['first_name', 'last_name']]);
  *  # => (first_name LIKE '%John%' ESCAPE '|' OR last_name LIKE '%John%' ESCAPE '|')
  *
  * If you give predicate includes '_not_' then multiple column alias will be conjunct by `AND`, like below.
  *
- *  $ransacker->convert('name_not_contains', 'John', ['name' => ['first_name', 'last_name']]);
+ *  $ransack->convert('name_not_contains', 'John', ['name' => ['first_name', 'last_name']]);
  *  # => (first_name NOT LIKE '%John%' ESCAPE '|' AND last_name NOT LIKE '%John%' ESCAPE '|')
  *
  * However, in the above examples, when searching with the full name 'John Smith', the intended data may not be hit, and this behavior may not be desirable.
  * Even in such a case, you can achieve the purpose by defining the alias as follows:
  *
- *  $ransacker->convert('name_contains', 'John Smith', ['name' => "CONCAT(first_name, ' ', last_name)"]);
+ *  $ransack->convert('name_contains', 'John Smith', ['name' => "CONCAT(first_name, ' ', last_name)"]);
  *  # => CONCAT(first_name, ' ', last_name) LIKE '%John Smith% ESCAPE '|''
  *
  * These definition methods can be used in combination and you can reuse other defined aliases by specifying "@ + alias_name" as follows:
  *
- *  $ransacker->convert('freeword_contains_fs', 'John', ['freeword' => ['@author_name', 'title', 'body'], 'author_name' => "CONCAT(author_first_name, ' ', author_last_name)"]);
+ *  $ransack->convert('freeword_contains_fs', 'John', ['freeword' => ['@author_name', 'title', 'body'], 'author_name' => "CONCAT(author_first_name, ' ', author_last_name)"]);
  *  # => (CONCAT(author_first_name, ' ', author_last_name) COLLATE utf8mb4_unicode_ci LIKE '%John%' ESCAPE '|' OR title COLLATE utf8mb4_unicode_ci LIKE '%John%' ESCAPE '|' OR body COLLATE utf8mb4_unicode_ci LIKE '%John%' ESCAPE '|')
  *
  * @see https://github.com/activerecord-hackery/ransack

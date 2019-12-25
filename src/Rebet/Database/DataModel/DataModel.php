@@ -273,15 +273,15 @@ abstract class DataModel
      *
      *   switch($predicate) {
      *     case 'name':
-     *       return $db->ransacker()->convert('name_or_name_ruby_contains_fuzzy', $value);
+     *       return $db->ransacker()->convert('name_contains_fs', $value);
      *       return ['(U.name collate utf8_unicode_ci LIKE :name || U.name_ruby collate utf8_unicode_ci LIKE :name)', '%'.addcslashes($value, '\_%').'%']
      *     case 'account_status':
      *       switch($value) {
-     *         case AccountStatus::ACTIVE(): return ['U.resign_at IS NULL AND U.locked = 1', $value];
-     *         case AccountStatus::LOCKED(): return ['U.resign_at IS NULL AND U.locked = 2', $value];
-     *         case AccountStatus::RESIGN(): return ['U.resign_at IS NOT NULL'             , $value];
+     *         case AccountStatus::ACTIVE(): return ['U.resign_at IS NULL AND U.locked = 1', null];
+     *         case AccountStatus::LOCKED(): return ['U.resign_at IS NULL AND U.locked = 2', null];
+     *         case AccountStatus::RESIGN(): return ['U.resign_at IS NOT NULL'             , null];
      *       }
-     *       return [null, $value];
+     *       return [null, null];
      *     case 'has_bank':
      *       return ['EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)', $value] ;
      *   }

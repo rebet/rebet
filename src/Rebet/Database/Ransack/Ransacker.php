@@ -22,7 +22,7 @@ interface Ransacker
     public static function of(Database $db) : self;
 
     /**
-     * Build 'WHERE' condition expression part from given ransack predicate and value.
+     * Resolve 'WHERE' condition expression part from given ransack predicate and value.
      *
      * @param int|string $predicate
      * @param mixed $value
@@ -31,4 +31,14 @@ interface Ransacker
      * @return array|null ['where explession', converted value] or null when ignored
      */
     public function resolve($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?array;
+
+    /**
+     * Build 'WHERE' condition expression from given ransack conditions.
+     *
+     * @param mixed $ransack condition that arrayable
+     * @param array $alias (default: [])
+     * @param \Closure|null $extention function(Database $db, Ransack $ransack) : ?array (default: null)
+     * @return array ['where explession', converted values]
+     */
+    public function build($ransack, array $alias = [], ?\Closure $extention = null) : array;
 }

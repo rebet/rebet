@@ -48,4 +48,25 @@ class BuiltinRansacker implements Ransacker
     {
         return Ransack::resolve($this->db, $ransack_predicate, $value, $alias, $extension);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function build($ransack, array $alias = [], ?\Closure $extension = null) : array
+    {
+        $wheres = [];
+        $params = [];
+        foreach ($ransack as $predicate => $value) {
+            [$condition, $param] = $this->resolve($predicate, $value, $alias, $extension) ?? [null, null];
+            if (!$condition) {
+                continue;
+            }
+            $wheres[] = $condition;
+            if ($param !== null) {
+                $params = array_merge($params, $param);
+            }
+        }
+
+        return [implode(' AND ', $wheres), $params];
+    }
 }
