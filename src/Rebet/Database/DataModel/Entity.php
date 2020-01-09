@@ -224,15 +224,15 @@ abstract class Entity extends DataModel
     }
 
     /**
-     * It check this entity is exists.
+     * It check this entity is exist.
      *
      * @param Database|string|null $db (default: null)
      * @return boolean
      */
-    public function exists($db = null) : bool
+    public function exist($db = null) : bool
     {
         [$where, $params] = Database::buildPrimaryWheresFrom($this);
-        return static::db($db)->exists("SELECT * FROM ".static::tabelName()." WHERE {$where}", $params);
+        return static::db($db)->exist("SELECT * FROM ".static::tabelName()." WHERE {$where}", $params);
     }
 
     /**
@@ -282,6 +282,56 @@ abstract class Entity extends DataModel
     public function delete($db = null) : bool
     {
         return static::db($db)->delete($this);
+    }
+
+    /**
+     * Update data using ransack conditions.
+     *
+     * @param array $changes
+     * @param mixed $ransack conditions that arrayable (default: [])
+     * @param DateTime|null $now (default: null)
+     * @param Database|string|null $db (default: null)
+     * @return int affected row count
+     */
+    public static function updates(array $changes, $ransack = [], ?DateTime $now = null, $db = null) : int
+    {
+        return static::db($db)->updates(static::class, $changes, $ransack, static::ransackAliases(), $now);
+    }
+
+    /**
+     * Delete data using ransack conditions.
+     *
+     * @param mixed $ransack conditions that arrayable (default: [])
+     * @param Database|string|null $db (default: null)
+     * @return int affected row count
+     */
+    public static function deletes($ransack = [], $db = null) : int
+    {
+        return static::db($db)->deletes(static::class, $ransack, static::ransackAliases());
+    }
+
+    /**
+     * It checks the data is exists using ransack conditions.
+     *
+     * @param mixed $ransack conditions that arrayable
+     * @param Database|string|null $db (default: null)
+     * @return bool
+     */
+    public static function exists($ransack, $db = null) : bool
+    {
+        return static::db($db)->exists(static::class, $ransack, static::ransackAliases());
+    }
+
+    /**
+     * Count data using ransack conditions.
+     *
+     * @param mixed $ransack conditions that arrayable (default: [])
+     * @param Database|string|null $db (default: null)
+     * @return int
+     */
+    public static function counts($ransack = [], $db = null) : int
+    {
+        return static::db($db)->counts(static::class, $ransack, static::ransackAliases());
     }
 
     /**

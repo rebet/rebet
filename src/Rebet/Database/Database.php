@@ -12,6 +12,8 @@ use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Converter\Converter;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Driver\Driver;
+use Rebet\Database\Event\BatchDeleted;
+use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
 use Rebet\Database\Event\BatchUpdating;
 use Rebet\Database\Event\Created;
@@ -596,13 +598,13 @@ class Database
     }
 
     /**
-     * It checks the given SQL result is exists.
+     * It checks the given SQL result is exist.
      *
      * @param string $sql
      * @param array $params (default: null)
      * @return boolean
      */
-    public function exists(string $sql, array $params = []) : bool
+    public function exist(string $sql, array $params = []) : bool
     {
         return $this->query("{$sql} LIMIT 1", $params)->first() !== null;
     }
@@ -616,7 +618,7 @@ class Database
      */
     public function count(string $sql, array $params = []) : int
     {
-        return $this->get('count', "SELECT count(*) AS count FROM ({$sql}) AS T", null, $params, 'int');
+        return $this->get('count', "SELECT COUNT(*) AS count FROM ({$sql}) AS T", null, $params, 'int');
     }
 
     /**
@@ -835,7 +837,7 @@ class Database
      */
     public function save(Entity $entity, ?DateTime $now = null) : bool
     {
-        return $entity->exists($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
+        return $entity->exist($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
     }
 
     /**
@@ -859,7 +861,7 @@ class Database
     }
 
     /**
-     * Update table using ransack conditions.
+     * Update data using ransack conditions.
      *
      * @param string $entity class name
      * @param array $changes
@@ -878,17 +880,69 @@ class Database
 
         $sets             = [];
         [$where, $params] = $this->ransacker->build($ransack, $alias);
+        $where            = empty($where) ? '' : " WHERE {$where}" ;
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
             $sets[]       = "{$column} = :{$key}";
             $params[$key] = $value;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
+        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets).$where, $params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
         }
         return $affected_rows;
+    }
+
+    /**
+     * Delete data using ransack conditions.
+     *
+     * @param string $entity class name
+     * @param mixed $ransack conditions that arrayable
+     * @param array $alias (default: [])
+     * @return int affected row count
+     */
+    public function deletes(string $entity, $ransack, array $alias = []) : int
+    {
+        Event::dispatch(new BatchDeleting($this, $entity, $ransack));
+
+        [$where, $params] = $this->ransacker->build($ransack, $alias);
+        $where            = empty($where) ? '' : " WHERE {$where}" ;
+        $affected_rows    = $this->execute("DELETE FROM ".$entity::tabelName().$where, $params);
+        if ($affected_rows !== 0) {
+            Event::dispatch(new BatchDeleted($this, $entity, $ransack, $affected_rows));
+        }
+        return $affected_rows;
+    }
+
+    /**
+     * It checks the data is exists using ransack conditions.
+     *
+     * @param string $entity class name
+     * @param mixed $ransack conditions that arrayable
+     * @param array $alias (default: [])
+     * @return bool
+     */
+    public function exists(string $entity, $ransack, array $alias = []) : bool
+    {
+        [$where, $params] = $this->ransacker->build($ransack, $alias);
+        $where            = empty($where) ? '' : " WHERE {$where}" ;
+        return $this->exist("SELECT * FROM ".$entity::tabelName().$where, $params);
+    }
+
+    /**
+     * Count data using ransack conditions.
+     *
+     * @param string $entity class name
+     * @param mixed $ransack conditions that arrayable
+     * @param array $alias (default: [])
+     * @return int
+     */
+    public function counts(string $entity, $ransack, array $alias = []) : int
+    {
+        [$where, $params] = $this->ransacker->build($ransack, $alias);
+        $where            = empty($where) ? '' : " WHERE {$where}" ;
+        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$entity::tabelName().$where, [], $params);
     }
 
     /**

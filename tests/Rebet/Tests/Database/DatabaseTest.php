@@ -13,6 +13,8 @@ use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Driver\PdoDriver;
+use Rebet\Database\Event\BatchDeleted;
+use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
 use Rebet\Database\Event\BatchUpdating;
 use Rebet\Database\Event\Created;
@@ -1163,14 +1165,14 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_exists()
+    public function test_exist()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertFalse($db->exists("SELECT * FROM users WHERE user_id = 0"));
-            $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id = 1"));
-            $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 1]));
-            $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 2, 3]]));
-            $this->assertFalse($db->exists("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [998, 999]]));
+            $this->assertFalse($db->exist("SELECT * FROM users WHERE user_id = 0"));
+            $this->assertTrue($db->exist("SELECT * FROM users WHERE user_id = 1"));
+            $this->assertTrue($db->exist("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 1]));
+            $this->assertTrue($db->exist("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 2, 3]]));
+            $this->assertFalse($db->exist("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [998, 999]]));
         });
     }
 
@@ -1544,16 +1546,79 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertFalse($updated_event_called);
             $this->assertEquals('Elody Bode III', $user->name);
             $this->assertEquals(null, $user->updated_at);
-            $this->assertEquals(3, $db->updates(User::class, ['name' => 'foo'], ['user_id_lteq' => 3], [], $now));
+            $this->assertEquals(3, $db->updates(User::class, ['name' => 'foo', 'role' => 'admin'], ['user_id_lteq' => 3], [], $now));
             $this->assertTrue($updating_event_called);
             $this->assertTrue($updated_event_called);
             foreach ([1, 2, 3] as $user_id) {
                 $user = User::find($user_id);
                 $this->assertEquals('foo', $user->name);
+                $this->assertEquals('admin', $user->role);
                 $this->assertEquals($now, $user->updated_at);
             }
             $user = User::find(4);
             $this->assertEquals('Odie Kozey', $user->name);
+        });
+    }
+
+    public function test_deletes()
+    {
+        $deleting_event_called = false;
+        $deleted_event_called  = false;
+        Event::listen(function (BatchDeleting $event) use (&$deleting_event_called) {
+            $deleting_event_called = true;
+        });
+        Event::listen(function (BatchDeleted $event) use (&$deleted_event_called) {
+            $deleted_event_called = true;
+        });
+
+        $this->eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
+            $deleting_event_called = false;
+            $deleted_event_called  = false;
+
+            $this->assertFalse($deleting_event_called);
+            $this->assertFalse($deleted_event_called);
+            $this->assertEquals(0, $db->deletes(User::class, ['user_id' => 9999]));
+            $this->assertTrue($deleting_event_called);
+            $this->assertFalse($deleted_event_called);
+
+            $user = User::find(1);
+            $deleting_event_called = false;
+            $deleted_event_called  = false;
+            $this->assertFalse($deleting_event_called);
+            $this->assertFalse($deleted_event_called);
+            $this->assertNotNull($user);
+            $this->assertEquals(3, $db->deletes(User::class, ['user_id_lteq' => 3], []));
+            $this->assertTrue($deleting_event_called);
+            $this->assertTrue($deleted_event_called);
+            foreach ([1, 2, 3] as $user_id) {
+                $user = User::find($user_id);
+                $this->assertNull($user);
+            }
+            $user = User::find(4);
+            $this->assertNotNull($user);
+        });
+    }
+
+    public function test_exists()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertFalse($db->exists(User::class, ['user_id' => 9999]));
+            $this->assertTrue($db->exists(User::class, ['user_id' => 1]));
+            $this->assertTrue($db->exists(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertFalse($db->exists(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertTrue($db->exists(User::class, ['user_id_lt' => 9999]));
+        });
+    }
+
+    public function test_counts()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertEquals( 0, $db->counts(User::class, ['user_id' => 9999]));
+            $this->assertEquals( 1, $db->counts(User::class, ['user_id' => 1]));
+            $this->assertEquals( 1, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertEquals( 0, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertEquals( 2, $db->counts(User::class, ['user_id_lt' => 3]));
+            $this->assertEquals(13, $db->counts(User::class, ['gender' => Gender::MALE()]));
         });
     }
 
