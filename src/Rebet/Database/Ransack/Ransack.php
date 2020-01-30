@@ -6,6 +6,7 @@ use Rebet\Common\Callback;
 use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
+use Rebet\Database\Condition;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\RansackException;
 
@@ -312,11 +313,11 @@ class Ransack
      * @param int|string $ransack_predicate
      * @param mixed $value
      * @param array $alias (default: [])
-     * @param \Closure|null $extension function(Database $db, Ransack $ransack) { ... } (default: null)
+     * @param \Closure|null $extension function(Database $db, Ransack $ransack) : Condition { ... } (default: null)
      * @param string $placeholder_suffix (default: '')
-     * @return array|null
+     * @return Condition|null
      */
-    public static function resolve(Database $db, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?array
+    public static function resolve(Database $db, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?Condition
     {
         //  1 | If value is blank(null, '' or []) then ransack will be ignored
         if (Utils::isBlank($value)) {
@@ -331,16 +332,15 @@ class Ransack
                 $sub_where  = [];
                 $sub_params = [];
                 foreach ($sub_conditions as $k => $v) {
-                    [$expression, $nv] = static::resolve($db, $k, $v, $alias, $extension, "{$placeholder_suffix}_{$i}");
-                    if ($expression) {
-                        $sub_where[] = $expression;
-                        $sub_params  = array_merge($sub_params, $nv);
+                    if ($condition = static::resolve($db, $k, $v, $alias, $extension, "{$placeholder_suffix}_{$i}")) {
+                        $sub_where[] = $condition->sql;
+                        $sub_params  = array_merge($sub_params, $condition->params);
                     }
                 }
                 $where[] = '('.implode(' AND ', $sub_where).')';
                 $params  = array_merge($params, $sub_params);
             }
-            return ['('.implode(' OR ', $where).')', $params];
+            return new Condition('('.implode(' OR ', $where).')', $params);
         }
 
         $ransack = static::analyze($db, $ransack_predicate, $value, $alias, $placeholder_suffix);
@@ -561,9 +561,9 @@ class Ransack
      *
      * @param string|null $template (default: null)
      * @param \Closure|null $value_converter function(mixed $value) { ... } (default: null)
-     * @return array
+     * @return Condition
      */
-    public function convert(?string $template = null, ?\Closure $value_converter = null) : array
+    public function convert(?string $template = null, ?\Closure $value_converter = null) : Condition
     {
         $template        = $template ?? $this->template;
         $params          = [];
@@ -588,6 +588,6 @@ class Ransack
         }
         $sql = count($wheres) === 1 ? $wheres[0] : '('.implode($this->compound === 'any' ? ' OR ' : ' AND ', $wheres).')' ;
 
-        return [$sql, $params];
+        return new Condition($sql, $params);
     }
 }

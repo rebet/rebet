@@ -768,9 +768,9 @@ class Database
      * Build primary where condition and parameters.
      *
      * @param Entity $entity
-     * @return array [string $where, array $params]
+     * @return Condition
      */
-    public static function buildPrimaryWheresFrom(Entity $entity) : array
+    public static function buildPrimaryWheresFrom(Entity $entity) : Condition
     {
         $class    = get_class($entity);
         $primarys = $class::primaryKeys();
@@ -785,7 +785,7 @@ class Database
             $params[$column] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
         }
 
-        return [join(' AND ', $where), $params];
+        return new Condition(join(' AND ', $where), $params);
     }
 
     /**
@@ -801,9 +801,10 @@ class Database
         $now = $now ?? DateTime::now();
         Event::dispatch(new Updating($this, $old, $entity));
 
-        [$where, $params] = static::buildPrimaryWheresFrom($entity);
-        $changes          = $entity->changes();
-        $sets             = [];
+        $condition = static::buildPrimaryWheresFrom($entity);
+        $params    = $condition->params;
+        $changes   = $entity->changes();
+        $sets      = [];
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
             $sets[]       = "{$column} = :{$key}";
@@ -818,7 +819,7 @@ class Database
             return true;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets)." WHERE {$where}", $params);
+        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets).$condition->where(), $params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -849,9 +850,8 @@ class Database
     public function delete(Entity $entity) : bool
     {
         Event::dispatch(new Deleting($this, $entity));
-        [$where, $params] = static::buildPrimaryWheresFrom($entity);
-
-        $affected_rows = $this->execute("DELETE FROM ".$entity->tabelName()." WHERE {$where}", $params);
+        $condition     = static::buildPrimaryWheresFrom($entity);
+        $affected_rows = $this->execute("DELETE FROM ".$entity->tabelName().$condition->where(), $condition->params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -878,16 +878,16 @@ class Database
             $changes[$entity::UPDATED_AT] = $changes[$entity::UPDATED_AT] ?? $now ;
         }
 
-        $sets             = [];
-        [$where, $params] = $this->ransacker->build($ransack, $alias);
-        $where            = empty($where) ? '' : " WHERE {$where}" ;
+        $sets      = [];
+        $condition = $this->ransacker->build($ransack, $alias);
+        $params    = $condition->params;
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
             $sets[]       = "{$column} = :{$key}";
             $params[$key] = $value;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets).$where, $params);
+        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets).$condition->where(), $params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
         }
@@ -906,9 +906,8 @@ class Database
     {
         Event::dispatch(new BatchDeleting($this, $entity, $ransack));
 
-        [$where, $params] = $this->ransacker->build($ransack, $alias);
-        $where            = empty($where) ? '' : " WHERE {$where}" ;
-        $affected_rows    = $this->execute("DELETE FROM ".$entity::tabelName().$where, $params);
+        $condition     = $this->ransacker->build($ransack, $alias);
+        $affected_rows = $this->execute("DELETE FROM ".$entity::tabelName().$condition->where(), $condition->params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchDeleted($this, $entity, $ransack, $affected_rows));
         }
@@ -925,9 +924,8 @@ class Database
      */
     public function exists(string $entity, $ransack, array $alias = []) : bool
     {
-        [$where, $params] = $this->ransacker->build($ransack, $alias);
-        $where            = empty($where) ? '' : " WHERE {$where}" ;
-        return $this->exist("SELECT * FROM ".$entity::tabelName().$where, $params);
+        $condition = $this->ransacker->build($ransack, $alias);
+        return $this->exist("SELECT * FROM ".$entity::tabelName().$condition->where(), $condition->params);
     }
 
     /**
@@ -940,9 +938,8 @@ class Database
      */
     public function counts(string $entity, $ransack, array $alias = []) : int
     {
-        [$where, $params] = $this->ransacker->build($ransack, $alias);
-        $where            = empty($where) ? '' : " WHERE {$where}" ;
-        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$entity::tabelName().$where, [], $params);
+        $condition = $this->ransacker->build($ransack, $alias);
+        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$entity::tabelName().$condition->where(), [], $condition->params);
     }
 
     /**

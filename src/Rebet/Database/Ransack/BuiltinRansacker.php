@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Ransack;
 
+use Rebet\Database\Condition;
 use Rebet\Database\Database;
 
 /**
@@ -44,7 +45,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public function resolve($ransack_predicate, $value, array $alias = [], ?\Closure $extension = null) : ?array
+    public function resolve($ransack_predicate, $value, array $alias = [], ?\Closure $extension = null) : ?Condition
     {
         return Ransack::resolve($this->db, $ransack_predicate, $value, $alias, $extension);
     }
@@ -52,21 +53,21 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public function build($ransack, array $alias = [], ?\Closure $extension = null) : array
+    public function build($ransack, array $alias = [], ?\Closure $extension = null) : Condition
     {
         $wheres = [];
         $params = [];
         foreach ($ransack as $predicate => $value) {
-            [$condition, $param] = $this->resolve($predicate, $value, $alias, $extension) ?? [null, null];
+            $condition = $this->resolve($predicate, $value, $alias, $extension) ?? null;
             if (!$condition) {
                 continue;
             }
-            $wheres[] = $condition;
-            if ($param !== null) {
-                $params = array_merge($params, $param);
+            $wheres[] = $condition->sql;
+            if ($condition->params !== null) {
+                $params = array_merge($params, $condition->params);
             }
         }
 
-        return [implode(' AND ', $wheres), $params];
+        return new Condition(implode(' AND ', $wheres), $params);
     }
 }

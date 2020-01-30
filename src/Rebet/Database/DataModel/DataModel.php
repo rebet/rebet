@@ -11,6 +11,7 @@ use Rebet\Common\Json;
 use Rebet\Common\Populatable;
 use Rebet\Common\Reflector;
 use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Condition;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
@@ -416,10 +417,10 @@ abstract class DataModel
         $alises    = static::ransackAliases();
         $extension = Closure::fromCallable([static::class, 'ransack']);
         foreach ($ransacks as $predicate => $value) {
-            [$expression, $new_value] = $db->ransacker()->resolve($predicate, $value, $alises, $extension) ?? [null, []];
-            if ($expression) {
-                $where[] = $expression;
-                $params  = array_merge($params, $new_value);
+            $condition = $db->ransacker()->resolve($predicate, $value, $alises, $extension);
+            if ($condition) {
+                $where[] = $condition->sql;
+                $params  = array_merge($params, $condition->params);
             }
         }
         return [$db->appendWhereTo(static::buildSelectAllSql(), $where), $params];
@@ -454,21 +455,21 @@ abstract class DataModel
      *       return $ransack->convert("REPLACE({col}, '-', '') = REPLACE({val}, '-', '')");
      *     case 'account_status':
      *       switch($ransack->value()) {
-     *         case AccountStatus::ACTIVE(): return ['U.resign_at IS NULL AND U.locked = 1', null];
-     *         case AccountStatus::LOCKED(): return ['U.resign_at IS NULL AND U.locked = 2', null];
-     *         case AccountStatus::RESIGN(): return ['U.resign_at IS NOT NULL'             , null];
+     *         case AccountStatus::ACTIVE(): return new Condition('U.resign_at IS NULL AND U.locked = 1');
+     *         case AccountStatus::LOCKED(): return new Condition('U.resign_at IS NULL AND U.locked = 2');
+     *         case AccountStatus::RESIGN(): return new Condition('U.resign_at IS NOT NULL'             );
      *       }
-     *       return [null, null];
+     *       return new Condition(null, null);
      *     case 'has_bank':
-     *       return ['EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)', null] ;
+     *       return new Condition('EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)') ;
      *   }
      *   return parent::ransack($db, $ransack);
      *
      * @param Database $db
      * @param Ransack $ransack
-     * @return array|null
+     * @return Condition|null
      */
-    protected static function ransack(Database $db, Ransack $ransack) : ?array
+    protected static function ransack(Database $db, Ransack $ransack) : ?Condition
     {
         return null;
     }

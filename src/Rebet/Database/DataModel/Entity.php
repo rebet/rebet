@@ -231,8 +231,8 @@ abstract class Entity extends DataModel
      */
     public function exist($db = null) : bool
     {
-        [$where, $params] = Database::buildPrimaryWheresFrom($this);
-        return static::db($db)->exist("SELECT * FROM ".static::tabelName()." WHERE {$where}", $params);
+        $condition = Database::buildPrimaryWheresFrom($this);
+        return static::db($db)->exist("SELECT * FROM ".static::tabelName().$condition->where(), $condition->params);
     }
 
     /**

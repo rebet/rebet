@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\Ransack;
 
+use Rebet\Database\Condition;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Ransack\Ransack;
@@ -15,61 +16,61 @@ class RansackTest extends RebetDatabaseTestCase
             [null, 'name_eq', ''],
             [null, 'name_in', []],
             [
-                [
+                new Condition(
                     'age > :age_gt',
                     ['age_gt' => 0]
-                ],
+                ),
                 'age_gt' , 0
             ],
             [
-                [
+                new Condition(
                     '((name = :name_0 AND age > :age_gt_0) OR (name = :name_1 AND age > :age_gt_1))',
                     ['name_0' => 'foo', 'age_gt_0' => 20, 'name_1' => 'bar', 'age_gt_1' => 18]
-                ],
+                ),
                 0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]]
             ],
             [
-                [
+                new Condition(
                     '((((name = :name_0_0) OR (name = :name_0_1)) AND age > :age_gt_0) OR (name = :name_1 AND age > :age_gt_1))',
                     ['name_0_0' => 'foo', 'name_0_1' => 'bar', 'age_gt_0' => 20, 'name_1' => 'baz', 'age_gt_1' => 18]
-                ],
+                ),
                 0 , [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]]
             ],
             [
-                [
+                new Condition(
                     '(((last_name = :name_0_0 OR first_name = :name_0_1) AND age > :age_gt_0) OR ((last_name = :name_1_0 OR first_name = :name_1_1) AND age > :age_gt_1))',
                     ['name_0_0' => 'foo', 'name_0_1' => 'foo', 'age_gt_0' => 20, 'name_1_0' => 'bar', 'name_1_1' => 'bar', 'age_gt_1' => 18]
-                ],
+                ),
                 0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
                 ['name' => ['last_name', 'first_name']]
             ],
             [
-                [
+                new Condition(
                     'age > :age_gt',
                     ['age_gt' => 20]
-                ],
+                ),
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) {
+                function (Database $db, Ransack $ransack) : ?Condition {
                     return null;
                 }
             ],
             [
-                [
+                new Condition(
                     'age > :age_gt',
                     ['age_gt' => 20]
-                ],
+                ),
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) {
+                function (Database $db, Ransack $ransack) : ?Condition {
                     return $ransack->convert();
                 }
             ],
             [
-                [
+                new Condition(
                     'age grater than :age_gt',
                     ['age_gt' => 20]
-                ],
+                ),
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) {
+                function (Database $db, Ransack $ransack) : ?Condition {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}');
                     }
@@ -77,12 +78,12 @@ class RansackTest extends RebetDatabaseTestCase
                 }
             ],
             [
-                [
+                new Condition(
                     'age grater than :age_gt',
                     ['age_gt' => 40]
-                ],
+                ),
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) {
+                function (Database $db, Ransack $ransack) : ?Condition {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
                     }
@@ -90,14 +91,14 @@ class RansackTest extends RebetDatabaseTestCase
                 }
             ],
             [
-                [
+                new Condition(
                     'age <> :bar',
                     ['bar' => 20]
-                ],
+                ),
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) {
+                function (Database $db, Ransack $ransack) : ?Condition {
                     if ($ransack->origin() === 'age_gt') {
-                        return ['age <> :bar', ['bar' => $ransack->value(true)]];
+                        return new Condition('age <> :bar', ['bar' => $ransack->value(true)]);
                     }
                     return null;
                 }
@@ -450,199 +451,199 @@ class RansackTest extends RebetDatabaseTestCase
     {
         return [
             [
-                [
+                new Condition(
                     'name = :name',
                     ['name' => 'foo']
-                ],
+                ),
                 'name', 'foo', [],
                 []
             ],
             [
-                [
+                new Condition(
                     'name IN (:name)',
                     ['name' => ['foo', 'bar']]
-                ],
+                ),
                 'name', ['foo', 'bar'], [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name COLLATE nocase = :name_ci',
                     ['name_ci' => 'foo']
-                ],
+                ),
                 'name_ci', 'foo', [],
                 ['sqlite']
             ],
             [
-                [
+                new Condition(
                     'name COLLATE nocase IN (:name_ci)',
                     ['name_ci' => ['foo', 'bar']]
-                ],
+                ),
                 'name_ci', ['foo', 'bar'], [],
                 ['sqlite']
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name = :name_eq',
                     ['name_eq' => 'foo']
-                ],
+                ),
                 'name_eq', 'foo', [],
                 []
             ],
             [
-                [
+                new Condition(
                     'name COLLATE nocase = :name_eq_ci',
                     ['name_eq_ci' => 'foo']
-                ],
+                ),
                 'name_eq_ci', 'foo', [],
                 ['sqlite']
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name <> :name_not_eq',
                     ['name_not_eq' => 'foo']
-                ],
+                ),
                 'name_not_eq', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name IN (:name_in)',
                     ['name_in' => ['foo', 'bar']]
-                ],
+                ),
                 'name_in', ['foo', 'bar'], [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name NOT IN (:name_not_in)',
                     ['name_not_in' => ['foo', 'bar']]
-                ],
+                ),
                 'name_not_in', ['foo', 'bar'], [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name < :name_lt',
                     ['name_lt' => 'foo']
-                ],
+                ),
                 'name_lt', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name <= :name_lteq',
                     ['name_lteq' => 'foo']
-                ],
+                ),
                 'name_lteq', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name >= :name_gteq',
                     ['name_gteq' => 'foo']
-                ],
+                ),
                 'name_gteq', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name > :name_gt',
                     ['name_gt' => 'foo']
-                ],
+                ),
                 'name_gt', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name >= :name_from',
                     ['name_from' => 'foo']
-                ],
+                ),
                 'name_from', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     'name <= :name_to',
                     ['name_to' => 'foo']
-                ],
+                ),
                 'name_to', 'foo', [],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name LIKE :name_contains ESCAPE '|'",
                     ['name_contains' => '%100|%%']
-                ],
+                ),
                 'name_contains', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "name LIKE :name_contains_any ESCAPE '|'",
                     ['name_contains_any' => '%100|%%']
-                ],
+                ),
                 'name_contains_any', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name LIKE :name_contains_any_0 ESCAPE '|' OR name LIKE :name_contains_any_1 ESCAPE '|')",
                     [
                         'name_contains_any_0' => '%100|%%',
                         'name_contains_any_1' => '%foo%'
                     ]
-                ],
+                ),
                 'name_contains_any', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name LIKE :name_contains_all_0 ESCAPE '|' AND name LIKE :name_contains_all_1 ESCAPE '|')",
                     [
                         'name_contains_all_0' => '%100|%%',
                         'name_contains_all_1' => '%foo%'
                     ]
-                ],
+                ),
                 'name_contains_all', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name COLLATE nocase LIKE :name_contains_any_ci_0 ESCAPE '|' OR name COLLATE nocase LIKE :name_contains_any_ci_1 ESCAPE '|')",
                     [
                         'name_contains_any_ci_0' => '%100|%%',
                         'name_contains_any_ci_1' => '%foo%'
                     ]
-                ],
+                ),
                 'name_contains_any_ci', ['100%', 'foo'], [],
                 ['sqlite']
             ],
             [
-                [
+                new Condition(
                     "(last_name LIKE :name_contains_0 ESCAPE '|' OR first_name LIKE :name_contains_1 ESCAPE '|')",
                     [
                         'name_contains_0' => '%100|%%',
                         'name_contains_1' => '%100|%%',
                     ]
-                ],
+                ),
                 'name_contains', '100%', ['name' => ['last_name', 'first_name']],
                 []
             ],
             [
-                [
+                new Condition(
                     "((last_name LIKE :name_contains_any_0_0 ESCAPE '|' OR first_name LIKE :name_contains_any_0_1 ESCAPE '|') OR (last_name LIKE :name_contains_any_1_0 ESCAPE '|' OR first_name LIKE :name_contains_any_1_1 ESCAPE '|'))",
                     [
                         'name_contains_any_0_0' => '%100|%%',
@@ -650,12 +651,12 @@ class RansackTest extends RebetDatabaseTestCase
                         'name_contains_any_1_0' => '%foo%',
                         'name_contains_any_1_1' => '%foo%',
                     ]
-                ],
+                ),
                 'name_contains_any', ['100%', 'foo'], ['name' => ['last_name', 'first_name']],
                 []
             ],
             [
-                [
+                new Condition(
                     "((last_name LIKE :name_contains_any_0_0 ESCAPE '|' OR first_name LIKE :name_contains_any_0_1 ESCAPE '|') OR (last_name LIKE :name_contains_any_1_0 ESCAPE '|' OR first_name LIKE :name_contains_any_1_1 ESCAPE '|'))",
                     [
                         'name_contains_any_0_0' => '%100|%%',
@@ -663,12 +664,12 @@ class RansackTest extends RebetDatabaseTestCase
                         'name_contains_any_1_0' => '%foo%',
                         'name_contains_any_1_1' => '%foo%',
                     ]
-                ],
+                ),
                 'name_contains_any', '100% foo', ['name' => ['last_name', 'first_name']],
                 []
             ],
             [
-                [
+                new Condition(
                     "((last_name COLLATE nocase LIKE :name_contains_all_ci_0_0 ESCAPE '|' OR first_name COLLATE nocase LIKE :name_contains_all_ci_0_1 ESCAPE '|') AND (last_name COLLATE nocase LIKE :name_contains_all_ci_1_0 ESCAPE '|' OR first_name COLLATE nocase LIKE :name_contains_all_ci_1_1 ESCAPE '|'))",
                     [
                         'name_contains_all_ci_0_0' => '%100|%%',
@@ -676,289 +677,289 @@ class RansackTest extends RebetDatabaseTestCase
                         'name_contains_all_ci_1_0' => '%foo%',
                         'name_contains_all_ci_1_1' => '%foo%',
                     ]
-                ],
+                ),
                 'name_contains_all_ci', ['100%', 'foo'], ['name' => ['last_name', 'first_name']],
                 ['sqlite']
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name NOT LIKE :name_not_contains ESCAPE '|'",
                     ['name_not_contains' => '%100|%%']
-                ],
+                ),
                 'name_not_contains', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name NOT LIKE :name_not_contains_any_0 ESCAPE '|' OR name NOT LIKE :name_not_contains_any_1 ESCAPE '|')",
                     [
                         'name_not_contains_any_0' => '%100|%%',
                         'name_not_contains_any_1' => '%foo%'
                     ]
-                ],
+                ),
                 'name_not_contains_any', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name NOT LIKE :name_not_contains_0 ESCAPE '|' AND first_name NOT LIKE :name_not_contains_1 ESCAPE '|')",
                     [
                         'name_not_contains_0' => '%100|%%',
                         'name_not_contains_1' => '%100|%%',
                     ]
-                ],
+                ),
                 'name_not_contains', '100%', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name LIKE :name_starts ESCAPE '|'",
                     ['name_starts' => '100|%%']
-                ],
+                ),
                 'name_starts', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name LIKE :name_starts_any_0 ESCAPE '|' OR name LIKE :name_starts_any_1 ESCAPE '|')",
                     [
                         'name_starts_any_0' => '100|%%',
                         'name_starts_any_1' => 'foo%'
                     ]
-                ],
+                ),
                 'name_starts_any', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name LIKE :name_starts_0 ESCAPE '|' OR first_name LIKE :name_starts_1 ESCAPE '|')",
                     [
                         'name_starts_0' => '100|%%',
                         'name_starts_1' => '100|%%',
                     ]
-                ],
+                ),
                 'name_starts', '100%', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name NOT LIKE :name_not_starts ESCAPE '|'",
                     ['name_not_starts' => '100|%%']
-                ],
+                ),
                 'name_not_starts', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name NOT LIKE :name_not_starts_any_0 ESCAPE '|' OR name NOT LIKE :name_not_starts_any_1 ESCAPE '|')",
                     [
                         'name_not_starts_any_0' => '100|%%',
                         'name_not_starts_any_1' => 'foo%'
                     ]
-                ],
+                ),
                 'name_not_starts_any', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name NOT LIKE :name_not_starts_0 ESCAPE '|' AND first_name NOT LIKE :name_not_starts_1 ESCAPE '|')",
                     [
                         'name_not_starts_0' => '100|%%',
                         'name_not_starts_1' => '100|%%',
                     ]
-                ],
+                ),
                 'name_not_starts', '100%', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name LIKE :name_ends ESCAPE '|'",
                     ['name_ends' => '%100|%']
-                ],
+                ),
                 'name_ends', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name LIKE :name_ends_any_0 ESCAPE '|' OR name LIKE :name_ends_any_1 ESCAPE '|')",
                     [
                         'name_ends_any_0' => '%100|%',
                         'name_ends_any_1' => '%foo'
                     ]
-                ],
+                ),
                 'name_ends_any', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name LIKE :name_ends_0 ESCAPE '|' OR first_name LIKE :name_ends_1 ESCAPE '|')",
                     [
                         'name_ends_0' => '%100|%',
                         'name_ends_1' => '%100|%',
                     ]
-                ],
+                ),
                 'name_ends', '100%', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name NOT LIKE :name_not_ends ESCAPE '|'",
                     ['name_not_ends' => '%100|%']
-                ],
+                ),
                 'name_not_ends', '100%', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(name NOT LIKE :name_not_ends_any_0 ESCAPE '|' OR name NOT LIKE :name_not_ends_any_1 ESCAPE '|')",
                     [
                         'name_not_ends_any_0' => '%100|%',
                         'name_not_ends_any_1' => '%foo'
                     ]
-                ],
+                ),
                 'name_not_ends_any', ['100%', 'foo'], [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name NOT LIKE :name_not_ends_0 ESCAPE '|' AND first_name NOT LIKE :name_not_ends_1 ESCAPE '|')",
                     [
                         'name_not_ends_0' => '%100|%',
                         'name_not_ends_1' => '%100|%',
                     ]
-                ],
+                    ),
                 'name_not_ends', '100%', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name IS NULL",
                     []
-                ],
+                ),
                 'name_null', '1', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name IS NULL AND first_name IS NULL)",
                     []
-                ],
+                ),
                 'name_null', '1', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name IS NOT NULL",
                     []
-                ],
+                ),
                 'name_not_null', '1', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "(last_name IS NOT NULL OR first_name IS NOT NULL)",
                     []
-                ],
+                ),
                 'name_not_null', '1', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "(name IS NULL OR name = '')",
                     []
-                ],
+                ),
                 'name_blank', '1', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "((last_name IS NULL OR last_name = '') AND (first_name IS NULL OR first_name = ''))",
                     []
-                ],
+                ),
                 'name_blank', '1', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "(name IS NOT NULL AND name <> '')",
                     []
-                ],
+                ),
                 'name_not_blank', '1', [],
                 []
             ],
             [
-                [
+                new Condition(
                     "((last_name IS NOT NULL AND last_name <> '') OR (first_name IS NOT NULL AND first_name <> ''))",
                     []
-                ],
+                ),
                 'name_not_blank', '1', ['name' => ['last_name', 'first_name']],
                 []
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name REGEXP :name_matches",
                     ['name_matches' => '^fo+']
-                ],
+                ),
                 'name_matches', '^fo+', [],
                 ['sqlite', 'mysql']
             ],
             [
-                [
+                new Condition(
                     "name ~ :name_matches",
                     ['name_matches' => '^fo+']
-                ],
+                ),
                 'name_matches', '^fo+', [],
                 ['pgsql']
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name NOT REGEXP :name_not_matches",
                     ['name_not_matches' => '^fo+']
-                ],
+                ),
                 'name_not_matches', '^fo+', [],
                 ['sqlite', 'mysql']
             ],
             [
-                [
+                new Condition(
                     "name !~ :name_not_matches",
                     ['name_not_matches' => '^fo+']
-                ],
+                ),
                 'name_not_matches', '^fo+', [],
                 ['pgsql']
             ],
             // --------------
             [
-                [
+                new Condition(
                     "name MATCH :name_search",
                     ['name_search' => 'foo']
-                ],
+                ),
                 'name_search', 'foo', [],
                 ['sqlite']
             ],
             [
-                [
+                new Condition(
                     "MATCH(name) AGAINST(:name_search)",
                     ['name_search' => 'foo']
-                ],
+                ),
                 'name_search', 'foo', [],
                 ['mysql']
             ],
             [
-                [
+                new Condition(
                     "to_tsvector(name) @@ to_tsquery(:name_search)",
                     ['name_search' => 'foo']
-                ],
+                ),
                 'name_search', 'foo', [],
                 ['pgsql']
             ],
