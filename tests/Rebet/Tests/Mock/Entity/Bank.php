@@ -26,10 +26,8 @@ class Bank extends Entity
      */
     public $updated_at;
 
-    protected static function relations() : array
+    public function user(bool $for_update = false, bool $eager_load = true) : ?User
     {
-        return [
-            'user' => ['belongs_to', User::class],
-        ];
+        return parent::belongsTo(User::class, [], $for_update, $eager_load);
     }
 }

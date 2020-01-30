@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Common\Strings;
+use Rebet\Common\Utils;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Presentation;
@@ -52,17 +53,17 @@ class User extends Presentation
 
     public function user(bool $for_update = false) : User
     {
-        return $this->hasOne(User::class, 'user', [], $for_update);
+        return $this->hasOne(User::class, [], $for_update);
     }
 
     public function bank(bool $for_update = false) : ?Bank
     {
-        return $this->hasOne(Bank::class, 'bank', [], $for_update);
+        return $this->hasOne(Bank::class, [], $for_update);
     }
 
     public function articles($conditions = [], bool $for_update = false) : ResultSet
     {
-        return $this->hasMany(Article::class, 'articles', [], $conditions, null, null, $for_update);
+        return $this->hasMany(Article::class, [], $conditions, null, null, $for_update);
     }
 
 //     protected static function buildSelectSql(array $conditions = []) : array

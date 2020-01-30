@@ -41,4 +41,16 @@ class Json
                 return $value;
         }
     }
+
+    /**
+     * Create digest string from JSON serialized text of given values.
+     *
+     * @param string $algorithm hash algorithm for digest
+     * @param mixed ...$values
+     * @return string
+     */
+    public static function digest(string $algorithm, ...$values) : string
+    {
+        return hash($algorithm, json_encode(static::serialize($values)));
+    }
 }

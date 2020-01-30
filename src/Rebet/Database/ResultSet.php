@@ -27,9 +27,9 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * Create result set instance
      *
-     * @param mixed $items can be arrayable
+     * @param mixed $items can be arrayable (default: [])
      */
-    public function __construct($items)
+    public function __construct($items = [])
     {
         $this->items = Arrays::toArray($items);
         foreach ($this->items as $item) {
@@ -55,11 +55,10 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
         if ($value instanceof DataModel) {
             $value->belongsResultSet($this);
         }
-        $brs = &$this->belongsResultSet();
         if ($offset === null) {
-            $brs[] = $value;
+            $this->items[] = $value;
         } else {
-            $brs[$offset] = $value;
+            $this->items[$offset] = $value;
         }
     }
 

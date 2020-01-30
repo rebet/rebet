@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock\Entity;
 
+use Rebet\Common\Reflector;
 use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Unmap;
@@ -52,11 +53,42 @@ class User extends Entity
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
 
-    protected static function relations() : array
+    public function fortune(bool $for_update = false, bool $eager_load = true) : ?Fortune
     {
-        return [
-            'bank'     => ['has_one', Bank::class],
-            'articles' => ['has_many', Article::class],
-        ];
+        return parent::belongsTo(Fortune::class, [], $for_update, $eager_load);
+    }
+
+    public function bank(bool $for_update = false, bool $eager_load = true) : ?Bank
+    {
+        return parent::hasOne(Bank::class, [], $for_update, $eager_load);
+    }
+
+    public function articles($ransack = [], $order_by = null, ?int $limit = null, bool $for_update = false, bool $eager_load = true) : array
+    {
+        return parent::hasMany(Article::class, [], $ransack, $order_by, $limit, $for_update, $eager_load);
+    }
+
+    /**
+     * Method for unit test
+     */
+    public function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
+    {
+        return parent::belongsTo($class, $alias, $for_update, $eager_load, $name ?? Reflector::caller());
+    }
+
+    /**
+     * Method for unit test
+     */
+    public function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
+    {
+        return parent::hasOne($class, $alias, $for_update, $eager_load, $name ?? Reflector::caller());
+    }
+
+    /**
+     * Method for unit test
+     */
+    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, bool $eager_load = true, ?string $name = null) : array
+    {
+        return parent::hasMany($class, $alias, $ransacks, $order_by, $limit, $for_update, $eager_load, $name ?? Reflector::caller());
     }
 }

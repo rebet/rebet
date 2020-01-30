@@ -7,6 +7,7 @@ use Rebet\Common\Arrays;
 use Rebet\Common\Describable;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Getsetable;
+use Rebet\Common\Json;
 use Rebet\Common\Populatable;
 use Rebet\Common\Reflector;
 use Rebet\Database\Annotation\PrimaryKey;
@@ -14,7 +15,6 @@ use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Database\Ransack\Predicate;
 use Rebet\Database\Ransack\Ransack;
 use Rebet\Database\ResultSet;
 use Rebet\Inflection\Inflector;
@@ -48,14 +48,192 @@ abstract class DataModel
      *
      * @var ResultSet|null
      */
+
     protected $_belongs_result_set = null;
 
     /**
-     * Relations data model
+     * Eager loaded data cache
      *
      * @var array
      */
-    protected $_relations = [];
+    protected $_eager_loads = [];
+
+    /**
+     * Relations entity cache
+     *
+     * @var array $_relations[table_name][relation_holder_object_hash][condition_digest] = $entity|$result_set
+     */
+    protected static $_relations = [];
+
+    /**
+     * It checks the given key eager loads data exists or not.
+     *
+     * @param string $key
+     * @return boolean
+     */
+    protected function hasEagerLoads(string $key) : bool
+    {
+        return array_key_exists($key, $this->_eager_loads);
+    }
+
+    /**
+     * Set given eager loads data.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return mixed that given value as it is.
+     */
+    protected function pushEagerLoads(string $key, $value)
+    {
+        return $this->_eager_loads[$key] = $value;
+    }
+
+    /**
+     * Get a value from the eager loads, and remove it.
+     *
+     * @param string $key
+     * @return mixed
+     */
+    protected function pullEagerLoads(string $key)
+    {
+        // @todo
+        // return $this->_eager_loads[$key] ?? null;
+        return Arrays::pull($this->_eager_loads, $key);
+    }
+
+    /**
+     * Verify this class is super class of given $class.
+     *
+     * @param string|null $class name
+     * @return void
+     * @throws LogicException when give the class name that is not subclass of this class.
+     */
+    protected static function mustBeSuperclassOf(?string $class) : void
+    {
+        if ($class !== null && !is_subclass_of($class, static::class)) {
+            throw LogicException::by("Invalid class name given. {$class} is not subclass of ".static::class.".");
+        }
+    }
+
+    /**
+     * Create 'sha256' hash string from given values.
+     *
+     * @param mixed ...$values
+     * @return string
+     */
+    protected static function hash(...$values) : string
+    {
+        return Json::digest('sha256', $values);
+    }
+
+    /**
+     * Generate primary hash of this data mode from primary key/values.
+     *
+     * @return string
+     */
+    public function primaryHash() : string
+    {
+        return static::hash(static::class, $this->primaryValues());
+    }
+
+    /**
+     * Get primary values of this data model.
+     *
+     * @return array [primary_key => value, ... ]
+     */
+    public function primaryValues() : array
+    {
+        return $this->pluck(...static::primaryKeys());
+    }
+
+    /**
+     * Generate foreign hash of this data mode from given foreign key/values.
+     *
+     * @param string $class name of data model
+     * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @return string
+     */
+    public function foreignHash(string $class, array $alias = []) : string
+    {
+        return static::hash($class, $this->foreignValues($class, $alias));
+    }
+
+    /**
+     * Get given foreign values of this data model.
+     *
+     * @param string $class name of data model
+     * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @return array [foreign_key => value, ... ]
+     */
+    public function foreignValues(string $class, array $alias = []) : array
+    {
+        $foreigns = [];
+        $alias    = array_flip($alias);
+        foreach ($class::primaryKeys() as $foreign_key) {
+            $foreigns[$foreign_key] = Reflector::get($this, $alias[$foreign_key] ?? $foreign_key);
+        }
+        return $foreigns;
+    }
+
+    /**
+     * Pluck given column-value pairs.
+     *
+     * @param string ...$columns
+     * @return array [column => value, ...]
+     */
+    public function pluck(string ...$columns) : array
+    {
+        $pluks = [];
+        foreach ($columns as $column) {
+            $pluks[$column] = $this->$column;
+        }
+        return $pluks;
+    }
+
+    // @todo Consider about relationship data cache and auto cache clear.
+    // /**
+    //  * Clear relation entity cache.
+    //  *
+    //  * @param string|null $entity class name (default: null for all reset)
+    //  * @return self
+    //  */
+    // public static function clearRelationCache(?string $entity = null) : void
+    // {
+    //     Entity::mustBeSuperclassOf($entity);
+    //     if ($entity) {
+    //         unset(static::$_relations[$entity::tabelName()]);
+    //     } else {
+    //         static::$_relations = [];
+    //     }
+    // }
+
+    // /**
+    //  * Set relation entity cache.
+    //  *
+    //  * @param string $entity class name
+    //  * @param array $conditions
+    //  * @param mixed $value
+    //  * @return self
+    //  */
+    // protected function setRelationCache(string $entity, array $conditions, $value)
+    // {
+    //     Entity::mustBeSuperclassOf($entity);
+    //     static::$_relations[$entity::tabelName()][spl_object_hash($this)][Json::digest('sha256', $conditions)] = $value;
+    //     return $this;
+    // }
+
+    // /**
+    //  * Get relation entity cache.
+    //  *
+    //  * @param string $entity class name
+    //  * @param array $conditions
+    //  * @return mixed
+    //  */
+    // protected function getRelationCache(string $entity, array $conditions)
+    // {
+    //     Entity::mustBeSuperclassOf($entity);
+    //     return static::$_relations[$entity::tabelName()][spl_object_hash($this)][Json::digest('sha256', $conditions)] ?? null;
+    // }
 
     /**
      * Get and Set result set container of this data model
@@ -271,21 +449,20 @@ abstract class DataModel
      * If you want to implement special ransack search conditions specific to the data model as shown below, please override this method.
      * NOTE: If this method return null then ransack handled by default behavior.
      *
-     *   switch($predicate) {
-     *     case 'name':
-     *       return $db->ransacker()->convert('name_contains_fs', $value);
-     *       return ['(U.name collate utf8_unicode_ci LIKE :name || U.name_ruby collate utf8_unicode_ci LIKE :name)', '%'.addcslashes($value, '\_%').'%']
+     *   switch($ransack->origin()) {
+     *     case 'tel':
+     *       return $ransack->convert("REPLACE({col}, '-', '') = REPLACE({val}, '-', '')");
      *     case 'account_status':
-     *       switch($value) {
+     *       switch($ransack->value()) {
      *         case AccountStatus::ACTIVE(): return ['U.resign_at IS NULL AND U.locked = 1', null];
      *         case AccountStatus::LOCKED(): return ['U.resign_at IS NULL AND U.locked = 2', null];
      *         case AccountStatus::RESIGN(): return ['U.resign_at IS NOT NULL'             , null];
      *       }
      *       return [null, null];
      *     case 'has_bank':
-     *       return ['EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)', $value] ;
+     *       return ['EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)', null] ;
      *   }
-     *   return parent::convertCustomRansack($db, $predicate, $value);
+     *   return parent::ransack($db, $ransack);
      *
      * @param Database $db
      * @param Ransack $ransack
@@ -296,6 +473,12 @@ abstract class DataModel
         return null;
     }
 
+    /**
+     * Get ransack aliases of this data model.
+     * If you want to define ransack aliases of this data model, please override this method.
+     *
+     * @return array
+     */
     protected static function ransackAliases() : array
     {
         return [];
@@ -314,100 +497,88 @@ abstract class DataModel
     }
 
     /**
-     * Get relationship configure of this data model like 'has_one', 'has_many', 'belongs_to' and 'belongs_to_many'.
-     * Configure settings like below,
-     *
-     *  return [
-     *    'methodName' => ['relation_type', SubClassOfDataModel::class, alias map, ransack, order by, limit],
-     *
-     *    // exsamples like below
-     *    'bank'                    => ['has_one'   , Bank::class   ],
-     *    'articles'                => ['has_meny'  , Article::class],
-     *    'owner'                   => ['belongs_to', User::class   , ['owner_id' => 'user_id']],
-     *    'latestPublishedArticles' => ['has_meny'  , Article::class, [], ['available' => true, 'open_at_less_than' => DateTime::now()], ['open_at' => 'desc'], 5],
-     *
-     *    // and also you can control relationship by context like depend on login user role.
-     *    'articles'                => ['has_meny'  , Article::class, [], Auth::user()->is('admin') ? [] : ['available' => true]],
-     *  ]
-     *
-     * And call $data_model->methodName(bool $for_update = false, bool $eager_load = true) like $user->bank(), $article->owner(true).
-     * If relation_type is has_one or belongs_to then return configured SubClassOfDataModel::class, otherwise return ResultSet that contains configured SubClassOfDataModel::class.
-     *
-     * @return array
-     */
-    protected static function relations() : array
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __call(string $name, array $args)
-    {
-        $relation = static::relations()[$name] ?? null;
-        if ($relation) {
-            [$type, $class, $alias, $ransacks, $order_by, $limit] = $relation;
-            switch ($type) {
-                case 'has_one':    return $this->hasOne($class, $name, $alias, ...$args);
-                case 'has_meny':   return $this->hasMany($class, $name, $alias, $ransacks, $order_by, $limit, ...$args);
-                case 'belongs_to': return $this->belongsTo($class, $name, $alias, ...$args);
-            }
-        }
-
-        return parent::__call($name, $args);
-    }
-
-    /**
      * Eager/Lazy load the 'belongs_to' relational data model.
+     * You can define belongs to relation in sub class like below,
+     *
+     * - IN Article::class
+     * public function user(bool $for_update = false) : User
+     * {
+     *     return $this->belongsTo(User:class, [], $for_update);
+     * }
+     *
+     * And also you can control relationship by context like depend on login user role using Auth::user().
+     *
+     * NOTE:
+     * This method does not cache the retrieved results.
+     * Usually, this will not be a problem since the retrieved result is stored in a local variable or disposed for one-time use.
+     * But if you don't want that, add caching function when overriding in subclasses.
      *
      * @param string $class of data model
-     * @param string $name for relational data model cache. this name must be unique in the data model.
      * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @param bool $for_update (default: false)
      * @param bool $eager_load (default: true)
+     * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return mixed Class instance of given $class or null.
      */
-    protected function belongsTo(string $class, string $name, array $alias = [], bool $for_update = false, bool $eager_load = true)
+    protected function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
     {
-        if (array_key_exists($name, $this->_relations)) {
-            return $this->_relations[$name];
+        if (!$eager_load || $this->_belongs_result_set === null) {
+            return $class::find($this->ransacksForBelongsTo($class, $alias), $for_update);
         }
 
-        if ($eager_load && $this->_belongs_result_set) {
-            $this_class   = get_class($this);
-            $ransacks     = [];
-            $sub_ransacks = [];
-            foreach ($this->_belongs_result_set as $i => $dm) {
-                if (!($dm instanceof $this_class)) {
-                    throw LogicException::by("Classes other than {$this_class} are mixed in the result set.");
-                }
-                $sub_ransacks[$i] = $dm->ransacksForBelongsTo($class, $alias);
-            }
+        $cache_key = ($name ?? Reflector::caller()).'_'.Json::digest('sha256', $class, $alias);
+        if ($this->hasEagerLoads($cache_key)) {
+            return $this->pullEagerLoads($cache_key);
+        }
 
-            $primary_keys = $class::primaryKeys();
-            if (count($primary_keys) === 1) {
-                $ransacks[$primary_keys[0]] = array_unique(Arrays::pluck($sub_ransacks, $primary_keys[0]), SORT_REGULAR);
+        $ransacks = $this->eagerRansack(function (DataModel $dm) use ($class, $alias) { return $dm->ransacksForBelongsTo($class, $alias); });
+        $rs       = Arrays::groupBy(
+            $class::select($ransacks, [], null, $for_update)->toArray(),
+            function ($v, $k) { return $v->primaryHash(); }
+        );
+        $eager_group = new ResultSet();
+        foreach ($this->_belongs_result_set as $dm) {
+            if ($belongs_to = $rs[$dm->foreignHash($class, $alias)][0] ?? null) {
+                $belongs_to    = clone $belongs_to;
+                $eager_group[] = $belongs_to;
+            }
+            $dm->pushEagerLoads($cache_key, $belongs_to);
+        }
+
+        return $this->pullEagerLoads($cache_key);
+    }
+
+    /**
+     * Create optimized ransacks condition for eager loads.
+     *
+     * @param \Closure $extracter of each ransacks, function(DataModel $dm) :array { ... }
+     * @return array of each ransack conditions
+     */
+    protected function eagerRansack(\Closure $extracter) : array
+    {
+        $this_class = get_class($this);
+        $ransacks   = [];
+        $duplicates = [];
+        foreach ($this->_belongs_result_set as $dm) {
+            if (!($dm instanceof $this_class)) {
+                throw LogicException::by("Classes other than {$this_class} are mixed in the result set.");
+            }
+            $ransack = $extracter($dm);
+            $digest  = Json::digest('sha256', $ransack);
+            if (isset($duplicates[$digest])) {
+                continue;
+            }
+            $duplicates[$digest] = true;
+            if (count($ransack) === 1) {
+                foreach ($ransack as $key => $value) {
+                    $ransacks[$key][] = $value;
+                }
             } else {
-                $ransacks[] = $sub_ransacks;
+                $ransacks[0][] = $ransack;
             }
-
-            $rs = Arrays::groupBy($class::select($ransacks, null, null, $for_update)->toArray(), $primary_keys);
-            foreach ($this->_belongs_result_set as $i => $dm) {
-                $item = $rs;
-                foreach ($sub_ransacks[$i] as $value) {
-                    $item = $item[$value] ?? null;
-                    if ($item === null) {
-                        break;
-                    }
-                }
-                $dm->_relations[$name] = $item;
-            }
-
-            return $this->_relations[$name];
         }
 
-        return $this->_relations[$name] = $class::find($this->ransacksForBelongsTo($class, $alias), $for_update);
+        return $ransacks;
     }
 
     /**
@@ -419,64 +590,64 @@ abstract class DataModel
      */
     protected function ransacksForBelongsTo(string $class, array $alias = []) : array
     {
-        $conditions = [];
-        $alias      = array_flip($alias);
-        foreach ($class::primaryKeys() as $column) {
-            $conditions[$column] = Reflector::get($this, $alias[$column] ?? $column) ;
-        }
-        return $conditions;
+        return $this->foreignValues($class, $alias);
     }
 
     /**
      * Eager/Lazy load the 'has_one' relational data model.
+     * You can define has one relation in sub class like below,
+     *
+     * - IN User::class
+     * public function bank(bool $for_update = false) : ?Bank
+     * {
+     *     return $this->hasOne(Bank:class, [], $for_update);
+     * }
+     *
+     * public function parent(bool $for_update = false) : ?User
+     * {
+     *     return $this->hasOne(User:class, ['parent_id' => 'user_id'], $for_update);
+     * }
+     *
+     * And also you can control relationship by context like depend on login user role using Auth::user().
+     *
+     * NOTE:
+     * This method does not cache the retrieved results.
+     * Usually, this will not be a problem since the retrieved result is stored in a local variable or disposed for one-time use.
+     * But if you don't want that, add caching function when overriding in subclasses.
      *
      * @param string $class of relational data model
-     * @param string $name for relational data model cache. this name must be unique in the data model.
      * @param array $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
      * @param bool $for_update (default: false)
      * @param bool $eager_load (default: true)
+     * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return mixed Class instance of given $class or null.
      */
-    protected function hasOne(string $class, string $name, array $alias = [], bool $for_update = false, bool $eager_load = true)
+    protected function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
     {
-        if (array_key_exists($name, $this->_relations)) {
-            return $this->_relations[$name];
+        if (!$eager_load || $this->_belongs_result_set === null) {
+            return $class::find($this->ransacksForHas($alias), $for_update);
         }
 
-        if ($eager_load && $this->_belongs_result_set) {
-            $this_class     = get_class($this);
-            $ransacks       = [];
-            $sub_ransacks   = [];
-            foreach ($this->_belongs_result_set as $i => $dm) {
-                if (!($dm instanceof $this_class)) {
-                    throw LogicException::by("Classes other than {$this_class} are mixed in the result set.");
-                }
-                $sub_ransacks[$i] = $dm->ransacksForHas($alias);
-            }
-
-            $primary_keys = static::primaryKeys();
-            if (count($primary_keys) === 1) {
-                $ransacks[$primary_keys[0]] = array_unique(Arrays::pluck($sub_ransacks, $primary_keys[0]), SORT_REGULAR);
-            } else {
-                $ransacks[] = $sub_ransacks;
-            }
-
-            $rs = Arrays::groupBy($class::select($ransacks, null, null, $for_update)->toArray(), $primary_keys);
-            foreach ($this->_belongs_result_set as $i => $dm) {
-                $item = $rs;
-                foreach ($sub_ransacks[$i] as $value) {
-                    $item = $item[$value] ?? null;
-                    if ($item === null) {
-                        break;
-                    }
-                }
-                $dm->_relations[$name] = $item;
-            }
-
-            return $this->_relations[$name];
+        $cache_key = ($name ?? Reflector::caller()).'_'.Json::digest('sha256', $class, $alias);
+        if ($this->hasEagerLoads($cache_key)) {
+            return $this->pullEagerLoads($cache_key);
         }
 
-        return $this->_relations[$name] = $class::find($this->ransacksForHas($alias), $for_update);
+        $ransacks = $this->eagerRansack(function (DataModel $dm) use ($alias) { return $dm->ransacksForHas($alias); });
+        $rs       = Arrays::groupBy(
+            $class::select($ransacks, [], null, $for_update)->toArray(),
+            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); }
+        );
+        $eager_group = new ResultSet();
+        foreach ($this->_belongs_result_set as $dm) {
+            if ($has_one = $rs[$dm->primaryHash()][0] ?? null) {
+                $has_one       = clone $has_one;
+                $eager_group[] = $has_one;
+            }
+            $dm->pushEagerLoads($cache_key, $has_one);
+        }
+
+        return $this->pullEagerLoads($cache_key);
     }
 
     /**
@@ -496,71 +667,73 @@ abstract class DataModel
 
     /**
      * Eager/Lazy load the 'has_many' relational data models.
+     * You can define has many relation in sub class like below,
+     *
+     * - IN User::class
+     * public function articles($ransack = [], ?int $limit = null, bool $for_update = false) : array
+     * {
+     *     return $this->hasMany(Article:class, [], $ransack, ['created_at' => 'DESC'], $limit, $for_update);
+     * }
+     *
+     * public function publichedArticles(?int $limit = null, bool $for_update = false) : array
+     * {
+     *     return $this->hasMany(
+     *         Article:class,
+     *         [],
+     *         [
+     *             'publiched_at_not_null' => 1,
+     *             'publiched_at_lteq'     => DateTime::now(),
+     *             'publiched_status'      => PublichedStatus::OPEN(),
+     *         ],
+     *         ['publiched_at' => 'DESC', 'article_id' => 'DESC'],
+     *         $limit,
+     *         $for_update,
+     *     );
+     * }
+     *
+     * And also you can control relationship by context like depend on login user role using Auth::user().
+     *
+     * NOTE:
+     * This method does not cache the retrieved results.
+     * Usually, this will not be a problem since the retrieved result is stored in a local variable or disposed for one-time use.
+     * But if you don't want that, add caching function when overriding in subclasses.
      *
      * @param string $class
-     * @param string $name for relational data models cache. this name must be unique in the data model.
      * @param array $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
      * @param array $ransacks of preconditions (default: [])
      * @param OrderBy|array|null $order_by (default: null for get from defaultOrderBy())
      * @param integer|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @param boolean $eager_load (default: true)
-     * @return ResultSet
+     * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
+     * @return array
      */
-    protected function hasMany(string $class, string $name, array $alias = [], array $ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, bool $eager_load = true) : ResultSet
+    protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, bool $eager_load = true, ?string $name = null) : array
     {
-        if (array_key_exists($name, $this->_relations)) {
-            return $this->_relations[$name];
+        if (!$eager_load || $this->_belongs_result_set === null) {
+            return $class::select(array_merge($ransacks, $this->ransacksForHas($alias)), $order_by, $limit, $for_update)->toArray();
         }
 
-        if ($eager_load && $this->_belongs_result_set) {
-            $this_class     = get_class($this);
-            $sub_ransacks   = [];
-            foreach ($this->_belongs_result_set as $i => $dm) {
-                if (!($dm instanceof $this_class)) {
-                    throw LogicException::by("Classes other than {$this_class} are mixed in the result set.");
+        $cache_key = ($name ?? Reflector::caller()).'_'.Json::digest('sha256', $class, $alias, $ransacks, $order_by, $limit);
+        if ($this->hasEagerLoads($cache_key)) {
+            return $this->pullEagerLoads($cache_key);
+        }
+
+        $ransacks = array_merge($ransacks, $this->eagerRansack(function (DataModel $dm) use ($alias) { return $dm->ransacksForHas($alias); }));
+        $rs       = Arrays::groupBy(
+            $class::select($ransacks, $order_by, null, $for_update)->toArray(),
+            function ($v, $k) use ($alias) { return $v->foreignHash(static::class, $alias); }
+        );
+        $eager_group = new ResultSet();
+        foreach ($this->_belongs_result_set as $dm) {
+            if ($has_many = array_slice($rs[$dm->primaryHash()] ?? [], 0, $limit)) {
+                foreach ($has_many as $value) {
+                    $eager_group[] = $value;
                 }
-                $sub_ransacks[$i] = $dm->ransacksForHas($alias);
             }
-
-            $primary_keys = static::primaryKeys();
-            if (count($primary_keys) === 1) {
-                $ransacks[$primary_keys[0]] = array_unique(Arrays::pluck($sub_ransacks, $primary_keys[0]), SORT_REGULAR);
-            } else {
-                $ransacks[] = $sub_ransacks;
-            }
-
-            $rs = Arrays::groupBy($class::select($ransacks, $order_by, null, $for_update)->toArray(), $primary_keys);
-            foreach ($this->_belongs_result_set as $i => $dm) {
-                $item = $rs;
-                foreach ($sub_ransacks[$i] as $value) {
-                    $item = $item[$value] ?? null;
-                    if ($item === null) {
-                        break;
-                    }
-                }
-                $dm->_relations[$name] = $limit && $item ? array_slice($item, 0, $limit) : $item ;
-            }
-
-            return $this->_relations[$name];
+            $dm->pushEagerLoads($cache_key, $has_many);
         }
 
-        return $this->_relations[$name] = $class::select(array_merge($ransacks, $this->ransacksForHas($alias)), $order_by, $limit, $for_update);
-    }
-
-    /**
-     * Reset relations data model cache.
-     *
-     * @param string|null $name (default: null for all reset)
-     * @return self
-     */
-    public function resetRelations(?string $name = null) : self
-    {
-        if ($name) {
-            unset($this->_relations[$name]);
-        } else {
-            $this->_relations = [];
-        }
-        return $this;
+        return $this->pullEagerLoads($cache_key);
     }
 }

@@ -782,4 +782,14 @@ class Reflector
         }
         return false;
     }
+
+    /**
+     * Get caller function name.
+     *
+     * @return string|null
+     */
+    public static function caller() : ?string
+    {
+        return debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)[2]['function'] ?? null ;
+    }
 }

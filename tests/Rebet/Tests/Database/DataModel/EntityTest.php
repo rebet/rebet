@@ -72,7 +72,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_unmaps()
     {
-        $base_protected = ['_origin', '_annotated_class', '_meta', '_belongs_result_set', '_relations'];
+        $base_protected = ['_origin', '_annotated_class', '_meta', '_belongs_result_set', '_eager_loads', '_relations'];
         $this->assertSame($base_protected, Article::unmaps());
         $this->assertSame(array_merge(['unmap'], $base_protected), User::unmaps());
         $this->assertSame(array_merge(['foo', 'bar'], $base_protected), UserWithAnnot::unmaps());

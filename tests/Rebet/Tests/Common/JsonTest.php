@@ -39,4 +39,12 @@ class JsonTest extends RebetTestCase
             [new IteratorAggregateStub([1, 2, 3]), [1, 2, 3]],
         ];
     }
+
+    public function test_digest()
+    {
+        $this->assertSame(Json::digest('sha256', 1), Json::digest('sha256', 1));
+        $this->assertNotSame(Json::digest('sha256', 1), Json::digest('sha256', 2));
+        $this->assertNotSame(Json::digest('sha256', 1), Json::digest('sha256', 1, 2));
+        $this->assertSame(Json::digest('sha256', 1, 2), Json::digest('sha256', 1, 2));
+    }
 }

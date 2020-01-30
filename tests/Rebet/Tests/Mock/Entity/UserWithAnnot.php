@@ -74,11 +74,18 @@ class UserWithAnnot extends Entity
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
 
-    protected static function relations() : array
+    public function fortune(bool $for_update = false, bool $eager_load = true) : ?Fortune
     {
-        return [
-            'bank'     => ['has_one', Bank::class],
-            'articles' => ['has_many', Article::class],
-        ];
+        return $this->belongsTo(Fortune::class, [], $for_update, $eager_load);
+    }
+
+    public function bank() : ?Bank
+    {
+        return $this->hasOne(Bank::class);
+    }
+
+    public function articles(?int $limit = null) : array
+    {
+        return $this->hasMany(Article::class, [], [], null, $limit);
     }
 }

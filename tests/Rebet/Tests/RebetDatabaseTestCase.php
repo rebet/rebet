@@ -74,6 +74,17 @@ EOS
                 );
 EOS
             ,
+            'fortunes' => <<<EOS
+                CREATE TABLE IF NOT EXISTS fortunes (
+                    gender INTEGER NOT NULL,
+                    birthday TEXT NOT NULL,
+                    result TEXT NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT,
+                    PRIMARY KEY(gender, birthday)
+                );
+EOS
+            ,
         ],
         'mysql' => [
             'users' => <<<EOS
@@ -130,6 +141,17 @@ EOS
                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at DATETIME,
                     PRIMARY KEY(group_id, user_id)
+                );
+EOS
+            ,
+            'fortunes' => <<<EOS
+                CREATE TABLE IF NOT EXISTS fortunes (
+                    gender INTEGER NOT NULL,
+                    birthday DATE NOT NULL,
+                    result TEXT NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME,
+                    PRIMARY KEY(gender, birthday)
                 );
 EOS
             ,
@@ -191,6 +213,18 @@ EOS
                     PRIMARY KEY(group_id, user_id)
                 );
 EOS
+            ,
+            'fortunes' => <<<EOS
+                CREATE TABLE IF NOT EXISTS fortunes (
+                    gender INTEGER NOT NULL,
+                    birthday DATE NOT NULL,
+                    result TEXT NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP,
+                    PRIMARY KEY(gender, birthday)
+                );
+EOS
+            ,
         ],
     ];
 

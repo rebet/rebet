@@ -4,6 +4,7 @@ namespace Rebet\Tests\Common;
 use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Reflector;
+use Rebet\Config\Configurable;
 use Rebet\Stream\Stream;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
@@ -1041,6 +1042,16 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::uses($child, Configurable::class));
         $this->assertFalse(Reflector::uses(ReflectorTest_TraitParent::class, Configurable::class));
         $this->assertFalse(Reflector::uses(ReflectorTest_TraitChild::class, Configurable::class));
+    }
+
+    public function test_caller()
+    {
+        $this->assertEquals('test_caller', $this->colledFromTestCaller());
+    }
+
+    private function colledFromTestCaller()
+    {
+        return Reflector::caller();
     }
 }
 

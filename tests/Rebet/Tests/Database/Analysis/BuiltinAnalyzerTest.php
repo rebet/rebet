@@ -130,4 +130,45 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
             $this->assertSame($expect, $analyser->extractAliasSelectColumn($alias));
         });
     }
+
+    // @todo Consider about relationship data cache and auto cache clear.
+    // public function dataAffectedTables() : array
+    // {
+    //     return [
+    //         [[              ], "SELECT * FROM foos"],
+    //         [['foos'        ], "INSERT INTO foos VALUES(1, 'name')"],
+    //         [['foos'        ], "INSERT INTO `foos` VALUES(1, 'name')"],
+    //         [['schema.foos' ], "INSERT INTO schema.foos VALUES(1, 'name')"],
+    //         [['foos'        ], "INSERT INTO foos SELECT * FROM owners"],
+    //         [['foos'        ], "INSERT INTO foos AS F SELECT * FROM owners"],
+    //         [['foos'        ], "UPDATE foos SET name = 'name' WHERE id = 1"],
+    //         [['foos'        ], "UPDATE `foos` SET name = 'name' WHERE id = 1"],
+    //         [['schema.foos' ], "UPDATE schema.foos SET name = 'name' WHERE id = 1"],
+    //         [['foos', 'bars'], "UPDATE foos AS F, bars AS B SET F.name = B.name WHERE F.foo_id = B.bar_id"],
+    //         [['foos'        ], "DELETE FROM foos WHERE foo_id = 1"],
+    //         [['foos'        ], "DELETE FROM 'foos' WHERE foo_id = 1"],
+    //         [['schema.foos' ], "DELETE FROM schema.foos WHERE foo_id = 1"],
+    //         [['foos'        ], "DELETE FROM foos AS F WHERE F.foo_id = 1"],
+    //         [['t1', 't2'    ], "DELETE t1, t2 FROM t1 INNER JOIN t2 INNER JOIN t3 WHERE t1.id=t2.id AND t2.id=t3.id"],
+    //         [['t1', 't2'    ], "DELETE FROM t1, t2 USING t1 INNER JOIN t2 INNER JOIN t3 WHERE t1.id=t2.id AND t2.id=t3.id"],
+    //         [['t1', 't2'    ], "DELETE a1, a2 FROM t1 AS a1 INNER JOIN t2 AS a2 WHERE a1.id=a2.id"],
+    //         [['t1', 't2'    ], "DELETE FROM a1, a2 USING t1 AS a1 INNER JOIN t2 AS a2 WHERE a1.id=a2.id"],
+    //         [['foos'        ], "REPLACE INTO foos VALUES (1, 'name')"],
+    //         [['foos'        ], "REPLACE INTO `foos` VALUES (1, 'name')"],
+    //         [['schema.foos' ], "REPLACE INTO schema.foos VALUES (1, 'name')"],
+    //         [['foos'        ], "REPLACE INTO foos SELECT * FROM owners"],
+    //         [['foos'        ], "REPLACE INTO foos AS F VALUES (1, 'name')"],
+    //     ];
+    // }
+
+    // /**
+    //  * @dataProvider dataAffectedTables
+    //  */
+    // public function test_affectedTables(array $expect, string $sql)
+    // {
+    //     $this->eachDb(function (Database $db) use ($expect, $sql) {
+    //         $analyser = BuiltinAnalyzer::of($db, $sql);
+    //         $this->assertEquals($expect, $analyser->affectedTables());
+    //     }, 'mysql');
+    // }
 }

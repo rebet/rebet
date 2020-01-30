@@ -50,6 +50,15 @@ interface Analyzer
      */
     public function hasGroupBy() : bool;
 
+    // @todo Consider about relationship data cache and auto cache clear.
+    // /**
+    //  * Get affected table name by SQL that data will be changed.
+    //  * NOTE: If the SQL is SELECT statement then this method return empty array.
+    //  *
+    //  * @return string[]
+    //  */
+    // public function affectedTables() : array;
+
     /**
      * Extract the actual statement (real column name / expression / CASE statement / subquery, etc.) of the column that is aliased in the top level SELECT clause.
      * If the given name is not alias or the given sql is UNION then return given alias as it is.
