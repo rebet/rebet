@@ -191,51 +191,6 @@ abstract class DataModel
         return $pluks;
     }
 
-    // @todo Consider about relationship data cache and auto cache clear.
-    // /**
-    //  * Clear relation entity cache.
-    //  *
-    //  * @param string|null $entity class name (default: null for all reset)
-    //  * @return self
-    //  */
-    // public static function clearRelationCache(?string $entity = null) : void
-    // {
-    //     Entity::mustBeSuperclassOf($entity);
-    //     if ($entity) {
-    //         unset(static::$_relations[$entity::tabelName()]);
-    //     } else {
-    //         static::$_relations = [];
-    //     }
-    // }
-
-    // /**
-    //  * Set relation entity cache.
-    //  *
-    //  * @param string $entity class name
-    //  * @param array $conditions
-    //  * @param mixed $value
-    //  * @return self
-    //  */
-    // protected function setRelationCache(string $entity, array $conditions, $value)
-    // {
-    //     Entity::mustBeSuperclassOf($entity);
-    //     static::$_relations[$entity::tabelName()][spl_object_hash($this)][Json::digest('sha256', $conditions)] = $value;
-    //     return $this;
-    // }
-
-    // /**
-    //  * Get relation entity cache.
-    //  *
-    //  * @param string $entity class name
-    //  * @param array $conditions
-    //  * @return mixed
-    //  */
-    // protected function getRelationCache(string $entity, array $conditions)
-    // {
-    //     Entity::mustBeSuperclassOf($entity);
-    //     return static::$_relations[$entity::tabelName()][spl_object_hash($this)][Json::digest('sha256', $conditions)] ?? null;
-    // }
-
     /**
      * Get and Set result set container of this data model
      *
