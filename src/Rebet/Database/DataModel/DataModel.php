@@ -23,6 +23,8 @@ use Rebet\Inflection\Inflector;
 /**
  * Data Model Class
  *
+ * @todo Implements belongsToMany
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
