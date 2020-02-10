@@ -23,7 +23,7 @@ class TextFormatter implements FormatterInterface
     public static function defaultConfig()
     {
         return [
-            'default_format'      => "{datetime} {channel} [{level_name}] {message}{context}{extra}{exception}\n",
+            'default_format'      => "{datetime} {channel}/{extra.process_id} [{level_name}] {message}{context}{extra}{exception}\n",
             'default_stringifier' => function ($val) { return Strings::stringify($val); },
             'stringifiers'        => [
                 '{datetime}'  => function ($val) { return $val->format('Y-m-d H:i:s.u'); },

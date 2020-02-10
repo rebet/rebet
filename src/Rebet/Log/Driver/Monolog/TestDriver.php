@@ -2,7 +2,6 @@
 namespace Rebet\Log\Driver\Monolog;
 
 use Monolog\Handler\TestHandler;
-use Rebet\Common\Arrays;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 
 /**
@@ -14,8 +13,8 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
  *     'driver'          [*] StderrDriver::class,
  *     'name'            [*] string of name (usualy same as channel name),
  *     'level'           [*] string of LogLevel::*,
- *     'format'          [ ] string of format template (default: null for use MonologDriver class config)
- *     'datetime_format' [ ] string of datetime format (default: null for use MonologDriver class config)
+ *     'format'          [ ] string of format template (default: null for use TextFormat class config)
+ *     'stringifiers'    [ ] placeholder stringify setting of format template (default: [] for use TextFormat class config)
  *     'bubble'          [ ] boolean of bubble (default: true)
  *
  * TestHandler delegate methods.
@@ -92,13 +91,13 @@ class TestDriver extends MonologDriver
      * @param string $name
      * @param string $level
      * @param string|null $format (default: null)
-     * @param string|null $datetime_format (default: null)
+     * @param array $stringifiers (default: [])
      * @param boolean $bubble (default: true)
      */
-    public function __construct(string $name, string $level, string $format = null, string $datetime_format = null, bool $bubble = true)
+    public function __construct(string $name, string $level, string $format = null, array $stringifiers = [], bool $bubble = true)
     {
         $this->handler = new TestHandler($level, $bubble);
-        $this->handler->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
+        $this->handler->setFormatter(new TextFormatter($format, $stringifiers));
         parent::__construct($name, $level, [$this->handler]);
     }
 

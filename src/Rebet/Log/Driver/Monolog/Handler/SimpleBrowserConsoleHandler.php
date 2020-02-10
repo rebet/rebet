@@ -52,7 +52,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
      */
     protected function getDefaultFormatter()
     {
-        return MonologDriver::formatter(TextFormatter::class);
+        return new TextFormatter();
     }
 
     /**

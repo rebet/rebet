@@ -661,7 +661,6 @@ class Reflector
 
     /**
      * Invoke a method of given object/class
-     * If the given args contains '@after' callback `function($returned) { ... }` then invoke the callback with invoked return value.
      *
      * @param string|object $object
      * @param string $method
@@ -674,13 +673,11 @@ class Reflector
     {
         $method = new \ReflectionMethod($object, $method);
         $method->setAccessible($accessible);
-        $after  = \Closure::fromCallable(static::remove($args, '@after') ?? Callback::echoBack());
-        return $after($method->invoke(is_object($object) ? $object : null, ...static::toArgs($method->getParameters(), $args, $type_convert)));
+        return $method->invoke(is_object($object) ? $object : null, ...static::toArgs($method->getParameters(), $args, $type_convert));
     }
 
     /**
      * Evaluate a given function
-     * If the given args contains '@after' callback `function($returned) { ... }` then invoke the callback with invoked return value.
      *
      * @param callable $function
      * @param array $args that ordered or named (default: [])
@@ -690,13 +687,11 @@ class Reflector
     public static function evaluate(callable $function, array $args = [], bool $type_convert = false)
     {
         $function = new \ReflectionFunction($function);
-        $after    = \Closure::fromCallable(static::remove($args, '@after') ?? Callback::echoBack());
-        return $after($function->invoke(...static::toArgs($function->getParameters(), $args, $type_convert)));
+        return $function->invoke(...static::toArgs($function->getParameters(), $args, $type_convert));
     }
 
     /**
      * Create a new instance of given class.
-     * If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
      *
      * @param string $class
      * @param array $args that ordered or named (default: [])
@@ -707,8 +702,7 @@ class Reflector
     {
         $rc          = new \ReflectionClass($class);
         $constractor = $rc->getConstructor();
-        $after       = \Closure::fromCallable(static::remove($args, '@after') ?? Callback::echoBack());
-        return $after($rc->newInstanceArgs(static::toArgs($constractor ? $constractor->getParameters() : [], $args, $type_convert)));
+        return $rc->newInstanceArgs(static::toArgs($constractor ? $constractor->getParameters() : [], $args, $type_convert));
     }
 
     /**
@@ -720,6 +714,11 @@ class Reflector
      *       => Instantiate the target class with a factory method without arguments
      *     {ClassName}
      *       => Instantiate the target class with a constructor without arguments
+     *
+     *  \Closure :
+     *     function() { ... }
+     *     \Closure::fromCallable( ... )
+     *       => Just return execute result of closure without arguments.
      *
      *  ordered array :
      *     [{ClassName}::{factoryMathod}, arg1, arg2, ...]
@@ -752,15 +751,18 @@ class Reflector
         if (Utils::isBlank($config)) {
             return null;
         }
+        if ($config instanceof \Closure) {
+            return $config();
+        }
         if (is_string($config)) {
             [$class, $method] = Strings::split($config, '::', 2);
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_array($config)) {
-            $class_config     = static::remove($config, $key ?? 0);
-            [$class, $method] = Strings::split($class_config, '::', 2);
+            [$class, $method] = Strings::split(static::remove($config, $key ?? 0), '::', 2);
+            $after            = static::remove($config, '@after') ?? Callback::echoBack();
             $config           = array_merge($config);
-            return empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config) ;
+            return $after(empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config)) ;
         }
         return $config;
     }

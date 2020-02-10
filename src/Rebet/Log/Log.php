@@ -139,7 +139,7 @@ class Log
     protected static function fallbackLogger() : Logger
     {
         $handler = new StreamHandler(static::config('fallback_log', false, 'php://stderr'));
-        $handler->setFormatter(MonologDriver::formatter(TextFormatter::class));
+        $handler->setFormatter(new TextFormatter());
         return new Logger(new MonologDriver('rebet', LogLevel::DEBUG, [$handler]));
     }
 

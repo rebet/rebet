@@ -2,7 +2,6 @@
 namespace Rebet\Log\Driver\Monolog;
 
 use Monolog\Handler\RotatingFileHandler;
-use Rebet\Common\Arrays;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 
@@ -22,8 +21,8 @@ use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
  *     'file_permission'      [ ] int of log file permission (default: 0644)
  *     'use_locking'          [ ] bool of file locking (default: false)
  *     'with_browser_console' [ ] bool of display log with browser console (default: false)
- *     'format'               [ ] string of format template (default: null for use MonologDriver class config)
- *     'datetime_format'      [ ] string of datetime format (default: null for use MonologDriver class config)
+ *     'format'               [ ] string of format template (default: null for use TextFormat class config)
+ *     'stringifiers'         [ ] placeholder stringify setting of format template (default: [] for use TextFormat class config)
  *     'bubble'               [ ] boolean of bubble (default: true)
  *
  * @package   Rebet
@@ -46,7 +45,7 @@ class FileDriver extends MonologDriver
      * @param bool $use_locking (default: false)
      * @param bool $with_browser_console (default: false)
      * @param string|null $format (default: null)
-     * @param string|null $datetime_format (default: null)
+     * @param array $stringifiers (default: [])
      * @param boolean $bubble (default: true)
      */
     public function __construct(
@@ -60,12 +59,12 @@ class FileDriver extends MonologDriver
         bool $use_locking            = false,
         bool $with_browser_console   = false,
         ?string $format              = null,
-        ?string $datetime_format     = null,
+        array $stringifiers          = [],
         bool $bubble                 = true
     ) {
         $rfh = new RotatingFileHandler($filename, $max_files, $level, $bubble, $file_permission, $use_locking);
         $rfh->setFilenameFormat($filename_format, $filename_date_format);
-        $rfh->setFormatter(static::formatter(TextFormatter::class, Arrays::compact(compact('format', 'datetime_format'))));
+        $rfh->setFormatter(new TextFormatter($format, $stringifiers));
         $handlers = [$rfh];
 
         if ($with_browser_console) {

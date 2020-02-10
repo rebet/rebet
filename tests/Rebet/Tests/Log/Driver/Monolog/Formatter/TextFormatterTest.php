@@ -22,11 +22,15 @@ class TextFormatterTest extends RebetTestCase
     public function dataFormats() : array
     {
         return [
-            ["2010-10-20 10:20:30.123456 web [DEBUG] Log Message.\n"],
-            ["2010-10-20 10:20:30.123456 web [INFO] Log Message.\n", ['level_name' => 'INFO']],
+            ["2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.\n"],
+            [
+                "2010-10-20 10:20:30.123456 web/123 [DEBUG] Log Message.\n"
+                , ['extra' => ['process_id' => '123']]
+            ],
+            ["2010-10-20 10:20:30.123456 web/ [INFO] Log Message.\n", ['level_name' => 'INFO']],
             [
                 <<<EOS
-2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
+2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.
 ====== [  CONTEXT  ] ======
 == array:1 [
 ==     foo => FOO
@@ -51,7 +55,7 @@ EOS
 
             [
                 <<<EOS
-2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
+2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.
 ------ [   EXTRA   ] ------
 -- array:1 [
 --     foo => FOO
@@ -75,7 +79,7 @@ EOS
             ],
             [
                 <<<EOS
-2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
+2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.
 ****** [ EXCEPTION ] ******
 ** Exception: Test Exception in 
 EOS
@@ -83,7 +87,7 @@ EOS
             ],
             [
                 <<<EOS
-2010-10-20 10:20:30.123456 web [DEBUG] Log Message.
+2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.
 ====== [  CONTEXT  ] ======
 == array:1 [
 ==     foo => FOO
@@ -103,7 +107,7 @@ EOS
             ],
             [
                 <<<EOS
-2010-10-20 10:20:30.123456 web [DEBUG] array:1 [
+2010-10-20 10:20:30.123456 web/ [DEBUG] array:1 [
     foo => FOO
 ]
 EOS
@@ -111,7 +115,7 @@ EOS
                     'message' => ['foo' => 'FOO'],
                 ]
             ],
-            ["2010年10月20日(水) 10:20:30.123456 web [DEBUG] Log Message.\n", [], null, [
+            ["2010年10月20日(水) 10:20:30.123456 web/ [DEBUG] Log Message.\n", [], null, [
                 '{datetime}'  => function (DateTime $val) { return $val->format('Xddd Xttt'); },
             ]],
         ];
@@ -146,7 +150,7 @@ EOS
                 'level_name' => MonologLogger::getLevelName(MonologLogger::DEBUG),
                 'channel'    => 'web',
                 'datetime'   => DateTime::createDateTime('2010-10-20 10:20:30.123456')->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
-                'extra'      => [],
+                'extra'      => ['process_id' => 123],
             ],
             [
                 'message'    => 'Log Message 2.',
@@ -155,13 +159,13 @@ EOS
                 'level_name' => MonologLogger::getLevelName(MonologLogger::INFO),
                 'channel'    => 'web',
                 'datetime'   => DateTime::createDateTime('2010-10-20 10:20:31.987654')->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
-                'extra'      => [],
+                'extra'      => ['process_id' => 456],
             ],
         ];
         $this->assertSame(
             <<<EOS
-2010-10-20 10:20:30.123456 web [DEBUG] Log Message 1.
-2010-10-20 10:20:31.987654 web [INFO] Log Message 2.
+2010-10-20 10:20:30.123456 web/123 [DEBUG] Log Message 1.
+2010-10-20 10:20:31.987654 web/456 [INFO] Log Message 2.
 
 EOS
             ,
