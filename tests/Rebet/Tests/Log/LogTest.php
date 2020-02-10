@@ -52,14 +52,20 @@ class LogTest extends RebetTestCase
     public function test_channel_invliad()
     {
         $process_id = getmypid();
-        $this->assertSameStderr(
-            "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'nothing' channel logger. Undefined configure 'Rebet\Log\Log.channels.nothing'.\n",
+        $this->assertContainsStderr(
+            [
+                "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'nothing' channel logger",
+                "Unable to instantiate 'channels.nothing' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing'."
+            ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('nothing')->driver());
             }
         );
-        $this->assertSameStderr(
-            "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'missing_driver' channel logger. Driver is undefined.\n",
+        $this->assertContainsStderr(
+            [
+                "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'missing_driver' channel logger",
+                "Unable to instantiate 'driver' of 'channels.missing_driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'."
+            ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('missing_driver')->driver());
             }

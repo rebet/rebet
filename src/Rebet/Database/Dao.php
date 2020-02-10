@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Database;
 
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Driver\PdoDriver;
@@ -126,28 +124,16 @@ class Dao
     public static function db(?string $name = null, bool $update_current_db = true) : Database
     {
         $name = $name ?? static::config('default_db');
-        $db   = static::$dbs[$name] ?? null;
-        if ($db !== null) {
-            if ($update_current_db) {
-                static::$current = $db;
-            }
-            return $db;
+        if ($db = static::$dbs[$name] ?? null) {
+            return $update_current_db ? static::$current = $db : $db ;
         }
 
-        $conf = static::config("dbs.{$name}", false);
-        if ($conf === null) {
-            throw LogicException::by("Unable to create '{$name}' db Dao. Undefined configure 'Rebet\Database\Dao.dbs.{$name}'.");
-        }
-        if (!isset($conf['driver'])) {
-            throw LogicException::by("Unable to create '{$name}' db Dao. Driver is undefined.");
-        }
-        $driver = $conf['driver'];
-        $db     = new Database(
+        $db = new Database(
             $name,
-            is_callable($driver) ? call_user_func($driver, $name) : (is_string($driver) ? Reflector::create($driver, $conf) : $driver),
-            $conf['debug'] ?? false,
-            $conf['emulated_sql_log'] ?? true,
-            $conf['log_handler'] ?? null
+            static::configInstantiate("dbs.{$name}", 'driver'),
+            static::config("dbs.{$name}.debug", false, false),
+            static::config("dbs.{$name}.emulated_sql_log", false, true),
+            static::config("dbs.{$name}.log_handler", false, null)
         );
 
         static::$dbs[$name] = $db;

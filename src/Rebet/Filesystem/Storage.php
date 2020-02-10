@@ -3,8 +3,6 @@ namespace Rebet\Filesystem;
 
 use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 
 /**
@@ -100,25 +98,15 @@ class Storage
     public static function disk(?string $name = null) : Filesystem
     {
         $name = $name ?? static::config('default') ;
-        $disk = static::$disks[$name] ?? null;
-        if ($disk !== null) {
+        if ($disk = static::$disks[$name] ?? null) {
             return $disk;
         }
 
-        $conf = static::config("disks.{$name}", false);
-        if ($conf === null) {
-            throw LogicException::by("Unable to create '{$name}' filesystem Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.{$name}'.");
-        }
-        if (!isset($conf['adapter'])) {
-            throw LogicException::by("Unable to create '{$name}' filesystem Storage. Adapter is undefined.");
-        }
-        $adapter    = $conf['adapter'];
         $filesystem = static::config('filesystem');
-        $disk       = new $filesystem(
-            is_callable($adapter) ? call_user_func($adapter, $name) : (is_string($adapter) ? Reflector::create($adapter, $conf) : $adapter),
-            $conf['filesystem'] ?? null
-        );
 
-        return static::$disks[$name] = $disk;
+        return static::$disks[$name] = new $filesystem(
+            static::configInstantiate("disks.{$name}", 'adapter'),
+            static::config("disks.{$name}.filesystem", false, null)
+        );
     }
 }

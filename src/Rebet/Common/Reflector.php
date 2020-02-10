@@ -729,9 +729,9 @@ class Reflector
      *         If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
      *
      *  named array :
-     *     ['key_name' => {ClassName}::{factoryMathod}, 'arg1' => value1, 'arg2' => value2, ...]
+     *     ['target' => {ClassName}::{factoryMathod}, 'arg1' => value1, 'arg2' => value2, ...]
      *       ⇒ Instantiate the target class with a factory method with arguments
-     *     ['key_name' => {ClassName}, 'arg1' => value1, 'arg2' => value2, ...]
+     *     ['target' => {ClassName}, 'arg1' => value1, 'arg2' => value2, ...]
      *       ⇒ Instantiate the target class with a constructor with arguments
      *     NOTE:
      *         If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
@@ -743,10 +743,10 @@ class Reflector
      *       ⇒ return input value
      *
      * @param mixed $config
-     * @param string|null $key name for named array instantiation (default: null)
+     * @param string|null $target key name for named array instantiation (default: null)
      * @return mixed
      */
-    public static function instantiate($config, ?string $key = null)
+    public static function instantiate($config, ?string $target = null)
     {
         if (Utils::isBlank($config)) {
             return null;
@@ -759,7 +759,14 @@ class Reflector
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_array($config)) {
-            [$class, $method] = Strings::split(static::remove($config, $key ?? 0), '::', 2);
+            $factory = static::remove($config, $target ?? 0);
+            if ($factory === null) {
+                throw LogicException::by("Unable to instantiate, because of '{$target}' is undefined.");
+            }
+            if (!is_string($factory)) {
+                return $factory;
+            }
+            [$class, $method] = Strings::split($factory, '::', 2);
             $after            = static::remove($config, '@after') ?? Callback::echoBack();
             $config           = array_merge($config);
             return $after(empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config)) ;

@@ -3,7 +3,6 @@ namespace Rebet\Log;
 
 use Exception;
 use Monolog\Handler\StreamHandler;
-use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
@@ -99,25 +98,16 @@ class Log
     public static function channel(?string $channel = null) : Logger
     {
         $channel = $channel ?? static::config('default_channel', false, 'default');
-        $logger  = static::$channels[$channel] ?? null;
-        if ($logger !== null) {
+        if ($logger = static::$channels[$channel] ?? null) {
             return $logger;
         }
 
-        $conf = static::config("channels.{$channel}", false);
-        if ($conf === null) {
-            static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger. Undefined configure 'Rebet\Log\Log.channels.{$channel}'.");
+        try {
+            return static::$channels[$channel] = new Logger(static::configInstantiate("channels.{$channel}", 'driver'));
+        } catch (\Exception $e) {
+            static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger.", [], $e);
             return new Logger(new NullDriver());
         }
-        if (!isset($conf['driver'])) {
-            static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger. Driver is undefined.");
-            return new Logger(new NullDriver());
-        }
-        $driver = $conf['driver'];
-        $logger = new Logger(is_callable($driver) ? call_user_func($driver, $channel) : Reflector::create($driver, $conf)) ;
-
-        static::$channels[$channel] = $logger;
-        return $logger;
     }
 
     /**
