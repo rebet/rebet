@@ -3,7 +3,10 @@ namespace Rebet\Filesystem;
 
 use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local;
+use Rebet\Common\Path;
+use Rebet\Common\Strings;
 use Rebet\Config\Configurable;
+use Rebet\Filesystem\Exception\FilesystemException;
 
 /**
  * Storage Class
@@ -24,10 +27,11 @@ class Storage
     public static function defaultConfig()
     {
         return [
-            'filesystem' => BuiltinFilesystem::class,
-            'default'    => 'local',
-            'disks'      => [
-                'local' => [
+            'filesystem'   => BuiltinFilesystem::class,
+            'private_disk' => 'private',
+            'public_disk'  => 'public',
+            'disks'        => [
+                'private'  => [
                     'adapter'      => Local::class,
                     'root'         => null,
 
@@ -90,14 +94,13 @@ class Storage
     }
 
     /**
-     * Get the given name storage.
+     * Get the given name disk storage.
      *
-     * @param string|null $name (default: depend on configure)
+     * @param string $name
      * @return self
      */
-    public static function disk(?string $name = null) : Filesystem
+    public static function disk(string $name) : Filesystem
     {
-        $name = $name ?? static::config('default') ;
         if ($disk = static::$disks[$name] ?? null) {
             return $disk;
         }
@@ -108,5 +111,121 @@ class Storage
             static::configInstantiate("disks.{$name}", 'adapter'),
             static::config("disks.{$name}.filesystem", false, null)
         );
+    }
+
+    /**
+     * Get the private disk storage.
+     *
+     * @return Filesystem
+     */
+    public static function private() : Filesystem
+    {
+        return static::disk(static::config('private_disk'));
+    }
+
+    /**
+     * Get the public disk storage.
+     *
+     * @return Filesystem
+     */
+    public static function public() : Filesystem
+    {
+        return static::disk(static::config('public_disk'));
+    }
+
+    /**
+     * Clean data of given name storage
+     *
+     * @param string|null $name (default: null for all storages)
+     * @return void
+     */
+    public static function clean(?string $name = null) : void
+    {
+        if ($name) {
+            $disk = static::$disks[$name] ?? null;
+            if ($disk) {
+                $disk->clean();
+                unset(static::$disks[$name]);
+            }
+            return;
+        }
+
+
+        foreach (static::$disks as $disk) {
+            $disk->clean();
+        }
+        static::$disks = [];
+    }
+
+    /**
+     * Copy contents between different disks.
+     *
+     * @param string $from_disk
+     * @param string $from_path
+     * @param string $to_disk
+     * @param string|null $to_path (default: null for use $from_path, as it is)
+     * @param string|array $options (default: [])
+     * @param bool $replace (default: false)
+     * @return void
+     */
+    public static function copy(string $from_disk, string $from_path, string $to_disk, ?string $to_path = null, $options = [], bool $replace = false) : void
+    {
+        $from    = static::disk($from_disk);
+        $to      = static::disk($to_disk);
+        $to_path = $to_path ?? $from_path;
+        if ($replace) {
+            $to->delete($to_path);
+        } else {
+            if ($to->exists($to_path)) {
+                throw new FilesystemException("Can not copy `{$from_disk}:{$from_path}` to `{$to_disk}:{$to_path}`, `{$to_disk}:{$to_path}` already exists.");
+            }
+        }
+        if (!$from->exists($from_path)) {
+            return;
+        }
+
+        if ($from->isFile($from_path)) {
+            $to->put($to_path, $from->readStream($from_path), $options);
+            return;
+        }
+
+        foreach ($from->ls($from_path, '*', null, true) as $content) {
+            $path = Path::normalize($to_path.'/'.Strings::ltrim($content, Strings::ltrim($from_path, '/')));
+            if ($from->isFile($content)) {
+                $to->put($path, $from->readStream($content), $options);
+                continue;
+            }
+
+            $to->mkdir($path);
+        }
+    }
+
+    /**
+     * Move contents between different disks.
+     *
+     * @param string $from_disk
+     * @param string $from_path
+     * @param string $to_disk
+     * @param string|null $to_path (default: null for use $from_path, as it is)
+     * @param string|array $options (default: [])
+     * @param bool $replace (default: false)
+     * @return void
+     */
+    public static function move(string $from_disk, string $from_path, string $to_disk, ?string $to_path = null, $options = [], bool $replace = false) : void
+    {
+        static::copy($from_disk, $from_path, $to_disk, $to_path, $options, $replace);
+        static::disk($from_disk)->delete($from_path);
+    }
+
+    /**
+     * Publish the given private storage contents to public storage.
+     *
+     * @param string $from contents path
+     * @param string|null $to contents path (default: null for use $from contents path, as it is)
+     * @return void
+     */
+    public static function publish(string $from, ?string $to = null) : void
+    {
+        static::move(static::config('private_disk'), $from, static::config('public_disk'), $to, Filesystem::VISIBILITY_PUBLIC, true);
     }
 }

@@ -618,6 +618,50 @@ EOS
         $this->assertSame('C', $this->text->_('case', $case, 'C')->return());
 
         $this->assertSame('A', $this->int->case($case)->return());
+
+        // length
+        $this->assertSame(null, $this->null->_('length')->return());
+        $this->assertSame(3, $this->int->_('length')->return());
+        $this->assertSame(9, $this->float->_('length')->return());
+        $this->assertSame(11, $this->string->_('length')->return());
+        $this->assertSame(1, $this->enum->_('length')->return());
+        $this->assertSame(2, $this->enums->_('length')->return());
+        $this->assertSame(3, $this->array->_('length')->return());
+
+        $this->assertSame(11, $this->string->length()->return());
+        $this->assertSame(3, $this->array->length()->return());
+
+        // values
+        $this->assertSame(null, $this->null->_('values')->return());
+        $this->assertSame([123], $this->int->_('values')->return());
+        $this->assertSame([1, 2, 3], $this->array->_('values')->return());
+        $this->assertSame([
+            'FOO',
+            [
+                'child' => [
+                    'bar' => 'BAR',
+                ],
+            ],
+            123,
+            Gender::MALE(),
+            true,
+        ], $this->map->_('values')->return());
+
+        $this->assertSame(Gender::lists(), $this->enums->values()->return());
+
+        // keys
+        $this->assertSame(null, $this->null->_('keys')->return());
+        $this->assertSame([0], $this->int->_('keys')->return());
+        $this->assertSame([0, 1, 2], $this->array->_('keys')->return());
+        $this->assertSame([
+            'foo',
+            'parent',
+            'number',
+            'gender',
+            'boolean',
+        ], $this->map->_('keys')->return());
+
+        $this->assertSame([0, 1], $this->enums->keys()->return());
     }
 
     public function test_filters_php()

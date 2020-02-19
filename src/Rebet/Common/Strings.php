@@ -267,7 +267,7 @@ class Strings
      * It checks whether the string contains all (or at least N) the given search strings.
      *
      * @param string|null $string
-     * @param string|array $searches
+     * @param string|string[] $searches
      * @param int $at_least (default: null)
      * @return bool
      */
@@ -376,7 +376,7 @@ class Strings
      * It checks the given string will match regex patterns at least one.
      *
      * @param string|null $string
-     * @param string|array $patterns
+     * @param string|string[] $patterns
      * @return boolean
      */
     public static function match(?string $string, $patterns) : bool
@@ -397,7 +397,7 @@ class Strings
      * It checks the given string will match shell's wildcard patterns at least one.
      *
      * @param string|null $string
-     * @param string|array $patterns
+     * @param string|string[] $patterns
      * @return boolean
      */
     public static function wildmatch(?string $string, $patterns) : bool
@@ -518,4 +518,6 @@ class Strings
     {
         return array_pad($string === null ? [] : explode($delimiter, $string, $size), $size, $padding);
     }
+
+    // @todo https://github.com/laravel/framework/blob/v6.15.0/src/Illuminate/Support/Str.php ascii
 }

@@ -15,6 +15,84 @@ use Rebet\Inflection\Inflector;
 /**
  * Stream Class
  *
+ * @method Stream convert(?string $type)
+ * @method bool   isBlank()
+ * @method Stream bvl($default)
+ * @method bool   isEmpty()
+ * @method Stream evl($default)
+ * @method Stream lcut(int $length, string $encoding = 'UTF-8')
+ * @method Stream rcut(int $length, string $encoding = 'UTF-8')
+ * @method Stream clip(int $length, string $ellipsis = '...')
+ * @method Stream indent(string $char = "\t", int $depth = 1)
+ * @method Stream ltrim(string $prefix = ' ', ?int $max = null)
+ * @method Stream rtrim(string $suffix = ' ', ?int $max = null)
+ * @method Stream trim(string $deletion = ' ', ?int $max = null)
+ * @method Stream mbtrim()
+ * @method bool   startsWith(string $needle)
+ * @method bool   endsWith(string $needle)
+ * @method bool   contains(string|string[] $searches, ?int $at_least = null)
+ * @method bool   match(string|string[] $patterns)
+ * @method bool   wildmatch(string|string[] $patterns)
+ * @method Stream split(string $delimiter, int $size, $padding = null)
+ * @method Stream pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null) - Closure : `function($index, $key, $value) {...}`
+ * @method Stream override($diff, array|string $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null) - Closure : `function($index, $key, $value) {...}`
+ * @method Stream duplicate()
+ * @method Stream crossJoin(iterable ...$arrays)
+ * @method Stream only(array|string $keys)
+ * @method Stream except(array|string $keys)
+ * @method Stream where(?callable $callback) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Stream compact()
+ * @method Stream first(?callable $callback = null, $default = null) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Stream last(?callable $callback = null, $default = null) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Stream flatten(int $depth = INF)
+ * @method Stream prepend($value, $key = null)
+ * @method Stream shuffle(?int $seed = null)
+ * @method Stream map(callable $callback) - $callback : `function($value[, $key]) {...}`
+ * @method Stream reduce(callable $reducer, $initial = null) - $reducer : `function($carry, $item) {...}`
+ * @method Stream diff($items, ?callable $comparator = null) - $comparator : `function($a, $b) : int {...}`
+ * @method Stream intersect($items, ?callable $comparator = null) - $comparator : `function($a, $b) : int {...}`
+ * @method Stream every(callable $test) - $test : `function($v, $k) : bool {...}`
+ * @method Stream groupBy(callable|string|array $group_by = null, bool $preserve_keys = false) - $group_by : `function($value, $key) {...}`
+ * @method Stream union($other)
+ * @method Stream min(callable|string|null $retriever = null, $initial = null) - $retriever : `function($value) {...}`
+ * @method Stream max(callable|string|null $retriever = null, $initial = null) - $retriever : `function($value) {...}`
+ * @method Stream sort(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) - $comparator :  `function($a, $b) : int`
+ * @method Stream sortBy(callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
+ * @method Stream sortKeys(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) - $comparator :  `function($a, $b) : int`
+ * @method Stream sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) - $retriever : `function($value) {...}`
+ * @method Stream avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) - $retriever : `function($value) {...}`
+ * @method Stream median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) - $retriever : `function($value) {...}`
+ * @method Stream mode(callable|string|null $retriever = null) - $retriever : `function($value) {...}`
+ * @method Stream implode(string $delimiter = ', ')
+ * @method bool   isNull()
+ * @method Stream nvl($default)
+ * @method Stream default($default)
+ * @method Stream escape(string $type = 'html') - $type : `'html'|'url'`
+ * @method Stream nl2br()
+ * @method Stream datetime(string $format)
+ * @method Stream text(string $format)
+ * @method Stream explode(string $delimiter, int $limit = PHP_INT_MAX)
+ * @method Stream replace($pattern, $replacement, int $limit = -1)
+ * @method Stream lower()
+ * @method Stream upper()
+ * @method Stream decimal()
+ * @method Stream floor(int $precision = 0)
+ * @method Stream round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)
+ * @method Stream ceil(int $precision = 0)
+ * @method Stream number(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')
+ * @method Stream dump()
+ * @method Stream invoke(...$args)
+ * @method bool   equals($other)
+ * @method bool   sameAs($other)
+ * @method Stream nnvl($then, $else = null)
+ * @method Stream nbvl($then, $else = null)
+ * @method Stream nevl($then, $else = null)
+ * @method Stream when(mixed $test, $then, $else = null) - $test : `function($value) {...}`
+ * @method Stream case(array $map, $default = null)
+ * @method Stream length()
+ * @method Stream values()
+ * @method Stream keys()
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -31,7 +109,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 'delegaters' => [
                     Reflector::class => ['convert'],
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
-                    Strings::class   => ['lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'mbtrim' => 'trim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch', 'split'],
+                    Strings::class   => ['lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch', 'split'],
                     Arrays::class    => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
@@ -76,6 +154,16 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                     },
                     'case'     => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
+                    'length'   => function ($value) {
+                        switch (true) {
+                            case $value === null:    return null;
+                            case is_numeric($value): return mb_strlen((string)$value);
+                            case is_string($value):  return mb_strlen($value);
+                        }
+                        return Arrays::count($value);
+                    },
+                    'values'   => function (array $value) { return array_values($value); },
+                    'keys'     => function (array $value) { return array_keys($value); },
                 ],
             ],
         ];

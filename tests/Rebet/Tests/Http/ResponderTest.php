@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use Rebet\Config\Config;
+use Rebet\Filesystem\Storage;
 use Rebet\Foundation\App;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
@@ -22,6 +23,12 @@ class ResponderTest extends RebetTestCase
         $this->vfs([
             'cache' => [],
         ]);
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        Storage::clean();
     }
 
     public function test_toResponse()
@@ -92,5 +99,39 @@ class ResponderTest extends RebetTestCase
     public function test_problem()
     {
         $this->assertInstanceOf(ProblemResponse::class, Responder::problem(500));
+    }
+
+    /**
+     * @expectedException Rebet\Filesystem\Exception\FileNotFoundException
+     * @expectedExceptionMessage File not found at path: nothing.txt
+     */
+    public function test_file_nothing()
+    {
+        $response = Responder::file('nothing.txt');
+        $response->sendContent();
+    }
+
+    public function test_file()
+    {
+        Storage::private()->put('foo.txt', 'foo');
+        $response = Responder::file('foo.txt');
+        $this->assertSame('text/plain', $response->getHeader('Content-Type'));
+        $this->assertSame(3, $response->getHeader('Content-Length'));
+        $this->assertSame("inline; filename=".md5('foo.txt').".txt; filename*=utf-8''foo.txt", $response->getHeader('Content-Disposition'));
+        $this->assertSameOutbuffer('foo', function () use ($response) {
+            $response->sendContent();
+        });
+    }
+
+    public function test_download()
+    {
+        Storage::private()->put('foo.csv', '1,2,3');
+        $response = Responder::download('foo.csv');
+        $this->assertSame('text/csv', $response->getHeader('Content-Type'));
+        $this->assertSame(5, $response->getHeader('Content-Length'));
+        $this->assertSame("attachment; filename=".md5('foo.csv').".csv; filename*=utf-8''foo.csv", $response->getHeader('Content-Disposition'));
+        $this->assertSameOutbuffer('1,2,3', function () use ($response) {
+            $response->sendContent();
+        });
     }
 }

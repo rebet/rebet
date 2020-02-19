@@ -21,6 +21,7 @@ use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
+use Rebet\Filesystem\Storage;
 use Rebet\Foundation\App;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
@@ -137,6 +138,7 @@ abstract class RebetTestCase extends TestCase
         CodeNode::clear();
         View::clear();
         StderrCapture::clear();
+        Storage::clean();
     }
 
     public static function setUpBeforeClass()
@@ -286,5 +288,10 @@ abstract class RebetTestCase extends TestCase
         $rp    = new \ReflectionProperty($class, $name);
         $rp->setAccessible(true);
         $rp->setValue(is_string($target) ? null : $target, $value);
+    }
+
+    protected function isWindows() : bool
+    {
+        return PHP_OS === 'WIN32' || PHP_OS === 'WINNT';
     }
 }

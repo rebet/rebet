@@ -3,6 +3,7 @@ namespace Rebet\Http;
 
 use Rebet\Common\Renderable;
 use Rebet\Common\Strings;
+use Rebet\Filesystem\Storage;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\JsonResponse;
 use Rebet\Http\Response\ProblemResponse;
@@ -123,5 +124,57 @@ class Responder
     public static function problem(int $status, ?string $title = null, ?string $type = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
     {
         return new ProblemResponse($status, $title, $type, $headers, $encoding_options);
+    }
+
+    /**
+     * Create a streamed response for a given file.
+     * NOTE: This moethod automatically create fallback filename using MD5 of ginven filename.
+     *
+     * @param string $path
+     * @param string|null $filename (default: null)
+     * @param array $headers (default: [])
+     * @param string $disposition (default: 'inline')
+     * @param string $disk of filesystem (default: null for use private disk)
+     * @return StreamedResponse
+     */
+    public static function file(string $path, ?string $filename = null, array $headers = [], string $disposition = 'inline', string $disk = null) : StreamedResponse
+    {
+        $filesystem  = $disk ? Storage::disk($disk) : Storage::private() ;
+        $response    = new StreamedResponse();
+        $filename    = $filename ?? basename($path);
+        $disposition = $response->headers->makeDisposition($disposition, $filename, preg_replace('/^.*\./', md5($filename).'.', $filename));
+
+        $response->headers->replace($headers + [
+            'Content-Type'        => $filesystem->mimeType($path),
+            'Content-Length'      => $filesystem->size($path),
+            'Content-Disposition' => $disposition,
+        ]);
+
+        $response->setCallback(function () use ($filesystem, $path) {
+            $stream = $filesystem->readStream($path);
+
+            while (!feof($stream)) {
+                echo fread($stream, 2048);
+            }
+
+            fclose($stream);
+        });
+
+        return $response;
+    }
+
+    /**
+     * Create a streamed download response for a given file.
+     * NOTE: This moethod automatically create fallback filename using MD5 of ginven filename.
+     *
+     * @param string $path
+     * @param string|null $filename (default: null)
+     * @param array $headers (default: [])
+     * @param string $disk of filesystem (default: null)
+     * @return StreamedResponse
+     */
+    public static function download(string $path, ?string $filename = null, array $headers = [], string $disk = null) : StreamedResponse
+    {
+        return static::file($path, $filename, $headers, 'attachment', $disk);
     }
 }

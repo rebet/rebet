@@ -8,6 +8,7 @@ use Rebet\Config\Configurable;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\DateTime\DateTime;
+use Rebet\Filesystem\Storage;
 use Rebet\Foundation\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Http\Request;
 use Rebet\Log\Log;
@@ -67,6 +68,23 @@ class App
             //---------------------------------------------
             Log::class => [
                 'default_channel' => Config::refer(App::class, 'channel', 'default'),
+            ],
+
+            //---------------------------------------------
+            // Filesystem Configure
+            //---------------------------------------------
+            Storage::class => [
+                'disks' => [
+                    'private' => [
+                        'root' => App::path('/storage/private'),
+                    ],
+                    'public' => [
+                        'root'       => App::path('/storage/public'),
+                        'filesystem' => [
+                            'url' => '/storage',
+                        ]
+                    ],
+                ],
             ],
 
             //---------------------------------------------

@@ -35,7 +35,7 @@ class UploadedFile extends SymfonyUploadedFile
                 $imagesize    = getimagesize($this->getRealPath());
                 $this->width  = $imagesize[0] ?? null ;
                 $this->height = $imagesize[1] ?? null ;
-            } catch (ErrorException $e) {
+            } catch (\ErrorException $e) {
                 $this->width  = null ;
                 $this->height = null ;
             }

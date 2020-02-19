@@ -224,7 +224,7 @@ class Config
      *
      * @param mixed $config
      * @param array $option
-     * @return void
+     * @return mixed
      */
     protected static function analyze($config, array &$option)
     {

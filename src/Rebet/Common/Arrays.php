@@ -116,8 +116,8 @@ class Arrays
      * $user_map   = Arrays::pluck($users, function($i, $k, $v) { return "{$v->name}($v->user_id)"; }, 'user_id'                                   ); //=> [21 => 'John(21)', 35 => 'David(35)', 43 => 'Linda(43)', ...]
      *
      * @param array|null $list
-     * @param int|string|Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
-     * @param int|string|Closure|null $key_field Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
+     * @param int|string|\Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
+     * @param int|string|\Closure|null $key_field Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
      * @return array
      * @see Reflector::get()
      */
@@ -336,10 +336,10 @@ class Arrays
     /**
      * Cross join the given arrays, returning all possible permutations.
      *
-     * @param  array  ...$arrays
+     * @param  iterable  ...$arrays
      * @return array
      */
-    public static function crossJoin(...$arrays) : array
+    public static function crossJoin(iterable ...$arrays) : array
     {
         $results = [[]];
         foreach ($arrays as $index => $array) {
@@ -494,11 +494,11 @@ class Arrays
      * Return the first element in an array passing a given truth test.
      *
      * @param  array|null  $array
-     * @param  callable|null  $callback
+     * @param  callable|null  $callback function($value, $key) : bool {...}
      * @param  mixed  $default (default: null)
      * @return mixed
      */
-    public static function first($array, callable $callback = null, $default = null)
+    public static function first($array, ?callable $callback = null, $default = null)
     {
         if ($array === null) {
             return static::value($default);
@@ -534,7 +534,7 @@ class Arrays
      * Flatten a multi-dimensional array into a single level.
      *
      * @param  array|null  $array
-     * @param  int  $depth
+     * @param  int  $depth (default: INF)
      * @return array
      */
     public static function flatten(?array $array, $depth = INF) : ?array
@@ -560,11 +560,11 @@ class Arrays
      * Return the last element in an array passing a given truth test.
      *
      * @param  array|null  $array
-     * @param  callable|null  $callback
+     * @param  callable|null  $callback function($value, $key) : bool {...}
      * @param  mixed  $default
      * @return mixed
      */
-    public static function last(?array $array, callable $callback = null, $default = null)
+    public static function last(?array $array, ?callable $callback = null, $default = null)
     {
         if ($array === null) {
             return null;
@@ -633,7 +633,7 @@ class Arrays
      * @param  int|null  $seed
      * @return array
      */
-    public static function shuffle(?array $array, $seed = null) : ?array
+    public static function shuffle(?array $array, ?int $seed = null) : ?array
     {
         if ($array === null) {
             return null;
@@ -725,7 +725,7 @@ class Arrays
      * Reduce the collection to a single value.
      *
      * @param array|null $array
-     * @param callable $reducer function($carry, $item):mixed
+     * @param callable $reducer function($carry, $item) { ... }
      * @param mixed $initial (defualt: null)
      * @return mixed
      */
@@ -739,7 +739,7 @@ class Arrays
      *
      * @param  array|null $array
      * @param  mixed $items
-     * @param  callable|null $comparator function(mixed $a, mixed $b) (default: null)
+     * @param  callable|null $comparator function(mixed $a, mixed $b) : int (default: null)
      * @return array|null
      */
     public static function diff(?array $array, $items, ?callable $comparator = null) : ?array
@@ -758,7 +758,7 @@ class Arrays
      *
      * @param array|null $array
      * @param mixed $items
-     * @param callable|null $comparator function(mixed $a, mixed $b):mixed (default: null)
+     * @param callable|null $comparator function(mixed $a, mixed $b):int (default: null)
      * @return array|null
      */
     public static function intersect(?array $array, $items, ?callable $comparator = null) : ?array
