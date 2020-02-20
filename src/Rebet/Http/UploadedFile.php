@@ -112,7 +112,8 @@ class UploadedFile extends SymfonyUploadedFile
      *
      *  $path = $uploaded_file->store("users/{$user_id}/avatar{.ext}");
      *
-     * The {.ext} placeholder will be replaced by extension of this uploaded file (and if extension is nothing then use guess extensions from mime type).
+     * The {.ext} placeholder will be replaced by guessed extension from mime type.
+     * If can not guess extension by mime type then use this uploaded file extension as it is.
      *
      * @param string $path can be contains {.ext} placeholder.
      * @param string|array $options (default: [])
