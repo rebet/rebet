@@ -116,7 +116,7 @@ interface Filesystem
      *  $path = $filesystem->put("users/{$user_id}/avatar{.ext}", $uploaded_file);
      *
      * If you can guess the extension (for exsample from mime type) then you can include ['.ext' => extension that was guessed] options for replacement of {.ext}.
-     * Otherwise the {.ext} placeholder will be replaced by extension of given `SplFileInfo` contents.
+     * Otherwise {.ext} will be empty string, but if `SplFileInfo` contents given then the {.ext} placeholder will be replaced by extension of contents.
      *
      * @param string $path can be contains {.ext} placeholder.
      * @param string|resource|\SplFileInfo|StreamInterface $contents string will be file contents
@@ -133,7 +133,7 @@ interface Filesystem
      *  $path = $filesystem->put("users/{$user_id}/avatar{.ext}", $uploaded_file);
      *
      * If you can guess the extension (for exsample from mime type) then you can include ['.ext' => extension that was guessed] options for replacement of {.ext}.
-     * Otherwise the {.ext} placeholder will be replaced by extension of given `SplFileInfo` contents.
+     * Otherwise {.ext} will be empty string, but if `SplFileInfo` contents given then the {.ext} placeholder will be replaced by extension of contents.
      *
      * @param string $path can be contains {.ext} placeholder.
      * @param string|resource|\SplFileInfo|StreamInterface $file string will be file path
