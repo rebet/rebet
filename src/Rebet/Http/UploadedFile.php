@@ -2,7 +2,10 @@
 namespace Rebet\Http;
 
 use Rebet\Common\Strings;
+use Rebet\Filesystem\Filesystem;
+use Rebet\Filesystem\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
+use Symfony\Component\Mime\MimeTypes;
 
 /**
  * Uploaded File Class
@@ -100,6 +103,54 @@ class UploadedFile extends SymfonyUploadedFile
                     $value['error']
                 );
         }
+        return null;
+    }
+
+    /**
+     * Store the uploaded file on a filesystem disk.
+     * This method can be contains {.ext} placeholder in $path argument, like below
+     *
+     *  $path = $uploaded_file->store("users/{$user_id}/avatar{.ext}");
+     *
+     * The {.ext} placeholder will be replaced by extension of this uploaded file (and if extension is nothing then use guess extensions from mime type).
+     *
+     * @param string $path can be contains {.ext} placeholder.
+     * @param string|array $options (default: [])
+     * @param string|null $disk name (default: null for private disk)
+     * @return string of saved path
+     */
+    public function store(string $path, $options = [], ?string $disk = null) : string
+    {
+        $options    = is_string($options) ? ['visibility' => $options] : (array) $options ;
+        $filesystem = $disk ? Storage::disk($disk) : Storage::private() ;
+        return $filesystem->put($path, $this, array_merge(['.ext' => $this->guessExtension()], $options));
+    }
+
+    /**
+     * Returns the extension based on the mime type.
+     * If the mime type is unknown, returns null.
+     * If the mime type cannot be narrowed down to one extension, then this uploaded files extension will be returned when the extension was contained in candidate extensios.
+     * Otherwise returns null.
+     *
+     * This method uses the mime type as guessed by getMimeType() to guess the file extension.
+     *
+     * @return string|null The guessed extension or null if it cannot be guessed
+     *
+     * @see MimeTypes
+     * @see getMimeType()
+     */
+    public function guessExtension()
+    {
+        $candidate_extensions = MimeTypes::getDefault()->getExtensions($this->getMimeType());
+        if (count($candidate_extensions) === 1) {
+            return $candidate_extensions[0];
+        }
+
+        $extension = strtolower($this->getExtension());
+        if (in_array($extension, $candidate_extensions, true)) {
+            return $extension;
+        }
+
         return null;
     }
 }

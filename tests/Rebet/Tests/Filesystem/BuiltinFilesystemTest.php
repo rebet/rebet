@@ -51,7 +51,7 @@ class BuiltinFilesystemTest extends RebetTestCase
     {
         foreach (['hello.txt', 'dir/hello.txt'] as $path) {
             $this->assertSame(false, $this->filesystem->exists($path));
-            $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->put($path, 'Hello'));
+            $this->assertSame($path, $this->filesystem->put($path, 'Hello'));
             $this->assertSame(true, $this->filesystem->exists($path));
         }
     }
@@ -98,23 +98,28 @@ class BuiltinFilesystemTest extends RebetTestCase
         foreach (['hello.txt', 'dir/hello.txt'] as $path) {
             $contents = "Hello {$path}";
             $this->assertSame(false, $this->filesystem->exists($path));
-            $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->put($path, $contents));
+            $this->assertSame($path, $this->filesystem->put($path, $contents));
             $this->assertSame(true, $this->filesystem->exists($path));
             $this->assertSame($contents, $this->filesystem->get($path));
 
             $contents = "Update {$path}";
-            $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->put($path, $contents));
+            $this->assertSame($path, $this->filesystem->put($path, $contents));
             $this->assertSame($contents, $this->filesystem->get($path));
         }
 
         $path = 'env_1.txt';
         $file = new \SplFileInfo(App::path('resources/.env.unittest'));
-        $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->put($path, $file));
+        $this->assertSame($path, $this->filesystem->put($path, $file));
         $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
+
+        $path = 'env_1{.ext}';
+        $file = new \SplFileInfo(App::path('resources/.env.unittest'));
+        $this->assertSame('env_1.unittest', $this->filesystem->put($path, $file));
+        $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get('env_1.unittest'));
 
         $path = 'env_2.txt';
         $file = fopen(App::path('resources/.env.unittest'), 'r');
-        $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->put($path, $file));
+        $this->assertSame($path, $this->filesystem->put($path, $file));
         $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
         fclose($file);
 
@@ -122,7 +127,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $file   = fopen(App::path('resources/.env.unittest'), 'r');
         $stream = $this->createMock(StreamInterface::class);
         $stream->method('detach')->willReturn($file);
-        $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->put($path, $stream));
+        $this->assertSame($path, $this->filesystem->put($path, $stream));
         $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
         fclose($file);
     }
@@ -131,10 +136,10 @@ class BuiltinFilesystemTest extends RebetTestCase
     {
         $path     = 'env.txt';
         $contents = App::path('resources/.env.unittest');
-        $this->filesystem->put($path, $contents);
+        $this->assertSame($path, $this->filesystem->put($path, $contents));
         $this->assertSame($contents, $this->filesystem->get($path));
 
-        $this->filesystem->putFile($path, $contents);
+        $this->assertSame($path, $this->filesystem->putFile($path, $contents));
         $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
     }
 
@@ -169,7 +174,7 @@ class BuiltinFilesystemTest extends RebetTestCase
     {
         $path = 'hello.txt';
         $this->assertSame(false, $this->filesystem->exists($path));
-        $this->filesystem->prepend($path, 'a');
+        $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->prepend($path, 'a'));
         $this->assertSame(true, $this->filesystem->exists($path));
         $this->assertSame("a", $this->filesystem->get($path));
         $this->filesystem->prepend($path, 'b');
@@ -182,7 +187,7 @@ class BuiltinFilesystemTest extends RebetTestCase
     {
         $path = 'hello.txt';
         $this->assertSame(false, $this->filesystem->exists($path));
-        $this->filesystem->append($path, 'a');
+        $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->append($path, 'a'));
         $this->assertSame(true, $this->filesystem->exists($path));
         $this->assertSame("a", $this->filesystem->get($path));
         $this->filesystem->append($path, 'b');
@@ -204,7 +209,7 @@ class BuiltinFilesystemTest extends RebetTestCase
             'path/2/2.log',
             'path/3/3.ini',
         ] as $path) {
-            $this->filesystem->put($path, "Hello {$path}");
+            $path = $this->filesystem->put($path, "Hello {$path}");
             $this->assertSame(true, $this->filesystem->exists($path));
         }
 
@@ -274,7 +279,7 @@ class BuiltinFilesystemTest extends RebetTestCase
             'path/2/2.log',
             'path/3/3.ini',
         ] as $path) {
-            $this->filesystem->put($path, "Hello {$path}");
+            $path = $this->filesystem->put($path, "Hello {$path}");
             $this->assertSame(true, $this->filesystem->exists($path));
         }
 

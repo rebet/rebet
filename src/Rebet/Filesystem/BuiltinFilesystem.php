@@ -14,6 +14,7 @@ use League\Flysystem\Util\MimeType;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Common\Path;
 use Rebet\Common\Strings;
+use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\Exception\FileNotFoundException;
@@ -129,29 +130,37 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function put(string $path, $contents, $options = []) : Filesystem
+    public function put(string $path, $contents, $options = []) : string
     {
         $options = is_string($options) ? ['visibility' => $options] : (array) $options ;
         $stream  = null;
+        $ext     = null;
         switch (true) {
-            case $contents instanceof \SplFileInfo:    $stream = fopen($contents->getRealPath(), 'r'); break;
-            case $contents instanceof StreamInterface: $stream = $contents->detach();                  break;
-            default:                                   $stream = $contents;
+            case $contents instanceof \SplFileInfo:
+                $stream = fopen($contents->getRealPath(), 'r');
+                $ext    = strtolower($contents->getExtension()) ?: null;
+                break;
+            case $contents instanceof StreamInterface:
+                $stream = $contents->detach();
+                break;
+            default:
+                $stream = $contents;
         }
-
+        $ext        = $options['.ext'] ?? $ext ?? null ;
+        $path       = str_replace('{.ext}', Utils::isBlank($ext) ? '' : ".{$ext}", $path);
         $put_method = is_resource($stream) ? 'putStream' : 'put' ;
         if (!$this->driver->{$put_method}($path, $stream, $options)) {
             throw new FilesystemException("Can not save contents to `{$path}`.");
         }
-        return $this;
+        return $path;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function putFile(string $path, $file, $options = []) : Filesystem
+    public function putFile(string $path, $file, $options = []) : string
     {
-        return $this->put($path, is_string($file) ? fopen($file, 'r') : $file, $options);
+        return $this->put($path, is_string($file) ? new \SplFileInfo($file) : $file, $options);
     }
 
     /**
@@ -188,7 +197,8 @@ class BuiltinFilesystem implements Filesystem
      */
     public function prepend(string $path, string $data, string $separator = "\n") : Filesystem
     {
-        return $this->exists($path) ? $this->put($path, $data.$separator.$this->get($path)) : $this->put($path, $data) ;
+        $this->exists($path) ? $this->put($path, $data.$separator.$this->get($path)) : $this->put($path, $data) ;
+        return $this;
     }
 
     /**
@@ -196,7 +206,8 @@ class BuiltinFilesystem implements Filesystem
      */
     public function append(string $path, string $data, string $separator = "\n") : Filesystem
     {
-        return $this->exists($path) ? $this->put($path, $this->get($path).$separator.$data) : $this->put($path, $data) ;
+        $this->exists($path) ? $this->put($path, $this->get($path).$separator.$data) : $this->put($path, $data) ;
+        return $this;
     }
 
     /**

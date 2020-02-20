@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Http;
 
+use Rebet\Filesystem\Storage;
 use Rebet\Foundation\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\RebetTestCase;
@@ -42,5 +43,49 @@ class UploadedFileTest extends RebetTestCase
         $this->assertSame(60, (new UploadedFile(App::path('/resources/image/120x60.png'), '120x60.png'))->getHeight());
         $this->assertSame(240, (new UploadedFile(App::path('/resources/image/160x240.png'), '160x240.png'))->getHeight());
         $this->assertSame(null, (new UploadedFile(App::path('/resources/.env.unittest'), '.env.unittest'))->getHeight());
+    }
+
+    public function test_store()
+    {
+        Storage::private()->put('/unittest/foo.csv', '1,2,3');
+        $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.csv'), 'foo.csv');
+        $path        = $upload_file->store('bar.txt');
+        $this->assertSame('bar.txt', $path);
+        $this->assertSame('1,2,3', Storage::private()->get($path));
+        Storage::clean();
+
+        Storage::private()->put('/unittest/foo.csv', '1,2,3');
+        $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.csv'), 'foo.csv');
+        $path        = $upload_file->store('test/bar{.ext}');
+        $this->assertSame('test/bar.csv', $path);
+        $this->assertSame('1,2,3', Storage::private()->get($path));
+        Storage::clean();
+
+        Storage::private()->put('/unittest/foo.csv', '1,2,3');
+        $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.csv'), 'foo.csv', 'text/plain');
+        $path        = $upload_file->store('test/bar{.ext}');
+        $this->assertSame('test/bar.csv', $path);
+        $this->assertSame('1,2,3', Storage::private()->get($path));
+        Storage::clean();
+
+        // Do not use client mime type
+        Storage::private()->put('/unittest/foo', '1,2,3');
+        $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo'), 'foo', 'text/csv');
+        $path        = $upload_file->store('test/bar{.ext}');
+        $this->assertSame('test/bar', $path);
+        $this->assertSame('1,2,3', Storage::private()->get($path));
+        Storage::clean();
+
+        Storage::private()->putFile('/unittest/foo', App::path('/resources/image/72x72.png'));
+        $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo'), 'foo');
+        $path        = $upload_file->store('test/bar{.ext}');
+        $this->assertSame('test/bar.png', $path);
+        Storage::clean();
+
+        Storage::private()->putFile('/unittest/foo.jpg', App::path('/resources/image/72x72.png'));
+        $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.jpg'), 'foo.jpg', 'image/jpg');
+        $path        = $upload_file->store('test/bar{.ext}');
+        $this->assertSame('test/bar.png', $path);
+        Storage::clean();
     }
 }

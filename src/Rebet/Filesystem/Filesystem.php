@@ -111,25 +111,37 @@ interface Filesystem
 
     /**
      * Write the contents of a file.
+     * This method can be contains {.ext} placeholder in $path argument, like below
      *
-     * @param string $path
+     *  $path = $filesystem->put("users/{$user_id}/avatar{.ext}", $uploaded_file);
+     *
+     * The {.ext} placeholder will be replaced by extension of given `SplFileInfo` contents. (otherwise {.ext} will be empty string)
+     * If you can guess the extension (for exsample from mime type) then you can include ['.ext' => extension that was guessed] options for replacement of {.ext}.
+     *
+     * @param string $path can be contains {.ext} placeholder.
      * @param string|resource|\SplFileInfo|StreamInterface $contents string will be file contents
      * @param string|array $options (default: [])
-     * @return self
+     * @return string of saved path
      * @throws FilesystemException when can not save given contents
      */
-    public function put(string $path, $contents, $options = []) : self;
+    public function put(string $path, $contents, $options = []) : string;
 
     /**
      * Write the contents of a file.
+     * This method can be contains {.ext} placeholder in $path argument, like below
      *
-     * @param string $path
+     *  $path = $filesystem->put("users/{$user_id}/avatar{.ext}", $uploaded_file);
+     *
+     * The {.ext} placeholder will be replaced by extension of given `SplFileInfo` contents. (otherwise {.ext} will be empty string)
+     * If you can guess the extension (for exsample from mime type) then you can include ['.ext' => extension that was guessed] options for replacement of {.ext}.
+     *
+     * @param string $path can be contains {.ext} placeholder.
      * @param string|resource|\SplFileInfo|StreamInterface $file string will be file path
      * @param string|array $options (default: [])
-     * @return self
+     * @return string of saved path
      * @throws FilesystemException when can not save given file
      */
-    public function putFile(string $path, $file, $options = []) : self;
+    public function putFile(string $path, $file, $options = []) : string;
 
     /**
      * Get the visibility for the given path.
