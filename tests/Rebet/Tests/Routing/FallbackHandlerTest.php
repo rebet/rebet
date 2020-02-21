@@ -21,6 +21,7 @@ use Rebet\View\View;
 
 class FallbackHandlerTest extends RebetTestCase
 {
+    /** @var FallbackHandler */
     public $handler;
 
     public function setUp()

@@ -57,7 +57,7 @@ class ResponderTest extends RebetTestCase
                 'engine' => Blade::class,
             ],
             Blade::class => [
-                'view_path'  => App::path('/resources/views/blade'),
+                'view_path'  => [App::path('/resources/views/blade')],
                 'cache_path' => 'vfs://root/cache',
             ],
         ]);

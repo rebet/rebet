@@ -12,6 +12,36 @@ namespace Rebet\View\Engine;
 interface Engine
 {
     /**
+     * Get core object of template engine.
+     *
+     * @return mixed
+     */
+    public function core();
+
+    /**
+     * Get template paths
+     *
+     * @return array
+     */
+    public function getPaths() : array;
+
+    /**
+     * Prepend template path.
+     *
+     * @param string $path
+     * @return Engine
+     */
+    public function prependPath(string $path) : Engine;
+
+    /**
+     * Append template path.
+     *
+     * @param string $path
+     * @return Engine
+     */
+    public function appendPath(string $path) : Engine;
+
+    /**
      * Get the string contents of the view.
      *
      * @param string $name Template name without base template dir and template file suffix

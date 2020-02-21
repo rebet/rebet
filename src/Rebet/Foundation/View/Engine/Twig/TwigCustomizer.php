@@ -2,11 +2,13 @@
 namespace Rebet\Foundation\View\Engine\Twig;
 
 use Rebet\Auth\Auth;
+use Rebet\Database\Pagination\Pager;
 use Rebet\Foundation\App;
 use Rebet\Http\Session\Session;
 use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Environment\Environment;
+use Rebet\View\Engine\Twig\Twig;
 
 /**
  * Twig custom extentions for Rebet
@@ -26,8 +28,11 @@ class TwigCustomizer
     /**
      * define costom extentions for Rebet.
      */
-    public static function customize(Environment $twig) : void
+    public static function customize(Twig $twig) : void
     {
+        $twig->appendPath(__DIR__.'/views');
+        $environment = $twig->core();
+
         // ------------------------------------------------
         // [env is/env is not] Check current environment
         // ------------------------------------------------
@@ -36,7 +41,7 @@ class TwigCustomizer
         // Usage:
         //   {% env is 'local' %} ... {% elseenv is 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
-        $twig->if('env', 'is', ['/,/*', '/or/'], function (string ...$env) {
+        $environment->if('env', 'is', ['/,/*', '/or/'], function (string ...$env) {
             return in_array(App::getEnv(), $env);
         });
 
@@ -47,7 +52,7 @@ class TwigCustomizer
         //   (none)
         // Usage:
         //   {% prefix %}
-        $twig->code('prefix', null, [], 'echo(', function ($prefix) {
+        $environment->code('prefix', null, [], 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', ['prefix']);
 
@@ -61,7 +66,7 @@ class TwigCustomizer
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
-        $twig->if('role', 'is', ['/,/*', '/or/'], function (string ...$roles) {
+        $environment->if('role', 'is', ['/,/*', '/or/'], function (string ...$roles) {
             return Auth::user()->is(...$roles);
         });
 
@@ -77,7 +82,7 @@ class TwigCustomizer
         //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update' 'remark' with $post %} ... {% else %} ... {% endcan %}
         //   {% can 'update' $post with $a, $b and $c %} ... {% else %} ... {% endcan %}
-        $twig->if('can', null, ['/with/', '/,/*', '/and/'], function (string $action, $target, ...$extras) {
+        $environment->if('can', null, ['/with/', '/,/*', '/and/'], function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
         });
 
@@ -86,21 +91,21 @@ class TwigCustomizer
         // ------------------------------------------------
         // Params:
         //   $name : string - attribute name
-        // Usage:
+        // Usage: <bind field name>
         //   {% field 'email' %} ... {% endfield %}
-        // Under {% field %}:
+        // Usage: <In {% field %} block>
         //   {% field %}
         // Note:
         //   It does not correspond to nesting.
         $field = &static::$field;
-        $twig->code('field', '', [], 'echo(', function ($name = null) use (&$field) {
+        $environment->code('field', '', [], 'echo(', function ($name = null) use (&$field) {
             if ($name === null) {
                 return Stream::of($field, true)->escape();
             }
             $field = $name;
             return '';
         }, ');');
-        $twig->code('endfield', '', [], '', function () use (&$field) {
+        $environment->code('endfield', '', [], '', function () use (&$field) {
             $field = null;
         }, ';');
 
@@ -118,11 +123,11 @@ class TwigCustomizer
         //   {% error '*' %}
         //   {% error 'email' format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
         //   {% error 'email' format by '<div class="error">:messages</div>', '* :message<br>' %}
-        // Under {% field %}:
+        // Usage: <In {% field %} block>
         //   {% error %}
         //   {% error format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
         //   {% error format by '<div class="error">:messages</div>', '* :message<br>' %}
-        $twig->code('error', '', ['/format/', '/by/', '/,/'], 'echo(', function ($errors, ...$args) use (&$field) {
+        $environment->code('error', '', ['/format/', '/by/', '/,/'], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors                  = Stream::of($errors, true);
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
@@ -156,9 +161,9 @@ class TwigCustomizer
         // Usage:
         //   {% errors %} ... {% else %} ... {% enderrors %}
         //   {% errors 'email' %} ... {% else %} ... {% enderrors %}
-        // Under {% field %}:
+        // Usage: <In {% field %} block>
         //   {% errors %} ... {% else %} ... {% enderrors %}
-        $twig->if('errors', '', [], function ($errors, $name = null) use (&$field) {
+        $environment->if('errors', '', [], function ($errors, $name = null) use (&$field) {
             $errors = Stream::of($errors, true);
             $name   = $name ?? $field ;
             return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
@@ -175,11 +180,11 @@ class TwigCustomizer
         //   {% iferror 'email' then 'color: red;' %}
         //   {% iferror 'email' then 'color: red;' else 'color: gleen;' %}
         //   {% iferror 'email' ? 'color: red;' : 'color: gleen;' %}
-        // Under {% field %}:
+        // Usage: <In {% field %} block>
         //   {% iferror then 'color: red;' %}
         //   {% iferror then 'color: red;' else 'color: gleen;' %}
         //   {% iferror ? 'color: red;' : 'color: gleen;' %}
-        $twig->code('iferror', '', ['/then|\?/', '/else|:/'], 'echo(', function ($errors, ...$args) use (&$field) {
+        $environment->code('iferror', '', ['/then|\?/', '/else|:/'], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors               = Stream::of($errors, true);
             [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $then ?? '' ;
@@ -194,10 +199,10 @@ class TwigCustomizer
         // Usage:
         //   {% e 'email' 'class' %}
         //   {% e 'email' 'icon' %}
-        // Under {% field %}:
+        // Usage: <In {% field %} block>
         //   {% e 'class' %}
         //   {% e 'icon' %}
-        $twig->code('e', '', [], 'echo(', function ($errors, ...$args) use (&$field) {
+        $environment->code('e', '', [], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors           = Stream::of($errors, true);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
@@ -214,11 +219,11 @@ class TwigCustomizer
         //   {% input 'email' %}
         //   {% input 'email' default $user->email %}
         //   {% input 'email' ?? $user->email %}
-        // Under {% field %}:
+        // Usage: <In {% field %} block>
         //   {% input %}
         //   {% input default $user->email %}
         //   {% input ?? $user->email %}
-        $twig->code('input', '', ['/default|\?\?/'], 'echo(', function ($input, ...$args) use (&$field) {
+        $environment->code('input', '', ['/default|\?\?/'], 'echo(', function ($input, ...$args) use (&$field) {
             $input            = Stream::of($input, true);
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
@@ -233,7 +238,7 @@ class TwigCustomizer
         //   {% csrf_token %}
         //   {% csrf_token for 'user', 'edit' %}
         //   {% csrf_token for 'article', 'edit', article.article_id %}
-        $twig->code('csrf_token', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+        $environment->code('csrf_token', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
             $session = Session::current();
             return htmlspecialchars($session->token(...$scope) ?? $session->generateToken(...$scope)) ;
         }, ');');
@@ -247,11 +252,26 @@ class TwigCustomizer
         //   {% csrf %}
         //   {% csrf for 'user', 'edit' %}
         //   {% csrf for 'article', 'edit', article.article_id %}
-        $twig->code('csrf', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+        $environment->code('csrf', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
             $session = Session::current();
             $key     = Session::createTokenKey(...$scope);
             $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
             return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
+        }, ');');
+
+        // ------------------------------------------------
+        // [paginate] Pagination link output tag
+        // ------------------------------------------------
+        // Params:
+        //   $paginator : Paginator - the paginator object.
+        //   $template  : string    - the template name of pagination.
+        // Usage:
+        //   {% paginate of users %}
+        //   {% paginate of users powered by 'paginate@semantic-ui' %}
+        // Note:
+        //   Default paginate template can be changed by Rebet\Database\Pagination\Pager.default_template configure.
+        $environment->code('paginate', 'of', ['/powered by/'], 'echo(', function ($paginator, $template = null) use ($twig) {
+            return $twig->render($template ?? Pager::config('default_template'), ['paginator' => $paginator]);
         }, ');');
     }
 }

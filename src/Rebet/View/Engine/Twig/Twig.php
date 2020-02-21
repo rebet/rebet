@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\View\Engine\Twig;
 
+use Rebet\Common\Path;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Engine\Twig\Environment\Environment;
@@ -24,7 +25,7 @@ class Twig implements Engine
     public static function defaultConfig()
     {
         return [
-            'template_dir' => null,
+            'template_dir' => [],
             'options'      => [],
             'customizers'  => [],
             'file_suffix'  => '.twig',
@@ -46,34 +47,74 @@ class Twig implements Engine
     protected $file_suffix = null;
 
     /**
+     * Crear view template engine.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$twig = null;
+    }
+
+    /**
      * Create Twig template engine
      *
-     * @param array $config
      * @param bool $clean_rebuild (default: false)
      */
-    public function __construct(array $config = [], bool $clean_rebuild = false)
+    public function __construct(bool $clean_rebuild = false)
     {
-        $this->file_suffix = $config['file_suffix'] ?? static::config('file_suffix') ;
-        $template_dir      = $config['template_dir'] ?? static::config('template_dir') ;
-        $options           = $config['options'] ?? static::config('options', false, []) ;
+        $this->file_suffix = static::config('file_suffix') ;
 
         if (static::$twig === null || $clean_rebuild) {
-            static::$twig = new Environment(new FilesystemLoader($template_dir), $options);
+            $template_dir      = static::config('template_dir') ;
+            $options           = static::config('options', false, []) ;
+            static::$twig      = new Environment(new FilesystemLoader($template_dir), $options);
             foreach (array_reverse(static::config('customizers', false, [])) as $customizer) {
-                call_user_func($customizer, static::$twig);
+                call_user_func($customizer, $this);
             }
         }
     }
 
     /**
-     * Customize Twig template engine by given callback customizer.
+     * {@inheritDoc}
      *
-     * @param callable $customizer is function(Environment $twig) : void
-     * @return void
+     * @return Environment
      */
-    public static function customize(callable $customizer) : void
+    public function core()
     {
-        call_user_func($customizer, static::$twig);
+        return static::$twig;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPaths() : array
+    {
+        return static::$twig->getLoader()->getPaths();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function prependPath(string $path) : Engine
+    {
+        $path = Path::normalize($path);
+        if (!in_array($path, $this->getPaths())) {
+            static::$twig->getLoader()->prependPath($path);
+        }
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function appendPath(string $path) : Engine
+    {
+        $path = Path::normalize($path);
+        if (!in_array($path, $this->getPaths())) {
+            static::$twig->getLoader()->addPath($path);
+        }
+        return $this;
     }
 
     /**

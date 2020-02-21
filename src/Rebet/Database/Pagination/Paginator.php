@@ -72,13 +72,6 @@ class Paginator extends ResultSet
 
     /**
      * Create Paginator instance
-     *
-     * @param mixed $items can be arrayable
-     * @param int $page_size
-     */
-
-    /**
-     * Create Paginator instance
      * NOTE: Argument total or next_page_count may not be null at least one.
      *
      * @param mixed $items can be arrayable

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
+use Rebet\Config\Config;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
@@ -19,11 +20,14 @@ class BladeCompilerTest extends RebetTestCase
         $this->vfs([
             'cache' => [],
         ]);
+        Config::application([
+            Blade::class => [
+                'view_path>'  => [App::path('/resources/views/blade')],
+                'cache_path'  => 'vfs://root/cache',
+            ],
+        ]);
 
-        $blade = new Blade([
-            'view_path'  => App::path('/resources/views/blade'),
-            'cache_path' => 'vfs://root/cache',
-        ], true);
+        $blade          = new Blade(true);
         $this->compiler = $blade->compiler();
     }
 

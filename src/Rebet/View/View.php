@@ -104,7 +104,7 @@ class View implements Renderable
      *
      * @param string $name
      * @param callable|null $changer function($view_name):string to return cahnged view name.
-     * @param Engine|null $engine
+     * @param Engine|null $engine (default: null for use configure setting)
      */
     public function __construct(string $name, ?callable $changer = null, ?Engine $engine = null)
     {
@@ -237,5 +237,39 @@ class View implements Renderable
     {
         $changer = $this->changer;
         return (array)($changer ? $changer($this->name) : $this->name);
+    }
+
+    /**
+     * Get template paths
+     *
+     * @return array
+     */
+    public function getPaths() : array
+    {
+        return $this->engine->getPaths();
+    }
+
+    /**
+     * Prepend template path.
+     *
+     * @param string $path
+     * @return self
+     */
+    public function prependPath(string $path) : self
+    {
+        $this->engine->prependPath($path);
+        return $this;
+    }
+
+    /**
+     * Append template path.
+     *
+     * @param string $path
+     * @return self
+     */
+    public function appendPath(string $path) : self
+    {
+        $this->engine->appendPath($path);
+        return $this;
     }
 }

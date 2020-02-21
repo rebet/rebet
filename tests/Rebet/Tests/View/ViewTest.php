@@ -24,35 +24,23 @@ class ViewTest extends RebetTestCase
                 'engine' => Blade::class,
             ],
             Blade::class => [
-                'view_path'  => App::path('/resources/views/blade'),
+                'view_path'  => [App::path('/resources/views/blade')],
                 'cache_path' => 'vfs://root/cache',
             ],
-        ]);
-    }
-
-    protected function blade() : Blade
-    {
-        return new Blade([
-            'view_path'  => App::path('/resources/views/blade'),
-            'cache_path' => 'vfs://root/cache',
-        ], true);
-    }
-
-    protected function twig() : Twig
-    {
-        return new Twig([
-            'template_dir' => App::path('/resources/views/twig'),
-            'options'      => [
-                // 'cache' => 'vfs://root/cache',
+            Twig::class => [
+                'template_dir' => [App::path('/resources/views/twig')],
+                'options'      => [
+                    // 'cache' => 'vfs://root/cache',
+                ],
             ],
-        ], true);
+        ]);
     }
 
     public function test___construct()
     {
         $this->assertInstanceOf(View::class, new View('welcom'));
-        $this->assertInstanceOf(View::class, new View('welcom', null, $this->blade()));
-        $this->assertInstanceOf(View::class, new View('welcom', null, $this->twig()));
+        $this->assertInstanceOf(View::class, new View('welcom', null, new Blade(true)));
+        $this->assertInstanceOf(View::class, new View('welcom', null, new Twig(true)));
     }
 
     public function test_of()

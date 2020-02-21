@@ -626,4 +626,15 @@ EOS
             $actual
         );
     }
+
+    public function test_tag_paginate()
+    {
+        $this->assertSame(
+            <<<EOS
+test
+EOS
+            ,
+            $this->render('custom/paginate', ['users' => []])
+        );
+    }
 }

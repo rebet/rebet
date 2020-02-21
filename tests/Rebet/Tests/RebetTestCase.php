@@ -126,7 +126,7 @@ abstract class RebetTestCase extends TestCase
             ],
             Pager::class => [
                 'resolver' => function (Pager $pager) { return $pager; }
-            ]
+            ],
         ]);
         Enum::clear();
         Event::clear();

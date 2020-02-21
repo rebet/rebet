@@ -79,7 +79,7 @@ class EnvResource
             if (is_dir("{$dir_path}/{$file}")) {
                 continue;
             }
-            $basenames[] = Strings::ratrim(Strings::ratrim($file, '.'), '@');
+            $basenames[] = Strings::ratrim(Strings::rtrim($file, ".{$suffix}", 1), '@');
         }
         return array_values(array_unique($basenames));
     }

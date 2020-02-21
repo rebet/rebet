@@ -2,10 +2,12 @@
 namespace Rebet\Foundation\View\Engine\Blade;
 
 use Rebet\Auth\Auth;
+use Rebet\Database\Pagination\Pager;
 use Rebet\Foundation\App;
 use Rebet\Http\Session\Session;
 use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
+use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 /**
@@ -26,14 +28,17 @@ class BladeCustomizer
     /**
      * Define costom directives for Rebet.
      *
-     * @param BladeCompiler $blade
+     * @param Blade $blade
      */
-    public static function customize(BladeCompiler $blade) : void
+    public static function customize(Blade $blade) : void
     {
+        $blade->appendPath(__DIR__.'/views');
+        $compiler = $blade->compiler();
+
         // ------------------------------------------------
         // Disable laravel blade built-in directives that not use in Rebet
         // ------------------------------------------------
-        static::disable($blade);
+        static::disable($compiler);
 
         // ------------------------------------------------
         // [env/envnot] Check current environment
@@ -43,7 +48,7 @@ class BladeCustomizer
         // Usage:
         //   @env('local') ... @elseenv('testing') ... @else ... @endenv
         //   @env('local', 'testing') ... @else ... @endenv
-        $blade->if('env', function (string ...$env) {
+        $compiler->if('env', function (string ...$env) {
             return in_array(App::getEnv(), $env);
         });
 
@@ -54,7 +59,7 @@ class BladeCustomizer
         //   (none)
         // Usage:
         //   @prefix
-        $blade->code('prefix', 'echo(', function ($prefix) {
+        $compiler->code('prefix', 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', '$prefix ?? null');
 
@@ -67,7 +72,7 @@ class BladeCustomizer
         //   @role('admin') ... @elserole('user') ... @else ... @endrole
         //   @role('user', 'guest') ... @else ... @endrole
         //   @role('user', 'guest:post-editable') ... @else ... @endrole
-        $blade->if('role', function (string ...$roles) {
+        $compiler->if('role', function (string ...$roles) {
             return Auth::user()->is(...$roles);
         });
 
@@ -82,7 +87,7 @@ class BladeCustomizer
         //   @can('update', $post) ... @elsecan('create', Post::class) ... @else ... @endcan
         //   @can('create', Post::class) ... @else ... @endcan
         //   @can('update', 'remark', $post) ... @else ... @endcan
-        $blade->if('can', function (string $action, $target, ...$extras) {
+        $compiler->if('can', function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
         });
 
@@ -91,21 +96,21 @@ class BladeCustomizer
         // ------------------------------------------------
         // Params:
         //   $name : string|null - attribute name
-        // Usage:
+        // Usage: <bind field name>
         //   @field('email') ... @endfield
-        // Under @field:
+        // Usage: <In @field block>
         //   @field
         // Note:
         //   It does not correspond to nesting.
         $field = &static::$field;
-        $blade->code('field', 'echo (', function ($name = null) use (&$field) {
+        $compiler->code('field', 'echo (', function ($name = null) use (&$field) {
             if ($name === null) {
                 return $field;
             }
             $field = $name;
             return '';
         }, ');');
-        $blade->code('endfield', '', function () use (&$field) {
+        $compiler->code('endfield', '', function () use (&$field) {
             $field = null;
         }, ';');
 
@@ -123,11 +128,11 @@ class BladeCustomizer
         //   @error('*')
         //   @error('email', '<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('email', '<div class="error">:messages</div>', '* :message<br>')
-        // Under @field:
+        // Usage: <In @field block>
         //   @error
         //   @error('<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('<div class="error">:messages</div>', '* :message<br>')
-        $blade->code('error', 'echo(', function ($errors, ...$args) use (&$field) {
+        $compiler->code('error', 'echo(', function ($errors, ...$args) use (&$field) {
             $errors                  = Stream::of($errors, true);
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
@@ -161,9 +166,9 @@ class BladeCustomizer
         // Usage:
         //   @errors ... @else ... @enderrors
         //   @errors('email') ... @else ... @enderrors
-        // Under @field:
+        // Usage: <In @field block>
         //   @errors ... @else ... @enderrors
-        $blade->if('errors', function ($errors, $name = null) use (&$field) {
+        $compiler->if('errors', function ($errors, $name = null) use (&$field) {
             $errors = Stream::of($errors, true);
             $name   = $name ?? $field ;
             return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
@@ -179,10 +184,10 @@ class BladeCustomizer
         // Usage:
         //   @iferror('email', 'color: red;')
         //   @iferror('email', 'color: red;', 'color: gleen;')
-        // Under @field:
+        // Usage: <In @field block>
         //   @iferror('color: red;')
         //   @iferror('color: red;', 'color: gleen;')
-        $blade->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
+        $compiler->code('iferror', 'echo(', function ($errors, ...$args) use (&$field) {
             $errors               = Stream::of($errors, true);
             [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $then ?? '' ;
@@ -197,10 +202,10 @@ class BladeCustomizer
         // Usage:
         //   @e('email', 'class')
         //   @e('email', 'icon')
-        // Under @field:
+        // Usage: <In @field block>
         //   @e('class')
         //   @e('icon')
-        $blade->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
+        $compiler->code('e', 'echo(', function ($errors, ...$args) use (&$field) {
             $errors           = Stream::of($errors, true);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
@@ -216,10 +221,10 @@ class BladeCustomizer
         // Usage:
         //   @input('email')
         //   @input('email', $user->email)
-        // Under @field:
+        // Usage: <In @field block>
         //   @input
         //   @input($user->email)
-        $blade->code('input', 'echo(', function ($input, ...$args) use (&$field) {
+        $compiler->code('input', 'echo(', function ($input, ...$args) use (&$field) {
             $input            = Stream::of($input, true);
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
@@ -234,7 +239,7 @@ class BladeCustomizer
         //   @csrf_token
         //   @csrf_token('user', 'edit')
         //   @csrf_token('article', 'edit', $article->article_id)
-        $blade->code('csrf_token', 'echo(', function (...$scope) {
+        $compiler->code('csrf_token', 'echo(', function (...$scope) {
             $session = Session::current();
             return htmlspecialchars($session->token(...$scope) ?? $session->generateToken(...$scope)) ;
         }, ');');
@@ -248,24 +253,39 @@ class BladeCustomizer
         //   @csrf
         //   @csrf('user', 'edit')
         //   @csrf('article', 'edit', $article->article_id)
-        $blade->code('csrf', 'echo(', function (...$scope) {
+        $compiler->code('csrf', 'echo(', function (...$scope) {
             $session = Session::current();
             $key     = Session::createTokenKey(...$scope);
             $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
             return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
+        }, ');');
+
+        // ------------------------------------------------
+        // [paginate] Pagination link output tag
+        // ------------------------------------------------
+        // Params:
+        //   $paginator : Paginator   - the paginator object.
+        //   $template  : string|null - the template name of pagination. (default: null for use default template)
+        // Usage:
+        //   @paginate($users)
+        //   @paginate($users, 'semantic-ui')
+        // Note:
+        //   Default paginate template can be changed by Rebet\Database\Pagination\Pager.default_template configure.
+        $compiler->code('paginate', 'echo(', function ($paginator, $template = null) use ($blade) {
+            return $blade->render($template ?? Pager::config('default_template'), ['paginator' => $paginator]);
         }, ');');
     }
 
     /**
      * Disable laravel directives what not use in Rebet.
      *
-     * @param BladeCompiler $blade
+     * @param BladeCompiler $compiler
      * @return void
      */
-    protected static function disable(BladeCompiler $blade) : void
+    protected static function disable(BladeCompiler $compiler) : void
     {
-        $blade->disable('auth', "Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
-        $blade->disable('guest', "Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");
+        $compiler->disable('auth', "Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
+        $compiler->disable('guest', "Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");
         // @inject
     }
 }

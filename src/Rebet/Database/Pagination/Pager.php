@@ -22,6 +22,7 @@ class Pager
             'default_page_size'  => 10,
             'default_each_side'  => 0,
             'default_need_total' => false,
+            'default_template'   => 'paginate@bootstrap-4',
             'resolver'           => null,   // function(Pager $pager) : Pager { ... }
         ];
     }

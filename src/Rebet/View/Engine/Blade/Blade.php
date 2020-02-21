@@ -7,8 +7,11 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Engines\FileEngine;
+use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Rebet\Common\Path;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 use Rebet\View\Engine\Engine;
@@ -38,30 +41,30 @@ class Blade implements Engine
     }
 
     /**
-     * Clear Blade view container.
+     * Crear view template engine.
      *
      * @return void
      */
     public static function clear() : void
     {
-        Container::setInstance(new Container()) ;
+        Container::setInstance(null);
     }
 
     /**
+     * Create Blade template engine.
      * It provides the Blade engine components to the globally container if 'view' component not exists.
      *
-     * @param array $view_path
-     * @param string $cache_path
-     * @param bool $clean_rebuild (default: false)
-     * @return Container
+     * @param boolean $clean_rebuild (default: false)
      */
-    public static function provide(array $view_path, string $cache_path, bool $clean_rebuild = false) : void
+    public function __construct(bool $clean_rebuild = false)
     {
-        if ($clean_rebuild) {
-            $app = Container::setInstance(new Container()) ;
-        } else {
-            $app = Container::getInstance() ?? Container::setInstance(new Container()) ;
+        $app = Container::getInstance() ;
+        if ($app->has('view') && !$clean_rebuild) {
+            return;
         }
+
+        $view_path  = (array)static::config('view_path');
+        $cache_path = static::config('cache_path', false);
 
         $app->bind('files', function () {
             return new Filesystem();
@@ -100,53 +103,50 @@ class Blade implements Engine
         Facade::setFacadeApplication($app);
 
         foreach (array_reverse(static::config('customizers', false, [])) as $customizer) {
-            call_user_func($customizer, static::compiler());
+            call_user_func($customizer, $this);
         }
     }
 
     /**
-     * Create Blade template engine
-     *
-     * @param array $config
-     * @param boolean $clean_rebuild (default: false)
-     */
-    public function __construct(array $config = [], bool $clean_rebuild = false)
-    {
-        $view_path   = $config['view_path'] ?? static::config('view_path') ;
-        $cache_path  = $config['cache_path'] ?? static::config('cache_path', false) ;
-
-        static::provide((array)$view_path, $cache_path, $clean_rebuild);
-    }
-
-    /**
-     * Get the view factory instance.
+     * {@inheritDoc}
      *
      * @return Factory
      */
-    protected static function factory() : Factory
+    public function core()
     {
         return Container::getInstance()['view'];
     }
 
     /**
-     * Shortcut for getting BladeCompiler
-     *
-     * @return Illuminate\View\Compilers\BladeCompiler
+     * {@inheritDoc}
      */
-    public static function compiler() : BladeCompiler
+    public function getPaths() : array
     {
-        return static::factory()->getEngineResolver()->resolve('blade')->getCompiler();
+        return array_map(function ($path) { return Path::normalize($path); }, $this->finder()->getPaths());
     }
 
     /**
-     * Customize Blade template engine by given callback customizer.
-     *
-     * @param callable $customizer is function(BladeCompiler $blade) : void
-     * @return void
+     * {@inheritDoc}
      */
-    public static function customize(callable $customizer) : void
+    public function prependPath(string $path) : Engine
     {
-        call_user_func($customizer, static::compiler());
+        $path = Path::normalize($path);
+        if (!in_array($path, $this->getPaths())) {
+            $this->finder()->prependLocation($path);
+        }
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function appendPath(string $path) : Engine
+    {
+        $path = Path::normalize($path);
+        if (!in_array($path, $this->getPaths())) {
+            $this->finder()->addLocation($path);
+        }
+        return $this;
     }
 
     /**
@@ -154,7 +154,7 @@ class Blade implements Engine
      */
     public function render(string $name, array $data = []) : string
     {
-        return static::factory()->make($name, $data)->render();
+        return $this->core()->make($name, $data)->render();
     }
 
     /**
@@ -162,6 +162,26 @@ class Blade implements Engine
      */
     public function exists(string $name) : bool
     {
-        return static::factory()->exists($name);
+        return $this->core()->exists($name);
+    }
+
+    /**
+     * Shortcut for getting ViewFinder
+     *
+     * @return FileViewFinder
+     */
+    public function finder() : FileViewFinder
+    {
+        return $this->core()->getFinder();
+    }
+
+    /**
+     * Shortcut for getting BladeCompiler
+     *
+     * @return BladeCompiler
+     */
+    public function compiler() : BladeCompiler
+    {
+        return $this->core()->getEngineResolver()->resolve('blade')->getCompiler();
     }
 }

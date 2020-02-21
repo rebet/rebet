@@ -1,13 +1,11 @@
 <?php
 namespace Rebet\Tests\View\Engine\Blade;
 
-use Illuminate\Container\Container;
-
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
+use Rebet\Config\Config;
 use Rebet\Foundation\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
-use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 use Rebet\View\EofLineFeed;
 
 class BladeTest extends RebetTestCase
@@ -23,26 +21,35 @@ class BladeTest extends RebetTestCase
         $this->vfs([
             'cache' => [],
         ]);
+        Config::application([
+            Blade::class => [
+                'view_path'  => [App::path('/resources/views/blade')],
+                'cache_path' => 'vfs://root/cache',
+            ],
+        ]);
 
-        $this->blade = new Blade([
-            'view_path'  => App::path('/resources/views/blade'),
-            'cache_path' => 'vfs://root/cache',
-        ], true);
+        $this->blade = new Blade(true);
     }
 
-    public function test_clear()
+    public function test_getPaths()
     {
-        $this->assertNotNull(Container::getInstance()['view'] ?? null);
-        $this->blade->clear();
-        $this->assertNull(Container::getInstance()['view'] ?? null);
+        $this->assertTrue(in_array(App::path('/resources/views/blade'), $this->blade->getPaths()));
     }
 
-    public function test_provide()
+    public function test_prependPath()
     {
-        $old_compiler = $this->blade->compiler();
-        $this->blade->provide([App::path('/resources/views/blade')], 'vfs://root/cache', true);
-        $new_compiler = $this->blade->compiler();
-        $this->assertNotSame($old_compiler, $new_compiler);
+        $paths = $this->blade->getPaths();
+        $this->blade->prependPath($path_1 = App::path('/resources/views'));
+        $new_paths = $this->blade->getPaths();
+        $this->assertSame(array_merge([$path_1], $paths), $new_paths);
+    }
+
+    public function test_appendPath()
+    {
+        $paths = $this->blade->getPaths();
+        $this->blade->appendPath($path_1 = App::path('/resources/views'));
+        $new_paths = $this->blade->getPaths();
+        $this->assertSame(array_merge($paths, [$path_1]), $new_paths);
     }
 
     public function test_compiler()
@@ -121,13 +128,5 @@ EOS
     public function test_render_builtin(string $expect, string $name, array $args = [])
     {
         $this->assertSame($expect, EofLineFeed::TRIM()->process($this->blade->render($name, $args)));
-    }
-
-    public function test_customize()
-    {
-        Blade::customize(function (BladeCompiler $compiler) {
-            $compiler->code('hello', 'echo(', function () { return 'Hello'; }, ');');
-        });
-        $this->assertSame('Hello', $this->blade->compiler()->execute('hello'));
     }
 }

@@ -47,7 +47,6 @@ class ViewRouteTest extends RebetTestCase
 
     /**
      * @expectedException Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage View route [/nothing] (possible: /nothing) not found. An exception occurred while processing the view.
      */
     public function test_routing_viewNotFound()
     {
