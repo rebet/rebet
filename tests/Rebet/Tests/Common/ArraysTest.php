@@ -453,6 +453,22 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([0 => 0, 4 => false, 5=> 500], $array);
     }
 
+    public function test_remove()
+    {
+        $array = ['foo' => 'F', 'bar' => 'B'];
+        $this->assertSame(null, Arrays::remove($array, null));
+        $this->assertEquals(['foo' => 'F', 'bar' => 'B'], $array);
+
+        $this->assertSame(null, Arrays::remove($array, 'nothing'));
+        $this->assertEquals(['foo' => 'F', 'bar' => 'B'], $array);
+
+        $this->assertSame('B', Arrays::remove($array, 'bar'));
+        $this->assertEquals(['foo' => 'F'], $array);
+
+        $this->assertSame('F', Arrays::remove($array, 'foo'));
+        $this->assertEquals([], $array);
+    }
+
     public function test_forget()
     {
         $array = ['products' => ['desk' => ['price' => 100]]];
@@ -1171,5 +1187,16 @@ class ArraysTest extends RebetTestCase
         $this->assertSame([], $array);
         $this->assertSame(['key' => null, 'value' => null], Arrays::pop($array));
         $this->assertSame([], $array);
+    }
+
+    public function test_toQuery()
+    {
+        $array = ['a' => 'A', 'b' => 'B b', 'c' => ['foo' => 'foo', 'bar' => 'bar']];
+        $this->assertSame(null, Arrays::toQuery(null));
+        $this->assertSame('', Arrays::toQuery([]));
+        $this->assertSame('a=A', Arrays::toQuery(['a' => 'A']));
+        $this->assertSame('a=A&b=B+b', Arrays::toQuery(['a' => 'A', 'b' => 'B b']));
+        $this->assertSame('a=A&b=B%20b', Arrays::toQuery(['a' => 'A', 'b' => 'B b'], PHP_QUERY_RFC3986));
+        $this->assertSame('a=A&b=B+b&c%5Bfoo%5D=foo&c%5Bbar%5D=bar', Arrays::toQuery(['a' => 'A', 'b' => 'B b', 'c' => ['foo' => 'foo', 'bar' => 'bar']]));
     }
 }

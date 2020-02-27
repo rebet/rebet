@@ -1,10 +1,12 @@
 <?php
 namespace Rebet\Tests\Foundation\View\Engine;
 
+use Rebet\Database\Pagination\Paginator;
 use Rebet\Foundation\App;
 use Rebet\Http\Session\Session;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Validation\BuiltinValidations;
 use Rebet\View\Engine\Engine;
 use Rebet\View\EofLineFeed;
 
@@ -627,14 +629,47 @@ EOS
         );
     }
 
-    public function test_tag_paginate()
+    public function test_tag_lang()
     {
+        $validator = new BuiltinValidations(); // load validation translate file
         $this->assertSame(
             <<<EOS
-test
+ようこそ、Jhon様--
+タグは1個以下で選択して下さい。--
+タグは3個以下で選択して下さい。--
+The Tag may not have more than 1 item.--
+The Tag may not have more than 3 items.
 EOS
             ,
-            $this->render('custom/paginate', ['users' => []])
+            $this->render('custom/lang')
         );
+    }
+
+    public function dataPaginates() : array
+    {
+        return [
+            [
+                [
+                    'test'
+                ],
+                '/users/search?gender=1&status=2',
+                [
+                    'template' => 'paginate@bootstrap-4',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataPaginates
+     */
+    public function test_tag_paginate(array $expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
+    {
+        $request = $this->createRequestMock($action);
+        $this->assertTrue(true);
+        // $this->assertStringContainsString(
+        //     $expect,
+        //     $this->render('custom/paginate', ['users' => new Paginator([], $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options])
+        // );
     }
 }

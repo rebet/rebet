@@ -161,65 +161,71 @@ abstract class RebetTestCase extends TestCase
 
     protected function assertSameStderr($expects, callable $test)
     {
-        $expects = is_array($expects) ? $expects : [$expects] ;
         StderrCapture::clearStart();
         $test();
         $actual = StderrCapture::stopGetClear();
-        foreach ($expects as $expect) {
-            $this->assertSame($expect, $actual);
-        }
+        $this->assertSameString($expects, $actual);
     }
 
     protected function assertContainsStderr($expects, callable $test)
     {
-        $expects = is_array($expects) ? $expects : [$expects] ;
         StderrCapture::clearStart();
         $test();
         $actual = StderrCapture::stopGetClear();
-        foreach ($expects as $expect) {
-            $this->assertContains($expect, $actual);
-        }
+        $this->assertContainsString($expects, $actual);
     }
 
     protected function assertRegExpStderr($expects, callable $test)
     {
-        $expects = is_array($expects) ? $expects : [$expects] ;
         StderrCapture::clearStart();
         $test();
         $actual = StderrCapture::stopGetClear();
-        foreach ($expects as $expect) {
-            $this->assertRegExp($expect, $actual);
-        }
+        $this->assertRegExpString($expects, $actual);
     }
 
-    protected function assertSameOutbuffer($expects, callable $test)
+    protected function assertSameStdout($expects, callable $test)
     {
-        $expects = is_array($expects) ? $expects : [$expects] ;
         \ob_start();
         $test();
         $actual = \ob_get_clean();
+        $this->assertSameString($expects, $actual);
+    }
+
+    protected function assertContainsStdout($expects, callable $test)
+    {
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        $this->assertContainsString($expects, $actual);
+    }
+
+    protected function assertRegExpStdout($expects, callable $test)
+    {
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        $this->assertRegExpString($expects, $actual);
+    }
+
+    protected function assertSameString($expects, string $actual)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
             $this->assertSame($expect, $actual);
         }
     }
 
-    protected function assertContainsOutbuffer($expects, callable $test)
+    protected function assertContainsString($expects, string $actual)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
-        \ob_start();
-        $test();
-        $actual = \ob_get_clean();
         foreach ($expects as $expect) {
             $this->assertContains($expect, $actual);
         }
     }
 
-    protected function assertRegExpOutbuufer($expects, callable $test)
+    protected function assertRegExpString($expects, string $actual)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
-        \ob_start();
-        $test();
-        $actual = \ob_get_clean();
         foreach ($expects as $expect) {
             $this->assertRegExp($expect, $actual);
         }
@@ -280,6 +286,14 @@ abstract class RebetTestCase extends TestCase
     protected function signout(Request $request = null) : void
     {
         Auth::signout($request ?? $this->createRequestMock('/'));
+    }
+
+    protected function getProperty($target, string $name)
+    {
+        $class = is_string($target) ? $target : get_class($target) ;
+        $rp    = new \ReflectionProperty($class, $name);
+        $rp->setAccessible(true);
+        return $rp->getValue($target);
     }
 
     protected function setProperty($target, string $name, $value)

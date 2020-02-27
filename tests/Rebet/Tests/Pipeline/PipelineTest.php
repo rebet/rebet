@@ -85,7 +85,7 @@ class PipelineTest extends RebetTestCase
             return $input;
         });
 
-        $this->assertSameOutbuffer(
+        $this->assertSameStdout(
             '[terminate](terminate)',
             function () {
                 $this->pipeline->invoke('terminate');

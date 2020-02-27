@@ -34,39 +34,39 @@ class EventTest extends RebetTestCase
 
     public function test_listenAndClear()
     {
-        $this->assertSameOutbuffer('6-a', function () { Event::dispatch('a'); });
-        $this->assertSameOutbuffer('', function () { Event::dispatch(1); });
+        $this->assertSameStdout('6-a', function () { Event::dispatch('a'); });
+        $this->assertSameStdout('', function () { Event::dispatch(1); });
 
         Event::listen(function (int $event) { echo $event; });
-        $this->assertSameOutbuffer('6-a', function () { Event::dispatch('a'); });
-        $this->assertSameOutbuffer('1', function () { Event::dispatch(1); });
+        $this->assertSameStdout('6-a', function () { Event::dispatch('a'); });
+        $this->assertSameStdout('1', function () { Event::dispatch(1); });
 
         Event::clear();
-        $this->assertSameOutbuffer('', function () { Event::dispatch('a'); });
-        $this->assertSameOutbuffer('', function () { Event::dispatch(1); });
+        $this->assertSameStdout('', function () { Event::dispatch('a'); });
+        $this->assertSameStdout('', function () { Event::dispatch(1); });
     }
 
     public function test_dispatch()
     {
-        $this->assertSameOutbuffer(
+        $this->assertSameStdout(
             '143',
             function () {
                 Event::dispatch(new Signined(Request::create('/'), AuthUser::guest(), false));
             }
         );
-        $this->assertSameOutbuffer(
+        $this->assertSameStdout(
             '23',
             function () {
                 Event::dispatch(new Signouted(Request::create('/'), AuthUser::guest()));
             }
         );
-        $this->assertSameOutbuffer(
+        $this->assertSameStdout(
             '6-test',
             function () {
                 Event::dispatch('test');
             }
         );
-        $this->assertSameOutbuffer(
+        $this->assertSameStdout(
             '3AB',
             function () {
                 Event::dispatch(new SigninFailed(Request::create('/')));

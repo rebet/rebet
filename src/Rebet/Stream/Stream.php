@@ -114,7 +114,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
                         'every', 'groupBy', 'union', 'min', 'max', 'sort', 'sortBy', 'sortKeys', 'sum', 'avg',
-                        'median', 'mode', 'implode'
+                        'median', 'mode', 'implode', 'toQuery'
                     ],
                 ],
                 'customs' => [

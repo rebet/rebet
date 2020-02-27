@@ -401,6 +401,21 @@ class Arrays
     }
 
     /**
+     * Remove one array items from a given array and get it.
+     *
+     * @param array|null $array
+     * @param int|string $key
+     * @param mixed $default (default: null)
+     * @return mixed
+     */
+    public static function remove(?array &$array, $key, $default = null)
+    {
+        $value = $array[$key] ?? $default;
+        unset($array[$key]);
+        return $value;
+    }
+
+    /**
      * Remove one or many array items from a given array using "dot" notation.
      *
      * @param  array|unll  $array
@@ -1119,5 +1134,17 @@ class Arrays
         $value = $array[$key];
         unset($array[$key]);
         return ['key' => $key, 'value' => $value];
+    }
+
+    /**
+     * Generate URL-encoded query string.
+     *
+     * @param array|\Traversable $value
+     * @param integer $encoding of PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @return string|null
+     */
+    public static function toQuery($value, int $encoding = PHP_QUERY_RFC1738) : ?string
+    {
+        return $value === null ? null : http_build_query($value, null, '&', $encoding) ;
     }
 }

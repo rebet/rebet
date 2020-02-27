@@ -1,1 +1,1 @@
-@paginate($users)
+@paginate($users, $options)

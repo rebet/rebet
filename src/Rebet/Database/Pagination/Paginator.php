@@ -2,6 +2,7 @@
 namespace Rebet\Database\Pagination;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Json;
 use Rebet\Database\ResultSet;
 
 /**
@@ -71,6 +72,34 @@ class Paginator extends ResultSet
     protected $each_side;
 
     /**
+     * Pagination link action url.
+     *
+     * @var string
+     */
+    protected $action;
+
+    /**
+     * Page parameter name of pagination link action.
+     *
+     * @var string
+     */
+    protected $page_name;
+
+    /**
+     * Pagination link action url anchor.
+     *
+     * @var string
+     */
+    protected $anchor;
+
+    /**
+     * Pagination link action url queries.
+     *
+     * @var array
+     */
+    protected $queries = [];
+
+    /**
      * Create Paginator instance
      * NOTE: Argument total or next_page_count may not be null at least one.
      *
@@ -112,6 +141,35 @@ class Paginator extends ResultSet
     }
 
     /**
+     * Set the pagination link action url and page parameter name.
+     *
+     * @param string $action url
+     * @param string $page_name (default: 'page')
+     * @param string|null $anchor (default: null)
+     * @return self
+     */
+    public function action(string $action, string $page_name = 'page', ?string $anchor = null) : self
+    {
+        $this->action    = $action;
+        $this->page_name = $page_name;
+        $this->anchor    = $anchor;
+        return $this;
+    }
+
+    /**
+     * Set/Append the pagination link action url queries.
+     * If the null given then reset the queries.
+     *
+     * @param array|null $queries
+     * @return self
+     */
+    public function with(?array $queries) : self
+    {
+        $this->queries = $queries === null ? [] : array_merge($this->queries, $queries) ;
+        return $this;
+    }
+
+    /**
      * Get the count of current page items.
      *
      * @return int
@@ -132,6 +190,16 @@ class Paginator extends ResultSet
     }
 
     /**
+     * It check the paginator has multi pages.
+     *
+     * @return boolean
+     */
+    public function hasPages() : bool
+    {
+        return $this->page !== 1 || $this->next_page_count !== 0 ;
+    }
+
+    /**
      * Get the current page number
      *
      * @return int
@@ -142,6 +210,103 @@ class Paginator extends ResultSet
     }
 
     /**
+     * Get the previouse page number
+     * NOTE: If paginator do not have previouse page then return current page.
+     *
+     * @return int
+     */
+    public function prevPage() : int
+    {
+        return $this->hasPrev() ? $this->page() - 1 : $this->page() ;
+    }
+
+    /**
+     * Get the next page number
+     * NOTE: If paginator do not have next page then return current page.
+     *
+     * @return int
+     */
+    public function nextPage() : int
+    {
+        return $this->hasNext() ? $this->page() + 1 : $this->page() ;
+    }
+
+    /**
+     * Create page link url of given page.
+     * This method do not care the given page is exists or not.
+     * NOTE: If the action is not set then return null.
+     *
+     * @see Paginator::action()
+     * @see Paginator::with()
+     *
+     * @param int $page
+     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @return string|null
+     */
+    public function pageUrl(int $page, int $encoding = PHP_QUERY_RFC1738) : ?string
+    {
+        if (empty($this->action)) {
+            return null;
+        }
+        $anchor = $this->anchor ? "#{$this->anchor}" : '' ;
+        return "{$this->action}?". Arrays::toQuery(array_merge($this->queries, [$this->page_name => $page]), $encoding).$anchor;
+    }
+
+    /**
+     * Create first page link url.
+     * NOTE: If the action is not set then return null.
+     *
+     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @return string|null
+     */
+    public function firstPageUrl(int $encoding = PHP_QUERY_RFC1738) : ?string
+    {
+        return $this->pageUrl(1, $encoding) ;
+    }
+
+    /**
+     * Create previous page link url.
+     * NOTE:
+     *   - If the action is not set then return null.
+     *   - If the paginator do not have previous page then return null.
+     *
+     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @return string|null
+     */
+    public function prevPageUrl(int $encoding = PHP_QUERY_RFC1738) : ?string
+    {
+        return $this->hasPrev() ? $this->pageUrl($this->page - 1, $encoding) : null ;
+    }
+
+    /**
+     * Create next page link url.
+     * NOTE:
+     *   - If the action is not set then return null.
+     *   - If the paginator do not have next page then return null.
+     *
+     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @return string|null
+     */
+    public function nextPageUrl(int $encoding = PHP_QUERY_RFC1738) : ?string
+    {
+        return $this->hasNext() ? $this->pageUrl($this->page + 1, $encoding) : null ;
+    }
+
+    /**
+     * Create last page link url.
+     * NOTE:
+     *   - If the action is not set then return null.
+     *   - If the paginator do not have last page then return null.
+     *
+     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @return string|null
+     */
+    public function lastPageUrl(int $encoding = PHP_QUERY_RFC1738) : ?string
+    {
+        return $this->hasLastPage() ? $this->pageUrl($this->last_page, $encoding) : null ;
+    }
+
+    /**
      * Get the page size (items count per page)
      *
      * @return int
@@ -149,6 +314,26 @@ class Paginator extends ResultSet
     public function pageSize() : int
     {
         return $this->page_size;
+    }
+
+    /**
+     * Determine if the paginator is on the first page.
+     *
+     * @return bool
+     */
+    public function onFirstPage() : bool
+    {
+        return $this->page === 1;
+    }
+
+    /**
+     * Determine if the paginator is on the last page.
+     *
+     * @return bool
+     */
+    public function onLastPage() : bool
+    {
+        return !$this->hasNext();
     }
 
     /**
@@ -265,5 +450,40 @@ class Paginator extends ResultSet
         }
 
         return $list;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function jsonSerialize()
+    {
+        $page_urls = [];
+        foreach ($this->eachSidePages() as $page) {
+            $page_urls[$page] = $this->pageUrl($page);
+        }
+        return Json::serialize([
+            'has_pages'      => $this->hasPages(),
+            'has_total'      => $this->hasTotal(),
+            'has_prev'       => $this->hasPrev(),
+            'has_next'       => $this->hasNext(),
+            'has_last_page'  => $this->hasLastPage(),
+            'on_first_page'  => $this->onFirstPage(),
+            'on_last_page'   => $this->onLastPage(),
+            'total'          => $this->total(),
+            'page_size'      => $this->pageSize(),
+            'page'           => $this->page(),
+            'prev_page'      => $this->prevPage(),
+            'next_page'      => $this->nextPage(),
+            'last_page'      => $this->lastPage(),
+            'first_page_url' => $this->firstPageUrl(),
+            'prev_page_url'  => $this->prevPageUrl(),
+            'next_page_url'  => $this->nextPageUrl(),
+            'last_page_url'  => $this->lastPageUrl(),
+            'page_urls'      => $page_urls,
+            'each_side'      => $this->eachSide(),
+            'from'           => $this->from(),
+            'to'             => $this->to(),
+            'data'           => $this->toArray(),
+        ]);
     }
 }

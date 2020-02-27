@@ -197,7 +197,8 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     public function equals(?Cursor $cursor) : bool
     {
-        return $this->cursor == $cursor->cursor
+        return $cursor !== null
+            && $this->cursor == $cursor->cursor
             && $this->pager == $cursor->pager
             && $this->next_page_count == $cursor->next_page_count
             ;

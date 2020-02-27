@@ -2,13 +2,16 @@
 namespace Rebet\Foundation\View\Engine\Twig;
 
 use Rebet\Auth\Auth;
-use Rebet\Database\Pagination\Pager;
+use Rebet\Common\Arrays;
+use Rebet\Common\Path;
 use Rebet\Foundation\App;
+use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
 use Rebet\Stream\Stream;
+use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
-use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Engine\Twig\Twig;
+use Rebet\View\View;
 
 /**
  * Twig custom extentions for Rebet
@@ -260,18 +263,58 @@ class TwigCustomizer
         }, ');');
 
         // ------------------------------------------------
+        // [lang] Translate given message to current locale
+        // ------------------------------------------------
+        // Params:
+        //   $key         : string - translate message key.
+        //   $replacement : array  - parameter of translate message. (default: [])
+        //   $selector    : mixed  - translation message selector for example pluralize. (default: null)
+        //   $locale      : string - locale that translate to. (default: null for current locale)
+        // Usage:
+        //   {% lang 'messages.welcome' %}
+        //   {% lang 'messages.welcome' with ['name': 'Jhon'] %}
+        //   {% lang 'messages.tags' with ['tags': tags] for count($tags) %}
+        //   {% lang 'messages.tags' with ['tags': tags] for count($tags) to 'en' %}
+        $environment->code('lang', '', ['/with/', '/for/', '/to/'], 'echo(', function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
+            return Translator::get($key, $replacement, $selector, true, $locale);
+        }, ');');
+
+        // ------------------------------------------------
         // [paginate] Pagination link output tag
         // ------------------------------------------------
         // Params:
-        //   $paginator : Paginator - the paginator object.
-        //   $template  : string    - the template name of pagination.
+        //   $paginator : Paginator     - the paginator object.
+        //   $options   : array         - pagination options.
+        //     - template : string|null - the template name of pagination. (default: null for use default template)
+        //     - action   : string|null - the paginate link action url. (default: null for use Request::getRequestPath())
+        //     - query    : array|null  - the paginate link query parameters. (default: null for use Request::input())
+        //     - append   : array|null  - the appended paginate link query parameters that append/override 'query' parameters. (default: null)
+        //     - reject   : array|null  - the rejected link query parameter keys from 'query' parameters. (default: null)
+        //     - *        : mixed       - Other options will pass through to paginate template, as it is.
         // Usage:
         //   {% paginate of users %}
-        //   {% paginate of users powered by 'paginate@semantic-ui' %}
+        //   {% paginate of users that ['template' => 'paginate@semantic-ui'] %}
         // Note:
-        //   Default paginate template can be changed by Rebet\Database\Pagination\Pager.default_template configure.
-        $environment->code('paginate', 'of', ['/powered by/'], 'echo(', function ($paginator, $template = null) use ($twig) {
-            return $twig->render($template ?? Pager::config('default_template'), ['paginator' => $paginator]);
+        //   Default paginate template can be changed by Rebet\Foundation\App.paginate.default_template configure.
+        $environment->code('paginate', 'of', ['/that/'], 'echo(', function ($paginator, array $options = []) {
+            $request  = Request::current();
+            $template = Arrays::remove($options, 'template') ?? App::config('paginate.default_template');
+            $action   = Arrays::remove($options, 'action') ?? $request->getRequestPath();
+            $query    = array_merge(Arrays::remove($options, 'query') ?? $request->input(), Arrays::remove($options, 'append') ?? []);
+            $anchor   = Arrays::remove($options, 'anchor');
+            $anchor   = $anchor ? "#{$anchor}" : '' ;
+            Arrays::forget($query, Arrays::remove($options, 'reject') ?? []);
+            $page_name = App::config('paginate.page_name');
+            unset($query[$page_name]);
+            return View::of($template)->with(array_merge($options, [
+                'paginator' => $paginator->action($action, $page_name, $anchor)->with($query)
+            ]))->render();
         }, ');');
     }
 }
+
+
+// ---------------------------------------------------------
+// Add library default translation resource
+// ---------------------------------------------------------
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'pagination');

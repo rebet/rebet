@@ -10,6 +10,8 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\Storage;
 use Rebet\Foundation\Database\Pagination\Storage\SessionCursorStorage;
+use Rebet\Foundation\View\Engine\Blade\BladeCustomizer;
+use Rebet\Foundation\View\Engine\Twig\TwigCustomizer;
 use Rebet\Http\Request;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
@@ -44,6 +46,11 @@ class App
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'resources'       => [
                 'i18n' => null,
+            ],
+            'paginate' => [
+                'page_name'        => 'page',
+                'page_size_name'   => 'page_size',
+                'default_template' => 'paginate@bootstrap-4',
             ],
         ];
     }
@@ -100,7 +107,10 @@ class App
             Pager::class => [
                 'resolver' => function (Pager $pager) {
                     $request = Request::current();
-                    return $pager->page($request->get('page') ?? 1)->size($request->get('page_size') ?? Pager::config('default_page_size'));
+                    return $pager
+                        ->page($request->get(App::config('paginate.page_name')) ?? 1)
+                        ->size($request->get(App::config('paginate.page_size_name')) ?? Pager::config('default_page_size'))
+                        ;
                 }
             ],
 
@@ -113,12 +123,12 @@ class App
             //---------------------------------------------
             // Blade template settings
             Blade::class => [
-                'customizers' => ['Rebet\\Foundation\\View\\Engine\\Blade\\BladeCustomizer::customize'],
+                'customizers' => [BladeCustomizer::class.'::customize'],
             ],
 
             // Twig template settings
             Twig::class => [
-                'customizers' => ['Rebet\\Foundation\\View\\Engine\\Twig\\TwigCustomizer::customize'],
+                'customizers' => [TwigCustomizer::class.'::customize'],
             ],
 
             //---------------------------------------------
