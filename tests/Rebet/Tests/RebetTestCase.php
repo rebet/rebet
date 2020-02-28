@@ -159,12 +159,20 @@ abstract class RebetTestCase extends TestCase
         return vfsStream::setup('root', null, $structure);
     }
 
-    protected function assertSameStderr($expects, callable $test)
+    protected function assertSameStderr(string $expect, callable $test)
     {
         StderrCapture::clearStart();
         $test();
         $actual = StderrCapture::stopGetClear();
-        $this->assertSameString($expects, $actual);
+        $this->assertSameString($expect, $actual);
+    }
+
+    protected function assertNotSameStderr($expects, callable $test)
+    {
+        StderrCapture::clearStart();
+        $test();
+        $actual = StderrCapture::stopGetClear();
+        $this->assertNotSameString($expects, $actual);
     }
 
     protected function assertContainsStderr($expects, callable $test)
@@ -175,6 +183,14 @@ abstract class RebetTestCase extends TestCase
         $this->assertContainsString($expects, $actual);
     }
 
+    protected function assertNotContainsStderr($expects, callable $test)
+    {
+        StderrCapture::clearStart();
+        $test();
+        $actual = StderrCapture::stopGetClear();
+        $this->assertNotContainsString($expects, $actual);
+    }
+
     protected function assertRegExpStderr($expects, callable $test)
     {
         StderrCapture::clearStart();
@@ -183,12 +199,28 @@ abstract class RebetTestCase extends TestCase
         $this->assertRegExpString($expects, $actual);
     }
 
-    protected function assertSameStdout($expects, callable $test)
+    protected function assertNotRegExpStderr($expects, callable $test)
+    {
+        StderrCapture::clearStart();
+        $test();
+        $actual = StderrCapture::stopGetClear();
+        $this->assertNotRegExpString($expects, $actual);
+    }
+
+    protected function assertSameStdout(string $expect, callable $test)
     {
         \ob_start();
         $test();
         $actual = \ob_get_clean();
-        $this->assertSameString($expects, $actual);
+        $this->assertSameString($expect, $actual);
+    }
+
+    protected function assertNotSameStdout($expects, callable $test)
+    {
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        $this->assertNotSameString($expects, $actual);
     }
 
     protected function assertContainsStdout($expects, callable $test)
@@ -199,6 +231,14 @@ abstract class RebetTestCase extends TestCase
         $this->assertContainsString($expects, $actual);
     }
 
+    protected function assertNotContainsStdout($expects, callable $test)
+    {
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        $this->assertNotContainsString($expects, $actual);
+    }
+
     protected function assertRegExpStdout($expects, callable $test)
     {
         \ob_start();
@@ -207,11 +247,24 @@ abstract class RebetTestCase extends TestCase
         $this->assertRegExpString($expects, $actual);
     }
 
-    protected function assertSameString($expects, string $actual)
+    protected function assertNotRegExpStdout($expects, callable $test)
+    {
+        \ob_start();
+        $test();
+        $actual = \ob_get_clean();
+        $this->assertNotRegExpString($expects, $actual);
+    }
+
+    protected function assertSameString(string $expect, string $actual)
+    {
+        $this->assertSame($expect, $actual);
+    }
+
+    protected function assertNotSameString($expects, string $actual)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
-            $this->assertSame($expect, $actual);
+            $this->assertNotSame($expect, $actual);
         }
     }
 
@@ -223,11 +276,27 @@ abstract class RebetTestCase extends TestCase
         }
     }
 
+    protected function assertNotContainsString($expects, string $actual)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        foreach ($expects as $expect) {
+            $this->assertNotContains($expect, $actual);
+        }
+    }
+
     protected function assertRegExpString($expects, string $actual)
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
             $this->assertRegExp($expect, $actual);
+        }
+    }
+
+    protected function assertNotRegExpString($expects, string $actual)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        foreach ($expects as $expect) {
+            $this->assertNotRegExp($expect, $actual);
         }
     }
 

@@ -279,6 +279,7 @@ class BladeCustomizer
         //   @lang('messages.tags', ['tags' => $tags], count($tags))
         //   @lang('messages.tags', ['tags' => $tags], count($tags), 'en')
         $compiler->code('lang', 'echo(', function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
+            $replacement = array_map(function ($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }, $replacement);
             return Translator::get($key, $replacement, $selector, true, $locale);
         }, ');');
 

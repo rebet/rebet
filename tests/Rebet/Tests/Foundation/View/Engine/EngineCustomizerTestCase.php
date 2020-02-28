@@ -650,7 +650,16 @@ EOS
         return [
             [
                 [
-                    'test'
+                    '/前へ/',
+                    '/次へ/',
+                    '/\/users\/search/',
+                    '/gender=1/',
+                    '/status=2/',
+                ],
+                [
+                    '/該当件数/',
+                    '/最初へ/',
+                    '/最後へ/',
                 ],
                 '/users/search?gender=1&status=2',
                 [
@@ -663,13 +672,14 @@ EOS
     /**
      * @dataProvider dataPaginates
      */
-    public function test_tag_paginate(array $expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
+    public function test_tag_paginate(array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
     {
-        $request = $this->createRequestMock($action);
         $this->assertTrue(true);
-        // $this->assertStringContainsString(
-        //     $expect,
-        //     $this->render('custom/paginate', ['users' => new Paginator([], $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options])
-        // );
+
+        // @todo
+        // $request    = $this->createRequestMock($action);
+        // $pagination = $this->render('custom/paginate', ['users' => new Paginator([], $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
+        // $this->assertRegExpString($expect, $pagination);
+        // $this->assertNotRegExpString($not_expect, $pagination);
     }
 }

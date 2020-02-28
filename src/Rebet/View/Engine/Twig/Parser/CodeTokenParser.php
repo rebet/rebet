@@ -91,10 +91,6 @@ class CodeTokenParser extends AbstractTokenParser
             if ($this->skipSeparatorsToken($stream, $separators)) {
                 continue;
             }
-            if ($stream->test(Token::PUNCTUATION_TYPE, '[')) {
-                $template_args[] = $this->parser->getExpressionParser()->parseArrayExpression();
-                continue;
-            }
             $template_args[] = $this->parser->getExpressionParser()->parsePrimaryExpression();
         }
         $stream->expect(Token::BLOCK_END_TYPE);

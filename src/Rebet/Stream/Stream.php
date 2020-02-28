@@ -217,7 +217,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param mixed $value
      * @return void
      */
-    protected static function peel($value)
+    public static function peel($value)
     {
         return $value instanceof self ? $value->origin() : $value ;
     }

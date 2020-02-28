@@ -4,6 +4,7 @@ namespace Rebet\Foundation\View\Engine\Twig;
 use Rebet\Auth\Auth;
 use Rebet\Common\Arrays;
 use Rebet\Common\Path;
+use Rebet\Database\Pagination\Paginator;
 use Rebet\Foundation\App;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
@@ -276,6 +277,8 @@ class TwigCustomizer
         //   {% lang 'messages.tags' with ['tags': tags] for count($tags) %}
         //   {% lang 'messages.tags' with ['tags': tags] for count($tags) to 'en' %}
         $environment->code('lang', '', ['/with/', '/for/', '/to/'], 'echo(', function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
+            $selector    = Stream::peel($selector);
+            $replacement = array_map(function ($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }, $replacement);
             return Translator::get($key, $replacement, $selector, true, $locale);
         }, ');');
 
@@ -296,7 +299,7 @@ class TwigCustomizer
         //   {% paginate of users that ['template' => 'paginate@semantic-ui'] %}
         // Note:
         //   Default paginate template can be changed by Rebet\Foundation\App.paginate.default_template configure.
-        $environment->code('paginate', 'of', ['/that/'], 'echo(', function ($paginator, array $options = []) {
+        $environment->code('paginate', 'of', ['/that/'], 'echo(', function (Paginator $paginator, array $options = []) {
             $request  = Request::current();
             $template = Arrays::remove($options, 'template') ?? App::config('paginate.default_template');
             $action   = Arrays::remove($options, 'action') ?? $request->getRequestPath();
