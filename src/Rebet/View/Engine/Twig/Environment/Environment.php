@@ -38,16 +38,17 @@ class Environment extends TwigEnvironment
      *
      * @param string $name
      * @param string|null $verbs
-     * @param array|null $separators of arguments. If null given then [','] will set.
+     * @param array|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
      * @param callable $callback
      * @param string $close code to callbak returns like ');', ';', '):' etc
      * @param array $binds (default: [])
+     * @param bool $can_omit_first_arg (default: false)
      * @return void
      */
-    public function code($name, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = []) : void
+    public function code($name, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = [], bool $can_omit_first_arg = false) : void
     {
-        $this->addTokenParser(new CodeTokenParser($name, $verbs, $separators, $open, $callback, $close, $binds));
+        $this->addTokenParser(new CodeTokenParser($name, $verbs, $separators, $open, $callback, $close, $binds, $can_omit_first_arg));
     }
 
     /**
@@ -55,15 +56,16 @@ class Environment extends TwigEnvironment
      *
      * @param string $name
      * @param string|null $verbs
-     * @param array|null $separators of arguments. If null given then [','] will set.
+     * @param array|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
      * @param callable $callback
      * @param array $binds (default: [])
+     * @param bool $can_omit_first_arg (default: false)
      * @return void
      */
-    public function if(string $name, ?string $verbs, ?array $separators, callable $callback, array $binds = [])
+    public function if(string $name, ?string $verbs, ?array $separators, callable $callback, array $binds = [], bool $can_omit_first_arg = false)
     {
-        $this->code($name, $verbs, $separators, 'if(', $callback, ") {\n", $binds);
-        $this->code("else{$name}", $verbs, $separators, '} elseif(', $callback, ") {\n", $binds);
+        $this->code($name, $verbs, $separators, 'if(', $callback, ") {\n", $binds, $can_omit_first_arg);
+        $this->code("else{$name}", $verbs, $separators, '} elseif(', $callback, ") {\n", $binds, $can_omit_first_arg);
         if (!$this->registered_else) {
             $this->raw("else", "} else {\n");
             $this->registered_else = true;

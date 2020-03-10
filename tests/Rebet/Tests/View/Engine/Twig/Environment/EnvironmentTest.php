@@ -38,91 +38,93 @@ EOS
         $this->assertSame($expect, $src);
     }
 
+    protected function renderPhpCode(string $source) : string
+    {
+        $stream = $this->env->tokenize(new Source($source, ''));
+        return $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
+    }
+
     public function test_code()
     {
-        $this->env->code('hello', null, [], 'echo(', function ($name = 'everyone') { return "Hello {$anme}."; }, ');');
+        $this->env->code('hello', null, [], 'echo(', function (string $name = 'everyone', string $greet = 'Hello') { return "{$greet} {$name}."; }, ');');
 
-        $source   = '{% hello %}';
-        $expect   = <<<EOS
+        $this->assertSame(
+            <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello") );
+echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", []) );
 EOS
-        ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
+            ,
+            $this->renderPhpCode('{% hello %}')
+        );
 
-        $source   = '{% hello "world" %}';
-        $expect   = <<<EOS
+        $this->assertSame(
+            <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", "world") );
+echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => "world"]) );
 EOS
-        ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
+            ,
+            $this->renderPhpCode('{% hello "world" %}')
+        );
 
-        $source   = '{% hello name %}';
-        $expect   = <<<EOS
+        $this->assertSame(
+            <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", (\$context["name"] ?? null)) );
+echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => (\$context["name"] ?? null)]) );
 EOS
-        ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
+            ,
+            $this->renderPhpCode('{% hello name %}')
+        );
+
+        $this->assertSame(
+            <<<EOS
+// line 1
+echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", ["greet" => "Good by"]) );
+EOS
+            ,
+            $this->renderPhpCode('{% hello greet="Good by" %}')
+        );
     }
 
     public function test_if()
     {
-        $this->env->if('env', 'is', [], function ($env) { return true; });
+        $this->env->if('env', 'is', ['*' => [',', 'or']], function ($env) { return true; });
 
-        $source   = <<<EOS
-{% env is "local" %}
-    LOCAL
-{% elseenv is "testing" %}
-    TESTING
-{% endenv %}
-EOS
-        ;
-        $expect   = <<<EOS
+        $this->assertSame(
+            <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", "local") ) {
+if( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", [0 => "local"]) ) {
 // line 2
 echo "    LOCAL
 ";
 // line 3
-} elseif( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", "testing") ) {
+} elseif( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", [0 => "testing"]) ) {
 // line 4
 echo "    TESTING
 ";
 }
 
 EOS
-        ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
-
-
-        $source   = <<<EOS
-{% env is not "local" %}
+            ,
+            $this->renderPhpCode(
+                <<<EOS
+{% env is "local" %}
     LOCAL
-{% elseenv is not "testing" %}
+{% elseenv is "testing" %}
     TESTING
-{% else %}
-    OTHER
 {% endenv %}
 EOS
-        ;
-        $expect   = <<<EOS
+            )
+        );
+
+        $this->assertSame(
+            <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", "local") )) {
+if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", [0 => "local"]) )) {
 // line 2
 echo "    LOCAL
 ";
 // line 3
-} elseif(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", "testing") )) {
+} elseif(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", [0 => "testing"]) )) {
 // line 4
 echo "    TESTING
 ";
@@ -133,9 +135,18 @@ echo "    OTHER
 }
 
 EOS
-        ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
+            ,
+            $this->renderPhpCode(
+                <<<EOS
+{% env is not "local" %}
+    LOCAL
+{% elseenv is not "testing" %}
+    TESTING
+{% else %}
+    OTHER
+{% endenv %}
+EOS
+            )
+        );
     }
 }

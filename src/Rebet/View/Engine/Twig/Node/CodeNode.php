@@ -1,7 +1,9 @@
 <?php
 namespace Rebet\View\Engine\Twig\Node;
 
+use Rebet\Common\Reflector;
 use Twig\Compiler;
+use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\NameExpression;
 use Twig\Node\Node;
@@ -47,12 +49,12 @@ class CodeNode extends Node
      * Execute given name callback.
      *
      * @param string $name
-     * @param mixed ...$args
+     * @param array $args (default: [])
      * @return mixed
      */
-    public static function execute(string $name, ...$args)
+    public static function execute(string $name, array $args = [])
     {
-        return isset(static::$callbacks[$name]) ? call_user_func(static::$callbacks[$name], ...$args) : null ;
+        return isset(static::$callbacks[$name]) ? Reflector::evaluate(static::$callbacks[$name], $args, true) : null ;
     }
 
     /**
@@ -60,24 +62,29 @@ class CodeNode extends Node
      *
      * @param string $open
      * @param string $name
-     * @param Node $template_args
+     * @param array $args
      * @param string $close
      * @param array $binds (default: [])
      * @param bool $invert (default: false)
      * @param int $lineno (default: 0)
      */
-    public function __construct(string $open, string $name, Node $template_args, string $close, array $binds = [], bool $invert = false, int $lineno = 0)
+    public function __construct(string $open, string $name, array $args, string $close, array $binds = [], bool $invert = false, int $lineno = 0)
     {
-        $args   = [];
-        $args[] = new ConstantExpression($name, $lineno);
-        foreach ($binds ?? [] as $arg) {
-            $args[] = new NameExpression($arg, $lineno);
+        $elements = [];
+        $args     = array_merge(
+            array_map(function ($value) use ($lineno) { return new NameExpression($value, $lineno); }, $binds),
+            array_map(function ($value) use ($lineno) { return $value instanceof Node ? $value : new ConstantExpression($value, $lineno); }, $args)
+        );
+        foreach ($args as $key => $value) {
+            $elements[] = new ConstantExpression($key, $lineno);
+            $elements[] = $value;
         }
-        foreach ($template_args as $arg) {
-            $args[] = $arg;
-        }
+
         parent::__construct(
-            ['args' => $this->toArgsNode($args, $lineno, $name)],
+            [
+                'name' => new ConstantExpression($name, $lineno),
+                'args' => new ArrayExpression($elements, $lineno),
+            ],
             [
                 'open'   => $open,
                 'close'  => $close,
@@ -99,30 +106,12 @@ class CodeNode extends Node
             ->raw($this->getAttribute('open'))
             ->raw($invert ? '!(' : '')
             ->raw(" Rebet\\View\\Engine\\Twig\\Node\\CodeNode::execute(")
+            ->subcompile($this->getNode('name'))
+            ->raw(", ")
             ->subcompile($this->getNode('args'))
             ->raw(") ")
             ->raw($invert ? ')' : '')
             ->raw($this->getAttribute('close'))
             ;
-    }
-
-    /**
-     * Add argument delimiter nodes.
-     *
-     * @param array $args
-     * @param integer $lineno
-     * @param string $tag
-     * @return void
-     */
-    protected function toArgsNode(array $args, int $lineno, string $tag) : \Twig_Node
-    {
-        $delimiter = new RawNode(', ', $lineno, $tag);
-        $nodes     = [];
-        foreach ($args as $arg) {
-            $nodes[] = $arg;
-            $nodes[] = $delimiter;
-        }
-        unset($nodes[count($nodes) - 1]);
-        return new Node($nodes, [], $lineno, $tag);
     }
 }

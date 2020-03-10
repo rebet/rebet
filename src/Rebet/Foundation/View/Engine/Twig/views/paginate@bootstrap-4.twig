@@ -1,5 +1,5 @@
 {% if paginator.hasPages() %}
-    <nav> 
+    <nav>
         {% if paginator.hasTotal() %}
             <div class="justify-content-start">
                 {% lang "pagination.info" with {'from': paginator.from(), 'to': paginator.to(), 'total': paginator.total()} for paginator.total() %}

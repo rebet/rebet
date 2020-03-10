@@ -590,7 +590,7 @@ class Reflector
             $is_nullable   = $parameter->allowsNull();
             $is_defined    = array_key_exists($orderd ? $i : $name, $values);
             $default_value = $is_optional && !$is_variadic ? $parameter->getDefaultValue() : ($is_variadic ? [] : null) ;
-            $value         = $values[$orderd ? $i : $name] ?? $default_value ;
+            $value         = $orderd && $is_variadic ? $values : (Arrays::remove($values, $orderd ? $i : $name) ?? $default_value) ;
             if (!$is_optional && (!$is_defined || (!$is_nullable && $value === null))) {
                 throw LogicException::by("Parameter '{$name}' is requierd.");
             }

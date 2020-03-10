@@ -677,9 +677,9 @@ EOS
         $this->assertTrue(true);
 
         // @todo
-        // $request    = $this->createRequestMock($action);
-        // $pagination = $this->render('custom/paginate', ['users' => new Paginator([], $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
-        // $this->assertRegExpString($expect, $pagination);
-        // $this->assertNotRegExpString($not_expect, $pagination);
+        $request    = $this->createRequestMock($action);
+        $pagination = $this->render('custom/paginate', ['users' => new Paginator([], $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
+        $this->assertRegExpString($expect, $pagination);
+        $this->assertNotRegExpString($not_expect, $pagination);
     }
 }

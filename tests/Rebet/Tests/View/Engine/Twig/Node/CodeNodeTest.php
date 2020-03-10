@@ -9,7 +9,6 @@ use Twig\Lexer;
 use Twig\Loader\LoaderInterface;
 use Twig\Node\Expression\ConstantExpression;
 use Twig\Node\Expression\NameExpression;
-use Twig\Node\Node;
 
 class CodeNodeTest extends RebetTestCase
 {
@@ -29,53 +28,66 @@ class CodeNodeTest extends RebetTestCase
     {
         CodeNode::clear();
         $this->assertNull(CodeNode::execute('hello'));
-        CodeNode::addCallback('hello', function ($name = 'everyone') { return "Hello {$name}."; });
+        CodeNode::addCallback('hello', function ($name = 'everyone', $call = 'Hello') { return "{$call} {$name}."; });
         $this->assertSame('Hello everyone.', CodeNode::execute('hello'));
-        $this->assertSame('Hello rebet.', CodeNode::execute('hello', 'rebet'));
+        $this->assertSame('Hello rebet.', CodeNode::execute('hello', ['rebet']));
+        $this->assertSame('Good by everyone.', CodeNode::execute('hello', ['call' => 'Good by']));
         CodeNode::clear();
         $this->assertNull(CodeNode::execute('hello'));
     }
 
     public function test___constract()
     {
-        $this->assertInstanceOf(CodeNode::class, new CodeNode('echo', 'hello', new Node([]), ';'));
+        $this->assertInstanceOf(CodeNode::class, new CodeNode('echo', 'hello', [], ';'));
     }
 
     public function test_compile()
     {
-        $node = new CodeNode('echo', 'hello', new Node([]), ';');
+        $node = new CodeNode('echo', 'hello', [], ';');
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello") ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", []) ;', $src);
 
-        $node = new CodeNode('echo', 'hello', new Node([]), ';', ['name']);
+        $node = new CodeNode('echo', 'hello', [], ';', ['name']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", ($context["name"] ?? null)) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => ($context["name"] ?? null)]) ;', $src);
 
-        $node = new CodeNode('echo', 'hello', new Node([]), ';', ['name', 'foo']);
+        $node = new CodeNode('echo', 'hello', [], ';', ['name', 'foo']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", ($context["name"] ?? null), ($context["foo"] ?? null)) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => ($context["name"] ?? null), 1 => ($context["foo"] ?? null)]) ;', $src);
 
-        $args = new Node([
+        $args = [
             new ConstantExpression('world', 0),
             new NameExpression('name', 0)
-        ]);
+        ];
         $node = new CodeNode('echo', 'hello', $args, ';');
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", "world", ($context["name"] ?? null)) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => "world", 1 => ($context["name"] ?? null)]) ;', $src);
 
         $node = new CodeNode('echo', 'hello', $args, ';', ['name', 'foo']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", ($context["name"] ?? null), ($context["foo"] ?? null), "world", ($context["name"] ?? null)) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => ($context["name"] ?? null), 1 => ($context["foo"] ?? null), 2 => "world", 3 => ($context["name"] ?? null)]) ;', $src);
 
-        $args = new Node([
+        $args = [
+            'foo' => new ConstantExpression('world', 0),
+            'bar' => new NameExpression('name', 0)
+        ];
+        $node = new CodeNode('echo', 'hello', $args, ';');
+        $src  = $this->compiler->compile($node)->getSource();
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", ["foo" => "world", "bar" => ($context["name"] ?? null)]) ;', $src);
+
+        $node = new CodeNode('echo', 'hello', $args, ';', ['name', 'foo']);
+        $src  = $this->compiler->compile($node)->getSource();
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => ($context["name"] ?? null), 1 => ($context["foo"] ?? null), "foo" => "world", "bar" => ($context["name"] ?? null)]) ;', $src);
+
+        $args = [
             new NameExpression('status', 0)
-        ]);
+        ];
         $node = new CodeNode('if(', 'is_active', $args, '):');
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('if( Rebet\View\Engine\Twig\Node\CodeNode::execute("is_active", ($context["status"] ?? null)) ):', $src);
+        $this->assertSame('if( Rebet\View\Engine\Twig\Node\CodeNode::execute("is_active", [0 => ($context["status"] ?? null)]) ):', $src);
 
         $node = new CodeNode('if(', 'is_active', $args, '):', [], true);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("is_active", ($context["status"] ?? null)) )):', $src);
+        $this->assertSame('if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("is_active", [0 => ($context["status"] ?? null)]) )):', $src);
     }
 }

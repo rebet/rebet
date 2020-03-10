@@ -1,15 +1,16 @@
 <?php
 namespace Rebet\View\Engine\Twig\Parser;
 
-use Rebet\Common\Strings;
+use Rebet\Common\Arrays;
+use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Node\CodeNode;
-use Twig\Node\Node;
+use Twig\Error\SyntaxError;
+use Twig\Node\Expression\NameExpression;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
-use Twig\TokenStream;
 
 /**
- * CodeTokenParser Class
+ * Code Token Parser Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -18,38 +19,84 @@ use Twig\TokenStream;
  */
 class CodeTokenParser extends AbstractTokenParser
 {
+    /**
+     * Tag name
+     *
+     * @var string
+     */
     protected $tag;
+
+    /**
+     * Verb phrase if the tag has verbs.
+     *
+     * @var string|null
+     */
     protected $verbs;
+
+    /**
+     * Partial code that opens like '', 'if(', 'echo(', '$foo = '.
+     * This partial code handle return value of main process callback function.
+     *
+     * @var string
+     */
     protected $open;
+
+    /**
+     * Main process callback function.
+     *
+     * @var callable
+     */
     protected $callback;
+
+    /**
+     * Partial code that closes like '', ') {', ');', ';'.
+     * This partial code handle return value of main process callback function.
+     *
+     * @var string
+     */
     protected $close;
+
+    /**
+     * The arguments separators.
+     * [
+     *     'with',             // Ordered 1st separator.
+     *     ['then', '?'],      // Ordered 2nd separator can be 'then' or '?'.
+     *     ['else', ':'],      // Ordered 3rd separator can be 'else' or ':'.
+     *     '*' => [',', 'or'], // Default separator can be repeatable ',' or 'or'.
+     * ]
+     *
+     * @var array
+     */
     protected $separators;
 
     /**
-     * Create Code Token Parser.
-     * The separators defined by array like below,
+     * The code tag support to omit first argument by special outer tag that defined it.
      *
-     *  1) Separators array such as ['/a/', '/b/', '/c/'] expects separator tokens to apper in this order.
-     *     Note: Not guarantee that all of the defined separators will be appered.
-     *  2) Separators array items are regex.
-     *  3) If the separator item ends with '*' like '/,/*' that means item '/,/' can be none or repeated.
+     * @var bool
+     */
+    protected $can_omit_first_arg;
+
+    /**
+     * Create Code Token Parser.
      *
      * @param string $tag
      * @param string|null $verbs
-     * @param array $separators
+     * @param array|null $separators null for no argument, [] for one argument
      * @param string $open
      * @param callable $callback
      * @param string $close
      * @param array $binds (default: [])
+     * @param bool $can_omit_first_arg (default: false)
      */
-    public function __construct(string $tag, ?string $verbs, array $separators, string $open, callable $callback, string $close, array $binds = [])
+    public function __construct(string $tag, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = [], bool $can_omit_first_arg = false)
     {
-        $this->tag        = $tag;
-        $this->verbs      = $verbs;
-        $this->separators = $separators;
-        $this->open       = $open;
-        $this->close      = $close;
-        $this->binds      = $binds;
+        $this->tag                = $tag;
+        $this->verbs              = $verbs;
+        $this->separators         = $separators;
+        $this->open               = $open;
+        $this->close              = $close;
+        $this->binds              = $binds;
+        $this->can_omit_first_arg = $can_omit_first_arg;
 
         CodeNode::addCallback($tag, $callback);
     }
@@ -57,94 +104,133 @@ class CodeTokenParser extends AbstractTokenParser
     /**
      * {@inheritDoc}
      */
-    public function parse(\Twig_Token $token)
+    public function parse(Token $token)
     {
         $stream = $this->parser->getStream();
         $invert = false;
         if ($stream->nextIf(Token::OPERATOR_TYPE, 'not')) {
             $invert = true;
         }
+        $token = $stream->getCurrent();
         if (!empty($this->verbs)) {
-            switch ($stream->getCurrent()->getValue()) {
+            switch ($token->getValue()) {
                 case $this->verbs:
-                    $stream->expect($stream->getCurrent()->getType(), $this->verbs);
+                    $stream->expect($token->getType(), $this->verbs);
                     if ($stream->nextIf(Token::NAME_TYPE, 'not')) {
                         $invert = true;
                     }
                     break;
                 case "{$this->verbs} not":
-                    $stream->expect($stream->getCurrent()->getType(), "{$this->verbs} not");
+                    $stream->expect($token->getType(), "{$this->verbs} not");
                     $invert = true;
                     break;
                 case "not {$this->verbs}":
-                    $stream->expect($stream->getCurrent()->getType(), "not {$this->verbs}");
+                    $stream->expect($token->getType(), "not {$this->verbs}");
                     $invert = true;
                     break;
             }
         }
-        $template_args = [];
-        $separators    = $this->separators;
-        while (true) {
-            if ($stream->test(Token::BLOCK_END_TYPE)) {
-                break;
-            }
-            if ($this->skipSeparatorsToken($stream, $separators)) {
-                continue;
-            }
-            $template_args[] = $this->parser->getExpressionParser()->parsePrimaryExpression();
+
+        $separators = $this->separators;
+        if ($this->can_omit_first_arg && in_array($token->getValue(), Arrays::toArray($separators[0] ?? []))) {
+            $stream->expect($token->getType(), Arrays::remove($separators, 0));
+            $separators = array_merge($separators);
         }
-        $stream->expect(Token::BLOCK_END_TYPE);
-        return new CodeNode($this->open, $this->tag, new Node($template_args), $this->close, $this->binds, $invert, $token->getLine());
+
+        return new CodeNode($this->open, $this->tag, $this->parseArguments($separators), $this->close, $this->binds, $invert, $token->getLine());
     }
 
     /**
-     * Skip separator tokens.
-     * The separators defined by array like below,
+     * Parses arguments.
      *
-     *  1) Separators array such as ['/a/', '/b/', '/c/'] expects separator tokens to apper in this order.
-     *     Note: Not guarantee that all of the defined separators will be appered.
-     *  2) Separators array items are regex.
-     *  3) If the separator item ends with '*' like '/,/*' that means item '/,/' can be none or repeated.
-     *
-     * @param TokenStream $stream
-     * @param array $separators
-     * @return bool
+     * @param bool $allow_arrow Whether to allow arrow function call
+     * @return array
+     * @throws SyntaxError
      */
-    private function skipSeparatorsToken(TokenStream $stream, array &$separators) : bool
+    public function parseArguments(?array $separators, bool $allow_arrow = false) : array
     {
-        if (empty($separators)) {
-            return false;
-        }
+        $args    = [];
+        $stream  = $this->parser->getStream();
+        $i       = 0;
+        $default = Arrays::remove($separators, '*');
+        while (!$stream->test(Token::BLOCK_END_TYPE)) {
+            $precedence = PHP_INT_MAX; // @todo
 
-        $repeatable = false;
-        $current    = current($separators);
-        if ($current === false) {
-            return false;
-        }
-        if (Strings::endsWith($current, '*')) {
-            $current    = Strings::rtrim($current, '*', 1);
-            $repeatable = true;
-        }
-
-        $token = $stream->getCurrent()->getValue();
-        if (preg_match($current, $token)) {
-            if (!$repeatable) {
-                array_shift($separators);
+            if ($this->separators === null) {
+                throw new SyntaxError(
+                    "Too many code arguments. The code tag '{$this->tag}' takes no arguments.",
+                    $this->parser->getCurrentToken()->getLine(),
+                    $stream->getSourceContext()
+                );
             }
-            $stream->next();
-            return true;
-        }
 
-        if ($repeatable) {
-            next($separators);
-            if ($this->skipSeparatorsToken($stream, $separators)) {
-                array_shift($separators);
-                return true;
+            if (!empty($args)) {
+                if ($this->separators === []) {
+                    throw new SyntaxError(
+                        "Too many code arguments. The code tag '{$this->tag}' takes only one argument.",
+                        $this->parser->getCurrentToken()->getLine(),
+                        $stream->getSourceContext()
+                    );
+                }
+
+                $candidates = Arrays::toArray($separators[$i++] ?? $default);
+                if ($candidates === null) {
+                    throw new SyntaxError(
+                        "Too many code arguments. The code tag '{$this->tag}' takes up to ".(count($separators) + 1)." arguments.",
+                        $this->parser->getCurrentToken()->getLine(),
+                        $stream->getSourceContext()
+                    );
+                }
+
+                $token_type        = Token::NAME_TYPE;
+                $allow_empty       = false;
+                $separator_matched = false;
+                foreach ($candidates as $separator) {
+                    if ($separator === '') {
+                        $allow_empty = true;
+                        continue;
+                    }
+                    foreach ([Token::PUNCTUATION_TYPE, Token::NAME_TYPE, Token::OPERATOR_TYPE] as $token_type) {
+                        if ($stream->test($token_type, $separator)) {
+                            $separator_matched = true;
+                            break 2;
+                        }
+                    }
+                }
+                if ($separator_matched) {
+                    $stream->next();
+                } elseif (!$allow_empty) {
+                    throw new SyntaxError(
+                        Translator::ordinalize($i, 'en')." and ".Translator::ordinalize($i + 1, 'en')." arguments of the code tag '{$this->tag}' must be separated by '".implode("' or '", $candidates)."'.",
+                        $this->parser->getCurrentToken()->getLine(),
+                        $stream->getSourceContext()
+                    );
+                }
+            }
+
+            $name  = null;
+            $value = $this->parser->getExpressionParser()->parseExpression($precedence, $allow_arrow);
+            if ($token = $stream->nextIf(Token::OPERATOR_TYPE, '=')) {
+                if (!$value instanceof NameExpression) {
+                    throw new SyntaxError(
+                        sprintf('A parameter name must be a string, "%s" given.', \get_class($value)),
+                        $token->getLine(),
+                        $stream->getSourceContext()
+                    );
+                }
+                $name  = $value->getAttribute('name');
+                $value = $this->parser->getExpressionParser()->parseExpression($precedence, $allow_arrow);
+            }
+
+            if (null === $name) {
+                $args[] = $value;
+            } else {
+                $args[$name] = $value;
             }
         }
 
-        reset($separators);
-        return false;
+        $stream->expect(Token::BLOCK_END_TYPE);
+        return $args;
     }
 
     /**

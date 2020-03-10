@@ -588,6 +588,16 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(
             ['a', 'b', 'c', 'd', 'e'],
             Reflector::toArgs($reflection->getParameters(), [
+                'mixed'    => 'a',
+                'string'   => 'b',
+                'nullable' => 'c',
+                'optional' => 'd',
+                'variadic' => 'e',
+            ])
+        );
+        $this->assertSame(
+            ['a', 'b', 'c', 'd', 'e'],
+            Reflector::toArgs($reflection->getParameters(), [
                 'nullable' => 'c',
                 'string'   => 'b',
                 'mixed'    => 'a',
@@ -603,6 +613,18 @@ class ReflectorTest extends RebetTestCase
                 'nullable' => null,
                 'variadic' => ['e', 'f', 'g'],
             ])
+        );
+        $this->assertSame(
+            ['a', 'b', 'c', 'd', 'e'],
+            Reflector::toArgs($reflection->getParameters(), ['a', 'b', 'c', 'd', 'e'])
+        );
+        $this->assertSame(
+            ['a', 'b', 'c', 'd', 'e', 'f'],
+            Reflector::toArgs($reflection->getParameters(), ['a', 'b', 'c', 'd', 'e', 'f'])
+        );
+        $this->assertSame(
+            ['a', 'b', 'c', 'd', ['e', 'f']],
+            Reflector::toArgs($reflection->getParameters(), ['a', 'b', 'c', 'd', ['e', 'f']])
         );
 
         $function   = function (int $convert) { return; };

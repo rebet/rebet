@@ -45,7 +45,9 @@ class TwigCustomizer
         // Usage:
         //   {% env is 'local' %} ... {% elseenv is 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
-        $environment->if('env', 'is', ['/,/*', '/or/'], function (string ...$env) {
+        //   {% env is 'local' or 'testing' %} ... {% else %} ... {% endenv %}
+        //   {% env is 'local', 'testing' or 'production' %} ... {% else %} ... {% endenv %}
+        $environment->if('env', 'is', ['*' => [',', 'or']], function (string ...$env) {
             return in_array(App::getEnv(), $env);
         });
 
@@ -56,7 +58,7 @@ class TwigCustomizer
         //   (none)
         // Usage:
         //   {% prefix %}
-        $environment->code('prefix', null, [], 'echo(', function ($prefix) {
+        $environment->code('prefix', null, null, 'echo(', function ($prefix) {
             return Stream::of($prefix, true)->escape() ;
         }, ');', ['prefix']);
 
@@ -70,7 +72,7 @@ class TwigCustomizer
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
-        $environment->if('role', 'is', ['/,/*', '/or/'], function (string ...$roles) {
+        $environment->if('role', 'is', ['*' => [',', 'or']], function (string ...$roles) {
             return Auth::user()->is(...$roles);
         });
 
@@ -86,7 +88,7 @@ class TwigCustomizer
         //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update' 'remark' with $post %} ... {% else %} ... {% endcan %}
         //   {% can 'update' $post with $a, $b and $c %} ... {% else %} ... {% endcan %}
-        $environment->if('can', null, ['/with/', '/,/*', '/and/'], function (string $action, $target, ...$extras) {
+        $environment->if('can', '', ['', 'with', '*' => [',', 'and']], function (string $action, $target, ...$extras) {
             return Auth::user()->can($action, $target, ...$extras);
         });
 
@@ -109,7 +111,7 @@ class TwigCustomizer
             $field = $name;
             return '';
         }, ');');
-        $environment->code('endfield', '', [], '', function () use (&$field) {
+        $environment->code('endfield', '', null, '', function () use (&$field) {
             $field = null;
         }, ';');
 
@@ -125,13 +127,13 @@ class TwigCustomizer
         //   {% error 'email' %}
         //   {% error ['first_name', 'last_name'] %}
         //   {% error '*' %}
-        //   {% error 'email' format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
-        //   {% error 'email' format by '<div class="error">:messages</div>', '* :message<br>' %}
+        //   {% error 'email' format '<div class="error">:messages</div>' %}
+        //   {% error 'email' format '<div class="error">:messages</div>', '* :message<br>' %}
         // Usage: <In {% field %} block>
         //   {% error %}
-        //   {% error format by '<div class="errors"><ul class="error">:messages</ul></div>' %}
-        //   {% error format by '<div class="error">:messages</div>', '* :message<br>' %}
-        $environment->code('error', '', ['/format/', '/by/', '/,/'], 'echo(', function ($errors, ...$args) use (&$field) {
+        //   {% error format '<div class="errors"><ul class="error">:messages</ul></div>' %}
+        //   {% error format '<div class="error">:messages</div>', '* :message<br>' %}
+        $environment->code('error', '', ['format', ','], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors                  = Stream::of($errors, true);
             [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
 
@@ -155,7 +157,7 @@ class TwigCustomizer
                 }
             }
             return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
-        }, ');', ['errors']);
+        }, ');', ['errors'], true);
 
         // ------------------------------------------------
         // [errors/errors not] Check error is exists
@@ -171,7 +173,7 @@ class TwigCustomizer
             $errors = Stream::of($errors, true);
             $name   = $name ?? $field ;
             return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
-        }, ['errors']);
+        }, ['errors'], true);
 
         // ------------------------------------------------
         // [iferror] Output given value if error
@@ -188,11 +190,11 @@ class TwigCustomizer
         //   {% iferror then 'color: red;' %}
         //   {% iferror then 'color: red;' else 'color: gleen;' %}
         //   {% iferror ? 'color: red;' : 'color: gleen;' %}
-        $environment->code('iferror', '', ['/then|\?/', '/else|:/'], 'echo(', function ($errors, ...$args) use (&$field) {
+        $environment->code('iferror', '', [['then', '?'], ['else', ':']], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors               = Stream::of($errors, true);
             [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
             return $errors[$name]->isBlank() ? $else : $then ?? '' ;
-        }, ');', ['errors']);
+        }, ');', ['errors'], true);
 
         // ------------------------------------------------
         // [e] Output error grammers if error
@@ -206,12 +208,12 @@ class TwigCustomizer
         // Usage: <In {% field %} block>
         //   {% e 'class' %}
         //   {% e 'icon' %}
-        $environment->code('e', '', [], 'echo(', function ($errors, ...$args) use (&$field) {
+        $environment->code('e', '', [''], 'echo(', function ($errors, ...$args) use (&$field) {
             $errors           = Stream::of($errors, true);
             [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
-        }, ');', ['errors']);
+        }, ');', ['errors'], true);
 
         // ------------------------------------------------
         // [input] Output input data
@@ -227,11 +229,11 @@ class TwigCustomizer
         //   {% input %}
         //   {% input default $user->email %}
         //   {% input ?? $user->email %}
-        $environment->code('input', '', ['/default|\?\?/'], 'echo(', function ($input, ...$args) use (&$field) {
+        $environment->code('input', '', [['default', '??']], 'echo(', function ($input, ...$args) use (&$field) {
             $input            = Stream::of($input, true);
             [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
             return $input[$name]->default($default)->escape();
-        }, ');', ['input']);
+        }, ');', ['input'], true);
 
         // ------------------------------------------------
         // [csrf_token] Output csrf token value
@@ -242,7 +244,7 @@ class TwigCustomizer
         //   {% csrf_token %}
         //   {% csrf_token for 'user', 'edit' %}
         //   {% csrf_token for 'article', 'edit', article.article_id %}
-        $environment->code('csrf_token', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+        $environment->code('csrf_token', 'for', ['*' => [',', 'and']], 'echo(', function (...$scope) {
             $session = Session::current();
             return htmlspecialchars($session->token(...$scope) ?? $session->generateToken(...$scope)) ;
         }, ');');
@@ -256,7 +258,7 @@ class TwigCustomizer
         //   {% csrf %}
         //   {% csrf for 'user', 'edit' %}
         //   {% csrf for 'article', 'edit', article.article_id %}
-        $environment->code('csrf', '', ['/for/', '/,/*'], 'echo(', function (...$scope) {
+        $environment->code('csrf', 'for', ['*' => [',', 'and']], 'echo(', function (...$scope) {
             $session = Session::current();
             $key     = Session::createTokenKey(...$scope);
             $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
@@ -273,10 +275,11 @@ class TwigCustomizer
         //   $locale      : string - locale that translate to. (default: null for current locale)
         // Usage:
         //   {% lang 'messages.welcome' %}
-        //   {% lang 'messages.welcome' with ['name': 'Jhon'] %}
-        //   {% lang 'messages.tags' with ['tags': tags] for count($tags) %}
-        //   {% lang 'messages.tags' with ['tags': tags] for count($tags) to 'en' %}
-        $environment->code('lang', '', ['/with/', '/for/', '/to/'], 'echo(', function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
+        //   {% lang 'messages.welcome' with {'name': 'Jhon'} %}
+        //   {% lang 'messages.tags' with {'tags': tags} for count(tags) %}
+        //   {% lang 'messages.tags' with {'tags': tags} for count(tags), 'en' %}
+        //   {% lang 'messages.tags' with {'tags': tags} for locale='en' %}
+        $environment->code('lang', '', ['with', 'for', ','], 'echo(', function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
             $selector    = Stream::peel($selector);
             $replacement = array_map(function ($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }, $replacement);
             return Translator::get($key, $replacement, $selector, true, $locale);
@@ -296,10 +299,10 @@ class TwigCustomizer
         //     - *        : mixed       - Other options will pass through to paginate template, as it is.
         // Usage:
         //   {% paginate of users %}
-        //   {% paginate of users that ['template' => 'paginate@semantic-ui'] %}
+        //   {% paginate of users that {'template': 'paginate@semantic-ui'} %}
         // Note:
         //   Default paginate template can be changed by Rebet\Foundation\App.paginate.default_template configure.
-        $environment->code('paginate', 'of', ['/that/'], 'echo(', function (Paginator $paginator, array $options = []) {
+        $environment->code('paginate', 'of', ['that'], 'echo(', function (Paginator $paginator, array $options = []) {
             $request  = Request::current();
             $template = Arrays::remove($options, 'template') ?? App::config('paginate.default_template');
             $action   = Arrays::remove($options, 'action') ?? $request->getRequestPath();
