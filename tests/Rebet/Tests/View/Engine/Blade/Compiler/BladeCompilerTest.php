@@ -42,42 +42,47 @@ class BladeCompilerTest extends RebetTestCase
     {
         $this->assertSame(null, $this->compiler->getCustomDirectives()['hello'] ?? null);
         $this->compiler->code('hello', "echo(", function () { return 'Hello'; }, ');');
-        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('hello') ); ?>", call_user_func($this->compiler->getCustomDirectives()['hello'], null));
+        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('hello', []) ); ?>", call_user_func($this->compiler->getCustomDirectives()['hello'], null));
 
         $this->compiler->code('say', "echo(", function ($word) { return $word; }, ');');
-        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('say', 'hello') ); ?>", call_user_func($this->compiler->getCustomDirectives()['say'], "'hello'"));
+        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('say', ['hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['say'], "'hello'"));
 
         $this->compiler->code('welcom', "echo(", function ($user_name, $word) { return "{$word} {$user_name}"; }, ');', '$user_name');
-        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('welcom', \$user_name, 'hello') ); ?>", call_user_func($this->compiler->getCustomDirectives()['welcom'], "'hello'"));
+        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('welcom', [\$user_name, 'hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['welcom'], "'hello'"));
+
+        $this->compiler->code('welcom', "echo(", function ($user_name, $word) { return "{$word} {$user_name}"; }, ');', '$user_name');
+        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('welcom', [\$user_name, 'foo' => 'hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['welcom'], "'foo' => 'hello'"));
     }
 
     public function test_execute()
     {
         $this->compiler->code('say', "echo(", function ($word) { return $word; }, ');');
-        $this->assertSame('Hello', $this->compiler->execute('say', 'Hello'));
+        $this->assertSame('Hello', $this->compiler->execute('say', ['Hello']));
     }
 
     public function test_if()
     {
         $this->compiler->if('hello', function ($word) { return $word === 'hello'; });
         $directives = $this->compiler->getCustomDirectives();
-        $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::check('hello', 'welcom')): ?>", call_user_func($directives['hello'], "'welcom'"));
-        $this->assertSame("<?php elseif (\Illuminate\Support\Facades\Blade::check('hello', 'bye')): ?>", call_user_func($directives['elsehello'], "'bye'"));
+        $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::execute('hello', ['welcom'])): ?>", call_user_func($directives['hello'], "'welcom'"));
+        $this->assertSame("<?php elseif (\Illuminate\Support\Facades\Blade::execute('hello', ['bye'])): ?>", call_user_func($directives['elsehello'], "'bye'"));
         $this->assertSame("<?php endif; ?>", call_user_func($directives['endhello']));
-        $this->assertSame("<?php if (! \Illuminate\Support\Facades\Blade::check('hello', 'welcom')): ?>", call_user_func($directives['hellonot'], "'welcom'"));
-        $this->assertSame("<?php elseif (! \Illuminate\Support\Facades\Blade::check('hello', 'bye')): ?>", call_user_func($directives['elsehellonot'], "'bye'"));
-        $this->assertSame(true, $this->compiler->check('hello', 'hello'));
-        $this->assertSame(false, $this->compiler->check('hello', 'welcom'));
+        $this->assertSame("<?php if (! \Illuminate\Support\Facades\Blade::execute('hello', ['welcom'])): ?>", call_user_func($directives['hellonot'], "'welcom'"));
+        $this->assertSame("<?php elseif (! \Illuminate\Support\Facades\Blade::execute('hello', ['bye'])): ?>", call_user_func($directives['elsehellonot'], "'bye'"));
+        $this->assertSame(true, $this->compiler->execute('hello', ['hello']));
+        $this->assertSame(false, $this->compiler->execute('hello', ['welcom']));
 
         $this->compiler->if('say', function ($word, $expect) { return $word === $expect; }, '$word');
         $directives = $this->compiler->getCustomDirectives();
-        $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::check('say', \$word, 'welcom')): ?>", call_user_func($directives['say'], "'welcom'"));
-        $this->assertSame("<?php elseif (\Illuminate\Support\Facades\Blade::check('say', \$word, 'bye')): ?>", call_user_func($directives['elsesay'], "'bye'"));
+        $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::execute('say', [\$word, 'welcom'])): ?>", call_user_func($directives['say'], "'welcom'"));
+        $this->assertSame("<?php elseif (\Illuminate\Support\Facades\Blade::execute('say', [\$word, 'bye'])): ?>", call_user_func($directives['elsesay'], "'bye'"));
         $this->assertSame("<?php endif; ?>", call_user_func($directives['endsay']));
-        $this->assertSame("<?php if (! \Illuminate\Support\Facades\Blade::check('say', \$word, 'welcom')): ?>", call_user_func($directives['saynot'], "'welcom'"));
-        $this->assertSame("<?php elseif (! \Illuminate\Support\Facades\Blade::check('say', \$word, 'bye')): ?>", call_user_func($directives['elsesaynot'], "'bye'"));
-        $this->assertSame(true, $this->compiler->check('say', 'hello', 'hello'));
-        $this->assertSame(false, $this->compiler->check('say', 'welcom', 'hello'));
+        $this->assertSame("<?php if (! \Illuminate\Support\Facades\Blade::execute('say', [\$word, 'welcom'])): ?>", call_user_func($directives['saynot'], "'welcom'"));
+        $this->assertSame("<?php elseif (! \Illuminate\Support\Facades\Blade::execute('say', [\$word, 'bye'])): ?>", call_user_func($directives['elsesaynot'], "'bye'"));
+        $this->assertSame(true, $this->compiler->execute('say', ['hello', 'hello']));
+        $this->assertSame(false, $this->compiler->execute('say', ['welcom', 'hello']));
+
+        $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::execute('say', [\$word, 'foo' => 'welcom'])): ?>", call_user_func($directives['say'], "'foo' => 'welcom'"));
     }
 
     /**
