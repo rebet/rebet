@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View\Engine\Twig\Node;
 
-use Rebet\Common\Reflector;
+use Rebet\View\Tag\Processor;
 use Twig\Compiler;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\ConstantExpression;
@@ -9,40 +9,40 @@ use Twig\Node\Expression\NameExpression;
 use Twig\Node\Node;
 
 /**
- * CodeNode Class
+ * Embed Node Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class CodeNode extends Node
+class EmbedNode extends Node
 {
     /**
-     * @var array of callbacks
+     * @var Processor[]
      */
-    protected static $callbacks = [];
+    protected static $processors = [];
 
     /**
-     * Clear registered callbacks.
+     * Clear registered codes.
      *
      * @return void
      */
     public static function clear() : void
     {
-        static::$callbacks = [];
+        static::$processors = [];
     }
 
     /**
-     * Add callback named given name.
+     * Add code named given name.
      *
      * @param string $name
-     * @param callable $callback
+     * @param Processor $processor
      * @return void
      */
-    public static function addCallback(string $name, callable $callback) : void
+    public static function addCode(string $name, Processor $processor) : void
     {
-        static::$callbacks[$name] = \Closure::fromCallable($callback);
+        static::$processors[$name] = $processor;
     }
 
     /**
@@ -54,7 +54,7 @@ class CodeNode extends Node
      */
     public static function execute(string $name, array $args = [])
     {
-        return isset(static::$callbacks[$name]) ? Reflector::evaluate(static::$callbacks[$name], $args, true) : null ;
+        return isset(static::$processors[$name]) ? static::$processors[$name]->execute($args) : null ;
     }
 
     /**
@@ -105,7 +105,7 @@ class CodeNode extends Node
             ->addDebugInfo($this)
             ->raw($this->getAttribute('open'))
             ->raw($invert ? '!(' : '')
-            ->raw(" Rebet\\View\\Engine\\Twig\\Node\\CodeNode::execute(")
+            ->raw(" Rebet\\View\\Engine\\Twig\\Node\\EmbedNode::execute(")
             ->subcompile($this->getNode('name'))
             ->raw(", ")
             ->subcompile($this->getNode('args'))

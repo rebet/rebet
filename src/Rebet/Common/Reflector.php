@@ -580,17 +580,17 @@ class Reflector
      */
     public static function toArgs(array $parameters, array $values, bool $type_convert = false) : array
     {
-        $orderd = Arrays::isSequential($values);
+        $values = static::toNamedArgs($parameters, $values);
         $args   = [];
-        foreach ($parameters as $i => $parameter) {
+        foreach ($parameters as $parameter) {
             $name          = $parameter->name ;
             $type          = static::getTypeHint($parameter);
             $is_optional   = $parameter->isOptional();
             $is_variadic   = $parameter->isVariadic();
             $is_nullable   = $parameter->allowsNull();
-            $is_defined    = array_key_exists($orderd ? $i : $name, $values);
+            $is_defined    = array_key_exists($name, $values);
             $default_value = $is_optional && !$is_variadic ? $parameter->getDefaultValue() : ($is_variadic ? [] : null) ;
-            $value         = $orderd && $is_variadic ? $values : (Arrays::remove($values, $orderd ? $i : $name) ?? $default_value) ;
+            $value         = $values[$name] ?? $default_value ;
             if (!$is_optional && (!$is_defined || (!$is_nullable && $value === null))) {
                 throw LogicException::by("Parameter '{$name}' is requierd.");
             }
@@ -625,8 +625,18 @@ class Reflector
      */
     public static function toNamedArgs(array $parameters, array $values) : array
     {
-        if (!Arrays::isSequential($values)) {
-            return $values;
+        if (empty($values)) {
+            return [];
+        }
+
+        $orderd = [];
+        $named  = [];
+        foreach ($values as $key => $value) {
+            if (is_int($key)) {
+                $orderd[$key] = $value;
+            } else {
+                $named[$key] = $value;
+            }
         }
 
         $args = [];
@@ -634,11 +644,21 @@ class Reflector
             if (empty($values)) {
                 break;
             }
+
+            $name = $parameter->name;
+            if (array_key_exists($name, $named)) {
+                $args[$name] = $named[$name];
+                unset($values[$name]);
+                continue;
+            }
             if ($parameter->isVariadic()) {
-                $args[$parameter->name] = $values;
+                $args[$name] = array_values($values);
                 break;
             }
-            $args[$parameter->name] = array_shift($values);
+            if (!empty($orderd)) {
+                $args[$name] = Arrays::remove($orderd, $idx = key($orderd));
+                unset($values[$idx]);
+            }
         }
         return $args;
     }

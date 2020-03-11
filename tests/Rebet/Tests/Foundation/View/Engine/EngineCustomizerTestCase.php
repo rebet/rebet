@@ -269,6 +269,8 @@ EOS
 ---
 ---
 ---
+---
+---
 EOS
             ,
             $this->render('custom/error', ['errors' => $errors])
@@ -291,6 +293,11 @@ EOS
  * The name may not be greater than 20 characters.
 =====
 ---
+<ul class="error"> * The name field is required.
+ * The name may not be greater than 20 characters.
+</ul>
+---
+---
 ---
 ---
 EOS
@@ -310,6 +317,7 @@ EOS
 ---
 ---
 ---
+---
 <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
 ---
 <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
@@ -318,6 +326,10 @@ EOS
  * The email field is required.
  * The email may not be greater than 255 characters.
 =====
+---
+<ul class="error"> * The email field is required.
+ * The email may not be greater than 255 characters.
+</ul>
 EOS
             ,
             $this->render('custom/error', ['errors' => $errors])
@@ -343,6 +355,10 @@ EOS
  * The name may not be greater than 20 characters.
 =====
 ---
+<ul class="error"> * The name field is required.
+ * The name may not be greater than 20 characters.
+</ul>
+---
 <ul class="error"><li>The email field is required.</li></ul>
 ---
 <ul class="error"><li>The email field is required.</li></ul>
@@ -350,6 +366,9 @@ EOS
 =====
  * The email field is required.
 =====
+---
+<ul class="error"> * The email field is required.
+</ul>
 EOS
             ,
             $this->render('custom/error', ['errors' => $errors])

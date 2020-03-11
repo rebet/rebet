@@ -3,21 +3,22 @@ namespace Rebet\View\Engine\Twig\Parser;
 
 use Rebet\Common\Arrays;
 use Rebet\Translation\Translator;
-use Rebet\View\Engine\Twig\Node\CodeNode;
+use Rebet\View\Engine\Twig\Node\EmbedNode;
+use Rebet\View\Tag\Processor;
 use Twig\Error\SyntaxError;
 use Twig\Node\Expression\NameExpression;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
 
 /**
- * Code Token Parser Class
+ * Embed Token Parser Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class CodeTokenParser extends AbstractTokenParser
+class EmbedTokenParser extends AbstractTokenParser
 {
     /**
      * Tag name
@@ -40,13 +41,6 @@ class CodeTokenParser extends AbstractTokenParser
      * @var string
      */
     protected $open;
-
-    /**
-     * Main process callback function.
-     *
-     * @var callable
-     */
-    protected $callback;
 
     /**
      * Partial code that closes like '', ') {', ');', ';'.
@@ -83,12 +77,12 @@ class CodeTokenParser extends AbstractTokenParser
      * @param string|null $verbs
      * @param array|null $separators null for no argument, [] for one argument
      * @param string $open
-     * @param callable $callback
+     * @param Processor $processor
      * @param string $close
      * @param array $binds (default: [])
      * @param bool $can_omit_first_arg (default: false)
      */
-    public function __construct(string $tag, ?string $verbs, ?array $separators, string $open, callable $callback, string $close, array $binds = [], bool $can_omit_first_arg = false)
+    public function __construct(string $tag, ?string $verbs, ?array $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false)
     {
         $this->tag                = $tag;
         $this->verbs              = $verbs;
@@ -98,7 +92,7 @@ class CodeTokenParser extends AbstractTokenParser
         $this->binds              = $binds;
         $this->can_omit_first_arg = $can_omit_first_arg;
 
-        CodeNode::addCallback($tag, $callback);
+        EmbedNode::addCode($tag, $processor);
     }
 
     /**
@@ -137,7 +131,7 @@ class CodeTokenParser extends AbstractTokenParser
             $separators = array_merge($separators);
         }
 
-        return new CodeNode($this->open, $this->tag, $this->parseArguments($separators), $this->close, $this->binds, $invert, $token->getLine());
+        return new EmbedNode($this->open, $this->tag, $this->parseArguments($separators), $this->close, $this->binds, $invert, $token->getLine());
     }
 
     /**

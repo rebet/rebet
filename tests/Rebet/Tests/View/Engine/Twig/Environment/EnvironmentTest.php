@@ -3,6 +3,7 @@ namespace Rebet\Tests\View\Engine\Twig\Environment;
 
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Twig\Environment\Environment;
+use Rebet\View\Tag\CallbackProcessor;
 use Twig\Compiler;
 use Twig\Loader\LoaderInterface;
 use Twig\Parser;
@@ -44,14 +45,14 @@ EOS
         return $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
     }
 
-    public function test_code()
+    public function test_embed()
     {
-        $this->env->code('hello', null, [], 'echo(', function (string $name = 'everyone', string $greet = 'Hello') { return "{$greet} {$name}."; }, ');');
+        $this->env->embed('hello', null, [], 'echo(', new CallbackProcessor(function (string $name = 'everyone', string $greet = 'Hello') { return "{$greet} {$name}."; }), ');');
 
         $this->assertSame(
             <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", []) );
+echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", []) );
 EOS
             ,
             $this->renderPhpCode('{% hello %}')
@@ -60,7 +61,7 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => "world"]) );
+echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "world"]) );
 EOS
             ,
             $this->renderPhpCode('{% hello "world" %}')
@@ -69,7 +70,7 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", [0 => (\$context["name"] ?? null)]) );
+echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["name"] ?? null)]) );
 EOS
             ,
             $this->renderPhpCode('{% hello name %}')
@@ -78,26 +79,26 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\CodeNode::execute("hello", ["greet" => "Good by"]) );
+echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["greet" => "Good by"]) );
 EOS
             ,
             $this->renderPhpCode('{% hello greet="Good by" %}')
         );
     }
 
-    public function test_if()
+    public function test_case()
     {
-        $this->env->if('env', 'is', ['*' => [',', 'or']], function ($env) { return true; });
+        $this->env->case('env', 'is', ['*' => [',', 'or']], new CallbackProcessor(function ($env) { return true; }));
 
         $this->assertSame(
             <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", [0 => "local"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", [0 => "local"]) ) {
 // line 2
 echo "    LOCAL
 ";
 // line 3
-} elseif( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", [0 => "testing"]) ) {
+} elseif( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", [0 => "testing"]) ) {
 // line 4
 echo "    TESTING
 ";
@@ -119,12 +120,12 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("env", [0 => "local"]) )) {
+if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", [0 => "local"]) )) {
 // line 2
 echo "    LOCAL
 ";
 // line 3
-} elseif(!( Rebet\View\Engine\Twig\Node\CodeNode::execute("elseenv", [0 => "testing"]) )) {
+} elseif(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", [0 => "testing"]) )) {
 // line 4
 echo "    TESTING
 ";

@@ -565,6 +565,10 @@ class ReflectorTest extends RebetTestCase
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toArgs($reflection->getParameters(), []));
 
+        $function   = function ($mixed, $foo = 'foo', $bar = 'bar') { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame([[], 'foo', 'BAR'], Reflector::toArgs($reflection->getParameters(), [[], 'bar' => 'BAR']));
+
         $function   = function (string ...$variadic) { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame([], Reflector::toArgs($reflection->getParameters(), []));
@@ -575,16 +579,6 @@ class ReflectorTest extends RebetTestCase
 
         $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
         $reflection = new \ReflectionFunction($function);
-        $this->assertSame(
-            ['a', 'b', 'c', 'd', 'e'],
-            Reflector::toArgs($reflection->getParameters(), [
-                'mixed'    => 'a',
-                'string'   => 'b',
-                'nullable' => 'c',
-                'optional' => 'd',
-                'variadic' => 'e',
-            ])
-        );
         $this->assertSame(
             ['a', 'b', 'c', 'd', 'e'],
             Reflector::toArgs($reflection->getParameters(), [
@@ -692,6 +686,15 @@ class ReflectorTest extends RebetTestCase
                 'variadic' => ['e', 'f', 'g'],
             ],
             Reflector::toNamedArgs($reflection->getParameters(), ['a', null, null, 'd', 'e', 'f', 'g'])
+        );
+        $this->assertSame(
+            [
+                'mixed'    => 'a',
+                'string'   => 'b',
+                'nullable' => 'c',
+                'variadic' => ['e', 'f'],
+            ],
+            Reflector::toNamedArgs($reflection->getParameters(), ['a', 'b', 'c', 'variadic' => ['e', 'f']])
         );
     }
 

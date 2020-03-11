@@ -1,18 +1,13 @@
 <?php
 namespace Rebet\Foundation\View\Engine\Twig;
 
-use Rebet\Auth\Auth;
-use Rebet\Common\Arrays;
 use Rebet\Common\Path;
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Foundation\App;
+use Rebet\Foundation\View\Engine\BuiltinTagProcessors;
 use Rebet\Http\Request;
-use Rebet\Http\Session\Session;
-use Rebet\Stream\Stream;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Twig;
-use Rebet\View\View;
 
 /**
  * Twig custom extentions for Rebet
@@ -24,11 +19,6 @@ use Rebet\View\View;
  */
 class TwigCustomizer
 {
-    /**
-     * @var string of field name
-     */
-    protected static $field = null;
-
     /**
      * define costom extentions for Rebet.
      */
@@ -47,9 +37,7 @@ class TwigCustomizer
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local' or 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' or 'production' %} ... {% else %} ... {% endenv %}
-        $environment->if('env', 'is', ['*' => [',', 'or']], function (string ...$env) {
-            return in_array(App::getEnv(), $env);
-        });
+        $environment->case('env', 'is', ['*' => [',', 'or']], BuiltinTagProcessors::env());
 
         // ------------------------------------------------
         // [prefix] Output route prefix
@@ -58,9 +46,7 @@ class TwigCustomizer
         //   (none)
         // Usage:
         //   {% prefix %}
-        $environment->code('prefix', null, null, 'echo(', function ($prefix) {
-            return Stream::of($prefix, true)->escape() ;
-        }, ');', ['prefix']);
+        $environment->embed('prefix', null, null, 'echo(', BuiltinTagProcessors::prefix(), ');', ['prefix']);
 
         // ------------------------------------------------
         // [role is/role is not] Check current users role (Authorization)
@@ -72,9 +58,7 @@ class TwigCustomizer
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
-        $environment->if('role', 'is', ['*' => [',', 'or']], function (string ...$roles) {
-            return Auth::user()->is(...$roles);
-        });
+        $environment->case('role', 'is', ['*' => [',', 'or']], BuiltinTagProcessors::role());
 
         // ------------------------------------------------
         // [can/can not] Check policy for target to current user (Authorization)
@@ -88,9 +72,7 @@ class TwigCustomizer
         //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update' 'remark' with $post %} ... {% else %} ... {% endcan %}
         //   {% can 'update' $post with $a, $b and $c %} ... {% else %} ... {% endcan %}
-        $environment->if('can', '', ['', 'with', '*' => [',', 'and']], function (string $action, $target, ...$extras) {
-            return Auth::user()->can($action, $target, ...$extras);
-        });
+        $environment->case('can', '', ['', 'with', '*' => [',', 'and']], BuiltinTagProcessors::can());
 
         // ------------------------------------------------
         // [field] Bind field attribute name
@@ -103,17 +85,8 @@ class TwigCustomizer
         //   {% field %}
         // Note:
         //   It does not correspond to nesting.
-        $field = &static::$field;
-        $environment->code('field', '', [], 'echo(', function ($name = null) use (&$field) {
-            if ($name === null) {
-                return Stream::of($field, true)->escape();
-            }
-            $field = $name;
-            return '';
-        }, ');');
-        $environment->code('endfield', '', null, '', function () use (&$field) {
-            $field = null;
-        }, ';');
+        $environment->embed('field', '', [], 'echo(', BuiltinTagProcessors::field(), ');');
+        $environment->embed('endfield', '', null, '', BuiltinTagProcessors::endfield(), ';');
 
         // ------------------------------------------------
         // [error] Output error message of given attributes
@@ -129,35 +102,13 @@ class TwigCustomizer
         //   {% error '*' %}
         //   {% error 'email' format '<div class="error">:messages</div>' %}
         //   {% error 'email' format '<div class="error">:messages</div>', '* :message<br>' %}
+        //   {% error 'email' format inner='* :message<br>' %}
         // Usage: <In {% field %} block>
         //   {% error %}
         //   {% error format '<div class="errors"><ul class="error">:messages</ul></div>' %}
         //   {% error format '<div class="error">:messages</div>', '* :message<br>' %}
-        $environment->code('error', '', ['format', ','], 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors                  = Stream::of($errors, true);
-            [$names, $outer, $inner] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
-
-            $names = $names ?? '*' ;
-            $outer = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>'."\n";
-            $inner = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
-
-            $output = '';
-            if ($names === '*') {
-                foreach ($errors as $messages) {
-                    foreach ($messages as $message) {
-                        $output .= str_replace(':message', $message->escape(), $inner);
-                    }
-                }
-            } else {
-                $names = (array)$names;
-                foreach ($names as $name) {
-                    foreach ($errors[$name] as $message) {
-                        $output .= str_replace(':message', $message->escape(), $inner);
-                    }
-                }
-            }
-            return empty($output) ? '' : str_replace(':messages', $output, $outer) ;
-        }, ');', ['errors'], true);
+        //   {% error format inner='* :message<br>' %}
+        $environment->embed('error', '', ['format', ','], 'echo(', BuiltinTagProcessors::error(), ');', ['errors'], true);
 
         // ------------------------------------------------
         // [errors/errors not] Check error is exists
@@ -169,11 +120,7 @@ class TwigCustomizer
         //   {% errors 'email' %} ... {% else %} ... {% enderrors %}
         // Usage: <In {% field %} block>
         //   {% errors %} ... {% else %} ... {% enderrors %}
-        $environment->if('errors', '', [], function ($errors, $name = null) use (&$field) {
-            $errors = Stream::of($errors, true);
-            $name   = $name ?? $field ;
-            return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
-        }, ['errors'], true);
+        $environment->case('errors', '', [], BuiltinTagProcessors::errors(), ['errors'], true);
 
         // ------------------------------------------------
         // [iferror] Output given value if error
@@ -190,11 +137,7 @@ class TwigCustomizer
         //   {% iferror then 'color: red;' %}
         //   {% iferror then 'color: red;' else 'color: gleen;' %}
         //   {% iferror ? 'color: red;' : 'color: gleen;' %}
-        $environment->code('iferror', '', [['then', '?'], ['else', ':']], 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors               = Stream::of($errors, true);
-            [$name, $then, $else] = array_pad($field ? array_merge([$field], $args) : $args, 3, null);
-            return $errors[$name]->isBlank() ? $else : $then ?? '' ;
-        }, ');', ['errors'], true);
+        $environment->embed('iferror', '', [['then', '?'], ['else', ':']], 'echo(', BuiltinTagProcessors::iferror(), ');', ['errors'], true);
 
         // ------------------------------------------------
         // [e] Output error grammers if error
@@ -208,12 +151,7 @@ class TwigCustomizer
         // Usage: <In {% field %} block>
         //   {% e 'class' %}
         //   {% e 'icon' %}
-        $environment->code('e', '', [''], 'echo(', function ($errors, ...$args) use (&$field) {
-            $errors           = Stream::of($errors, true);
-            [$name, $grammer] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
-            [$value, $else]   = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
-            return $errors[$name]->isBlank() ? $else : $value ;
-        }, ');', ['errors'], true);
+        $environment->embed('e', '', [''], 'echo(', BuiltinTagProcessors::e(), ');', ['errors'], true);
 
         // ------------------------------------------------
         // [input] Output input data
@@ -229,11 +167,7 @@ class TwigCustomizer
         //   {% input %}
         //   {% input default $user->email %}
         //   {% input ?? $user->email %}
-        $environment->code('input', '', [['default', '??']], 'echo(', function ($input, ...$args) use (&$field) {
-            $input            = Stream::of($input, true);
-            [$name, $default] = array_pad($field ? array_merge([$field], $args) : $args, 2, null);
-            return $input[$name]->default($default)->escape();
-        }, ');', ['input'], true);
+        $environment->embed('input', '', [['default', '??']], 'echo(', BuiltinTagProcessors::input(), ');', ['input'], true);
 
         // ------------------------------------------------
         // [csrf_token] Output csrf token value
@@ -244,10 +178,7 @@ class TwigCustomizer
         //   {% csrf_token %}
         //   {% csrf_token for 'user', 'edit' %}
         //   {% csrf_token for 'article', 'edit', article.article_id %}
-        $environment->code('csrf_token', 'for', ['*' => [',', 'and']], 'echo(', function (...$scope) {
-            $session = Session::current();
-            return htmlspecialchars($session->token(...$scope) ?? $session->generateToken(...$scope)) ;
-        }, ');');
+        $environment->embed('csrf_token', 'for', ['*' => [',', 'and']], 'echo(', BuiltinTagProcessors::csrfToken(), ');');
 
         // ------------------------------------------------
         // [csrf] Output csrf token hidden field tag
@@ -258,12 +189,7 @@ class TwigCustomizer
         //   {% csrf %}
         //   {% csrf for 'user', 'edit' %}
         //   {% csrf for 'article', 'edit', article.article_id %}
-        $environment->code('csrf', 'for', ['*' => [',', 'and']], 'echo(', function (...$scope) {
-            $session = Session::current();
-            $key     = Session::createTokenKey(...$scope);
-            $token   = $session->token(...$scope) ?? $session->generateToken(...$scope) ;
-            return '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($token).'" />';
-        }, ');');
+        $environment->embed('csrf', 'for', ['*' => [',', 'and']], 'echo(', BuiltinTagProcessors::csrf(), ');');
 
         // ------------------------------------------------
         // [lang] Translate given message to current locale
@@ -279,11 +205,7 @@ class TwigCustomizer
         //   {% lang 'messages.tags' with {'tags': tags} for count(tags) %}
         //   {% lang 'messages.tags' with {'tags': tags} for count(tags), 'en' %}
         //   {% lang 'messages.tags' with {'tags': tags} for locale='en' %}
-        $environment->code('lang', '', ['with', 'for', ','], 'echo(', function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
-            $selector    = Stream::peel($selector);
-            $replacement = array_map(function ($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }, $replacement);
-            return Translator::get($key, $replacement, $selector, true, $locale);
-        }, ');');
+        $environment->embed('lang', '', ['with', 'for', ','], 'echo(', BuiltinTagProcessors::lang(), ');');
 
         // ------------------------------------------------
         // [paginate] Pagination link output tag
@@ -302,20 +224,7 @@ class TwigCustomizer
         //   {% paginate of users that {'template': 'paginate@semantic-ui'} %}
         // Note:
         //   Default paginate template can be changed by Rebet\Foundation\App.paginate.default_template configure.
-        $environment->code('paginate', 'of', ['that'], 'echo(', function (Paginator $paginator, array $options = []) {
-            $request  = Request::current();
-            $template = Arrays::remove($options, 'template') ?? App::config('paginate.default_template');
-            $action   = Arrays::remove($options, 'action') ?? $request->getRequestPath();
-            $query    = array_merge(Arrays::remove($options, 'query') ?? $request->input(), Arrays::remove($options, 'append') ?? []);
-            $anchor   = Arrays::remove($options, 'anchor');
-            $anchor   = $anchor ? "#{$anchor}" : '' ;
-            Arrays::forget($query, Arrays::remove($options, 'reject') ?? []);
-            $page_name = App::config('paginate.page_name');
-            unset($query[$page_name]);
-            return View::of($template)->with(array_merge($options, [
-                'paginator' => $paginator->action($action, $page_name, $anchor)->with($query)
-            ]))->render();
-        }, ');');
+        $environment->embed('paginate', 'of', ['that'], 'echo(', BuiltinTagProcessors::paginate(), ');');
     }
 }
 

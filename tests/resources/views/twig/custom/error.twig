@@ -4,10 +4,14 @@
 ---
 {% error 'name' format "=====\n:messages=====\n", " * :message\n" %}
 ---
+{% error 'name' format inner=" * :message\n" %}
+---
 {% error 'email' %}
 ---
 {% field 'email' %}
 {% error %}
 ---
 {% error format "=====\n:messages=====\n", " * :message\n" %}
+---
+{% error format inner=" * :message\n" %}
 {% endfield %}

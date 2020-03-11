@@ -3,7 +3,8 @@ namespace Rebet\View\Engine\Blade\Compiler;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
+use Rebet\View\Code\Code;
+use Rebet\View\Tag\Processor;
 
 /**
  * Blade Compilera Class
@@ -16,11 +17,11 @@ use Rebet\Common\Reflector;
 class BladeCompiler extends LaravelBladeCompiler
 {
     /**
-     * All custom "codes" handlers.
+     * All custom "processors" handlers.
      *
-     * @var array
+     * @var Processor[]
      */
-    protected $codes = [];
+    protected $processors = [];
 
     /**
      * Register an "raw" statement directive.
@@ -37,19 +38,31 @@ class BladeCompiler extends LaravelBladeCompiler
     }
 
     /**
-     * Register an "code" statement directive.
+     * Execute the given name code.
+     *
+     * @param string $name
+     * @param array $args (default: [])
+     * @return bool
+     */
+    public function execute($name, array $args = [])
+    {
+        return isset($this->processors[$name]) ? $this->processors[$name]->execute($args) : null ;
+    }
+
+    /**
+     * Register an "embed" statement directive.
      * If you give '$errors' as binds then you can get the $errors of assigned value as first argument of callback.
      *
      * @param string $name
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
-     * @param callable $callback
+     * @param Processor $processor
      * @param string $close code to callbak returns like ');', ';', '):' etc
      * @param string $binds (default: null)
      * @return void
      */
-    public function code(string $name, string $open, callable $callback, string $close, string $binds = null) : void
+    public function embed(string $name, string $open, Processor $processor, string $close, string $binds = null) : void
     {
-        $this->codes[$name] = $callback;
+        $this->processors[$name] = $processor;
         $this->directive($name, function ($expression) use ($name, $open, $close, $binds) {
             return $binds
                 ? "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}]) {$close} ?>"
@@ -59,28 +72,16 @@ class BladeCompiler extends LaravelBladeCompiler
     }
 
     /**
-     * Execute the codes closuer.
-     *
-     * @param string $name
-     * @param array $args (default: [])
-     * @return bool
-     */
-    public function execute($name, array $args = [])
-    {
-        return isset($this->codes[$name]) ? Reflector::evaluate($this->codes[$name], $args, true) : null ;
-    }
-
-    /**
      * Register an "if" (and not) statement directive.
      *
      * @param string|array $name
-     * @param callable $callback
+     * @param Processor $processor
      * @param string $binds (default: null)
      * @return void
      */
-    public function if($name, callable $callback, string $binds = null)
+    public function case($name, Processor $processor, string $binds = null)
     {
-        $this->codes[$name] = $callback;
+        $this->processors[$name] = $processor;
 
         $this->directive($name, function ($expression) use ($name, $binds) {
             return $binds
