@@ -1,9 +1,5 @@
-@lang('message.welcome', ['name' => 'Jhon'])
---
-@lang('validation.MaxCount', ['attribute' => 'タグ', 'max' => 1], 1)
---
-@lang('validation.MaxCount', ['attribute' => 'タグ', 'max' => 3], 3)
---
-@lang('validation.MaxCount', ['attribute' => 'Tag', 'max' => 1], 1, 'en')
---
-@lang('validation.MaxCount', ['attribute' => 'Tag', 'max' => 3], 3, 'en')
+[1] @lang('message.welcome', ['name' => 'Jhon'])
+[2] @lang('validation.MaxCount', ['attribute' => 'タグ', 'max' => 1], 1)
+[3] @lang('validation.MaxCount', ['attribute' => 'タグ', 'max' => 3], 3)
+[4] @lang('validation.MaxCount', ['attribute' => 'Tag', 'max' => 1], 1, 'en')
+[5] @lang('validation.MaxCount', ['attribute' => 'Tag', 'max' => 3], 3, 'en')

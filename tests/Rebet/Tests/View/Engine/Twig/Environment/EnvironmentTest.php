@@ -88,7 +88,7 @@ EOS
 
     public function test_case()
     {
-        $this->env->case('env', 'is', ['*' => [',', 'or']], new CallbackProcessor(function ($env) { return true; }));
+        $this->env->case('env', 'is', ['...' => [',', 'or']], new CallbackProcessor(function ($env) { return true; }));
 
         $this->assertSame(
             <<<EOS

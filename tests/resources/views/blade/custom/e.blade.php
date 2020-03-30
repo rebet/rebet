@@ -1,9 +1,6 @@
-@e('name', 'class')
----
-@e('name', 'color')
----
-@e('email', 'class')
----
+[1] @e('name', 'class')
+[2] @e('name', 'color')
+[3] @e('email', 'class')
 @field('email')
-@e('class')
+[4] @e('class')
 @endfield

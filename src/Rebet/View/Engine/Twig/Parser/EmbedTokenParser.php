@@ -21,6 +21,13 @@ use Twig\TokenParser\AbstractTokenParser;
 class EmbedTokenParser extends AbstractTokenParser
 {
     /**
+     * Variadic arguments separators key.
+     *
+     * @var string
+     */
+    private const VARIADIC = '...';
+
+    /**
      * Tag name
      *
      * @var string
@@ -53,10 +60,11 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * The arguments separators.
      * [
-     *     'with',             // Ordered 1st separator.
-     *     ['then', '?'],      // Ordered 2nd separator can be 'then' or '?'.
-     *     ['else', ':'],      // Ordered 3rd separator can be 'else' or ':'.
-     *     '*' => [',', 'or'], // Default separator can be repeatable ',' or 'or'.
+     *     'with',               // Ordered 1st separator.
+     *     ['then', '?'],        // Ordered 2nd separator can be 'then' or '?'.
+     *     ['else', ':'],        // Ordered 3rd separator can be 'else' or ':'.
+     *     '...' => ',',         // Variadic separator can be repeated by ','.
+     *     '...' => [',', 'or'], // Variadic separator can be repeated by ',' or 'or'.
      * ]
      *
      * @var array
@@ -143,10 +151,10 @@ class EmbedTokenParser extends AbstractTokenParser
      */
     public function parseArguments(?array $separators, bool $allow_arrow = false) : array
     {
-        $args    = [];
-        $stream  = $this->parser->getStream();
-        $i       = 0;
-        $default = Arrays::remove($separators, '*');
+        $args     = [];
+        $stream   = $this->parser->getStream();
+        $i        = 0;
+        $variadic = Arrays::remove($separators, static::VARIADIC);
         while (!$stream->test(Token::BLOCK_END_TYPE)) {
             $precedence = PHP_INT_MAX; // @todo
 
@@ -167,7 +175,7 @@ class EmbedTokenParser extends AbstractTokenParser
                     );
                 }
 
-                $candidates = Arrays::toArray($separators[$i++] ?? $default);
+                $candidates = Arrays::toArray($separators[$i++] ?? $variadic);
                 if ($candidates === null) {
                     throw new SyntaxError(
                         "Too many code arguments. The code tag '{$this->tag}' takes up to ".(count($separators) + 1)." arguments.",

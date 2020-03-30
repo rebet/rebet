@@ -37,7 +37,7 @@ class TwigCustomizer
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local' or 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' or 'production' %} ... {% else %} ... {% endenv %}
-        $environment->case('env', 'is', ['*' => [',', 'or']], BuiltinTagProcessors::env());
+        $environment->case('env', 'is', ['...' => [',', 'or']], BuiltinTagProcessors::env());
 
         // ------------------------------------------------
         // [prefix] Output route prefix
@@ -58,7 +58,7 @@ class TwigCustomizer
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user' or 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
-        $environment->case('role', 'is', ['*' => [',', 'or']], BuiltinTagProcessors::role());
+        $environment->case('role', 'is', ['...' => [',', 'or']], BuiltinTagProcessors::role());
 
         // ------------------------------------------------
         // [can/can not] Check policy for target to current user (Authorization)
@@ -72,7 +72,7 @@ class TwigCustomizer
         //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update' 'remark' with $post %} ... {% else %} ... {% endcan %}
         //   {% can 'update' $post with $a, $b and $c %} ... {% else %} ... {% endcan %}
-        $environment->case('can', '', ['', 'with', '*' => [',', 'and']], BuiltinTagProcessors::can());
+        $environment->case('can', '', ['', 'with', '...' => [',', 'and']], BuiltinTagProcessors::can());
 
         // ------------------------------------------------
         // [field] Bind field attribute name
@@ -178,7 +178,7 @@ class TwigCustomizer
         //   {% csrf_token %}
         //   {% csrf_token for 'user', 'edit' %}
         //   {% csrf_token for 'article', 'edit', article.article_id %}
-        $environment->embed('csrf_token', 'for', ['*' => [',', 'and']], 'echo(', BuiltinTagProcessors::csrfToken(), ');');
+        $environment->embed('csrf_token', 'for', ['...' => [',', 'and']], 'echo(', BuiltinTagProcessors::csrfToken(), ');');
 
         // ------------------------------------------------
         // [csrf] Output csrf token hidden field tag
@@ -189,7 +189,7 @@ class TwigCustomizer
         //   {% csrf %}
         //   {% csrf for 'user', 'edit' %}
         //   {% csrf for 'article', 'edit', article.article_id %}
-        $environment->embed('csrf', 'for', ['*' => [',', 'and']], 'echo(', BuiltinTagProcessors::csrf(), ');');
+        $environment->embed('csrf', 'for', ['...' => [',', 'and']], 'echo(', BuiltinTagProcessors::csrf(), ');');
 
         // ------------------------------------------------
         // [lang] Translate given message to current locale
