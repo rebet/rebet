@@ -1,4 +1,4 @@
-@csrf_token
-@csrf_token('user', 'edit')
-@csrf_token('article', 'edit', $article_id)
-@csrf_token('direct', $article_id)
+[1] @csrf_token
+[2] @csrf_token('user', 'edit')
+[3] @csrf_token('article', 'edit', $article_id)
+[4] @csrf_token('direct', $article_id)

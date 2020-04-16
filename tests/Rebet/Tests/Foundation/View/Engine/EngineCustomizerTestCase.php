@@ -183,9 +183,11 @@ EOS
     {
         $this->assertSame(
             <<<EOS
-[1] ;
-[2] name;
-[3] ;
+[1] 
+[2] name
+[3] 
+[4]  ;
+[5] ---===
 EOS
             ,
             $this->render('custom/field')
@@ -264,7 +266,14 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] [2] [3] [4] [5] [6] [7] [8] 
+[1] 
+[2] 
+[3] 
+[4] 
+[5] 
+[6] 
+[7] 
+[8] 
 EOS
             ,
             $this->render('custom/error', ['errors' => $errors])
@@ -287,7 +296,10 @@ EOS
 [4] <ul class="error"> * The name field is required.
  * The name may not be greater than 20 characters.
 </ul>
-[5] [6] [7] [8] 
+[5] 
+[6] 
+[7] 
+[8] 
 EOS
             ,
             $this->render('custom/error', ['errors' => $errors])
@@ -302,7 +314,10 @@ EOS
         $this->assertSame(
             <<<EOS
 [1] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
-[2] [3] [4] [5] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+[2] 
+[3] 
+[4] 
+[5] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
 [6] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
 [7] =====
  * The email field is required.
@@ -355,7 +370,11 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] [2] name has not error[3] email has not error[4] [5] email has not error in field
+[1] 
+[2] name has not error
+[3] email has not error
+[4] 
+[5] email has not error in field
 EOS
             ,
             $this->render('custom/iferror', ['errors' => $errors])
@@ -369,7 +388,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] name has error[2] name has error[3] email has not error[4] [5] email has not error in field
+[1] name has error
+[2] name has error
+[3] email has not error
+[4] 
+[5] email has not error in field
 EOS
             ,
             $this->render('custom/iferror', ['errors' => $errors])
@@ -383,7 +406,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] [2] name has not error[3] email has error[4] email has error in field[5] email has error in field
+[1] 
+[2] name has not error
+[3] email has error
+[4] email has error in field
+[5] email has error in field
 EOS
             ,
             $this->render('custom/iferror', ['errors' => $errors])
@@ -400,7 +427,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] name has error[2] name has error[3] email has error[4] email has error in field[5] email has error in field
+[1] name has error
+[2] name has error
+[3] email has error
+[4] email has error in field
+[5] email has error in field
 EOS
             ,
             $this->render('custom/iferror', ['errors' => $errors])
@@ -413,7 +444,10 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] [2] #333[3] [4] 
+[1] 
+[2] #333
+[3] 
+[4] 
 EOS
             ,
             $this->render('custom/e', ['errors' => $errors])
@@ -427,7 +461,10 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] is-danger[2] red[3] [4] 
+[1] is-danger
+[2] red
+[3] 
+[4] 
 EOS
             ,
             $this->render('custom/e', ['errors' => $errors])
@@ -441,7 +478,10 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] [2] #333[3] is-danger[4] is-danger
+[1] 
+[2] #333
+[3] is-danger
+[4] is-danger
 EOS
             ,
             $this->render('custom/e', ['errors' => $errors])
@@ -458,7 +498,10 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] is-danger[2] red[3] is-danger[4] is-danger
+[1] is-danger
+[2] red
+[3] is-danger
+[4] is-danger
 EOS
             ,
             $this->render('custom/e', ['errors' => $errors])
@@ -471,7 +514,11 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] [2] default[3] default[4] [5] default
+[1] 
+[2] default
+[3] default
+[4] 
+[5] default
 EOS
             ,
             $this->render('custom/input', ['input' => $input])
@@ -482,7 +529,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] Name[2] Name[3] default[4] [5] default
+[1] Name
+[2] Name
+[3] default
+[4] 
+[5] default
 EOS
             ,
             $this->render('custom/input', ['input' => $input])
@@ -493,7 +544,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] [2] default[3] test@rebet.local[4] test@rebet.local[5] test@rebet.local
+[1] 
+[2] default
+[3] test@rebet.local
+[4] test@rebet.local
+[5] test@rebet.local
 EOS
             ,
             $this->render('custom/input', ['input' => $input])
@@ -505,7 +560,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] Name[2] Name[3] test@rebet.local[4] test@rebet.local[5] test@rebet.local
+[1] Name
+[2] Name
+[3] test@rebet.local
+[4] test@rebet.local
+[5] test@rebet.local
 EOS
             ,
             $this->render('custom/input', ['input' => $input])
@@ -526,7 +585,10 @@ EOS
         $direct_1_token = $session->token('direct', 1);
         $this->assertSame(
             <<<EOS
-{$reusable_token}{$user_edit_token}{$article_edit_1_token}{$direct_1_token}
+[1] {$reusable_token}
+[2] {$user_edit_token}
+[3] {$article_edit_1_token}
+[4] {$direct_1_token}
 EOS
             ,
             $actual
@@ -536,7 +598,10 @@ EOS
         $direct_2_token = $session->token('direct', 2);
         $this->assertSame(
             <<<EOS
-{$reusable_token}{$user_edit_token}{$article_edit_2_token}{$direct_2_token}
+[1] {$reusable_token}
+[2] {$user_edit_token}
+[3] {$article_edit_2_token}
+[4] {$direct_2_token}
 EOS
             ,
             $actual
@@ -562,7 +627,10 @@ EOS
         $direct_1_token_key = Session::createTokenKey('direct', 1);
         $this->assertSame(
             <<<EOS
-<input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" /><input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" /><input type="hidden" name="{$article_edit_1_token_key}" value="{$article_edit_1_token}" /><input type="hidden" name="{$direct_1_token_key}" value="{$direct_1_token}" />
+[1] <input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" />
+[2] <input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" />
+[3] <input type="hidden" name="{$article_edit_1_token_key}" value="{$article_edit_1_token}" />
+[4] <input type="hidden" name="{$direct_1_token_key}" value="{$direct_1_token}" />
 EOS
             ,
             $actual
@@ -573,7 +641,10 @@ EOS
         $direct_2_token_key = Session::createTokenKey('direct', 2);
         $this->assertSame(
             <<<EOS
-<input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" /><input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" /><input type="hidden" name="{$article_edit_2_token_key}" value="{$article_edit_2_token}" /><input type="hidden" name="{$direct_2_token_key}" value="{$direct_2_token}" />
+[1] <input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" />
+[2] <input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" />
+[3] <input type="hidden" name="{$article_edit_2_token_key}" value="{$article_edit_2_token}" />
+[4] <input type="hidden" name="{$direct_2_token_key}" value="{$direct_2_token}" />
 EOS
             ,
             $actual
@@ -585,7 +656,11 @@ EOS
         $validator = new BuiltinValidations(); // load validation translate file
         $this->assertSame(
             <<<EOS
-[1] ようこそ、Jhon様[2] タグは1個以下で選択して下さい。[3] タグは3個以下で選択して下さい。[4] The Tag may not have more than 1 item.[5] The Tag may not have more than 3 items.
+[1] ようこそ、Jhon様
+[2] タグは1個以下で選択して下さい。
+[3] タグは3個以下で選択して下さい。
+[4] The Tag may not have more than 1 item.
+[5] The Tag may not have more than 3 items.
 EOS
             ,
             $this->render('custom/lang')

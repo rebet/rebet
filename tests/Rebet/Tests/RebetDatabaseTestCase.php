@@ -359,7 +359,7 @@ EOS
             return Dao::db($db);
         } catch (\Exception $e) {
             if ($mark_test_skiped) {
-                $this->markTestSkipped("Database '$db' was not ready.");
+                $this->markTestSkipped("Database '$db' was not ready: {$e->getMessage()}.");
             }
         }
         return null;
@@ -370,7 +370,7 @@ EOS
         $dbs    = empty($dbs) ? array_keys(Dao::config('dbs')) : $dbs ;
         $skiped = [];
         foreach ($dbs as $name) {
-            $db = $this->connect($name, false);
+            $db = $this->connect($name);
             if ($db === null) {
                 $skiped[] = $name;
                 continue;

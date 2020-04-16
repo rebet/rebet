@@ -30,6 +30,10 @@ class BladeCustomizer
         $blade->appendPath(__DIR__.'/views');
         $compiler = $blade->compiler();
 
+        // Line feed handler that next of tag closing bracket.
+        $lf_trim_if_args = function (?string $expression) { return !empty($expression); };
+        $lf_not_trim     = function (?string $expression) { return false; };
+
         // ------------------------------------------------
         // Disable laravel blade built-in directives that not use in Rebet
         // ------------------------------------------------
@@ -52,7 +56,7 @@ class BladeCustomizer
         //   (none)
         // Usage:
         //   @prefix
-        $compiler->embed('prefix', 'echo(', BuiltinTagProcessors::prefix(), ');', '$prefix ?? null');
+        $compiler->embed('prefix', 'echo(', BuiltinTagProcessors::prefix(), ');', $lf_not_trim, '$prefix ?? null');
 
         // ------------------------------------------------
         // [role/rolenot] Check current users role (Authorization)
@@ -89,7 +93,7 @@ class BladeCustomizer
         //   @field
         // Note:
         //   It does not correspond to nesting.
-        $compiler->embed('field', 'echo (', BuiltinTagProcessors::field(), ');');
+        $compiler->embed('field', 'echo (', BuiltinTagProcessors::field(), ');', $lf_trim_if_args);
         $compiler->embed('endfield', '', BuiltinTagProcessors::endfield(), ';');
 
         // ------------------------------------------------
@@ -112,7 +116,7 @@ class BladeCustomizer
         //   @error('<div class="errors"><ul class="error">:messages</ul></div>')
         //   @error('<div class="error">:messages</div>', '* :message<br>')
         //   @error('inner' => '* :message<br>')
-        $compiler->embed('error', 'echo(', BuiltinTagProcessors::error(), ');', '$errors ?? null');
+        $compiler->embed('error', 'echo(', BuiltinTagProcessors::error(), ');', $lf_not_trim, '$errors ?? null');
 
         // ------------------------------------------------
         // [errors/errorsnot] Check error is exists
@@ -139,7 +143,7 @@ class BladeCustomizer
         // Usage: <In @field block>
         //   @iferror('color: red;')
         //   @iferror('color: red;', 'color: gleen;')
-        $compiler->embed('iferror', 'echo(', BuiltinTagProcessors::iferror(), ');', '$errors ?? null');
+        $compiler->embed('iferror', 'echo(', BuiltinTagProcessors::iferror(), ');', $lf_not_trim, '$errors ?? null');
 
         // ------------------------------------------------
         // [e] Output error grammers if error
@@ -153,7 +157,7 @@ class BladeCustomizer
         // Usage: <In @field block>
         //   @e('class')
         //   @e('icon')
-        $compiler->embed('e', 'echo(', BuiltinTagProcessors::e(), ');', '$errors ?? null');
+        $compiler->embed('e', 'echo(', BuiltinTagProcessors::e(), ');', $lf_not_trim, '$errors ?? null');
 
         // ------------------------------------------------
         // [input] Output input data
@@ -167,7 +171,7 @@ class BladeCustomizer
         // Usage: <In @field block>
         //   @input
         //   @input($user->email)
-        $compiler->embed('input', 'echo(', BuiltinTagProcessors::input(), ');', '$input ?? null');
+        $compiler->embed('input', 'echo(', BuiltinTagProcessors::input(), ');', $lf_not_trim, '$input ?? null');
 
         // ------------------------------------------------
         // [csrf_token] Output csrf token value
@@ -178,7 +182,7 @@ class BladeCustomizer
         //   @csrf_token
         //   @csrf_token('user', 'edit')
         //   @csrf_token('article', 'edit', $article->article_id)
-        $compiler->embed('csrf_token', 'echo(', BuiltinTagProcessors::csrfToken(), ');');
+        $compiler->embed('csrf_token', 'echo(', BuiltinTagProcessors::csrfToken(), ');', $lf_not_trim);
 
         // ------------------------------------------------
         // [csrf] Output csrf token hidden field tag
@@ -189,7 +193,7 @@ class BladeCustomizer
         //   @csrf
         //   @csrf('user', 'edit')
         //   @csrf('article', 'edit', $article->article_id)
-        $compiler->embed('csrf', 'echo(', BuiltinTagProcessors::csrf(), ');');
+        $compiler->embed('csrf', 'echo(', BuiltinTagProcessors::csrf(), ');', $lf_not_trim);
 
         // ------------------------------------------------
         // [lang] Translate given message to current locale
@@ -204,7 +208,7 @@ class BladeCustomizer
         //   @lang('messages.welcome', ['name' => 'Jhon'])
         //   @lang('messages.tags', ['tags' => $tags], count($tags))
         //   @lang('messages.tags', ['tags' => $tags], count($tags), 'en')
-        $compiler->embed('lang', 'echo(', BuiltinTagProcessors::lang(), ');');
+        $compiler->embed('lang', 'echo(', BuiltinTagProcessors::lang(), ');', $lf_not_trim);
 
         // ------------------------------------------------
         // [paginate] Pagination link output tag
@@ -225,7 +229,7 @@ class BladeCustomizer
         //   @paginate($users, ['template' => 'paginate@semantic-ui'])
         // Note:
         //   Default paginate template can be changed by Rebet\Foundation\App.paginate.default_template configure.
-        $compiler->embed('paginate', 'echo(', BuiltinTagProcessors::paginate(), ');');
+        $compiler->embed('paginate', 'echo(', BuiltinTagProcessors::paginate(), ');', $lf_not_trim);
     }
 
     /**

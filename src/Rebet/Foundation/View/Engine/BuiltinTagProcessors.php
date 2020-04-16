@@ -138,7 +138,7 @@ class BuiltinTagProcessors
         $processor = function ($errors, ?string $names = null, ?string $outer = null, ?string $inner = null) {
             $errors = Stream::of($errors, true);
             $names  = $names ?? '*' ;
-            $outer  = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>'."\n";
+            $outer  = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
             $inner  = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
 
             $output = '';

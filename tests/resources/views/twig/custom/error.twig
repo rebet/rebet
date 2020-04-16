@@ -1,10 +1,10 @@
-[1] {% error %}
-[2] {% error 'name' %}
-[3] {% error 'name' format "=====\n:messages=====\n", " * :message\n" %}
-[4] {% error 'name' format inner=" * :message\n" %}
-[5] {% error 'email' %}
+[1] {% error ~%}
+[2] {% error 'name' ~%}
+[3] {% error 'name' format "=====\n:messages=====", " * :message\n" ~%}
+[4] {% error 'name' format inner=" * :message\n" ~%}
+[5] {% error 'email' ~%}
 {% field 'email' %}
-[6] {% error %}
-[7] {% error format "=====\n:messages=====\n", " * :message\n" %}
-[8] {% error format inner=" * :message\n" %}
+[6] {% error ~%}
+[7] {% error format "=====\n:messages=====", " * :message\n" ~%}
+[8] {% error format inner=" * :message\n" ~%}
 {% endfield %}

@@ -57,16 +57,19 @@ class BladeCompiler extends LaravelBladeCompiler
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
      * @param Processor $processor
      * @param string $close code to callbak returns like ');', ';', '):' etc
+     * @param \Closure|null $lf_trimer Line feed that next of tag closing bracket trim or not. function(?string $expression){ return true or false; } (default: null for trim line feed)
      * @param string $binds (default: null)
      * @return void
      */
-    public function embed(string $name, string $open, Processor $processor, string $close, string $binds = null) : void
+    public function embed(string $name, string $open, Processor $processor, string $close, ?\Closure $lf_trimer = null, string $binds = null) : void
     {
         $this->processors[$name] = $processor;
-        $this->directive($name, function ($expression) use ($name, $open, $close, $binds) {
+        $lf_trimer               = $lf_trimer ?? function (?string $expression) { return true; };
+        $this->directive($name, function ($expression) use ($name, $open, $close, $binds, $lf_trimer) {
+            $lf = $lf_trimer($expression) ? "" : "\n" ;
             return $binds
-                ? "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}]) {$close} ?>"
-                : "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}]) {$close} ?>"
+                ? "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}]) {$close} ?>{$lf}"
+                : "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}]) {$close} ?>{$lf}"
                 ;
         });
     }

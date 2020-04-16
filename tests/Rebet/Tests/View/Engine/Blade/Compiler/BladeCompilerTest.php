@@ -48,10 +48,13 @@ class BladeCompilerTest extends RebetTestCase
         $this->compiler->embed('say', "echo(", new CallbackProcessor(function ($word) { return $word; }), ');');
         $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('say', ['hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['say'], "'hello'"));
 
-        $this->compiler->embed('welcom', "echo(", new CallbackProcessor(function ($user_name, $word) { return "{$word} {$user_name}"; }), ');', '$user_name');
+        $this->compiler->embed('say', "echo(", new CallbackProcessor(function ($word) { return $word; }), ');', function ($expression) { return false; });
+        $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('say', ['hello']) ); ?>\n", call_user_func($this->compiler->getCustomDirectives()['say'], "'hello'"));
+
+        $this->compiler->embed('welcom', "echo(", new CallbackProcessor(function ($user_name, $word) { return "{$word} {$user_name}"; }), ');', null, '$user_name');
         $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('welcom', [\$user_name, 'hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['welcom'], "'hello'"));
 
-        $this->compiler->embed('welcom', "echo(", new CallbackProcessor(function ($user_name, $word) { return "{$word} {$user_name}"; }), ');', '$user_name');
+        $this->compiler->embed('welcom', "echo(", new CallbackProcessor(function ($user_name, $word) { return "{$word} {$user_name}"; }), ');', null, '$user_name');
         $this->assertSame("<?php echo( \Illuminate\Support\Facades\Blade::execute('welcom', [\$user_name, 'foo' => 'hello']) ); ?>", call_user_func($this->compiler->getCustomDirectives()['welcom'], "'foo' => 'hello'"));
     }
 
