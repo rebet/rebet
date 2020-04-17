@@ -37,7 +37,6 @@
         "league/flysystem-memory": "^1.0",
         "league/flysystem-sftp": "^1.0",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/dbunit": "^4.0",
         "phpunit/phpunit": "^7.3.0",
         "twig/twig": "^2.5"
     },

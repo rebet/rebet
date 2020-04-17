@@ -155,17 +155,17 @@ class BuiltinFilesystemTest extends RebetTestCase
             $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->setVisibility($path, 'private'));
             $this->assertSame('public', $this->filesystem->getVisibility($path));
         } else {
+            $this->assertSame('public', $this->filesystem->getVisibility($path));
+            $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->setVisibility($path, 'private'));
             $this->assertSame('private', $this->filesystem->getVisibility($path));
-            $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->setVisibility($path, 'public'));
-            $this->assertSame('public', $this->filesystem->getVisibility($path));
             $this->filesystem->delete($path);
 
-            $this->filesystem->put($path, $contents, 'public');
-            $this->assertSame('public', $this->filesystem->getVisibility($path));
+            $this->filesystem->put($path, $contents, 'private');
+            $this->assertSame('private', $this->filesystem->getVisibility($path));
             $this->filesystem->delete($path);
 
-            $this->filesystem->put($path, $contents, ['visibility' => 'public']);
-            $this->assertSame('public', $this->filesystem->getVisibility($path));
+            $this->filesystem->put($path, $contents, ['visibility' => 'private']);
+            $this->assertSame('private', $this->filesystem->getVisibility($path));
             $this->filesystem->delete($path);
         }
     }
