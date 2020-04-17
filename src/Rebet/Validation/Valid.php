@@ -9,8 +9,6 @@ use Rebet\Common\Unit;
  * This class is constants list of built-in validation names.
  * Some definitions (ex REQUIRED/DATE_TIME) includes '!' (validation stop if failed) option defaultly.
  *
- * @todo Implements around upload file validations
- *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

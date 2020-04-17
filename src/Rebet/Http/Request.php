@@ -83,12 +83,13 @@ class Request extends SymfonyRequest
      * @param string $crud
      * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
      * @param string $fallback_url
+     * @param bool $accept_undefined (default: false)
      * @return ValidData
      */
-    public function validate(string $crud, $rules, string $fallback_url) : ValidData
+    public function validate(string $crud, $rules, string $fallback_url, bool $accept_undefined = false) : ValidData
     {
         $validator  = new Validator($this->all());
-        $valid_data = $validator->validate($crud, $rules);
+        $valid_data = $validator->validate($crud, $rules, $accept_undefined);
         if ($valid_data) {
             return $valid_data;
         }

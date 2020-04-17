@@ -78,9 +78,10 @@ class Validator
      *
      * @param string $crud
      * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
+     * @param bool $accept_undefined (default: false)
      * @return ValidData|null
      */
-    public function validate(string $crud, $rules) : ?ValidData
+    public function validate(string $crud, $rules, bool $accept_undefined = false) : ?ValidData
     {
         if (!Arrays::isSequential($rules)) {
             $rules = [$rules];
@@ -107,7 +108,19 @@ class Validator
             $messages = array_values(array_unique($messages));
         }
 
-        return empty($this->errors) ? $valid_data : null ;
+        if (!empty($this->errors)) {
+            return null;
+        }
+
+        if ($accept_undefined) {
+            foreach ($this->data as $key => $value) {
+                if (!$valid_data->has($key)) {
+                    $valid_data[$key] = $value;
+                }
+            }
+        }
+
+        return $valid_data;
     }
 
     /**

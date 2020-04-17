@@ -75,11 +75,12 @@ abstract class Controller
      * @param string $crud
      * @param string|Rule|array $rules
      * @param string $fallback_url
+     * @param bool $accept_undefined (default: false)
      * @return ValidData
      */
-    protected function validate(string $crud, $rules, string $fallback_url) : ValidData
+    protected function validate(string $crud, $rules, string $fallback_url, bool $accept_undefined = false) : ValidData
     {
-        return $this->request->validate($crud, $rules, $fallback_url);
+        return $this->request->validate($crud, $rules, $fallback_url, $accept_undefined);
     }
 
     /**

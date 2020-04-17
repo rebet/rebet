@@ -565,7 +565,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["Error message 1.", "Error message 2.", "Error message 3."]], $validator->errors()); // The same message is not duplicated
     }
-    
+
     public function test_validate_typeConsistencyCheck()
     {
         App::setLocale('en');
@@ -601,7 +601,7 @@ class ValidatorTest extends RebetTestCase
         $this->assertNull($valid_data);
         $this->assertSame(['foo' => ["The 1st Foo (abc) must be number.", "The 2nd Foo (99) must be greater than 100."]], $validator->errors());
     }
-    
+
     public function test_validate_inlineLabelAndI18n()
     {
         App::setLocale('en');
@@ -817,22 +817,22 @@ class ValidatorTest extends RebetTestCase
             'bar'     => ['rule'  => [[ 'U', 'Ng']]],
             'baz'     => ['rule'  => [['CU', 'Ng']]],
             'qux'     => ['rule'  => [['C' , 'Ok:?',
-                'then' => [['C', 'Ng', '@C ok then C ng'],['U', 'Ng', '@C ok then U ng']],
-                'else' => [['C', 'Ng', '@C ok else C ng'],['U', 'Ng', '@C ok else U ng']],
+                'then' => [['C', 'Ng', '@C ok then C ng'], ['U', 'Ng', '@C ok then U ng']],
+                'else' => [['C', 'Ng', '@C ok else C ng'], ['U', 'Ng', '@C ok else U ng']],
             ]]],
             'quxx'    => ['rule'  => [['U' , 'Ok:?',
-                'then' => [['C', 'Ng', '@U ok then C ng'],['U', 'Ng', '@U ok then U ng']],
-                'else' => [['C', 'Ng', '@U ok else C ng'],['U', 'Ng', '@U ok else U ng']],
+                'then' => [['C', 'Ng', '@U ok then C ng'], ['U', 'Ng', '@U ok then U ng']],
+                'else' => [['C', 'Ng', '@U ok else C ng'], ['U', 'Ng', '@U ok else U ng']],
             ]]],
             'parent'  => [
                 'rule' => [['C', 'Ng']],
                 'nest' => [
-                    'foo' => ['rule'  => [['C' , 'Ng']]],
-                    'bar' => ['rule'  => [[ 'U', 'Ng']]],
-                    'baz' => ['rule'  => [['CU', 'Ng']]],
+                    'foo'     => ['rule'  => [['C' , 'Ng']]],
+                    'bar'     => ['rule'  => [[ 'U', 'Ng']]],
+                    'baz'     => ['rule'  => [['CU', 'Ng']]],
                     'qux'     => ['rule'  => [['C' , 'Ok:?',
-                        'then' => [['C', 'Ng', '@C ok then C ng'],['U', 'Ng', '@C ok then U ng']],
-                        'else' => [['C', 'Ng', '@C ok else C ng'],['U', 'Ng', '@C ok else U ng']],
+                        'then' => [['C', 'Ng', '@C ok then C ng'], ['U', 'Ng', '@C ok then U ng']],
+                        'else' => [['C', 'Ng', '@C ok else C ng'], ['U', 'Ng', '@C ok else U ng']],
                     ]]],
                     'children' => [
                         'rule'  => [['U', 'Ng']],
@@ -851,8 +851,8 @@ class ValidatorTest extends RebetTestCase
                     'bar'    => ['rule'  => [[ 'U', 'Ng']]],
                     'baz'    => ['rule'  => [['CU', 'Ng']]],
                     'quxx'   => ['rule'  => [[ 'U' , 'Ok:?',
-                        'then' => [['C', 'Ng', '@U ok then C ng'],['U', 'Ng', '@U ok then U ng']],
-                        'else' => [['C', 'Ng', '@U ok else C ng'],['U', 'Ng', '@U ok else U ng']],
+                        'then' => [['C', 'Ng', '@U ok then C ng'], ['U', 'Ng', '@U ok then U ng']],
+                        'else' => [['C', 'Ng', '@U ok else C ng'], ['U', 'Ng', '@U ok else U ng']],
                     ]]],
                     'child' => [
                         'nest' => [
@@ -936,6 +936,25 @@ class ValidatorTest extends RebetTestCase
             'parents.0.child.bar'   => ["The Parents Child Bar is NG."],
             'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
         ], $validator->errors());
+    }
+
+    public function test_validate_acceptUndefined()
+    {
+        App::setLocale('en');
+        $rule = [
+            'foo' => [
+                'rule'  => [
+                    ['C', Valid::REQUIRED],
+                ]
+            ]
+        ];
+
+        $validator  = new Validator(['foo' => 'Foo', 'bar' => 'bar']);
+        $valid_data = $validator->validate('C', $rule);
+        $this->assertSame(['foo' => 'Foo'], $valid_data->toArray());
+
+        $valid_data = $validator->validate('C', $rule, true);
+        $this->assertSame(['foo' => 'Foo', 'bar' => 'bar'], $valid_data->toArray());
     }
 
     /**

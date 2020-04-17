@@ -41,6 +41,17 @@ trait Arrayable
     }
 
     /**
+     * It checks the given key is exists or not.
+     *
+     * @param int|string $key
+     * @return boolean
+     */
+    public function has($key) : bool
+    {
+        return array_key_exists($key, $this->container());
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function count()

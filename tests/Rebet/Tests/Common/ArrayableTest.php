@@ -26,6 +26,26 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame(['a' => 'A', 'b' => 'B', 'c' => 'C'], $this->map->all());
     }
 
+    public function test_empty()
+    {
+        $this->assertSame(true, $this->empty->empty());
+        $this->assertSame(false, $this->array->empty());
+        $this->assertSame(false, $this->map->empty());
+    }
+
+    public function test_has()
+    {
+        $this->assertSame(false, $this->empty->has('a'));
+        $this->assertSame(false, $this->array->has('a'));
+        $this->assertSame(true, $this->array->has(1));
+        $this->assertSame(false, $this->array->has(10));
+        $this->assertSame(true, $this->map->has('a'));
+        $this->assertSame(false, $this->map->has('d'));
+
+        $map  = new ArrayableTest_Mock(['a' => 'A', 'b' => 'B', 'c' => null]);
+        $this->assertSame(true, $map->has('c'));
+    }
+
     public function test_count()
     {
         $this->assertSame(0, $this->empty->count());
