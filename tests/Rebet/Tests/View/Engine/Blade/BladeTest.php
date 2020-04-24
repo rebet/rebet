@@ -3,7 +3,7 @@ namespace Rebet\Tests\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\EofLineFeed;

@@ -3,7 +3,7 @@ namespace Rebet\Tests\Http;
 
 use Rebet\Config\Config;
 use Rebet\Filesystem\Storage;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\JsonResponse;

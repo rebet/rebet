@@ -3,7 +3,7 @@ namespace Rebet\Tests\Validation;
 
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Validation\BarValidation;

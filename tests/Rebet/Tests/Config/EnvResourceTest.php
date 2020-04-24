@@ -3,7 +3,7 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Config\EnvResource;
 
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 
 class EnvResourceTest extends RebetTestCase

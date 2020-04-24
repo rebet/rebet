@@ -3,7 +3,7 @@ namespace Rebet\Tests\Common;
 
 use Rebet\Common\Strings;
 use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToStringStub;
 use Rebet\Tests\RebetTestCase;

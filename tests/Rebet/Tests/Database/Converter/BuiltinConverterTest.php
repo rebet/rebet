@@ -9,7 +9,7 @@ use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 

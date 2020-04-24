@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Validation;
 
 use Rebet\DateTime\DateTime;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Bag;
 
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\RebetTestCase;

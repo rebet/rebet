@@ -23,7 +23,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
 use Rebet\Filesystem\Storage;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;

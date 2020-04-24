@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Response;
 
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;

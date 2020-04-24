@@ -2,7 +2,7 @@
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;

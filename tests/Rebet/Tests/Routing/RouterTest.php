@@ -5,7 +5,7 @@ use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;

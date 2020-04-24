@@ -3,7 +3,7 @@ namespace Rebet\Tests\View;
 
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Stream\Stream;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;

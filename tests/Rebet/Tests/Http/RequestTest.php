@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use Rebet\Common\Reflector;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Request;

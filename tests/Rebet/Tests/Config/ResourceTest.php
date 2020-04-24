@@ -3,7 +3,7 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Config\Resource;
 
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 
 class ResourceTest extends RebetTestCase

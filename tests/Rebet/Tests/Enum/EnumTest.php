@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Enum;
 
 use Rebet\Enum\Enum;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;

@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Env;
 
 use Rebet\Env\Dotenv;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tests\StderrCapture;
 

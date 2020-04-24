@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Config;
 
 use Rebet\Config\LocaleResource;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Kind;

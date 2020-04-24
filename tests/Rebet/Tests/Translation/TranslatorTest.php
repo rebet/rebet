@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Translation;
 
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;

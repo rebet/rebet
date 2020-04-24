@@ -3,7 +3,7 @@ namespace Rebet\Tests\Routing;
 
 use Rebet\Common\Strings;
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Routing\Route\ViewRoute;
 use Rebet\Routing\ViewSelector;

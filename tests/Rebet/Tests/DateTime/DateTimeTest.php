@@ -9,7 +9,7 @@ use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
 use Rebet\DateTime\DayOfWeek;
 use Rebet\DateTime\Month;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
 

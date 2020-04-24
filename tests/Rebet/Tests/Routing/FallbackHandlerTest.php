@@ -3,7 +3,7 @@ namespace Rebet\Tests\Routing;
 
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\Exception\TokenMismatchException;

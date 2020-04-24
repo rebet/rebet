@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use Rebet\Filesystem\Storage;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\RebetTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;

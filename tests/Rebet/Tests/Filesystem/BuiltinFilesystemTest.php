@@ -9,7 +9,7 @@ use Psr\Http\Message\StreamInterface;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\BuiltinFilesystem;
 use Rebet\Filesystem\Filesystem;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 
 class BuiltinFilesystemTest extends RebetTestCase

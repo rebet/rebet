@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\DateTime\Exception;
 
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;

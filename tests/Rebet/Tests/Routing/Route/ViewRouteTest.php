@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Config\Config;
-use Rebet\Foundation\App;
+use Rebet\Application\App;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Route\ViewRoute;
 use Rebet\Tests\RebetTestCase;
