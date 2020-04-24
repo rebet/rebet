@@ -12,6 +12,7 @@ use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Guard\TokenGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Common\Namespaces;
+use Rebet\Common\Path;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
@@ -47,6 +48,7 @@ use Rebet\View\View;
 abstract class RebetTestCase extends TestCase
 {
     private static $start_at;
+    private static $original_cwd;
 
     protected function setUp()
     {
@@ -143,7 +145,10 @@ abstract class RebetTestCase extends TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$start_at = microtime(true);
+        self::$start_at     = microtime(true);
+        self::$original_cwd = Path::normalize(getcwd());
+        App::setRoot(__DIR__.'/../../');
+        chdir(App::path('/work'));
     }
 
     public static function tearDownAfterClass()
@@ -152,6 +157,7 @@ abstract class RebetTestCase extends TestCase
             $spend = (microtime(true) - self::$start_at);
             printf(" ... Time: %f [ms] - ".static::class."\n", $spend * 1000);
         }
+        chdir(self::$original_cwd);
     }
 
     protected function vfs(array $structure) : vfsStreamDirectory

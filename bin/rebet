@@ -1,10 +1,4 @@
 #!/usr/bin/env php
 <?php
 require __DIR__.'/../vendor/autoload.php';
-
-use Rebet\Console\Application;
-use Rebet\Console\Command\InitCommand;
-
-$app = new Application();
-$app->add(new InitCommand());
-$app->run();
+exit((new Rebet\Foundation\Console\Assistant())->run());
