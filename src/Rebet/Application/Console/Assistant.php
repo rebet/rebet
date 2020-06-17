@@ -1,8 +1,11 @@
 <?php
 namespace Rebet\Application\Console;
 
-use Rebet\Console\Application;
+use Rebet\Application\Console\Command\EnvCommand;
 use Rebet\Application\Console\Command\InitCommand;
+use Rebet\Common\Reflector;
+use Rebet\Config\Configurable;
+use Rebet\Console\Application;
 
 /**
  * Assistant Class
@@ -14,12 +17,26 @@ use Rebet\Application\Console\Command\InitCommand;
  */
 class Assistant extends Application
 {
+    use Configurable;
+
+    public static function defaultConfig()
+    {
+        return [
+            'commands' => [
+                InitCommand::class,
+                EnvCommand::class,
+            ],
+        ];
+    }
+
     /**
      * Create Rebet assistant console application.
      */
     public function __construct()
     {
         parent::__construct();
-        $this->add(new InitCommand());
+        foreach (static::config('commands') as $command) {
+            $this->add(Reflector::instantiate($command));
+        }
     }
 }

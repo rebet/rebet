@@ -10,6 +10,8 @@ class InitCommandTest extends RebetConsoleTestCase
 
     public function test_execute()
     {
+        // $this->doRun('init');
+
         // @todo implements
         $tester = $this->getTester(InitCommand::NAME);
         $status = $tester->execute([]);
