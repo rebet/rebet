@@ -6,6 +6,7 @@ use org\bovigo\vfs\vfsStream;
 
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
+use Rebet\Application\App;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
@@ -22,8 +23,8 @@ use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
 use Rebet\Event\Event;
+use Rebet\File\Files;
 use Rebet\Filesystem\Storage;
-use Rebet\Application\App;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
@@ -49,6 +50,7 @@ abstract class RebetTestCase extends TestCase
 {
     private static $start_at;
     private static $original_cwd;
+    private static $unittest_cwd;
 
     protected function setUp()
     {
@@ -148,7 +150,11 @@ abstract class RebetTestCase extends TestCase
         self::$start_at     = microtime(true);
         self::$original_cwd = Path::normalize(getcwd());
         App::setRoot(__DIR__.'/../../');
-        chdir(App::path('/work'));
+        self::$unittest_cwd = App::path('/work');
+        if (!file_exists(self::$unittest_cwd)) {
+            mkdir(self::$unittest_cwd);
+        }
+        chdir(self::$unittest_cwd);
     }
 
     public static function tearDownAfterClass()
@@ -158,6 +164,7 @@ abstract class RebetTestCase extends TestCase
             printf(" ... Time: %f [ms] - ".static::class."\n", $spend * 1000);
         }
         chdir(self::$original_cwd);
+        Files::removeDir(self::$unittest_cwd ?? App::path('/work'));
     }
 
     protected function vfs(array $structure) : vfsStreamDirectory
