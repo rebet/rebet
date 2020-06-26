@@ -1,9 +1,7 @@
 <?php
 namespace Rebet\Application\Bootstrap;
 
-use Rebet\Application\App;
 use Rebet\Application\Kernel;
-use Rebet\Config\Config;
 use Rebet\Env\Dotenv;
 
 /**
@@ -22,10 +20,5 @@ class LoadEnvironmentVariables implements Bootstrapper
     public function bootstrap(Kernel $kernel)
     {
         Dotenv::init($kernel->structure()->env());
-        Config::framework([
-            App::class => [
-                'env' => getenv('APP_ENV') ?: 'development',
-            ],
-        ]);
     }
 }

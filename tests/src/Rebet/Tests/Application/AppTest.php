@@ -18,7 +18,6 @@ class AppTest extends RebetTestCase
     {
         App::init($kernel = new KernelMock(new Structure('/var/www/app'), 'web'));
         $this->assertSame($kernel, App::kernel());
-        $this->assertSame($kernel->structure()->resources('/i18n'), App::config('resources.i18n'));
     }
 
     public function test_root()

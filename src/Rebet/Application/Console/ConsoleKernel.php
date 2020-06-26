@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Application\Console;
 
-use Rebet\Application\Bootstrap\LoadConfiguration;
+use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
+use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
 
@@ -34,7 +35,8 @@ abstract class ConsoleKernel extends ApplicationKernel
     {
         return [
             LoadEnvironmentVariables::class,
-            LoadConfiguration::class,
+            LoadFrameworkConfiguration::class,
+            LoadApplicationConfiguration::class,
         ];
     }
 

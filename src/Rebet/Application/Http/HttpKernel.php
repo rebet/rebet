@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Application\Http;
 
-use Rebet\Application\Bootstrap\LoadConfiguration;
+use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
+use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
 use Rebet\Http\Request;
@@ -37,7 +38,8 @@ abstract class HttpKernel extends ApplicationKernel
     {
         return [
             LoadEnvironmentVariables::class,
-            LoadConfiguration::class,
+            LoadFrameworkConfiguration::class,
+            LoadApplicationConfiguration::class,
         ];
     }
 
