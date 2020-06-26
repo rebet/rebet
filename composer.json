@@ -47,7 +47,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rebet\\Tests\\": "tests/Rebet/Tests/"
+            "Rebet\\Tests\\": "tests/src/Rebet/Tests/"
         }
     },
     "suggest": {

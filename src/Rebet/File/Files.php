@@ -23,12 +23,12 @@ class Files
     /**
      * Delete the target directory including the subdirectory.
      *
-     * @param string $dir
+     * @param string|null $dir
      * @return void
      */
-    public static function removeDir(string $dir) : void
+    public static function removeDir(?string $dir) : void
     {
-        if (!file_exists($dir)) {
+        if ($dir === null || !file_exists($dir)) {
             return;
         }
         if ($handle = opendir($dir)) {

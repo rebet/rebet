@@ -1,6 +1,9 @@
 <?php
 namespace Rebet\Application;
 
+use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
+use Rebet\Application\View\Engine\Blade\BladeCustomizer;
+use Rebet\Application\View\Engine\Twig\TwigCustomizer;
 use Rebet\Common\Path;
 use Rebet\Config\Config;
 use Rebet\Config\ConfigPromise;
@@ -9,9 +12,6 @@ use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\Storage;
-use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
-use Rebet\Application\View\Engine\Blade\BladeCustomizer;
-use Rebet\Application\View\Engine\Twig\TwigCustomizer;
 use Rebet\Http\Request;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
@@ -34,14 +34,20 @@ class App
 {
     use Configurable;
 
+    /**
+     * The kernel of this application
+     *
+     * @var Kernel
+     */
+    protected static $kernel;
+
     public static function defaultConfig()
     {
         return [
             'channel'         => null,
-            'env'             => Config::promise(function () { return getenv('APP_ENV') ?: 'development' ; }),
+            'env'             => null,
             'entry_point'     => null,
-            'root'            => null,
-            'locale'          => null,
+            'locale'          => 'en',
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'resources'       => [
@@ -56,13 +62,43 @@ class App
     }
 
     /**
-     * initialize framework config.
+     * Get the application kernel
+     *
+     * @return Kernel
+     */
+    public static function kernel() : Kernel
+    {
+        return static::$kernel ;
+    }
+
+    /**
+     * Get the application structure.
+     *
+     * @return Structure
+     */
+    public static function structure() : Structure
+    {
+        return static::kernel()->structure();
+    }
+
+    /**
+     * initialize App and set framework configure.
      *
      * @return void
      */
-    public static function initFrameworkConfig() : void
+    public static function init(Kernel $kernel) : void
     {
+        static::$kernel = $kernel;
         Config::framework([
+            //---------------------------------------------
+            // App Configure
+            //---------------------------------------------
+            App::class => [
+                'resources' => [
+                    'i18n' => $kernel->structure()->resources('/i18n'),
+                ],
+            ],
+
             //---------------------------------------------
             // DateTime Configure
             //---------------------------------------------
@@ -83,12 +119,12 @@ class App
             Storage::class => [
                 'disks' => [
                     'private' => [
-                        'root' => App::path('/storage/private'),
+                        'root' => $kernel->structure()->privateStorage(),
                     ],
                     'public' => [
-                        'root'       => App::path('/storage/public'),
+                        'root'       => $kernel->structure()->publicStorage(),
                         'filesystem' => [
-                            'url' => '/storage',
+                            'url' => $kernel->structure()->storageUrl(),
                         ]
                     ],
                 ],
@@ -145,6 +181,8 @@ class App
                 ]
             ],
         ]);
+
+        $kernel->bootstrap();
     }
 
     /**
@@ -152,19 +190,9 @@ class App
      *
      * @return string
      */
-    public static function getRoot() : string
+    public static function root() : string
     {
-        return self::config('root');
-    }
-
-    /**
-     * Set application root path by given path
-     *
-     * @param string $app_root_path
-     */
-    public static function setRoot(string $app_root_path) : void
-    {
-        self::setConfig(['root' => Path::normalize($app_root_path)]);
+        return static::kernel()->structure()->root();
     }
 
     /**
@@ -175,7 +203,7 @@ class App
      */
     public static function path(string $root_relative_path) : string
     {
-        return Path::normalize(self::getRoot().'/'.$root_relative_path);
+        return static::kernel()->structure()->path($root_relative_path);
     }
 
     /**
