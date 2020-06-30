@@ -318,6 +318,7 @@ class Reflector
      *
      * 　7. When $type is scaler(int|float|bool):
      *      -> If $value is_{$type}() then return $value
+     *      -> If $value is '' or array then return null
      *      -> If $value is scaler then invoke {$type}val($value)
      *      -> If $value has convertTo($type) method then invoke that and check return value type
      *      -> If $value has to{$type<without namespace>}() method then invoke that and check return value type
@@ -415,6 +416,9 @@ class Reflector
                 if (static::typeOf($value, $type)) {
                     return $value;
                 }
+                if ($value === '' || is_array($value)) {
+                    return null;
+                }
                 if (is_scalar($value)) {
                     $convertor = "{$type}val";
                     return $convertor($value);
@@ -425,7 +429,13 @@ class Reflector
                 ;
 
             //---------------------------------------------
-            // To Object
+            // To stdClass Object
+            //---------------------------------------------
+            case 'stdClass':
+                return (object)$value;
+
+            //---------------------------------------------
+            // To Other Object
             //---------------------------------------------
             default:
                 $rc = new \ReflectionClass($type);

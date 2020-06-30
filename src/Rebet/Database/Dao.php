@@ -100,7 +100,7 @@ class Dao
     public static function clear(?string $name = null) : void
     {
         if ($name === null) {
-            foreach (static::$dbs as $db) {
+            foreach (static::$dbs ?? [] as $db) {
                 $db->close();
             }
             static::$dbs     = [];

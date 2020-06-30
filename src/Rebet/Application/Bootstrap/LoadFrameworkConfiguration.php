@@ -80,7 +80,8 @@ class LoadFrameworkConfiguration implements Bootstrapper
             // Routing Configure
             //---------------------------------------------
             Router::class => [
-                'current_channel' => Config::refer(App::class, 'channel'),
+                'current_channel'          => Config::refer(App::class, 'channel'),
+                'default_fallback_handler' => $kernel->exceptionHandler(),
             ],
 
             //---------------------------------------------

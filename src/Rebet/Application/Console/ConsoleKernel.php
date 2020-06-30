@@ -1,11 +1,15 @@
 <?php
 namespace Rebet\Application\Console;
 
+use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Console Kernel Class
@@ -17,6 +21,27 @@ use Rebet\Application\Structure;
  */
 abstract class ConsoleKernel extends ApplicationKernel
 {
+    /**
+     * Current handling input
+     *
+     * @var InputInterface
+     */
+    protected $input;
+
+    /**
+     * Current handling output
+     *
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * Status code of handling result
+     *
+     * @var int|null
+     */
+    protected $result;
+
     /**
      * {@inheritDoc}
      *
@@ -37,6 +62,7 @@ abstract class ConsoleKernel extends ApplicationKernel
             LoadEnvironmentVariables::class,
             LoadFrameworkConfiguration::class,
             LoadApplicationConfiguration::class,
+            HandleExceptions::class,
         ];
     }
 
@@ -49,7 +75,10 @@ abstract class ConsoleKernel extends ApplicationKernel
      */
     public function handle($input = null, $output = null)
     {
-        return $this->assistant()->run($input, $output);
+        return $this->result = $this->assistant()->run(
+            $this->input  = $input ?? new ArgvInput(),
+            $this->output = $output ?? new ConsoleOutput()
+        );
     }
 
     /**
@@ -62,18 +91,35 @@ abstract class ConsoleKernel extends ApplicationKernel
      */
     public function call(string $action, array $parameters = [], $output = null)
     {
-        return $this->assistant()->call($action, $parameters, $output);
+        return $this->result = $this->assistant()->run(
+            $this->input  = new ArrayInput(array_merge($parameters, ['command' => $action])),
+            $this->output = $output ?? new ConsoleOutput()
+        );
     }
 
     /**
      * Terminate the application.
      *
-     * @param InputInterface $input
-     * @param int $result
      * @return void
      */
-    public function terminate($input, $result) : void
+    public function terminate() : void
     {
         // Currently nothing to do.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fallback(\Throwable $e) : int
+    {
+        return $this->result = $this->exceptionHandler()->handle($this->input, $this->output, $e);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function report(\Throwable $e) : void
+    {
+        $this->exceptionHandler()->report($this->input, $this->result, $e);
     }
 }

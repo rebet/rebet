@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application\Http;
 
+use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
@@ -21,6 +22,20 @@ use Rebet\Routing\Router;
 abstract class HttpKernel extends ApplicationKernel
 {
     /**
+     * Current handling request.
+     *
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * Current handling response.
+     *
+     * @var Response
+     */
+    protected $response;
+
+    /**
      * {@inheritDoc}
      *
      * @param Structure $structure
@@ -40,6 +55,7 @@ abstract class HttpKernel extends ApplicationKernel
             LoadEnvironmentVariables::class,
             LoadFrameworkConfiguration::class,
             LoadApplicationConfiguration::class,
+            HandleExceptions::class,
         ];
     }
 
@@ -52,7 +68,7 @@ abstract class HttpKernel extends ApplicationKernel
      */
     public function handle($input, $output = null)
     {
-        return Router::handle($input);
+        return $this->response = Router::handle($this->request = $input);
     }
 
     /**
@@ -65,18 +81,34 @@ abstract class HttpKernel extends ApplicationKernel
      */
     public function call(string $action, array $parameters = [], $output = null)
     {
-        return Router::handle(Request::create($action, 'GET', $parameters));
+        return $this->response = Router::handle($this->request = Request::create($action, 'GET', $parameters));
     }
 
     /**
      * Terminate the application.
      *
-     * @param Request $input
-     * @param Response $result
      * @return void
      */
-    public function terminate($input, $result) : void
+    public function terminate() : void
     {
-        Router::terminate($input, $result);
+        Router::terminate($this->request, $this->response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fallback(\Throwable $e) : int
+    {
+        $this->response = $this->exceptionHandler()->handle($this->request, null, $e);
+        $this->response->send();
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function report(\Throwable $e) : void
+    {
+        $this->exceptionHandler()->report($this->request, $this->response, $e);
     }
 }

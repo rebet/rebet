@@ -249,6 +249,7 @@ class UnitTest extends RebetTestCase
                     $origin    = "{$v}{$symbole}";
                     $converted = $unit->convert($origin, $base_unit, null);
                     $reversed  = $unit->convert($converted, $symbole, 3);
+                    $flactor   = is_array($flactor) ? '*Convert function*' : $flactor ;
                     $this->assertSame($origin, $reversed, "Faled in {$unit_name} {$symbole} => {$flactor} is not reversible, {$origin} -> {$converted} -> {$reversed}");
                 }
             }

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock;
 
+use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Application\Kernel;
 use Rebet\Application\Structure;
 
@@ -31,7 +32,21 @@ class KernelMock extends Kernel
         return $this->result;
     }
 
-    public function terminate($input, $result) : void
+    public function terminate() : void
+    {
+    }
+
+    public function exceptionHandler() : ExceptionHandler
+    {
+        return new ExceptionHandler();
+    }
+
+    public function fallback(\Throwable $e) : int
+    {
+        return 1;
+    }
+
+    public function report(\Throwable $e) : void
     {
     }
 }

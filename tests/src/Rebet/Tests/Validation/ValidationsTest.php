@@ -15,7 +15,7 @@ class ValidationsTest extends RebetTestCase
                 return true;
             }
             if ($c->value == 'Hello') {
-                return ture;
+                return true;
             }
             return $c->appendError("@The :attribute must be 'Hello'");
         });

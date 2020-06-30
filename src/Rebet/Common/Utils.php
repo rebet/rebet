@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use stdClass;
+
 /**
  * Utils Class
  *
@@ -19,6 +21,33 @@ class Utils
      */
     private function __construct()
     {
+    }
+
+    /**
+     * It checks that the given values are equivalent.
+     *
+     * @param mixed $value
+     * @param mixed $other
+     * @param \Closure|null $comparator (default: null)
+     * @return boolean
+     */
+    public static function equivalent($value, $other, ?\Closure $comparator = null) : bool
+    {
+        if ((is_iterable($value) || $value instanceof stdClass) && (is_iterable($other) || $other instanceof stdClass)) {
+            foreach ($value as $k => $v) {
+                if (!static::equivalent($v, Reflector::get($other, $k))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if ($comparator) {
+            return $comparator($value, $other);
+        }
+
+        return $value === Reflector::convert($other, Reflector::getType($value)) || Reflector::convert($value, Reflector::getType($other)) === $other;
     }
 
     /**

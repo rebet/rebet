@@ -285,15 +285,3 @@ class Log
         static::channel()->log($level, $message, $context, $exception);
     }
 }
-
-// Error handler registration
-set_error_handler(function ($severity, $message, $file, $line) {
-    Log::log(LogLevel::errorTypeOf($severity), LogLevel::errorTypeLabel($severity)." : {$message} in {$file}:{$line}");
-});
-
-// Shutdown handler registration
-register_shutdown_function(function () {
-    if ($error = error_get_last()) {
-        Log::log(LogLevel::errorTypeOf($error['type']), LogLevel::errorTypeLabel($error['type']).' : '.$error['message'].' in '.$error['file'].':'.$error['line']);
-    }
-});

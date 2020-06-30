@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Common;
 
+use stdClass;
+
 /**
  * Json Class
  *
@@ -33,9 +35,11 @@ class Json
                 return $value->jsonSerialize();
             case is_array($value):
                 return array_map(function ($v) { return Json::serialize($v); }, $value);
+            case $value instanceof stdClass:
+                return array_map(function ($v) { return Json::serialize($v); }, (array)$value);
             case method_exists($value, 'toArray'):
                 return array_map(function ($v) { return Json::serialize($v); }, $value->toArray());
-            case $value instanceof \Traversable:
+            case is_iterable($value):
                 return array_map(function ($v) { return Json::serialize($v); }, iterator_to_array($value));
             default:
                 return $value;

@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Tests\Http;
 
-use Rebet\Common\Reflector;
 use Rebet\Application\App;
+use Rebet\Common\Reflector;
+use Rebet\Config\Config;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Request;
@@ -14,11 +15,31 @@ use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Router;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Valid;
+use Rebet\View\Engine\Blade\Blade;
+use Rebet\View\View;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 
 class RequestTest extends RebetTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        $this->vfs([
+            'cache' => [],
+        ]);
+        Blade::clear();
+        Config::application([
+            View::class => [
+                'engine' => Blade::class,
+            ],
+            Blade::class => [
+                'view_path'  => [App::structure()->views('/blade')],
+                'cache_path' => 'vfs://root/cache',
+            ],
+        ]);
+    }
+
     public function test___construct()
     {
         $this->assertInstanceOf(Request::class, new Request());

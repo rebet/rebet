@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Routing;
 
+use Rebet\Application\App;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Enum\Enum;
-use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -35,7 +35,10 @@ class RouterTest extends RebetTestCase
         App::setChannel('web');
         Config::application([
             Router::class => [
-                'middlewares!' => [],
+                'middlewares!'             => [],
+                'default_fallback_handler' => function (Request $request, \Throwable $e) {
+                    throw $e;
+                }
             ],
             View::class => [
                 'engine' => Blade::class,

@@ -708,7 +708,7 @@ class Arrays
                 return $json;
             }
         }
-        if ($items instanceof \Traversable) {
+        if (is_iterable($items)) {
             return iterator_to_array($items);
         }
         if (is_string($items)) {
@@ -1101,18 +1101,21 @@ class Arrays
     /**
      * Join the given array elements to string using given delimiter.
      *
-     * @param array|\Traversable $array
+     * @param mixed $iterable
      * @param string $delimiter (default: ', ')
-     * @return string|null return null when other than array or \Traversable given as array.
+     * @return string|null return null when other than iterable given as $iterable.
      */
-    public static function implode($array, string $delimiter = ', ') : ?string
+    public static function implode($iterable, string $delimiter = ', ') : ?string
     {
-        if (!is_array($array) && !($array instanceof \Traversable)) {
+        if (!is_iterable($iterable)) {
             return null;
         }
 
         $string = '';
-        foreach ($array as $value) {
+        foreach ($iterable as $value) {
+            if (is_iterable($value)) {
+                $value = '['.static::implode($value, $delimiter).']';
+            }
             $string .= "{$value}{$delimiter}";
         }
         return Strings::rtrim($string, $delimiter, 1);

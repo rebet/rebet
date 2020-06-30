@@ -1,15 +1,16 @@
 <?php
 namespace Rebet\Tests\Database\Converter;
 
+use Rebet\Application\App;
 use Rebet\Common\Decimal;
 use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;
-use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 
@@ -422,7 +423,8 @@ EOS;
         ] as $col => [$native_type, $php_type]) {
             $meta_native_type = $meta[$col]['native_type'] ?? null;
             $this->assertSame($native_type, $meta_native_type, "Failed {$col} => {$native_type} actual {$meta_native_type}");
-            $this->assertSame($php_type, Reflector::getType($rs->$col), "Failed {$col} => {$native_type} actual {$meta_native_type} {$rs->$col}");
+            $value = Strings::stringify($rs->$col);
+            $this->assertSame($php_type, Reflector::getType($rs->$col), "Failed {$col} => {$native_type} actual {$meta_native_type} {$value}");
         }
     }
 

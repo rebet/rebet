@@ -64,6 +64,7 @@ class BuiltinCompiler implements Compiler
         // -----------------------------------------------------------------
         // Check params key format and resolve multi placeholder
         // -----------------------------------------------------------------
+        $params = $params ?? [];
         foreach ($params as $key => $value) {
             if (!preg_match('/[a-zA-Z0-9_]+/', $key)) {
                 throw DatabaseException::by("Invalid SQL query parameter key [ {$key} ], the key must be pattern of /[a-zA-Z0-9_]+/.");

@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Mock;
 
 use Rebet\Application\Bootstrap\LoadConfiguration;
+use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Application\Http\HttpKernel;
 
 class AppHttpKernel extends HttpKernel
@@ -17,5 +18,10 @@ class AppHttpKernel extends HttpKernel
     {
         parent::bootstrap();
         // Do nothing.
+    }
+
+    public function exceptionHandler() : ExceptionHandler
+    {
+        return new ExceptionHandler();
     }
 }

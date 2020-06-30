@@ -915,7 +915,10 @@ class ReflectorTest extends RebetTestCase
     {
         $type = 'int';
         $this->assertNull(Reflector::convert(null, $type));
+        $this->assertNull(Reflector::convert('', $type));
+        $this->assertNull(Reflector::convert([], $type));
 
+        $this->assertSame(0, Reflector::convert(0, $type));
         $this->assertSame(1, Reflector::convert(1, $type));
         $this->assertSame(1, Reflector::convert(1.2, $type));
         $this->assertSame(2, Reflector::convert(2.9, $type));
@@ -944,7 +947,10 @@ class ReflectorTest extends RebetTestCase
     {
         $type = 'float';
         $this->assertNull(Reflector::convert(null, $type));
+        $this->assertNull(Reflector::convert('', $type));
+        $this->assertNull(Reflector::convert([], $type));
 
+        $this->assertSame(0.0, Reflector::convert(0, $type));
         $this->assertSame(1.0, Reflector::convert(1, $type));
         $this->assertSame(1.2, Reflector::convert(1.2, $type));
         $this->assertSame(2.9, Reflector::convert(2.9, $type));
@@ -973,7 +979,10 @@ class ReflectorTest extends RebetTestCase
     {
         $type = 'bool';
         $this->assertNull(Reflector::convert(null, $type));
+        $this->assertNull(Reflector::convert('', $type));
+        $this->assertNull(Reflector::convert([], $type));
 
+        $this->assertSame(true, Reflector::convert(true, $type));
         $this->assertSame(true, Reflector::convert(1, $type));
         $this->assertSame(true, Reflector::convert(1.2, $type));
         $this->assertSame(true, Reflector::convert(2.9, $type));

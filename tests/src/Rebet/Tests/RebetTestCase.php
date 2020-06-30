@@ -147,7 +147,7 @@ abstract class RebetTestCase extends TestCase
     {
         self::$start_at     = microtime(true);
         self::$original_cwd = Path::normalize(getcwd());
-        self::$unittest_cwd = (new Structure(__DIR__.'/../../../'))->path('/work');
+        self::$unittest_cwd = (new Structure(__DIR__.'/../../../'))->path('/work/'.getmypid());
         if (!file_exists(self::$unittest_cwd)) {
             mkdir(self::$unittest_cwd);
         }

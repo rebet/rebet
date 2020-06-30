@@ -1,12 +1,56 @@
 <?php
 namespace Rebet\Tests\Common;
 
+use ArrayObject;
 use Rebet\Common\Utils;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 
 class UtilsTest extends RebetTestCase
 {
     const TEST_VALUE = "UtilsTest::TEST_VALUE";
+
+    public function test_equivalent()
+    {
+        $this->assertSame(true, Utils::equivalent(null, null));
+        $this->assertSame(true, Utils::equivalent(0, 0));
+        $this->assertSame(true, Utils::equivalent('', ''));
+        $this->assertSame(true, Utils::equivalent([], []));
+        $this->assertSame(false, Utils::equivalent(null, 0));
+        $this->assertSame(false, Utils::equivalent(null, ''));
+        $this->assertSame(false, Utils::equivalent(null, []));
+        $this->assertSame(false, Utils::equivalent(0, ''));
+        $this->assertSame(false, Utils::equivalent(0, []));
+        $this->assertSame(false, Utils::equivalent('', []));
+
+        $this->assertSame(true, Utils::equivalent(1, '1'));
+        $this->assertSame(true, Utils::equivalent(1, Gender::MALE()));
+        $this->assertSame(true, Utils::equivalent(Gender::MALE(), '1'));
+        $this->assertSame(true, Utils::equivalent(Gender::MALE(), Gender::MALE()));
+        $this->assertSame(false, Utils::equivalent(1, '2'));
+        $this->assertSame(false, Utils::equivalent(2, Gender::MALE()));
+
+        $this->assertSame(true, Utils::equivalent([1, 2, 3], [1, 2, 3]));
+        $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, '2', 3]));
+        $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, Gender::FEMALE(), 3]));
+        $this->assertSame(true, Utils::equivalent([1, 2, 3], new ArrayObject([1, 2, 3])));
+        $this->assertSame(true, Utils::equivalent(new ArrayObject([1, 2, 3]), new ArrayObject([1, 2, 3])));
+        $this->assertSame(true, Utils::equivalent([1, 2, 3], new ArrayObject([1, Gender::FEMALE(), 3])));
+        $this->assertSame(false, Utils::equivalent([1, 2, 3], [1, 2]));
+
+        $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'c' => 3]));
+        $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], (object)['a' => 1, 'b' => 2, 'c' => 3])); // stdClass can be treated synonymous with array even if it is not iterable
+        $this->assertSame(false, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'C' => 3]));
+        $object       = new class {
+            public $a = 1;
+            public $b = 2;
+            public $c = 3;
+        };
+        $this->assertSame(false, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], $object)); // Other class without iterable is not treated synonymously with array
+
+        $this->assertSame(true, Utils::equivalent([1, [2, 3]], [1, [2, 3]]));
+        $this->assertSame(true, Utils::equivalent([1, [Gender::FEMALE(), 3]], [Gender::MALE(), new ArrayObject([2, 3])]));
+    }
 
     public function test_when()
     {

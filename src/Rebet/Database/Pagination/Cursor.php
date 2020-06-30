@@ -4,6 +4,7 @@ namespace Rebet\Database\Pagination;
 use Rebet\Common\Arrayable;
 use Rebet\Common\Reflector;
 use Rebet\Common\Unit;
+use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\DateTime\DateTime;
@@ -198,7 +199,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     public function equals(?Cursor $cursor) : bool
     {
         return $cursor !== null
-            && $this->cursor == $cursor->cursor
+            && Utils::equivalent($this->cursor, $cursor->cursor)
             && $this->pager == $cursor->pager
             && $this->next_page_count == $cursor->next_page_count
             ;

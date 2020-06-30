@@ -2,6 +2,7 @@
 namespace Rebet\Application;
 
 use Rebet\Application\Console\Assistant;
+use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Common\Reflector;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -123,9 +124,31 @@ abstract class Kernel
     /**
      * Terminate the application.
      *
-     * @param mixed|Request|InputInterface $input
-     * @param mixed|Response|int $result
      * @return void
      */
-    abstract public function terminate($input, $result) : void;
+    abstract public function terminate() : void;
+
+    /**
+     * Get exception handler.
+     *
+     * @return ExceptionHandler
+     */
+    abstract public function exceptionHandler() : ExceptionHandler;
+
+    /**
+     * Report an uncaught exception then display fallback pages(console messages).
+     *
+     * @param \Throwable $e
+     * @return int error code for exit()
+     */
+    abstract public function fallback(\Throwable $e) : int;
+
+    /**
+     * Report an uncaught exception.
+     * Just only report, this function do not response and display result.
+     *
+     * @param \Throwable $e
+     * @return void
+     */
+    abstract public function report(\Throwable $e) : void;
 }
