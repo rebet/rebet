@@ -72,7 +72,7 @@ class VerifyCsrfToken
             return $response;
         }
 
-        throw TokenMismatchException::by("CSRF token mismatch.");
+        throw new TokenMismatchException("CSRF token mismatch.");
     }
 
     /**

@@ -196,7 +196,7 @@ class Validator
     {
         foreach ($rules as $rule) {
             if (!is_array($rule)) {
-                throw LogicException::by("Invalid rules format. A 'rule/then/else' list item should be array.");
+                throw new LogicException("Invalid rules format. A 'rule/then/else' list item should be array.");
             }
             $crud = array_shift($rule);
             if (!Strings::contains($crud, $context->crud())) {

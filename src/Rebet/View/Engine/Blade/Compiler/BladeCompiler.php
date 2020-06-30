@@ -132,7 +132,7 @@ class BladeCompiler extends LaravelBladeCompiler
     {
         $thrower = $thrower ?? "The '{$name}' directive is not supported in Rebet." ;
         $this->directive($name, function ($expression) use ($thrower) {
-            throw is_string($thrower) ? LogicException::by($thrower) : $thrower() ;
+            throw is_string($thrower) ? new LogicException($thrower) : $thrower() ;
         });
     }
 }

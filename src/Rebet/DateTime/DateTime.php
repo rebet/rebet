@@ -303,11 +303,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                     }
                 }
                 if (!$parsed_test_now) {
-                    throw DateTimeFormatException::by("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
+                    throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
                 }
                 $parsed_test_now = $parsed_test_now->modify($time);
                 if (!$parsed_test_now) {
-                    throw DateTimeFormatException::by("Invalid date time format [{$time}] given for modify.");
+                    throw new DateTimeFormatException("Invalid date time format [{$time}] given for modify.");
                 }
                 $adopt_time = $parsed_test_now->format('Y-m-d H:i:s.u');
             }
@@ -337,7 +337,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $modified = parent::modify($modify);
         if (!$modified) {
-            throw DateTimeFormatException::by("Invalid date time format [{$modify}] given for modify.");
+            throw new DateTimeFormatException("Invalid date time format [{$modify}] given for modify.");
         }
         return $modified;
     }
@@ -876,7 +876,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $at_time = static::valueOf($at_time);
         if ($at_time === null) {
-            throw LogicException::by("Invalid datetime format of given at time '{$at_time}'.");
+            throw new LogicException("Invalid datetime format of given at time '{$at_time}'.");
         }
         return floor(($at_time->format('Ymd') - $this->format('Ymd')) / 10000);
     }

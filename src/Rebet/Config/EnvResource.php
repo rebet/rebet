@@ -49,7 +49,7 @@ class EnvResource
             $env_resource      = Resource::load($suffix, $env_resource_path, $option);
 
             if ($base_resource === null && $env_resource === null) {
-                throw LogicException::by("Resource {$base_name} {$suffix} not found in {$dir_path}.");
+                throw new LogicException("Resource {$base_name} {$suffix} not found in {$dir_path}.");
             }
 
             $resource = Arrays::override($resource, $base_resource ?? []);

@@ -381,7 +381,7 @@ class Config
         }
         foreach (\explode('.', $key) as $value) {
             if (\ctype_digit($value)) {
-                throw LogicException::by("Invalid config key access, the key '{$key}' contains digit only part.");
+                throw new LogicException("Invalid config key access, the key '{$key}' contains digit only part.");
             }
         }
     }
@@ -408,7 +408,7 @@ class Config
         static::setup($section);
         $value = Reflector::get(static::$compiled[$section] ?? null, $key);
         if ($required && Utils::isBlank($value)) {
-            throw ConfigNotDefineException::by("Required config {$section}".($key ? ".{$key}" : "")." is blank or not define.");
+            throw new ConfigNotDefineException("Required config {$section}".($key ? ".{$key}" : "")." is blank or not define.");
         }
         return $value ?? $default;
     }

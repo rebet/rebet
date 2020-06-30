@@ -114,7 +114,7 @@ abstract class DataModel
     protected static function mustBeSuperclassOf(?string $class) : void
     {
         if ($class !== null && !is_subclass_of($class, static::class)) {
-            throw LogicException::by("Invalid class name given. {$class} is not subclass of ".static::class.".");
+            throw new LogicException("Invalid class name given. {$class} is not subclass of ".static::class.".");
         }
     }
 
@@ -519,7 +519,7 @@ abstract class DataModel
         $duplicates = [];
         foreach ($this->_belongs_result_set as $dm) {
             if (!($dm instanceof $this_class)) {
-                throw LogicException::by("Classes other than {$this_class} are mixed in the result set.");
+                throw new LogicException("Classes other than {$this_class} are mixed in the result set.");
             }
             $ransack = $extracter($dm);
             $digest  = Json::digest('sha256', $ransack);

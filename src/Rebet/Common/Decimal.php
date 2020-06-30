@@ -323,7 +323,7 @@ class Decimal
                     case '^': return $result->roundByDecimalPlaces($max_scale)->compact();
                     case '√': return $result->roundByDecimalPlaces($max_scale)->compact();
                 }
-                throw LogicException::by("Invalid formula [${$formula}] was given.");
+                throw new LogicException("Invalid formula [${$formula}] was given.");
 
             case static::MODE_SIGNIFICANCE_ARITHMETIC:
                 switch ($formula) {
@@ -334,7 +334,7 @@ class Decimal
                     case '^': return $result->roundBySignificantFigures($left->significant_figures, $guard_digits);
                     case '√': return $result->roundBySignificantFigures($left->significant_figures, $guard_digits);
                 }
-                throw LogicException::by("Invalid formula [${$formula}] was given.");
+                throw new LogicException("Invalid formula [${$formula}] was given.");
 
             case static::MODE_FIXED_DECIMAL_PLACES:
                 $fixed_scale = static::config('options.fixed_scale');
@@ -346,10 +346,10 @@ class Decimal
                     case '^': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
                     case '√': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
                 }
-                throw LogicException::by("Invalid formula [${$formula}] was given.");
+                throw new LogicException("Invalid formula [${$formula}] was given.");
        }
 
-        throw LogicException::by("Invalid mode [${$mode}] was given.");
+        throw new LogicException("Invalid mode [${$mode}] was given.");
     }
 
     /**
@@ -667,7 +667,7 @@ class Decimal
             case static::TYPE_SIGNIFICANT_FIGURES:
                 return $this->roundBySignificantFigures($precision, $guard_digits);
         }
-        throw LogicException::by("Invalid precision type was given.");
+        throw new LogicException("Invalid precision type was given.");
     }
 
     /**
@@ -708,7 +708,7 @@ class Decimal
     protected function roundBySignificantFigures(int $precision, int $guard_digits = 0) : self
     {
         if ($precision < 1) {
-            throw LogicException::by("Invalid significant figures precision [{$precision}] was given. Significant figures precision must be higher than 0.");
+            throw new LogicException("Invalid significant figures precision [{$precision}] was given. Significant figures precision must be higher than 0.");
         }
 
         if ($this->eq('0')) {

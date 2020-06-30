@@ -123,7 +123,7 @@ class Event
         }
         $listener = Reflector::instantiate($listener);
         if (!method_exists($listener, 'handle')) {
-            throw LogicException::by("Event listener ".get_class($listener)." must have 'handle' method or callable.");
+            throw new LogicException("Event listener ".get_class($listener)." must have 'handle' method or callable.");
         }
         $method = new \ReflectionMethod($listener, 'handle');
         return [Reflector::getTypeHint($method->getParameters()[0]), $listener];

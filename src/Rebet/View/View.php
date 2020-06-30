@@ -205,12 +205,12 @@ class View implements Renderable
                 try {
                     return $eof->process($this->engine->render($name, $this->data));
                 } catch (\Throwable $e) {
-                    throw ViewRenderFailedException::by("The view [{$this->name}] (actual: {$name}) render failed because of exception occurred.")->caused($e);
+                    throw (new ViewRenderFailedException("The view [{$this->name}] (actual: {$name}) render failed because of exception occurred."))->caused($e);
                 }
             }
         }
 
-        throw ViewRenderFailedException::by("The view [{$this->name}] (possible: ".join(', ', $names).") render failed because of all of view templates not exists.");
+        throw new ViewRenderFailedException("The view [{$this->name}] (possible: ".join(', ', $names).") render failed because of all of view templates not exists.");
     }
 
     /**

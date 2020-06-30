@@ -72,7 +72,7 @@ class Pipeline
     public function send($passable)
     {
         if ($this->pipeline === null) {
-            throw LogicException::by('Pipeline not build yet. You shold buld a pipeline using then() first.');
+            throw new LogicException('Pipeline not build yet. You shold buld a pipeline using then() first.');
         }
         return ($this->pipeline)($passable);
     }

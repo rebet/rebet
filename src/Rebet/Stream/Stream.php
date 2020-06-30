@@ -416,7 +416,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 return static::$null;
             }
             if ($converted === null) {
-                throw LogicException::by("Apply {$name} filter failed. The origin type '". Reflector::getType($origin) ."' can not convert to {$type}.")->caused($e);
+                throw (new LogicException("Apply {$name} filter failed. The origin type '". Reflector::getType($origin) ."' can not convert to {$type}."))->caused($e);
             }
             throw $e;
         }

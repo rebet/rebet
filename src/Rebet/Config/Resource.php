@@ -114,7 +114,7 @@ class Resource
     {
         $loader = self::config("loader.{$type}", false);
         if (empty($loader) || !\is_callable($loader)) {
-            throw LogicException::by("Unsupported file type [$type]. Please set loader to Rebet\Config\Resource class.");
+            throw new LogicException("Unsupported file type [$type]. Please set loader to Rebet\Config\Resource class.");
         }
         return $loader($path, $option);
     }

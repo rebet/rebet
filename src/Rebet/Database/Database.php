@@ -775,7 +775,7 @@ class Database
         $class    = get_class($entity);
         $primarys = $class::primaryKeys();
         if (empty($primarys)) {
-            throw DatabaseException::by("Can not build SQL because of {$class} entity do not have any primary keys.");
+            throw new DatabaseException("Can not build SQL because of {$class} entity do not have any primary keys.");
         }
 
         $where  = [];

@@ -114,7 +114,7 @@ class Cookie extends SymfonyCookie
     {
         $request = Request::current();
         if (!$request) {
-            throw LogicException::by("Request has not been initialized.");
+            throw new LogicException("Request has not been initialized.");
         }
         return $request->cookies->has($name);
     }
@@ -131,7 +131,7 @@ class Cookie extends SymfonyCookie
     {
         $request = Request::current();
         if (!$request) {
-            throw LogicException::by("Request has not been initialized.");
+            throw new LogicException("Request has not been initialized.");
         }
         return $request->cookies->get($name, $default);
     }

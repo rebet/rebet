@@ -55,7 +55,7 @@ class Path
             }
             if (empty($absolutes) || end($absolutes) === '..') {
                 if (!$is_relatable) {
-                    throw LogicException::by("Invalid path format: {$path}");
+                    throw new LogicException("Invalid path format: {$path}");
                 }
                 $absolutes[] = '..';
                 continue;

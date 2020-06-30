@@ -67,10 +67,10 @@ class BuiltinCompiler implements Compiler
         $params = $params ?? [];
         foreach ($params as $key => $value) {
             if (!preg_match('/[a-zA-Z0-9_]+/', $key)) {
-                throw DatabaseException::by("Invalid SQL query parameter key [ {$key} ], the key must be pattern of /[a-zA-Z0-9_]+/.");
+                throw new DatabaseException("Invalid SQL query parameter key [ {$key} ], the key must be pattern of /[a-zA-Z0-9_]+/.");
             }
             if (Strings::contains($key, '__')) {
-                throw DatabaseException::by("Invalid SQL query parameter key [ {$key} ], the key may not be contain '__'(combined two underscores).");
+                throw new DatabaseException("Invalid SQL query parameter key [ {$key} ], the key may not be contain '__'(combined two underscores).");
             }
             $holder = ":{$key}";
             $count  = preg_match_all('/'.$holder.'([^a-zA-Z0-9_]|$)/', $sql);

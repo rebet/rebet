@@ -75,7 +75,7 @@ class Files
             return;
         }
         if ($code === false) {
-            throw ZipArchiveException::by($message);
+            throw new ZipArchiveException($message);
         }
         switch ($code) {
             case \ZipArchive::ER_OK:          return;
@@ -105,7 +105,7 @@ class Files
             default: $message                          = "{$message} (Unknown reason)"; break;
         }
 
-        throw ZipArchiveException::by($message)->code($code);
+        throw (new ZipArchiveException($message))->code($code);
     }
 
     /**

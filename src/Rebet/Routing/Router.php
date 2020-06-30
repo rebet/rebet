@@ -244,7 +244,7 @@ class Router
         } elseif (is_callable($action)) {
             $route = new ClosureRoute($methods, $uri, $action);
         } else {
-            throw LogicException::by("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.");
+            throw new LogicException("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.");
         }
 
         return static::addRoute($route);
@@ -310,7 +310,7 @@ class Router
     protected static function addRoute(Route $route) : Route
     {
         if (!static::$rules) {
-            throw LogicException::by("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+            throw new LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         static::applyRulesTo($route);
         static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
@@ -355,7 +355,7 @@ class Router
     public static function default($route) : Route
     {
         if (!static::$rules) {
-            throw LogicException::by("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+            throw new LogicException("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         $route = Reflector::instantiate($route);
         static::applyRulesTo($route);
@@ -499,7 +499,7 @@ class Router
             }
         }
 
-        throw RouteNotFoundException::by("Route {$request->getMethod()} {$request_uri} not found.");
+        throw new RouteNotFoundException("Route {$request->getMethod()} {$request_uri} not found.");
     }
 
     /**

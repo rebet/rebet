@@ -21,14 +21,6 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public static function by(...$reason) : RebetException
-    {
-        return new static(...$reason);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function caused(\Throwable $previous) : RebetException
     {
         $rc = new \ReflectionClass(\Exception::class);

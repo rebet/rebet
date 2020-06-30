@@ -69,7 +69,7 @@ class ExceptionHandlerTest extends RebetTestCase
         ], $response->getProblem());
 
         $request  = $this->createJsonRequestMock('/');
-        $response = $this->handler->handle($request, null, RouteNotFoundException::by('Detail message'));
+        $response = $this->handler->handle($request, null, new RouteNotFoundException('Detail message'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(ProblemResponse::class, $response);
         $this->assertSame([
@@ -81,49 +81,49 @@ class ExceptionHandlerTest extends RebetTestCase
 
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, FallbackRedirectException::by('Detail message')->to('/'));
+        $response = $this->handler->handle($request, null, (new FallbackRedirectException('Detail message'))->to('/'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame(302, $response->getStatusCode());
         $this->assertContains('/', $response->getTargetUrl());
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, HttpException::by(403));
+        $response = $this->handler->handle($request, null, new HttpException(403));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame(403, $response->getStatusCode());
         $this->assertContains('<h2 class="title"><span class="status">403</span>Forbidden</h2>', $response->getContent());
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, HttpException::by(403)->title('Custom Title'));
+        $response = $this->handler->handle($request, null, (new HttpException(403))->title('Custom Title'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame(403, $response->getStatusCode());
         $this->assertContains('<h2 class="title">Custom Title</h2>', $response->getContent());
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, AuthenticateException::by('Detail message'));
+        $response = $this->handler->handle($request, null, new AuthenticateException('Detail message'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame(403, $response->getStatusCode());
         $this->assertContains('<h2 class="title"><span class="status">403</span>Forbidden</h2>', $response->getContent());
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, RouteNotFoundException::by('Detail message'));
+        $response = $this->handler->handle($request, null, new RouteNotFoundException('Detail message'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame(404, $response->getStatusCode());
         $this->assertContains('<h2 class="title">指定のページが見つかりません</h2>', $response->getContent());
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, TokenMismatchException::by('Detail message'));
+        $response = $this->handler->handle($request, null, new TokenMismatchException('Detail message'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame(404, $response->getStatusCode());
         $this->assertContains('<h2 class="title">指定のページが見つかりません</h2>', $response->getContent());
 
         $request  = $this->createRequestMock('/');
-        $response = $this->handler->handle($request, null, HttpException::by(400)->title('Use errors custom view template'));
+        $response = $this->handler->handle($request, null, (new HttpException(400))->title('Use errors custom view template'));
         $this->assertSame($reported_count++, $this->handler->reported_count);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame(400, $response->getStatusCode());
@@ -178,7 +178,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $request = $this->createRequestMock('/');
         $handler = new ExceptionHandler();
 
-        $response = $handler->handle($request, null, AuthenticateException::by('Authentication failed'));
+        $response = $handler->handle($request, null, new  AuthenticateException('Authentication failed'));
         $this->assertContains('<span class="status">403</span>Forbidden', $response->getContent());
         $this->assertContains('Authentication failed', $response->getContent());
         $driver = Log::channel()->driver();
@@ -187,7 +187,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $this->assertContains('HTTP 403 Forbidden occurred.', $log);
         $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
 
-        $response = $handler->handle($request, null, RouteNotFoundException::by('Route not found'));
+        $response = $handler->handle($request, null, new RouteNotFoundException('Route not found'));
         $this->assertContains('<span class="status">404</span>Not Found', $response->getContent());
         $this->assertContains('Route not found', $response->getContent());
         $driver = Log::channel()->driver();
@@ -196,7 +196,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $this->assertContains('HTTP 404 Not Found occurred.', $log);
         $this->assertContains('Rebet\Routing\Exception\RouteNotFoundException: Route not found in', $log);
 
-        $response = $handler->handle($request, null, ConfigNotDefineException::by('unit test'));
+        $response = $handler->handle($request, null, new ConfigNotDefineException('unit test'));
         $this->assertContains('<span class="status">500</span>Internal Server Error', $response->getContent());
         $this->assertContains('unit test', $response->getContent());
         $driver = Log::channel()->driver();
@@ -212,7 +212,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $request = $this->createJsonRequestMock('/');
         $handler = new ExceptionHandler();
 
-        $response = $handler->handle($request, null, AuthenticateException::by('Authentication failed'));
+        $response = $handler->handle($request, null, new AuthenticateException('Authentication failed'));
         $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
         $this->assertSame('{"status":403,"title":"Forbidden","type":"about:blank","detail":"Authentication failed"}', $response->getContent());
         $driver = Log::channel()->driver();
@@ -221,7 +221,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $this->assertContains('HTTP 403 Forbidden occurred.', $log);
         $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
 
-        $response = $handler->handle($request, null, RouteNotFoundException::by('Route not found'));
+        $response = $handler->handle($request, null, new RouteNotFoundException('Route not found'));
         $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
         $this->assertSame('{"status":404,"title":"Custom Not Found","type":"about:blank","detail":"The page could not be found. The specified URL is incorrect, or the page may have already been deleted \/ moved."}', $response->getContent());
         $driver = Log::channel()->driver();
@@ -230,7 +230,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $this->assertContains('HTTP 403 Forbidden occurred.', $log);
         $this->assertContains('Rebet\Auth\Exception\AuthenticateException: Authentication failed in', $log);
 
-        $response = $handler->handle($request, null, ConfigNotDefineException::by('unit test'));
+        $response = $handler->handle($request, null, new ConfigNotDefineException('unit test'));
         $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
         $this->assertSame('{"status":500,"title":"Internal Server Error","type":"about:blank","detail":"unit test"}', $response->getContent());
         $driver = Log::channel()->driver();

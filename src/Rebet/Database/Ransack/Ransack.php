@@ -405,7 +405,7 @@ class Ransack
             $value_converter = $predicates[$predicate][1];
             $conjunction     = $predicates[$predicate][2];
             if ($compound) {
-                throw RansackException::by("Short predicates of 'in' and 'eq' can not contain 'any' and 'all' compound word.");
+                throw new RansackException("Short predicates of 'in' and 'eq' can not contain 'any' and 'all' compound word.");
             };
         }
 

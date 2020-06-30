@@ -193,7 +193,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     protected function __construct($value, string $label)
     {
         if (!\is_scalar($value)) {
-            throw LogicException::by("Invalid value type. Value should be scalar.");
+            throw new LogicException("Invalid value type. Value should be scalar.");
         }
         $this->value = $value;
         $this->label = $label;
@@ -314,7 +314,7 @@ abstract class Enum implements \JsonSerializable, Convertible
             return self::$enum_data_cache[$class][$name];
         }
         if (!defined("static::{$name}")) {
-            throw LogicException::by("Invalid enum const. {$class}::{$name} is not defined.");
+            throw new LogicException("Invalid enum const. {$class}::{$name} is not defined.");
         }
 
         $args       = $rc->getConstant($name);
@@ -384,7 +384,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     {
         $class = get_called_class();
         if (!\property_exists($class, $field)) {
-            throw LogicException::by("Invalid property access. Property {$class}->{$field} is not exists.");
+            throw new LogicException("Invalid property access. Property {$class}->{$field} is not exists.");
         }
 
         $locale = $locale ?? Translator::getLocale();
@@ -476,7 +476,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     {
         $class = get_called_class();
         if (!\property_exists($class, $name)) {
-            throw LogicException::by("Invalid property access. Property {$class}->{$name} is not exists.");
+            throw new LogicException("Invalid property access. Property {$class}->{$name} is not exists.");
         }
 
         $values = [];
@@ -554,7 +554,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     {
         $class = get_called_class();
         if (!\property_exists($class, $name)) {
-            throw LogicException::by("Invalid property access. Property {$class}->{$name} is not exists.");
+            throw new LogicException("Invalid property access. Property {$class}->{$name} is not exists.");
         }
 
         $values = [];

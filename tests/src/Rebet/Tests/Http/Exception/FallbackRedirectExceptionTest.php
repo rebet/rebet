@@ -41,7 +41,7 @@ class FallbackRedirectExceptionTest extends RebetTestCase
     {
         $session = new Session();
         $session->start();
-        $e = FallbackRedirectException::by('test')->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
+        $e = (new FallbackRedirectException('test'))->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
 
         $response = $e->redirect();
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -52,7 +52,7 @@ class FallbackRedirectExceptionTest extends RebetTestCase
 
     public function test_problem()
     {
-        $e = FallbackRedirectException::by('test')->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
+        $e = (new FallbackRedirectException('test'))->to('/redirect/path')->with(['name' => 'rebet'])->errors(['name' => ['failed']]);
 
         $response = $e->problem();
         $this->assertInstanceOf(ProblemResponse::class, $response);

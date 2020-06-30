@@ -47,7 +47,7 @@ class Callback
                 case '===': return $retrieved === $value;
                 case '!==': return $retrieved !== $value;
                 default:
-                    throw LogicException::by("Invalid operator {$operator} given.");
+                    throw new LogicException("Invalid operator {$operator} given.");
             }
         };
     }
@@ -146,7 +146,7 @@ class Callback
      */
     public static function echoBack() : \Closure
     {
-        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = function($value) { return $value; };
+        return static::$cache[__FUNCTION__] ?? static::$cache[__FUNCTION__] = function ($value) { return $value; };
     }
 
     /**

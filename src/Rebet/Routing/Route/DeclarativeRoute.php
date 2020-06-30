@@ -79,7 +79,7 @@ abstract class DeclarativeRoute extends Route
         }
 
         if (!empty($this->methods) && !in_array($request->getMethod(), $this->methods)) {
-            throw RouteNotFoundException::by("{$this} not found. Invalid method {$request->getMethod()} given.");
+            throw new RouteNotFoundException("{$this} not found. Invalid method {$request->getMethod()} given.");
         }
 
         $vars = [];
@@ -90,7 +90,7 @@ abstract class DeclarativeRoute extends Route
                 }
                 $regex = $this->wheres[$key] ?? null ;
                 if ($regex && !preg_match($regex, $value)) {
-                    throw RouteNotFoundException::by("{$this} not found. Routing parameter '{$key}' value '{$value}' not match {$regex}.");
+                    throw new RouteNotFoundException("{$this} not found. Routing parameter '{$key}' value '{$value}' not match {$regex}.");
                 }
                 $vars[$key] = $value;
             }

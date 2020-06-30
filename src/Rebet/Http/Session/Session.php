@@ -313,7 +313,7 @@ class Session
         }
         foreach ($scopes as $scope) {
             if (Strings::contains("{$scope}", ':')) {
-                throw LogicException::by("Invalid token scope name '{$scope}' found. Token scope can not contains ':'.");
+                throw new LogicException("Invalid token scope name '{$scope}' found. Token scope can not contains ':'.");
             }
         }
         return '_token:'.implode(':', $scopes);
@@ -329,7 +329,7 @@ class Session
     public static function analyzeTokenScope(string $key) : array
     {
         if (!Strings::startsWith($key, '_token')) {
-            throw LogicException::by("Invalid token key '{$key}' was given. Token key must be starts with '_token'.");
+            throw new LogicException("Invalid token key '{$key}' was given. Token key must be starts with '_token'.");
         }
         $scopes = Strings::trim(Strings::ltrim($key, '_token', 1), ':');
         return empty($scopes) ? [] : explode(':', $scopes) ;

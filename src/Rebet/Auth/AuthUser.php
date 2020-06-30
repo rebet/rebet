@@ -177,7 +177,7 @@ class AuthUser implements \JsonSerializable
                 break;
             }
             if ($max < ++$depth) {
-                throw LogicException::by("Too many (over {$max}) aliases recursion depth.");
+                throw new LogicException("Too many (over {$max}) aliases recursion depth.");
             }
         }
         return $alias;

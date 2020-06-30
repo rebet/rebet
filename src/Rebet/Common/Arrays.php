@@ -287,7 +287,7 @@ class Arrays
                 return $diff;
         }
 
-        throw LogicException::by("Invalid array merge mode '{$option}' given.");
+        throw new LogicException("Invalid array merge mode '{$option}' given.");
     }
 
     /**

@@ -367,7 +367,7 @@ class Strings
         }
         $max = $length - mb_strlen($ellipsis);
         if ($max < 1) {
-            throw LogicException::by("Invalid clip length and ellipsis. The length must be longer than ellipsis.");
+            throw new LogicException("Invalid clip length and ellipsis. The length must be longer than ellipsis.");
         }
         return mb_substr($string, 0, $max).$ellipsis;
     }

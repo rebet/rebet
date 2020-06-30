@@ -53,6 +53,6 @@ class BasicAuth
         System::header('WWW-Authenticate: Basic realm="'.$realm.'"');
         System::header('Content-type: text/html; charset='.$charset);
 
-        throw AuthenticateException::by($failed_text);
+        throw new AuthenticateException($failed_text);
     }
 }

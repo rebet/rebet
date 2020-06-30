@@ -83,7 +83,7 @@ class DatabaseException extends RuntimeException
         $sql .= empty($params) ? '' : "\n-- [PARAM] --\n".Strings::stringify($params) ;
         $sql .= empty($sql)    ? '' : "\n-------------\n" ;
 
-        $e = static::by("[{$name}/{$driver}: ".($sql_state ?? '-----').($code ? "({$code})" : "")."] {$message}{$sql}")->db($db)->sqlState($sql_state)->code($code)->appendix($error_info);
+        $e = (new static("[{$name}/{$driver}: ".($sql_state ?? '-----').($code ? "({$code})" : "")."] {$message}{$sql}"))->db($db)->sqlState($sql_state)->code($code)->appendix($error_info);
         if ($error instanceof \Throwable) {
             $e->caused($error);
         }

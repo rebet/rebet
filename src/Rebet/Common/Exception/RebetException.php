@@ -14,14 +14,6 @@ namespace Rebet\Common\Exception;
 interface RebetException
 {
     /**
-     * Create a Rebet Exception
-     *
-     * @param mixed ...$reason
-     * @return self
-     */
-    public static function by(...$reason) : self ;
-
-    /**
      * Set the given previous exception.
      *
      * @param \Throwable $previous

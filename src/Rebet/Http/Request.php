@@ -94,7 +94,7 @@ class Request extends SymfonyRequest
             return $valid_data;
         }
 
-        throw FallbackRedirectException::by('Validate Failed.')->to($fallback_url)->with($this->input())->errors($validator->errors());
+        throw (new FallbackRedirectException('Validate Failed.'))->to($fallback_url)->with($this->input())->errors($validator->errors());
     }
 
     /**

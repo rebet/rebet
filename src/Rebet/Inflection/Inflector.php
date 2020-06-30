@@ -501,7 +501,7 @@ class Inflector
             }
         }
 
-        throw LogicException::by("Can't convert the word '{$word}' to plural from. Please review the plural.rules config.");
+        throw new LogicException("Can't convert the word '{$word}' to plural from. Please review the plural.rules config.");
     }
 
     /**

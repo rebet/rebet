@@ -602,14 +602,14 @@ class Reflector
             $default_value = $is_optional && !$is_variadic ? $parameter->getDefaultValue() : ($is_variadic ? [] : null) ;
             $value         = $values[$name] ?? $default_value ;
             if (!$is_optional && (!$is_defined || (!$is_nullable && $value === null))) {
-                throw LogicException::by("Parameter '{$name}' is requierd.");
+                throw new LogicException("Parameter '{$name}' is requierd.");
             }
 
             if ($type_convert) {
                 $converter = function ($value) use ($type, $name) {
                     $converted = static::convert($value, $type) ;
                     if ($value !== null && $converted === null) {
-                        throw LogicException::by("Parameter {$name}(={$value}) can not convert to {$type}.");
+                        throw new LogicException("Parameter {$name}(={$value}) can not convert to {$type}.");
                     }
                     return $converted;
                 };
@@ -791,7 +791,7 @@ class Reflector
         if (is_array($config)) {
             $factory = static::remove($config, $target ?? 0);
             if ($factory === null) {
-                throw LogicException::by("Unable to instantiate, because of '{$target}' is undefined.");
+                throw new LogicException("Unable to instantiate, because of '{$target}' is undefined.");
             }
             if (!is_string($factory)) {
                 return $factory;

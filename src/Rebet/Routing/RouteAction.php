@@ -56,7 +56,7 @@ class RouteAction
     public function __construct(Route $route, $reflector, $instance = null)
     {
         if (!($reflector instanceof \ReflectionFunction) && !($reflector instanceof \ReflectionMethod)) {
-            throw LogicException::by('Invalid type of reflector.');
+            throw new LogicException('Invalid type of reflector.');
         }
         $this->route            = $route;
         $this->reflector        = $reflector;
@@ -89,11 +89,11 @@ class RouteAction
             $default_value = $optional ? $parameter->getDefaultValue() : null ;
             $origin        = $vars->has($name) ? $vars->get($name) : $default_value ;
             if (!$optional && $origin === null) {
-                throw RouteNotFoundException::by("{$this->route} not found. Routing parameter '{$name}' is requierd.");
+                throw new RouteNotFoundException("{$this->route} not found. Routing parameter '{$name}' is requierd.");
             }
             $converted = Reflector::convert($origin, $type);
             if ($origin !== null && $converted === null) {
-                throw RouteNotFoundException::by("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
+                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
             }
             $args[$name] = $converted;
         }

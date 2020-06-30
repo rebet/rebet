@@ -63,7 +63,7 @@ class ProblemResponse extends JsonResponse
     {
         $status_label = HttpStatus::reasonPhraseOf($status);
         if ($status_label === null) {
-            throw LogicException::by("Invalid http status code [{$status}]");
+            throw new LogicException("Invalid http status code [{$status}]");
         }
         $this->problem = [
             'status' => $status,
@@ -111,18 +111,18 @@ class ProblemResponse extends JsonResponse
     public function additional($key, $value = null) : self
     {
         if ($this->problem['type'] === static::TYPE_HTTP_STATUS) {
-            throw LogicException::by("The type of 'about:blank' can not contains additional.");
+            throw new LogicException("The type of 'about:blank' can not contains additional.");
         }
         if (is_array($key)) {
             foreach (static::RESERVED_WORDS as $reserved) {
                 if (array_key_exists($reserved, $key)) {
-                    throw LogicException::by("The key of '{$reserved}' is reserved. so you can't set '{$reserved}' via additional.");
+                    throw new LogicException("The key of '{$reserved}' is reserved. so you can't set '{$reserved}' via additional.");
                 }
             }
             $this->problem = array_merge($this->problem, $key);
         } else {
             if (in_array($key, static::RESERVED_WORDS, true)) {
-                throw LogicException::by("The key of '{$key}' is reserved. so you can't set '{$key}' via additional.");
+                throw new LogicException("The key of '{$key}' is reserved. so you can't set '{$key}' via additional.");
             }
             $this->problem[$key] = $value;
         }
