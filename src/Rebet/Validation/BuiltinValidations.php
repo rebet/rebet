@@ -2,18 +2,18 @@
 namespace Rebet\Validation;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Decimal;
 use Rebet\Common\Path;
 use Rebet\Common\Strings;
 use Rebet\Common\System;
+use Rebet\Common\Unit;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\Http\UploadedFile;
 use Rebet\Stream\Stream;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
-use Rebet\Common\Unit;
-use Rebet\Http\UploadedFile;
-use Rebet\Common\Decimal;
 
 /**
  * BuiltinValidations Class
@@ -773,7 +773,7 @@ class BuiltinValidations extends Validations
             },
             $messsage_key,
             $replacement,
-            function($value) use ($precision) { return $precision ?? 'auto' ; }
+            function ($value) use ($precision) { return $precision ?? 'auto' ; }
         );
         return $valid;
     }
@@ -788,7 +788,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberLessThan(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lt($number, $precision); },'NumberLessThan');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lt($number, $precision); }, 'NumberLessThan');
     }
 
     /**
@@ -801,7 +801,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberLessThanOrEqual(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lte($number, $precision); },'NumberLessThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lte($number, $precision); }, 'NumberLessThanOrEqual');
     }
 
     /**
@@ -814,7 +814,7 @@ class BuiltinValidations extends Validations
      */
     public function validationNumberEqual(Context $c, $number, ?int $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->eq($number, $precision); },'NumberEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->eq($number, $precision); }, 'NumberEqual');
     }
 
     /**
@@ -1459,19 +1459,19 @@ class BuiltinValidations extends Validations
             return true;
         }
         $unit = Unit::of(Unit::STORAGE_PREFIX);
-        $max  = $unit->parse($max);
+        $max  = $unit->convert($max);
         return $this->handleListableValue(
             $c,
             Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($max, $unit, $precision) {
                 $size                     = $value->getSize();
                 $replacement['file_name'] = $value->getClientOriginalName();
-                $replacement['size']      = $unit->convert($size, null, $precision);
+                $replacement['size']      = $unit->exchange($size, null, $precision);
                 return $max->gte($size);
             },
             'FileSize',
             [
-                'max' => $unit->convert($max, null, $precision)
+                'max' => $unit->exchange($max, null, $precision)
             ]
         );
     }
@@ -1623,7 +1623,7 @@ class BuiltinValidations extends Validations
             Kind::INDEPENDENTLY(),
             function (UploadedFile $value, array &$replacement) use ($test) {
                 $replacement['file_name'] = $value->getClientOriginalName();
-                if(!$value->hasArea()) {
+                if (!$value->hasArea()) {
                     return false;
                 }
                 $replacement['width']  = ($width  = $value->getWidth());
@@ -1632,7 +1632,7 @@ class BuiltinValidations extends Validations
             },
             $messsage_key,
             $replacement,
-            function(UploadedFile $value) { return $value->hasArea() ? 'area' : 'no-area' ; }
+            function (UploadedFile $value) { return $value->hasArea() ? 'area' : 'no-area' ; }
         );
     }
 
@@ -1647,7 +1647,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($max) { return $width <= $max; },
+            function (int $width, int $height) use ($max) { return $width <= $max; },
             'FileImageMaxWidth',
             ['max' => $max]
         );
@@ -1664,7 +1664,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($size) { return $width === $size; },
+            function (int $width, int $height) use ($size) { return $width === $size; },
             'FileImageWidth',
             ['size' => $size]
         );
@@ -1681,7 +1681,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($min) { return $width >= $min; },
+            function (int $width, int $height) use ($min) { return $width >= $min; },
             'FileImageMinWidth',
             ['min' => $min]
         );
@@ -1698,7 +1698,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($max) { return $height <= $max; },
+            function (int $width, int $height) use ($max) { return $height <= $max; },
             'FileImageMaxHeight',
             ['max' => $max]
         );
@@ -1715,7 +1715,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($size) { return $height === $size; },
+            function (int $width, int $height) use ($size) { return $height === $size; },
             'FileImageHeight',
             ['size' => $size]
         );
@@ -1732,7 +1732,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($min) { return $height >= $min; },
+            function (int $width, int $height) use ($min) { return $height >= $min; },
             'FileImageMinHeight',
             ['min' => $min]
         );
@@ -1751,7 +1751,7 @@ class BuiltinValidations extends Validations
     {
         return $this->handleFileImageArea(
             $c,
-            function(int $width, int $height) use ($width_ratio, $height_ratio, $precision) {
+            function (int $width, int $height) use ($width_ratio, $height_ratio, $precision) {
                 return Decimal::of($width_ratio)->div($height_ratio, $precision)->eq(Decimal::of($width)->div($height, $precision));
             },
             'FileImageAspectRatio',
@@ -1762,8 +1762,6 @@ class BuiltinValidations extends Validations
             ]
         );
     }
-
-
 }
 
 // ---------------------------------------------------------

@@ -52,7 +52,7 @@ class UnitTest extends RebetTestCase
         ]));
     }
 
-    public function dataConverts() : array
+    public function dataExchanges() : array
     {
         return [
             ['0.12y' , UNIT::SI_PREFIX, 0.000000000000000000000000123],
@@ -229,14 +229,14 @@ class UnitTest extends RebetTestCase
     }
 
     /**
-     * @dataProvider dataConverts
+     * @dataProvider dataExchanges
      */
-    public function test_convert($expect, $units, $value, ?string $to = null, ?int $precision = 2, array $options = [])
+    public function test_exchange($expect, $units, $value, ?string $to = null, ?int $precision = 2, array $options = [])
     {
-        $this->assertSame($expect, Unit::of($units)->convert($value, $to, $precision, $options));
+        $this->assertSame($expect, Unit::of($units)->exchange($value, $to, $precision, $options));
     }
 
-    public function test_convert_reversible()
+    public function test_exchange_reversible()
     {
         foreach (Unit::config('factors') as $unit_name => $flactors) {
             $base_unit = Unit::baseUnitOf($flactors);
@@ -246,17 +246,17 @@ class UnitTest extends RebetTestCase
             foreach ($flactors as $symbole => [$flactor, $auto_scalable]) {
                 $unit = Unit::of($unit_name, ['thousands_separator' => '']);
                 foreach (['1', '0.123', '9876.543', '-12.34'] as $v) {
-                    $origin    = "{$v}{$symbole}";
-                    $converted = $unit->convert($origin, $base_unit, null);
-                    $reversed  = $unit->convert($converted, $symbole, 3);
-                    $flactor   = is_array($flactor) ? '*Convert function*' : $flactor ;
-                    $this->assertSame($origin, $reversed, "Faled in {$unit_name} {$symbole} => {$flactor} is not reversible, {$origin} -> {$converted} -> {$reversed}");
+                    $origin     = "{$v}{$symbole}";
+                    $exchangeed = $unit->exchange($origin, $base_unit, null);
+                    $reversed   = $unit->exchange($exchangeed, $symbole, 3);
+                    $flactor    = is_array($flactor) ? '*Convert function*' : $flactor ;
+                    $this->assertSame($origin, $reversed, "Faled in {$unit_name} {$symbole} => {$flactor} is not reversible, {$origin} -> {$exchangeed} -> {$reversed}");
                 }
             }
         }
     }
 
-    public function dataParses() : array
+    public function dataConverts() : array
     {
         return [
             ['0.000000000000000000000000123', Unit::SI_PREFIX, '0.123y', ''],
@@ -275,11 +275,11 @@ class UnitTest extends RebetTestCase
     }
 
     /**
-     * @dataProvider dataParses
+     * @dataProvider dataConverts
      */
-    public function test_parse($expect, $units, $value, ?string $to = null, array $options = [])
+    public function test_convert($expect, $units, $value, ?string $to = null, array $options = [])
     {
-        $decimal = Unit::of($units)->parse($value, $to, $options);
+        $decimal = Unit::of($units)->convert($value, $to, $options);
         $this->assertInstanceOf(Decimal::class, $decimal);
         $this->assertSame($expect, $decimal->value());
     }

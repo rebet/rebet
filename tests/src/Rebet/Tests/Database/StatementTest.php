@@ -19,7 +19,7 @@ class StatementTest extends RebetDatabaseTestCase
 {
     protected function tables(string $db_name) : array
     {
-        return static::BASIC_TABLES[$db_name === 'main' ? 'sqlite' : $db_name] ?? [];
+        return static::BASIC_TABLES[$db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array
@@ -70,21 +70,21 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_execute()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute();
             $this->assertInstanceOf(Statement::class, $stmt);
             $rs       = $stmt->all();
             $this->assertSame(3, $rs->count());
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users WHERE gender = :gender", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute(['gender' => 1]);
             $this->assertInstanceOf(Statement::class, $stmt);
             $rs       = $stmt->all();
             $this->assertSame(2, $rs->count());
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users WHERE gender = :gender", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute(['gender' => PdoParameter::int(2)]);
             $this->assertInstanceOf(Statement::class, $stmt);
@@ -95,7 +95,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     /**
      * @expectedException Rebet\Database\Exception\DatabaseException
-     * @expectedExceptionMessage [main/sqlite: UNKOWN] Unkown error occured.
+     * @expectedExceptionMessage [sqlite/sqlite: UNKOWN] Unkown error occured.
      */
     public function test_execute_exception_01()
     {
@@ -109,7 +109,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     /**
      * @expectedException Rebet\Database\Exception\DatabaseException
-     * @expectedExceptionMessage [main/sqlite: UNKOWN] Unkown error occured.
+     * @expectedExceptionMessage [sqlite/sqlite: UNKOWN] Unkown error occured.
      */
     public function test_execute_exception_02()
     {
@@ -124,7 +124,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_all()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->all();
             $this->assertInstanceOf(ResultSet::class, $rs);
@@ -143,7 +143,7 @@ class StatementTest extends RebetDatabaseTestCase
             $rs       = $stmt->all();
             $this->assertTrue($rs->empty());
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->all(User::class);
             $this->assertInstanceOf(ResultSet::class, $rs);
@@ -159,7 +159,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_first()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->first();
             $this->assertInstanceOf('stdClass', $rs);
@@ -191,7 +191,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_allOf()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf('user_id');
             $this->assertInstanceOf(ResultSet::class, $rs);
@@ -201,14 +201,14 @@ class StatementTest extends RebetDatabaseTestCase
             $rs       = $stmt->allOf('user_id');
             $this->assertTrue($rs->empty());
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf(0);
             $this->assertInstanceOf(ResultSet::class, $rs);
             $this->assertSame(3, $rs->count());
             $this->assertSame([1, 2, 3], $rs->toArray());
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf('birthday');
             if ($db->driverName() === 'sqlite') {
@@ -217,7 +217,7 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertInstanceOf(Date::class, $rs[0]);
             }
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf(3);
             if ($db->driverName() === 'sqlite') {
@@ -226,22 +226,22 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertInstanceOf(Date::class, $rs[0]);
             }
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf('birthday', Date::class);
             $this->assertInstanceOf(Date::class, $rs[0]);
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf(3, Date::class);
             $this->assertInstanceOf(Date::class, $rs[0]);
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf('birthday', 'string');
             $this->assertTrue(is_string($rs[0]));
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf(3, 'string');
             $this->assertTrue(is_string($rs[0]));
@@ -251,7 +251,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_firstOf()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf('user_id');
             $this->assertTrue(is_int($rs));
@@ -266,13 +266,13 @@ class StatementTest extends RebetDatabaseTestCase
             $rs = $stmt->firstOf('user_id');
             $this->assertNull($rs);
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf(0);
             $this->assertTrue(is_int($rs));
             $this->assertSame(1, $rs);
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf('birthday');
             if ($db->driverName() === 'sqlite') {
@@ -281,7 +281,7 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertInstanceOf(Date::class, $rs);
             }
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf(3);
             if ($db->driverName() === 'sqlite') {
@@ -290,22 +290,22 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertInstanceOf(Date::class, $rs);
             }
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf('birthday', Date::class);
             $this->assertInstanceOf(Date::class, $rs);
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf(3, Date::class);
             $this->assertInstanceOf(Date::class, $rs);
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf('birthday', 'string');
             $this->assertTrue(is_string($rs));
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf(3, 'string');
             $this->assertTrue(is_string($rs));
@@ -315,7 +315,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_affectedRows()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $count    = $stmt->execute()->affectedRows();
             if ($db->driverName() == 'sqlite') {
@@ -324,12 +324,12 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertSame(3, $count, 'on DB '.$db->driverName());
             }
 
-            $pdo_stmt = $db->driver()->prepare("INSERT INTO users VALUES(99, 'foo', 2, '1980-01-02', 'foo@bar.rebet.local', 'user', CURRENT_TIMESTAMP, NULL)");
+            $pdo_stmt = $db->pdo()->prepare("INSERT INTO users VALUES(99, 'foo', 2, '1980-01-02', 'foo@bar.rebet.local', 'user', CURRENT_TIMESTAMP, NULL)");
             $stmt     = new Statement($db, $pdo_stmt);
             $count    = $stmt->execute()->affectedRows();
             $this->assertSame(1, $count);
 
-            $pdo_stmt = $db->driver()->prepare("UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE gender = 1");
+            $pdo_stmt = $db->pdo()->prepare("UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE gender = 1");
             $stmt     = new Statement($db, $pdo_stmt);
             $count    = $stmt->execute()->affectedRows();
             $this->assertSame(2, $count);
@@ -339,7 +339,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_each()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $i = 1;
             $stmt->execute()->each(function (User $user) use (&$i) {
@@ -347,7 +347,7 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertInstanceOf(User::class, $user);
             });
 
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt->execute()->each(function ($user) {
                 $this->assertEquals(1, $user->user_id);
@@ -360,7 +360,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_filter()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $users    = $stmt->execute()->filter(function (User $user) {
                 return $user->gender == Gender::MALE();
@@ -372,7 +372,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_map()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $users    = $stmt->execute()->map(function (User $user) {
                 $user->name = $user->gender == Gender::MALE() ? "Mr. {$user->name}" : "Ms. {$user->name}";
@@ -385,7 +385,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_reduce()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $result   = $stmt->execute()->reduce(function (User $user, $carry) {
                 return $carry + $user->user_id;
@@ -397,7 +397,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_getIterator()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $this->assertInstanceOf(Traversable::class, $stmt->getIterator());
         });
@@ -406,7 +406,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_close()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->driver()->prepare("SELECT * FROM users");
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $this->assertTrue($stmt->execute()->close());
         });

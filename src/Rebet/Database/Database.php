@@ -11,7 +11,6 @@ use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Converter\Converter;
 use Rebet\Database\DataModel\Entity;
-use Rebet\Database\Driver\Driver;
 use Rebet\Database\Event\BatchDeleted;
 use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
@@ -62,11 +61,11 @@ class Database
     protected $name = null;
 
     /**
-     * The database driver that supported PDO interfaces.
+     * The PDO instance.
      *
-     * @var Driver
+     * @var \PDO
      */
-    protected $driver = null;
+    protected $pdo = null;
 
     /**
      * Status that logging or not.
@@ -111,21 +110,22 @@ class Database
     protected $ransacker = null;
 
     /**
-     * Create database instance using given driver.
+     * Create database instance using given PDO instance.
      *
      * @param string $name of this database (alias ​​for classification)
-     * @param Driver $driver
+     * @param \PDO $pdo
      * @param bool $debug (default: false)
      * @param bool $emulated_sql_log (default: true)
      * @param callable|null $log_handler function(string $name, string $sql, array $params = []) (default: depend on configure)
      */
-    public function __construct(string $name, Driver $driver, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
+    public function __construct(string $name, \PDO $pdo, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
     {
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+
         $this->name             = $name;
-        $driver->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $driver->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-        $driver->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-        $this->driver           = $driver;
+        $this->pdo              = $pdo;
         $this->debug            = $debug;
         $this->emulated_sql_log = $emulated_sql_log;
         $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
@@ -152,7 +152,7 @@ class Database
      */
     public function driverName() : string
     {
-        return $this->driver()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        return $this->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 
     /**
@@ -163,7 +163,7 @@ class Database
      */
     public function serverVersion() : string
     {
-        return $this->driver()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        return $this->pdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
     }
 
     /**
@@ -174,20 +174,20 @@ class Database
      */
     public function clientVersion() : string
     {
-        return $this->driver()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+        return $this->pdo()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
     }
 
     /**
-     * Get the database driver that supported PDO interfaces.
+     * Get the PDO instance.
      *
-     * @return Driver
+     * @return \PDO
      */
-    public function driver() : Driver
+    public function pdo() : \PDO
     {
         if ($this->closed()) {
             throw new DatabaseException("Database [{$this->name}] connection was lost.");
         }
-        return $this->driver;
+        return $this->pdo;
     }
 
     /**
@@ -320,7 +320,7 @@ class Database
         if ($param->value === null) {
             return 'NULL';
         }
-        return $this->driver()->quote($param->value, $param->type);
+        return $this->pdo()->quote($param->value, $param->type);
     }
 
     /**
@@ -355,8 +355,8 @@ class Database
      */
     public function begin() : self
     {
-        if (!$this->driver()->beginTransaction()) {
-            throw $this->exception($this->driver()->errorInfo());
+        if (!$this->pdo()->beginTransaction()) {
+            throw $this->exception($this->pdo()->errorInfo());
         }
         $this->log("BEGIN");
         return $this;
@@ -372,7 +372,7 @@ class Database
     public function savepoint(string $name) : self
     {
         $sql = "SAVEPOINT {$name}";
-        $this->driver()->exec($sql);
+        $this->pdo()->exec($sql);
         $this->log($sql);
         return $this;
     }
@@ -389,8 +389,8 @@ class Database
     {
         try {
             $sql = $savepoint ? "ROLLBACK TO SAVEPOINT {$savepoint}" : null ;
-            if (!($sql ? $this->driver()->exec($sql) : $this->driver()->rollBack())) {
-                throw $this->exception($this->driver()->errorInfo(), $sql);
+            if (!($sql ? $this->pdo()->exec($sql) : $this->pdo()->rollBack())) {
+                throw $this->exception($this->pdo()->errorInfo(), $sql);
             }
             $this->log($sql ?? "ROLLBACK");
         } catch (\Exception $e) {
@@ -410,8 +410,8 @@ class Database
      */
     public function commit() : self
     {
-        if (!$this->driver()->commit()) {
-            throw $this->exception($this->driver()->errorInfo());
+        if (!$this->pdo()->commit()) {
+            throw $this->exception($this->pdo()->errorInfo());
         }
         $this->log("COMMIT");
         return $this;
@@ -447,7 +447,7 @@ class Database
      */
     public function lastInsertId(?string $name = null) : string
     {
-        return $this->driver()->lastInsertId($name);
+        return $this->pdo()->lastInsertId($name);
     }
 
     /**
@@ -459,12 +459,12 @@ class Database
     protected function prepare(string $sql) : Statement
     {
         try {
-            $stmt = $this->driver()->prepare($sql, [
+            $stmt = $this->pdo()->prepare($sql, [
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
                 // \PDO::ATTR_CURSOR             => \PDO::CURSOR_SCROLL,
             ]);
             if (!$stmt) {
-                throw $this->exception($this->driver()->errorInfo(), $sql);
+                throw $this->exception($this->pdo()->errorInfo(), $sql);
             }
             return new Statement($this, $stmt);
         } catch (\PDOException $e) {
@@ -949,9 +949,9 @@ class Database
      */
     public function close() : void
     {
-        if ($this->driver) {
+        if ($this->pdo) {
             $this->rollback();
-            $this->driver = null;
+            $this->pdo = null;
         }
     }
 
@@ -962,6 +962,6 @@ class Database
      */
     public function closed() : bool
     {
-        return $this->driver === null;
+        return $this->pdo === null;
     }
 }

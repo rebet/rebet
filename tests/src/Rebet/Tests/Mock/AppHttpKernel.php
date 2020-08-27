@@ -4,6 +4,7 @@ namespace Rebet\Tests\Mock;
 use Rebet\Application\Bootstrap\LoadConfiguration;
 use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Application\Http\HttpKernel;
+use Throwable;
 
 class AppHttpKernel extends HttpKernel
 {
@@ -22,6 +23,11 @@ class AppHttpKernel extends HttpKernel
 
     public function exceptionHandler() : ExceptionHandler
     {
-        return new ExceptionHandler();
+        return new class extends ExceptionHandler {
+            public function handle($input, $output, Throwable $e)
+            {
+                throw $e;
+            }
+        };
     }
 }

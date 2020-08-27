@@ -25,27 +25,27 @@ class PaginatorTest extends RebetTestCase
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertInstanceOf(Paginator::class, $paginator->action('/foo'));
-        $this->assertSame('/foo', $this->getProperty($paginator, 'action'));
-        $this->assertSame('page', $this->getProperty($paginator, 'page_name'));
-        $this->assertSame(null, $this->getProperty($paginator, 'anchor'));
+        $this->assertSame('/foo', $this->inspect($paginator, 'action'));
+        $this->assertSame('page', $this->inspect($paginator, 'page_name'));
+        $this->assertSame(null, $this->inspect($paginator, 'anchor'));
 
         $this->assertInstanceOf(Paginator::class, $paginator->action('/bar', '_page', 'top'));
-        $this->assertSame('/bar', $this->getProperty($paginator, 'action'));
-        $this->assertSame('_page', $this->getProperty($paginator, 'page_name'));
-        $this->assertSame('top', $this->getProperty($paginator, 'anchor'));
+        $this->assertSame('/bar', $this->inspect($paginator, 'action'));
+        $this->assertSame('_page', $this->inspect($paginator, 'page_name'));
+        $this->assertSame('top', $this->inspect($paginator, 'anchor'));
     }
 
     public function test_with()
     {
         $paginator = new Paginator([], 0, 10, 1, null, 1);
         $this->assertInstanceOf(Paginator::class, $paginator->with(['gender' => 1]));
-        $this->assertSame(['gender' => 1], $this->getProperty($paginator, 'queries'));
+        $this->assertSame(['gender' => 1], $this->inspect($paginator, 'queries'));
 
         $this->assertInstanceOf(Paginator::class, $paginator->with(['foo' => 'bar']));
-        $this->assertSame(['gender' => 1, 'foo' => 'bar'], $this->getProperty($paginator, 'queries'));
+        $this->assertSame(['gender' => 1, 'foo' => 'bar'], $this->inspect($paginator, 'queries'));
 
         $this->assertInstanceOf(Paginator::class, $paginator->with(['gender' => 2]));
-        $this->assertSame(['gender' => 2, 'foo' => 'bar'], $this->getProperty($paginator, 'queries'));
+        $this->assertSame(['gender' => 2, 'foo' => 'bar'], $this->inspect($paginator, 'queries'));
     }
 
     public function test_count()

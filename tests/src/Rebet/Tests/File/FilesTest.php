@@ -1,12 +1,13 @@
 <?php
 namespace Rebet\Tests\File;
 
-use Rebet\File\Exception\ZipArchiveException;
 use Rebet\File\Files;
 use Rebet\Tests\RebetTestCase;
 
 class FilesTest extends RebetTestCase
 {
+    protected $test_dir;
+
     public function setUp()
     {
         $this->vfs([
@@ -29,6 +30,14 @@ class FilesTest extends RebetTestCase
             ],
             'var' => [],
         ]);
+
+        $this->test_dir = static::$unittest_cwd.'/FilesTest';
+        Files::removeDir($this->test_dir);
+        mkdir("{$this->test_dir}/parent", 0777, true);
+        mkdir("{$this->test_dir}/parent/child", 0777, true);
+        file_put_contents("{$this->test_dir}/parent/foo.txt", "foo");
+        file_put_contents("{$this->test_dir}/parent/bar.ini", "bar");
+        file_put_contents("{$this->test_dir}/parent/child/baz.log", "baz");
     }
 
     public function test_removeDir()
@@ -52,41 +61,61 @@ class FilesTest extends RebetTestCase
         $this->assertFileExists('vfs://root');
     }
 
+    public function test_removeDir_onlyIncludeContents()
+    {
+        $this->assertFileExists('vfs://root/public/css/normalize.css');
+        $this->assertFileExists('vfs://root/public/js/underscore/underscore.min.js');
+        $this->assertFileExists('vfs://root/public/index.html');
+        $this->assertFileExists('vfs://root/public/img');
+        $this->assertFileExists('vfs://root/public');
+        $this->assertFileExists('vfs://root/var');
+        $this->assertFileExists('vfs://root');
+
+        Files::removeDir('vfs://root/public', false);
+
+        $this->assertFileNotExists('vfs://root/public/css/normalize.css');
+        $this->assertFileNotExists('vfs://root/public/js/underscore/underscore.min.js');
+        $this->assertFileNotExists('vfs://root/public/index.html');
+        $this->assertFileNotExists('vfs://root/public/img');
+        $this->assertFileExists('vfs://root/public');
+        $this->assertFileExists('vfs://root/var');
+        $this->assertFileExists('vfs://root');
+    }
+
     public function test_zip()
     {
-        if (DIRECTORY_SEPARATOR == '\\') {
-            // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
-            try {
-                Files::zip('vfs://root/public', 'vfs://root/var/public.zip');
-                $this->fail("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
-            } catch (ZipArchiveException $e) {
-                $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
-            }
-        } else {
-            try {
-                Files::zip('vfs://root/public', 'vfs://root/var/public.zip');
-                $this->assertFalse(file_get_contents('vfs://root/var/public.zip'), "vfsStream supported ZipArchive, so please update test code.");
-            } catch (\ErrorException $e) {
-                $this->assertSame(
-                    'ZipArchive::close(): Failure to create temporary file: No such file or directory',
-                    $e->getMessage()
-                );
-            }
-        }
+        $this->assertFileNotExists("{$this->test_dir}/parent.zip");
+        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/parent.zip");
+        $this->assertFileExists("{$this->test_dir}/parent.zip");
+
+        // @todo inplements more tests
     }
 
     public function test_unzip()
     {
-        if (DIRECTORY_SEPARATOR == '\\') {
-            // vfsStream not supported ZipArchive::open() when DIRECTORY_SEPARATOR == '\\'
-            try {
-                Files::unzip('vfs://root/var/public.zip', 'vfs://root/public');
-                $this->fail("vfsStream support ZipArchive::open() when DIRECTORY_SEPARATOR == '\\', so please update test code.");
-            } catch (ZipArchiveException $e) {
-                $this->assertSame(\ZipArchive::ER_READ, $e->getCode());
-            }
-        } else {
-            $this->markTestSkipped("vfsStream not support ZipArchive, yet.");
-        }
+        $this->assertFileNotExists("{$this->test_dir}/parent.zip");
+        $this->assertFileExists("{$this->test_dir}/parent");
+
+        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/parent.zip");
+
+        $this->assertFileExists("{$this->test_dir}/parent.zip");
+        $this->assertFileExists("{$this->test_dir}/parent");
+
+        Files::removeDir("{$this->test_dir}/parent");
+
+        $this->assertFileExists("{$this->test_dir}/parent.zip");
+        $this->assertFileNotExists("{$this->test_dir}/parent");
+
+        Files::unzip("{$this->test_dir}/parent.zip", $this->test_dir);
+
+        $this->assertFileExists("{$this->test_dir}/parent.zip");
+        $this->assertFileExists("{$this->test_dir}/parent");
+        $this->assertFileExists("{$this->test_dir}/parent/foo.txt");
+        $this->assertSame("foo", file_get_contents("{$this->test_dir}/parent/foo.txt"));
+        $this->assertFileExists("{$this->test_dir}/parent/bar.ini");
+        $this->assertSame("bar", file_get_contents("{$this->test_dir}/parent/bar.ini"));
+        $this->assertFileExists("{$this->test_dir}/parent/child");
+        $this->assertFileExists("{$this->test_dir}/parent/child/baz.log");
+        $this->assertSame("baz", file_get_contents("{$this->test_dir}/parent/child/baz.log"));
     }
 }

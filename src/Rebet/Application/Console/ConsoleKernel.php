@@ -112,7 +112,7 @@ abstract class ConsoleKernel extends ApplicationKernel
      */
     public function fallback(\Throwable $e) : int
     {
-        return $this->result = $this->exceptionHandler()->handle($this->input, $this->output, $e);
+        return $this->result = $this->exceptionHandler()->handle($this->input ?? $this->input = new ArgvInput(), $this->output, $e);
     }
 
     /**
@@ -120,6 +120,6 @@ abstract class ConsoleKernel extends ApplicationKernel
      */
     public function report(\Throwable $e) : void
     {
-        $this->exceptionHandler()->report($this->input, $this->result, $e);
+        $this->exceptionHandler()->report($this->input ?? $this->input = new ArgvInput(), $this->result, $e);
     }
 }

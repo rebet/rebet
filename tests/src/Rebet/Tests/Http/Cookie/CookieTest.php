@@ -74,7 +74,7 @@ class CookieTest extends RebetTestCase
      */
     public function test_has_requestNotInit()
     {
-        $this->setProperty(Request::class, 'current', null);
+        $this->inject(Request::class, 'current', null);
         Cookie::has('key');
     }
 
@@ -92,7 +92,7 @@ class CookieTest extends RebetTestCase
      */
     public function test_get_requestNotInit()
     {
-        $this->setProperty(Request::class, 'current', null);
+        $this->inject(Request::class, 'current', null);
         Cookie::get('key');
     }
 

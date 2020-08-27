@@ -22,7 +22,7 @@ class KernelMock extends Kernel
         return $this->bootstrappers;
     }
 
-    public function handle($input, $output = null)
+    public function handle($input = null, $output = null)
     {
         return $this->result;
     }

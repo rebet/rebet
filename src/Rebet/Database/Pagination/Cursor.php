@@ -107,7 +107,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     public function expired() : bool
     {
-        $lifetime = Unit::of(Unit::TIME)->parse(static::config('lifetime', false, 0), 'ms')->toInt();
+        $lifetime = Unit::of(Unit::TIME)->convert(static::config('lifetime', false, 0), 'ms')->toInt();
         if ($lifetime === 0) {
             return false;
         }

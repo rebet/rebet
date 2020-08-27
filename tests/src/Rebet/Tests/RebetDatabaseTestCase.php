@@ -2,10 +2,10 @@
 namespace Rebet\Tests;
 
 use Rebet\Common\Arrays;
+use Rebet\Common\Strings;
 use Rebet\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
-use Rebet\Database\Driver\PdoDriver;
 use Rebet\Database\Pagination\Cursor;
 
 /**
@@ -228,38 +228,39 @@ EOS
         ],
     ];
 
-    protected static $main   = null;
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+    }
+
+    public static function tearDownAfterClass()
+    {
+        foreach (array_keys(Dao::config('dbs')) as $db_name) {
+            Dao::db($db_name)->close();
+        }
+        parent::tearDownAfterClass();
+    }
+
     protected static $sqlite = null;
 
     protected function setUp() : void
     {
         parent::setUp();
-        if (self::$main == null) {
-            self::$main = new PdoDriver('sqlite::memory:');
-        }
-        if (self::$sqlite == null) {
-            self::$sqlite = new PdoDriver('sqlite::memory:');
+        if (!static::$sqlite) {
+            static::$sqlite = new \PDO('sqlite::memory:');
         }
         Config::application([
             Dao::class => [
-                'dbs' => [
-                    'main'   => [
-                        'driver'   => self::$main,
-                        'dsn'      => 'sqlite::memory:',
-                        // 'emulated_sql_log' => false,
-                        // 'debug'            => true,
-                    ],
-
+                'default_db' => 'sqlite',
+                'dbs!'       => [
                     'sqlite' => [
-                        'driver'   => self::$sqlite,
-                        'dsn'      => 'sqlite::memory:',
+                        'dsn' => function () { return static::$sqlite; },
                         // 'emulated_sql_log' => false,
                         // 'debug'            => true,
                     ],
 
                     // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
                     'mysql' => [
-                        'driver'   => PdoDriver::class,
                         'dsn'      => 'mysql:host=localhost;dbname=rebet_test;charset=utf8mb4',
                         'user'     => 'root',
                         'password' => '',
@@ -275,7 +276,6 @@ EOS
                     //   host    all     postgres             127.0.0.1/32            trust
                     //   host    all     postgres             ::1/128                 trust
                     'pgsql' => [
-                        'driver'   => PdoDriver::class,
                         'dsn'      => "pgsql:host=localhost;dbname=rebet_test;options='--client_encoding=UTF8'",
                         'user'     => 'postgres',
                         'password' => '',
@@ -346,6 +346,7 @@ EOS
                 $db->execute("DROP TABLE IF EXISTS {$table_name}");
             }
         }
+        parent::tearDown();
     }
 
     /**
@@ -359,7 +360,7 @@ EOS
             return Dao::db($db);
         } catch (\Exception $e) {
             if ($mark_test_skiped) {
-                $this->markTestSkipped("Database '$db' was not ready: {$e->getMessage()}.");
+                $this->markTestSkipped("Database '$db' was not ready: {$e->getMessage()}.\n".$e->getTraceAsString());
             }
         }
         return null;

@@ -2,8 +2,7 @@
 namespace Rebet\Tests\Database;
 
 use Rebet\Database\Dao;
-use Rebet\Database\Driver\PdoDriver;
-use Rebet\Tests\Mock\Entity\User;
+use Rebet\DateTime\DateTime;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class DaoTest extends RebetDatabaseTestCase
@@ -11,69 +10,71 @@ class DaoTest extends RebetDatabaseTestCase
     protected function setUp() : void
     {
         parent::setUp();
+        DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
     protected function tables(string $db_name) : array
     {
-        return [
-            'sqlite' => [
-                'users' => <<<EOS
-                    CREATE TABLE IF NOT EXISTS users (
-                        user_id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        gender INTEGER NOT NULL,
-                        birthday TEXT NOT NULL,
-                        email TEXT NOT NULL,
-                        role TEXT NOT NULL,
-                        created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TEXT
-                    );
-EOS
-
-            ]
-        ][$db_name] ?? [];
+        return static::BASIC_TABLES[$db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array
     {
         return [
             'users' => [
-                ['user_id' => 1, 'name' => 'John Smith'    , 'gender' => 1, 'birthday' => '1988-01-23', 'email' => 'john@rebet.local', 'role' => 'user'],
-                ['user_id' => 2, 'name' => 'Jane Smith'    , 'gender' => 2, 'birthday' => '1999-11-09', 'email' => 'jane@rebet.local', 'role' => 'user'],
-                ['user_id' => 3, 'name' => 'Robert Baldwin', 'gender' => 1, 'birthday' => '1991-08-14', 'email' => 'bob@rebet.local' , 'role' => 'user'],
+                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08', 'email' => 'elody@s1.rebet.local' , 'role' => 'user'],
+                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16', 'email' => 'alta_h@s2.rebet.local', 'role' => 'user'],
+                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user'],
             ],
         ][$table_name] ?? [];
     }
 
-    public function test___construct()
+    public function test_clear()
     {
-        $this->assertInstanceOf(PdoDriver::class, new PdoDriver('sqlite::memory:'));
+        $mysql = Dao::db('mysql');
+        $this->assertSame($mysql, Dao::current());
+        $this->assertSame(false, $mysql->closed());
+        Dao::clear('pgsql');
+        $this->assertSame($mysql, Dao::current());
+        $this->assertSame(false, $mysql->closed());
+        Dao::clear('mysql');
+        $this->assertSame(null, Dao::current());
+        $this->assertSame(true, $mysql->closed());
+
+        $mysql = Dao::db('mysql');
+        $pgsql = Dao::db('pgsql');
+        $this->assertSame($pgsql, Dao::current());
+        $this->assertSame(false, $mysql->closed());
+        $this->assertSame(false, $pgsql->closed());
+        Dao::clear();
+        $this->assertSame(null, Dao::current());
+        $this->assertSame(true, $mysql->closed());
+        $this->assertSame(true, $pgsql->closed());
     }
 
-    // public function test_sandbox()
-    // {
-    //     // var_dump(Dao::db()->select('select * from users where user_id = :user$id', ['user$id' => 2]));
+    public function test_db()
+    {
+        $default = Dao::db();
+        $sqlite  = Dao::db('sqlite');
+        $this->assertSame($default, $sqlite);
 
-    //     // var_dump(Dao::db()->select('select * from users where user_id = :user_id', ['user_id' => 1]));
-    //     // $user = new User();
-    //     // $user->populate(['name' => 'Branden Nieves', 'gender' => 1, 'birthday' => '2002-11-30', 'email' => 'nieves@rebet.local' , 'role' => 'user']);
-    //     // Dao::db()->insert($user);
-    //     // var_dump(Dao::db()->select('select * from users where gender = :gender', ['gender' => 1]));
+        // @todo Need implement more tests.
+    }
 
-    //     $user = Dao::db()->find('select * from users where user_id = :user_id', ['user_id' => 1], User::class);
-    //     // var_dump($user);
-    //     $user->name = 'Updated';
-    //     // var_dump($user);
-    //     Dao::db()->update($user);
-    //     $user = Dao::db()->find('select * from users where user_id = :user_id', ['user_id' => 1], User::class);
-    //     // var_dump($user);
+    public function test_current()
+    {
+        $this->assertSame(null, Dao::current());
+        $mysql = Dao::db('mysql');
+        $this->assertSame($mysql, Dao::current());
+        $pgsql = Dao::db('pgsql');
+        $this->assertSame($pgsql, Dao::current());
+        $mysql = Dao::db('mysql', false);
+        $this->assertSame($pgsql, Dao::current());
+    }
 
-    //     // $con  = parent::$pdo;
-    //     // $stmt = $con->prepare('select * from users where user_id = :user_id');
-    //     // $stmt->execute([':user_id' => 1]);
-    //     // foreach ($stmt as $row) {
-    //     //     var_dump($row);
-    //     // }
-    //     // $this->assertSame('', '');
-    // }
+    public function test___callStatic()
+    {
+        $this->assertSame('Elody Bode III', Dao::find("SELECT * FROM users WHERE user_id = :user_id", null, ['user_id' => 1])->name);
+        $this->assertSame('sqlite', Dao::driverName());
+    }
 }

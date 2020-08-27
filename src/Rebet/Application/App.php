@@ -70,12 +70,13 @@ class App
     /**
      * initialize App and set framework configure.
      *
-     * @return void
+     * @return Kernel
      */
-    public static function init(Kernel $kernel) : void
+    public static function init(Kernel $kernel) : Kernel
     {
         static::$kernel = $kernel;
         $kernel->bootstrap();
+        return $kernel;
     }
 
     /**

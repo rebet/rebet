@@ -11,8 +11,6 @@ use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
-use Rebet\Database\Driver\Driver;
-use Rebet\Database\Driver\PdoDriver;
 use Rebet\Database\Event\BatchDeleted;
 use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
@@ -49,7 +47,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
     protected function tables(string $db_name) : array
     {
-        return static::BASIC_TABLES[$db_name === 'main' ? 'sqlite' : $db_name] ?? [];
+        return static::BASIC_TABLES[$db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array
@@ -102,7 +100,6 @@ class DatabaseTest extends RebetDatabaseTestCase
     public function test_driverName()
     {
         $this->assertSame('sqlite', Dao::db()->driverName());
-        $this->assertSame('sqlite', Dao::db('main')->driverName());
         $this->assertSame('sqlite', Dao::db('sqlite')->driverName());
         $this->assertSame('mysql', Dao::db('mysql')->driverName());
         $this->assertSame('pgsql', Dao::db('pgsql')->driverName());
@@ -122,10 +119,10 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_driver()
+    public function test_pdo()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertInstanceOf(PdoDriver::class, $db->driver());
+            $this->assertInstanceOf(\PDO::class, $db->pdo());
         });
     }
 
@@ -172,6 +169,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             Dao::class => [
                 'dbs' => [
                     'sqlite' => [
+                        'dsn'              => 'sqlite::memory:',
                         'log_handler'      => function (string $n, string $s, array $p = []) use (&$en, &$es, &$ep) {
                             $en = $n;
                             $es = $s;
@@ -1613,11 +1611,11 @@ class DatabaseTest extends RebetDatabaseTestCase
     public function test_counts()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertEquals( 0, $db->counts(User::class, ['user_id' => 9999]));
-            $this->assertEquals( 1, $db->counts(User::class, ['user_id' => 1]));
-            $this->assertEquals( 1, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertEquals( 0, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
-            $this->assertEquals( 2, $db->counts(User::class, ['user_id_lt' => 3]));
+            $this->assertEquals(0, $db->counts(User::class, ['user_id' => 9999]));
+            $this->assertEquals(1, $db->counts(User::class, ['user_id' => 1]));
+            $this->assertEquals(1, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertEquals(0, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertEquals(2, $db->counts(User::class, ['user_id_lt' => 3]));
             $this->assertEquals(13, $db->counts(User::class, ['gender' => Gender::MALE()]));
         });
     }
@@ -1625,10 +1623,10 @@ class DatabaseTest extends RebetDatabaseTestCase
     public function test_close()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertInstanceOf(Driver::class, $db->driver());
+            $this->assertInstanceOf(\PDO::class, $db->pdo());
             $db->close();
             try {
-                $db->driver();
+                $db->pdo();
                 $this->fail('Never execute');
             } catch (\Exception $e) {
                 $this->assertInstanceOf(DatabaseException::class, $e);

@@ -18,6 +18,7 @@ use Rebet\Routing\FallbackHandler;
 use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
 use Rebet\View\View;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -116,7 +117,7 @@ class ExceptionHandler extends FallbackHandler
      */
     public function handle($input, $output, \Throwable $e)
     {
-        return $input instanceof Request ? $this->handleHttp($input, $e) : $this->handleConsole($input, $output ?? new ConsoleOutput(), $e);
+        return $input instanceof Request ? $this->handleHttp($input, $e) : $this->handleConsole($input ?? new ArgvInput(), $output ?? new ConsoleOutput(), $e);
     }
 
     /**
@@ -219,14 +220,16 @@ class ExceptionHandler extends FallbackHandler
         $title  = Translator::get("message.http.{$status}.title") ?? $title ;
         $detail = Translator::get("message.http.{$status}.detail") ?? $detail ;
 
-        $view = View::of("/errors/{$status}");
-        if ($view->exists()) {
-            return Responder::toResponse($view->with([
-                'status'    => $status,
-                'title'     => $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error',
-                'detail'    => $detail,
-                'exception' => $e
-            ]), $status);
+        if (View::isEnabled()) {
+            $view = View::of("/errors/{$status}");
+            if ($view->exists()) {
+                return Responder::toResponse($view->with([
+                    'status'    => $status,
+                    'title'     => $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error',
+                    'detail'    => $detail,
+                    'exception' => $e
+                ]), $status);
+            }
         }
 
         return $this->makeDefaultView($status, $title, $detail, $request, $e);
@@ -252,14 +255,17 @@ class ExceptionHandler extends FallbackHandler
             $title        = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
             $custom_title = false;
         }
-        $view = View::of("/errors/default");
-        if ($view->exists()) {
-            return Responder::toResponse($view->with([
-                'status'    => $status,
-                'title'     => $title,
-                'detail'    => $detail,
-                'exception' => $e
-            ]), $status);
+
+        if (View::isEnabled()) {
+            $view = View::of("/errors/default");
+            if ($view->exists()) {
+                return Responder::toResponse($view->with([
+                    'status'    => $status,
+                    'title'     => $title,
+                    'detail'    => $detail,
+                    'exception' => $e
+                ]), $status);
+            }
         }
 
         $home   = $request->getRoutePrefix().'/' ;

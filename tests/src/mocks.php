@@ -1,7 +1,7 @@
 <?php
 
 /**
- * テスト用モッククラスを定義
+ * Mock class for unit testing
  */
 namespace Rebet\Common {
     use Rebet\Stream\Stream;

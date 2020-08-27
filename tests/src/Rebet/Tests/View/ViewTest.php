@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\View;
 
+use Rebet\Application\App;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
-use Rebet\Application\App;
 use Rebet\Stream\Stream;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
@@ -34,6 +34,17 @@ class ViewTest extends RebetTestCase
                 ],
             ],
         ]);
+    }
+
+    public function test_isEnabled()
+    {
+        $this->assertTrue(View::isEnabled());
+        Config::application([
+            View::class => [
+                'engine' => null,
+            ],
+        ]);
+        $this->assertFalse(View::isEnabled());
     }
 
     public function test___construct()

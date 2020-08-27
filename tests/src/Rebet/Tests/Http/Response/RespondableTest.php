@@ -68,7 +68,7 @@ class RespondableTest extends RebetTestCase
 
         $request = $this->createMock(Request::class);
         $request->method('getRoutePrefix')->willReturn('/prefix');
-        $this->setProperty(Request::class, 'current', $request);
+        $this->inject(Request::class, 'current', $request);
         $this->assertSame('/prefix', Request::current()->getRoutePrefix());
 
         $cookie_5 = new Cookie('foo', '5', null, '/path', 'prefix.com');

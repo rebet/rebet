@@ -105,11 +105,11 @@ abstract class Kernel
     /**
      * Handle the given input data.
      *
-     * @param mixed|Request|InputInterface $input
+     * @param mixed|null|Request|InputInterface $input (default: null)
      * @param mixed|null|OutputInterface $output (default: null)
      * @return mixed|Response|int
      */
-    abstract public function handle($input, $output = null);
+    abstract public function handle($input = null, $output = null);
 
     /**
      * Run an action/command by name.

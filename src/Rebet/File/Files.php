@@ -21,12 +21,13 @@ class Files
     }
 
     /**
-     * Delete the target directory including the subdirectory.
+     * Delete the target directory including the subdirectory or all contains files and subdirectories.
      *
      * @param string|null $dir
+     * @param bool $remove_target_dir (default: true)
      * @return void
      */
-    public static function removeDir(?string $dir) : void
+    public static function removeDir(?string $dir, bool $remove_target_dir = true) : void
     {
         if ($dir === null || !file_exists($dir)) {
             return;
@@ -42,7 +43,9 @@ class Files
                 }
             }
             closedir($handle);
-            rmdir($dir);
+            if ($remove_target_dir) {
+                rmdir($dir);
+            }
         }
     }
 

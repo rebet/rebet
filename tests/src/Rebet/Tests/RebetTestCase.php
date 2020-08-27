@@ -13,6 +13,8 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Guard\TokenGuard;
 use Rebet\Auth\Provider\ArrayProvider;
+use Rebet\Cache\Adapter\ArrayAdapter;
+use Rebet\Cache\Cache;
 use Rebet\Common\Namespaces;
 use Rebet\Common\Path;
 use Rebet\Common\Securities;
@@ -50,9 +52,20 @@ use Rebet\View\View;
  */
 abstract class RebetTestCase extends TestCase
 {
-    private static $start_at;
-    private static $original_cwd;
-    private static $unittest_cwd;
+    protected static $original_cwd;
+    protected static $work_dir;
+    protected static $unittest_cwd;
+
+    public static function setUpBeforeClass()
+    {
+        self::$original_cwd = Path::normalize(getcwd());
+        self::$work_dir     = (new Structure(__DIR__.'/../../../'))->path('/work');
+        self::$unittest_cwd = self::$work_dir.'/'.getmypid();
+        if (!file_exists(self::$unittest_cwd)) {
+            mkdir(self::$unittest_cwd, 0777, true);
+        }
+        chdir(self::$unittest_cwd);
+    }
 
     protected function setUp()
     {
@@ -129,6 +142,14 @@ abstract class RebetTestCase extends TestCase
             Pager::class => [
                 'resolver' => function (Pager $pager) { return $pager; }
             ],
+            Cache::class => [
+                'stores!' => [
+                    'array' => [
+                        'adapter' => ArrayAdapter::class,
+                    ],
+                ],
+                'default_store' => 'array',
+            ],
         ]);
         Enum::clear();
         Event::clear();
@@ -143,23 +164,16 @@ abstract class RebetTestCase extends TestCase
         Storage::clean();
     }
 
-    public static function setUpBeforeClass()
-    {
-        self::$start_at     = microtime(true);
-        self::$original_cwd = Path::normalize(getcwd());
-        self::$unittest_cwd = (new Structure(__DIR__.'/../../../'))->path('/work/'.getmypid());
-        if (!file_exists(self::$unittest_cwd)) {
-            mkdir(self::$unittest_cwd);
-        }
-        chdir(self::$unittest_cwd);
-    }
+    // protected function assertPreConditions() {}
+
+    // protected function assertPostConditions() {}
+
+    // protected function tearDown() {}
+
+    // protected function onNotSuccessfulTest(Throwable $t) {}
 
     public static function tearDownAfterClass()
     {
-        if (in_array('--debug', $_SERVER['argv'], true)) {
-            $spend = (microtime(true) - self::$start_at);
-            printf(" ... Time: %f [ms] - ".static::class."\n", $spend * 1000);
-        }
         chdir(self::$original_cwd);
         Files::removeDir(self::$unittest_cwd);
     }
@@ -367,7 +381,7 @@ abstract class RebetTestCase extends TestCase
         Auth::signout($request ?? $this->createRequestMock('/'));
     }
 
-    protected function getProperty($target, string $name)
+    protected function inspect($target, string $name)
     {
         $class = is_string($target) ? $target : get_class($target) ;
         $rp    = new \ReflectionProperty($class, $name);
@@ -375,7 +389,7 @@ abstract class RebetTestCase extends TestCase
         return $rp->getValue($target);
     }
 
-    protected function setProperty($target, string $name, $value)
+    protected function inject($target, string $name, $value)
     {
         $class = is_string($target) ? $target : get_class($target) ;
         $rp    = new \ReflectionProperty($class, $name);

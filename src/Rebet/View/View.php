@@ -77,6 +77,16 @@ class View implements Renderable
     protected $eof = null;
 
     /**
+     * Check view configuration is enabled or not.
+     *
+     * @return bool
+     */
+    public static function isEnabled() : bool
+    {
+        return static::config('engine', false) !== null;
+    }
+
+    /**
      * Create a view of given name.
      *
      * @param string $name

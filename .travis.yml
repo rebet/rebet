@@ -5,6 +5,8 @@ php:
 services:
   - mysql
   - postgresql
+  - memcached
+  - redis-server
 
 addons:
   postgresql: "9.6"
@@ -12,6 +14,7 @@ addons:
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
+  - yes '' | pecl install apcu
   - mysql -uroot -e "CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
   - psql -c 'CREATE DATABASE rebet_test;' -U postgres
 
@@ -19,4 +22,5 @@ script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_success:
-- bash <(curl -s https://codecov.io/bash) -cF php
+  - bash <(curl -s https://codecov.io/bash) -cF php
+  

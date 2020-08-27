@@ -62,13 +62,13 @@ abstract class HttpKernel extends ApplicationKernel
     /**
      * {@inheritDoc}
      *
-     * @param Request $input
+     * @param Request|null $input (default: null for Request::createFromGlobals())
      * @param null $output do not use in this class (default: null)
      * @return Response
      */
-    public function handle($input, $output = null)
+    public function handle($input = null, $output = null)
     {
-        return $this->response = Router::handle($this->request = $input);
+        return $this->response = Router::handle($this->request = $input ?? Request::createFromGlobals());
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class HttpKernel extends ApplicationKernel
      */
     public function terminate() : void
     {
-        Router::terminate($this->request, $this->response);
+        Router::terminate($this->request ?? $this->request = Request::createFromGlobals(), $this->response);
     }
 
     /**
@@ -99,7 +99,7 @@ abstract class HttpKernel extends ApplicationKernel
      */
     public function fallback(\Throwable $e) : int
     {
-        $this->response = $this->exceptionHandler()->handle($this->request, null, $e);
+        $this->response = $this->exceptionHandler()->handle($this->request ?? $this->request = Request::createFromGlobals(), null, $e);
         $this->response->send();
         return 0;
     }
@@ -109,6 +109,6 @@ abstract class HttpKernel extends ApplicationKernel
      */
     public function report(\Throwable $e) : void
     {
-        $this->exceptionHandler()->report($this->request, $this->response, $e);
+        $this->exceptionHandler()->report($this->request ?? $this->request = Request::createFromGlobals(), $this->response, $e);
     }
 }

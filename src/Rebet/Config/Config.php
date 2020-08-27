@@ -112,7 +112,7 @@ class Config
      * If the null given then clear all data.
      *
      * @param string|null $section (default: null)
-     * @param string ...$layers (default: all layers)
+     * @param string ...$layers list of Layer::* (default: all layers)
      * @return void
      */
     public static function clear(?string $section = null, string ...$layers) : void

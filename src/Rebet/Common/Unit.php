@@ -381,15 +381,15 @@ class Unit
     }
 
     /**
-     * Convert and format from the given value with/without unit prefix to given unit prefix format.
+     * Exchange and format from the given value with/without unit prefix to given unit prefix format.
      *
      * @param int|float|string|Decimal $value can be contains unit.
-     * @param string|null $to prefix name to convert. If the null given then convert to human readable. (default: null)
+     * @param string|null $to prefix name to exchange. If the null given then exchange to human readable. (default: null)
      * @param int|null $precision (default: 2).
      * @param array $options for runtime override (default: [])
      * @return string
      */
-    public function convert($value, ?string $to = null, ?int $precision = 2, array $options = []) : string
+    public function exchange($value, ?string $to = null, ?int $precision = 2, array $options = []) : string
     {
         extract($options = array_merge($this->options, $options));
         $units       = Arrays::sortKeys($this->units, SORT_DESC, Callback::compareLength());
@@ -430,12 +430,12 @@ class Unit
      * @param int|float|string $value can be contains unit.
      * @param string $to prefix name to convert. (default: null for base unit)
      * @param array $options for runtime override (default: [])
-     * @return string
+     * @return Decimal
      */
-    public function parse($value, ?string $to = null, array $options = []) : Decimal
+    public function convert($value, ?string $to = null, array $options = []) : Decimal
     {
         $to      = $to ?? static::baseUnitOf($this->units);
         $options = array_merge($this->options, $options, ['without_prefix' => true]);
-        return Decimal::of(static::convert($value, $to, null, $options), $options['decimal_point'] ?? '.', $options['thousands_separator'] ?? ',');
+        return Decimal::of(static::exchange($value, $to, null, $options), $options['decimal_point'] ?? '.', $options['thousands_separator'] ?? ',');
     }
 }

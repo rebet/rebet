@@ -2,44 +2,70 @@
 namespace Rebet\Database;
 
 use Rebet\Config\Configurable;
-use Rebet\Database\Driver\Driver;
-use Rebet\Database\Driver\PdoDriver;
 
 /**
  * Dao Class
  *
- * Database Access Object by specifying any driver for each db definition.
- * The driver MUST be implements PDO Interface.
- *
- * The driver used for Rebet database access object can be specified by the following definition.
+ * Database Access Object based on PDO.
+ * The PDO used for DAO can be specified by the following definition.
  *
  *     Dao::class => [
  *         'dbs' => [
- *              'name' => [                        // Alias ​​for classification, Not a schema name
- *                  'driver'     => Driver::class, // PDO Interface implementation class
- *                  'arg_name_1' => value_1,       // Constructor argument name and value for 'driver' class.
- *                  (snip)                         // If the argument has default value (or variadic), then the parameter can be optional.
- *                  'arg_name_n' => value_n,       // Also, you don't have to worry about the order of parameter definition.
+ *              'name' => [                       // Alias ​​for classification, Not a schema name
+ *                  'dsn'      => 'dsn:string',   // DSN string or function returned PDO object `function():\PDO { ... }`
+ *                  'user'     => 'user',         // Database user name
+ *                  'password' => 'password',     // Database pasword
+ *                  'options'  => [],             // PDO options
  *              ],
  *         ]
  *     ]
  *
- * If it is difficult to build a driver with simple constructor parameter specification, you can build a driver by specifying a factory method.
- *
- *     Dao::class => [
- *         'dbs' => [
- *              'name' => [
- *                  'driver' => function() { ... Build any log driver here ... } , // Return PDO Interface implementation class
- *              ],
- *         ]
- *     ]
- *
- * Based on this specification, Rebet provides PDO driver class.
- * The drivers prepared in the package are as follows.
- *
- * Drivers
+ * Dynamically call the default database method
  * --------------------
- * @see \Rebet\Database\Driver\PdoDriver::class (Library Default)
+ * @method static string            name()                                                                                                                                                                      Dynamically call the default database method.
+ * @method static string            driverName()                                                                                                                                                                Dynamically call the default database method.
+ * @method static string            serverVersion()                                                                                                                                                             Dynamically call the default database method.
+ * @method static string            clientVersion()                                                                                                                                                             Dynamically call the default database method.
+ * @method static \PDO              pdo()                                                                                                                                                                       Dynamically call the default database method.
+ * @method static Compiler          compiler()                                                                                                                                                                  Dynamically call the default database method.
+ * @method static Converter         converter()                                                                                                                                                                 Dynamically call the default database method.
+ * @method static Analyzer          analyzer(string $sql)                                                                                                                                                       Dynamically call the default database method.
+ * @method static Ransacker         ransacker()                                                                                                                                                                 Dynamically call the default database method.
+ * @method static Database          debug(bool $debug = true, ?bool $emulated_sql_log = null)                                                                                                                   Dynamically call the default database method.
+ * @method static void              log(string $sql, array $params = [])                                                                                                                                        Dynamically call the default database method.
+ * @method static DatabaseException exception(array|\PDOException $error, ?string $sql = null, array $params = [])                                                                                              Dynamically call the default database method.
+ * @method static PdoParameter      convertToPdo(mixed $value)                                                                                                                                                  Dynamically call the default database method.
+ * @method static mixed             convertToPhp(mixed $value, array $meta = [], ?string $type = null)                                                                                                          Dynamically call the default database method.
+ * @method static Database          begin()                                                                                                                                                                     Dynamically call the default database method.
+ * @method static Database          savepoint(string $name)                                                                                                                                                     Dynamically call the default database method.
+ * @method static Database          rollback(?string $savepoint = null, bool $quiet = true)                                                                                                                     Dynamically call the default database method.
+ * @method static Database          commit()                                                                                                                                                                    Dynamically call the default database method.
+ * @method static Database          transaction(\Closure $callback)                                                                                                                                             Dynamically call the default database method.
+ * @method static string            lastInsertId(?string $name = null)                                                                                                                                          Dynamically call the default database method.
+ * @method static Statement         query(string $sql, $params = [])                                                                                                                                            Dynamically call the default database method.
+ * @method static int               execute(string $sql, $params = [])                                                                                                                                          Dynamically call the default database method.
+ * @method static ResultSet         select(string $sql, OrderBy|array|null $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false, string $class = 'stdClass')                      Dynamically call the default database method.
+ * @method static Paginator         paginate(string $sql, OrderBy|array $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', ?string $optimised_count_sql = null) Dynamically call the default database method.
+ * @method static mixed             find(string $sql, OrderBy|array|null $order_by = null, array $params = [], bool $for_update = false, string $class = 'stdClass')                                            Dynamically call the default database method.
+ * @method static ResultSet         extract(string|int $column, string $sql, OrderBy|array|null $order_by = null, array $params = [], ?string $type = null)                                                     Dynamically call the default database method.
+ * @method static mixed             get(string|int $column, string $sql, OrderBy|array|null $order_by = null, array $params = [], ?string $type = null)                                                         Dynamically call the default database method.
+ * @method static bool              exist(string $sql, array $params = [])                                                                                                                                      Dynamically call the default database method.
+ * @method static int               count(string $sql, array $params = [])                                                                                                                                      Dynamically call the default database method.
+ * @method static void              each(callable $callback, string $sql, OrderBy|array|null $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false)                                Dynamically call the default database method.
+ * @method static ResultSet         filter(callable $callback, string $sql, OrderBy|array|null $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false)                              Dynamically call the default database method.
+ * @method static ResultSet         map(callable $callback, string $sql, OrderBy|array|null $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false)                                 Dynamically call the default database method.
+ * @method static mixed             reduce(callable $reducer, $initial, string $sql, OrderBy|array|null $order_by = null, array $params = [], ?int $limit = null)                                               Dynamically call the default database method.
+ * @method static bool              create(Entity &$entity, ?DateTime $now = null)                                                                                                                              Dynamically call the default database method.
+ * @method static string            appendWhereTo(string $sql, array $where)                                                                                                                                    Dynamically call the default database method.
+ * @method static bool              update(Entity &$entity, ?DateTime $now = null)                                                                                                                              Dynamically call the default database method.
+ * @method static bool              save(Entity $entity, ?DateTime $now = null)                                                                                                                                 Dynamically call the default database method.
+ * @method static bool              delete(Entity $entity)                                                                                                                                                      Dynamically call the default database method.
+ * @method static int               updates(string $entity, array $changes, $ransack, array $alias = [], ?DateTime $now = null)                                                                                 Dynamically call the default database method.
+ * @method static int               deletes(string $entity, mixed $ransack, array $alias = [])                                                                                                                  Dynamically call the default database method.
+ * @method static bool              exists(string $entity, mixed $ransack, array $alias = [])                                                                                                                   Dynamically call the default database method.
+ * @method static int               counts(string $entity, mixed $ransack, array $alias = [])                                                                                                                   Dynamically call the default database method.
+ * @method static void              close()                                                                                                                                                                     Dynamically call the default database method.
+ * @method static bool              closed()                                                                                                                                                                    Dynamically call the default database method.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -55,7 +81,6 @@ class Dao
         return [
             'dbs' => [
                 'main' => [
-                    'driver'           => PdoDriver::class,
                     'dsn'              => null,
                     'user'             => null,
                     'password'         => null,
@@ -128,9 +153,19 @@ class Dao
             return $update_current_db ? static::$current = $db : $db ;
         }
 
+        $dsn = static::config("dbs.{$name}.dsn");
+        $pdo = is_callable($dsn)
+                ? call_user_func($dsn)
+                : new \PDO(
+                    $dsn,
+                    static::config("dbs.{$name}.user", false),
+                    static::config("dbs.{$name}.password", false),
+                    static::config("dbs.{$name}.options", false, [])
+                );
+
         $db = new Database(
             $name,
-            static::configInstantiate("dbs.{$name}", 'driver'),
+            $pdo,
             static::config("dbs.{$name}.debug", false, false),
             static::config("dbs.{$name}.emulated_sql_log", false, true),
             static::config("dbs.{$name}.log_handler", false, null)
@@ -151,5 +186,17 @@ class Dao
     public static function current() : ?Database
     {
         return static::$current;
+    }
+
+    /**
+     * Dynamically call the default Database instance.
+     *
+     * @param string $method
+     * @param array $parameters
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        return static::db()->$method(...$parameters);
     }
 }
