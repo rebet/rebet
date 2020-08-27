@@ -69,7 +69,7 @@ class EnvResource
     {
         $basenames = [];
         $excludes  = ['.', '..'];
-        foreach (scandir($dir_path) as $file) {
+        foreach (@scandir($dir_path) ?: [] as $file) {
             if (in_array($file, $excludes)) {
                 continue;
             }
