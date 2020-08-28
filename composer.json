@@ -27,6 +27,7 @@
         "league/flysystem-cached-adapter": "^1.0",
         "monolog/monolog": "^1.24",
         "piwik/device-detector": "^3.11",
+        "predis/predis": "^1.1",
         "symfony/cache": "^4.4",
         "symfony/console": "^4.4",
         "symfony/http-foundation": "^4.1",

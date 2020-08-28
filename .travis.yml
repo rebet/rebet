@@ -14,7 +14,9 @@ addons:
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
-  - yes '' | pecl install apcu
+  - pecl config-set preferred_state beta
+  - echo yes | pecl upgrade apcu
+  - phpenv config-add ./tests/travis/php.ini
   - mysql -uroot -e "CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
   - psql -c 'CREATE DATABASE rebet_test;' -U postgres
 
