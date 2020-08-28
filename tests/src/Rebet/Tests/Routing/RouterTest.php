@@ -32,7 +32,6 @@ class RouterTest extends RebetTestCase
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
-        App::setChannel('web');
         Config::application([
             Router::class => [
                 'middlewares!'             => [],
@@ -186,21 +185,12 @@ class RouterTest extends RebetTestCase
         });
     }
 
-    public function test_getCurrentChannel()
-    {
-        $this->assertSame('web', Router::getCurrentChannel());
-        App::setChannel('api');
-        $this->assertSame('api', Router::getCurrentChannel());
-        App::setChannel('console');
-        $this->assertSame('console', Router::getCurrentChannel());
-    }
-
-    public function test_setCurrentChannel()
+    public function test_getAndSetCurrentChannel()
     {
         $this->assertSame('web', Router::getCurrentChannel());
         Router::setCurrentChannel('api');
         $this->assertSame('api', Router::getCurrentChannel());
-        App::setChannel('console');
+        $this->inject(App::class, 'kernel.channel', 'console');
         $this->assertSame('api', Router::getCurrentChannel());
     }
 

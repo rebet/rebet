@@ -18,7 +18,7 @@ class AppTest extends RebetTestCase
     {
         $kernel = App::init(new KernelMock(new Structure('/var/www/app'), 'web'));
         $this->assertSame($kernel, App::kernel());
-        $this->assertSame('web', App::getChannel());
+        $this->assertSame('web', App::channel());
     }
 
     public function test_root()
@@ -133,27 +133,15 @@ class AppTest extends RebetTestCase
         $this->assertFalse(App::envIn('production', 'staging'));
     }
 
-    public function test_getChannel()
+    public function test_channel()
     {
-        Config::application([
-            App::class => [
-                'channel' => 'console',
-            ],
-        ]);
-        $this->assertSame('console', App::getChannel());
-    }
-
-    public function test_setChannel()
-    {
-        App::setChannel('console');
-        $this->assertSame('console', App::getChannel());
+        $this->assertSame('web', App::channel());
     }
 
     public function test_ChannelIn()
     {
-        App::setChannel('console');
-        $this->assertTrue(App::ChannelIn('console'));
-        $this->assertFalse(App::ChannelIn('web', 'api'));
+        $this->assertTrue(App::ChannelIn('web'));
+        $this->assertFalse(App::ChannelIn('console', 'api'));
     }
 
     public function test_when()
@@ -167,23 +155,23 @@ class AppTest extends RebetTestCase
             'default'          => 'default',
         ];
 
-        App::setChannel('console');
+        $this->inject(App::class, 'kernel.channel', 'console');
         App::setEnv('unittest');
         $this->assertSame('console@unittest', App::when($case)->get());
 
-        App::setChannel('console');
+        $this->inject(App::class, 'kernel.channel', 'console');
         App::setEnv('development');
         $this->assertSame('console', App::when($case)->get());
 
-        App::setChannel('api');
+        $this->inject(App::class, 'kernel.channel', 'api');
         App::setEnv('unittest');
         $this->assertSame('unittest', App::when($case)->get());
 
-        App::setChannel('web');
+        $this->inject(App::class, 'kernel.channel', 'web');
         App::setEnv('local');
         $this->assertSame('web@local', App::when($case)->get());
 
-        App::setChannel('api');
+        $this->inject(App::class, 'kernel.channel', 'api');
         App::setEnv('development');
         $this->assertSame('default', App::when($case)->get());
     }

@@ -400,10 +400,11 @@ abstract class RebetTestCase extends TestCase
 
     protected function inject($target, string $name, $value)
     {
-        $class = is_string($target) ? $target : get_class($target) ;
-        $rp    = new \ReflectionProperty($class, $name);
-        $rp->setAccessible(true);
-        $rp->setValue(is_string($target) ? null : $target, $value);
+        Reflector::set($target, $name, $value, true);
+        // $class = is_string($target) ? $target : get_class($target) ;
+        // $rp    = new \ReflectionProperty($class, $name);
+        // $rp->setAccessible(true);
+        // $rp->setValue(is_string($target) ? null : $target, $value);
     }
 
     protected function invoke($object, string $method, array $args = [], bool $type_convert = false)

@@ -30,7 +30,6 @@ class App
     public static function defaultConfig()
     {
         return [
-            'channel'         => null,
             'env'             => null,
             'locale'          => 'en',
             'fallback_locale' => 'en',
@@ -75,7 +74,6 @@ class App
     public static function init(Kernel $kernel) : Kernel
     {
         static::$kernel = $kernel;
-        Config::application([App::class => ['channel' => $kernel->channel()]]);
         $kernel->bootstrap();
         return $kernel;
     }
@@ -178,21 +176,11 @@ class App
     /**
      * Get the current channel (inflow route/application invoke interface) like web, api, console.
      *
-     * @return string
+     * @return string|null
      */
-    public static function getChannel() : string
+    public static function channel() : ?string
     {
-        return self::config('channel');
-    }
-
-    /**
-     * Set the current channel (inflow route/application invoke interface) like web, api, console.
-     *
-     * @param string $channel
-     */
-    public static function setChannel(string $channel) : void
-    {
-        self::setConfig(['channel' => $channel]);
+        return static::$kernel ? static::$kernel->channel() : null ;
     }
 
     /**
@@ -202,7 +190,7 @@ class App
      */
     public static function channelIn(string ...$channel) : bool
     {
-        return \in_array(self::getChannel(), $channel, true);
+        return \in_array(self::channel(), $channel, true);
     }
 
     /**
@@ -220,7 +208,7 @@ class App
     public static function when(array $case) : ConfigPromise
     {
         return Config::promise(function () use ($case) {
-            $channel = App::getChannel();
+            $channel = App::channel();
             $env     = App::getEnv();
             return
                 $case["{$channel}@{$env}"] ??

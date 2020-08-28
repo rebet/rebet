@@ -56,7 +56,7 @@ class LoadFrameworkConfiguration implements Bootstrapper
             // Logging Configure
             //---------------------------------------------
             Log::class => [
-                'default_channel' => Config::refer(App::class, 'channel', 'default'),
+                'default_channel' => App::channel() ?? 'default',
             ],
 
             //---------------------------------------------
@@ -80,7 +80,7 @@ class LoadFrameworkConfiguration implements Bootstrapper
             // Routing Configure
             //---------------------------------------------
             Router::class => [
-                'current_channel'          => Config::refer(App::class, 'channel'),
+                'current_channel'          => App::channel(),
                 'default_fallback_handler' => $kernel->exceptionHandler(),
             ],
 
