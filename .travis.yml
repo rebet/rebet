@@ -11,9 +11,7 @@ services:
 addons:
   postgresql: "9.6"
 
-before_script:
-  - mysql -uroot -e "CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
-  - psql -c 'CREATE DATABASE rebet_test;' -U postgres
+before_install:
   - pecl channel-update pecl.php.net
   - pecl config-set preferred_state beta
   - echo yes | pecl upgrade apcu
@@ -21,6 +19,10 @@ before_script:
 
 install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
+
+before_script:
+  - mysql -uroot -e "CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
+  - psql -c 'CREATE DATABASE rebet_test;' -U postgres
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
