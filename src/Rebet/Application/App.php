@@ -32,7 +32,6 @@ class App
         return [
             'channel'         => null,
             'env'             => null,
-            'entry_point'     => null,
             'locale'          => 'en',
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
@@ -70,11 +69,13 @@ class App
     /**
      * initialize App and set framework configure.
      *
+     * @param Kernel $kernel
      * @return Kernel
      */
     public static function init(Kernel $kernel) : Kernel
     {
         static::$kernel = $kernel;
+        Config::application([App::class => ['channel' => $kernel->channel()]]);
         $kernel->bootstrap();
         return $kernel;
     }
@@ -202,26 +203,6 @@ class App
     public static function channelIn(string ...$channel) : bool
     {
         return \in_array(self::getChannel(), $channel, true);
-    }
-
-    /**
-     * Get the current entry point name.
-     *
-     * @return string
-     */
-    public static function getEntryPoint() : string
-    {
-        return self::config('entry_point');
-    }
-
-    /**
-     * Set the current entry point name.
-     *
-     * @param string $entry_point
-     */
-    public static function setEntryPoint(string $entry_point) : void
-    {
-        self::setConfig(['entry_point' => $entry_point]);
     }
 
     /**

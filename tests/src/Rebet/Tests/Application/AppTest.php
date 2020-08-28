@@ -16,8 +16,9 @@ class AppTest extends RebetTestCase
 
     public function test_init()
     {
-        App::init($kernel = new KernelMock(new Structure('/var/www/app'), 'web'));
+        $kernel = App::init(new KernelMock(new Structure('/var/www/app'), 'web'));
         $this->assertSame($kernel, App::kernel());
+        $this->assertSame('web', App::getChannel());
     }
 
     public function test_root()
@@ -153,22 +154,6 @@ class AppTest extends RebetTestCase
         App::setChannel('console');
         $this->assertTrue(App::ChannelIn('console'));
         $this->assertFalse(App::ChannelIn('web', 'api'));
-    }
-
-    public function test_getEntryPoint()
-    {
-        Config::application([
-            App::class => [
-                'entry_point' => 'unittest',
-            ],
-        ]);
-        $this->assertSame('unittest', App::getEntryPoint());
-    }
-
-    public function test_setEntryPoint()
-    {
-        App::setEntryPoint('unittest');
-        $this->assertSame('unittest', App::getEntryPoint());
     }
 
     public function test_when()

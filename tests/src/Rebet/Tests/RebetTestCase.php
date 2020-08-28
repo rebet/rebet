@@ -17,6 +17,7 @@ use Rebet\Cache\Adapter\ArrayAdapter;
 use Rebet\Cache\Cache;
 use Rebet\Common\Namespaces;
 use Rebet\Common\Path;
+use Rebet\Common\Reflector;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
 use Rebet\Config\Config;
@@ -36,6 +37,7 @@ use Rebet\Http\Session\Storage\ArraySessionStorage;
 use Rebet\Http\UploadedFile;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Log;
+use Rebet\Log\LogLevel;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Address;
@@ -88,6 +90,13 @@ abstract class RebetTestCase extends TestCase
                 'channels' => [
                     'default' => [
                         'driver' => TestDriver::class,
+                        'name'   => 'web',
+                        'level'  => LogLevel::DEBUG,
+                    ],
+                    'web' => [
+                        'driver' => TestDriver::class,
+                        'name'   => 'web',
+                        'level'  => LogLevel::DEBUG,
                     ],
                 ],
             ],
@@ -395,6 +404,11 @@ abstract class RebetTestCase extends TestCase
         $rp    = new \ReflectionProperty($class, $name);
         $rp->setAccessible(true);
         $rp->setValue(is_string($target) ? null : $target, $value);
+    }
+
+    protected function invoke($object, string $method, array $args = [], bool $type_convert = false)
+    {
+        return Reflector::invoke($object, $method, $args, true, $type_convert);
     }
 
     protected function isWindows() : bool

@@ -80,7 +80,7 @@ class Log
      *
      * @var Logger[]
      */
-    protected static $channels = null;
+    protected static $channels = [];
 
     /**
      * No instantiation
