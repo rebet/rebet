@@ -22,6 +22,6 @@ class EnvCommand extends Command
      */
     protected function handle()
     {
-        $this->writeln('<info>Current application environment:</info> <comment>'.App::getEnv().'.</comment>');
+        $this->writeln('<info>Current application environment:</info> <comment>'.App::env().'.</comment>');
     }
 }

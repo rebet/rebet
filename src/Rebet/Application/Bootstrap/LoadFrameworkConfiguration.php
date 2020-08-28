@@ -39,7 +39,6 @@ class LoadFrameworkConfiguration implements Bootstrapper
             // App Configure
             //---------------------------------------------
             App::class => [
-                'env'       => getenv('APP_ENV') ?: 'development',
                 'resources' => [
                     'i18n' => $kernel->structure()->resources('/i18n'),
                 ],

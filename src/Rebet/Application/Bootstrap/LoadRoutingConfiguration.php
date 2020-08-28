@@ -20,6 +20,6 @@ class LoadRoutingConfiguration implements Bootstrapper
      */
     public function bootstrap(Kernel $kernel)
     {
-        EnvResource::load(App::getEnv(), $kernel->structure()->routes());
+        EnvResource::load(App::env(), $kernel->structure()->routes());
     }
 }

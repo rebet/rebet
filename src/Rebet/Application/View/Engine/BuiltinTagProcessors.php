@@ -48,7 +48,7 @@ class BuiltinTagProcessors
     public static function env() : Processor
     {
         $processor = function (string ...$env) {
-            return in_array(App::getEnv(), $env);
+            return in_array(App::env(), $env);
         };
 
         return new CallbackProcessor($processor);

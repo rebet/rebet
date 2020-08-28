@@ -30,7 +30,6 @@ class App
     public static function defaultConfig()
     {
         return [
-            'env'             => null,
             'locale'          => 'en',
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
@@ -145,22 +144,13 @@ class App
 
     /**
      * Get the current environment.
+     * If the 'APP_ENV' environment value undefined then return 'development'.
      *
      * @return string
      */
-    public static function getEnv() : string
+    public static function env() : string
     {
-        return self::config('env');
-    }
-
-    /**
-     * Set the current environment by given environment.
-     *
-     * @param string $env 環境
-     */
-    public static function setEnv(string $env) : void
-    {
-        self::setConfig(['env' => $env]);
+        return getenv('APP_ENV') ?: 'development';
     }
 
     /**
@@ -170,7 +160,7 @@ class App
      */
     public static function envIn(string ...$env) : bool
     {
-        return \in_array(self::getEnv(), $env, true);
+        return \in_array(self::env(), $env, true);
     }
 
     /**
@@ -209,7 +199,7 @@ class App
     {
         return Config::promise(function () use ($case) {
             $channel = App::channel();
-            $env     = App::getEnv();
+            $env     = App::env();
             return
                 $case["{$channel}@{$env}"] ??
                 $case[$channel] ??

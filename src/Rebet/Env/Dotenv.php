@@ -19,12 +19,17 @@ class Dotenv extends VlucasDotenv
      *
      * @param string $path of .env file
      * @param string $filename of .env file (default: .env)
+     * @param bool $overload (default: true)
      * @return Dotenv
      */
-    public static function init(string $path, string $filename = '.env') : self
+    public static function init(string $path, string $filename = '.env', bool $overload = true) : self
     {
         $dotenv = new static($path, $filename);
-        $dotenv->load();
+        if ($overload) {
+            $dotenv->overload();
+        } else {
+            $dotenv->load();
+        }
         return $dotenv;
     }
 }

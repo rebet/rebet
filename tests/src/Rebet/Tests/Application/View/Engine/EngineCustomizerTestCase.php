@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Application\View\Engine;
 
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Application\App;
 use Rebet\Http\Session\Session;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
@@ -34,7 +33,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
     public function test_tag_env()
     {
-        App::setEnv('unittest');
+        \putenv("APP_ENV=unittest");
         $this->assertSame(
             <<<EOS
 unittest
@@ -45,7 +44,7 @@ EOS
             $this->render('custom/env')
         );
 
-        App::setEnv('local');
+        \putenv("APP_ENV=local");
         $this->assertSame(
             <<<EOS
 unittest or local

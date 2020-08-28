@@ -98,33 +98,11 @@ class AppTest extends RebetTestCase
         $this->assertFalse(App::localeIn('en', 'de'));
     }
 
-    public function test_getEnv()
+    public function test_env()
     {
-        $this->assertSame('unittest', App::getEnv());
-
-        Config::application([
-            App::class => [
-                'env' => 'production',
-            ],
-        ]);
-
-        $this->assertSame('production', App::getEnv());
-    }
-
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function test_getEnv_envLoad()
-    {
-        $this->assertSame('unittest', App::getEnv());
-    }
-
-    public function test_setEnv()
-    {
-        $this->assertSame('unittest', App::getEnv());
-        App::setEnv('production');
-        $this->assertSame('production', App::getEnv());
+        $this->assertSame('unittest', App::env());
+        \putenv("APP_ENV=production");
+        $this->assertSame('production', App::env());
     }
 
     public function test_envIn()
@@ -156,23 +134,23 @@ class AppTest extends RebetTestCase
         ];
 
         $this->inject(App::class, 'kernel.channel', 'console');
-        App::setEnv('unittest');
+        \putenv("APP_ENV=unittest");
         $this->assertSame('console@unittest', App::when($case)->get());
 
         $this->inject(App::class, 'kernel.channel', 'console');
-        App::setEnv('development');
+        \putenv("APP_ENV=development");
         $this->assertSame('console', App::when($case)->get());
 
         $this->inject(App::class, 'kernel.channel', 'api');
-        App::setEnv('unittest');
+        \putenv("APP_ENV=unittest");
         $this->assertSame('unittest', App::when($case)->get());
 
         $this->inject(App::class, 'kernel.channel', 'web');
-        App::setEnv('local');
+        \putenv("APP_ENV=local");
         $this->assertSame('web@local', App::when($case)->get());
 
         $this->inject(App::class, 'kernel.channel', 'api');
-        App::setEnv('development');
+        \putenv("APP_ENV=development");
         $this->assertSame('default', App::when($case)->get());
     }
 
