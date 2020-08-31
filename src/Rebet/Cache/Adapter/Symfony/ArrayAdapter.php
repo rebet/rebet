@@ -28,7 +28,7 @@ class ArrayAdapter extends AbstractSymfonyAdapter
     {
         parent::__construct(
             new ProxyAdapter(
-                new ArrayPool(), // @todo Symfony ver 4.4.11 ArrayAdapter has problem #37667, if fixed version released then change to use ArrayAdapter.
+                new ArrayPool(), // @todo Symfony ver 4.4.12 ProxyAdapter + ArrayAdapter has problem that invalidateTags() not working when wrraped by TagAwareAdapter.
                 $namespace,
                 Unit::of(Unit::TIME)->convert($default_lifetime)->toInt()
             ),
