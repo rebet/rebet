@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Application;
 
-use Rebet\Common\Path;
 use Rebet\Config\Config;
 use Rebet\Config\ConfigPromise;
 use Rebet\Config\Configurable;

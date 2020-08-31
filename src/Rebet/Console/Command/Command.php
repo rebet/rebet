@@ -4,6 +4,7 @@ namespace Rebet\Console\Command;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -108,6 +109,7 @@ abstract class Command extends SymfonyCommand
         foreach (static::OPTIONS as $option) {
             $this->addOption(...$option);
         }
+        $this->setHelperSet(new HelperSet([new QuestionHelper()]));
     }
 
     /**
@@ -214,7 +216,7 @@ abstract class Command extends SymfonyCommand
      * @param bool $default (default: false)
      * @return bool
      */
-    public function confirm(string $question, bool $default = false) : bool
+    protected function confirm(string $question, bool $default = false) : bool
     {
         return !$this->_ask(new ConfirmationQuestion($question, $default));
     }
@@ -227,7 +229,7 @@ abstract class Command extends SymfonyCommand
      * @param array|callable|null $choices for auto completion. (default: null)
      * @return mixed
      */
-    public function ask(string $question, ?string $default = null, $choices = null)
+    protected function ask(string $question, ?string $default = null, $choices = null)
     {
         $question = new Question($question, $default);
         if ($choices !== null) {
@@ -243,7 +245,7 @@ abstract class Command extends SymfonyCommand
      * @param bool $fallback (default: true)
      * @return mixed
      */
-    public function secret(string $question, bool $fallback = true)
+    protected function secret(string $question, bool $fallback = true)
     {
         $question = new Question($question);
         return $this->_ask($question->setHidden(true)->setHiddenFallback($fallback));
@@ -259,7 +261,7 @@ abstract class Command extends SymfonyCommand
      * @param bool $multiple (default: false)
      * @return string|array
      */
-    public function choice(string $question, array $choices, $default = null, ?int $attempts = null, $multiple = false)
+    protected function choice(string $question, array $choices, $default = null, ?int $attempts = null, $multiple = false)
     {
         $question = new ChoiceQuestion($question, $choices, $default);
         return $this->_ask($question->setMaxAttempts($attempts)->setMultiselect($multiple));
@@ -274,7 +276,7 @@ abstract class Command extends SymfonyCommand
      * @param array $column_styles (default: [])
      * @return void
      */
-    public function table(array $headers, array $rows, $table_style = 'default', array $column_styles = [])
+    protected function table(array $headers, array $rows, $table_style = 'default', array $column_styles = [])
     {
         $table = new Table($this->output);
         $table->setHeaders($headers)->setRows($rows)->setStyle($table_style);
@@ -317,7 +319,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity (default: null)
      * @return self
      */
-    public function write($message, $verbosity = null)
+    protected function write($message, $verbosity = null)
     {
         $this->output->write($message, false, $this->parseVerbosity($verbosity));
         return $this;
@@ -330,7 +332,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity (default: null)
      * @return self
      */
-    public function writeln($message, $verbosity = null)
+    protected function writeln($message, $verbosity = null)
     {
         $this->output->writeln($message, $this->parseVerbosity($verbosity));
         return $this;
@@ -343,7 +345,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity
      * @return self
      */
-    public function info($message, $verbosity = null)
+    protected function info($message, $verbosity = null)
     {
         return $this->writeln("<info>{$message}</info>", $verbosity);
     }
@@ -355,7 +357,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity
      * @return self
      */
-    public function comment($message, $verbosity = null)
+    protected function comment($message, $verbosity = null)
     {
         return $this->writeln("<comment>{$message}</comment>", $verbosity);
     }
@@ -367,7 +369,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity
      * @return self
      */
-    public function question($message, $verbosity = null)
+    protected function question($message, $verbosity = null)
     {
         return $this->writeln("<question>{$message}</question>", $verbosity);
     }
@@ -379,7 +381,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity
      * @return self
      */
-    public function error($message, $verbosity = null)
+    protected function error($message, $verbosity = null)
     {
         return $this->writeln("<error>{$message}</error>", $verbosity);
     }
@@ -391,7 +393,7 @@ abstract class Command extends SymfonyCommand
      * @param int|string|null $verbosity
      * @return self
      */
-    public function warning($message, $verbosity = null)
+    protected function warning($message, $verbosity = null)
     {
         if (!$this->output->getFormatter()->hasStyle('warning')) {
             $this->output->getFormatter()->setStyle('warning', new OutputFormatterStyle('yellow'));

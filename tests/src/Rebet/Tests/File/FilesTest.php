@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Tests\File;
 
+use Rebet\Common\Strings;
+use Rebet\File\Exception\ZipArchiveException;
 use Rebet\File\Files;
 use Rebet\Tests\RebetTestCase;
 
@@ -88,7 +90,23 @@ class FilesTest extends RebetTestCase
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/parent.zip");
         $this->assertFileExists("{$this->test_dir}/parent.zip");
 
-        // @todo inplements more tests
+        $this->assertFileNotExists("{$this->test_dir}/archives");
+        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/1/parent.zip");
+        $this->assertFileExists("{$this->test_dir}/archives/1");
+        $this->assertFileExists("{$this->test_dir}/archives/1/parent.zip");
+        Files::unzip("{$this->test_dir}/archives/1/parent.zip", "{$this->test_dir}/archives/1");
+        $this->assertFileExists("{$this->test_dir}/archives/1/parent");
+
+        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/2/parent.zip", false);
+        Files::unzip("{$this->test_dir}/archives/2/parent.zip", "{$this->test_dir}/archives/2");
+        $this->assertFileNotExists("{$this->test_dir}/archives/2/parent");
+        $this->assertFileExists("{$this->test_dir}/archives/2/foo.txt");
+
+        Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/3/parent.zip", false, function ($path) { return !Strings::endsWith($path, '.ini'); });
+        Files::unzip("{$this->test_dir}/archives/3/parent.zip", "{$this->test_dir}/archives/3");
+        $this->assertFileExists("{$this->test_dir}/archives/3/foo.txt");
+        $this->assertFileNotExists("{$this->test_dir}/archives/3/bar.ini");
+        $this->assertFileExists("{$this->test_dir}/archives/3/child/baz.log");
     }
 
     public function test_unzip()
@@ -117,5 +135,54 @@ class FilesTest extends RebetTestCase
         $this->assertFileExists("{$this->test_dir}/parent/child");
         $this->assertFileExists("{$this->test_dir}/parent/child/baz.log");
         $this->assertSame("baz", file_get_contents("{$this->test_dir}/parent/child/baz.log"));
+    }
+
+    public function dataZipErrorChecks() : array
+    {
+        return [
+            ['ZipArchive error.', false],
+            [null, \ZipArchive::ER_OK],
+            ["ZipArchive error. (Multi-disk zip archives not supported)" , \ZipArchive::ER_MULTIDISK],
+            ["ZipArchive error. (Renaming temporary file failed)" , \ZipArchive::ER_RENAME],
+            ["ZipArchive error. (Closing zip archive failed)" , \ZipArchive::ER_CLOSE],
+            ["ZipArchive error. (Seek error)" , \ZipArchive::ER_SEEK],
+            ["ZipArchive error. (Read error)" , \ZipArchive::ER_READ],
+            ["ZipArchive error. (Write error)" , \ZipArchive::ER_WRITE],
+            ["ZipArchive error. (CRC error)" , \ZipArchive::ER_CRC],
+            ["ZipArchive error. (Containing zip archive was closed)" , \ZipArchive::ER_ZIPCLOSED],
+            ["ZipArchive error. (No such file)" , \ZipArchive::ER_NOENT],
+            ["ZipArchive error. (File already exists)" , \ZipArchive::ER_EXISTS],
+            ["ZipArchive error. (Can't open file)" , \ZipArchive::ER_OPEN],
+            ["ZipArchive error. (Failure to create temporary file)" , \ZipArchive::ER_TMPOPEN],
+            ["ZipArchive error. (Zlib error)" , \ZipArchive::ER_ZLIB],
+            ["ZipArchive error. (Malloc failure)" , \ZipArchive::ER_MEMORY],
+            ["ZipArchive error. (Entry has been changed)" , \ZipArchive::ER_CHANGED],
+            ["ZipArchive error. (Compression method not supported)" , \ZipArchive::ER_COMPNOTSUPP],
+            ["ZipArchive error. (Premature EOF)" , \ZipArchive::ER_EOF],
+            ["ZipArchive error. (Invalid argument)" , \ZipArchive::ER_INVAL],
+            ["ZipArchive error. (Not a zip archive)" , \ZipArchive::ER_NOZIP],
+            ["ZipArchive error. (Internal error)" , \ZipArchive::ER_INTERNAL],
+            ["ZipArchive error. (Zip archive inconsistent)" , \ZipArchive::ER_INCONS],
+            ["ZipArchive error. (Can't remove file)" , \ZipArchive::ER_REMOVE],
+            ["ZipArchive error. (Entry has been delete)" , \ZipArchive::ER_DELETED],
+            ["ZipArchive error. (Unknown reason)" , 999],
+        ];
+    }
+
+    /**
+     * @dataProvider dataZipErrorChecks
+     */
+    public function test_zipErrorCheck($expect, $code)
+    {
+        try {
+            $this->invoke(Files::class, 'zipErrorCheck', [$code, 'ZipArchive error.']);
+            if ($code === \ZipArchive::ER_OK) {
+                $this->assertTrue(true);
+            } else {
+                $this->fail("Must not execute.");
+            }
+        } catch (ZipArchiveException $e) {
+            $this->assertSame($expect, $e->getMessage());
+        }
     }
 }
