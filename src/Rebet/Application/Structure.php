@@ -55,17 +55,19 @@ class Structure
 
     /**
      * Get environment file path
+     * Defaultly this method return "{Structure::root()}/app/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function env(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->root()}/{$relative_path}");
+        return Path::normalize("{$this->path('/app')}/{$relative_path}");
     }
 
     /**
      * Get application bootstrap modules path
+     * Defaultly this method return "{Structure::root()}/app/bootstrap/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -77,6 +79,7 @@ class Structure
 
     /**
      * Get application config path
+     * Defaultly this method return "{Structure::root()}/app/configs/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -88,6 +91,7 @@ class Structure
 
     /**
      * Get application resources path
+     * Defaultly this method return "{Structure::root()}/app/resources/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -99,6 +103,7 @@ class Structure
 
     /**
      * Get application routes configuration path
+     * Defaultly this method return "{Structure::root()}/app/routes/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -110,6 +115,7 @@ class Structure
 
     /**
      * Get application views path
+     * Defaultly this method return "{Structure::root()}/app/views/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -121,6 +127,7 @@ class Structure
 
     /**
      * Get public root path
+     * Defaultly this method return "{Structure::root()}/public/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -132,6 +139,7 @@ class Structure
 
     /**
      * Get cache path
+     * Defaultly this method return "{Structure::root()}/var/cache/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -143,6 +151,7 @@ class Structure
 
     /**
      * Get logs path
+     * Defaultly this method return "{Structure::root()}/var/logs/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -154,6 +163,7 @@ class Structure
 
     /**
      * Get root storage path.
+     * Defaultly this method return "{Structure::root()}/var/storage/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -165,6 +175,7 @@ class Structure
 
     /**
      * Get private storage path.
+     * Defaultly this method return "{Structure::root()}/var/storage/private/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -176,6 +187,7 @@ class Structure
 
     /**
      * Get public storage path.
+     * Defaultly this method return "{Structure::root()}/var/storage/public/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -187,6 +199,7 @@ class Structure
 
     /**
      * Get root storage url.
+     * Defaultly this method return "/storage", you can override this method if you want.
      *
      * @return string
      */
