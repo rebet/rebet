@@ -84,7 +84,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function config(?string $relative_path = null) : string
+    public function configs(?string $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/app/configs')}/{$relative_path}");
     }
@@ -175,7 +175,7 @@ class Structure
 
     /**
      * Get private storage path.
-     * Defaultly this method return "{Structure::root()}/var/storage/private/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::storage()}/private/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
@@ -187,7 +187,7 @@ class Structure
 
     /**
      * Get public storage path.
-     * Defaultly this method return "{Structure::root()}/var/storage/public/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::storage()}/public/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
