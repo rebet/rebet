@@ -13,7 +13,7 @@ use Rebet\Tests\RebetTestCase;
 
 class LogTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
@@ -101,35 +101,35 @@ class LogTest extends RebetTestCase
 
         $driver->clear();
         Log::debug('Test');
-        $this->assertContains('DEBUG', $driver->formatted());
+        $this->assertStringContainsString('DEBUG', $driver->formatted());
 
         $driver->clear();
         Log::info('Test');
-        $this->assertContains('INFO', $driver->formatted());
+        $this->assertStringContainsString('INFO', $driver->formatted());
 
         $driver->clear();
         Log::notice('Test');
-        $this->assertContains('NOTICE', $driver->formatted());
+        $this->assertStringContainsString('NOTICE', $driver->formatted());
 
         $driver->clear();
         Log::warning('Test');
-        $this->assertContains('WARNING', $driver->formatted());
+        $this->assertStringContainsString('WARNING', $driver->formatted());
 
         $driver->clear();
         Log::error('Test');
-        $this->assertContains('ERROR', $driver->formatted());
+        $this->assertStringContainsString('ERROR', $driver->formatted());
 
         $driver->clear();
         Log::critical('Test');
-        $this->assertContains('CRITICAL', $driver->formatted());
+        $this->assertStringContainsString('CRITICAL', $driver->formatted());
 
         $driver->clear();
         Log::alert('Test');
-        $this->assertContains('ALERT', $driver->formatted());
+        $this->assertStringContainsString('ALERT', $driver->formatted());
 
         $driver->clear();
         Log::emergency('Test');
-        $this->assertContains('EMERGENCY', $driver->formatted());
+        $this->assertStringContainsString('EMERGENCY', $driver->formatted());
     }
 
     public function test_memory()
@@ -137,7 +137,7 @@ class LogTest extends RebetTestCase
         $driver = Log::channel()->driver();
         $driver->clear();
         Log::memory();
-        $this->assertContains('Memory', $driver->formatted());
+        $this->assertStringContainsString('Memory', $driver->formatted());
     }
 
     public function test_log()

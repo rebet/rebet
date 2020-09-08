@@ -13,7 +13,7 @@ use Rebet\Tests\RebetTestCase;
 
 class EventTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         Config::application([

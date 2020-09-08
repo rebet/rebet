@@ -9,7 +9,7 @@ class ConfigPromiseTest extends RebetTestCase
     private $promise_once;
     private $promise_every;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
@@ -21,7 +21,7 @@ class ConfigPromiseTest extends RebetTestCase
         }, false);
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         \putenv('PROMISE_TEST=');
     }

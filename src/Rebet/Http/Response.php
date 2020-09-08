@@ -7,11 +7,11 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Response interface
  *
- * This interface covered Symfony\Component\HttpFoundation\Response of symfony/http-foundation ver 4.2.
- * The Symfony's interface signature and comment text are borrowed from symfony/http-foundation ver 4.2. with some modifications.
+ * This interface covered Symfony\Component\HttpFoundation\Response of symfony/http-foundation ver 5.1.
+ * The Symfony's interface signature and comment text are borrowed from symfony/http-foundation ver 5.1. with some modifications.
  *
- * @see https://github.com/symfony/http-foundation/blob/4.2/Response.php
- * @see https://github.com/symfony/http-foundation/blob/4.2/LICENSE
+ * @see https://github.com/symfony/http-foundation/blob/5.1/Response.php
+ * @see https://github.com/symfony/http-foundation/blob/5.1/LICENSE
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -67,21 +67,6 @@ interface Response
      ******************************************************/
 
     /**
-     * Factory method for chainability.
-     *
-     * Example:
-     *
-     *     return Response::create($body, 200)
-     *         ->setSharedMaxAge(300);
-     *
-     * @param mixed $content The response content, see setContent()
-     * @param int   $status  The response status code
-     * @param array $headers An array of response headers
-     * @return static
-     */
-    public static function create($content = '', $status = 200, $headers = []);
-
-    /**
      * Returns the Response as an HTTP string.
      *
      * The string representation of the Response is the same as the
@@ -135,11 +120,11 @@ interface Response
      *
      * Valid types are strings, numbers, null, and objects that implement a __toString() method.
      *
-     * @param mixed $content Content that can be cast to string
+     * @param string|null $content Content that can be cast to string
      * @return self
      * @throws \UnexpectedValueException
      */
-    public function setContent($content);
+    public function setContent(?string $content);
 
     /**
       * Gets the current response content.
@@ -573,4 +558,11 @@ interface Response
      * @final
      */
     public static function closeOutputBuffers(int $targetLevel, bool $flush);
+
+    /**
+     * Marks a response as safe according to RFC8674.
+     *
+     * @see https://tools.ietf.org/html/rfc8674
+     */
+    public function setContentSafe(bool $safe = true) : void ;
 }

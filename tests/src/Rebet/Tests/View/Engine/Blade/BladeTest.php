@@ -15,7 +15,7 @@ class BladeTest extends RebetTestCase
      */
     private $blade;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([

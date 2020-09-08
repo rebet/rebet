@@ -10,7 +10,7 @@ class FilesTest extends RebetTestCase
 {
     protected $test_dir;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->vfs([
             'public' => [
@@ -54,11 +54,11 @@ class FilesTest extends RebetTestCase
 
         Files::removeDir('vfs://root/public');
 
-        $this->assertFileNotExists('vfs://root/public/css/normalize.css');
-        $this->assertFileNotExists('vfs://root/public/js/underscore/underscore.min.js');
-        $this->assertFileNotExists('vfs://root/public/index.html');
-        $this->assertFileNotExists('vfs://root/public/img');
-        $this->assertFileNotExists('vfs://root/public');
+        $this->assertFileDoesNotExist('vfs://root/public/css/normalize.css');
+        $this->assertFileDoesNotExist('vfs://root/public/js/underscore/underscore.min.js');
+        $this->assertFileDoesNotExist('vfs://root/public/index.html');
+        $this->assertFileDoesNotExist('vfs://root/public/img');
+        $this->assertFileDoesNotExist('vfs://root/public');
         $this->assertFileExists('vfs://root/var');
         $this->assertFileExists('vfs://root');
     }
@@ -75,10 +75,10 @@ class FilesTest extends RebetTestCase
 
         Files::removeDir('vfs://root/public', false);
 
-        $this->assertFileNotExists('vfs://root/public/css/normalize.css');
-        $this->assertFileNotExists('vfs://root/public/js/underscore/underscore.min.js');
-        $this->assertFileNotExists('vfs://root/public/index.html');
-        $this->assertFileNotExists('vfs://root/public/img');
+        $this->assertFileDoesNotExist('vfs://root/public/css/normalize.css');
+        $this->assertFileDoesNotExist('vfs://root/public/js/underscore/underscore.min.js');
+        $this->assertFileDoesNotExist('vfs://root/public/index.html');
+        $this->assertFileDoesNotExist('vfs://root/public/img');
         $this->assertFileExists('vfs://root/public');
         $this->assertFileExists('vfs://root/var');
         $this->assertFileExists('vfs://root');
@@ -86,11 +86,11 @@ class FilesTest extends RebetTestCase
 
     public function test_zip()
     {
-        $this->assertFileNotExists("{$this->test_dir}/parent.zip");
+        $this->assertFileDoesNotExist("{$this->test_dir}/parent.zip");
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/parent.zip");
         $this->assertFileExists("{$this->test_dir}/parent.zip");
 
-        $this->assertFileNotExists("{$this->test_dir}/archives");
+        $this->assertFileDoesNotExist("{$this->test_dir}/archives");
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/1/parent.zip");
         $this->assertFileExists("{$this->test_dir}/archives/1");
         $this->assertFileExists("{$this->test_dir}/archives/1/parent.zip");
@@ -99,19 +99,19 @@ class FilesTest extends RebetTestCase
 
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/2/parent.zip", false);
         Files::unzip("{$this->test_dir}/archives/2/parent.zip", "{$this->test_dir}/archives/2");
-        $this->assertFileNotExists("{$this->test_dir}/archives/2/parent");
+        $this->assertFileDoesNotExist("{$this->test_dir}/archives/2/parent");
         $this->assertFileExists("{$this->test_dir}/archives/2/foo.txt");
 
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/archives/3/parent.zip", false, function ($path) { return !Strings::endsWith($path, '.ini'); });
         Files::unzip("{$this->test_dir}/archives/3/parent.zip", "{$this->test_dir}/archives/3");
         $this->assertFileExists("{$this->test_dir}/archives/3/foo.txt");
-        $this->assertFileNotExists("{$this->test_dir}/archives/3/bar.ini");
+        $this->assertFileDoesNotExist("{$this->test_dir}/archives/3/bar.ini");
         $this->assertFileExists("{$this->test_dir}/archives/3/child/baz.log");
     }
 
     public function test_unzip()
     {
-        $this->assertFileNotExists("{$this->test_dir}/parent.zip");
+        $this->assertFileDoesNotExist("{$this->test_dir}/parent.zip");
         $this->assertFileExists("{$this->test_dir}/parent");
 
         Files::zip("{$this->test_dir}/parent", "{$this->test_dir}/parent.zip");
@@ -122,7 +122,7 @@ class FilesTest extends RebetTestCase
         Files::removeDir("{$this->test_dir}/parent");
 
         $this->assertFileExists("{$this->test_dir}/parent.zip");
-        $this->assertFileNotExists("{$this->test_dir}/parent");
+        $this->assertFileDoesNotExist("{$this->test_dir}/parent");
 
         Files::unzip("{$this->test_dir}/parent.zip", $this->test_dir);
 

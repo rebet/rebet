@@ -34,11 +34,11 @@ class Password
      * Generate password hash from given plain password using password_hash() php function.
      *
      * @param string|null $password
-     * @param integer|null $algorithm (default: depend on configure)
+     * @param int|string|null $algorithm (default: depend on configure)
      * @param array|null $options (default: depend on configure)
      * @return string|null
      */
-    public static function hash(?string $password, ?int $algorithm = null, ?array $options = null) : ?string
+    public static function hash(?string $password, $algorithm = null, ?array $options = null) : ?string
     {
         if ($password === null) {
             return null;
@@ -64,11 +64,11 @@ class Password
      * It checks the password needs rehash.
      *
      * @param string|null $hash
-     * @param integer|null $algorithm (default: depend on configure)
+     * @param int|string|null $algorithm (default: depend on configure)
      * @param array|null $options (default: depend on configure)
      * @return bool
      */
-    public static function needsRehash(?string $hash, ?int $algorithm = null, ?array $options = null) : bool
+    public static function needsRehash(?string $hash, $algorithm = null, ?array $options = null) : bool
     {
         if ($hash === null) {
             return false;

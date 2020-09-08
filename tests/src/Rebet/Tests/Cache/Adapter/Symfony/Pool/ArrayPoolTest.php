@@ -15,7 +15,7 @@ class ArrayPoolTest extends RebetTestCase
      */
     protected $pools = [];
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->pools[] = new ArrayPool();

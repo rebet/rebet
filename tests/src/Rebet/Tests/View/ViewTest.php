@@ -9,11 +9,12 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\EofLineFeed;
+use Rebet\View\Exception\ViewRenderFailedException;
 use Rebet\View\View;
 
 class ViewTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -103,21 +104,19 @@ class ViewTest extends RebetTestCase
         $this->assertSame('Hello, Bob.', View::of('welcome')->with('name', 'Bob')->render());
     }
 
-    /**
-     * @expectedException Rebet\View\Exception\ViewRenderFailedException
-     * @expectedExceptionMessage The view [nothing] (possible: nothing) render failed because of all of view templates not exists.
-     */
     public function test_render_notExists()
     {
+        $this->expectException(ViewRenderFailedException::class);
+        $this->expectExceptionMessage("The view [nothing] (possible: nothing) render failed because of all of view templates not exists.");
+
         View::of('nothing')->render();
     }
 
-    /**
-     * @expectedException Rebet\View\Exception\ViewRenderFailedException
-     * @expectedExceptionMessage The view [nothing] (possible: ja/nothing, en/nothing) render failed because of all of view templates not exists.
-     */
     public function test_render_notExistsMultiPosible()
     {
+        $this->expectException(ViewRenderFailedException::class);
+        $this->expectExceptionMessage("The view [nothing] (possible: ja/nothing, en/nothing) render failed because of all of view templates not exists.");
+
         View::of('nothing', function (string $name) { return ["ja/{$name}", "en/{$name}"] ;})->render();
     }
 

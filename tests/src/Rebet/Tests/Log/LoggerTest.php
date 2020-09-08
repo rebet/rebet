@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class LoggerTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
@@ -105,6 +105,6 @@ class LoggerTest extends RebetTestCase
         $this->assertFalse($logger->driver()->hasDebugRecords());
         $logger->memory('message');
         $this->assertTrue($logger->driver()->hasDebugRecords());
-        $this->assertContains('Peak Memory', $logger->driver()->formatted());
+        $this->assertStringContainsString('Peak Memory', $logger->driver()->formatted());
     }
 }

@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Common;
 
 use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Strings;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
@@ -222,12 +223,11 @@ class StringsTest extends RebetTestCase
         $this->assertSame('123456789*', Strings::clip('1234567890+', 10, '*'));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid clip length and ellipsis. The length must be longer than ellipsis.
-     */
     public function test_clip_exception()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid clip length and ellipsis. The length must be longer than ellipsis.");
+
         $this->assertSame('', Strings::clip('1234567890', 2));
     }
 
@@ -419,7 +419,7 @@ EOS
     {
         $mock  = new StringsTest_Mock();
         $trace = $mock->getTrace();
-        $this->assertContains('Rebet\Tests\Common\StringsTest_Mock::getTrace()', Strings::traceToString($trace));
+        $this->assertStringContainsString('Rebet\Tests\Common\StringsTest_Mock::getTrace()', Strings::traceToString($trace));
     }
 }
 

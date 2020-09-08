@@ -9,6 +9,8 @@ use Psr\Http\Message\StreamInterface;
 use Rebet\Application\App;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\BuiltinFilesystem;
+use Rebet\Filesystem\Exception\FileNotFoundException;
+use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Tests\RebetTestCase;
 
@@ -84,12 +86,11 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame($body, $this->filesystem->get($path));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FileNotFoundException
-     * @expectedExceptionMessage File not found at path: not_found.txt
-     */
     public function test_get_fileNotFound()
     {
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage("File not found at path: not_found.txt");
+
         $this->filesystem->get('not_found.txt');
     }
 
@@ -321,12 +322,11 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("1", $this->filesystem->get('to.txt'));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FilesystemException
-     * @expectedExceptionMessage File already exists at path: to.txt
-     */
     public function test_copy_replace_faile()
     {
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage("File already exists at path: to.txt");
+
         $this->filesystem->put('from.txt', "1");
         $this->filesystem->put('to.txt', "2");
         $this->filesystem->copy('from.txt', 'to.txt');
@@ -359,12 +359,11 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(false, $this->filesystem->exists('dir_to/2.txt'));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FilesystemException
-     * @expectedExceptionMessage Can not copy from `dir_from` to `dir_to`. `dir_to` directory already exists.
-     */
     public function test_copy_dir_replace_failed()
     {
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage("Can not copy from `dir_from` to `dir_to`. `dir_to` directory already exists.");
+
         $this->filesystem->put('dir_from/1.txt', "1");
         $this->filesystem->put('dir_to/2.txt', "2");
         $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->copy('dir_from', 'dir_to'));
@@ -393,12 +392,11 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame("1", $this->filesystem->get('to.txt'));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FilesystemException
-     * @expectedExceptionMessage File already exists at path: to.txt
-     */
     public function test_move_replace_faile()
     {
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage("File already exists at path: to.txt");
+
         $this->filesystem->put('from.txt', "1");
         $this->filesystem->put('to.txt', "2");
         $this->filesystem->move('from.txt', 'to.txt');
@@ -434,12 +432,11 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(false, $this->filesystem->exists('dir_to/2.txt'));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FilesystemException
-     * @expectedExceptionMessage File already exists at path: dir_to
-     */
     public function test_move_dir_replace_failed()
     {
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage("File already exists at path: dir_to");
+
         $this->filesystem->put('dir_from/1.txt', "1");
         $this->filesystem->put('dir_to/2.txt', "2");
         $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->move('dir_from', 'dir_to'));
@@ -528,12 +525,11 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertTrue($last_modified <= $end);
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FileNotFoundException
-     * @expectedExceptionMessage /foo/bar.txt is not public.
-     */
     public function test_url_private()
     {
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage("/foo/bar.txt is not public.");
+
         $local = $this->createMock(Local::class);
         $local->method('getVisibility')->willReturn(['visibility' => 'private']);
         $filesystem = new BuiltinFilesystem($local, ['disable_asserts' => true]);

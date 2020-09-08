@@ -54,7 +54,7 @@ class Securities
     {
         $res = "";
         for ($i=0; $i < $length; $i++) {
-            $res .= $chars{mt_rand(0, strlen($chars) - 1)};
+            $res .= $chars[mt_rand(0, strlen($chars) - 1)];
         }
         return $res;
     }

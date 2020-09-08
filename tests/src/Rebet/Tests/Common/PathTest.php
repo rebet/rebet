@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Common;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Path;
 
 use Rebet\Tests\RebetTestCase;
@@ -32,12 +33,11 @@ class PathTest extends RebetTestCase
         $this->assertSame('file://c:/', Path::normalize('file://c:/var/..'));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid path format: c:/invalid/../../path
-     */
     public function test_normalizePath_invalid()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid path format: c:/invalid/../../path");
+
         $this->assertSame('app', Path::normalize('c:/invalid/../../path'));
     }
 }

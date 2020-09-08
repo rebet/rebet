@@ -10,10 +10,9 @@ use Rebet\Tests\RebetTestCase;
  *    https://github.com/microsoftarchive/redis/releases
  * 2. Download and install redis using Redis-x64-*.msi
  *
- * # Setup PhpRedis PHP Extension
+ * # Setup PhpRedis PHP Extension for Windows
  * 1. Get PhpRedis dll from PECL
- *    https://pecl.php.net/package/redis/5.1.1/windows
- *    NOTE: Latest version of redis supported php 7.1 is 5.1.1.
+ *    https://pecl.php.net/package/redis/
  * 2. Copy `php_redis.dll` to `{PHP_HOME}/ext`
  * 3. Edit php.ini
  *    ```

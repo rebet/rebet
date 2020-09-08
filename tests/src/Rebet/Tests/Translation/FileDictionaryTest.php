@@ -14,7 +14,7 @@ class FileDictionaryTest extends RebetTestCase
      */
     private $dictionary;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->dictionary = new FileDictionary();

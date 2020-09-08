@@ -18,7 +18,7 @@ class EnvironmentTest extends RebetTestCase
     protected $parser;
     protected $compiler;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->env      = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());

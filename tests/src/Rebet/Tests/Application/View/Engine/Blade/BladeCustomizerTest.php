@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Application\View\Engine\Blade;
 
 use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\Tests\Application\View\Engine\EngineCustomizerTestCase;
 use Rebet\View\Engine\Blade\Blade;
@@ -25,21 +26,19 @@ class BladeCustomizerTest extends EngineCustomizerTestCase
         return new Blade(true);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.
-     */
     public function test_disabled_tag_auth()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Unsupported directive '@auth' found. In Rebet, you should use '@role' directive instead.");
+
         $this->engine->render('disabled/auth');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.
-     */
     public function test_disabled_tag_guest()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Unsupported directive '@guest' found. In Rebet, you should use '@role' directive instead.");
+
         $this->engine->render('disabled/guest');
     }
 }

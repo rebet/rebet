@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Http\Response;
 
 use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;
@@ -56,84 +57,75 @@ class ProblemResponseTest extends RebetTestCase
         $this->assertSame('Instance', $response->getProblem('instance'));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The type of 'about:blank' can not contains additional.
-     */
     public function test_additional_invalidType()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The type of 'about:blank' can not contains additional.");
+
         $response = (new ProblemResponse(404))->additional('foo', 'bar');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'status' is reserved. so you can't set 'status' via additional.
-     */
     public function test_additional_reservedWord_status()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'status' is reserved. so you can't set 'status' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('status', 200);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'status' is reserved. so you can't set 'status' via additional.
-     */
     public function test_additional_array_reservedWord_status()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'status' is reserved. so you can't set 'status' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['status' => 200]);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'title' is reserved. so you can't set 'title' via additional.
-     */
     public function test_additional_reservedWord_title()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'title' is reserved. so you can't set 'title' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('title', 'new');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'title' is reserved. so you can't set 'title' via additional.
-     */
     public function test_additional_array_reservedWord_title()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'title' is reserved. so you can't set 'title' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['title' => 'new']);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'detail' is reserved. so you can't set 'detail' via additional.
-     */
     public function test_additional_reservedWord_detail()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'detail' is reserved. so you can't set 'detail' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('detail', 'new');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'detail' is reserved. so you can't set 'detail' via additional.
-     */
     public function test_additional_array_reservedWord_detail()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'detail' is reserved. so you can't set 'detail' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['detail' => 'new']);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'instance' is reserved. so you can't set 'instance' via additional.
-     */
     public function test_additional_reservedWord_instance()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'instance' is reserved. so you can't set 'instance' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional('instance', 'new');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The key of 'instance' is reserved. so you can't set 'instance' via additional.
-     */
     public function test_additional_array_reservedWord_instance()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The key of 'instance' is reserved. so you can't set 'instance' via additional.");
+
         $response = (new ProblemResponse(404, 'New title', ProblemResponse::TYPE_FALLBACK_ERRORS))->additional(['instance' => 'new']);
     }
 

@@ -1,8 +1,10 @@
 <?php
 namespace Rebet\Tests\Common;
 
+use OutOfBoundsException;
 use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\Stream\Stream;
@@ -19,7 +21,7 @@ class ReflectorTest extends RebetTestCase
     private $transparent = null;
     private $accessible  = null;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->array  = ['a', 'b', 'c', null];
@@ -317,12 +319,11 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->array, 'undefind_key'));
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested parent key 'undefind_key' does not exist.
-     */
     public function test_set_nestedUndefindKeyArray()
     {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage("Nested parent key 'undefind_key' does not exist.");
+
         Reflector::set($this->map, 'undefind_key.name', 'value');
     }
 
@@ -332,30 +333,27 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->map, 'partner.undefind_key'));
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested key 'undefind_key' does not exist.
-     */
     public function test_set_undefindKeyObject()
     {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
+
         Reflector::set($this->object, 'undefind_key', 'value');
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested key 'undefind_key' does not exist.
-     */
     public function test_set_nestedTerminateUndefindKeyObject()
     {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
+
         Reflector::set($this->object, 'partner.undefind_key', 'value');
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Nested key 'undefind_key' does not exist.
-     */
     public function test_set_nestedUndefindKeyObject()
     {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
+
         Reflector::set($this->object, 'undefind_key.partner', 'value');
     }
 
@@ -524,34 +522,31 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::typeOf($object, \stdClass::class));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Parameter 'mixed' is requierd.
-     */
     public function test_toArgs_error()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Parameter 'mixed' is requierd.");
+
         $function = function ($mixed) { return; };
         $rf   = new \ReflectionFunction($function);
         $args = Reflector::toArgs($rf->getParameters(), []);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Parameter 'nullable' is requierd.
-     */
     public function test_toArgs_errorNullable()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Parameter 'nullable' is requierd.");
+
         $function = function (?int $nullable) { return; };
         $rf       = new \ReflectionFunction($function);
         $args     = Reflector::toArgs($rf->getParameters(), []);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Parameter gender(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
-     */
     public function test_toArgs_errorConvert()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Parameter gender(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.");
+
         $function = function (Gender $gender) { return; };
         $rf       = new \ReflectionFunction($function);
         $this->assertSame([Gender::MALE()], Reflector::toArgs($rf->getParameters(), ['gender' => 1], true));

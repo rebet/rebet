@@ -14,7 +14,7 @@ class TwigTest extends RebetTestCase
      */
     private $twig;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([

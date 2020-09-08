@@ -21,7 +21,7 @@ use Rebet\Tests\RebetTestCase;
 
 class AuthTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->signout();

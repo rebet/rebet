@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Session;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
@@ -188,12 +189,11 @@ class SessionTest extends RebetTestCase
         $this->assertSame('new_Id', $session->id());
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid token scope name 'invalid:name' found. Token scope can not contains ':'.
-     */
     public function test_createTokenKey_invalidScopeName()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid token scope name 'invalid:name' found. Token scope can not contains ':'.");
+
         Session::createTokenKey('invalid:name');
     }
 
@@ -205,12 +205,11 @@ class SessionTest extends RebetTestCase
         $this->assertSame('_token:article:edit:1', Session::createTokenKey('article', 'edit', 1));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid token key 'invalid:name' was given. Token key must be starts with '_token'.
-     */
     public function test_analyzeTokenScope_invalidKeyName()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid token key 'invalid:name' was given. Token key must be starts with '_token'.");
+
         Session::analyzeTokenScope('invalid:name');
     }
 

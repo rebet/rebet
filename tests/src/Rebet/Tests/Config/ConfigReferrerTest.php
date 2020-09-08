@@ -39,7 +39,7 @@ class ConfigReferrerTest extends RebetTestCase
     private $ref_database;
     private $ref_user;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->ref_driver   = new ConfigReferrer(ConfigReferrerTest_Mock::class, 'driver');

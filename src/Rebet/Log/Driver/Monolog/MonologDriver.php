@@ -1,12 +1,13 @@
 <?php
 namespace Rebet\Log\Driver\Monolog;
 
-use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
 use Rebet\Common\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
+use Rebet\DateTime\DateTimeZone;
+use Throwable;
 
 /**
  * Monolog Driver Class
@@ -47,10 +48,11 @@ class MonologDriver extends MonologLogger
      * @param string $level
      * @param array $handlers (default: [])
      * @param array $processors (default: [])
+     * @param string|\DateTimeZone|null $timezone (default: null for use Datetime.default_timezone configure)
      */
-    public function __construct(string $name, string $level, array $handlers = [], array $processors = [])
+    public function __construct(string $name, string $level, array $handlers = [], array $processors = [], $timezone = null)
     {
-        parent::__construct($name, $handlers, $processors);
+        parent::__construct($name, $handlers, $processors, new DateTimeZone($timezone ?? DateTime::config('default_timezone')));
         $extra_args = compact('name', 'level');
         foreach (static::config('processors', false, []) as $processor) {
             if (is_callable($processor)) {
@@ -66,29 +68,22 @@ class MonologDriver extends MonologLogger
      *
      * Override for use Rebet DateTime class to 'datetime' attribute creation.
      */
-    public function addRecord($level, $message, array $context = [])
+    public function addRecord(int $level, string $message, array $context = []) : bool
     {
-        if (!$this->handlers) {
-            $this->pushHandler(new StreamHandler('php://stderr', static::DEBUG));
-        }
-
-        $levelName = static::getLevelName($level);
-
         // check if any handler will handle this message so we can return early and save cycles
         $handlerKey = null;
-        reset($this->handlers);
-        while ($handler = current($this->handlers)) {
+        foreach ($this->handlers as $key => $handler) {
             if ($handler->isHandling(['level' => $level])) {
-                $handlerKey = key($this->handlers);
+                $handlerKey = $key;
                 break;
             }
-
-            next($this->handlers);
         }
 
         if (null === $handlerKey) {
             return false;
         }
+
+        $levelName = static::getLevelName($level);
 
         $record = [
             'message'    => $message,
@@ -96,13 +91,19 @@ class MonologDriver extends MonologLogger
             'level'      => $level,
             'level_name' => $levelName,
             'channel'    => $this->name,
-            'datetime'   => DateTime::now(static::$timezone)->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
+            'datetime'   => DateTime::now($this->timezone)->setDefaultFormat($this->microsecondTimestamps ? 'Y-m-d\TH:i:s.uP' : 'Y-m-d\TH:i:sP'), // Use Rebet DateTime class for create datetime.
             'extra'      => [],
         ];
 
         try {
             foreach ($this->processors as $processor) {
-                $record = call_user_func($processor, $record);
+                $record = $processor($record);
+            }
+
+            // advance the array pointer to the first handler that will handle this record
+            reset($this->handlers);
+            while ($handlerKey !== key($this->handlers)) {
+                next($this->handlers);
             }
 
             while ($handler = current($this->handlers)) {
@@ -112,7 +113,7 @@ class MonologDriver extends MonologLogger
 
                 next($this->handlers);
             }
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->handleException($e, $record);
         }
 

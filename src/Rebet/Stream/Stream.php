@@ -416,7 +416,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 return static::$null;
             }
             if ($converted === null) {
-                throw (new LogicException("Apply {$name} filter failed. The origin type '". Reflector::getType($origin) ."' can not convert to {$type}."))->caused($e);
+                throw (new LogicException("Apply {$name} filter failed. The origin type '".Reflector::getType($origin)."' can not convert to {$type}."))->caused($e);
             }
             throw $e;
         }
@@ -440,6 +440,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         if (is_object($origin) && method_exists($origin, $name)) {
             $method      = new \ReflectionMethod($origin, $name);
             $type        = $method->getReturnType();
+            $type        = $type ? $type->getName() : $type ;
             $fingerprint = $type === null || $type == 'bool' || $type == 'boolean' ? md5(serialize($origin)) : null ;
             $args        = array_map(function ($value) { return static::peel($value); }, $args);
             $result      = $method->invoke($origin, ...$args);

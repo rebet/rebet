@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Tests\Stream;
 
+use InvalidArgumentException;
+use Rebet\Common\Exception\LogicException;
 use Rebet\DateTime\DateTime;
 use Rebet\Stream\Stream;
 use Rebet\Tests\Mock\Enum\Gender;
@@ -25,7 +27,7 @@ class StreamTest extends RebetTestCase
     private $callable;
     private $destructive;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2001/02/03 04:05:06');
@@ -677,21 +679,19 @@ EOS
         $this->assertSame([1, 2, 3, 0, 0], $this->array->arrayPad(5, 0)->return());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid escape type [xml] given. The type must be html or url
-     */
     public function test_filters_escapeError()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid escape type [xml] given. The type must be html or url");
+
         $this->string->escape('xml');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Apply datetime filter failed. The origin type 'Closure' can not convert to Rebet\DateTime\DateTime.
-     */
     public function test_filters_convertError()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Apply datetime filter failed. The origin type 'Closure' can not convert to Rebet\DateTime\DateTime.");
+
         $this->callable->datetime('Y/m/d');
     }
 }

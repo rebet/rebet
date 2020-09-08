@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Tests\Routing\Route;
 
-use Rebet\Config\Config;
 use Rebet\Application\App;
+use Rebet\Config\Config;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ViewRoute;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
@@ -11,7 +12,7 @@ use Rebet\View\View;
 
 class ViewRouteTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -45,11 +46,10 @@ class ViewRouteTest extends RebetTestCase
         $this->assertSame('Hello, Bob.', $response->getContent());
     }
 
-    /**
-     * @expectedException Rebet\Routing\Exception\RouteNotFoundException
-     */
     public function test_routing_viewNotFound()
     {
+        $this->expectException(RouteNotFoundException::class);
+
         $route   = new ViewRoute('/nothing', '/nothing');
         $request = $this->createRequestMock('/nothing');
         $this->assertTrue($route->match($request));

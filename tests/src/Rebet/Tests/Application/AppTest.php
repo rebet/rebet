@@ -9,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class AppTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }

@@ -1,7 +1,9 @@
 <?php
 namespace Rebet\Tests\Common;
 
+use ArrayObject;
 use Rebet\Common\Callback;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Config\Layer;
 use Rebet\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
@@ -9,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
 
 class CallbackTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }
@@ -108,12 +110,11 @@ class CallbackTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid operator <=> given.
-     */
     public function test_test_iInvalidOperator()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid operator <=> given.");
+
         $test = Callback::test(null, '<=>', 12);
         $test(10);
     }
@@ -196,14 +197,14 @@ class CallbackTest extends RebetTestCase
             [['count' => 123, 'name' => 'foo'], '@count', 123],
             [['count' => 123, 'name' => 'foo'], 'name', 'foo'],
 
-            [(object)['a' => 'A'], null, (object)['a' => 'A']],
-            [(object)['a' => 'A'], 'a', 'A'],
-            [(object)['a' => 'A'], 'b', null],
+            [new ArrayObject(['a' => 'A']), null, new ArrayObject(['a' => 'A'])],
+            [new ArrayObject(['a' => 'A']), 'a', 'A'],
+            [new ArrayObject(['a' => 'A']), 'b', null],
 
-            [(object)['count' => 123, 'name' => 'foo'], null, (object)['count' => 123, 'name' => 'foo']],
-            [(object)['count' => 123, 'name' => 'foo'], 'count', 1],
-            [(object)['count' => 123, 'name' => 'foo'], '@count', 123],
-            [(object)['count' => 123, 'name' => 'foo'], 'name', 'foo'],
+            [new ArrayObject(['count' => 123, 'name' => 'foo']), null, new ArrayObject(['count' => 123, 'name' => 'foo'])],
+            [new ArrayObject(['count' => 123, 'name' => 'foo']), 'count', 2],
+            [new ArrayObject(['count' => 123, 'name' => 'foo']), '@count', 123],
+            [new ArrayObject(['count' => 123, 'name' => 'foo']), 'name', 'foo'],
 
         ];
     }

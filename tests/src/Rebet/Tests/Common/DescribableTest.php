@@ -12,7 +12,7 @@ class DescribableTest extends RebetTestCase
     public $dest_b;
     public $dest_array;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->src      = new DescribableTest_MockA();

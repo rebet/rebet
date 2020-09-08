@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class TestDriverTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');

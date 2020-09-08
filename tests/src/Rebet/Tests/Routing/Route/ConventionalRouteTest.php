@@ -5,6 +5,7 @@ use Rebet\Common\Namespaces;
 use Rebet\Common\Reflector;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Tests\Mock\Controller\TestController;
 use Rebet\Tests\Mock\Controller\TopController;
@@ -78,112 +79,102 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Controller [ Rebet\Tests\Mock\Controller\InvalidController ] can not instantiate.
-     */
     public function test_routing_notFound()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Controller [ Rebet\Tests\Mock\Controller\InvalidController ] can not instantiate.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/invalid', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::invalid ] not exists.
-     */
     public function test_routing_actionNotFound()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::invalid ] not exists.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/invalid', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::privateCall ] not accessible.
-     */
     public function test_routing_actionNotAccessible()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::privateCall ] not accessible.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/private-call', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationNotRouting ] is not routing.
-     */
     public function test_routing_annotationNotRouting()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationNotRouting ] is not routing.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/annotation-not-routing', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationAliasOnly ] accespt only alias access.
-     */
     public function test_routing_accesptOnlyAliasAccess()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationAliasOnly ] accespt only alias access.");
+
         $route   = new ConventionalRoute(['aliases' => ['/alias' => '/test/annotation-alias-only']]);
         $request = $this->createRequestMock('/test/annotation-alias-only', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Requierd parameter 'id' on [ Rebet\Tests\Mock\Controller\TestController::withParam ] not supplied.
-     */
     public function test_routing_invlidRouteParameter_requierd()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Requierd parameter 'id' on [ Rebet\Tests\Mock\Controller\TestController::withParam ] not supplied.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/with-param/', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value '123' not match /^[a-z]*$/.
-     */
     public function test_routing_invlidRouteParameter_where()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value '123' not match /^[a-z]*$/.");
+
         $route   = new ConventionalRoute();
         $route->where('id', '/^[a-z]*$/');
         $request = $this->createRequestMock('/test/with-param/123', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.
-     */
     public function test_routing_invlidRouteParameter_annotationWhere()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/annotation-where/123', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.
-     */
     public function test_routing_invlidChannel()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/annotation-channel-api', null, 'web', 'GET', '', $route);
         $route->match($request);
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.
-     */
     public function test_routing_invlidMethod()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.");
+
         $route   = new ConventionalRoute();
         $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'POST', '', $route);
         $route->match($request);

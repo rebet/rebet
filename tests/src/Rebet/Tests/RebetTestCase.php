@@ -58,7 +58,7 @@ abstract class RebetTestCase extends TestCase
     protected static $work_dir;
     protected static $unittest_cwd;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         self::$original_cwd = Path::normalize(getcwd());
         self::$work_dir     = (new Structure(__DIR__.'/../../../'))->path('/work');
@@ -69,7 +69,7 @@ abstract class RebetTestCase extends TestCase
         chdir(self::$unittest_cwd);
     }
 
-    protected function setUp()
+    protected function setUp() : void
     {
         System::initMock();
         Config::clear();
@@ -177,11 +177,11 @@ abstract class RebetTestCase extends TestCase
 
     // protected function assertPostConditions() {}
 
-    // protected function tearDown() {}
+    // protected function tearDown() : void {}
 
     // protected function onNotSuccessfulTest(Throwable $t) {}
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         chdir(self::$original_cwd);
         Files::removeDir(self::$unittest_cwd);
@@ -305,7 +305,7 @@ abstract class RebetTestCase extends TestCase
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
-            $this->assertContains($expect, $actual);
+            $this->assertStringContainsString($expect, $actual);
         }
     }
 
@@ -321,7 +321,7 @@ abstract class RebetTestCase extends TestCase
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
-            $this->assertRegExp($expect, $actual);
+            $this->assertMatchesRegularExpression($expect, $actual);
         }
     }
 
@@ -329,7 +329,7 @@ abstract class RebetTestCase extends TestCase
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
-            $this->assertNotRegExp($expect, $actual);
+            $this->assertDoesNotMatchRegularExpression($expect, $actual);
         }
     }
 

@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use Rebet\Application\App;
+use Rebet\Http\Exception\HttpException;
 use Rebet\Http\HttpStatus;
 use Rebet\Tests\RebetTestCase;
 
@@ -92,51 +93,46 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(true, HttpStatus::isServerError(500));
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\HttpException
-     * @expectedExceptionMessage 404 指定のページが見つかりません
-     */
     public function test_abort_ja()
     {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage("404 指定のページが見つかりません");
+
         HttpStatus::abort(404);
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\HttpException
-     * @expectedExceptionMessage 404 Custom Not Found
-     */
     public function test_abort_en()
     {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage("404 Custom Not Found");
+
         App::setLocale('en');
         HttpStatus::abort(404);
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\HttpException
-     * @expectedExceptionMessage 404 Not Found
-     */
     public function test_abort_none()
     {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage("404 Not Found");
+
         App::setLocale('none', 'none');
         HttpStatus::abort(404);
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\HttpException
-     * @expectedExceptionMessage 404 Not Found: This is detail.
-     */
     public function test_abort_detail()
     {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage("404 Not Found: This is detail.");
+
         App::setLocale('none', 'none');
         HttpStatus::abort(404, 'This is detail.');
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\HttpException
-     * @expectedExceptionMessage New Title: This is detail.
-     */
     public function test_abort_detailAndTitle()
     {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage("New Title: This is detail.");
+
         App::setLocale('none', 'none');
         HttpStatus::abort(404, 'This is detail.', 'New Title');
     }

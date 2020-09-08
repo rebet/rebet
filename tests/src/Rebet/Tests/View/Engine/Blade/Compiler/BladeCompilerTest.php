@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
-use Rebet\Config\Config;
 use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
+use Rebet\Config\Config;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
@@ -15,7 +16,7 @@ class BladeCompilerTest extends RebetTestCase
      */
     private $compiler;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -89,12 +90,11 @@ class BladeCompilerTest extends RebetTestCase
         $this->assertSame("<?php if (\Illuminate\Support\Facades\Blade::execute('say', [\$word, 'foo' => 'welcom'])): ?>", call_user_func($directives['say'], "'foo' => 'welcom'"));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage The 'hello' directive is not supported in Rebet.
-     */
     public function test_disable()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("The 'hello' directive is not supported in Rebet.");
+
         $this->compiler->disable('hello');
         $directives = $this->compiler->getCustomDirectives();
         call_user_func($directives['hello'], null);

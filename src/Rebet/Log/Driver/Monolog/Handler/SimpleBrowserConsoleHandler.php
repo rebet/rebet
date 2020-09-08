@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Log\Driver\Monolog\Handler;
 
+use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger as MonologLogger;
 use Rebet\Common\Strings;
@@ -50,7 +51,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    protected function getDefaultFormatter()
+    protected function getDefaultFormatter() : FormatterInterface
     {
         return new TextFormatter();
     }
@@ -58,7 +59,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    protected function write(array $record)
+    protected function write(array $record) : void
     {
         // Accumulate records
         static::$records[] = $record;
@@ -95,7 +96,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    public function close()
+    public function close() : void
     {
         static::clear();
     }

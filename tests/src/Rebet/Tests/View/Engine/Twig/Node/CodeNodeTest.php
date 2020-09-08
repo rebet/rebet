@@ -17,7 +17,7 @@ class EmbedNodeTest extends RebetTestCase
     protected $compiler;
     protected $lexer;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->env      = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());

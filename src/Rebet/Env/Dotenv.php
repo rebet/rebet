@@ -2,6 +2,8 @@
 namespace Rebet\Env;
 
 use Dotenv\Dotenv as VlucasDotenv;
+use Dotenv\Repository\Adapter\PutenvAdapter;
+use Dotenv\Repository\RepositoryBuilder;
 
 /**
  * Dotenv Class
@@ -11,25 +13,21 @@ use Dotenv\Dotenv as VlucasDotenv;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Dotenv extends VlucasDotenv
+class Dotenv
 {
     /**
      * Initialize the Dotenv module and load the .env file.
      * Note: This method is supposed to be called immediately after composer ../vendor/autoload.php.
      *
-     * @param string $path of .env file
-     * @param string $filename of .env file (default: .env)
+     * @param string|string[] $paths of .env file
+     * @param string|string[] $names of .env file (default: '.env')
      * @param bool $overload (default: true)
-     * @return Dotenv
+     * @return array
      */
-    public static function init(string $path, string $filename = '.env', bool $overload = true) : self
+    public static function load($paths, $names = '.env', bool $overload = true) : void
     {
-        $dotenv = new static($path, $filename);
-        if ($overload) {
-            $dotenv->overload();
-        } else {
-            $dotenv->load();
-        }
-        return $dotenv;
+        $builder = RepositoryBuilder::createWithDefaultAdapters()->addWriter(PutenvAdapter::class);
+        $dotenv  = VlucasDotenv::create($overload ? $builder->make() : $builder->immutable()->make(), $paths, $names);
+        $dotenv->load();
     }
 }

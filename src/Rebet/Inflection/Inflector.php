@@ -333,7 +333,7 @@ class Inflector
         if (count($word) !== 2) {
             return null;
         }
-        return implode('_', array_sort(array_map(function ($value) use ($replacement, $delimiters) {
+        return implode('_', Arrays::sort(array_map(function ($value) use ($replacement, $delimiters) {
             return static::singularize(static::snakize($value, $replacement, $delimiters));
         }, $word)));
     }

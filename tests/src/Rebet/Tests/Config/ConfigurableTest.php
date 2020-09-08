@@ -3,12 +3,13 @@ namespace Rebet\Tests\Config;
 
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\Config\Exception\ConfigNotDefineException;
 use Rebet\Config\Layer;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigurableTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }
@@ -66,30 +67,27 @@ class ConfigurableTest extends RebetTestCase
         $this->assertSame('new driver', $mock->configInMember('driver'));
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.
-     */
     public function test_config_blank()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.");
+
         ConfigurableTest_Mock::config('database');
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.
-     */
     public function test_config_blankInStatic()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.");
+
         ConfigurableTest_Mock::configInStatic('database');
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.
-     */
     public function test_config_blankInMember()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.");
+
         $mock = new ConfigurableTest_Mock();
         $mock->configInMember('database');
     }

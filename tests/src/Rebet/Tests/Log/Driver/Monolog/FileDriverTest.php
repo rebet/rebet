@@ -10,7 +10,7 @@ use Rebet\Tests\RebetTestCase;
 
 class FileDriverTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -41,6 +41,6 @@ class FileDriverTest extends RebetTestCase
         $driver->debug('TEST');
 
         $process_id = getmypid();
-        $this->assertContains(" web/{$process_id} [DEBUG] TEST", file_get_contents('vfs://root/logs/unittest_'.$today->format('Ym').'.log'));
+        $this->assertStringContainsString(" web/{$process_id} [DEBUG] TEST", file_get_contents('vfs://root/logs/unittest_'.$today->format('Ym').'.log'));
     }
 }

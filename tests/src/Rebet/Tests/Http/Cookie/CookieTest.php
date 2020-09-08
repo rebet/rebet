@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Cookie;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
@@ -8,7 +9,7 @@ use Rebet\Tests\RebetTestCase;
 
 class CookieTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }
@@ -68,12 +69,11 @@ class CookieTest extends RebetTestCase
         $this->assertInstanceOf(Cookie::class, Cookie::create('key', 'value'));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Request has not been initialized.
-     */
     public function test_has_requestNotInit()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Request has not been initialized.");
+
         $this->inject(Request::class, 'current', null);
         Cookie::has('key');
     }
@@ -86,12 +86,11 @@ class CookieTest extends RebetTestCase
         $this->assertTrue(Cookie::has('key'));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Request has not been initialized.
-     */
     public function test_get_requestNotInit()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Request has not been initialized.");
+
         $this->inject(Request::class, 'current', null);
         Cookie::get('key');
     }

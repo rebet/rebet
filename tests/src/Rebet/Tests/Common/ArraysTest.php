@@ -13,7 +13,7 @@ use Rebet\Tests\RebetTestCase;
 
 class ArraysTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         $this->vfs([
             'dummy.txt' => 'dummy'

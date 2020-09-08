@@ -13,7 +13,7 @@ use Rebet\Tests\RebetTestCase;
  */
 class InflectorTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }

@@ -1123,13 +1123,13 @@ class BuiltinValidations extends Validations
             switch ($ambiguous_pattern) {
                 case '^':
                     $regex .= $ambiguous_pattern.$delimiter_pattern.'*';
-                    continue;
+                break;
                 case '$':
                     $regex .= $ambiguous_pattern;
-                    continue;
+                break;
                 case $ng_word_length < $omission_length:
                     $regex .= "{$ambiguous_pattern}{$delimiter_pattern}*";
-                    continue;
+                break;
                 default:
                     $regex .= "(?:{$ambiguous_pattern}|(?<o{$i}>{$omission_pattern})){$delimiter_pattern}*";
             }

@@ -13,7 +13,7 @@ use Rebet\View\View;
 
 class ViewSelectorTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([

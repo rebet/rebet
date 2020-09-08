@@ -173,7 +173,7 @@ namespace Rebet\Common {
                         case DNS_A & $type && $vt === 'A': return true;
                         case DNS_CNAME & $type && $vt === 'CNAME': return true;
                         case DNS_HINFO & $type && $vt === 'HINFO': return true;
-                        case DNS_CAA & $type && $vt === 'CAA': return true;
+                        // case DNS_CAA & $type && $vt === 'CAA': return true; // PHP Warning:  Use of undefined constant DNS_CAA - assumed 'DNS_CAA' (this will throw an Error in a future version of PHP)
                         case DNS_MX & $type && $vt === 'MX': return true;
                         case DNS_NS & $type && $vt === 'NS': return true;
                         case DNS_PTR & $type && $vt === 'PTR': return true;

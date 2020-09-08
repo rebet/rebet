@@ -39,6 +39,6 @@ class RebetExceptionableTest extends RebetTestCase
     public function test___toString()
     {
         $e = (new LogicException('test'))->appendix([1, 2, 3]);
-        $this->assertContains("Appendix:", "{$e}");
+        $this->assertStringContainsString("Appendix:", "{$e}");
     }
 }

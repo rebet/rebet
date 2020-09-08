@@ -6,7 +6,7 @@ use Rebet\Tests\RebetTestCase;
 
 class OverrideOptionTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }

@@ -8,7 +8,7 @@ use Rebet\Tests\RebetTestCase;
 
 class TextFormatterTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
@@ -136,7 +136,7 @@ EOS
             'extra'      => [],
         ], $record);
         $formatter = new TextFormatter($format, $stringifiers);
-        $this->assertContains($expect, $formatter->format($record));
+        $this->assertStringContainsString($expect, $formatter->format($record));
     }
 
     public function test_formatBatch()

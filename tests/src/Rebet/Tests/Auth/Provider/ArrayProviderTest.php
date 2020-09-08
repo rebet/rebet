@@ -14,7 +14,7 @@ class ArrayProviderTest extends RebetTestCase
     private $provider_by_signin_id;
     private $provider_exclude_resigned;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->users = [
             ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin

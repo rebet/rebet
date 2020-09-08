@@ -2,6 +2,8 @@
 namespace Rebet\Tests\Common;
 
 use Rebet\Common\System;
+use Rebet\Tests\DieException;
+use Rebet\Tests\ExitException;
 use Rebet\Tests\RebetTestCase;
 
 /**
@@ -9,7 +11,7 @@ use Rebet\Tests\RebetTestCase;
  */
 class SystemMockTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }
@@ -26,21 +28,19 @@ class SystemMockTest extends RebetTestCase
         $this->assertSame(['HTTP/1.1 200 OK'], System::headers_list());
     }
 
-    /**
-     * @expectedException Rebet\Tests\ExitException
-     * @expectedExceptionMessage Exit message
-     */
     public function test_exit()
     {
+        $this->expectException(ExitException::class);
+        $this->expectExceptionMessage("Exit message");
+
         System::exit('Exit message');
     }
 
-    /**
-     * @expectedException Rebet\Tests\DieException
-     * @expectedExceptionMessage Die message
-     */
     public function test_die()
     {
+        $this->expectException(DieException::class);
+        $this->expectExceptionMessage("Die message");
+
         System::die('Die message');
     }
 

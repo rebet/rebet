@@ -136,7 +136,8 @@ class BuiltinConverter implements Converter
                 return floatval($value);
 
             case 'bit':              // mysql, dblib
-                return mb_strlen($value) <= PHP_INT_SIZE * 8 ? bindec($value) : (string)$value ;
+                $decimal = is_string($value) ? base_convert($value, 2, 10) : intval($value) ;
+                return is_string($value) && mb_strlen($value) < PHP_INT_SIZE * 8 ? intval($decimal) : $decimal ;
 
             case 'bool':             // pgsql
                 return boolval($value);

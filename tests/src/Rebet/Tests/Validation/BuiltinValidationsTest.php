@@ -14,7 +14,7 @@ class BuiltinValidationsTest extends RebetTestCase
 {
     private $validations;
 
-    public function setup()
+    protected function setUp() : void
     {
         parent::setUp();
         App::setLocale('en');

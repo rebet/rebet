@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Database;
 
+use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\CursorStorage;
-use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Tests\RebetTestCase;
 
 class SessionCursorStorageTest extends RebetTestCase
@@ -14,7 +14,7 @@ class SessionCursorStorageTest extends RebetTestCase
      */
     protected $strage;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->strage = new SessionCursorStorage();
     }

@@ -339,112 +339,116 @@ class Reflector
      */
     public static function convert($value, ?string $type)
     {
-        if ($type === null) {
-            return $value;
-        }
-        if ($value === null) {
+        try {
+            if ($type === null) {
+                return $value;
+            }
+            if ($value === null) {
+                return null;
+            }
+            if (static::typeOf($value, $type)) {
+                return $value;
+            }
+
+            switch ($type) {
+                //---------------------------------------------
+                // To Array
+                //---------------------------------------------
+                case 'array':
+                    return Arrays::toArray($value);
+
+                //---------------------------------------------
+                // To String
+                //---------------------------------------------
+                case 'string':
+                    if (is_string($value)) {
+                        return $value;
+                    }
+                    if (is_resource($value)) {
+                        return null;
+                    }
+                    if (is_scalar($value)) {
+                        return (string)$value;
+                    }
+                    if (method_exists($value, '__toString')) {
+                        return $value->__toString();
+                    }
+                    if (Arrays::accessible($value)) {
+                        return json_encode(Arrays::toArray($value));
+                    }
+                    if (is_object($value) && $value instanceof \JsonSerializable) {
+                        $json = $value->jsonSerialize();
+                        if (is_scalar($json)) {
+                            return (string)$json;
+                        }
+                        if (Arrays::accessible($json)) {
+                            return json_encode(Arrays::toArray($json));
+                        }
+                    }
+                    return null;
+
+                //---------------------------------------------
+                // To Callable
+                //---------------------------------------------
+                case 'callable':
+                    if (is_callable($value)) {
+                        return $value;
+                    }
+                    return null;
+
+                //---------------------------------------------
+                // To Closure
+                //---------------------------------------------
+                case \Closure::class:
+                    if ($value instanceof \Closure) {
+                        return $value;
+                    }
+                    if (is_callable($value)) {
+                        return \Closure::fromCallable($value);
+                    }
+                    return null;
+
+                //---------------------------------------------
+                // To Scalar (int|float|bool)
+                //---------------------------------------------
+                case 'int':
+                case 'float':
+                case 'bool':
+                    if (static::typeOf($value, $type)) {
+                        return $value;
+                    }
+                    if ($value === '' || is_array($value)) {
+                        return null;
+                    }
+                    if (is_scalar($value)) {
+                        $convertor = "{$type}val";
+                        return $convertor($value);
+                    }
+                    return
+                        static::tryConvertByMember($value, 'convertTo', $type) ??
+                        static::tryConvertByMember($value, "to".ucfirst($type), $type)
+                    ;
+
+                //---------------------------------------------
+                // To stdClass Object
+                //---------------------------------------------
+                case 'stdClass':
+                    return (object)$value;
+
+                //---------------------------------------------
+                // To Other Object
+                //---------------------------------------------
+                default:
+                    $rc = new \ReflectionClass($type);
+                    return
+                        static::tryConvertByStatic($type, 'valueOf', $value) ??
+                        static::tryConvertByStatic($type, 'of', $value) ??
+                        static::tryConvertByMember($value, 'convertTo', $type) ??
+                        static::tryConvertByMember($value, "to".$rc->getShortName(), $type)
+                    ;
+            }
+        } catch (\Throwable $e) {
             return null;
-        }
-        if (static::typeOf($value, $type)) {
-            return $value;
-        }
-
-        switch ($type) {
-            //---------------------------------------------
-            // To Array
-            //---------------------------------------------
-            case 'array':
-                return Arrays::toArray($value);
-
-            //---------------------------------------------
-            // To String
-            //---------------------------------------------
-            case 'string':
-                if (is_string($value)) {
-                    return $value;
-                }
-                if (is_resource($value)) {
-                    return null;
-                }
-                if (is_scalar($value)) {
-                    return (string)$value;
-                }
-                if (method_exists($value, '__toString')) {
-                    return $value->__toString();
-                }
-                if (Arrays::accessible($value)) {
-                    return json_encode(Arrays::toArray($value));
-                }
-                if (is_object($value) && $value instanceof \JsonSerializable) {
-                    $json = $value->jsonSerialize();
-                    if (is_scalar($json)) {
-                        return (string)$json;
-                    }
-                    if (Arrays::accessible($json)) {
-                        return json_encode(Arrays::toArray($json));
-                    }
-                }
-                return null;
-
-            //---------------------------------------------
-            // To Callable
-            //---------------------------------------------
-            case 'callable':
-                if (is_callable($value)) {
-                    return $value;
-                }
-                return null;
-
-            //---------------------------------------------
-            // To Closure
-            //---------------------------------------------
-            case \Closure::class:
-                if ($value instanceof \Closure) {
-                    return $value;
-                }
-                if (is_callable($value)) {
-                    return \Closure::fromCallable($value);
-                }
-                return null;
-
-            //---------------------------------------------
-            // To Scalar (int|float|bool)
-            //---------------------------------------------
-            case 'int':
-            case 'float':
-            case 'bool':
-                if (static::typeOf($value, $type)) {
-                    return $value;
-                }
-                if ($value === '' || is_array($value)) {
-                    return null;
-                }
-                if (is_scalar($value)) {
-                    $convertor = "{$type}val";
-                    return $convertor($value);
-                }
-                return
-                    static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".ucfirst($type), $type)
-                ;
-
-            //---------------------------------------------
-            // To stdClass Object
-            //---------------------------------------------
-            case 'stdClass':
-                return (object)$value;
-
-            //---------------------------------------------
-            // To Other Object
-            //---------------------------------------------
-            default:
-                $rc = new \ReflectionClass($type);
-                return
-                    static::tryConvertByStatic($type, 'valueOf', $value) ??
-                    static::tryConvertByStatic($type, 'of', $value) ??
-                    static::tryConvertByMember($value, 'convertTo', $type) ??
-                    static::tryConvertByMember($value, "to".$rc->getShortName(), $type)
-                ;
         }
     }
 
@@ -458,13 +462,17 @@ class Reflector
      */
     protected static function tryConvertByStatic(string $type, string $method, $value)
     {
-        if (method_exists($type, $method)) {
-            $converted = $type::$method($value);
-            if (static::typeOf($converted, $type)) {
-                return $converted;
+        try {
+            if (method_exists($type, $method)) {
+                $converted = $type::$method($value);
+                if (static::typeOf($converted, $type)) {
+                    return $converted;
+                }
             }
+            return null;
+        } catch (\Throwable $e) {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -477,14 +485,18 @@ class Reflector
      */
     protected static function tryConvertByMember($value, string $method, string $type)
     {
-        if (method_exists($value, $method)) {
-            $rm        = new \ReflectionMethod($value, $method);
-            $converted = $rm->getNumberOfParameters() === 0 ? $value->$method() : $value->$method($type);
-            if (static::typeOf($converted, $type)) {
-                return $converted;
+        try {
+            if (method_exists($value, $method)) {
+                $rm        = new \ReflectionMethod($value, $method);
+                $converted = $rm->getNumberOfParameters() === 0 ? $value->$method() : $value->$method($type);
+                if (static::typeOf($converted, $type)) {
+                    return $converted;
+                }
             }
+            return null;
+        } catch (\Throwable $e) {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -552,7 +564,7 @@ class Reflector
         }
         $type = $param->getType();
         if (!empty($type)) {
-            return (string)$type;
+            return $type->getName();
         }
 
         $type = $param->getClass();
@@ -609,7 +621,7 @@ class Reflector
                 $converter = function ($value) use ($type, $name) {
                     $converted = static::convert($value, $type) ;
                     if ($value !== null && $converted === null) {
-                        throw new LogicException("Parameter {$name}(={$value}) can not convert to {$type}.");
+                        throw new LogicException("Parameter {$name}(=".Strings::stringify($value).") can not convert to {$type}.");
                     }
                     return $converted;
                 };

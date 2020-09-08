@@ -14,7 +14,7 @@ class ArrayCursorStorageTest extends RebetTestCase
      */
     protected $strage;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->strage = new ArrayCursorStorage();
     }

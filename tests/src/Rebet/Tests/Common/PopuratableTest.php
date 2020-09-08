@@ -11,7 +11,7 @@ class PopulatableTest extends RebetTestCase
 {
     public $valid_data;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->valid_data = new ValidData([

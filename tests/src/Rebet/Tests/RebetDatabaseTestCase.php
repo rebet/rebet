@@ -228,12 +228,12 @@ EOS
         ],
     ];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         parent::setUpBeforeClass();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         foreach (array_keys(Dao::config('dbs')) as $db_name) {
             Dao::db($db_name)->close();
@@ -334,7 +334,7 @@ EOS
         return [];
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         foreach (array_keys(Dao::config('dbs')) as $db_name) {
             if (!($db = $this->connect($db_name, false))) {

@@ -4,6 +4,7 @@ namespace Rebet\Routing;
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
+use Rebet\Common\Strings;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -93,7 +94,7 @@ class RouteAction
             }
             $converted = Reflector::convert($origin, $type);
             if ($origin !== null && $converted === null) {
-                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(={$origin}) can not convert to {$type}.");
+                throw new RouteNotFoundException("{$this->route} not found. Routing parameter {$name}(=".Strings::stringify($origin).") can not convert to {$type}.");
             }
             $args[$name] = $converted;
         }

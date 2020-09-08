@@ -5,6 +5,7 @@ use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\DateTime\Date;
 use Rebet\DateTime\DateTime;
@@ -17,7 +18,7 @@ class AuthUserTest extends RebetTestCase
     private $array_user_source;
     private $object_user_source;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->signout();
@@ -261,12 +262,11 @@ class AuthUserTest extends RebetTestCase
         }
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Too many (over 20) aliases recursion depth.
-     */
     public function test___getInfiniteRecursionAliases()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Too many (over 20) aliases recursion depth.");
+
         $user = new AuthUser($this->object_user_source, ['name' => 'email', 'email' => 'name']);
         $name = $user->name;
     }

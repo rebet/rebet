@@ -2,23 +2,23 @@
 namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\BasicAuth;
+use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Common\System;
 
 use Rebet\Tests\RebetTestCase;
 
 class BasicAuthTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }
 
-    /**
-     * @expectedException Rebet\Auth\Exception\AuthenticateException
-     * @expectedExceptionMessage Authenticate Failed.
-     */
     public function test_authenticate()
     {
+        $this->expectException(AuthenticateException::class);
+        $this->expectExceptionMessage("Authenticate Failed.");
+
         try {
             BasicAuth::authenticate(['id' => 'password']);
         } finally {
@@ -37,12 +37,11 @@ class BasicAuthTest extends RebetTestCase
         $this->assertSame('id', $id);
     }
 
-    /**
-     * @expectedException Rebet\Auth\Exception\AuthenticateException
-     * @expectedExceptionMessage Authenticate Failed.
-     */
     public function test_authenticate_faled()
     {
+        $this->expectException(AuthenticateException::class);
+        $this->expectExceptionMessage("Authenticate Failed.");
+
         try {
             $_SERVER['PHP_AUTH_USER'] = 'id';
             $_SERVER['PHP_AUTH_PW']   = 'invalid';

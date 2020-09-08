@@ -15,7 +15,7 @@ use Rebet\Translation\Translator;
 
 class DateTimeTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30');
@@ -544,7 +544,7 @@ class DateTimeTest extends RebetTestCase
     {
         $date = DateTime::now();
         $year = $date->getYear();
-        $this->assertInternalType(\int::class, $year);
+        $this->assertIsInt($year);
         $this->assertSame(2010, $year);
     }
 
@@ -584,7 +584,7 @@ class DateTimeTest extends RebetTestCase
     {
         $date  = DateTime::now();
         $month = $date->getMonth();
-        $this->assertInternalType(\int::class, $month);
+        $this->assertIsInt($month);
         $this->assertSame(10, $month);
     }
 
@@ -636,7 +636,7 @@ class DateTimeTest extends RebetTestCase
     {
         $date = DateTime::now();
         $day  = $date->getDay();
-        $this->assertInternalType(\int::class, $day);
+        $this->assertIsInt($day);
         $this->assertSame(20, $day);
     }
 
@@ -676,7 +676,7 @@ class DateTimeTest extends RebetTestCase
     {
         $date = DateTime::now();
         $hour = $date->getHour();
-        $this->assertInternalType(\int::class, $hour);
+        $this->assertIsInt($hour);
         $this->assertSame(10, $hour);
     }
 
@@ -716,7 +716,7 @@ class DateTimeTest extends RebetTestCase
     {
         $date   = DateTime::now();
         $minute = $date->getMinute();
-        $this->assertInternalType(\int::class, $minute);
+        $this->assertIsInt($minute);
         $this->assertSame(20, $minute);
     }
 
@@ -756,7 +756,7 @@ class DateTimeTest extends RebetTestCase
     {
         $date   = DateTime::now();
         $second = $date->getSecond();
-        $this->assertInternalType(\int::class, $second);
+        $this->assertIsInt($second);
         $this->assertSame(30, $second);
     }
 
@@ -816,7 +816,7 @@ class DateTimeTest extends RebetTestCase
 
         $date        = DateTime::now();
         $milli_micro = $date->getMilliMicro();
-        $this->assertInternalType(\int::class, $milli_micro);
+        $this->assertIsInt($milli_micro);
         $this->assertSame(123456, $milli_micro);
 
 
@@ -824,7 +824,7 @@ class DateTimeTest extends RebetTestCase
 
         $date        = DateTime::now();
         $milli_micro = $date->getMilliMicro();
-        $this->assertInternalType(\int::class, $milli_micro);
+        $this->assertIsInt($milli_micro);
         $this->assertSame(123000, $milli_micro);
     }
 
@@ -884,7 +884,7 @@ class DateTimeTest extends RebetTestCase
 
         $date  = DateTime::now();
         $milli = $date->getMilli();
-        $this->assertInternalType(\int::class, $milli);
+        $this->assertIsInt($milli);
         $this->assertSame(123, $milli);
 
 
@@ -892,7 +892,7 @@ class DateTimeTest extends RebetTestCase
 
         $date  = DateTime::now();
         $milli = $date->getMilli();
-        $this->assertInternalType(\int::class, $milli);
+        $this->assertIsInt($milli);
         $this->assertSame(100, $milli);
     }
 
@@ -952,28 +952,28 @@ class DateTimeTest extends RebetTestCase
 
         $date  = DateTime::now();
         $micro = $date->getMicro();
-        $this->assertInternalType(\int::class, $micro);
+        $this->assertIsInt($micro);
         $this->assertSame(456, $micro);
 
 
         DateTime::setTestNow('2010-10-20 10:20:30.1234');
         $date  = DateTime::now();
         $micro = $date->getMicro();
-        $this->assertInternalType(\int::class, $micro);
+        $this->assertIsInt($micro);
         $this->assertSame(400, $micro);
 
 
         DateTime::setTestNow('2010-10-20 10:20:30.123');
         $date  = DateTime::now();
         $micro = $date->getMicro();
-        $this->assertInternalType(\int::class, $micro);
+        $this->assertIsInt($micro);
         $this->assertSame(0, $micro);
 
 
         DateTime::setTestNow('2010-10-20 10:20:30.12301');
         $date  = DateTime::now();
         $micro = $date->getMicro();
-        $this->assertInternalType(\int::class, $micro);
+        $this->assertIsInt($micro);
         $this->assertSame(10, $micro);
     }
 

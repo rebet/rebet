@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Config;
 
 use Rebet\Application\App;
-
+use Rebet\Common\Exception\LogicException;
 use Rebet\Config\EnvResource;
 use Rebet\Tests\RebetTestCase;
 
@@ -10,7 +10,7 @@ class EnvResourceTest extends RebetTestCase
 {
     private $resources;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->resources = App::structure()->resources('/adhoc/Config/EnvResource');
@@ -108,11 +108,10 @@ class EnvResourceTest extends RebetTestCase
         );
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     */
     public function test_load_notfound()
     {
+        $this->expectException(LogicException::class);
+
         EnvResource::load('unittest', $this->resources, 'test', 'txt');
     }
 }

@@ -11,7 +11,7 @@ class ArrayableTest extends RebetTestCase
     private $array;
     private $map;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->empty = new ArrayableTest_Mock();

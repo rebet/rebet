@@ -5,7 +5,7 @@ use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Tests\RebetTestCase;
 
 /**
- * # Setup APCu PHP Extension
+ * # Setup APCu PHP Extension for Windows
  * 1. Get APCu dll from PECL
  *    https://pecl.php.net/package/APCu/5.1.18/windows
  * 2. Copy `php_apcu.dll` to `{PHP_HOME}/ext`
@@ -24,7 +24,7 @@ use Rebet\Tests\RebetTestCase;
  */
 class ApcuAdapterTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         if (!ApcuAdapter::isSupported()) {
             $this->markTestSkipped('APCu is not enabled.');

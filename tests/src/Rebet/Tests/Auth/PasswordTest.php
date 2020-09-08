@@ -9,7 +9,7 @@ class PasswordTest extends RebetTestCase
     /**
      * @dataProvider dataPasswords
      */
-    public function test_hashAndVerify(?string $password, ?int $algorithm = null, ?array $options = null)
+    public function test_hashAndVerify(?string $password, $algorithm = null, ?array $options = null)
     {
         $hash = Password::hash($password, $algorithm, $options);
         $this->assertTrue(Password::verify($password, $hash));

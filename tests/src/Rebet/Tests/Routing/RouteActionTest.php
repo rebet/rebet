@@ -2,13 +2,14 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\RouteAction;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 
 class RouteActionTest extends RebetTestCase
@@ -18,12 +19,11 @@ class RouteActionTest extends RebetTestCase
         $this->assertInstanceOf(RouteAction::class, $this->createRouteActionBasedClosureMock(function () { return 'Hello'; }));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid type of reflector.
-     */
     public function test___construct_error()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid type of reflector.");
+
         $action = function () { return 'Hello'; };
         $route  = new ClosureRoute([], '/', $action);
         $this->assertInstanceOf(RouteAction::class, new RouteAction($route, $action));
@@ -89,23 +89,21 @@ class RouteActionTest extends RebetTestCase
         $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());
     }
 
-    /**
-     * @expectedException Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' is requierd.
-     */
     public function test_invoke_withParam_error()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' is requierd.");
+
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/with-param/123');
         $request->attributes->set('id', null);
         $response = $route_action->invoke($request);
     }
 
-    /**
-     * @expectedException Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withConvertEnumParam not found. Routing parameter gender(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
-     */
     public function test_invoke_withParam_convertError()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::withConvertEnumParam not found. Routing parameter gender(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.");
+
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/with-convert-enum-param/3');
 
         $response = $route_action->invoke($request);

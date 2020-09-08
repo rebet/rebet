@@ -4,6 +4,7 @@ namespace Rebet\Tests\Database\Ransack;
 use Rebet\Database\Condition;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
+use Rebet\Database\Exception\RansackException;
 use Rebet\Database\Ransack\Ransack;
 use Rebet\Tests\RebetDatabaseTestCase;
 
@@ -125,12 +126,11 @@ class RansackTest extends RebetDatabaseTestCase
         });
     }
 
-    /**
-     * @expectedException Rebet\Database\Exception\RansackException
-     * @expectedExceptionMessage Short predicates of 'in' and 'eq' can not contain 'any' and 'all' compound word.
-     */
     public function test_analyze_exception()
     {
+        $this->expectException(RansackException::class);
+        $this->expectExceptionMessage("Short predicates of 'in' and 'eq' can not contain 'any' and 'all' compound word.");
+
         Ransack::analyze(Dao::db(), 'name_any', 'John');
     }
 

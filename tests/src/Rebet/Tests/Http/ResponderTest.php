@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Tests\Http;
 
-use Rebet\Config\Config;
-use Rebet\Filesystem\Storage;
 use Rebet\Application\App;
+use Rebet\Config\Config;
+use Rebet\Filesystem\Exception\FileNotFoundException;
+use Rebet\Filesystem\Storage;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\JsonResponse;
@@ -17,7 +18,7 @@ use Rebet\View\View;
 
 class ResponderTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -25,7 +26,7 @@ class ResponderTest extends RebetTestCase
         ]);
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         parent::tearDown();
         Storage::clean();
@@ -101,12 +102,11 @@ class ResponderTest extends RebetTestCase
         $this->assertInstanceOf(ProblemResponse::class, Responder::problem(500));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FileNotFoundException
-     * @expectedExceptionMessage File not found at path: nothing.txt
-     */
     public function test_file_nothing()
     {
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage("File not found at path: nothing.txt");
+
         $response = Responder::file('nothing.txt');
         $response->sendContent();
     }

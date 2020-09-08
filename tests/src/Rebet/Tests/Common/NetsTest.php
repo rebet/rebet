@@ -7,7 +7,7 @@ use Rebet\Tests\RebetTestCase;
 
 class NetsTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }
@@ -57,7 +57,7 @@ class NetsTest extends RebetTestCase
     public function test_urlGetContents()
     {
         $content = Nets::urlGetContents('https://raw.githubusercontent.com/rebet/rebet/master/LICENSE');
-        $this->assertRegExp('/^MIT License/', $content);
-        $this->assertRegExp('/github.com\/rebet/', $content);
+        $this->assertMatchesRegularExpression('/^MIT License/', $content);
+        $this->assertMatchesRegularExpression('/github.com\/rebet/', $content);
     }
 }

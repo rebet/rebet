@@ -6,7 +6,7 @@ use Rebet\Tests\RebetTestCase;
 
 class DecimalTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         Decimal::setMaxScale(30);

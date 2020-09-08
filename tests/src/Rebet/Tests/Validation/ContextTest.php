@@ -12,7 +12,7 @@ class ContextTest extends RebetTestCase
     private $errors;
     private $rule_set;
 
-    public function setup()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->errors   = [];

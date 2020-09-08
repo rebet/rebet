@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\Pagination;
 
+use InvalidArgumentException;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Tests\RebetTestCase;
 
@@ -11,12 +12,11 @@ class PaginatorTest extends RebetTestCase
         $this->assertInstanceOf(Paginator::class, new Paginator([], 0, 10, 1, null, 1));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid paginator arguments. Argument total or next_page_count may not be null at least one.
-     */
     public function test___construct_error()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid paginator arguments. Argument total or next_page_count may not be null at least one.");
+
         $paginator = new Paginator([], 0, 10, 1, null, null);
         $this->assertSame(1, $paginator->nextPageCount());
     }

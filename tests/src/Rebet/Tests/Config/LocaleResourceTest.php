@@ -9,7 +9,7 @@ use Rebet\Validation\Kind;
 
 class LocaleResourceTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
     }

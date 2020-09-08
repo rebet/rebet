@@ -7,7 +7,7 @@ use Rebet\Tests\RebetTestCase;
 
 class NamespacesTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         Config::application([

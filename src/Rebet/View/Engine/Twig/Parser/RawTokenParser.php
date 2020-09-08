@@ -33,7 +33,7 @@ class RawTokenParser extends AbstractTokenParser
     /**
      * {@inheritDoc}
      */
-    public function parse(\Twig_Token $token)
+    public function parse(Token $token)
     {
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
         return new RawNode($this->code, $token->getLine(), $this->tag);

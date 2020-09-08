@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
-use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Validation\BarValidation;
@@ -19,7 +20,7 @@ class ValidatorTest extends RebetTestCase
 {
     private $root;
 
-    public function setup()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-01-23 12:34:56');
@@ -957,12 +958,11 @@ class ValidatorTest extends RebetTestCase
         $this->assertSame(['foo' => 'Foo', 'bar' => 'bar'], $valid_data->toArray());
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid rules format. A 'rule/then/else' list item should be array.
-     */
     public function test_validate_invalidFormatThen()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid rules format. A 'rule/then/else' list item should be array.");
+
         App::setLocale('en');
         $validator  = new Validator(['type' => 1]);
         $valid_data = $validator->validate('C', [
@@ -972,12 +972,11 @@ class ValidatorTest extends RebetTestCase
         ]);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid rules format. A 'rule/then/else' list item should be array.
-     */
     public function test_validate_invalidFormatElse()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid rules format. A 'rule/then/else' list item should be array.");
+
         App::setLocale('en');
         $validator  = new Validator(['type' => 1]);
         $valid_data = $validator->validate('C', [

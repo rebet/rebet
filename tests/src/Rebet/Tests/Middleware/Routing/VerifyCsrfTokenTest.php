@@ -168,11 +168,10 @@ class VerifyCsrfTokenTest extends RebetTestCase
         $this->assertSame($token, Securities::decrypt(Nets::decodeBase64Url($response->getCookie('XSRF-TOKEN')->getValue())));
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\TokenMismatchException
-     */
     public function test_handle_xxsrf_unsupport()
     {
+        $this->expectException(TokenMismatchException::class);
+
         $middleware  = new VerifyCsrfToken([], false);
         $destination = function ($request) { return Responder::toResponse('OK'); };
         $request     = $this->createRequestMock('/', null, 'web', 'POST');

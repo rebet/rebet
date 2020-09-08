@@ -6,7 +6,7 @@ use Rebet\Tests\RebetTestCase;
 
 class NativeFileSessionHandlerTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -14,6 +14,9 @@ class NativeFileSessionHandlerTest extends RebetTestCase
         ]);
     }
 
+    /**
+     * @runInSeparateProcess
+     */
     public function test___construct()
     {
         $this->assertInstanceOf(NativeFileSessionHandler::class, new NativeFileSessionHandler('vfs://root/session'));

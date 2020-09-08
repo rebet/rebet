@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Tests\Filesystem;
 
+use Rebet\Config\Exception\ConfigNotDefineException;
+use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;
 use Rebet\Tests\RebetTestCase;
@@ -23,12 +25,11 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::disk('public')->exists('foo.txt'));
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Unable to instantiate 'disks.nothing' in Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.nothing'.
-     */
     public function test_disk_failed()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Unable to instantiate 'disks.nothing' in Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.nothing'.");
+
         $this->assertInstanceOf(Filesystem::class, Storage::disk('nothing'));
     }
 
@@ -49,12 +50,11 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::public()->exists('bar.txt'));
     }
 
-    /**
-     * @expectedException Rebet\Filesystem\Exception\FilesystemException
-     * @expectedExceptionMessage Can not copy `private:foo.txt` to `public:foo.txt`, `public:foo.txt` already exists.
-     */
     public function test_copy_failed()
     {
+        $this->expectException(FilesystemException::class);
+        $this->expectExceptionMessage("Can not copy `private:foo.txt` to `public:foo.txt`, `public:foo.txt` already exists.");
+
         Storage::private()->put('foo.txt', 'foo');
         Storage::public()->put('foo.txt', 'foo');
         Storage::copy('private', 'foo.txt', 'public');

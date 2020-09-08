@@ -1,21 +1,23 @@
 <?php
 namespace Rebet\Tests\Config;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
+use Rebet\Config\Exception\ConfigNotDefineException;
 use Rebet\Config\Layer;
 use Rebet\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         \putenv('PROMISE_TEST=');
     }
@@ -174,30 +176,27 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('refer_database', Config::get(ConfigTest_MockRefer::class, 'database'));
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.database is blank or not define.
-     */
     public function test_get_blank()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.database is blank or not define.");
+
         Config::get(ConfigTest_Mock::class, 'database');
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.undfine is blank or not define.
-     */
     public function test_get_undfine()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.undfine is blank or not define.");
+
         Config::get(ConfigTest_Mock::class, 'undfine');
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.
-     */
     public function test_get_frameworkOrverrideBlank()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.");
+
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::framework([
@@ -209,12 +208,11 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'driver');
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.
-     */
     public function test_get_applicationOrverrideBlank()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.");
+
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::application([
@@ -226,12 +224,11 @@ class ConfigTest extends RebetTestCase
         Config::get(ConfigTest_Mock::class, 'driver');
     }
 
-    /**
-     * @expectedException Rebet\Config\Exception\ConfigNotDefineException
-     * @expectedExceptionMessage Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.
-     */
     public function test_get_runtimeOrverrideBlank()
     {
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.");
+
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
         Config::runtime([
@@ -669,12 +666,11 @@ class ConfigTest extends RebetTestCase
         );
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid config key access, the key 'array.1' contains digit only part.
-     */
     public function test_has_digitKeyAccessLast()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid config key access, the key 'array.1' contains digit only part.");
+
         Config::application([
             ConfigTest_Mock::class => [
                 'array' => [1, 2, 3],
@@ -685,21 +681,19 @@ class ConfigTest extends RebetTestCase
         Config::has(ConfigTest_Mock::class, 'array.1');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid config key access, the key '1' contains digit only part.
-     */
     public function test_has_digitKeyAccessOnly()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid config key access, the key '1' contains digit only part.");
+
         Config::has(ConfigTest_Mock::class, '1');
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid config key access, the key 'driver.123.dummy' contains digit only part.
-     */
     public function test_has_digitKeyAccessMiddle()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid config key access, the key 'driver.123.dummy' contains digit only part.");
+
         Config::has(ConfigTest_Mock::class, 'driver.123.dummy');
     }
 

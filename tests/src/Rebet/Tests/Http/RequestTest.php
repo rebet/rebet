@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Http;
 
+use BadMethodCallException;
 use Rebet\Application\App;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
@@ -22,7 +23,7 @@ use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 
 class RequestTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->vfs([
@@ -79,12 +80,11 @@ class RequestTest extends RebetTestCase
         $this->assertSame('John Smith', $valid_data->name);
     }
 
-    /**
-     * @expectedException Rebet\Http\Exception\FallbackRedirectException
-     * @expectedExceptionMessage Validate Failed.
-     */
     public function test_validate_error()
     {
+        $this->expectException(FallbackRedirectException::class);
+        $this->expectExceptionMessage("Validate Failed.");
+
         $rule = [
             'name' => [
                 'label' => '氏名',
@@ -181,42 +181,38 @@ class RequestTest extends RebetTestCase
         $this->assertInstanceOf(UploadedFile::class, $copy->files->get('file'));
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.
-     */
     public function test_getSession()
     {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
+
         $request = Request::create('/');
         $request->getSession();
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.
-     */
     public function test_setSession()
     {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
+
         $request = Request::create('/');
         $request->setSession(new SymfonySession());
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.
-     */
     public function test_setSessionFactory()
     {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
+
         $request = Request::create('/');
         $request->setSessionFactory(function () { return null; });
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Session has not been set
-     */
     public function test_session_notSet()
     {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage("Session has not been set");
+
         $request = Request::create('/');
         $request->session();
     }

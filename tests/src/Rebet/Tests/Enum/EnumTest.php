@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\Tests\Enum;
 
-use Rebet\Enum\Enum;
 use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
+use Rebet\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Translation\Translator;
@@ -12,7 +13,7 @@ class EnumTest extends RebetTestCase
     private $male;
     private $female;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->male   = Gender::MALE();
@@ -67,12 +68,11 @@ class EnumTest extends RebetTestCase
         $this->assertSame('fas fa-check-circle', $status->icon);
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid enum const. Rebet\Tests\Mock\Enum\Gender::INVALID is not defined.
-     */
     public function test_callStatic_undefine()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid enum const. Rebet\Tests\Mock\Enum\Gender::INVALID is not defined.");
+
         $invalid = Gender::INVALID();
     }
 
@@ -179,12 +179,11 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
-     */
     public function test_maps_invalid()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.");
+
         Gender::maps('invalid');
     }
 
@@ -205,12 +204,11 @@ class EnumTest extends RebetTestCase
         $this->assertNull(EnumTest_AcceptStatus::fieldOf('value', 1));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
-     */
     public function test_fieldOf_invalid()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.");
+
         $this->assertNull(Gender::fieldOf('invalid', 1));
     }
 
@@ -311,12 +309,11 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
-     */
     public function test_listOf_invalid()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.");
+
         $this->assertNull(Gender::listOf('invalid'));
     }
 
@@ -489,12 +486,11 @@ class EnumTest extends RebetTestCase
         );
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.
-     */
     public function test_nextOf_invalid()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid property access. Property Rebet\Tests\Mock\Enum\Gender->invalid is not exists.");
+
         $this->assertNull(Gender::listOf('invalid'));
     }
 

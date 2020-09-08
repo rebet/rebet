@@ -6,6 +6,7 @@ use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Engine\Twig\Parser\EmbedTokenParser;
 use Rebet\View\Tag\CallbackProcessor;
 use Twig\Compiler;
+use Twig\Error\SyntaxError;
 use Twig\Loader\LoaderInterface;
 use Twig\Parser;
 use Twig\Source;
@@ -285,60 +286,55 @@ EOS
         $this->assertSame($expect, $this->renderPhpCode($parser, $source));
     }
 
-    /**
-     * @expectedException Twig\Error\SyntaxError
-     * @expectedExceptionMessage Too many code arguments. The code tag 'hello' takes no arguments at line 1.
-     */
     public function test_parse_faile_empty()
     {
+        $this->expectException(SyntaxError::class);
+        $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes no arguments at line 1.");
+
         $this->renderPhpCode(
             new EmbedTokenParser('hello', null, null, 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
             '{% hello "a" %}'
         );
     }
 
-    /**
-     * @expectedException Twig\Error\SyntaxError
-     * @expectedExceptionMessage Too many code arguments. The code tag 'hello' takes only one argument at line 1.
-     */
     public function test_parse_faile_one()
     {
+        $this->expectException(SyntaxError::class);
+        $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes only one argument at line 1.");
+
         $this->renderPhpCode(
             new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
             '{% hello "a" "b" %}'
         );
     }
 
-    /**
-     * @expectedException Twig\Error\SyntaxError
-     * @expectedExceptionMessage 1st and 2nd arguments of the code tag 'hello' must be separated by 'with' at line 1.
-     */
     public function test_parse_faile_1st()
     {
+        $this->expectException(SyntaxError::class);
+        $this->expectExceptionMessage("1st and 2nd arguments of the code tag 'hello' must be separated by 'with' at line 1.");
+
         $this->renderPhpCode(
             new EmbedTokenParser('hello', null, ['with'], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
             '{% hello "a", "b" %}'
         );
     }
 
-    /**
-     * @expectedException Twig\Error\SyntaxError
-     * @expectedExceptionMessage 1st and 2nd arguments of the code tag 'hello' must be separated by ',' or 'or' at line 1.
-     */
     public function test_parse_faile_1st2()
     {
+        $this->expectException(SyntaxError::class);
+        $this->expectExceptionMessage("1st and 2nd arguments of the code tag 'hello' must be separated by ',' or 'or' at line 1.");
+
         $this->renderPhpCode(
             new EmbedTokenParser('hello', null, [[',', 'or']], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
             '{% hello "a" "b" %}'
         );
     }
 
-    /**
-     * @expectedException Twig\Error\SyntaxError
-     * @expectedExceptionMessage Too many code arguments. The code tag 'hello' takes up to 2 arguments at line 1.
-     */
     public function test_parse_faile_2nd()
     {
+        $this->expectException(SyntaxError::class);
+        $this->expectExceptionMessage("Too many code arguments. The code tag 'hello' takes up to 2 arguments at line 1.");
+
         $this->renderPhpCode(
             new EmbedTokenParser('hello', null, [','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
             '{% hello "a", "b", "c" %}'

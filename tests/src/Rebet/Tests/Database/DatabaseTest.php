@@ -108,14 +108,14 @@ class DatabaseTest extends RebetDatabaseTestCase
     public function test_serverVersion()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertRegExp('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->serverVersion());
+            $this->assertMatchesRegularExpression('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->serverVersion());
         });
     }
 
     public function test_clientVersion()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertRegExp('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->clientVersion());
+            $this->assertMatchesRegularExpression('/[0-9]+\.[0-9]+(\.[0-9]+)?/', $db->clientVersion());
         });
     }
 
@@ -301,12 +301,11 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @expectedException \PDOException
-     * @expectedExceptionMessage There is no active transaction
-     */
     public function test_rollbackNotQuiet()
     {
+        $this->expectException(\PDOException::class);
+        $this->expectExceptionMessage("There is no active transaction");
+
         Dao::db()->rollback(null, false);
     }
 

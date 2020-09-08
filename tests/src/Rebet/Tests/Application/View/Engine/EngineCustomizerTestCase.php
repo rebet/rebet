@@ -15,7 +15,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
     abstract protected function createEngine() : Engine;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->signout();

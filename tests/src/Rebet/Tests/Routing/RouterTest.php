@@ -2,10 +2,10 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Application\App;
+use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
-use Rebet\Enum\Enum;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -14,10 +14,8 @@ use Rebet\Log\Log;
 use Rebet\Log\LogLevel;
 use Rebet\Middleware\Routing\EmptyStringToNull;
 use Rebet\Middleware\Routing\TrimStrings;
-use Rebet\Routing\Annotation\Channel;
-use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Controller;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Different\DifferentNamespaceController;
@@ -25,10 +23,11 @@ use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
+use ReflectionException;
 
 class RouterTest extends RebetTestCase
 {
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
@@ -194,12 +193,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('api', Router::getCurrentChannel());
     }
 
-    /**
-     * @expectedException Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route GET / not found.
-     */
     public function test_clear()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route GET / not found.");
+
         $response = Router::handle(Request::create('/'));
         $this->assertSame(200, $response->getStatusCode());
 
@@ -208,23 +206,21 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/'));
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().
-     */
     public function test_invalidRuleDefine_match()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+
         Router::match('GET', '/get', function () {
             return 'Content: /get';
         });
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().
-     */
     public function test_invalidRuleDefine_default()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Routing default rules are defined without Router::rules(). You should wrap rules by Router::rules().");
+
         Router::default(function () {
             return 'default route.';
         });
@@ -251,12 +247,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /get not found. Invalid method POST given.
-     */
     public function test_routing_get_invalidMethod()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: [GET|HEAD] /get not found. Invalid method POST given.");
+
         $response = Router::handle(Request::create('/get', 'POST'));
     }
 
@@ -356,12 +351,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.
-     */
     public function test_routing_invalidMatch()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Invalid action type for declarative routing. Action should be string of 'Class::method' or callable.");
+
         Router::rules('web')->routing(function () {
             Router::match(['GET', 'HEAD', 'POST'], '/match/invlid-action', null);
         });
@@ -376,21 +370,19 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /parameter/requierd/{id} - abc', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route GET /parameter/requierd not found.
-     */
     public function test_routing_parameterRequierdNothing()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route GET /parameter/requierd not found.");
+
         $response = Router::handle(Request::create('/parameter/requierd'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route GET /parameter/requierd/ not found.
-     */
     public function test_routing_parameterRequierdNothing2()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route GET /parameter/requierd/ not found.");
+
         $response = Router::handle(Request::create('/parameter/requierd/'));
     }
 
@@ -433,21 +425,19 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Content: /parameter/convert/enum/{value} - 男性', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/where/{id} where {"id":"\/^[0-9]+$\/"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.
-     */
     public function test_routing_parameterOptionInvalidWhere()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: [GET|HEAD] /parameter/where/{id} where {\"id\":\"\/^[0-9]+$\/\"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.");
+
         $response = Router::handle(Request::create('/parameter/where/abc'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /parameter/convert/enum/{value} not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.
-     */
     public function test_routing_parameterOptionInvalidConvert()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: [GET|HEAD] /parameter/convert/enum/{value} not found. Routing parameter value(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.");
+
         $response = Router::handle(Request::create('/parameter/convert/enum/3'));
     }
 
@@ -469,11 +459,10 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Hello, Samantha.', $response->getContent());
     }
 
-    /**
-     * @expectedException \ReflectionException
-     */
     public function test_routing_methodPrivateCall()
     {
+        $this->expectException(ReflectionException::class);
+
         $response = Router::handle(Request::create('/method/private-call'));
     }
 
@@ -483,11 +472,10 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: privateCall', $response->getContent());
     }
 
-    /**
-     * @expectedException \ReflectionException
-     */
     public function test_routing_methodProtectedCall()
     {
+        $this->expectException(ReflectionException::class);
+
         $response = Router::handle(Request::create('/method/protected-call'));
     }
 
@@ -503,36 +491,33 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: publicCall', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route GET /method/with-param/ not found.
-     */
     public function test_routing_methodWithParam()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route GET /method/with-param/ not found.");
+
         $response = Router::handle(Request::create('/method/with-param/123'));
         $this->assertSame('Controller: withParam - 123', $response->getContent());
 
         $response = Router::handle(Request::create('/method/with-param/'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/where/{id} where {"id":"\/^[0-9]+$\/"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.
-     */
     public function test_routing_methodWithParamWhere()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: [GET|HEAD] /method/with-param/where/{id} where {\"id\":\"\/^[0-9]+$\/\"} not found. Routing parameter 'id' value 'abc' not match /^[0-9]+$/.");
+
         $response = Router::handle(Request::create('/method/with-param/where/123'));
         $this->assertSame('Controller: withParam - 123', $response->getContent());
 
         $response = Router::handle(Request::create('/method/with-param/where/abc'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} not found. Routing parameter 'id' is requierd.
-     */
     public function test_routing_methodWithMissmatchParam()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: [GET|HEAD] /method/with-param/missmatch/{bad_name} not found. Routing parameter 'id' is requierd.");
+
         $response = Router::handle(Request::create('/method/with-param/missmatch/123'));
     }
 
@@ -631,11 +616,10 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Hello, John.', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     */
     public function test_routing_viewNotFound()
     {
+        $this->expectException(RouteNotFoundException::class);
+
         $response = Router::handle(Request::create('/view/not-found/John'));
     }
 
@@ -681,75 +665,67 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: index', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.
-     */
     public function test_routing_controllerAnnotationChannelReject()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationChannelApi not found. Routing channel 'web' not allowed or not annotated channel meta info.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-channel-api'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.
-     */
     public function test_routing_controllerAnnotationMethodReject()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationMethodGet not found. Routing method 'POST' not allowed.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-method-get', 'POST'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.
-     */
     public function test_routing_controllerAnnotationWhereReject()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationWhere not found. Routing parameter 'id' value '123' not match /^[a-zA-Z]+$/.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-where/123'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.
-     */
     public function test_routing_controllerAnnotationClassWhereReject()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::annotationClassWhere not found. Routing parameter 'user_id' value 'abc' not match /^[0-9]+$/.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-class-where/abc'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationNotRouting ] is not routing.
-     */
     public function test_routing_controllerAnnotationNotRouting()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationNotRouting ] is not routing.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/annotation-not-routing'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::undefinedAction ] not exists.
-     */
     public function test_routing_controllerUndefinedAction()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::undefinedAction ] not exists.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/undefined-action'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::privateCall ] not accessible.
-     */
     public function test_routing_controllerPrivateCall()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::privateCall ] not accessible.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/private-call'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::protectedCall ] not accessible.
-     */
     public function test_routing_controllerProtectedCall()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::protectedCall ] not accessible.");
+
         $response = Router::handle(Request::create('/controller/namespace/short/protected-call'));
     }
 
@@ -786,12 +762,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
-     */
     public function test_routing_controllerWhereReject()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
+
         $response = Router::handle(Request::create('/controller/where/with-param/ABC'));
     }
 
@@ -865,12 +840,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: annotationClassWhere - 123', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Controller [ Rebet\Tests\Mock\Controller\InvalidController ] can not instantiate.
-     */
     public function test_routing_defaultConventionalRouteNotFound()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Controller [ Rebet\Tests\Mock\Controller\InvalidController ] can not instantiate.");
+
         Router::clear();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);
@@ -879,12 +853,11 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/invalid'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
-     */
     public function test_routing_defaultConventionalRouteWhereRejectTop()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
+
         Router::clear();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
@@ -893,12 +866,11 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/top/with-param/ABC'));
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.
-     */
     public function test_routing_defaultConventionalRouteWhereRejectRouterTest()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route: Rebet\Tests\Mock\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
+
         Router::clear();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
@@ -921,12 +893,11 @@ class RouterTest extends RebetTestCase
         $this->assertSame('Controller: protectedCall', $response->getContent());
     }
 
-    /**
-     * @expectedException \Rebet\Routing\Exception\RouteNotFoundException
-     * @expectedExceptionMessage Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationAliasOnly ] accespt only alias access.
-     */
     public function test_routing_defaultConventionalRouteAliasOnly()
     {
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("Route not found : Action [ Rebet\Tests\Mock\Controller\TestController::annotationAliasOnly ] accespt only alias access.");
+
         Router::clear();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);

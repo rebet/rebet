@@ -12,7 +12,7 @@ class ControllerTest extends RebetTestCase
      */
     private $controller;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->controller = new class extends Controller {

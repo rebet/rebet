@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Pipeline;
 
+use Rebet\Common\Exception\LogicException;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Tests\RebetTestCase;
 
@@ -8,18 +9,17 @@ class PipelineTest extends RebetTestCase
 {
     private $pipeline;
 
-    public function setup()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->pipeline = new Pipeline();
     }
 
-    /**
-     * @expectedException Rebet\Common\Exception\LogicException
-     * @expectedExceptionMessage Pipeline not build yet. You shold buld a pipeline using then() first.
-     */
     public function test_send_beforePipelineBuild()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Pipeline not build yet. You shold buld a pipeline using then() first.");
+
         $output = $this->pipeline->send('onion');
     }
 

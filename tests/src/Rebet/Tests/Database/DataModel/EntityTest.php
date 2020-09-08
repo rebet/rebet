@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
+use InvalidArgumentException;
 use Rebet\Database\Database;
 use Rebet\Database\Event\BatchDeleted;
 use Rebet\Database\Event\BatchDeleting;
@@ -59,12 +60,11 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(null, $user->origin());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Origin must be same class of [Rebet\Tests\Mock\Entity\User].
-     */
     public function test_origin_diffrentClass()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Origin must be same class of [Rebet\Tests\Mock\Entity\User].");
+
         $user  = new User();
         $othre = new UserWithAnnot();
         $user->origin($othre);

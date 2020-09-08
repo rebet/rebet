@@ -15,7 +15,7 @@ class SessionGuardTest extends RebetTestCase
     private $request;
     private $user;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 

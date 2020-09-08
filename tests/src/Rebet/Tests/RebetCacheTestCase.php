@@ -21,12 +21,12 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
 {
     protected $test_dir;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         parent::setUpBeforeClass();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass() : void
     {
         parent::tearDownAfterClass();
     }
@@ -75,7 +75,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         Files::removeDir($this->test_dir);
         parent::tearDown();

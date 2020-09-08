@@ -131,9 +131,11 @@ class Callback
         $string .= ')';
 
         if ($verbose) {
-            $return_type = $reflector->getReturnType();
-            $return_type = $return_type !== null && $return_type->allowsNull() ? "?{$return_type}" : $return_type ;
-            $string      = $return_type === null ? $string : "{$string} : {$return_type}";
+            if ($return_type = $reflector->getReturnType()) {
+                $type_name = $return_type->getName() ;
+                $type_name = $return_type->allowsNull() ? "?{$type_name}" : $type_name ;
+                $string    = "{$string} : {$type_name}";
+            }
         }
 
         return $string;

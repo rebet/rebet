@@ -14,7 +14,7 @@ class TokenGuardTest extends RebetTestCase
     private $provider;
     private $request;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 

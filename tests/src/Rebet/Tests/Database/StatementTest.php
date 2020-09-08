@@ -5,6 +5,7 @@ use PDOException;
 use Rebet\Common\Arrays;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
+use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\PdoParameter;
 use Rebet\Database\ResultSet;
 use Rebet\Database\Statement;
@@ -93,12 +94,11 @@ class StatementTest extends RebetDatabaseTestCase
         });
     }
 
-    /**
-     * @expectedException Rebet\Database\Exception\DatabaseException
-     * @expectedExceptionMessage [sqlite/sqlite: UNKOWN] Unkown error occured.
-     */
     public function test_execute_exception_01()
     {
+        $this->expectException(DatabaseException::class);
+        $this->expectExceptionMessage("[sqlite/sqlite: UNKOWN] Unkown error occured.");
+
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $pdo_stmt->method('execute')->willThrowException(new PDOException('This is test'));
         $pdo_stmt->method('errorInfo')->willReturn([]);
@@ -107,12 +107,11 @@ class StatementTest extends RebetDatabaseTestCase
         $stmt = $stmt->execute();
     }
 
-    /**
-     * @expectedException Rebet\Database\Exception\DatabaseException
-     * @expectedExceptionMessage [sqlite/sqlite: UNKOWN] Unkown error occured.
-     */
     public function test_execute_exception_02()
     {
+        $this->expectException(DatabaseException::class);
+        $this->expectExceptionMessage("[sqlite/sqlite: UNKOWN] Unkown error occured.");
+
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $pdo_stmt->method('execute')->willReturn(false);
         $pdo_stmt->method('errorInfo')->willReturn([]);
