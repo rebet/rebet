@@ -6,3 +6,4 @@ Thumbs.db
 /composer.phar
 .php_cs.cache
 /.vscode/
+.phpunit.result.cache
