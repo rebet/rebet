@@ -6,8 +6,8 @@ use Rebet\Common\Describable;
 use Rebet\Common\DotAccessDelegator;
 use Rebet\Common\Exception\LogicException;
 use Rebet\Common\Reflector;
+use Rebet\Common\Tinker;
 use Rebet\Config\Configurable;
-use Rebet\Stream\Stream;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;
@@ -161,7 +161,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('ac', Reflector::get($this->transparent, 'a.c'));
         $this->assertSame('b', Reflector::get($this->transparent, 'b'));
 
-        $name = Stream::of('Bob');
+        $name = Tinker::with('Bob');
         $view = (object)['data' => ['name' => $name]];
         $this->assertSame($name, Reflector::get($view, 'data.name', null, true));
     }

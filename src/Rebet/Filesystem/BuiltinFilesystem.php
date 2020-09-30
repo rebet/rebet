@@ -14,12 +14,12 @@ use League\Flysystem\Util\MimeType;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Common\Path;
 use Rebet\Common\Strings;
+use Rebet\Common\Tinker;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
-use Rebet\Stream\Stream;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -446,7 +446,7 @@ class BuiltinFilesystem implements Filesystem
      */
     protected function filter(array $lists, ?string $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {
-        return Stream::of($lists, true)
+        return Tinker::with($lists, true)
             ->where(function ($content) use ($type) { return $type === null ? true : $content['type'] === $type; })
             ->pluck('path')
             ->where(function ($path) use ($pattern, $matching_mode) {

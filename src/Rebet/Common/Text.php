@@ -2,7 +2,6 @@
 namespace Rebet\Common;
 
 use Rebet\Common\Exception\LogicException;
-use Rebet\Stream\Stream;
 
 /**
  * Text Class
@@ -17,8 +16,8 @@ use Rebet\Stream\Stream;
  *  - If statement : {% if expression %}...{% elseif expression %}...{% else %}...{% endif %}
  *  - For loop     : {% for $list as $k => $v %}...{% else %}...{% endfor %}
  *
- * This template wrap assigned vars by Stream class.
- * So, you can use Stream filter in template like below.
+ * This template wrap assigned vars by Tinker class.
+ * So, you can use Tinker filter in template like below.
  *
  *  - {{ $entry_at->datetimef('Y/m/d H:i') }}
  *  - {{ $value->isInt() ? 'number' : 'other' }}
@@ -232,7 +231,7 @@ class Text implements Renderable
             null,
             function (array $nodes, array $vars) use ($filter) {
                 foreach ($nodes as $node) {
-                    return Stream::peel(Reflector::evaluate($filter, array_merge([Text::process($node['nodes'], $vars)], Text::evaluate('['.$node['code'].']', $vars))));
+                    return Tinker::peel(Reflector::evaluate($filter, array_merge([Text::process($node['nodes'], $vars)], Text::evaluate('['.$node['code'].']', $vars))));
                 }
                 return '';
             }
@@ -257,7 +256,7 @@ class Text implements Renderable
             [$tag => ["else{$tag}", 'else'], "else{$tag}" => ["else{$tag}", 'else'], 'else' => []],
             function (array $nodes, array $vars) use ($test) {
                 foreach ($nodes as $node) {
-                    if ($node['tag'] === 'else' || Stream::peel(Reflector::evaluate($test, Text::evaluate('['.$node['code'].']', $vars)))) {
+                    if ($node['tag'] === 'else' || Tinker::peel(Reflector::evaluate($test, Text::evaluate('['.$node['code'].']', $vars)))) {
                         return Text::process($node['nodes'], $vars);
                     }
                 }
@@ -282,7 +281,7 @@ class Text implements Renderable
         static::embed(
             $tag,
             function (array $node, array $vars) use ($callback) {
-                return Stream::peel(Reflector::evaluate($callback, Text::evaluate('['.$node['code'].']', $vars)));
+                return Tinker::peel(Reflector::evaluate($callback, Text::evaluate('['.$node['code'].']', $vars)));
             }
         );
     }
@@ -583,7 +582,7 @@ class Text implements Renderable
      * Expand placeholder in template using given vars.
      *
      * @param string $template
-     * @param array|Stream $vars
+     * @param array|Tinker $vars
      * @return string
      */
     public static function expandVars(string $template, $vars) : string
@@ -597,7 +596,7 @@ class Text implements Renderable
      * Execute PHP partial expression code.
      *
      * @param string $__code
-     * @param array|Stream $__vars
+     * @param array|Tinker $__vars
      * @return mixed
      */
     public static function evaluate(string $__code, $__vars)
@@ -609,7 +608,7 @@ class Text implements Renderable
      * Execute PHP partial code.
      *
      * @param string $__code
-     * @param array|Stream $__vars
+     * @param array|Tinker $__vars
      * @return mixed
      */
     public static function eval(string $__code, $__vars)
@@ -617,11 +616,11 @@ class Text implements Renderable
         if (empty($__code)) {
             return;
         }
-        $__vars = Stream::of(static::undefinedVarsCompletion($__code, $__vars));
+        $__vars = Tinker::with(static::undefinedVarsCompletion($__code, $__vars));
         foreach ($__vars as $__name => $__value) {
             ${$__name} = $__value;
         }
-        return Stream::peel(eval($__code));
+        return Tinker::peel(eval($__code));
     }
 }
 

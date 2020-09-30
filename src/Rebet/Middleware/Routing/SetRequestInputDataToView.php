@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Middleware\Routing;
 
+use Rebet\Common\Tinker;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\Stream\Stream;
 use Rebet\View\View;
 
 /**
@@ -25,7 +25,7 @@ class SetRequestInputDataToView
      */
     public function handle(Request $request, \Closure $next) : Response
     {
-        View::share('input', Stream::promise(function () use ($request) { return $request->input(); }));
+        View::share('input', Tinker::promise(function () use ($request) { return $request->input(); }));
         return $next($request);
     }
 }

@@ -2,7 +2,6 @@
 namespace Rebet\Common;
 
 use Rebet\Common\Exception\LogicException;
-use Rebet\Stream\Stream;
 
 /**
  * Reflector Class
@@ -102,7 +101,7 @@ class Reflector
             \is_scalar($object) ||
             \is_resource($object) ||
             (is_iterable($object) && !is_array($object) && !($object instanceof \ArrayAccess)) ||
-            $object instanceof Stream
+            $object instanceof Tinker
         ) {
             return $object;
         }

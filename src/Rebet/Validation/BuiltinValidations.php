@@ -6,12 +6,12 @@ use Rebet\Common\Decimal;
 use Rebet\Common\Path;
 use Rebet\Common\Strings;
 use Rebet\Common\System;
+use Rebet\Common\Tinker;
 use Rebet\Common\Unit;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
-use Rebet\Stream\Stream;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 
@@ -1420,7 +1420,7 @@ class BuiltinValidations extends Validations
      */
     public function validationCorrelatedRequired(Context $c, array $fields, int $at_least) : bool
     {
-        $correlations = Stream::of($c->pluckCorrelated($fields), true);
+        $correlations = Tinker::with($c->pluckCorrelated($fields), true);
         $inputed      = $correlations->where(function ($row) { return !Context::isBlank($row['value']); });
         return $inputed->count() >= $at_least ? true : $c->appendError('CorrelatedRequired', [
             'attribute' => $correlations->pluck('label')->return(),
@@ -1437,7 +1437,7 @@ class BuiltinValidations extends Validations
      */
     public function validationCorrelatedUnique(Context $c, array $fields) : bool
     {
-        $correlations = Stream::of($c->pluckCorrelated($fields), true);
+        $correlations = Tinker::with($c->pluckCorrelated($fields), true);
         $duplicate    = Arrays::duplicate($correlations->pluck('value')->map(function ($value) { return Context::isBlank($value) ? '' : $value ; })->return());
         return empty($duplicate) ? true : $c->appendError('CorrelatedUnique', [
             'attribute' => $correlations->pluck('label')->return(),

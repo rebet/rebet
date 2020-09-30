@@ -2,8 +2,8 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
+use Rebet\Common\Tinker;
 use Rebet\Config\Configurable;
-use Rebet\Stream\Stream;
 
 /**
  * Array Auth Provider Class
@@ -30,9 +30,9 @@ class ArrayProvider extends AuthProvider
     /**
      * Users map data.
      *
-     * @var Stream
+     * @var Tinker
      */
-    protected $users = [];
+    protected $users;
 
     /**
      * Sign in id attribute name
@@ -66,7 +66,7 @@ class ArrayProvider extends AuthProvider
      */
     public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
     {
-        $this->users          = Stream::of($users, true);
+        $this->users          = Tinker::with($users, true);
         $this->signin_id_name = $signin_id_name ?? static::config('signin_id_name') ;
         $this->precondition   = $precondition ?? static::config('precondition');
     }

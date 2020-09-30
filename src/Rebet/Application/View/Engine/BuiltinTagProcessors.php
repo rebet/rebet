@@ -1,13 +1,13 @@
 <?php
 namespace Rebet\Application\View\Engine;
 
+use Rebet\Application\App;
 use Rebet\Auth\Auth;
 use Rebet\Common\Arrays;
+use Rebet\Common\Tinker;
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
-use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
 use Rebet\View\Code\Code;
 use Rebet\View\Tag\CallbackProcessor;
@@ -62,7 +62,7 @@ class BuiltinTagProcessors
     public static function prefix() : Processor
     {
         $processor = function ($prefix) {
-            return Stream::of($prefix, true)->escape() ;
+            return Tinker::with($prefix, true)->escape() ;
         };
 
         return new CallbackProcessor($processor);
@@ -136,7 +136,7 @@ class BuiltinTagProcessors
     public static function error() : Processor
     {
         $processor = function ($errors, ?string $names = null, ?string $outer = null, ?string $inner = null) {
-            $errors = Stream::of($errors, true);
+            $errors = Tinker::with($errors, true);
             $names  = $names ?? '*' ;
             $outer  = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
             $inner  = $inner ?? Translator::grammar('message', "errors.inner") ?? '<li>:message</li>';
@@ -177,7 +177,7 @@ class BuiltinTagProcessors
     public static function errors() : Processor
     {
         $processor = function ($errors, $name = null) {
-            $errors = Stream::of($errors, true);
+            $errors = Tinker::with($errors, true);
             $name   = $name ?? BuiltinTagProcessors::$field ;
             return $name ? !$errors[$name]->isBlank() : !$errors->isEmpty() ;
         };
@@ -193,7 +193,7 @@ class BuiltinTagProcessors
     public static function iferror() : Processor
     {
         $processor = function ($errors, string $name, $then, $else = null) {
-            $errors = Stream::of($errors, true);
+            $errors = Tinker::with($errors, true);
             return !$errors[$name]->isBlank() ? $then : $else ?? '' ;
         };
 
@@ -218,7 +218,7 @@ class BuiltinTagProcessors
     public static function e() : Processor
     {
         $processor = function ($errors, string $name, string $grammer) {
-            $errors         = Stream::of($errors, true);
+            $errors         = Tinker::with($errors, true);
             [$value, $else] = array_pad((array)Translator::grammar('message', "errors.{$grammer}"), 2, '');
             return $errors[$name]->isBlank() ? $else : $value ;
         };
@@ -244,7 +244,7 @@ class BuiltinTagProcessors
     public static function input() : Processor
     {
         $processor = function ($input, string $name, $default = null) {
-            $input = Stream::of($input, true);
+            $input = Tinker::with($input, true);
             return $input[$name]->default($default)->escape();
         };
 

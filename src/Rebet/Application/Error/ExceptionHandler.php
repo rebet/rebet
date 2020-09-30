@@ -2,6 +2,7 @@
 namespace Rebet\Application\Error;
 
 use Rebet\Auth\Exception\AuthenticateException;
+use Rebet\Common\Tinker;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
@@ -15,7 +16,6 @@ use Rebet\Http\Response\ProblemResponse;
 use Rebet\Log\Log;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\FallbackHandler;
-use Rebet\Stream\Stream;
 use Rebet\Translation\Translator;
 use Rebet\View\View;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -269,11 +269,11 @@ class ExceptionHandler extends FallbackHandler
         }
 
         $home   = $request->getRoutePrefix().'/' ;
-        $title  = Stream::of($title, true)->escape()->nl2br();
+        $title  = Tinker::with($title, true)->escape()->nl2br();
         if (!$custom_title) {
             $title = $title->stringf('<span class="status">'.$status.'</span>%s');
         }
-        $detail = Stream::of($detail, true)->escape()->nl2br()->stringf('<div class="detail">%s</div>')->default('');
+        $detail = Tinker::with($detail, true)->escape()->nl2br()->stringf('<div class="detail">%s</div>')->default('');
         $html   = <<<EOS
 <!DOCTYPE html>
 <html>

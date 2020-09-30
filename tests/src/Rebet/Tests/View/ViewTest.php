@@ -3,8 +3,8 @@ namespace Rebet\Tests\View;
 
 use Rebet\Application\App;
 use Rebet\Common\Reflector;
+use Rebet\Common\Tinker;
 use Rebet\Config\Config;
-use Rebet\Stream\Stream;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
@@ -85,7 +85,7 @@ class ViewTest extends RebetTestCase
         $this->assertSame('Hello, Bob.', View::of('welcome')->with('name', 'Bob')->render());
         $this->assertSame('Hello, Bob.', View::of('welcome')->with(['name' => 'Bob'])->render());
         $view = View::of('welcome')->with('name', 'Bob');
-        $this->assertInstanceOf(Stream::class, Reflector::get($view, 'data.name', null, true));
+        $this->assertInstanceOf(Tinker::class, Reflector::get($view, 'data.name', null, true));
     }
 
     public function test_eof()

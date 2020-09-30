@@ -2,8 +2,8 @@
 namespace Rebet\View;
 
 use Rebet\Common\Renderable;
+use Rebet\Common\Tinker;
 use Rebet\Config\Configurable;
-use Rebet\Stream\Stream;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Exception\ViewRenderFailedException;
 
@@ -180,10 +180,10 @@ class View implements Renderable
     {
         if (is_array($key)) {
             $this->data = array_merge($this->data, array_map(function ($value) {
-                return Stream::of($value) ;
+                return Tinker::with($value) ;
             }, $key));
         } else {
-            $this->data[$key] = Stream::of($value);
+            $this->data[$key] = Tinker::with($value);
         }
         return $this;
     }

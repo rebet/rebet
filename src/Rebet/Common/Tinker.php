@@ -1,110 +1,104 @@
 <?php
-namespace Rebet\Stream;
+namespace Rebet\Common;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\Decimal;
 use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Json;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
-use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 
 /**
- * Stream Class
+ * Tinker Class
  *
- * @method Stream|bool convert(?string $type)                                                                                                               Call Reflector::convert($value, ...)
+ * @method Tinker|bool convert(?string $type)                                                                                                               Call Reflector::convert($value, ...)
  * @method bool        isBlank()                                                                                                                            Call Utils::isBlank($value)
- * @method Stream|bool bvl($default)                                                                                                                        Call Utils::bvl($value, ...)
+ * @method Tinker|bool bvl($default)                                                                                                                        Call Utils::bvl($value, ...)
  * @method bool        isEmpty()                                                                                                                            Call Utils::isEmpty($value)
- * @method Stream|bool evl($default)                                                                                                                        Call Utils::evl($value, ...)
- * @method Stream      lcut(int $length, string $encoding = 'UTF-8')                                                                                        Call Strings::lcut($value, ...)
- * @method Stream      rcut(int $length, string $encoding = 'UTF-8')                                                                                        Call Strings::rcut($value, ...)
- * @method Stream      clip(int $length, string $ellipsis = '...')                                                                                          Call Strings::clip($value, ...)
- * @method Stream      indent(string $char = "\t", int $depth = 1)                                                                                          Call Strings::indent($value, ...)
- * @method Stream      ltrim(string $prefix = ' ', ?int $max = null)                                                                                        Call Strings::ltrim($value, ...)
- * @method Stream      rtrim(string $suffix = ' ', ?int $max = null)                                                                                        Call Strings::rtrim($value, ...)
- * @method Stream      trim(string $deletion = ' ', ?int $max = null)                                                                                       Call Strings::trim($value, ...)
- * @method Stream      mbtrim()                                                                                                                             Call Strings::mbtrim($value)
+ * @method Tinker|bool evl($default)                                                                                                                        Call Utils::evl($value, ...)
+ * @method Tinker      lcut(int $length, string $encoding = 'UTF-8')                                                                                        Call Strings::lcut($value, ...)
+ * @method Tinker      rcut(int $length, string $encoding = 'UTF-8')                                                                                        Call Strings::rcut($value, ...)
+ * @method Tinker      clip(int $length, string $ellipsis = '...')                                                                                          Call Strings::clip($value, ...)
+ * @method Tinker      indent(string $char = "\t", int $depth = 1)                                                                                          Call Strings::indent($value, ...)
+ * @method Tinker      ltrim(string $prefix = ' ', ?int $max = null)                                                                                        Call Strings::ltrim($value, ...)
+ * @method Tinker      rtrim(string $suffix = ' ', ?int $max = null)                                                                                        Call Strings::rtrim($value, ...)
+ * @method Tinker      trim(string $deletion = ' ', ?int $max = null)                                                                                       Call Strings::trim($value, ...)
+ * @method Tinker      mbtrim()                                                                                                                             Call Strings::mbtrim($value)
  * @method bool        startsWith(string $needle)                                                                                                           Call Strings::startsWith($value, ...)
  * @method bool        endsWith(string $needle)                                                                                                             Call Strings::endsWith($value, ...)
  * @method bool        contains(string|string[] $searches, ?int $at_least = null)                                                                           Call Strings::contains($value, ...)
  * @method bool        match(string|string[] $patterns)                                                                                                     Call Strings::match($value, ...)
  * @method bool        wildmatch(string|string[] $patterns)                                                                                                 Call Strings::wildmatch($value, ...)
- * @method Stream      split(string $delimiter, int $size, $padding = null)                                                                                 Call Strings::split($value, ...)
- * @method Stream      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                             Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value) {...}`
- * @method Stream      override($diff, array|string $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
- * @method Stream      duplicate()                                                                                                                          Call Arrays::duplicate($value)
- * @method Stream      crossJoin(iterable ...$arrays)                                                                                                       Call Arrays::crossJoin($value, ...)
- * @method Stream      only(array|string $keys)                                                                                                             Call Arrays::only($value, ...)
- * @method Stream      except(array|string $keys)                                                                                                           Call Arrays::except($value, ...)
- * @method Stream      where(?callable $callback)                                                                                                           Call Arrays::where($value, ...) - $callback : `function($value[, $key]) : bool {...}`
- * @method Stream      compact()                                                                                                                            Call Arrays::compact($value)
- * @method Stream      unique(int $sort_flag = SORT_REGULAR)                                                                                                Call Arrays::unique($value, ...)
- * @method Stream|bool first(?callable $callback = null, $default = null)                                                                                   Call Arrays::first($value, ...) - $callback : `function($value[, $key]) : bool {...}`
- * @method Stream|bool last(?callable $callback = null, $default = null)                                                                                    Call Arrays::last($value, ...) - $callback : `function($value[, $key]) : bool {...}`
- * @method Stream      flatten(int $depth = INF)                                                                                                            Call Arrays::flatten($value, ...)
- * @method Stream      prepend($value, $key = null)                                                                                                         Call Arrays::prepend($value, ...)
- * @method Stream      shuffle(?int $seed = null)                                                                                                           Call Arrays::shuffle($value, ...)
- * @method Stream      map(callable $callback)                                                                                                              Call Arrays::map($value, ...) - $callback : `function($value[, $key]) {...}`
- * @method Stream|bool reduce(callable $reducer, $initial = null)                                                                                           Call Arrays::reduce($value, ...) - $reducer : `function($carry, $item) {...}`
- * @method Stream      diff($items, ?callable $comparator = null)                                                                                           Call Arrays::diff($value, ...) - $comparator : `function($a, $b) : int {...}`
- * @method Stream      intersect($items, ?callable $comparator = null)                                                                                      Call Arrays::intersect($value, ...) - $comparator : `function($a, $b) : int {...}`
+ * @method Tinker      split(string $delimiter, int $size, $padding = null)                                                                                 Call Strings::split($value, ...)
+ * @method Tinker      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                             Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Tinker      override($diff, array|string $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Tinker      duplicate()                                                                                                                          Call Arrays::duplicate($value)
+ * @method Tinker      crossJoin(iterable ...$arrays)                                                                                                       Call Arrays::crossJoin($value, ...)
+ * @method Tinker      only(array|string $keys)                                                                                                             Call Arrays::only($value, ...)
+ * @method Tinker      except(array|string $keys)                                                                                                           Call Arrays::except($value, ...)
+ * @method Tinker      where(?callable $callback)                                                                                                           Call Arrays::where($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Tinker      compact()                                                                                                                            Call Arrays::compact($value)
+ * @method Tinker      unique(int $sort_flag = SORT_REGULAR)                                                                                                Call Arrays::unique($value, ...)
+ * @method Tinker|bool first(?callable $callback = null, $default = null)                                                                                   Call Arrays::first($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Tinker|bool last(?callable $callback = null, $default = null)                                                                                    Call Arrays::last($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Tinker      flatten(int $depth = INF)                                                                                                            Call Arrays::flatten($value, ...)
+ * @method Tinker      prepend($value, $key = null)                                                                                                         Call Arrays::prepend($value, ...)
+ * @method Tinker      shuffle(?int $seed = null)                                                                                                           Call Arrays::shuffle($value, ...)
+ * @method Tinker      map(callable $callback)                                                                                                              Call Arrays::map($value, ...) - $callback : `function($value[, $key]) {...}`
+ * @method Tinker|bool reduce(callable $reducer, $initial = null)                                                                                           Call Arrays::reduce($value, ...) - $reducer : `function($carry, $item) {...}`
+ * @method Tinker      diff($items, ?callable $comparator = null)                                                                                           Call Arrays::diff($value, ...) - $comparator : `function($a, $b) : int {...}`
+ * @method Tinker      intersect($items, ?callable $comparator = null)                                                                                      Call Arrays::intersect($value, ...) - $comparator : `function($a, $b) : int {...}`
  * @method bool        every(callable $test)                                                                                                                Call Arrays::every($value, ...) - $test : `function($v, $k) : bool {...}`
- * @method Stream      groupBy(callable|string|array $group_by = null, bool $preserve_keys = false)                                                         Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key) {...}`
- * @method Stream      union($other)                                                                                                                        Call Arrays::union($value, ...)
- * @method Stream|bool min(callable|string|null $retriever = null, $initial = null)                                                                         Call Arrays::min($value, ...) - $retriever : `function($value) {...}`
- * @method Stream|bool max(callable|string|null $retriever = null, $initial = null)                                                                         Call Arrays::max($value, ...) - $retriever : `function($value) {...}`
- * @method Stream      sort(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                                 Call Arrays::sort($value, ...) - $comparator : `function($a, $b) : int`
- * @method Stream      sortBy(callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                   Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
- * @method Stream      sortKeys(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                             Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b) : int`
- * @method Stream      sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                               Call Arrays::sum($value, ...) - $retriever : `function($value) {...}`
- * @method Stream      avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                               Call Arrays::avg($value, ...) - $retriever : `function($value) {...}`
- * @method Stream      median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                            Call Arrays::median($value, ...) - $retriever : `function($value) {...}`
- * @method Stream      mode(callable|string|null $retriever = null)                                                                                         Call Arrays::mode($value, ...) - $retriever : `function($value) {...}`
- * @method Stream      implode(string $delimiter = ', ')                                                                                                    Call Arrays::implode($value, ...)
- * @method Stream      nvl($default)                                                                                                                        Call Stream.filter.customs.nvl($value, ...) configured closure - Return the given default value if the wrapped value is null.
- * @method Stream      default($default)                                                                                                                    Call Stream.filter.customs.default($value, ...) configured closure - Return the given default value if the wrapped value is null.
- * @method Stream      escape(string $type = 'html')                                                                                                        Call Stream.filter.customs.escape($value, ...) configured closure - Escape the wrapped value string by html sanitise or url encoding. $type : `'html'|'url'`
- * @method Stream      nl2br()                                                                                                                              Call Stream.filter.customs.nl2br($value) configured closure - Convert line feed to <br> tag using PHP nl2br() function.
- * @method Stream      datetimef(string $format)                                                                                                            Call Stream.filter.customs.datetimef($value, ...) configured closure - Format the wrapped value using DateTime::format().
- * @method Stream      numberf(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')                 Call Stream.filter.customs.numberf($value, ...) configured closure - Format the wrapped value using Decimal::round($precision)->format($omit_zero, $decimal_point, $thousands_separator).
- * @method Stream      stringf(string $format)                                                                                                              Call Stream.filter.customs.stringf($value, ...) configured closure - Format the wrapped value using sprintf format.
- * @method Stream      explode(string $delimiter, int $limit = PHP_INT_MAX)                                                                                 Call Stream.filter.customs.explode($value, ...) configured closure - Split the wrapped value string using given delimiter.
- * @method Stream      replace($pattern, $replacement, int $limit = -1)                                                                                     Call Stream.filter.customs.replace($value, ...) configured closure - Replace the string using given regex pattern from the wrapped value.
- * @method Stream      lower()                                                                                                                              Call Stream.filter.customs.lower($value) configured closure - Change to lower case string from the wrapped value.
- * @method Stream      upper()                                                                                                                              Call Stream.filter.customs.upper($value) configured closure - Change to upper case string from the wrapped value.
- * @method Stream      decimal()                                                                                                                            Call Stream.filter.customs.decimal($value) configured closure - Convert to Decimal class from the wrapped value.
- * @method Stream      abs()                                                                                                                                Call Stream.filter.customs.abs($value) configured closure - Calc the wrapped value using Decimal::abs().
- * @method bool        eq($other, ?int $precision = null)                                                                                                   Call Stream.filter.customs.eq($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::eq(). Returns false if null is included.
- * @method bool        gt($other, ?int $precision = null)                                                                                                   Call Stream.filter.customs.gt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gt(). Returns false if null is included.
- * @method bool        gte($other, ?int $precision = null)                                                                                                  Call Stream.filter.customs.gte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gte(). Returns false if null is included.
- * @method bool        lt($other, ?int $precision = null)                                                                                                   Call Stream.filter.customs.lt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lt(). Returns false if null is included.
- * @method bool        lte($other, ?int $precision = null)                                                                                                  Call Stream.filter.customs.lte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lte(). Returns false if null is included.
- * @method Stream      add($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.add($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::add().
- * @method Stream      sub($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.sub($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::sub().
- * @method Stream      mul($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.mul($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::mul().
- * @method Stream      div($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.div($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::div().
- * @method Stream      pow($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.pow($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::pow().
- * @method Stream      sqrt(?int $precision = null, ?int $mode = null)                                                                                      Call Stream.filter.customs.sqrt($value, ...) configured closure - Calc the wrapped value using Decimal::sqrt().
- * @method Stream      mod($modulus)                                                                                                                        Call Stream.filter.customs.mod($value, ...) configured closure - Calc the wrapped value using Decimal::mod().
- * @method Stream      powmod($exponent, $modulus)                                                                                                          Call Stream.filter.customs.powmod($value, ...) configured closure - Calc the wrapped value using Decimal::powmod().
- * @method Stream      floor(int $precision = 0)                                                                                                            Call Stream.filter.customs.floor($value, ...) configured closure - Decimal::floor($value, ...) the wrapped value.
- * @method Stream      round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)                                 Call Stream.filter.customs.round($value, ...) configured closure - Decimal::round($value, ...) the wrapped value.
- * @method Stream      ceil(int $precision = 0)                                                                                                             Call Stream.filter.customs.ceil($value, ...) configured closure - Decimal::ceil($value, ...) the wrapped value.
- * @method Stream      dump()                                                                                                                               Call Stream.filter.customs.dump($value) configured closure - Dump wrapped value as string for debug and log.
- * @method Stream      invoke(...$args)                                                                                                                     Call Stream.filter.customs.invoke($value, ...) configured closure - Invoke wrraped callback function.
- * @method bool        equals($other)                                                                                                                       Call Stream.filter.customs.equals($value, ...) configured closure - It will compare using '==' operator.
- * @method bool        sameAs($other)                                                                                                                       Call Stream.filter.customs.sameAs($value, ...) configured closure - It will compare using '===' operator.
- * @method Stream      nnvl($then, $else = null)                                                                                                            Call Stream.filter.customs.nnvl($value, ...) configured closure - Return given value if the wrapped value is NOT null.
- * @method Stream      nbvl($then, $else = null)                                                                                                            Call Stream.filter.customs.nnbl($value, ...) configured closure - Return given value if the wrapped value is NOT blank(= null,'',[]).
- * @method Stream      nevl($then, $else = null)                                                                                                            Call Stream.filter.customs.nnel($value, ...) configured closure - Return given value if the wrapped value is NOT empty(= null,'',[], 0).
- * @method Stream      when(mixed $test, $then, $else = null)                                                                                               Call Stream.filter.customs.when($value, ...) configured closure - Return given value if the wrapped value matched given test. - $test : value or `function($value) {...}`
- * @method Stream      case(array $map, $default = null)                                                                                                    Call Stream.filter.customs.case($value, ...) configured closure - Return given case value if the wrapped value matched given case key.
- * @method Stream      length()                                                                                                                             Call Stream.filter.customs.length($value, ...) configured closure - Get the wrapped value string length.
- * @method Stream      values()                                                                                                                             Call Stream.filter.customs.values($value, ...) configured closure - Get values from the wrapped value.
- * @method Stream      keys()                                                                                                                               Call Stream.filter.customs.keys($value, ...) configured closure - Get keys from the wrapped value.
+ * @method Tinker      groupBy(callable|string|array $group_by = null, bool $preserve_keys = false)                                                         Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key) {...}`
+ * @method Tinker      union($other)                                                                                                                        Call Arrays::union($value, ...)
+ * @method Tinker|bool min(callable|string|null $retriever = null, $initial = null)                                                                         Call Arrays::min($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker|bool max(callable|string|null $retriever = null, $initial = null)                                                                         Call Arrays::max($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker      sort(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                                 Call Arrays::sort($value, ...) - $comparator : `function($a, $b) : int`
+ * @method Tinker      sortBy(callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                   Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
+ * @method Tinker      sortKeys(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                             Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b) : int`
+ * @method Tinker      sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                               Call Arrays::sum($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker      avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                               Call Arrays::avg($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker      median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                            Call Arrays::median($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker      mode(callable|string|null $retriever = null)                                                                                         Call Arrays::mode($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker      implode(string $delimiter = ', ')                                                                                                    Call Arrays::implode($value, ...)
+ * @method Tinker      nvl($default)                                                                                                                        Call Tinker.filter.customs.nvl($value, ...) configured closure - Return the given default value if the wrapped value is null.
+ * @method Tinker      default($default)                                                                                                                    Call Tinker.filter.customs.default($value, ...) configured closure - Return the given default value if the wrapped value is null.
+ * @method Tinker      escape(string $type = 'html')                                                                                                        Call Tinker.filter.customs.escape($value, ...) configured closure - Escape the wrapped value string by html sanitise or url encoding. $type : `'html'|'url'`
+ * @method Tinker      nl2br()                                                                                                                              Call Tinker.filter.customs.nl2br($value) configured closure - Convert line feed to <br> tag using PHP nl2br() function.
+ * @method Tinker      datetimef(string $format)                                                                                                            Call Tinker.filter.customs.datetimef($value, ...) configured closure - Format the wrapped value using DateTime::format().
+ * @method Tinker      numberf(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')                 Call Tinker.filter.customs.numberf($value, ...) configured closure - Format the wrapped value using Decimal::round($precision)->format($omit_zero, $decimal_point, $thousands_separator).
+ * @method Tinker      stringf(string $format)                                                                                                              Call Tinker.filter.customs.stringf($value, ...) configured closure - Format the wrapped value using sprintf format.
+ * @method Tinker      explode(string $delimiter, int $limit = PHP_INT_MAX)                                                                                 Call Tinker.filter.customs.explode($value, ...) configured closure - Split the wrapped value string using given delimiter.
+ * @method Tinker      replace($pattern, $replacement, int $limit = -1)                                                                                     Call Tinker.filter.customs.replace($value, ...) configured closure - Replace the string using given regex pattern from the wrapped value.
+ * @method Tinker      lower()                                                                                                                              Call Tinker.filter.customs.lower($value) configured closure - Change to lower case string from the wrapped value.
+ * @method Tinker      upper()                                                                                                                              Call Tinker.filter.customs.upper($value) configured closure - Change to upper case string from the wrapped value.
+ * @method Tinker      decimal()                                                                                                                            Call Tinker.filter.customs.decimal($value) configured closure - Convert to Decimal class from the wrapped value.
+ * @method Tinker      abs()                                                                                                                                Call Tinker.filter.customs.abs($value) configured closure - Calc the wrapped value using Decimal::abs().
+ * @method bool        eq($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.eq($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::eq(). Returns false if null is included.
+ * @method bool        gt($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.gt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gt(). Returns false if null is included.
+ * @method bool        gte($other, ?int $precision = null)                                                                                                  Call Tinker.filter.customs.gte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gte(). Returns false if null is included.
+ * @method bool        lt($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.lt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lt(). Returns false if null is included.
+ * @method bool        lte($other, ?int $precision = null)                                                                                                  Call Tinker.filter.customs.lte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lte(). Returns false if null is included.
+ * @method Tinker      add($other, ?int $precision = null, ?int $mode = null)                                                                               Call Tinker.filter.customs.add($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::add().
+ * @method Tinker      sub($other, ?int $precision = null, ?int $mode = null)                                                                               Call Tinker.filter.customs.sub($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::sub().
+ * @method Tinker      mul($other, ?int $precision = null, ?int $mode = null)                                                                               Call Tinker.filter.customs.mul($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::mul().
+ * @method Tinker      div($other, ?int $precision = null, ?int $mode = null)                                                                               Call Tinker.filter.customs.div($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::div().
+ * @method Tinker      pow($other, ?int $precision = null, ?int $mode = null)                                                                               Call Tinker.filter.customs.pow($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::pow().
+ * @method Tinker      sqrt(?int $precision = null, ?int $mode = null)                                                                                      Call Tinker.filter.customs.sqrt($value, ...) configured closure - Calc the wrapped value using Decimal::sqrt().
+ * @method Tinker      mod($modulus)                                                                                                                        Call Tinker.filter.customs.mod($value, ...) configured closure - Calc the wrapped value using Decimal::mod().
+ * @method Tinker      powmod($exponent, $modulus)                                                                                                          Call Tinker.filter.customs.powmod($value, ...) configured closure - Calc the wrapped value using Decimal::powmod().
+ * @method Tinker      floor(int $precision = 0)                                                                                                            Call Tinker.filter.customs.floor($value, ...) configured closure - Decimal::floor($value, ...) the wrapped value.
+ * @method Tinker      round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)                                 Call Tinker.filter.customs.round($value, ...) configured closure - Decimal::round($value, ...) the wrapped value.
+ * @method Tinker      ceil(int $precision = 0)                                                                                                             Call Tinker.filter.customs.ceil($value, ...) configured closure - Decimal::ceil($value, ...) the wrapped value.
+ * @method Tinker      dump()                                                                                                                               Call Tinker.filter.customs.dump($value) configured closure - Dump wrapped value as string for debug and log.
+ * @method Tinker      invoke(...$args)                                                                                                                     Call Tinker.filter.customs.invoke($value, ...) configured closure - Invoke wrraped callback function.
+ * @method bool        equals($other)                                                                                                                       Call Tinker.filter.customs.equals($value, ...) configured closure - It will compare using '==' operator.
+ * @method bool        sameAs($other)                                                                                                                       Call Tinker.filter.customs.sameAs($value, ...) configured closure - It will compare using '===' operator.
+ * @method Tinker      nnvl($then, $else = null)                                                                                                            Call Tinker.filter.customs.nnvl($value, ...) configured closure - Return given value if the wrapped value is NOT null.
+ * @method Tinker      nbvl($then, $else = null)                                                                                                            Call Tinker.filter.customs.nnbl($value, ...) configured closure - Return given value if the wrapped value is NOT blank(= null,'',[]).
+ * @method Tinker      nevl($then, $else = null)                                                                                                            Call Tinker.filter.customs.nnel($value, ...) configured closure - Return given value if the wrapped value is NOT empty(= null,'',[], 0).
+ * @method Tinker      when(mixed $test, $then, $else = null)                                                                                               Call Tinker.filter.customs.when($value, ...) configured closure - Return given value if the wrapped value matched given test. - $test : value or `function($value) {...}`
+ * @method Tinker      case(array $map, $default = null)                                                                                                    Call Tinker.filter.customs.case($value, ...) configured closure - Return given case value if the wrapped value matched given case key.
+ * @method Tinker      length()                                                                                                                             Call Tinker.filter.customs.length($value, ...) configured closure - Get the wrapped value string length.
+ * @method Tinker      values()                                                                                                                             Call Tinker.filter.customs.values($value, ...) configured closure - Get values from the wrapped value.
+ * @method Tinker      keys()                                                                                                                               Call Tinker.filter.customs.keys($value, ...) configured closure - Get keys from the wrapped value.
  * @method bool        isNull()                                                                                                                             Call PHP function is_null($value) - It checks the wrapped value is null or not.
  * @method bool        isString()                                                                                                                           Call PHP function is_string($value) - It checks the wrapped value is string or not.
  * @method bool        isInt()                                                                                                                              Call PHP function is_int($value) - It checks the wrapped value is int or not.
@@ -120,7 +114,7 @@ use Rebet\DateTime\DateTime;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
+class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
     use Configurable;
 
@@ -247,7 +241,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     protected $safety = false;
 
     /**
-     * Peel the stream wrapper of given value if wrapped
+     * Peel the Tinker wrapper of given value if wrapped
      *
      * @param mixed $value
      * @return void
@@ -305,7 +299,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     }
 
     /**
-     * Add the given filter to Stream.
+     * Add the given filter to Tinker.
      *
      * @param string $name
      * @param callable $filter function(mixed $value, ...$args):mixed
@@ -323,7 +317,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param boolean $safety (default: false)
      * @return self
      */
-    public static function of($origin, bool $safety = false) : self
+    public static function with($origin, bool $safety = false) : self
     {
         return new static(static::peel($origin), null, $safety) ;
     }
@@ -550,7 +544,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $origin = $this->origin();
         return new \ArrayIterator(array_map(
             function ($value) {
-                return static::of($value);
+                return static::with($value);
             },
             is_object($origin) ? get_object_vars($origin) : (array)$origin
         ));

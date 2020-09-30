@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Middleware\Routing;
 
+use Rebet\Common\Tinker;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Middleware\Routing\SetRequestInputDataToView;
-use Rebet\Stream\Stream;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\View;
 
@@ -26,7 +26,7 @@ class SetRequestInputDataToViewTest extends RebetTestCase
         $response = $middleware->handle($request, $destination);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('OK', $response->getContent());
-        $this->assertInstanceOf(Stream::class, View::shared('input'));
+        $this->assertInstanceOf(Tinker::class, View::shared('input'));
         $this->assertSame([
             'request' => 'R',
             'query'   => 'Q',

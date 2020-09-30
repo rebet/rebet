@@ -4,8 +4,8 @@ namespace Rebet\Translation;
 use Rebet\Common\Arrays;
 use Rebet\Common\Callback;
 use Rebet\Common\Strings;
+use Rebet\Common\Tinker;
 use Rebet\Config\Configurable;
-use Rebet\Stream\Stream;
 
 /**
  * Translator Class
@@ -195,7 +195,7 @@ class Translator
             return $sentence;
         }
 
-        $replacement = Stream::of($replacement, true)->sortKeys(SORT_DESC, Callback::compareLength())->return();
+        $replacement = Tinker::with($replacement, true)->sortKeys(SORT_DESC, Callback::compareLength())->return();
         foreach ($replacement as $key => $value) {
             $sentence = str_replace(':'.$key, Arrays::implode($value, $delimiter) ?? $value, $sentence);
         }
