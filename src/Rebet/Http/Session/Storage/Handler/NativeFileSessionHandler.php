@@ -30,6 +30,6 @@ class NativeFileSessionHandler extends SymfonyNativeFileSessionHandler
      */
     public function __construct(?string $save_path = null)
     {
-        parent::__construct($save_path ?? static::config('save_path'));
+        parent::__construct($save_path ?? static::config('save_path', false));
     }
 }

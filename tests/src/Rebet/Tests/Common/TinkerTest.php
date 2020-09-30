@@ -68,7 +68,7 @@ class TinkerTest extends RebetTestCase
         $this->safty       = Tinker::with("Hello Rebet", true);
     }
 
-    public function test_of()
+    public function test_with()
     {
         $this->assertInstanceOf(Tinker::class, Tinker::with(123));
     }
