@@ -315,7 +315,7 @@ abstract class RebetTestCase extends TestCase
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
-            $this->assertNotContains($expect, $actual);
+            $this->assertStringNotContainsString($expect, $actual);
         }
     }
 
