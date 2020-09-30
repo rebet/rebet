@@ -2,6 +2,8 @@
 namespace Rebet\Tests\Stream;
 
 use InvalidArgumentException;
+use Rebet\Common\Arrays;
+use Rebet\Common\Decimal;
 use Rebet\Common\Exception\LogicException;
 use Rebet\DateTime\DateTime;
 use Rebet\Stream\Stream;
@@ -361,52 +363,14 @@ class StreamTest extends RebetTestCase
 
     public function test_filters()
     {
-        // Reflector::convert
+        // Call filter using method
         $this->assertNull($this->null->_('convert', 'string')->return());
         $this->assertSame('123', $this->int->_('convert', 'string')->return());
 
+        // Reflector::convert
+        $this->assertNull($this->null->convert('string')->return());
         $this->assertSame('123', $this->int->convert('string')->return());
-
-        // format => number
-        $this->assertNull($this->null->_('number')->return());
-        $this->assertSame('123', $this->int->_('number')->return());
-        $this->assertSame('1,235', $this->float->_('number')->return());
-        $this->assertSame('1,235', $this->float->_('number', 0)->return());
-        $this->assertSame('1,234.6', $this->float->_('number', 1)->return());
-        $this->assertSame('1,234.57', $this->float->_('number', 2)->return());
-        $this->assertSame('1,234.568', $this->float->_('number', 3)->return());
-        $this->assertSame('1,234.5678', $this->float->_('number', 4)->return());
-        $this->assertSame('1,234.56780', $this->float->_('number', 5)->return());
-        $this->assertSame('1,234.5678', $this->float->_('number', 5, true)->return());
-        $this->assertSame('1234.57', $this->float->_('number', 2, false, '.', '')->return());
-        $this->assertSame('1 234,57', $this->float->_('number', 2, false, ',', ' ')->return());
-
-        // floor
-        $this->assertNull($this->null->_('floor')->value()->return());
-        $this->assertSame('1234', $this->float->_('floor')->value()->return());
-        $this->assertSame('1234.56', $this->float->_('floor', 2)->value()->return());
-        $this->assertSame('1200', $this->float->_('floor', -2)->value()->return());
-
-        $this->assertSame('1234', $this->float->floor()->value()->return());
-        $this->assertSame('1234.56', $this->float->floor(2)->value()->return());
-
-        // round
-        $this->assertNull($this->null->_('round')->value()->return());
-        $this->assertSame('1235', $this->float->_('round')->value()->return());
-        $this->assertSame('1234.57', $this->float->_('round', 2)->value()->return());
-        $this->assertSame('1200', $this->float->_('round', -2)->value()->return());
-
-        $this->assertSame('1235', $this->float->round()->value()->return());
-        $this->assertSame('1234.57', $this->float->round(2)->value()->return());
-
-        // ceil
-        $this->assertNull($this->null->_('ceil')->value()->return());
-        $this->assertSame('1235', $this->float->_('ceil')->value()->return());
-        $this->assertSame('1234.57', $this->float->_('ceil', 2)->value()->return());
-        $this->assertSame('1300', $this->float->_('ceil', -2)->value()->return());
-
-        $this->assertSame('1235', $this->float->ceil()->value()->return());
-        $this->assertSame('1234.57', $this->float->ceil(2)->value()->return());
+        $this->assertSame(true, Stream::of(1)->convert('bool'));
 
         // Utils::isBlank
         $this->assertTrue($this->null->isBlank());
@@ -415,6 +379,7 @@ class StreamTest extends RebetTestCase
         // Utils::bvl
         $this->assertSame('(blank)', $this->null->bvl('(blank)')->return());
         $this->assertSame(123, $this->int->bvl('(blank)')->return());
+        $this->assertSame(true, Stream::of(true)->bvl('(blank)'));
 
         // Utils::isEmpty
         $this->assertTrue($this->null->isEmpty());
@@ -423,220 +388,496 @@ class StreamTest extends RebetTestCase
         // Utils::evl
         $this->assertSame('(empty)', $this->null->evl('(empty)')->return());
         $this->assertSame(123, $this->int->evl('(empty)')->return());
+        $this->assertSame(true, Stream::of(true)->evl('(empty)'));
+
+        // Strings::lcut
+        $this->assertNull($this->null->lcut(4)->return());
+        $this->assertSame('ebet', $this->string->lcut(7)->return());
+
+        // Strings::rcut
+        $this->assertNull($this->null->rcut(4)->return());
+        $this->assertSame('Hell', $this->string->rcut(7)->return());
 
         // Strings::clip
-        $this->assertNull($this->null->clip(10)->return());
-        $this->assertSame('Hello R...', $this->string->clip(10)->return());
+        $this->assertNull($this->null->clip(4)->return());
+        $this->assertSame('Hell...', $this->string->clip(7)->return());
+        $this->assertSame('Hello R', $this->string->clip(7, '')->return());
+        $this->assertSame('Hell《略》', $this->string->clip(7, '《略》')->return());
 
         // Strings::indent
         $this->assertNull($this->null->indent('> ')->return());
         $this->assertSame("> Hello\n> Rebet", $this->text->indent('> ')->return());
 
+        // Strings::ltrim
+        $this->assertNull($this->null->ltrim('He')->return());
+        $this->assertSame("llo Rebet", $this->string->ltrim('He')->return());
+
+        // Strings::rtrim
+        $this->assertNull($this->null->rtrim('et')->return());
+        $this->assertSame("Hello Reb", $this->string->rtrim('et')->return());
+
+        // Strings::trim
+        $this->assertNull($this->null->trim()->return());
+        $this->assertSame("　trim　", Stream::of(' 　trim　 ')->trim()->return());
+
+        // Strings::mbtrim
+        $this->assertNull($this->null->mbtrim()->return());
+        $this->assertSame("trim", Stream::of(' 　trim　 ')->mbtrim()->return());
+
+        // Strings::startsWith
+        $this->assertSame(true, $this->string->startsWith('Hello'));
+        $this->assertSame(false, $this->string->startsWith('Rebet'));
+
+        // Strings::endsWith
+        $this->assertSame(false, $this->string->endsWith('Hello'));
+        $this->assertSame(true, $this->string->endsWith('Rebet'));
+
+        // Strings::contains
+        $this->assertSame(true, $this->string->contains('o R'));
+        $this->assertSame(false, $this->string->contains('foo'));
+
+        // Strings::match
+        $this->assertSame(true, $this->string->match('/^He/'));
+        $this->assertSame(false, $this->string->match('/foo/'));
+
+        // Strings::wildmatch
+        $this->assertSame(true, $this->string->wildmatch('He*'));
+        $this->assertSame(false, $this->string->wildmatch('Foo*'));
+
+        // Strings::split
+        $this->assertSame(['Hello', 'Rebet', null], $this->string->split(' ', 3)->return());
+
+
+        // Arrays::pluck
+        $this->assertSame(['Foo', 'Bar', 'Baz', 'Qux', 'Quxx'], $this->rs->pluck('first_name')->return());
+
+        // Arrays::override
+        $this->assertSame(
+            ['foo' => 'foo', 'parent' => null, 'number' => 123, 'gender' => Gender::MALE(), 'boolean' => true],
+            $this->map->override(['foo' => 'foo', 'parent!' => null])->return()
+        );
+
+        // Arrays::duplicate
+        $this->assertSame([2, 3], Stream::of([1, 2, 2, 3, 4, 3])->duplicate()->return());
+
+        // Arrays::crossJoin
+        $this->assertSame([[1, 'a'], [1, 'b'], [2, 'a'], [2, 'b']], Stream::of([1, 2])->crossJoin(['a', 'b'])->return());
+
+        // Arrays::only
+        $this->assertSame(['foo' => 'FOO', 'number' => 123], $this->map->only(['foo', 'number'])->return());
+
+        // Arrays::except
+        $this->assertSame(['foo' => 'FOO', 'number' => 123, 'boolean' => true], $this->map->except(['parent', 'gender'])->return());
+
+        // Arrays::where
+        $this->assertSame(['foo' => 'FOO', 'number' => 123, 'boolean' => true], $this->map->where(function ($v, $k) { return is_scalar($v); })->return());
+
+        // Arrays::compact
+        $this->assertSame([0 => 1, 2 => 3], Stream::of([1, null, 3])->compact()->return());
+
+        // Arrays::unique
+        $this->assertSame([0 => 1, 2 => 2, 3 => 3], Stream::of([1, 1, 2, 3, '3'])->unique()->return());
+
+        // Arrays::first
+        $this->assertSame(1, Stream::of([1, 2, 3])->first()->return());
+        $this->assertSame(true, Stream::of([true, 1, 2, 3])->first());
+
+        // Arrays::last
+        $this->assertSame(3, Stream::of([1, 2, 3])->last()->return());
+        $this->assertSame(false, Stream::of([1, 2, 3, false])->last());
+
+        // Arrays::flatten
+        $this->assertSame([1, 'a', 'b', 3], Stream::of([1, ['a', 'b'], 3])->flatten()->return());
+
+        // Arrays::prepend
+        $this->assertSame(['a', 1, 2, 3], Stream::of([1, 2, 3])->prepend('a')->return());
+
+        // Arrays::shuffle
+        for ($i = 0 ; $i < 10 ; $i++) {
+            if ([1, 2, 3, 4] != Stream::of([1, 2, 3, 4])->shuffle()->return()) {
+                break;
+            }
+        }
+        if ($i === 10) {
+            $this->fail("Stream::shuffle failed.");
+        } else {
+            $this->assertTrue(true);
+        }
+
+        // Arrays::map
+        $this->assertSame([2, 4, 6], Stream::of([1, 2, 3])->map(function ($v, $k) { return $v * 2; })->return());
+
+        // Arrays::reduce
+        $this->assertSame(6, Stream::of([1, 2, 3])->reduce(function ($c, $i) { return $c + $i; }, 0)->return());
+        $this->assertSame(true, Stream::of([1, 2, 3])->reduce(function ($c, $i) { return $c && ($i < 10); }, true));
+
+        // Arrays::diff
+        $this->assertSame([1 => 2], Stream::of([1, 2, 3])->diff([1, 3, 4])->return());
+
+        // Arrays::intersect
+        $this->assertSame([0 => 1, 2 => 3], Stream::of([1, 2, 3])->intersect([1, 3, 4])->return());
+
+        // Arrays::every
+        $this->assertSame(false, Stream::of([1, 2, 3])->every(function ($v) { return $v % 2 === 1; }));
+
+        // Arrays::groupBy
+        $this->assertSame([
+            1 => [
+                ['rating' => 1, 'url' => 'a'],
+                ['rating' => 1, 'url' => 'b'],
+            ],
+            2 => [
+                ['rating' => 2, 'url' => 'b'],
+            ],
+        ], Stream::of([
+            ['rating' => 1, 'url' => 'a'],
+            ['rating' => 1, 'url' => 'b'],
+            ['rating' => 2, 'url' => 'b'],
+        ])->groupBy('rating')->return());
+
+        // Arrays::union
+        $this->assertSame(['name' => 'Hello', 'id' => 1], Stream::of(['name' => 'Hello'])->union(['name' => 'World', 'id' => 1])->return());
+
+        // Arrays::min
+        $this->assertSame(-2, Stream::of([1, 2, 5, -2, 4])->min()->return());
+        $this->assertSame(false, Stream::of([false, true])->min());
+
+        // Arrays::max
+        $this->assertSame(5, Stream::of([1, 2, 5, -2, 4])->max()->return());
+        $this->assertSame(true, Stream::of([false, true])->max());
+
+        // Arrays::sort
+        $this->assertSame([1 => 1, 3 => 2, 2 => 3, 0 => 4], Stream::of([4, 1, 3, 2])->sort()->return());
+
+        // Arrays::sortBy
+        $this->assertSame(
+            [1 => ['age' => '8'], 2 => ['age' => '14'], 0 => ['age' => '23']],
+            Stream::of([['age' => '23'], ['age' => '8'], ['age' => '14']])->sortBy('age')->return()
+        );
+
+        // Arrays::sortKeys
+        $this->assertSame(
+            ['a' => 'A', 'b' => 'B', 'c' => 'C'],
+            Stream::of(['c' => 'C', 'a' => 'A', 'b' => 'B'])->sortKeys()->return()
+        );
+
+        // Arrays::sum
+        $this->assertEquals("55", Stream::of(range(1, 10))->sum()->value()->return());
+
+        // Arrays::avg
+        $this->assertEquals("5.5", Stream::of(range(1, 10))->avg()->value()->return());
+
+        // Arrays::median
+        $this->assertEquals("5.5", Stream::of(range(1, 10))->median()->value()->return());
+
+        // Arrays::mode
+        $this->assertEquals([1, 4], Stream::of([1, 2, 3, 4, 4, 5, 1])->mode()->return());
+
         // Arrays::implode
-        $this->assertSame('1, 2, 3', $this->array->implode()->return());
-        $this->assertSame('1／2／3', $this->array->implode('／')->return());
-        $this->assertSame('[1, 2, 3]', $this->array->implode()->text('[%s]')->return());
+        $this->assertEquals('1, 2, 3', Stream::of([1, 2, 3])->implode()->return());
 
 
-        // default
-        $this->assertSame('(null)', $this->null->_('default', '(null)')->return());
-        $this->assertSame(123, $this->int->_('default', '(null)')->return());
-        $this->assertSame('(null)', $this->int->nothing->_('default', '(null)')->return());
-
-        $this->assertSame('(null)', $this->null->default('(null)')->return());
-
-        // nvl
-        $this->assertSame('(null)', $this->null->_('nvl', '(null)')->return());
-        $this->assertSame(123, $this->int->_('nvl', '(null)')->return());
-        $this->assertSame('(null)', $this->int->nothing->_('nvl', '(null)')->return());
-
+        // Stream.filter.customs.nvl
         $this->assertSame('(null)', $this->null->nvl('(null)')->return());
+        $this->assertSame(123, $this->int->nvl('(null)')->return());
+        $this->assertSame('(null)', $this->int->nothing->nvl('(null)')->return());
 
-        // escape:html
-        $this->assertNull($this->null->_('escape')->return());
-        $this->assertSame('123', $this->int->_('escape')->return());
-        $this->assertSame('Hello Rebet', $this->string->_('escape')->return());
-        $this->assertSame('&lt;h1&gt;Hello Rebet&lt;/h1&gt;', $this->html->_('escape')->return());
-        $this->assertSame('男性', $this->enum->_('escape')->return());
+        // Stream.filter.customs.default
+        $this->assertSame('(null)', $this->null->default('(null)')->return());
+        $this->assertSame(123, $this->int->default('(null)')->return());
+        $this->assertSame('(null)', $this->int->nothing->default('(null)')->return());
 
+        // Stream.filter.customs.escape:html
+        $this->assertNull($this->null->escape()->return());
+        $this->assertSame('123', $this->int->escape()->return());
+        $this->assertSame('Hello Rebet', $this->string->escape()->return());
         $this->assertSame('&lt;h1&gt;Hello Rebet&lt;/h1&gt;', $this->html->escape()->return());
+        $this->assertSame('男性', $this->enum->escape()->return());
 
-        // escape:url
-        $this->assertNull($this->null->_('escape', 'url')->return());
-        $this->assertSame('Hello+Rebet', $this->string->_('escape', 'url')->return());
-        $this->assertSame('%3Ch1%3EHello+Rebet%3C%2Fh1%3E', $this->html->_('escape', 'url')->return());
-
+        // Stream.filter.customs.escape:url
+        $this->assertNull($this->null->escape('url')->return());
+        $this->assertSame('Hello+Rebet', $this->string->escape('url')->return());
         $this->assertSame('%3Ch1%3EHello+Rebet%3C%2Fh1%3E', $this->html->escape('url')->return());
 
-        // nl2br
-        $this->assertNull($this->null->_('nl2br')->return());
-        $this->assertSame('Hello Rebet', $this->string->_('nl2br')->return());
-        $this->assertSame("Hello<br />\nRebet", $this->text->_('nl2br')->return());
-
+        // Stream.filter.customs.nl2br
+        $this->assertNull($this->null->nl2br()->return());
+        $this->assertSame('Hello Rebet', $this->string->nl2br()->return());
         $this->assertSame("Hello<br />\nRebet", $this->text->nl2br()->return());
 
-        // datetime
-        $this->assertNull($this->null->_('datetime', 'Ymd')->return());
-        $this->assertSame('20010203', $this->datetime_o->_('datetime', 'Ymd')->return());
-        $this->assertSame('20010203', $this->datetime_s->_('datetime', 'Ymd')->return());
+        // Stream.filter.customs.datetimef
+        $this->assertNull($this->null->datetimef('Ymd')->return());
+        $this->assertSame('20010203', $this->datetime_o->datetimef('Ymd')->return());
+        $this->assertSame('20010203', $this->datetime_s->datetimef('Ymd')->return());
 
-        $this->assertSame('20010203', $this->datetime_s->datetime('Ymd')->return());
+        // Stream.filter.customs.numberf
+        $this->assertNull($this->null->numberf()->return());
+        $this->assertSame('123', $this->int->numberf()->return());
+        $this->assertSame('1,235', $this->float->numberf()->return());
+        $this->assertSame('1,235', $this->float->numberf(0)->return());
+        $this->assertSame('1,234.6', $this->float->numberf(1)->return());
+        $this->assertSame('1,234.57', $this->float->numberf(2)->return());
+        $this->assertSame('1,234.568', $this->float->numberf(3)->return());
+        $this->assertSame('1,234.5678', $this->float->numberf(4)->return());
+        $this->assertSame('1,234.56780', $this->float->numberf(5)->return());
+        $this->assertSame('1,234.5678', $this->float->numberf(5, true)->return());
+        $this->assertSame('1234.57', $this->float->numberf(2, false, '.', '')->return());
+        $this->assertSame('1 234,57', $this->float->numberf(2, false, ',', ' ')->return());
 
-        // text
-        $this->assertNull($this->null->_('text', '%s')->return());
-        $this->assertNull($this->null->_('text', '[%s]')->return());
+        // Stream.filter.customs.stringf
+        $this->assertNull($this->null->stringf('%s')->return());
+        $this->assertNull($this->null->stringf('[%s]')->return());
+        $this->assertSame('[123]', $this->int->stringf('[%s]')->return());
+        $this->assertSame('[000123]', $this->int->stringf('[%06d]')->return());
+        $this->assertSame('[123.00]', $this->int->stringf('[%01.2f]')->return());
+        $this->assertSame('[1234.57]', $this->float->stringf('[%01.2f]')->return());
 
-        $this->assertSame('[123]', $this->int->_('text', '[%s]')->return());
-        $this->assertSame('[000123]', $this->int->_('text', '[%06d]')->return());
-        $this->assertSame('[123.00]', $this->int->_('text', '[%01.2f]')->return());
-        $this->assertSame('[1234.57]', $this->float->_('text', '[%01.2f]')->return());
-
-        $this->assertSame('[1234.57]', $this->float->text('[%01.2f]')->return());
-
-        // explode
-        $this->assertNull($this->null->_('explode', ' ')->return());
-        $this->assertSame(['Hello', 'Rebet'], $this->string->_('explode', ' ')->return());
-
+        // Stream.filter.customs.explode
+        $this->assertNull($this->null->explode(' ')->return());
         $this->assertSame(['Hello', 'Rebet'], $this->string->explode(' ')->return());
 
-        // replace
-        $this->assertNull($this->null->_('replace', '/Hello/', 'Good by')->return());
-        $this->assertSame('Good by Rebet', $this->string->_('replace', '/Hello/', 'Good by')->return());
-
+        // Stream.filter.customs.replace
+        $this->assertNull($this->null->replace('/Hello/', 'Good by')->return());
         $this->assertSame('Good by Rebet', $this->string->replace('/Hello/', 'Good by')->return());
 
-        // lcut
-        $this->assertNull($this->null->_('lcut', 4)->return());
-        $this->assertSame('ebet', $this->string->_('lcut', 7)->return());
-
-        $this->assertSame('ebet', $this->string->lcut(7)->return());
-
-        // rcut
-        $this->assertNull($this->null->_('rcut', 4)->return());
-        $this->assertSame('Hell', $this->string->_('rcut', 7)->return());
-
-        $this->assertSame('Hell', $this->string->rcut(7)->return());
-
-        // clip
-        $this->assertNull($this->null->_('clip', 4)->return());
-        $this->assertSame('Hell...', $this->string->_('clip', 7)->return());
-        $this->assertSame('Hello R', $this->string->_('clip', 7, '')->return());
-        $this->assertSame('Hell《略》', $this->string->_('clip', 7, '《略》')->return());
-
-        $this->assertSame('Hell...', $this->string->clip(7)->return());
-
-        // lower
-        $this->assertNull($this->null->_('lower')->return());
-        $this->assertSame('hello rebet', $this->string->_('lower')->return());
-
+        // Stream.filter.customs.lower
+        $this->assertNull($this->null->lower()->return());
         $this->assertSame('hello rebet', $this->string->lower()->return());
 
-        // upper
-        $this->assertNull($this->null->_('upper')->return());
-        $this->assertSame('HELLO REBET', $this->string->_('upper')->return());
-
+        // Stream.filter.customs.upper
+        $this->assertNull($this->null->upper()->return());
         $this->assertSame('HELLO REBET', $this->string->upper()->return());
 
-        // dump
-        $this->assertSame('', $this->null->_('dump')->return());
+        // Stream.filter.customs.decimal
+        $this->assertNull($this->null->decimal()->return());
+        $this->assertEquals(Decimal::of(123), $this->int->decimal()->return());
+        $this->assertEquals(Decimal::of("12.3"), Stream::of("12.3")->decimal()->return());
+
+        // Stream.filter.customs.abs
+        $this->assertNull($this->null->abs()->return());
+        $this->assertEquals("123", Stream::of(-123)->abs()->value()->return());
+
+        // Stream.filter.customs.eq
+        $this->assertSame(false, $this->null->eq(null));
+        $this->assertSame(false, $this->null->eq(1));
+        $this->assertSame(true, $this->int->eq(123));
+        $this->assertSame(true, $this->float->eq(1234.5678));
+        $this->assertSame(false, $this->float->eq(1234.56789));
+        $this->assertSame(true, $this->float->eq(1234.56789, 2));
+
+        // Stream.filter.customs.gt
+        $this->assertSame(false, $this->null->gt(null));
+        $this->assertSame(false, $this->null->gt(1));
+        $this->assertSame(false, $this->int->gt(null));
+        $this->assertSame(true, $this->int->gt(122));
+        $this->assertSame(false, $this->int->gt(123));
+        $this->assertSame(false, $this->int->gt(124));
+        $this->assertSame(true, $this->float->gt(1234.56779));
+        $this->assertSame(false, $this->float->gt(1234.5678));
+        $this->assertSame(false, $this->float->gt(1234.56781));
+        $this->assertSame(false, $this->float->gt(1234.56779, 2));
+        $this->assertSame(false, $this->float->gt(1234.5678, 2));
+        $this->assertSame(false, $this->float->gt(1234.56781, 2));
+
+        // Stream.filter.customs.gte
+        $this->assertSame(false, $this->null->gte(null));
+        $this->assertSame(false, $this->null->gte(1));
+        $this->assertSame(false, $this->int->gte(null));
+        $this->assertSame(true, $this->int->gte(122));
+        $this->assertSame(true, $this->int->gte(123));
+        $this->assertSame(false, $this->int->gte(124));
+        $this->assertSame(true, $this->float->gte(1234.56779));
+        $this->assertSame(true, $this->float->gte(1234.5678));
+        $this->assertSame(false, $this->float->gte(1234.56781));
+        $this->assertSame(true, $this->float->gte(1234.56779, 2));
+        $this->assertSame(true, $this->float->gte(1234.5678, 2));
+        $this->assertSame(true, $this->float->gte(1234.56781, 2));
+
+        // Stream.filter.customs.lt
+        $this->assertSame(false, $this->null->lt(null));
+        $this->assertSame(false, $this->null->lt(1));
+        $this->assertSame(false, $this->int->lt(null));
+        $this->assertSame(false, $this->int->lt(122));
+        $this->assertSame(false, $this->int->lt(123));
+        $this->assertSame(true, $this->int->lt(124));
+        $this->assertSame(false, $this->float->lt(1234.56779));
+        $this->assertSame(false, $this->float->lt(1234.5678));
+        $this->assertSame(true, $this->float->lt(1234.56781));
+        $this->assertSame(false, $this->float->lt(1234.56779, 2));
+        $this->assertSame(false, $this->float->lt(1234.5678, 2));
+        $this->assertSame(false, $this->float->lt(1234.56781, 2));
+
+        // Stream.filter.customs.lte
+        $this->assertSame(false, $this->null->lte(null));
+        $this->assertSame(false, $this->null->lte(1));
+        $this->assertSame(false, $this->int->lte(null));
+        $this->assertSame(false, $this->int->lte(122));
+        $this->assertSame(true, $this->int->lte(123));
+        $this->assertSame(true, $this->int->lte(124));
+        $this->assertSame(false, $this->float->lte(1234.56779));
+        $this->assertSame(true, $this->float->lte(1234.5678));
+        $this->assertSame(true, $this->float->lte(1234.56781));
+        $this->assertSame(true, $this->float->lte(1234.56779, 2));
+        $this->assertSame(true, $this->float->lte(1234.5678, 2));
+        $this->assertSame(true, $this->float->lte(1234.56781, 2));
+
+        // Stream.filter.customs.add
+        $this->assertSame(null, $this->null->add(null)->value()->return());
+        $this->assertSame(null, $this->null->add(1)->value()->return());
+        $this->assertSame(null, $this->int->add(null)->value()->return());
+        $this->assertSame('125', $this->int->add(2)->value()->return());
+
+        // Stream.filter.customs.sub
+        $this->assertSame(null, $this->null->sub(null)->value()->return());
+        $this->assertSame(null, $this->null->sub(1)->value()->return());
+        $this->assertSame(null, $this->int->sub(null)->value()->return());
+        $this->assertSame('121', $this->int->sub(2)->value()->return());
+
+        // Stream.filter.customs.mul
+        $this->assertSame(null, $this->null->mul(null)->value()->return());
+        $this->assertSame(null, $this->null->mul(1)->value()->return());
+        $this->assertSame(null, $this->int->mul(null)->value()->return());
+        $this->assertSame('246', $this->int->mul(2)->value()->return());
+
+        // Stream.filter.customs.div
+        $this->assertSame(null, $this->null->div(null)->value()->return());
+        $this->assertSame(null, $this->null->div(1)->value()->return());
+        $this->assertSame(null, $this->int->div(null)->value()->return());
+        $this->assertSame('61.5', $this->int->div(2)->value()->return());
+
+        // Stream.filter.customs.pow
+        $this->assertSame(null, $this->null->pow(null)->value()->return());
+        $this->assertSame(null, $this->null->pow(1)->value()->return());
+        $this->assertSame(null, $this->int->pow(null)->value()->return());
+        $this->assertSame('15129', $this->int->pow(2)->value()->return());
+
+        // Stream.filter.customs.sqrt
+        $this->assertSame(null, $this->null->sqrt()->value()->return());
+        $this->assertSame('3', Stream::of(9)->sqrt()->value()->return());
+
+        // Stream.filter.customs.mod
+        $this->assertSame(null, $this->null->mod(null)->value()->return());
+        $this->assertSame(null, $this->null->mod(1)->value()->return());
+        $this->assertSame(null, $this->int->mod(null)->value()->return());
+        $this->assertSame('3', $this->int->mod(10)->value()->return());
+
+        // Stream.filter.customs.powmod
+        $this->assertSame(null, $this->null->powmod(2, 10)->value()->return());
+        $this->assertSame(null, $this->int->powmod(null, 10)->value()->return());
+        $this->assertSame(null, $this->int->powmod(2, null)->value()->return());
+        $this->assertSame('9', $this->int->powmod(2, 10)->value()->return());
+
+        // Stream.filter.customs.floor
+        $this->assertNull($this->null->floor()->value()->return());
+        $this->assertSame('1234', $this->float->floor()->value()->return());
+        $this->assertSame('1234.56', $this->float->floor(2)->value()->return());
+        $this->assertSame('1200', $this->float->floor(-2)->value()->return());
+
+        // Stream.filter.customs.round
+        $this->assertNull($this->null->round()->value()->return());
+        $this->assertSame('1235', $this->float->round()->value()->return());
+        $this->assertSame('1234.57', $this->float->round(2)->value()->return());
+        $this->assertSame('1200', $this->float->round(-2)->value()->return());
+
+        // Stream.filter.customs.ceil
+        $this->assertNull($this->null->ceil()->value()->return());
+        $this->assertSame('1235', $this->float->ceil()->value()->return());
+        $this->assertSame('1234.57', $this->float->ceil(2)->value()->return());
+        $this->assertSame('1300', $this->float->ceil(-2)->value()->return());
+
+        // Stream.filter.customs.dump
+        $this->assertSame('null', $this->null->dump()->return());
         $this->assertSame(<<<EOS
-Array
-(
-    [0] => 1
-    [1] => 2
-    [2] => 3
-)
-
-EOS
-        , $this->array->_('dump')->return());
-
-        $this->assertSame(<<<EOS
-Array
-(
-    [0] => 1
-    [1] => 2
-    [2] => 3
-)
-
+array:3 [
+    0 => 1,
+    1 => 2,
+    2 => 3
+]
 EOS
         , $this->array->dump()->return());
+        $this->assertSame(<<<EOS
+array:3 [
+    0 => 1,
+    1 => ***,
+    2 => 3
+]
+EOS
+        , $this->array->dump([1], '***')->return());
 
-        // invoke
-        $this->assertNull($this->null->_('invoke', 'Test')->return());
-        $this->assertSame('Hello Test', $this->callable->_('invoke', 'Test')->return());
-
+        // Stream.filter.customs.invoke
+        $this->assertNull($this->null->invoke('Test')->return());
         $this->assertSame('Hello Test', $this->callable->invoke('Test')->return());
 
-        // nnvl
-        $this->assertSame(null, $this->null->_('nnvl', 'A')->return());
-        $this->assertSame('B', $this->null->_('nnvl', 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('nnvl', 'A')->return());
-        $this->assertSame('A', Stream::of('')->_('nnvl', 'A')->return());
-        $this->assertSame('A', Stream::of([])->_('nnvl', 'A')->return());
-        $this->assertSame('A', Stream::of(0)->_('nnvl', 'A')->return());
+        // Stream.filter.customs.equals
+        $this->assertTrue($this->null->equals(null));
+        $this->assertTrue($this->null->equals(''));
+        $this->assertTrue($this->int->equals(123));
+        $this->assertTrue($this->int->equals('123'));
+        $this->assertFalse($this->int->equals(1234));
 
+        // Stream.filter.customs.sameAs
+        $this->assertTrue($this->null->sameAs(null));
+        $this->assertFalse($this->null->sameAs(''));
+        $this->assertTrue($this->int->sameAs(123));
+        $this->assertFalse($this->int->sameAs('123'));
+        $this->assertFalse($this->int->sameAs(1234));
+
+        // Stream.filter.customs.nnvl
+        $this->assertSame(null, $this->null->nnvl('A')->return());
+        $this->assertSame('B', $this->null->nnvl('A', 'B')->return());
         $this->assertSame('A', $this->int->nnvl('A')->return());
+        $this->assertSame('A', Stream::of('')->nnvl('A')->return());
+        $this->assertSame('A', Stream::of([])->nnvl('A')->return());
+        $this->assertSame('A', Stream::of(0)->nnvl('A')->return());
 
-        // nbvl
-        $this->assertSame(null, $this->null->_('nbvl', 'A')->return());
-        $this->assertSame('B', $this->null->_('nbvl', 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('nbvl', 'A')->return());
-        $this->assertSame(null, Stream::of('')->_('nbvl', 'A')->return());
-        $this->assertSame(null, Stream::of([])->_('nbvl', 'A')->return());
-        $this->assertSame('A', Stream::of(0)->_('nbvl', 'A')->return());
-
+        // Stream.filter.customs.nbvl
+        $this->assertSame(null, $this->null->nbvl('A')->return());
+        $this->assertSame('B', $this->null->nbvl('A', 'B')->return());
         $this->assertSame('A', $this->int->nbvl('A')->return());
+        $this->assertSame(null, Stream::of('')->nbvl('A')->return());
+        $this->assertSame(null, Stream::of([])->nbvl('A')->return());
+        $this->assertSame('A', Stream::of(0)->nbvl('A')->return());
 
-        // nevl
-        $this->assertSame(null, $this->null->_('nevl', 'A')->return());
-        $this->assertSame('B', $this->null->_('nevl', 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('nevl', 'A')->return());
-        $this->assertSame(null, Stream::of('')->_('nevl', 'A')->return());
-        $this->assertSame(null, Stream::of([])->_('nevl', 'A')->return());
-        $this->assertSame(null, Stream::of(0)->_('nevl', 'A')->return());
-
+        // Stream.filter.customs.nevl
+        $this->assertSame(null, $this->null->nevl('A')->return());
+        $this->assertSame('B', $this->null->nevl('A', 'B')->return());
         $this->assertSame('A', $this->int->nevl('A')->return());
+        $this->assertSame(null, Stream::of('')->nevl('A')->return());
+        $this->assertSame(null, Stream::of([])->nevl('A')->return());
+        $this->assertSame(null, Stream::of(0)->nevl('A')->return());
 
-        // when
-        $this->assertSame('A', $this->null->_('when', null, 'A')->return());
-        $this->assertSame(null, $this->null->_('when', 123, 'A')->return());
-        $this->assertSame('A', $this->int->_('when', 123, 'A')->return());
-        $this->assertSame('A', $this->int->_('when', Stream::of(123), 'A')->return());
-        $this->assertSame(123, $this->int->_('when', 234, 'A')->return());
-        $this->assertSame('B', $this->int->_('when', 234, 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('when', function ($v) { return $v < 999; }, 'A', 'B')->return());
-        $this->assertSame('A', $this->int->_('when', true, 'A', 'B')->return());
-        $this->assertSame('B', $this->int->_('when', false, 'A', 'B')->return());
-
+        // Stream.filter.customs.when
+        $this->assertSame('A', $this->null->when(null, 'A')->return());
+        $this->assertSame(null, $this->null->when(123, 'A')->return());
         $this->assertSame('A', $this->int->when(123, 'A')->return());
+        $this->assertSame('A', $this->int->when(Stream::of(123), 'A')->return());
+        $this->assertSame(123, $this->int->when(234, 'A')->return());
+        $this->assertSame('B', $this->int->when(234, 'A', 'B')->return());
+        $this->assertSame('A', $this->int->when(function ($v) { return $v < 999; }, 'A', 'B')->return());
+        $this->assertSame('A', $this->int->when(true, 'A', 'B')->return());
+        $this->assertSame('B', $this->int->when(false, 'A', 'B')->return());
 
-        // case
+        // Stream.filter.customs.case
         $case = [123 => 'A', 'Hello Rebet' => 'B'];
-        $this->assertNull($this->null->_('case', $case)->return());
-        $this->assertSame('default', $this->null->_('case', $case, 'default')->return());
-        $this->assertSame('A', $this->int->_('case', $case)->return());
-        $this->assertSame('B', $this->string->_('case', $case)->return());
-        $this->assertSame("Hello\nRebet", $this->text->_('case', $case)->return());
-        $this->assertSame('C', $this->text->_('case', $case, 'C')->return());
-
+        $this->assertNull($this->null->case($case)->return());
+        $this->assertSame('default', $this->null->case($case, 'default')->return());
         $this->assertSame('A', $this->int->case($case)->return());
+        $this->assertSame('B', $this->string->case($case)->return());
+        $this->assertSame("Hello\nRebet", $this->text->case($case)->return());
+        $this->assertSame('C', $this->text->case($case, 'C')->return());
 
-        // length
-        $this->assertSame(null, $this->null->_('length')->return());
-        $this->assertSame(3, $this->int->_('length')->return());
-        $this->assertSame(9, $this->float->_('length')->return());
-        $this->assertSame(11, $this->string->_('length')->return());
-        $this->assertSame(1, $this->enum->_('length')->return());
-        $this->assertSame(2, $this->enums->_('length')->return());
-        $this->assertSame(3, $this->array->_('length')->return());
-
+        // Stream.filter.customs.length
+        $this->assertSame(null, $this->null->length()->return());
+        $this->assertSame(3, $this->int->length()->return());
+        $this->assertSame(9, $this->float->length()->return());
         $this->assertSame(11, $this->string->length()->return());
+        $this->assertSame(1, $this->enum->length()->return());
+        $this->assertSame(2, $this->enums->length()->return());
         $this->assertSame(3, $this->array->length()->return());
 
-        // values
-        $this->assertSame(null, $this->null->_('values')->return());
-        $this->assertSame([123], $this->int->_('values')->return());
-        $this->assertSame([1, 2, 3], $this->array->_('values')->return());
+        // Stream.filter.customs.values
+        $this->assertSame(null, $this->null->values()->return());
+        $this->assertSame([123], $this->int->values()->return());
+        $this->assertSame([1, 2, 3], $this->array->values()->return());
         $this->assertSame([
             'FOO',
             [
@@ -647,31 +888,56 @@ EOS
             123,
             Gender::MALE(),
             true,
-        ], $this->map->_('values')->return());
+        ], $this->map->values()->return());
 
-        $this->assertSame(Gender::lists(), $this->enums->values()->return());
-
-        // keys
-        $this->assertSame(null, $this->null->_('keys')->return());
-        $this->assertSame([0], $this->int->_('keys')->return());
-        $this->assertSame([0, 1, 2], $this->array->_('keys')->return());
+        // Stream.filter.customs.keys
+        $this->assertSame(null, $this->null->keys()->return());
+        $this->assertSame([0], $this->int->keys()->return());
+        $this->assertSame([0, 1, 2], $this->array->keys()->return());
         $this->assertSame([
             'foo',
             'parent',
             'number',
             'gender',
             'boolean',
-        ], $this->map->_('keys')->return());
+        ], $this->map->keys()->return());
 
-        $this->assertSame([0, 1], $this->enums->keys()->return());
+
+        // PHP function is_null
+        $this->assertTrue($this->null->isNull());
+        $this->assertFalse($this->int->isNull());
+
+        // PHP function is_string
+        $this->assertTrue($this->string->isString());
+        $this->assertFalse($this->int->isString());
+
+        // PHP function is_int
+        $this->assertTrue($this->int->isInt());
+        $this->assertFalse($this->string->isInt());
+
+        // PHP function is_float
+        $this->assertTrue($this->float->isFloat());
+        $this->assertFalse($this->int->isFloat());
+
+        // PHP function is_array
+        $this->assertTrue($this->array->isArray());
+        $this->assertFalse($this->int->isArray());
+
+        // PHP function is_bool
+        $this->assertTrue(Stream::of(true)->isBool());
+        $this->assertFalse($this->int->isBool());
+
+        // PHP function is_callable
+        $this->assertTrue($this->callable->isCallable());
+        $this->assertFalse($this->int->isCallable());
     }
 
     public function test_filters_php()
     {
-        $this->assertTrue($this->null->isNull());
-        $this->assertTrue($this->null->is_null());
-        $this->assertFalse($this->int->isNull());
-        $this->assertFalse($this->int->is_null());
+        $this->assertFalse($this->null->isInt());
+        $this->assertFalse($this->null->is_int());
+        $this->assertTrue($this->int->isInt());
+        $this->assertTrue($this->int->is_int());
 
         $this->assertSame('[1,2,3]', $this->array->jsonEncode()->return());
         $this->assertSame([1, 2, 3], $this->json->jsonDecode()->return());
@@ -690,9 +956,9 @@ EOS
     public function test_filters_convertError()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Apply datetime filter failed. The origin type 'Closure' can not convert to Rebet\DateTime\DateTime.");
+        $this->expectExceptionMessage("Apply datetimef filter failed. The origin type 'Closure' can not convert to Rebet\DateTime\DateTime.");
 
-        $this->callable->datetime('Y/m/d');
+        $this->callable->datetimef('Y/m/d');
     }
 }
 

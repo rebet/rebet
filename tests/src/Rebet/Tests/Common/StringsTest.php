@@ -404,15 +404,38 @@ EOS
                 , new \ArrayObject([1, 2, 3])
             ],
             ['<instance of Rebet\Tests\Common\StringsTest_Mock>', new StringsTest_Mock()],
+            [
+                <<<EOS
+array:3 [
+    a => ********,
+    b => B,
+    c => C
+]
+EOS
+                , ['a' => 'A', 'b' => 'B', 'c' => 'C'], ['a']
+            ],
+            [
+                <<<EOS
+array:3 [
+    a => *,
+    b => array:2 [
+        a => *,
+        b => B
+    ],
+    c => *
+]
+EOS
+                , ['a' => 'A', 'b' => ['a' => 'A', 'b' => 'B'], 'c' => 'C'], ['a', 'c'], '*'
+            ],
         ];
     }
 
     /**
      * @dataProvider dataStringifis
      */
-    public function test_stringify($expect, $value)
+    public function test_stringify($expect, $value, array $masks = [], string $masked_label = '********')
     {
-        $this->assertSame($expect, Strings::stringify($value));
+        $this->assertSame($expect, Strings::stringify($value, $masks, $masked_label));
     }
 
     public function test_traceToString()

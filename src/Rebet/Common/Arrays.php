@@ -485,6 +485,18 @@ class Arrays
     }
 
     /**
+     * Remove duplicate values from given array.
+     *
+     * @param array|null $array
+     * @param int $sort_flags (default: SORT_REGULAR)
+     * @return array|null
+     */
+    public static function unique(?array $array, int $sort_flags = SORT_REGULAR) : ?array
+    {
+        return $array === null ? null : array_unique($array, $sort_flags) ;
+    }
+
+    /**
      * Return the key in an array passing a given truth test.
      *
      * @param  array|null  $array

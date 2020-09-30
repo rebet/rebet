@@ -12,6 +12,9 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\DateTime\DateTime;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Request;
+use Rebet\Http\Session\Storage\Handler\NativeFileSessionHandler;
+use Rebet\Http\Session\Storage\SessionStorage;
+use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
 use Rebet\Translation\FileDictionary;
@@ -57,6 +60,9 @@ class LoadFrameworkConfiguration implements Bootstrapper
             Log::class => [
                 'default_channel' => App::channel() ?? 'default',
             ],
+            TextFormatter::class => [
+                'masks' => ['password', 'password_confirm'],
+            ],
 
             //---------------------------------------------
             // Filesystem Configure
@@ -73,6 +79,13 @@ class LoadFrameworkConfiguration implements Bootstrapper
                         ]
                     ],
                 ],
+            ],
+
+            //---------------------------------------------
+            // Http Configure
+            //---------------------------------------------
+            SessionStorage::class => [
+                'handler' => NativeFileSessionHandler::class,
             ],
 
             //---------------------------------------------

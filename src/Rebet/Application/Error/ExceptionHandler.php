@@ -271,9 +271,9 @@ class ExceptionHandler extends FallbackHandler
         $home   = $request->getRoutePrefix().'/' ;
         $title  = Stream::of($title, true)->escape()->nl2br();
         if (!$custom_title) {
-            $title = $title->text('<span class="status">'.$status.'</span>%s');
+            $title = $title->stringf('<span class="status">'.$status.'</span>%s');
         }
-        $detail = Stream::of($detail, true)->escape()->nl2br()->text('<div class="detail">%s</div>')->default('');
+        $detail = Stream::of($detail, true)->escape()->nl2br()->stringf('<div class="detail">%s</div>')->default('');
         $html   = <<<EOS
 <!DOCTYPE html>
 <html>

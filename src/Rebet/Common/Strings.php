@@ -418,11 +418,13 @@ class Strings
      * Convert value to string.
      *
      * @param mixed $value
+     * @param array $masks the property name list that you want to mask. (default: [])
+     * @param string $masked_label (default: '********')
      * @return string
      */
-    public static function stringify($value) : string
+    public static function stringify($value, array $masks = [], string $masked_label = '********') : string
     {
-        return static::_stringify($value, false);
+        return static::_stringify($value, false, $masks, $masked_label);
     }
 
     /**
@@ -430,9 +432,11 @@ class Strings
      *
      * @param mixed $value
      * @param bool $is_nested
+     * @param array $masks the property name list that you want to mask. (default: [])
+     * @param string $masked_label (default: '********')
      * @return string
      */
-    protected static function _stringify($value, bool $is_nested) : string
+    protected static function _stringify($value, bool $is_nested, array $masks = [], string $masked_label = '********') : string
     {
         if ($value === null) {
             return 'null';
@@ -464,7 +468,7 @@ class Strings
             return Callback::stringify($value);
         }
         if (is_object($value) && $value instanceof \JsonSerializable) {
-            return get_class($value)." : ".static::_stringify($value->jsonSerialize(), true) ;
+            return get_class($value)." : ".static::_stringify($value->jsonSerialize(), true, $masks, $masked_label);
         }
         if (is_array($value) && empty($value)) {
             return "[]";
@@ -473,7 +477,8 @@ class Strings
             $describes = '';
             $count     = 0;
             foreach ($value as $k => $v) {
-                $describes .= "\n".static::indent("{$k} => ".static::_stringify($v, true).",", '    ');
+                $v          = in_array($k, $masks) ? $masked_label : $v ;
+                $describes .= "\n".static::indent("{$k} => ".static::_stringify($v, true, $masks, $masked_label).",", '    ');
                 $count++;
             }
             return (Reflector::getType($value) ?? 'unkown').":{$count} [".static::rtrim($describes, ',')."\n]";

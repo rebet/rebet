@@ -159,7 +159,7 @@ class Logger
      */
     public function debug($message, array $context = [], $exception = null) : void
     {
-        self::log(LogLevel::DEBUG, $message, $context, $exception);
+        $this->log(LogLevel::DEBUG, $message, $context, $exception);
     }
 
     /**

@@ -453,6 +453,13 @@ class ArraysTest extends RebetTestCase
         $this->assertEquals([0 => 0, 4 => false, 5=> 500], $array);
     }
 
+    public function test_unique()
+    {
+        $array = [1, 1, 2, 3, 2, '3', 4];
+        $array = Arrays::unique($array);
+        $this->assertEquals([0 => 1, 2 => 2, 3 => 3, 6=> 4], $array);
+    }
+
     public function test_remove()
     {
         $array = ['foo' => 'F', 'bar' => 'B'];
@@ -1198,5 +1205,18 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('a=A&b=B+b', Arrays::toQuery(['a' => 'A', 'b' => 'B b']));
         $this->assertSame('a=A&b=B%20b', Arrays::toQuery(['a' => 'A', 'b' => 'B b'], PHP_QUERY_RFC3986));
         $this->assertSame('a=A&b=B+b&c%5Bfoo%5D=foo&c%5Bbar%5D=bar', Arrays::toQuery(['a' => 'A', 'b' => 'B b', 'c' => ['foo' => 'foo', 'bar' => 'bar']]));
+    }
+
+    public function test_map()
+    {
+        $this->assertSame(null, Arrays::map(null, function ($v, $k) { return $v; }));
+        $this->assertSame([2, 4], Arrays::map([1, 2], function ($v, $k) { return $v * 2; }));
+        $this->assertSame(["0 : 1", "1 : 2"], Arrays::map([1, 2], function ($v, $k) { return "{$k} : {$v}"; }));
+    }
+
+    public function test_reduce()
+    {
+        $this->assertSame(null, Arrays::reduce(null, function ($c, $i) { return $c + $i; }));
+        $this->assertSame(6, Arrays::reduce([1, 2, 3], function ($c, $i) { return $c + $i; }, 0));
     }
 }

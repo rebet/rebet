@@ -6,6 +6,9 @@ use Rebet\Tests\RebetTestCase;
 
 class SessionStorageTest extends RebetTestCase
 {
+    /**
+     * @runInSeparateProcess
+     */
     public function test___construct()
     {
         $this->assertInstanceOf(SessionStorage::class, new SessionStorage());

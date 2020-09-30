@@ -20,6 +20,7 @@ use Rebet\Common\Path;
 use Rebet\Common\Reflector;
 use Rebet\Common\Securities;
 use Rebet\Common\System;
+use Rebet\Common\Text;
 use Rebet\Config\Config;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -171,6 +172,7 @@ abstract class RebetTestCase extends TestCase
         View::clear();
         StderrCapture::clear();
         Storage::clean();
+        Text::clear();
     }
 
     // protected function assertPreConditions() {}

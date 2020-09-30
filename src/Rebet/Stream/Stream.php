@@ -10,88 +10,110 @@ use Rebet\Common\Strings;
 use Rebet\Common\Utils;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
-use Rebet\Inflection\Inflector;
 
 /**
  * Stream Class
  *
- * @method Stream convert(?string $type)
- * @method bool   isBlank()
- * @method Stream bvl($default)
- * @method bool   isEmpty()
- * @method Stream evl($default)
- * @method Stream lcut(int $length, string $encoding = 'UTF-8')
- * @method Stream rcut(int $length, string $encoding = 'UTF-8')
- * @method Stream clip(int $length, string $ellipsis = '...')
- * @method Stream indent(string $char = "\t", int $depth = 1)
- * @method Stream ltrim(string $prefix = ' ', ?int $max = null)
- * @method Stream rtrim(string $suffix = ' ', ?int $max = null)
- * @method Stream trim(string $deletion = ' ', ?int $max = null)
- * @method Stream mbtrim()
- * @method bool   startsWith(string $needle)
- * @method bool   endsWith(string $needle)
- * @method bool   contains(string|string[] $searches, ?int $at_least = null)
- * @method bool   match(string|string[] $patterns)
- * @method bool   wildmatch(string|string[] $patterns)
- * @method Stream split(string $delimiter, int $size, $padding = null)
- * @method Stream pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null) - Closure : `function($index, $key, $value) {...}`
- * @method Stream override($diff, array|string $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null) - Closure : `function($index, $key, $value) {...}`
- * @method Stream duplicate()
- * @method Stream crossJoin(iterable ...$arrays)
- * @method Stream only(array|string $keys)
- * @method Stream except(array|string $keys)
- * @method Stream where(?callable $callback) - $callback : `function($value[, $key]) : bool {...}`
- * @method Stream compact()
- * @method Stream first(?callable $callback = null, $default = null) - $callback : `function($value[, $key]) : bool {...}`
- * @method Stream last(?callable $callback = null, $default = null) - $callback : `function($value[, $key]) : bool {...}`
- * @method Stream flatten(int $depth = INF)
- * @method Stream prepend($value, $key = null)
- * @method Stream shuffle(?int $seed = null)
- * @method Stream map(callable $callback) - $callback : `function($value[, $key]) {...}`
- * @method Stream reduce(callable $reducer, $initial = null) - $reducer : `function($carry, $item) {...}`
- * @method Stream diff($items, ?callable $comparator = null) - $comparator : `function($a, $b) : int {...}`
- * @method Stream intersect($items, ?callable $comparator = null) - $comparator : `function($a, $b) : int {...}`
- * @method Stream every(callable $test) - $test : `function($v, $k) : bool {...}`
- * @method Stream groupBy(callable|string|array $group_by = null, bool $preserve_keys = false) - $group_by : `function($value, $key) {...}`
- * @method Stream union($other)
- * @method Stream min(callable|string|null $retriever = null, $initial = null) - $retriever : `function($value) {...}`
- * @method Stream max(callable|string|null $retriever = null, $initial = null) - $retriever : `function($value) {...}`
- * @method Stream sort(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) - $comparator :  `function($a, $b) : int`
- * @method Stream sortBy(callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
- * @method Stream sortKeys(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) - $comparator :  `function($a, $b) : int`
- * @method Stream sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) - $retriever : `function($value) {...}`
- * @method Stream avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) - $retriever : `function($value) {...}`
- * @method Stream median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) - $retriever : `function($value) {...}`
- * @method Stream mode(callable|string|null $retriever = null) - $retriever : `function($value) {...}`
- * @method Stream implode(string $delimiter = ', ')
- * @method bool   isNull()
- * @method Stream nvl($default)
- * @method Stream default($default)
- * @method Stream escape(string $type = 'html') - $type : `'html'|'url'`
- * @method Stream nl2br()
- * @method Stream datetime(string $format)
- * @method Stream text(string $format)
- * @method Stream explode(string $delimiter, int $limit = PHP_INT_MAX)
- * @method Stream replace($pattern, $replacement, int $limit = -1)
- * @method Stream lower()
- * @method Stream upper()
- * @method Stream decimal()
- * @method Stream floor(int $precision = 0)
- * @method Stream round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)
- * @method Stream ceil(int $precision = 0)
- * @method Stream number(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')
- * @method Stream dump()
- * @method Stream invoke(...$args)
- * @method bool   equals($other)
- * @method bool   sameAs($other)
- * @method Stream nnvl($then, $else = null)
- * @method Stream nbvl($then, $else = null)
- * @method Stream nevl($then, $else = null)
- * @method Stream when(mixed $test, $then, $else = null) - $test : `function($value) {...}`
- * @method Stream case(array $map, $default = null)
- * @method Stream length()
- * @method Stream values()
- * @method Stream keys()
+ * @method Stream|bool convert(?string $type)                                                                                                               Call Reflector::convert($value, ...)
+ * @method bool        isBlank()                                                                                                                            Call Utils::isBlank($value)
+ * @method Stream|bool bvl($default)                                                                                                                        Call Utils::bvl($value, ...)
+ * @method bool        isEmpty()                                                                                                                            Call Utils::isEmpty($value)
+ * @method Stream|bool evl($default)                                                                                                                        Call Utils::evl($value, ...)
+ * @method Stream      lcut(int $length, string $encoding = 'UTF-8')                                                                                        Call Strings::lcut($value, ...)
+ * @method Stream      rcut(int $length, string $encoding = 'UTF-8')                                                                                        Call Strings::rcut($value, ...)
+ * @method Stream      clip(int $length, string $ellipsis = '...')                                                                                          Call Strings::clip($value, ...)
+ * @method Stream      indent(string $char = "\t", int $depth = 1)                                                                                          Call Strings::indent($value, ...)
+ * @method Stream      ltrim(string $prefix = ' ', ?int $max = null)                                                                                        Call Strings::ltrim($value, ...)
+ * @method Stream      rtrim(string $suffix = ' ', ?int $max = null)                                                                                        Call Strings::rtrim($value, ...)
+ * @method Stream      trim(string $deletion = ' ', ?int $max = null)                                                                                       Call Strings::trim($value, ...)
+ * @method Stream      mbtrim()                                                                                                                             Call Strings::mbtrim($value)
+ * @method bool        startsWith(string $needle)                                                                                                           Call Strings::startsWith($value, ...)
+ * @method bool        endsWith(string $needle)                                                                                                             Call Strings::endsWith($value, ...)
+ * @method bool        contains(string|string[] $searches, ?int $at_least = null)                                                                           Call Strings::contains($value, ...)
+ * @method bool        match(string|string[] $patterns)                                                                                                     Call Strings::match($value, ...)
+ * @method bool        wildmatch(string|string[] $patterns)                                                                                                 Call Strings::wildmatch($value, ...)
+ * @method Stream      split(string $delimiter, int $size, $padding = null)                                                                                 Call Strings::split($value, ...)
+ * @method Stream      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                             Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Stream      override($diff, array|string $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Stream      duplicate()                                                                                                                          Call Arrays::duplicate($value)
+ * @method Stream      crossJoin(iterable ...$arrays)                                                                                                       Call Arrays::crossJoin($value, ...)
+ * @method Stream      only(array|string $keys)                                                                                                             Call Arrays::only($value, ...)
+ * @method Stream      except(array|string $keys)                                                                                                           Call Arrays::except($value, ...)
+ * @method Stream      where(?callable $callback)                                                                                                           Call Arrays::where($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Stream      compact()                                                                                                                            Call Arrays::compact($value)
+ * @method Stream      unique(int $sort_flag = SORT_REGULAR)                                                                                                Call Arrays::unique($value, ...)
+ * @method Stream|bool first(?callable $callback = null, $default = null)                                                                                   Call Arrays::first($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Stream|bool last(?callable $callback = null, $default = null)                                                                                    Call Arrays::last($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Stream      flatten(int $depth = INF)                                                                                                            Call Arrays::flatten($value, ...)
+ * @method Stream      prepend($value, $key = null)                                                                                                         Call Arrays::prepend($value, ...)
+ * @method Stream      shuffle(?int $seed = null)                                                                                                           Call Arrays::shuffle($value, ...)
+ * @method Stream      map(callable $callback)                                                                                                              Call Arrays::map($value, ...) - $callback : `function($value[, $key]) {...}`
+ * @method Stream|bool reduce(callable $reducer, $initial = null)                                                                                           Call Arrays::reduce($value, ...) - $reducer : `function($carry, $item) {...}`
+ * @method Stream      diff($items, ?callable $comparator = null)                                                                                           Call Arrays::diff($value, ...) - $comparator : `function($a, $b) : int {...}`
+ * @method Stream      intersect($items, ?callable $comparator = null)                                                                                      Call Arrays::intersect($value, ...) - $comparator : `function($a, $b) : int {...}`
+ * @method bool        every(callable $test)                                                                                                                Call Arrays::every($value, ...) - $test : `function($v, $k) : bool {...}`
+ * @method Stream      groupBy(callable|string|array $group_by = null, bool $preserve_keys = false)                                                         Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key) {...}`
+ * @method Stream      union($other)                                                                                                                        Call Arrays::union($value, ...)
+ * @method Stream|bool min(callable|string|null $retriever = null, $initial = null)                                                                         Call Arrays::min($value, ...) - $retriever : `function($value) {...}`
+ * @method Stream|bool max(callable|string|null $retriever = null, $initial = null)                                                                         Call Arrays::max($value, ...) - $retriever : `function($value) {...}`
+ * @method Stream      sort(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                                 Call Arrays::sort($value, ...) - $comparator : `function($a, $b) : int`
+ * @method Stream      sortBy(callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                   Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
+ * @method Stream      sortKeys(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                             Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b) : int`
+ * @method Stream      sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                               Call Arrays::sum($value, ...) - $retriever : `function($value) {...}`
+ * @method Stream      avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                               Call Arrays::avg($value, ...) - $retriever : `function($value) {...}`
+ * @method Stream      median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                            Call Arrays::median($value, ...) - $retriever : `function($value) {...}`
+ * @method Stream      mode(callable|string|null $retriever = null)                                                                                         Call Arrays::mode($value, ...) - $retriever : `function($value) {...}`
+ * @method Stream      implode(string $delimiter = ', ')                                                                                                    Call Arrays::implode($value, ...)
+ * @method Stream      nvl($default)                                                                                                                        Call Stream.filter.customs.nvl($value, ...) configured closure - Return the given default value if the wrapped value is null.
+ * @method Stream      default($default)                                                                                                                    Call Stream.filter.customs.default($value, ...) configured closure - Return the given default value if the wrapped value is null.
+ * @method Stream      escape(string $type = 'html')                                                                                                        Call Stream.filter.customs.escape($value, ...) configured closure - Escape the wrapped value string by html sanitise or url encoding. $type : `'html'|'url'`
+ * @method Stream      nl2br()                                                                                                                              Call Stream.filter.customs.nl2br($value) configured closure - Convert line feed to <br> tag using PHP nl2br() function.
+ * @method Stream      datetimef(string $format)                                                                                                            Call Stream.filter.customs.datetimef($value, ...) configured closure - Format the wrapped value using DateTime::format().
+ * @method Stream      numberf(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')                 Call Stream.filter.customs.numberf($value, ...) configured closure - Format the wrapped value using Decimal::round($precision)->format($omit_zero, $decimal_point, $thousands_separator).
+ * @method Stream      stringf(string $format)                                                                                                              Call Stream.filter.customs.stringf($value, ...) configured closure - Format the wrapped value using sprintf format.
+ * @method Stream      explode(string $delimiter, int $limit = PHP_INT_MAX)                                                                                 Call Stream.filter.customs.explode($value, ...) configured closure - Split the wrapped value string using given delimiter.
+ * @method Stream      replace($pattern, $replacement, int $limit = -1)                                                                                     Call Stream.filter.customs.replace($value, ...) configured closure - Replace the string using given regex pattern from the wrapped value.
+ * @method Stream      lower()                                                                                                                              Call Stream.filter.customs.lower($value) configured closure - Change to lower case string from the wrapped value.
+ * @method Stream      upper()                                                                                                                              Call Stream.filter.customs.upper($value) configured closure - Change to upper case string from the wrapped value.
+ * @method Stream      decimal()                                                                                                                            Call Stream.filter.customs.decimal($value) configured closure - Convert to Decimal class from the wrapped value.
+ * @method Stream      abs()                                                                                                                                Call Stream.filter.customs.abs($value) configured closure - Calc the wrapped value using Decimal::abs().
+ * @method bool        eq($other, ?int $precision = null)                                                                                                   Call Stream.filter.customs.eq($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::eq(). Returns false if null is included.
+ * @method bool        gt($other, ?int $precision = null)                                                                                                   Call Stream.filter.customs.gt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gt(). Returns false if null is included.
+ * @method bool        gte($other, ?int $precision = null)                                                                                                  Call Stream.filter.customs.gte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gte(). Returns false if null is included.
+ * @method bool        lt($other, ?int $precision = null)                                                                                                   Call Stream.filter.customs.lt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lt(). Returns false if null is included.
+ * @method bool        lte($other, ?int $precision = null)                                                                                                  Call Stream.filter.customs.lte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lte(). Returns false if null is included.
+ * @method Stream      add($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.add($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::add().
+ * @method Stream      sub($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.sub($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::sub().
+ * @method Stream      mul($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.mul($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::mul().
+ * @method Stream      div($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.div($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::div().
+ * @method Stream      pow($other, ?int $precision = null, ?int $mode = null)                                                                               Call Stream.filter.customs.pow($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::pow().
+ * @method Stream      sqrt(?int $precision = null, ?int $mode = null)                                                                                      Call Stream.filter.customs.sqrt($value, ...) configured closure - Calc the wrapped value using Decimal::sqrt().
+ * @method Stream      mod($modulus)                                                                                                                        Call Stream.filter.customs.mod($value, ...) configured closure - Calc the wrapped value using Decimal::mod().
+ * @method Stream      powmod($exponent, $modulus)                                                                                                          Call Stream.filter.customs.powmod($value, ...) configured closure - Calc the wrapped value using Decimal::powmod().
+ * @method Stream      floor(int $precision = 0)                                                                                                            Call Stream.filter.customs.floor($value, ...) configured closure - Decimal::floor($value, ...) the wrapped value.
+ * @method Stream      round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)                                 Call Stream.filter.customs.round($value, ...) configured closure - Decimal::round($value, ...) the wrapped value.
+ * @method Stream      ceil(int $precision = 0)                                                                                                             Call Stream.filter.customs.ceil($value, ...) configured closure - Decimal::ceil($value, ...) the wrapped value.
+ * @method Stream      dump()                                                                                                                               Call Stream.filter.customs.dump($value) configured closure - Dump wrapped value as string for debug and log.
+ * @method Stream      invoke(...$args)                                                                                                                     Call Stream.filter.customs.invoke($value, ...) configured closure - Invoke wrraped callback function.
+ * @method bool        equals($other)                                                                                                                       Call Stream.filter.customs.equals($value, ...) configured closure - It will compare using '==' operator.
+ * @method bool        sameAs($other)                                                                                                                       Call Stream.filter.customs.sameAs($value, ...) configured closure - It will compare using '===' operator.
+ * @method Stream      nnvl($then, $else = null)                                                                                                            Call Stream.filter.customs.nnvl($value, ...) configured closure - Return given value if the wrapped value is NOT null.
+ * @method Stream      nbvl($then, $else = null)                                                                                                            Call Stream.filter.customs.nnbl($value, ...) configured closure - Return given value if the wrapped value is NOT blank(= null,'',[]).
+ * @method Stream      nevl($then, $else = null)                                                                                                            Call Stream.filter.customs.nnel($value, ...) configured closure - Return given value if the wrapped value is NOT empty(= null,'',[], 0).
+ * @method Stream      when(mixed $test, $then, $else = null)                                                                                               Call Stream.filter.customs.when($value, ...) configured closure - Return given value if the wrapped value matched given test. - $test : value or `function($value) {...}`
+ * @method Stream      case(array $map, $default = null)                                                                                                    Call Stream.filter.customs.case($value, ...) configured closure - Return given case value if the wrapped value matched given case key.
+ * @method Stream      length()                                                                                                                             Call Stream.filter.customs.length($value, ...) configured closure - Get the wrapped value string length.
+ * @method Stream      values()                                                                                                                             Call Stream.filter.customs.values($value, ...) configured closure - Get values from the wrapped value.
+ * @method Stream      keys()                                                                                                                               Call Stream.filter.customs.keys($value, ...) configured closure - Get keys from the wrapped value.
+ * @method bool        isNull()                                                                                                                             Call PHP function is_null($value) - It checks the wrapped value is null or not.
+ * @method bool        isString()                                                                                                                           Call PHP function is_string($value) - It checks the wrapped value is string or not.
+ * @method bool        isInt()                                                                                                                              Call PHP function is_int($value) - It checks the wrapped value is int or not.
+ * @method bool        isFloat()                                                                                                                            Call PHP function is_float($value) - It checks the wrapped value is float or not.
+ * @method bool        isArray()                                                                                                                            Call PHP function is_array($value) - It checks the wrapped value is array or not.
+ * @method bool        isBool()                                                                                                                             Call PHP function is_bool($value) - It checks the wrapped value is bool or not.
+ * @method bool        isCallable()                                                                                                                         Call PHP function is_callable($value) - It checks the wrapped value is callable or not.
+ *
+ * And you can call any PHP function xxx_yyy($value [, $arg, ...]) as xxxYyy([$arg, ...]).
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -111,7 +133,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
                     Strings::class   => ['lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch', 'split'],
                     Arrays::class    => [
-                        'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact',
+                        'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'unique',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
                         'every', 'groupBy', 'union', 'min', 'max', 'sort', 'sortBy', 'sortKeys', 'sum', 'avg',
                         'median', 'mode', 'implode', 'toQuery'
@@ -119,7 +141,6 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
-                    'isNull'   => function ($value) { return $value === null; },
                     'nvl'      => function ($value, $default) { return $value ?? $default; },
                     'default'  => function ($value, $default) { return $value ?? $default; },
                     'escape'   => function (string $value, string $type = 'html') {
@@ -129,32 +150,46 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                             default: throw new \InvalidArgumentException("Invalid escape type [{$type}] given. The type must be html or url");
                         }
                     },
-                    'nl2br'    => function (string $value) { return nl2br($value); },
-                    'datetime' => function (DateTime $value, string $format) { return $value->format($format); },
-                    'text'     => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
-                    'explode'  => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
-                    'replace'  => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
-                    'lower'    => function (string $value) { return strtolower($value); },
-                    'upper'    => function (string $value) { return strtoupper($value); },
-                    'decimal'  => function ($value) { return $value === null ? null : Decimal::of($value); },
-                    'floor'    => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->floor($precision); },
-                    'round'    => function ($value, int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES) { return $value === null ? null : Decimal::of($value)->round($precision, $guard_digits, $precision_type); },
-                    'ceil'     => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->ceil($precision); },
-                    'number'   => function ($value, int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',') { return $value === null ? null : Decimal::of($value)->round($precision)->format($omit_zero, $decimal_point, $thousands_separator); },
-                    'dump'     => function ($value) { return print_r($value, true); },
-                    'invoke'   => function ($value, ...$args) { return call_user_func($value, ...$args); },
-                    'equals'   => function ($value, $other) { return $value == $other; },
-                    'sameAs'   => function ($value, $other) { return $value === $other; },
-                    'nnvl'     => function ($value, $then, $else = null) { return $value !== null ? $then : $else ; },
-                    'nbvl'     => function ($value, $then, $else = null) { return !Utils::isBlank($value) ? $then : $else ; },
-                    'nevl'     => function ($value, $then, $else = null) { return !Utils::isEmpty($value) ? $then : $else ; },
-                    'when'     => function ($value, $test, $then, $else = null) {
+                    'nl2br'     => function (string $value) { return nl2br($value); },
+                    'datetimef' => function (DateTime $value, string $format) { return $value->format($format); },
+                    'numberf'   => function ($value, int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',') { return $value === null ? null : Decimal::of($value)->round($precision)->format($omit_zero, $decimal_point, $thousands_separator); },
+                    'stringf'   => function ($value, string $format) { return $value === null ? null : sprintf($format, $value) ; },
+                    'explode'   => function (string $value, string $delimiter, int $limit = PHP_INT_MAX) { return explode($delimiter, $value, $limit); },
+                    'replace'   => function (string $value, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $value, $limit); },
+                    'lower'     => function (string $value) { return strtolower($value); },
+                    'upper'     => function (string $value) { return strtoupper($value); },
+                    'decimal'   => function ($value) { return $value === null ? null : Decimal::of($value); },
+                    'abs'       => function ($value) { return $value === null ? null : Decimal::of($value)->abs(); },
+                    'eq'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision); },
+                    'gt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision); },
+                    'gte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
+                    'lt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
+                    'lte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
+                    'add'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
+                    'sub'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
+                    'mul'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
+                    'div'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode); },
+                    'pow'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode); },
+                    'sqrt'      => function ($value, ?int $precision = null, ?int $mode = null) { return $value === null ? null : Decimal::of($value)->sqrt($precision, $mode); },
+                    'mod'       => function ($value, $modulus) { return $value === null || $modulus === null ? null : Decimal::of($value)->mod($modulus); },
+                    'powmod'    => function ($value, $exponent, $modulus) { return $value === null || $exponent === null || $modulus === null ? null : Decimal::of($value)->powmod($exponent, $modulus); },
+                    'floor'     => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->floor($precision); },
+                    'round'     => function ($value, int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES) { return $value === null ? null : Decimal::of($value)->round($precision, $guard_digits, $precision_type); },
+                    'ceil'      => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->ceil($precision); },
+                    'dump'      => function ($value, array $masks = [], string $masked_label = '********') { return Strings::stringify($value, $masks, $masked_label); },
+                    'invoke'    => function ($value, ...$args) { return call_user_func($value, ...$args); },
+                    'equals'    => function ($value, $other) { return $value == $other; },
+                    'sameAs'    => function ($value, $other) { return $value === $other; },
+                    'nnvl'      => function ($value, $then, $else = null) { return $value !== null ? $then : $else ; },
+                    'nbvl'      => function ($value, $then, $else = null) { return !Utils::isBlank($value) ? $then : $else; },
+                    'nevl'      => function ($value, $then, $else = null) { return !Utils::isEmpty($value) ? $then : $else; },
+                    'when'      => function ($value, $test, $then, $else = null) {
                         $test = static::peel($test);
                         $test = is_callable($test) ? call_user_func($test, $value) : $test ;
                         return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                     },
-                    'case'     => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
-                    'length'   => function ($value) {
+                    'case'      => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
+                    'length'    => function ($value) {
                         switch (true) {
                             case $value === null:    return null;
                             case is_numeric($value): return mb_strlen((string)$value);
@@ -162,8 +197,8 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         }
                         return Arrays::count($value);
                     },
-                    'values'   => function (array $value) { return array_values($value); },
-                    'keys'     => function (array $value) { return array_keys($value); },
+                    'values'    => function (array $value) { return array_values($value); },
+                    'keys'      => function (array $value) { return array_keys($value); },
                 ],
             ],
         ];
@@ -387,7 +422,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         } else {
             $filter = static::config("filter.customs.{$name}", false) ?? static::$delegate_filters[$name] ?? null ;
         }
-        $alias  = Inflector::snakize($name);
+        $alias  = ltrim(strtolower(preg_replace('/[A-Z]/', '_\0', $name)), '_');
         $filter = $filter ?? (is_callable($alias) ? $alias : null) ?? (is_callable($name) ? $name : null) ;
         return $this->_filter($name, $filter ? \Closure::fromCallable($filter) : null, ...$args);
     }
