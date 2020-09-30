@@ -162,7 +162,7 @@ class View implements Renderable
      * Get the global shared valiables.
      *
      * @param string $key
-     * @return void
+     * @return mixed
      */
     public static function shared(string $key)
     {
