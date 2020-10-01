@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Enum;
+namespace Rebet\Tools\Enum;
 
 use Rebet\Tools\Convertible;
 use Rebet\Tools\Exception\LogicException;

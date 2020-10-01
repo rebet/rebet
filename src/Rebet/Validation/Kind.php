@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 
 /**
  * Validation Check Kind Enum Class

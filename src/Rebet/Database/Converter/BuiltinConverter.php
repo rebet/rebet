@@ -8,7 +8,7 @@ use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 
 /**
  * Builtin Converter Class

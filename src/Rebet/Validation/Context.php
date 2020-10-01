@@ -5,7 +5,7 @@ use Rebet\Tools\Arrays;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\Translation\Translator;
 

@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Enum;
+namespace Rebet\Tests\Tools\Enum;
 
 use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Translation\Translator;

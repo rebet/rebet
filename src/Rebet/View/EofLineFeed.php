@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View;
 
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 
 /**
  * EOF Line Feed Class

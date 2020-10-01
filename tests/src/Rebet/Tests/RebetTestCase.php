@@ -26,7 +26,7 @@ use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 use Rebet\Event\Event;
 use Rebet\File\Files;
 use Rebet\Filesystem\Storage;

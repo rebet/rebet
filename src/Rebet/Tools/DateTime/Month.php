@@ -2,7 +2,7 @@
 namespace Rebet\Tools\DateTime;
 
 use Rebet\Tools\Path;
-use Rebet\Enum\Enum;
+use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 
