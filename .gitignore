@@ -1,9 +1,8 @@
-/nbproject/
-/vendor/
-/composer.lock
 .DS_Store
 Thumbs.db
+/.php_cs.cache
+/.phpunit.result.cache
 /composer.phar
-.php_cs.cache
+/vendor/
 /.vscode/
-.phpunit.result.cache
+/nbproject/
