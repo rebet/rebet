@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Validation;
+namespace Rebet\Tests\Tools\Reflection;
 
-use Rebet\Tools\Describable;
-use Rebet\Tools\Reflector;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Reflection\Describable;
+use Rebet\Tools\Reflection\Reflector;
 
 class DescribableTest extends RebetTestCase
 {

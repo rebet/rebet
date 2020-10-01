@@ -2,7 +2,7 @@
 namespace Rebet\Validation;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
 use Rebet\Tools\Enum\Enum;

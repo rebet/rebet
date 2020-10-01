@@ -3,8 +3,8 @@ namespace Rebet\Validation;
 
 use Rebet\Tools\Arrayable;
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Describable;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Describable;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Valid Data Class

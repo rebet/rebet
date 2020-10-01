@@ -4,7 +4,7 @@ namespace Rebet\Tools\Math;
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Callback;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Unit Class

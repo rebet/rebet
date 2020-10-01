@@ -2,7 +2,7 @@
 namespace Rebet\Pipeline;
 
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Pipeline Class
@@ -13,7 +13,7 @@ use Rebet\Tools\Reflector;
  * Function diffs between Laravel and Rebet are like below;
  *  - remove illuminate modules dependency. (dependency injection container and Responsable)
  *  - unsupported: full pipe string to get name and parameters. (additional handle parameters)
- *  + supported: multi instantiate way based on Rebet\Tools\Reflector::instantiate() like array for constract with parameters. (exclude callable type)
+ *  + supported: multi instantiate way based on Rebet\Tools\Reflection\Reflector::instantiate() like array for constract with parameters. (exclude callable type)
  *  + supported: invoke any method of instantiated pipes.
  *  # changed: then() to be pipeline builder and send() to be pipeline runner.
  *

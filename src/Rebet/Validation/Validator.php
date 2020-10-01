@@ -3,7 +3,7 @@ namespace Rebet\Validation;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Config\Configurable;
 

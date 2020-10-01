@@ -1,17 +1,17 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Reflection;
 
 use OutOfBoundsException;
-use Rebet\Tools\Describable;
-use Rebet\Tools\DotAccessDelegator;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
-use Rebet\Tools\Tinker;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Describable;
+use Rebet\Tools\Reflection\DotAccessDelegator;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Tinker;
 
 class ReflectorTest extends RebetTestCase
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Reflection;
 
 /**
  * Dot Access Delegator Interface

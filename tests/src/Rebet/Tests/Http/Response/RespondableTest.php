@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Response;
 
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Response\BasicResponse;

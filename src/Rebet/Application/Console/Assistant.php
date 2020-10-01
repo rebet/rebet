@@ -3,7 +3,7 @@ namespace Rebet\Application\Console;
 
 use Rebet\Application\Console\Command\EnvCommand;
 use Rebet\Application\Console\Command\InitCommand;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Console\Application;
 

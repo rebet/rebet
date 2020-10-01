@@ -2,7 +2,7 @@
 namespace Rebet\Http\Response;
 
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\HttpStatus;
 use Rebet\Tools\Translation\Translator;
 

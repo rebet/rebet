@@ -3,6 +3,7 @@ namespace Rebet\Tools;
 
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Array Utility Class
@@ -1161,6 +1162,6 @@ class Arrays
      */
     public static function toQuery($value, int $encoding = PHP_QUERY_RFC1738) : ?string
     {
-        return $value === null ? null : http_build_query($value, null, '&', $encoding) ;
+        return $value === null ? null : http_build_query($value, '', '&', $encoding) ;
     }
 }

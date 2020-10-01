@@ -2,7 +2,7 @@
 namespace Rebet\Database;
 
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Exception\DatabaseException;

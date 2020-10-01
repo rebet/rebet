@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http\Session\Storage\Bag;
 
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 
 /**

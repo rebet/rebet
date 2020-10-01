@@ -139,7 +139,7 @@ trait Configurable
      * Create an instance from the own configuration settings using Reflector::instantiate().
      *
      * @see Rebet\Tools\Config\Config::instantiate()
-     * @see Rebet\Tools\Reflector::instantiate()
+     * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
      * @param string $key can contains dot notation
      * @param string|null $target key name for named array instantiation (default: null)

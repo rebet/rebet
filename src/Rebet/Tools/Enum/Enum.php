@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tools\Enum;
 
-use Rebet\Tools\Convertible;
+use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Translation\Translator;
 
 /**

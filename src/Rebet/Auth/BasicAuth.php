@@ -2,7 +2,7 @@
 namespace Rebet\Auth;
 
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\System;
 
 /**

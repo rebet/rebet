@@ -3,7 +3,7 @@ namespace Rebet\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;

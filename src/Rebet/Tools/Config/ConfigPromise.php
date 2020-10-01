@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tools\Config;
 
-use Rebet\Tools\DotAccessDelegator;
+use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Strings;
 
 /**

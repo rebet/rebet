@@ -17,7 +17,7 @@ use Rebet\Cache\Adapter\ArrayAdapter;
 use Rebet\Cache\Cache;
 use Rebet\Tools\Namespaces;
 use Rebet\Tools\Path;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Securities;
 use Rebet\Tools\System;
 use Rebet\Tools\Text;

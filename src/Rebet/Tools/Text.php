@@ -2,6 +2,7 @@
 namespace Rebet\Tools;
 
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Text Class

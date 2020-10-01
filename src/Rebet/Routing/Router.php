@@ -5,7 +5,7 @@ use Rebet\Tools\Arrays;
 use Rebet\Tools\Callback;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Path;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
 use Rebet\Tools\Config\Configurable;

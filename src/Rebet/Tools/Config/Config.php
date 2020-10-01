@@ -3,10 +3,10 @@ namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
-use Rebet\Tools\DotAccessDelegator;
+use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\OverrideOption;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
 
@@ -431,7 +431,7 @@ class Config
     /**
      * Create an instance from the configuration settings using Reflector::instantiate().
      *
-     * @see Rebet\Tools\Reflector::instantiate()
+     * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
      * @param string $section
      * @param string $key can contains dot notation

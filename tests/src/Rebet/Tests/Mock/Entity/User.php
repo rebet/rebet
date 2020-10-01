@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock\Entity;
 
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Unmap;

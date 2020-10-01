@@ -3,7 +3,7 @@ namespace Rebet\Tests\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Exception\RouteNotFoundException;

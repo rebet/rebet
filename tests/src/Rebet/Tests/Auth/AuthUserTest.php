@@ -6,7 +6,7 @@ use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Entity\Bank;

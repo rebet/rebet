@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Reflection;
 
 /**
  * Type Convertible Interface
@@ -7,7 +7,7 @@ namespace Rebet\Tools;
  * It is an interface that "explicitly" indicates that type conversion by Reflector::convert() is possible.
  * Note that Reflector::convert($value, $type) does not necessarily have to implement this interface as it operates by determining the existence of a method.
  *
- * @see Rebet\Tools\Reflector::convert
+ * @see Rebet\Tools\Reflection\Reflector::convert
  *
  * @package   Rebet
  * @author    github.com/rain-noise

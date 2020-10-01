@@ -2,7 +2,7 @@
 namespace Rebet\Tests\View;
 
 use Rebet\Application\App;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;

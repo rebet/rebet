@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Reflection;
 
 use Rebet\Tests\Mock\Address;
 use Rebet\Tests\Mock\Customer;

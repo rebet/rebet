@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View\Tag;
 
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Selective Processor Class

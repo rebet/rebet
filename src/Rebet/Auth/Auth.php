@@ -8,7 +8,7 @@ use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Tools\Namespaces;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Event\Event;
 use Rebet\Http\Request;

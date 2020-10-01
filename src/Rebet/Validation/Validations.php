@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 

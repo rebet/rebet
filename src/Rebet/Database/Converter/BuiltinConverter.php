@@ -2,7 +2,7 @@
 namespace Rebet\Database\Converter;
 
 use Rebet\Tools\Math\Decimal;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;

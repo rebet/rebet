@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Middleware\Routing\AddGlobalShareVariableToView;
 use Rebet\Routing\Annotation\Method;

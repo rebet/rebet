@@ -4,7 +4,7 @@ namespace Rebet\Log\Driver\Monolog\Formatter;
 use Monolog\Formatter\FormatterInterface;
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Callback;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Config\Configurable;
 

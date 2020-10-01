@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Mock;
 
-use Rebet\Tools\Describable;
-use Rebet\Tools\Populatable;
+use Rebet\Tools\Reflection\Describable;
+use Rebet\Tools\Reflection\Populatable;
 
 class Customer
 {

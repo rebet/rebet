@@ -1,7 +1,12 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Reflection;
 
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Callback;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Strings;
+use Rebet\Tools\Tinker;
+use Rebet\Tools\Utils;
 
 /**
  * Reflector Class

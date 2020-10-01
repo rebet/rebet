@@ -2,7 +2,7 @@
 namespace Rebet\Database\Pagination;
 
 use Rebet\Tools\Arrayable;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utils;
 use Rebet\Tools\Config\Configurable;

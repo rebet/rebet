@@ -3,7 +3,7 @@ namespace Rebet\Application;
 
 use Rebet\Application\Console\Assistant;
 use Rebet\Application\Error\ExceptionHandler;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Symfony\Component\Console\Input\InputInterface;

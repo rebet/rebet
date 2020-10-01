@@ -5,6 +5,7 @@ use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Tinker Class

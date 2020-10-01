@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tools\DateTime;
 
-use Rebet\Tools\Convertible;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Convertible;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Date Time Zone Class

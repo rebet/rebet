@@ -2,7 +2,7 @@
 namespace Rebet\Database;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Reflector;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
