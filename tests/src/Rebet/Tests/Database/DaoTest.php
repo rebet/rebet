@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Database;
 
 use Rebet\Database\Dao;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class DaoTest extends RebetDatabaseTestCase

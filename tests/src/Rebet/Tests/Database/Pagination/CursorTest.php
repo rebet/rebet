@@ -3,7 +3,7 @@ namespace Rebet\Tests\Database\Pagination;
 
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 
 class CursorTest extends RebetTestCase

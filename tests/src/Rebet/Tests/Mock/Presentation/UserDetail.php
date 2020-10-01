@@ -7,8 +7,8 @@ use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Presentation;
 use Rebet\Database\ResultSet;
-use Rebet\DateTime\Date;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 
 class User extends Presentation

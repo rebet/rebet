@@ -8,7 +8,7 @@ use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
-use Rebet\DateTime\DateTime; // Use for Annotation
+use Rebet\Tools\DateTime\DateTime; // Use for Annotation
 use Rebet\Routing\Annotation\AliasOnly;
 use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;

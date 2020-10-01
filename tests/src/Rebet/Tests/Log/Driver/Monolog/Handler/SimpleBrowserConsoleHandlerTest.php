@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Log\Driver\Monolog\Handler;
 
 use Monolog\Logger as MonologLogger;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Tests\RebetTestCase;
 

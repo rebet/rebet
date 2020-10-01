@@ -7,7 +7,7 @@ use Rebet\Tools\Unit;
 use Rebet\Tools\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Database\Pagination\Storage\CursorStorage;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 
 /**
  * Cursor Class

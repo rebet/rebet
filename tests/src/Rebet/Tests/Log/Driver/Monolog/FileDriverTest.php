@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\RotatingFileHandler;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\FileDriver;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Log\LogLevel;

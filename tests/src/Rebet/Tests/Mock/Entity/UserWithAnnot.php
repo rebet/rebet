@@ -7,8 +7,8 @@ use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
-use Rebet\DateTime\Date;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 
 /**

@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Validation;
 
 use Rebet\Tools\Json;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\IteratorAggregateStub;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;

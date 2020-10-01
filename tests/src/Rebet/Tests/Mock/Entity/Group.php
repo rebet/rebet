@@ -3,7 +3,7 @@ namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 
 class Group extends Entity
 {

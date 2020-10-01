@@ -7,7 +7,7 @@ use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\Database;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Inflection\Inflector;
 use ReflectionClass;
 

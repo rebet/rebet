@@ -8,9 +8,9 @@ use Rebet\Tools\Strings;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
-use Rebet\DateTime\Date;
-use Rebet\DateTime\DateTime;
-use Rebet\DateTime\DateTimeZone;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTimeZone;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 

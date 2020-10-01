@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\DateTime\Exception;
+namespace Rebet\Tests\Tools\DateTime\Exception;
 
 use Rebet\Http\Exception\TokenMismatchException;
 use Rebet\Http\Response\ProblemResponse;

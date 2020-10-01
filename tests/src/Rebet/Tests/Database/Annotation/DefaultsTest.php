@@ -3,7 +3,7 @@ namespace Rebet\Tests\Database\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Database\Annotation\Defaults;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 

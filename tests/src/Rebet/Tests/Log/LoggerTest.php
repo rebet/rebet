@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Log;
 
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Logger;
 use Rebet\Log\LogLevel;

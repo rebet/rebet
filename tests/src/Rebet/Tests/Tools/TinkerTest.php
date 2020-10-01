@@ -6,7 +6,7 @@ use Rebet\Tools\Arrays;
 use Rebet\Tools\Decimal;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Tinker;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 
@@ -956,7 +956,7 @@ EOS
     public function test_filters_convertError()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Apply datetimef filter failed. The origin type 'Closure' can not convert to Rebet\DateTime\DateTime.");
+        $this->expectExceptionMessage("Apply datetimef filter failed. The origin type 'Closure' can not convert to Rebet\Tools\DateTime\DateTime.");
 
         $this->callable->datetimef('Y/m/d');
     }

@@ -6,7 +6,7 @@ use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\Exception\ConfigNotDefineException;
 use Rebet\Config\Layer;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigTest extends RebetTestCase

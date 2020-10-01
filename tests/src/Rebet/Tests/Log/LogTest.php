@@ -3,7 +3,7 @@ namespace Rebet\Tests\Log;
 
 use Rebet\Config\Config;
 
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\StderrDriver;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Driver\NullDriver;

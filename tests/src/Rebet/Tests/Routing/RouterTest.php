@@ -5,7 +5,7 @@ use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
 use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;

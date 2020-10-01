@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Tools;
 
 use Rebet\Tools\Arrayable;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 
 class ArrayableTest extends RebetTestCase

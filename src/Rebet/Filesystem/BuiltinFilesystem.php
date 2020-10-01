@@ -17,7 +17,7 @@ use Rebet\Tools\Strings;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\Utils;
 use Rebet\Config\Configurable;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Symfony\Component\Mime\MimeTypes;

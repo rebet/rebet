@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
 use Monolog\Logger as MonologLogger;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Tests\RebetTestCase;
 

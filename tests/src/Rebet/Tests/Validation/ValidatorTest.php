@@ -4,7 +4,7 @@ namespace Rebet\Tests\Validation;
 use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Config\Config;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Validation\BarValidation;

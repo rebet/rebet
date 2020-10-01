@@ -4,7 +4,7 @@ namespace Rebet\Tests\Database\DataModel;
 use Rebet\Config\Config;
 use Rebet\Database\Database;
 use Rebet\Database\ResultSet;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Entity\Article;
 use Rebet\Tests\Mock\Entity\Bank;
 use Rebet\Tests\Mock\Entity\Fortune;

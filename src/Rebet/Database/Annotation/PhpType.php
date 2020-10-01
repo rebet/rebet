@@ -9,8 +9,8 @@ namespace Rebet\Database\Annotation;
  *
  * USAGE:
  *  - @PhpType("int")
- *  - @PhpType(DateTime::class) // with use Rebet\DateTime\DateTime
- *  - @PhpType('Rebet\DateTime\DateTime')
+ *  - @PhpType(DateTime::class) // with use Rebet\Tools\DateTime\DateTime
+ *  - @PhpType('Rebet\Tools\DateTime\DateTime')
  *
  * @package   Rebet
  * @author    github.com/rain-noise

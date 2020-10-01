@@ -2,7 +2,7 @@
 namespace Rebet\Database\Event;
 
 use Rebet\Database\Database;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 
 /**
  * Batch Updated Event Class

@@ -4,7 +4,7 @@ namespace Rebet\Tests\Mock\Entity;
 use Rebet\Tools\Reflector;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 
 class Article extends Entity
 {

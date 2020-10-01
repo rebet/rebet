@@ -27,7 +27,7 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Database\Ransack\Ransacker;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Event\Event;
 
 /**

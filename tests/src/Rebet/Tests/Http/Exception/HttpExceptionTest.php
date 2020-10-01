@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\DateTime\Exception;
+namespace Rebet\Tests\Tools\DateTime\Exception;
 
 use Rebet\Application\App;
 use Rebet\Http\Exception\HttpException;

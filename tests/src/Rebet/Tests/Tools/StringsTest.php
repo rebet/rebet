@@ -4,7 +4,7 @@ namespace Rebet\Tests\Tools;
 use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Strings;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToStringStub;
 use Rebet\Tests\RebetTestCase;

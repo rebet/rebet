@@ -3,7 +3,7 @@ namespace Rebet\Tools;
 
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Config\Configurable;
-use Rebet\DateTime\DateTime;
+use Rebet\Tools\DateTime\DateTime;
 
 /**
  * Tinker Class
