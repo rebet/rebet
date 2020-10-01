@@ -4,7 +4,7 @@ namespace Rebet\Tests\Tools;
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Decimal;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;

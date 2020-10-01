@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Math;
 
-use Rebet\Tools\Decimal;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Math\Decimal;
 
 class DecimalTest extends RebetTestCase
 {

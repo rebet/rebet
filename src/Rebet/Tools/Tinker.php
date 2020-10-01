@@ -1,9 +1,10 @@
 <?php
 namespace Rebet\Tools;
 
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Math\Decimal;
 
 /**
  * Tinker Class

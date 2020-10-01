@@ -1,7 +1,10 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Math;
 
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Callback;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Reflector;
 
 /**
  * Unit Class
@@ -436,6 +439,6 @@ class Unit
     {
         $to      = $to ?? static::baseUnitOf($this->units);
         $options = array_merge($this->options, $options, ['without_prefix' => true]);
-        return Decimal::of(static::exchange($value, $to, null, $options), $options['decimal_point'] ?? '.', $options['thousands_separator'] ?? ',');
+        return Decimal::of($this->exchange($value, $to, null, $options), $options['decimal_point'] ?? '.', $options['thousands_separator'] ?? ',');
     }
 }

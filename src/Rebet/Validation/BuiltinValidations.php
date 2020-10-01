@@ -2,12 +2,12 @@
 namespace Rebet\Validation;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Decimal;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Path;
 use Rebet\Tools\Strings;
 use Rebet\Tools\System;
 use Rebet\Tools\Tinker;
-use Rebet\Tools\Unit;
+use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utils;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;

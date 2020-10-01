@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\Converter;
 
-use Rebet\Tools\Decimal;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflector;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;

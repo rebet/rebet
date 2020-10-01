@@ -3,7 +3,7 @@ namespace Rebet\Tests\Tools;
 
 use InvalidArgumentException;
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Decimal;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\DateTime\DateTime;

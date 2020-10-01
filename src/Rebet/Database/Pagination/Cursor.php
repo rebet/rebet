@@ -3,7 +3,7 @@ namespace Rebet\Database\Pagination;
 
 use Rebet\Tools\Arrayable;
 use Rebet\Tools\Reflector;
-use Rebet\Tools\Unit;
+use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utils;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Database\Pagination\Storage\CursorStorage;

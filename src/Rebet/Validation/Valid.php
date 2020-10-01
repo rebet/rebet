@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Unit;
+use Rebet\Tools\Math\Unit;
 
 /**
  * Valid Class

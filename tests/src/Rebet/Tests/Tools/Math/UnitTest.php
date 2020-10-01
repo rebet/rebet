@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Math;
 
-use Rebet\Tools\Decimal;
-use Rebet\Tools\Unit;
-use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Math\Unit;
 
 class UnitTest extends RebetTestCase
 {

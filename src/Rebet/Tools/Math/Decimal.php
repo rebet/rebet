@@ -1,8 +1,9 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Math;
 
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Strings;
 
 /**
  * Decimal Class

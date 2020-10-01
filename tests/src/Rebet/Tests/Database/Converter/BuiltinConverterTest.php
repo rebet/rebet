@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Database\Converter;
 
 use Rebet\Application\App;
-use Rebet\Tools\Decimal;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Database\Database;
