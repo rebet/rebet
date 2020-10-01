@@ -3,7 +3,7 @@ namespace Rebet\Log\Driver\Monolog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Config\Configurable;
@@ -78,7 +78,7 @@ class TextFormatter implements FormatterInterface
         $output    = $this->format;
         $exception = Reflector::remove($record, 'context.exception');
 
-        foreach (Arrays::sortKeys($record['extra'] ?? [], SORT_DESC, Callback::compareLength()) as $var => $val) {
+        foreach (Arrays::sortKeys($record['extra'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{extra.'.$var.'}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
@@ -86,7 +86,7 @@ class TextFormatter implements FormatterInterface
             }
         }
 
-        foreach (Arrays::sortKeys($record['context'] ?? [], SORT_DESC, Callback::compareLength()) as $var => $val) {
+        foreach (Arrays::sortKeys($record['context'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{context.'.$var.'}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
@@ -94,7 +94,7 @@ class TextFormatter implements FormatterInterface
             }
         }
 
-        foreach (Arrays::sortKeys($record, SORT_DESC, Callback::compareLength()) as $var => $val) {
+        foreach (Arrays::sortKeys($record, SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{'.$var.'}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);

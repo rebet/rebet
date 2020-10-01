@@ -175,7 +175,7 @@ class Utils
      */
     public static function heredocImplanter() : \Closure
     {
-        return Callback::echoBack();
+        return Callbacks::echoBack();
     }
 
     /**

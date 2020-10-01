@@ -2,14 +2,14 @@
 namespace Rebet\Tests\Tools;
 
 use ArrayObject;
-use Rebet\Tools\Callback;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\Layer;
-use Rebet\Tools\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Callbacks;
+use Rebet\Tools\Config\Layer;
+use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Exception\LogicException;
 
-class CallbackTest extends RebetTestCase
+class CallbacksTest extends RebetTestCase
 {
     protected function setUp() : void
     {
@@ -21,7 +21,7 @@ class CallbackTest extends RebetTestCase
      */
     public function test_test($item, $key, $operator, $value, bool $result)
     {
-        $test = Callback::test($key, $operator, $value);
+        $test = Callbacks::test($key, $operator, $value);
         $this->assertTrue($test($item) === $result);
     }
 
@@ -115,7 +115,7 @@ class CallbackTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid operator <=> given.");
 
-        $test = Callback::test(null, '<=>', 12);
+        $test = Callbacks::test(null, '<=>', 12);
         $test(10);
     }
 
@@ -124,7 +124,7 @@ class CallbackTest extends RebetTestCase
      */
     public function test_compare($a, $b, $key, $invert, int $result)
     {
-        $comparator = Callback::compare($key, $invert);
+        $comparator = Callbacks::compare($key, $invert);
         $this->assertSame($result, $comparator($a, $b));
     }
 
@@ -173,7 +173,7 @@ class CallbackTest extends RebetTestCase
      */
     public function test_retriever($value, $retriever, $except)
     {
-        $retriever = Callback::retriever($retriever);
+        $retriever = Callbacks::retriever($retriever);
         $this->assertEquals($except, $retriever($value));
     }
 
@@ -214,7 +214,7 @@ class CallbackTest extends RebetTestCase
      */
     public function test_stringify($expect, $callable, $verbose)
     {
-        $this->assertSame($expect, Callback::stringify($callable, $verbose));
+        $this->assertSame($expect, Callbacks::stringify($callable, $verbose));
     }
 
     public function dataStringifis() : array
@@ -223,37 +223,37 @@ class CallbackTest extends RebetTestCase
             ['mb_strlen($str, $encoding)', 'mb_strlen', true ],
             ['mb_strlen($str, $encoding)', 'mb_strlen', false],
 
-            ['Rebet\Tools\Callback::test($key, string $operator, $value) : Closure', Callback::class.'::test', true ],
-            ['Rebet\Tools\Callback::test($key, string $operator, $value) : Closure', [Callback::class, 'test'], true ],
-            ['Callback::test($key, $operator, $value)', Callback::class.'::test', false],
+            ['Rebet\Tools\Callbacks::test($key, string $operator, $value) : Closure', Callbacks::class.'::test', true ],
+            ['Rebet\Tools\Callbacks::test($key, string $operator, $value) : Closure', [Callbacks::class, 'test'], true ],
+            ['Callbacks::test($key, $operator, $value)', Callbacks::class.'::test', false],
 
-            ['Rebet\Tests\Tools\CallbackTest::{closure}()', function () {}, true ],
-            ['CallbackTest::{closure}()'                   , function () {}, false],
+            ['Rebet\Tests\Tools\CallbacksTest::{closure}()', function () {}, true ],
+            ['CallbacksTest::{closure}()'                   , function () {}, false],
 
-            ['Rebet\Tests\Tools\CallbackTest::{closure}(?int $i = null, string ...$s) : ?int', function (?int $i = null, string ...$s) : ?int { return $i; }, true ],
-            ['CallbackTest::{closure}($i, ...$s)'                                             , function (?int $i = null, string ...$s) : ?int { return $i; }, false],
+            ['Rebet\Tests\Tools\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (?int $i = null, string ...$s) : ?int { return $i; }, true ],
+            ['CallbacksTest::{closure}($i, ...$s)'                                             , function (?int $i = null, string ...$s) : ?int { return $i; }, false],
 
-            ['Rebet\Tests\Tools\CallbackTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
-            ['CallbackTest::{closure}($i, $j, $k, $l)'                                                                                             , function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
+            ['Rebet\Tests\Tools\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
+            ['CallbacksTest::{closure}($i, $j, $k, $l)'                                                                                             , function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
 
-            ['Rebet\Tests\Tools\CallbackTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
-            ['CallbackTest::{closure}(&$a, &...$s)'                                , function (array &$a, string &...$s) { }, false],
+            ['Rebet\Tests\Tools\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
+            ['CallbacksTest::{closure}(&$a, &...$s)'                                , function (array &$a, string &...$s) { }, false],
 
-            ['Rebet\Tests\Tools\CallbackTest::{closure}(Rebet\Tests\Mock\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
-            ['CallbackTest::{closure}($g)'                                                             , function (Gender $g) : Enum { return $g; } , false],
+            ['Rebet\Tests\Tools\CallbacksTest::{closure}(Rebet\Tests\Mock\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
+            ['CallbacksTest::{closure}($g)'                                                             , function (Gender $g) : Enum { return $g; } , false],
         ];
     }
 
     public function test_echoBack()
     {
-        $echo_back = Callback::echoBack();
+        $echo_back = Callbacks::echoBack();
         $value     = 'foo';
         $this->assertSame($value, $echo_back($value));
     }
 
     public function test_compareLength()
     {
-        $comparator = Callback::compareLength();
+        $comparator = Callbacks::compareLength();
         $this->assertSame(-1, $comparator('123', '1234'));
         $this->assertSame(0, $comparator('123', '123'));
         $this->assertSame(1, $comparator('1234', '123'));

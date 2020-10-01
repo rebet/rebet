@@ -2,7 +2,7 @@
 namespace Rebet\Tools\Reflection;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Tinker;
@@ -813,7 +813,7 @@ class Reflector
                 return $factory;
             }
             [$class, $method] = Strings::split($factory, '::', 2);
-            $after            = static::remove($config, '@after') ?? Callback::echoBack();
+            $after            = static::remove($config, '@after') ?? Callbacks::echoBack();
             $config           = array_merge($config);
             return $after(empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config)) ;
         }

@@ -2,7 +2,7 @@
 namespace Rebet\Routing;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Path;
 use Rebet\Tools\Reflection\Reflector;
@@ -556,7 +556,7 @@ class Router
         }
         if (!in_array($prefix, static::$prefixes)) {
             static::$prefixes[] = $prefix;
-            static::$prefixes   = Arrays::sort(static::$prefixes, SORT_DESC, Callback::compareLength());
+            static::$prefixes   = Arrays::sort(static::$prefixes, SORT_DESC, Callbacks::compareLength());
         }
         return $prefix;
     }

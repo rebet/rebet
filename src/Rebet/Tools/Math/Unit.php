@@ -2,7 +2,7 @@
 namespace Rebet\Tools\Math;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
 
@@ -395,7 +395,7 @@ class Unit
     public function exchange($value, ?string $to = null, ?int $precision = 2, array $options = []) : string
     {
         extract($options = array_merge($this->options, $options));
-        $units       = Arrays::sortKeys($this->units, SORT_DESC, Callback::compareLength());
+        $units       = Arrays::sortKeys($this->units, SORT_DESC, Callbacks::compareLength());
         $value       = is_string($value) ? $value : Decimal::of($value)->value() ;
         $from_factor = '1';
         foreach ($units as $prefix => [$factor, /*auto_scaleable*/]) {

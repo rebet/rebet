@@ -2,7 +2,7 @@
 namespace Rebet\Tools\Translation;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\Config\Configurable;
@@ -195,7 +195,7 @@ class Translator
             return $sentence;
         }
 
-        $replacement = Tinker::with($replacement, true)->sortKeys(SORT_DESC, Callback::compareLength())->return();
+        $replacement = Tinker::with($replacement, true)->sortKeys(SORT_DESC, Callbacks::compareLength())->return();
         foreach ($replacement as $key => $value) {
             $sentence = str_replace(':'.$key, Arrays::implode($value, $delimiter) ?? $value, $sentence);
         }

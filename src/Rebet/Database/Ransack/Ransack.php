@@ -2,7 +2,7 @@
 namespace Rebet\Database\Ransack;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
 use Rebet\Tools\Config\Configurable;
@@ -386,7 +386,7 @@ class Ransack
             }
         }
 
-        $predicates = Arrays::sortKeys(array_merge(static::config("predicates.common", false, []), static::config("predicates.{$driver_name}", false, [])), SORT_DESC, Callback::compareLength());
+        $predicates = Arrays::sortKeys(array_merge(static::config("predicates.common", false, []), static::config("predicates.{$driver_name}", false, [])), SORT_DESC, Callbacks::compareLength());
         $predicate  = null;
         foreach ($predicates as $p => [$t, $vc, $c]) {
             if (Strings::endsWith($ransack_predicate, "_{$p}")) {

@@ -4,7 +4,7 @@ namespace Rebet\Tools\DateTime;
 use DateInterval;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Tools\Exception\LogicException;
@@ -842,7 +842,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     {
         $format = $format ?? $this->default_format ;
 
-        $length_comparator   = Callback::compareLength();
+        $length_comparator   = Callbacks::compareLength();
         $localized_templates = Arrays::sortKeys(Translator::grammar('datetime', 'formats', []), SORT_DESC, $length_comparator);
         foreach ($localized_templates as $key => $template) {
             if (Strings::contains($format, $key)) {

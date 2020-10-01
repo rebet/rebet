@@ -466,7 +466,7 @@ class Strings
             return $class.' : '.$value;
         }
         if (is_callable($value)) {
-            return Callback::stringify($value);
+            return Callbacks::stringify($value);
         }
         if (is_object($value) && $value instanceof \JsonSerializable) {
             return get_class($value)." : ".static::_stringify($value->jsonSerialize(), true, $masks, $masked_label);

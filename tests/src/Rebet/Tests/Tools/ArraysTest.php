@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Tools;
 
 use Rebet\Tools\Arrays;
-use Rebet\Tools\Callback;
+use Rebet\Tools\Callbacks;
 use Rebet\Tools\OverrideOption;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\CountableStub;
@@ -680,8 +680,8 @@ class ArraysTest extends RebetTestCase
         }));
 
         $array = [['age' => 18], ['age' => 20], ['age' => 20]];
-        $this->assertTrue(Arrays::every($array, Callback::test('age', '>=', 18)));
-        $this->assertFalse(Arrays::every($array, Callback::test('age', '<', 18)));
+        $this->assertTrue(Arrays::every($array, Callbacks::test('age', '>=', 18)));
+        $this->assertFalse(Arrays::every($array, Callbacks::test('age', '<', 18)));
         $this->assertTrue(Arrays::every($array, function ($item) {
             return $item['age'] >= 18;
         }));
