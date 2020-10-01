@@ -1,7 +1,7 @@
 <?php
-namespace Rebet\File;
+namespace Rebet\Tools\Utility;
 
-use Rebet\File\Exception\ZipArchiveException;
+use Rebet\Tools\Utility\Exception\ZipArchiveException;
 
 /**
  * Files Utility Class
@@ -55,7 +55,7 @@ class Files
      * @param string $zip_path
      * @param string $dest_dir
      * @return void
-     * @throws Rebet\File\Exception\ZipArchiveException
+     * @throws Rebet\Tools\Utility\Exception\ZipArchiveException
      */
     public static function unzip(string $zip_path, string $dest_dir) : void
     {
@@ -70,7 +70,7 @@ class Files
      *
      * @param int|bool $code
      * @param string|null $messsage of error happend (default: 'ZipArchive error.')
-     * @throws Rebet\File\Exception\ZipArchiveException
+     * @throws Rebet\Tools\Utility\Exception\ZipArchiveException
      */
     private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
     {
@@ -121,7 +121,7 @@ class Files
      *                 => Take $path as an argument, return true to include that path, and return false to exclude that path.
      * @param int $out_dir_permission (default: 0775)
      * @return void
-     * @throws Rebet\File\Exception\ZipArchiveException
+     * @throws Rebet\Tools\Utility\Exception\ZipArchiveException
      */
     public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, ?\Closure $filter = null, int $out_dir_permission = 0775) : void
     {

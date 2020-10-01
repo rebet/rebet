@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\File\Exception;
+namespace Rebet\Tests\Tools\Utility\Exception;
 
-use Rebet\File\Exception\ZipArchiveException;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Utility\Exception\ZipArchiveException;
 
 class ZipArchiveExceptionTest extends RebetTestCase
 {

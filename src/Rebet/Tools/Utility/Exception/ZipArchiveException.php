@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\File\Exception;
+namespace Rebet\Tools\Utility\Exception;
 
 use Rebet\Tools\Exception\RuntimeException;
 

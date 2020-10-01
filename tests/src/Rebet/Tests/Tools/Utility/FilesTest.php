@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\File;
+namespace Rebet\Tests\Tools\Utility;
 
-use Rebet\Tools\Utility\Strings;
-use Rebet\File\Exception\ZipArchiveException;
-use Rebet\File\Files;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Utility\Exception\ZipArchiveException;
+use Rebet\Tools\Utility\Files;
+use Rebet\Tools\Utility\Strings;
 
 class FilesTest extends RebetTestCase
 {

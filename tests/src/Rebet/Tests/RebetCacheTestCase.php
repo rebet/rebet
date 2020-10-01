@@ -10,7 +10,7 @@ use Rebet\Cache\Adapter\Symfony\RedisAdapter;
 use Rebet\Cache\Cache;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Layer;
-use Rebet\File\Files;
+use Rebet\Tools\Utility\Files;
 
 /**
  * Rebet Cache Test Case Class
