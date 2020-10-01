@@ -20,7 +20,7 @@ use Rebet\Tools\Path;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Securities;
 use Rebet\Tools\System;
-use Rebet\Tools\Text;
+use Rebet\Tools\Template\Text;
 use Rebet\Tools\Config\Config;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;

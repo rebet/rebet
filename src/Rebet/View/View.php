@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View;
 
-use Rebet\Tools\Renderable;
+use Rebet\Tools\Template\Renderable;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\Config\Configurable;
 use Rebet\View\Engine\Engine;

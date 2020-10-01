@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Tools\Renderable;
+use Rebet\Tools\Template\Renderable;
 use Rebet\Tools\Strings;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Response\BasicResponse;

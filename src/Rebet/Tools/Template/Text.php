@@ -1,8 +1,11 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Template;
 
+use Rebet\Tools\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Strings;
+use Rebet\Tools\Tinker;
 
 /**
  * Text Class
