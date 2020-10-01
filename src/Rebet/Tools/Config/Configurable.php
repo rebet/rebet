@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tools\Config;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\OverrideOption;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\OverrideOption;
 
 /**
  * Configurable Trait

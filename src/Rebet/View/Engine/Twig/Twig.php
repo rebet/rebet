@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View\Engine\Twig;
 
-use Rebet\Tools\Path;
+use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Config\Configurable;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Engine\Twig\Environment\Environment;

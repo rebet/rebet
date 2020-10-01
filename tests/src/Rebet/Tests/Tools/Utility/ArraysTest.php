@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Utility;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Callbacks;
-use Rebet\Tools\OverrideOption;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
+use Rebet\Tools\Utility\OverrideOption;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\CountableStub;
 use Rebet\Tests\Mock\Stub\IteratorAggregateStub;

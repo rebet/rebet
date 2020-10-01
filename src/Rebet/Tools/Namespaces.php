@@ -2,6 +2,7 @@
 namespace Rebet\Tools;
 
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Namespaces Class

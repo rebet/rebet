@@ -2,7 +2,7 @@
 namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Reflection\DotAccessDelegator;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Config Promise Class

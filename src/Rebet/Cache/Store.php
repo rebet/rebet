@@ -3,7 +3,7 @@ namespace Rebet\Cache;
 
 use DateTimeInterface;
 use Rebet\Cache\Adapter\Adapter;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Math\Unit;
 use Symfony\Contracts\Cache\ItemInterface;
 

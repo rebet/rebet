@@ -3,11 +3,11 @@ namespace Rebet\Database\DataModel;
 
 use Closure;
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Support\Getsetable;
-use Rebet\Tools\Json;
+use Rebet\Tools\Utility\Json;
 use Rebet\Tools\Reflection\Populatable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Annotation\PrimaryKey;

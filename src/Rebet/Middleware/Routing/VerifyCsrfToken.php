@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Middleware\Routing;
 
-use Rebet\Tools\Nets;
-use Rebet\Tools\Securities;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Nets;
+use Rebet\Tools\Utility\Securities;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Exception\TokenMismatchException;
 use Rebet\Http\Request;

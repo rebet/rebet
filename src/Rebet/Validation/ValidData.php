@@ -2,7 +2,7 @@
 namespace Rebet\Validation;
 
 use Rebet\Tools\Support\Arrayable;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\Reflector;
 

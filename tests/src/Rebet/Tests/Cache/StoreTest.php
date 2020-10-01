@@ -4,7 +4,7 @@ namespace Rebet\Tests\Cache;
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;
 use Rebet\Cache\Store;
 use Rebet\Cache\TagSet;
-use Rebet\Tools\Securities;
+use Rebet\Tools\Utility\Securities;
 use Rebet\Tests\RebetCacheTestCase;
 
 class StoreTest extends RebetCacheTestCase

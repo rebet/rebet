@@ -2,10 +2,10 @@
 namespace Rebet\Log\Driver\Monolog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Callbacks;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Configurable;
 
 /**

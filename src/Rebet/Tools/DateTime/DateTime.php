@@ -3,14 +3,14 @@ namespace Rebet\Tools\DateTime;
 
 use DateInterval;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Callbacks;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Path;
+use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 

@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Database\Pagination;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Json;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Json;
 use Rebet\Database\ResultSet;
 
 /**

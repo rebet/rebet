@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tools\Resource;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\OverrideOption;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\OverrideOption;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Locale Dependent Resource Loader Class

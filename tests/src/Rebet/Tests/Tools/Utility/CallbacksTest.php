@@ -1,13 +1,13 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Utility;
 
 use ArrayObject;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Callbacks;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\Callbacks;
 
 class CallbacksTest extends RebetTestCase
 {
@@ -223,24 +223,24 @@ class CallbacksTest extends RebetTestCase
             ['mb_strlen($str, $encoding)', 'mb_strlen', true ],
             ['mb_strlen($str, $encoding)', 'mb_strlen', false],
 
-            ['Rebet\Tools\Callbacks::test($key, string $operator, $value) : Closure', Callbacks::class.'::test', true ],
-            ['Rebet\Tools\Callbacks::test($key, string $operator, $value) : Closure', [Callbacks::class, 'test'], true ],
+            ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', Callbacks::class.'::test', true ],
+            ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', [Callbacks::class, 'test'], true ],
             ['Callbacks::test($key, $operator, $value)', Callbacks::class.'::test', false],
 
-            ['Rebet\Tests\Tools\CallbacksTest::{closure}()', function () {}, true ],
-            ['CallbacksTest::{closure}()'                   , function () {}, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}()', function () {}, true ],
+            ['CallbacksTest::{closure}()'                          , function () {}, false],
 
-            ['Rebet\Tests\Tools\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (?int $i = null, string ...$s) : ?int { return $i; }, true ],
-            ['CallbacksTest::{closure}($i, ...$s)'                                             , function (?int $i = null, string ...$s) : ?int { return $i; }, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (?int $i = null, string ...$s) : ?int { return $i; }, true ],
+            ['CallbacksTest::{closure}($i, ...$s)'                                                    , function (?int $i = null, string ...$s) : ?int { return $i; }, false],
 
-            ['Rebet\Tests\Tools\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
-            ['CallbacksTest::{closure}($i, $j, $k, $l)'                                                                                             , function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
+            ['CallbacksTest::{closure}($i, $j, $k, $l)'                                                                                                    , function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
 
-            ['Rebet\Tests\Tools\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
-            ['CallbacksTest::{closure}(&$a, &...$s)'                                , function (array &$a, string &...$s) { }, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
+            ['CallbacksTest::{closure}(&$a, &...$s)'                                       , function (array &$a, string &...$s) { }, false],
 
-            ['Rebet\Tests\Tools\CallbacksTest::{closure}(Rebet\Tests\Mock\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
-            ['CallbacksTest::{closure}($g)'                                                             , function (Gender $g) : Enum { return $g; } , false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(Rebet\Tests\Mock\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
+            ['CallbacksTest::{closure}($g)'                                                                               , function (Gender $g) : Enum { return $g; } , false],
         ];
     }
 

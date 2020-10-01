@@ -3,7 +3,7 @@ namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Password;
-use Rebet\Tools\Securities;
+use Rebet\Tools\Utility\Securities;
 
 /**
  * Abstract Auth Provider Class

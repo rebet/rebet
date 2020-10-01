@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Application;
 
-use Rebet\Tools\Path;
+use Rebet\Tools\Utility\Path;
 
 /**
  * Application Structure Class

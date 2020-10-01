@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tools\Math;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Callbacks;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
 

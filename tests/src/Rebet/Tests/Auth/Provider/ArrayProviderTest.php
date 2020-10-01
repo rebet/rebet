@@ -3,7 +3,7 @@ namespace Rebet\Tests\Auth\Event;
 
 use Rebet\Auth\Password;
 use Rebet\Auth\Provider\ArrayProvider;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 

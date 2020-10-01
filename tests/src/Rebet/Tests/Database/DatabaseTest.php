@@ -3,7 +3,7 @@ namespace Rebet\Tests\Database;
 
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Config\Config;
 use Rebet\Database\Analysis\BuiltinAnalyzer;

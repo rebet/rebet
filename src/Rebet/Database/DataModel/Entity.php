@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\DataModel;
 
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Table;

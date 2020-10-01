@@ -9,8 +9,8 @@ use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;
-use Rebet\Tools\Path;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Translation\Translator;
 
 class DateTimeTest extends RebetTestCase

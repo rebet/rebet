@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Validation;
+namespace Rebet\Tests\Tools\Utility;
 
 use Exception;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Dsn;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tests\RebetTestCase;
 
 class DsnTest extends RebetTestCase
 {

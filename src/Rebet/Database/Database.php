@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database;
 
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Database\Analysis\Analyzer;

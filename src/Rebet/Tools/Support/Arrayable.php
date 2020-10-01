@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tools\Support;
 
-use Rebet\Tools\Json;
+use Rebet\Tools\Utility\Json;
 
 /**
  * Arrayable Trait

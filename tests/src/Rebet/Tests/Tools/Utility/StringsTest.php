@@ -1,13 +1,13 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Strings;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToStringStub;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\Strings;
 
 class StringsTest extends RebetTestCase
 {
@@ -347,7 +347,7 @@ array:1 [
 EOS
                 , [new ToStringStub("multi\nline\ntext\nin\narray")]
             ],
-            ['Rebet\Tests\Tools\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, ?int $b, string $c = 'default') : ?bool { return true; }],
+            ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, ?int $b, string $c = 'default') : ?bool { return true; }],
             ['Rebet\Tests\Mock\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
             ['Rebet\Tests\Mock\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
             [
@@ -403,7 +403,7 @@ ArrayObject:3 [
 EOS
                 , new \ArrayObject([1, 2, 3])
             ],
-            ['<instance of Rebet\Tests\Tools\StringsTest_Mock>', new StringsTest_Mock()],
+            ['<instance of Rebet\Tests\Tools\Utility\StringsTest_Mock>', new StringsTest_Mock()],
             [
                 <<<EOS
 array:3 [
@@ -442,7 +442,7 @@ EOS
     {
         $mock  = new StringsTest_Mock();
         $trace = $mock->getTrace();
-        $this->assertStringContainsString('Rebet\Tests\Tools\StringsTest_Mock::getTrace()', Strings::traceToString($trace));
+        $this->assertStringContainsString('Rebet\Tests\Tools\Utility\StringsTest_Mock::getTrace()', Strings::traceToString($trace));
     }
 }
 

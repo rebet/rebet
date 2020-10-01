@@ -4,11 +4,11 @@ namespace Rebet\Tests\Tools\Template;
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Template\Text;
 
 class TextTest extends RebetTestCase

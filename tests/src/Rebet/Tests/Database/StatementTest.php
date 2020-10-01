@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Database;
 
 use PDOException;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;

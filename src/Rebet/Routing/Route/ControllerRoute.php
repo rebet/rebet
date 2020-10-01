@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Request;
 use Rebet\Inflection\Inflector;
 

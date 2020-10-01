@@ -2,7 +2,7 @@
 namespace Rebet\Database;
 
 use Rebet\Tools\Support\Arrayable;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Database\DataModel\DataModel;
 
 /**

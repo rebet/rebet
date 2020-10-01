@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;

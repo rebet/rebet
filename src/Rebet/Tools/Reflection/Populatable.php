@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tools\Reflection;
 
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 
 /**
  * Populatable Trait

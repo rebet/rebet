@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Utility;
 
 use ArrayObject;
-use Rebet\Tools\Utils;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Utility\Utils;
 
 class UtilsTest extends RebetTestCase
 {

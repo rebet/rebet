@@ -7,6 +7,7 @@ namespace Rebet\Tools {
     use Rebet\Tests\DieException;
     use Rebet\Tests\ExitException;
     use Rebet\Tools\Reflection\Reflector;
+    use Rebet\Tools\Utility\Arrays;
 
     class System
     {

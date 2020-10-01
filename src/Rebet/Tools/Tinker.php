@@ -6,6 +6,10 @@ use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Json;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 
 /**
  * Tinker Class

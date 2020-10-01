@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tools\Reflection;
 
-use Rebet\Tools\Arrays;
-use Rebet\Tools\Callbacks;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Tinker;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Utils;
 
 /**
  * Reflector Class
@@ -302,7 +302,7 @@ class Reflector
      *      -> return null
      *
      * 　3. When $type is 'array':
-     *      -> @see Rebet\Tools\Arrays::toArray()
+     *      -> @see Rebet\Tools\Utility\Arrays::toArray()
      *
      * 　4. When $type is 'string':
      *      -> If $value is string then return $value (no convert)

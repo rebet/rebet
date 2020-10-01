@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Application\View\Engine\Twig;
 
-use Rebet\Tools\Path;
+use Rebet\Tools\Utility\Path;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Application\View\Engine\BuiltinTagProcessors;
 use Rebet\Http\Request;

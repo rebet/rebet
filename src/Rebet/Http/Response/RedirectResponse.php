@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Http\Session\Session;

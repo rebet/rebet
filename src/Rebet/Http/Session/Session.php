@@ -2,8 +2,8 @@
 namespace Rebet\Http\Session;
 
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Securities;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Securities;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;

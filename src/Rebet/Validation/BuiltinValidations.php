@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Math\Decimal;
-use Rebet\Tools\Path;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\System;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\Math\Unit;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Utils;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;

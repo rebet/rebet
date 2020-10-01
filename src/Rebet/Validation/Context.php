@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Strings;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 use Rebet\Tools\Enum\Enum;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\Translation\Translator;

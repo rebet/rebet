@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Application\Console\Command;
 
-use Rebet\Tools\Path;
+use Rebet\Tools\Utility\Path;
 use Rebet\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;

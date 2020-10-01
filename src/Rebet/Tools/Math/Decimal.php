@@ -3,7 +3,7 @@ namespace Rebet\Tools\Math;
 
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Decimal Class

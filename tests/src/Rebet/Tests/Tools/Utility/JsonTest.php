@@ -1,13 +1,13 @@
 <?php
-namespace Rebet\Tests\Validation;
+namespace Rebet\Tests\Tools\Utility;
 
-use Rebet\Tools\Json;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\IteratorAggregateStub;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\Json;
 
 class JsonTest extends RebetTestCase
 {

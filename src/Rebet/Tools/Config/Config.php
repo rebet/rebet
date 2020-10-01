@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Tools\Config;
 
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\OverrideOption;
+use Rebet\Tools\Utility\OverrideOption;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Strings;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 
 /**
  * Config Class
@@ -34,10 +34,10 @@ use Rebet\Tools\Utils;
  *     => Set / overwrite with Config::runtime() during application execution
  *     => The individual configration methods of the Configurable implementation class that using protected Configurable::setConfig() method.
  *
- * Note: The behaviors behave like Rebet\Tools\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
+ * Note: The behaviors behave like Rebet\Tools\Utility\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
  *
  * @see Rebet\Tools\Config\Configurable
- * @see Rebet\Tools\Arrays
+ * @see Rebet\Tools\Utility\Arrays
  *
  * @package   Rebet
  * @author    github.com/rain-noise

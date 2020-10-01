@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Mock\Entity;
 
-use Rebet\Tools\Strings;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Presentation;

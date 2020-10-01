@@ -4,7 +4,7 @@ namespace Rebet\Database\Pagination;
 use Rebet\Tools\Support\Arrayable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Math\Unit;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Utils;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\Tools\DateTime\DateTime;

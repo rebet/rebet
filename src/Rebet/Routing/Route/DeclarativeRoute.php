@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Tools\Path;
-use Rebet\Tools\Strings;
-use Rebet\Tools\Utils;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 use Rebet\Http\Request;
 use Rebet\Routing\Exception\RouteNotFoundException;
 

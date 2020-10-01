@@ -4,7 +4,7 @@ namespace Rebet\Tests\Database\Converter;
 use Rebet\Application\App;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;

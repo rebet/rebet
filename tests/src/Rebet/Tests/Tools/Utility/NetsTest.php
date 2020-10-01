@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Tools;
-
-use Rebet\Tools\Nets;
+namespace Rebet\Tests\Tools\Utility;
 
 use Rebet\Tests\RebetTestCase;
+
+use Rebet\Tools\Utility\Nets;
 
 class NetsTest extends RebetTestCase
 {

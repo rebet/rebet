@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Tools;
 
 use InvalidArgumentException;
-use Rebet\Tools\Arrays;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Tinker;

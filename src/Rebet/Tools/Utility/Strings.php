@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Utility;
 
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;

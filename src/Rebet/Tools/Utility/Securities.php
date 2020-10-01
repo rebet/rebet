@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Utility;
 
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;

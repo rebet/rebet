@@ -3,8 +3,8 @@ namespace Rebet\Filesystem;
 
 use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local;
-use Rebet\Tools\Path;
-use Rebet\Tools\Strings;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Filesystem\Exception\FilesystemException;
 
