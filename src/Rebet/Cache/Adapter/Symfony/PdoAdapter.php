@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Cache\Adapter\Symfony;
 
-use Rebet\Common\Unit;
+use Rebet\Tools\Unit;
 use Rebet\Database\Dao;
 use Symfony\Component\Cache\Adapter\PdoAdapter as SymfonyPdoAdapter;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;

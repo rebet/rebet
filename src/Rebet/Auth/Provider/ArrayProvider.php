@@ -2,7 +2,7 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
-use Rebet\Common\Tinker;
+use Rebet\Tools\Tinker;
 use Rebet\Config\Configurable;
 
 /**

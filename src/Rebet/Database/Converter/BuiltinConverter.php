@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Database\Converter;
 
-use Rebet\Common\Decimal;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Decimal;
+use Rebet\Tools\Reflector;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;

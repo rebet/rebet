@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Cache\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 
 /**
  * Cache Exception Class

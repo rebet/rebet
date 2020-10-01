@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Middleware\Routing;
 
-use Rebet\Common\Arrays;
+use Rebet\Tools\Arrays;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Symfony\Component\HttpFoundation\ParameterBag;

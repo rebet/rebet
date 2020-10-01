@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Translation;
 
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\Layer;

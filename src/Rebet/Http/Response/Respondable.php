@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\Strings;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Strings;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Response;
 

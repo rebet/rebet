@@ -3,7 +3,7 @@ namespace Rebet\Log\Driver\Monolog;
 
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Reflector;
 use Rebet\Config\Configurable;
 use Rebet\DateTime\DateTime;
 use Rebet\DateTime\DateTimeZone;

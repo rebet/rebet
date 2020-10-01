@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Validation;
 
 use Rebet\Application\App;
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Http\UploadedFile;

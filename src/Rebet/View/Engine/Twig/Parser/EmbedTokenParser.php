@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View\Engine\Twig\Parser;
 
-use Rebet\Common\Arrays;
+use Rebet\Tools\Arrays;
 use Rebet\Translation\Translator;
 use Rebet\View\Engine\Twig\Node\EmbedNode;
 use Rebet\View\Tag\Processor;

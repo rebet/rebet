@@ -2,8 +2,8 @@
 namespace Rebet\Tests\DateTime;
 
 use Rebet\Application\App;
-use Rebet\Common\Path;
-use Rebet\Common\Strings;
+use Rebet\Tools\Path;
+use Rebet\Tools\Strings;
 use Rebet\Config\Config;
 use Rebet\Config\Resource;
 use Rebet\DateTime\DateTime;

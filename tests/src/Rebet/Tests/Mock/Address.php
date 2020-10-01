@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock;
 
-use Rebet\Common\Populatable;
+use Rebet\Tools\Populatable;
 
 class Address
 {

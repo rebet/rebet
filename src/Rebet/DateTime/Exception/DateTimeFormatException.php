@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\DateTime\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 
 /**
  * Date Time Format Exception Class

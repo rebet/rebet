@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Routing;
 
-use Rebet\Common\Strings;
+use Rebet\Tools\Strings;
 use Rebet\Config\Config;
 use Rebet\Application\App;
 use Rebet\Http\Request;

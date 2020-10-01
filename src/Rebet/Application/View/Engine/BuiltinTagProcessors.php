@@ -3,8 +3,8 @@ namespace Rebet\Application\View\Engine;
 
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
-use Rebet\Common\Arrays;
-use Rebet\Common\Tinker;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Tinker;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;

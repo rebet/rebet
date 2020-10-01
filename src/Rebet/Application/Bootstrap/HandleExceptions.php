@@ -3,7 +3,7 @@ namespace Rebet\Application\Bootstrap;
 
 use ErrorException;
 use Rebet\Application\Kernel;
-use Rebet\Common\System;
+use Rebet\Tools\System;
 
 /**
  * Handle Exceptions Class

@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Http\Response;
 
 use Rebet\Application\App;
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;

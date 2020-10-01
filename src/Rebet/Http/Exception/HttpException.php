@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;

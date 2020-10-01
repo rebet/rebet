@@ -2,7 +2,7 @@
 namespace Rebet\Filesystem\Exception;
 
 use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 
 /**
  * Filesystem Exception

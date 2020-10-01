@@ -2,9 +2,9 @@
 namespace Rebet\Http;
 
 use PHPUnit\Framework\MockObject\BadMethodCallException;
-use Rebet\Common\Arrays;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Response\RedirectResponse;

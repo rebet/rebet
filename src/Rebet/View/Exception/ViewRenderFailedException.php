@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View\Exception;
 
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 
 /**
  * View Render Failed Exception Class

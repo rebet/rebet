@@ -3,7 +3,7 @@
 /**
  * Mock class for unit testing
  */
-namespace Rebet\Common {
+namespace Rebet\Tools {
     use Rebet\Tests\DieException;
     use Rebet\Tests\ExitException;
 

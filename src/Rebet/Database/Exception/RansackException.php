@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 
 /**
  * Ransack Exception Class

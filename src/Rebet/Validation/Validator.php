@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Config\Configurable;
 
 /**

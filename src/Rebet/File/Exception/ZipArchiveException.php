@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\File\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 
 /**
  * Zip Archive Exception

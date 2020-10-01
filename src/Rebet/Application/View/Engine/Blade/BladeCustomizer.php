@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Application\View\Engine\Blade;
 
-use Rebet\Common\Path;
+use Rebet\Tools\Path;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Application\View\Engine\BuiltinTagProcessors;
 use Rebet\Http\Request;

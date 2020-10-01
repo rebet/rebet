@@ -1,5 +1,5 @@
 <?php
-use Rebet\Common\Path;
+use Rebet\Tools\Path;
 use Rebet\DateTime\DateTime;
 
 /**

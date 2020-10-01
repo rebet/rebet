@@ -2,9 +2,9 @@
 namespace Rebet\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;

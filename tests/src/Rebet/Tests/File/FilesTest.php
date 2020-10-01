@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\File;
 
-use Rebet\Common\Strings;
+use Rebet\Tools\Strings;
 use Rebet\File\Exception\ZipArchiveException;
 use Rebet\File\Files;
 use Rebet\Tests\RebetTestCase;

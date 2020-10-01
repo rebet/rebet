@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Enum;
 
 use Rebet\Application\App;
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;

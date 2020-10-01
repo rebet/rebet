@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\View;
 
-use Rebet\Common\Renderable;
-use Rebet\Common\Tinker;
+use Rebet\Tools\Renderable;
+use Rebet\Tools\Tinker;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Exception\ViewRenderFailedException;

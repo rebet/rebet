@@ -4,8 +4,8 @@ namespace Rebet\Log\Driver\Monolog\Handler;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger as MonologLogger;
-use Rebet\Common\Strings;
-use Rebet\Common\System;
+use Rebet\Tools\Strings;
+use Rebet\Tools\System;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 

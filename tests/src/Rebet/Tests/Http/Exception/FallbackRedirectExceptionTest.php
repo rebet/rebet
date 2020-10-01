@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\DateTime\Exception;
 
-use Rebet\Common\Reflector;
+use Rebet\Tools\Reflector;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;

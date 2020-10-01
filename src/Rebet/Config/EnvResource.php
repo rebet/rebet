@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Strings;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Strings;
 
 /**
  * Environment Dependent Resource Loader Class

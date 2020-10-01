@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Translation;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\Callback;
-use Rebet\Common\Strings;
-use Rebet\Common\Tinker;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Callback;
+use Rebet\Tools\Strings;
+use Rebet\Tools\Tinker;
 use Rebet\Config\Configurable;
 
 /**

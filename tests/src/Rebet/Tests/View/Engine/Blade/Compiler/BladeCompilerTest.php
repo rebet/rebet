@@ -2,7 +2,7 @@
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
 use Rebet\Application\App;
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;

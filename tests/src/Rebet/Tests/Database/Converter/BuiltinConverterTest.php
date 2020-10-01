@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Database\Converter;
 
 use Rebet\Application\App;
-use Rebet\Common\Decimal;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Decimal;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;

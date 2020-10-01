@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflector;
 use Rebet\Http\HttpStatus;
 use Rebet\Translation\Translator;
 

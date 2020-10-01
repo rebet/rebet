@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Config;
 
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Config\Exception\ConfigNotDefineException;

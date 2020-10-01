@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Middleware\Routing;
 
-use Rebet\Common\Strings;
+use Rebet\Tools\Strings;
 
 /**
  * [Routing Middleware] Trim Strings Middleware Class

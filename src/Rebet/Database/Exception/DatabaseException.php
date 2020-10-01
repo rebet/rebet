@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Database\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
-use Rebet\Common\Getsetable;
-use Rebet\Common\Strings;
+use Rebet\Tools\Exception\RuntimeException;
+use Rebet\Tools\Getsetable;
+use Rebet\Tools\Strings;
 use Rebet\Database\Database;
 
 /**

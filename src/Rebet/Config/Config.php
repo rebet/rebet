@@ -1,13 +1,13 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\DotAccessDelegator;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\OverrideOption;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
-use Rebet\Common\Utils;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\DotAccessDelegator;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\OverrideOption;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
+use Rebet\Tools\Utils;
 use Rebet\Config\Exception\ConfigNotDefineException;
 
 /**
@@ -34,10 +34,10 @@ use Rebet\Config\Exception\ConfigNotDefineException;
  *     => Set / overwrite with Config::runtime() during application execution
  *     => The individual configration methods of the Configurable implementation class that using protected Configurable::setConfig() method.
  *
- * Note: The behaviors behave like Rebet\Common\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
+ * Note: The behaviors behave like Rebet\Tools\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
  *
  * @see Rebet\Config\Configurable
- * @see Rebet\Common\Arrays
+ * @see Rebet\Tools\Arrays
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -431,7 +431,7 @@ class Config
     /**
      * Create an instance from the configuration settings using Reflector::instantiate().
      *
-     * @see Rebet\Common\Reflector::instantiate()
+     * @see Rebet\Tools\Reflector::instantiate()
      *
      * @param string $section
      * @param string $key can contains dot notation

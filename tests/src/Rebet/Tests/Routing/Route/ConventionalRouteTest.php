@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Routing\Route;
 
-use Rebet\Common\Namespaces;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Namespaces;
+use Rebet\Tools\Reflector;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;

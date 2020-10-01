@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 
 /**
  * Resource Class

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Cache\Adapter\Symfony;
 
-use Rebet\Common\Unit;
+use Rebet\Tools\Unit;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter as SymfonyFilesystemAdapter;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 

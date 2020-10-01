@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Database\Pagination;
 
-use Rebet\Common\Arrayable;
-use Rebet\Common\Reflector;
-use Rebet\Common\Unit;
-use Rebet\Common\Utils;
+use Rebet\Tools\Arrayable;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Unit;
+use Rebet\Tools\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\DateTime\DateTime;

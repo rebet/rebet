@@ -3,10 +3,10 @@ namespace Rebet\Auth;
 
 use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Json;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Json;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Inflection\Inflector;
 

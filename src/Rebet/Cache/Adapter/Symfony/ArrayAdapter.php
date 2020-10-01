@@ -2,7 +2,7 @@
 namespace Rebet\Cache\Adapter\Symfony;
 
 use Rebet\Cache\Adapter\Symfony\Pool\ArrayPool;
-use Rebet\Common\Unit;
+use Rebet\Tools\Unit;
 use Symfony\Component\Cache\Adapter\ProxyAdapter;
 
 /**

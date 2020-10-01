@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\DotAccessDelegator;
-use Rebet\Common\Strings;
+use Rebet\Tools\DotAccessDelegator;
+use Rebet\Tools\Strings;
 
 /**
  * Config Promise Class

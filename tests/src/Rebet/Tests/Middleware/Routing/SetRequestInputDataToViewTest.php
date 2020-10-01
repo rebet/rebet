@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Middleware\Routing;
 
-use Rebet\Common\Tinker;
+use Rebet\Tools\Tinker;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Middleware\Routing\SetRequestInputDataToView;

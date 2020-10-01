@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\DateTime;
 
-use Rebet\Common\Path;
+use Rebet\Tools\Path;
 use Rebet\Enum\Enum;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;

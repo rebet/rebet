@@ -2,7 +2,7 @@
 namespace Rebet\View\Engine\Blade\Compiler;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\View\Code\Code;
 use Rebet\View\Tag\Processor;
 

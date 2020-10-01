@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Config;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\OverrideOption;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\OverrideOption;
 
 /**
  * Configurable Trait
@@ -139,7 +139,7 @@ trait Configurable
      * Create an instance from the own configuration settings using Reflector::instantiate().
      *
      * @see Rebet\Config\Config::instantiate()
-     * @see Rebet\Common\Reflector::instantiate()
+     * @see Rebet\Tools\Reflector::instantiate()
      *
      * @param string $key can contains dot notation
      * @param string|null $target key name for named array instantiation (default: null)

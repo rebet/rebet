@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\View\Tag;
 
-use Rebet\Common\Reflector;
+use Rebet\Tools\Reflector;
 
 /**
  * Callback Processor Class

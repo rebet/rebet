@@ -3,7 +3,7 @@ namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\BasicAuth;
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Common\System;
+use Rebet\Tools\System;
 
 use Rebet\Tests\RebetTestCase;
 

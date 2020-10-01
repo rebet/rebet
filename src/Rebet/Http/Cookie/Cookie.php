@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Cookie;
 
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Strings;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Strings;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;

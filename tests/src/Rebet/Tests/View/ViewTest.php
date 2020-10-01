@@ -2,8 +2,8 @@
 namespace Rebet\Tests\View;
 
 use Rebet\Application\App;
-use Rebet\Common\Reflector;
-use Rebet\Common\Tinker;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Tinker;
 use Rebet\Config\Config;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;

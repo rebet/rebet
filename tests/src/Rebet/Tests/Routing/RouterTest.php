@@ -2,8 +2,8 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Application\App;
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflector;
 use Rebet\Config\Config;
 use Rebet\DateTime\DateTime;
 use Rebet\Http\Request;

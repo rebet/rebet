@@ -2,7 +2,7 @@
 namespace Rebet\Application\Error;
 
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Common\Tinker;
+use Rebet\Tools\Tinker;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;

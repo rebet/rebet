@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Auth\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;

@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Http\Session;
 
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Securities;
-use Rebet\Common\Strings;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Securities;
+use Rebet\Tools\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;

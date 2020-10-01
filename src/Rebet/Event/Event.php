@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Event;
 
-use Rebet\Common\Exception\LogicException;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflector;
 use Rebet\Config\Config;
 use Rebet\Config\Configurable;
 

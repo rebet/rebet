@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Common\Arrayable;
-use Rebet\Common\Arrays;
-use Rebet\Common\Describable;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Arrayable;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Describable;
+use Rebet\Tools\Reflector;
 
 /**
  * Valid Data Class

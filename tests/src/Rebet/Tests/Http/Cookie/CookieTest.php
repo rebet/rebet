@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Cookie;
 
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Config\Config;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;

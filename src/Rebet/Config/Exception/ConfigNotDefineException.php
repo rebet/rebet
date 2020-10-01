@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Config\Exception;
 
-use Rebet\Common\Exception\RuntimeException;
+use Rebet\Tools\Exception\RuntimeException;
 
 /**
  * Config Not Define Exception Class

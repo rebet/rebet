@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Database\Ransack;
 
-use Rebet\Common\Arrays;
-use Rebet\Common\Callback;
-use Rebet\Common\Strings;
-use Rebet\Common\Utils;
+use Rebet\Tools\Arrays;
+use Rebet\Tools\Callback;
+use Rebet\Tools\Strings;
+use Rebet\Tools\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Database\Condition;
 use Rebet\Database\Database;

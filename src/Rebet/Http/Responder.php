@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Common\Renderable;
-use Rebet\Common\Strings;
+use Rebet\Tools\Renderable;
+use Rebet\Tools\Strings;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\JsonResponse;

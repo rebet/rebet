@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Http\Session;
 
-use Rebet\Common\Exception\LogicException;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;

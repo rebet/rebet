@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Middleware\Routing;
 
-use Rebet\Common\Tinker;
+use Rebet\Tools\Tinker;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\View\View;

@@ -3,7 +3,7 @@ namespace Rebet\Tests\Http;
 
 use BadMethodCallException;
 use Rebet\Application\App;
-use Rebet\Common\Reflector;
+use Rebet\Tools\Reflector;
 use Rebet\Config\Config;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;

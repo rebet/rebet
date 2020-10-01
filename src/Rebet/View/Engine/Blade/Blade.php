@@ -11,7 +11,7 @@ use Illuminate\View\Engines\FileEngine;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
-use Rebet\Common\Path;
+use Rebet\Tools\Path;
 use Rebet\Config\Configurable;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 use Rebet\View\Engine\Engine;

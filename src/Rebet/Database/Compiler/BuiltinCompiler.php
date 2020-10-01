@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\Compiler;
 
-use Rebet\Common\Strings;
+use Rebet\Tools\Strings;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;

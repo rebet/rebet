@@ -2,9 +2,9 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Common\Namespaces;
-use Rebet\Common\Reflector;
-use Rebet\Common\Strings;
+use Rebet\Tools\Namespaces;
+use Rebet\Tools\Reflector;
+use Rebet\Tools\Strings;
 use Rebet\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;

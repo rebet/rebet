@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Middleware\Routing;
 
 use PHPUnit\Framework\AssertionFailedError;
-use Rebet\Common\Nets;
-use Rebet\Common\Securities;
-use Rebet\Common\Strings;
+use Rebet\Tools\Nets;
+use Rebet\Tools\Securities;
+use Rebet\Tools\Strings;
 use Rebet\Http\Exception\TokenMismatchException;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;

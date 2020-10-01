@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock\Entity;
 
-use Rebet\Common\Reflector;
+use Rebet\Tools\Reflector;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
 use Rebet\DateTime\DateTime;
