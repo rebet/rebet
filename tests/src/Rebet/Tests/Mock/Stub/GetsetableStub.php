@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock\Stub;
 
-use Rebet\Tools\Getsetable;
+use Rebet\Tools\Support\Getsetable;
 
 class GetsetableStub
 {

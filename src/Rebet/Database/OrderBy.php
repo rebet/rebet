@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database;
 
-use Rebet\Tools\Arrayable;
+use Rebet\Tools\Support\Arrayable;
 
 /**
  * Order By Class

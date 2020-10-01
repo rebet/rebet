@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Arrayable;
+use Rebet\Tools\Support\Arrayable;
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\Reflector;

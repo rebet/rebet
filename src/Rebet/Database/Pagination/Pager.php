@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\Pagination;
 
-use Rebet\Tools\Getsetable;
+use Rebet\Tools\Support\Getsetable;
 use Rebet\Tools\Config\Configurable;
 
 /**

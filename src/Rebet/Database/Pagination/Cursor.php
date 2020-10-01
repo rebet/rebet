@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\Pagination;
 
-use Rebet\Tools\Arrayable;
+use Rebet\Tools\Support\Arrayable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utils;

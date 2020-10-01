@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Support;
 
-use Rebet\Tools\Arrayable;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Support\Arrayable;
 
 class ArrayableTest extends RebetTestCase
 {

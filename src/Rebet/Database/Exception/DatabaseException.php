@@ -2,7 +2,7 @@
 namespace Rebet\Database\Exception;
 
 use Rebet\Tools\Exception\RuntimeException;
-use Rebet\Tools\Getsetable;
+use Rebet\Tools\Support\Getsetable;
 use Rebet\Tools\Strings;
 use Rebet\Database\Database;
 

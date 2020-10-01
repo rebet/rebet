@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tests\Validation;
+namespace Rebet\Tests\Tools\Support;
 
 use Rebet\Tests\Mock\Stub\GetsetableStub;
 use Rebet\Tests\RebetTestCase;

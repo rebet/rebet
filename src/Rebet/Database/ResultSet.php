@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database;
 
-use Rebet\Tools\Arrayable;
+use Rebet\Tools\Support\Arrayable;
 use Rebet\Tools\Arrays;
 use Rebet\Database\DataModel\DataModel;
 
