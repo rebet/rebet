@@ -1,15 +1,16 @@
 <?php
 namespace Rebet\Tools\DateTime;
 
+use DateInterval;
+use Rebet\Config\Configurable;
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Callback;
 use Rebet\Tools\Convertible;
+use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Path;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
-use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Translation\FileDictionary;
 use Rebet\Translation\Translator;
 
@@ -345,7 +346,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Set timezone
      *
-     * @param string|\DateTimeZone|null (default: depend on confige)
+     * @param \DateTimeZone|string|null $timezone (default: depend on confige)
      * @return static
      */
     public function setTimezone($timezone)
@@ -419,6 +420,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
 
     /**
      * {@inheritDoc}
+     *
+     * @param DateInterval|string $interval
      */
     public function add($interval)
     {
@@ -427,6 +430,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
 
     /**
      * {@inheritDoc}
+     *
+     * @param DateInterval|string $interval
      */
     public function sub($interval)
     {
@@ -776,7 +781,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @see Convertible
      * @param string $type
-     * @return void
+     * @return mixed
      */
     public function convertTo(string $type)
     {
