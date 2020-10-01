@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Tools\Config;
+namespace Rebet\Tests\Tools\Resource;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\EnvResource;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Resource\EnvResource;
 
 class EnvResourceTest extends RebetTestCase
 {
@@ -13,7 +13,7 @@ class EnvResourceTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->resources = App::structure()->resources('/adhoc/Config/EnvResource');
+        $this->resources = App::structure()->resources('/adhoc/Tools/Resource/EnvResource');
     }
 
     public function test_load()

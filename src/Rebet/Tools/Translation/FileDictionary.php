@@ -6,7 +6,7 @@ use Rebet\Tools\Strings;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Config\Layer;
-use Rebet\Tools\Config\LocaleResource;
+use Rebet\Tools\Resource\LocaleResource;
 
 /**
  * File Dictionary Class
@@ -64,7 +64,7 @@ class FileDictionary implements Dictionary
     /**
      * Resource file loading option
      *
-     * @see Rebet\Tools\Config\Resource
+     * @see Rebet\Tools\Resource\Resource
      * @var array
      */
     protected $option = [];

@@ -4,7 +4,7 @@ namespace Rebet\Application\Bootstrap;
 use Rebet\Application\App;
 use Rebet\Application\Kernel;
 use Rebet\Tools\Config\Config;
-use Rebet\Tools\Config\EnvResource;
+use Rebet\Tools\Resource\EnvResource;
 
 /**
  * Load Application Configuration Class

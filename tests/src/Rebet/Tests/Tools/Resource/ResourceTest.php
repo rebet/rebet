@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Tools\Config;
+namespace Rebet\Tests\Tools\Resource;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\Resource;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Resource\Resource;
 
 class ResourceTest extends RebetTestCase
 {
@@ -13,7 +13,7 @@ class ResourceTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->resources = App::structure()->resources('/adhoc/Config/Resource');
+        $this->resources = App::structure()->resources('/adhoc/Tools/Resource/Resource');
     }
 
     public function test_load()
@@ -83,7 +83,7 @@ class ResourceTest extends RebetTestCase
     public function test_load_unsuported()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Unsupported file type [yaml]. Please set loader to Rebet\Tools\Config\Resource class.");
+        $this->expectExceptionMessage("Unsupported file type [yaml]. Please set loader to Rebet\Tools\Resource\Resource class.");
 
         Resource::load('yaml', $this->resources.'/test.yaml');
     }

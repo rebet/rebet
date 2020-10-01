@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tools\Config;
+namespace Rebet\Tools\Resource;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\OverrideOption;
@@ -14,10 +14,10 @@ use Rebet\Tools\Strings;
  *     Note: if locale contains country part like 'en_US', try to find 'en_US' first and if not exists it try to find 'en'.
  *  2. Arrays::override() while repeating 1 for the given directories
  *
- * Furthermore, Rebet\Tools\Config\Resource::load() is used for loading resources.
+ * Furthermore, Rebet\Tools\Resource\Resource::load() is used for loading resources.
  * So adding a loader to the class will automatically be able to handle the target resource in this class as well .
  *
- * @see Rebet\Tools\Config\Resource
+ * @see Rebet\Tools\Resource\Resource
  *
  * @package   Rebet
  * @author    github.com/rain-noise
