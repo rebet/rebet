@@ -16,7 +16,7 @@ use Rebet\Http\Response\ProblemResponse;
 use Rebet\Log\Log;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\FallbackHandler;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 use Rebet\View\View;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;

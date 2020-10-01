@@ -8,7 +8,7 @@ use Rebet\Tools\Tinker;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 use Rebet\View\Code\Code;
 use Rebet\View\Tag\CallbackProcessor;
 use Rebet\View\Tag\Processor;

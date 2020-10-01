@@ -6,7 +6,7 @@ use Rebet\Tools\Exception\LogicException;
 use Rebet\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 class EnumTest extends RebetTestCase
 {

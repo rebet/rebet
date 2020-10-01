@@ -4,7 +4,7 @@ namespace Rebet\Enum;
 use Rebet\Tools\Convertible;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Enum Class

@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Translation;
+namespace Rebet\Tools\Translation;
 
 /**
  * Dictionary Interface

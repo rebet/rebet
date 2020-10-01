@@ -44,7 +44,7 @@ use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Address;
 use Rebet\Tests\Mock\AppHttpKernel;
 use Rebet\Tests\Mock\Entity\User;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Twig\Node\EmbedNode;
 use Rebet\View\View;
 

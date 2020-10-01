@@ -15,7 +15,7 @@ use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Routing\Router;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Auth Class

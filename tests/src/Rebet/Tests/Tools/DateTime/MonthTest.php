@@ -3,7 +3,7 @@ namespace Rebet\Tests\Tools\DateTime;
 
 use Rebet\Tools\DateTime\Month;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 class MonthTest extends RebetTestCase
 {

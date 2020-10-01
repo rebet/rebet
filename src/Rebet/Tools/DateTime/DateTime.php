@@ -11,8 +11,8 @@ use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Path;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Translation\FileDictionary;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\FileDictionary;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Date Time Class

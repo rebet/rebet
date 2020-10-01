@@ -17,8 +17,8 @@ use Rebet\Http\Session\Storage\SessionStorage;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
-use Rebet\Translation\FileDictionary;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\FileDictionary;
+use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
 

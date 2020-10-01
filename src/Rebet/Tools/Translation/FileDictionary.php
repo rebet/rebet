@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Translation;
+namespace Rebet\Tools\Translation;
 
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;

@@ -6,7 +6,7 @@ use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Http Exception Class

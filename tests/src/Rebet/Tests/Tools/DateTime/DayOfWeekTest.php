@@ -3,7 +3,7 @@ namespace Rebet\Tests\Tools\DateTime;
 
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 class DayOfWeekTest extends RebetTestCase
 {

@@ -3,8 +3,8 @@ namespace Rebet\Tools\DateTime;
 
 use Rebet\Tools\Path;
 use Rebet\Enum\Enum;
-use Rebet\Translation\FileDictionary;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\FileDictionary;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Month Enum Class

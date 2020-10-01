@@ -7,7 +7,7 @@ use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
 use Rebet\Enum\Enum;
 use Rebet\Inflection\Inflector;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Validate Context Class

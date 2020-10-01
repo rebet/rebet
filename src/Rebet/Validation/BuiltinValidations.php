@@ -12,8 +12,8 @@ use Rebet\Tools\Utils;
 use Rebet\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
-use Rebet\Translation\FileDictionary;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\FileDictionary;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * BuiltinValidations Class

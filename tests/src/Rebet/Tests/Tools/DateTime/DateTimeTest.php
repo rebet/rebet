@@ -11,7 +11,7 @@ use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;
 use Rebet\Tools\Path;
 use Rebet\Tools\Strings;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 class DateTimeTest extends RebetTestCase
 {

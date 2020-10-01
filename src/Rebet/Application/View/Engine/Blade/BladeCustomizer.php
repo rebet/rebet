@@ -5,8 +5,8 @@ use Rebet\Tools\Path;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Application\View\Engine\BuiltinTagProcessors;
 use Rebet\Http\Request;
-use Rebet\Translation\FileDictionary;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\FileDictionary;
+use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 

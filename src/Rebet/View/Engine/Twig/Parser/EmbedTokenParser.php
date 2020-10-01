@@ -2,7 +2,7 @@
 namespace Rebet\View\Engine\Twig\Parser;
 
 use Rebet\Tools\Arrays;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Twig\Node\EmbedNode;
 use Rebet\View\Tag\Processor;
 use Twig\Error\SyntaxError;

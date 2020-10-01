@@ -6,7 +6,7 @@ use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Fallback Redirect Exception Class

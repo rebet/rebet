@@ -4,7 +4,7 @@ namespace Rebet\Http\Response;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
 use Rebet\Http\HttpStatus;
-use Rebet\Translation\Translator;
+use Rebet\Tools\Translation\Translator;
 
 /**
  * Problem Response (RFC7807 Problem Details for HTTP APIs) Class
