@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\Pagination;
 
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Tests\RebetTestCase;
 

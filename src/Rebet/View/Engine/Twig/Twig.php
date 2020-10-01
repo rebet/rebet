@@ -2,7 +2,7 @@
 namespace Rebet\View\Engine\Twig;
 
 use Rebet\Tools\Path;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Engine\Twig\Environment\Environment;
 use Twig\Loader\FilesystemLoader;

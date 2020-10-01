@@ -5,7 +5,7 @@ use Rebet\Tools\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Validator Class

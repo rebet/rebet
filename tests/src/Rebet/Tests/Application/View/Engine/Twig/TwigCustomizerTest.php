@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Application\View\Engine\Twig;
 
 use Rebet\Application\App;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tests\Application\View\Engine\EngineCustomizerTestCase;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Engine\Twig\Twig;

@@ -2,7 +2,7 @@
 namespace Rebet\Tests\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;

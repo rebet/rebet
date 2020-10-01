@@ -3,7 +3,7 @@ namespace Rebet\View;
 
 use Rebet\Tools\Renderable;
 use Rebet\Tools\Tinker;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Exception\ViewRenderFailedException;
 

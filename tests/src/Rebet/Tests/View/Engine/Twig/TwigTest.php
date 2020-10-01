@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\View\Engine\Twig;
 
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
 
 use Rebet\Tests\RebetTestCase;

@@ -5,7 +5,7 @@ use Rebet\Tools\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Inflector Class
@@ -46,7 +46,7 @@ use Rebet\Config\Configurable;
  *
  * @see https://github.com/doctrine/inflector/blob/1.3.x/lib/Doctrine/Common/Inflector/Inflector.php
  * @see https://github.com/doctrine/inflector/blob/1.3.x/LICENSE
- * @see Rebet\Config\Config
+ * @see Rebet\Tools\Config\Config
  *
  * @package   Rebet
  * @author    github.com/rain-noise

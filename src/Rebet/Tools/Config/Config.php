@@ -1,14 +1,14 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Arrays;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Tools\DotAccessDelegator;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\OverrideOption;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
-use Rebet\Config\Exception\ConfigNotDefineException;
 
 /**
  * Config Class
@@ -36,7 +36,7 @@ use Rebet\Config\Exception\ConfigNotDefineException;
  *
  * Note: The behaviors behave like Rebet\Tools\Arrays::override($lower_layer, $higher_layer, $option, OverrideOption::PREPEND) in the above layer overwriting.
  *
- * @see Rebet\Config\Configurable
+ * @see Rebet\Tools\Config\Configurable
  * @see Rebet\Tools\Arrays
  *
  * @package   Rebet

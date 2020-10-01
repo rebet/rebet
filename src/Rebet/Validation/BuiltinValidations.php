@@ -9,7 +9,7 @@ use Rebet\Tools\System;
 use Rebet\Tools\Tinker;
 use Rebet\Tools\Unit;
 use Rebet\Tools\Utils;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
 use Rebet\Tools\Translation\FileDictionary;

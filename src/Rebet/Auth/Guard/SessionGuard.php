@@ -3,7 +3,7 @@ namespace Rebet\Auth\Guard;
 
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\AuthProvider;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;

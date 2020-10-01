@@ -3,8 +3,8 @@ namespace Rebet\Event;
 
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Event Class

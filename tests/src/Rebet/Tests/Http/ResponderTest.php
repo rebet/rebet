@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use Rebet\Application\App;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Responder;

@@ -9,7 +9,7 @@ use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\Guard;
 use Rebet\Tools\Namespaces;
 use Rebet\Tools\Reflector;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;

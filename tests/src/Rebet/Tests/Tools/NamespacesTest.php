@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Tools;
 
 use Rebet\Tools\Namespaces;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;
 
 class NamespacesTest extends RebetTestCase

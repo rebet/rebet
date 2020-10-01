@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Config;
+namespace Rebet\Tests\Tools\Config;
 
-use Rebet\Config\Config;
-use Rebet\Config\ConfigReferrer;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\ConfigReferrer;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigReferrerTest_Mock
@@ -74,7 +74,7 @@ class ConfigReferrerTest extends RebetTestCase
 
     public function test___toString()
     {
-        $this->assertSame("<Referrer: Rebet\Tests\Config\ConfigReferrerTest_Mock.driver (default: null)>", $this->ref_driver->__toString());
-        $this->assertSame("<Referrer: Rebet\Tests\Config\ConfigReferrerTest_Mock.user (default: default_user)>", $this->ref_user->__toString());
+        $this->assertSame("<Referrer: Rebet\Tests\Tools\Config\ConfigReferrerTest_Mock.driver (default: null)>", $this->ref_driver->__toString());
+        $this->assertSame("<Referrer: Rebet\Tests\Tools\Config\ConfigReferrerTest_Mock.user (default: default_user)>", $this->ref_user->__toString());
     }
 }

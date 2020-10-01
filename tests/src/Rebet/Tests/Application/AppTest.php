@@ -3,7 +3,7 @@ namespace Rebet\Tests\Application;
 
 use Rebet\Application\App;
 use Rebet\Application\Structure;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tests\Mock\KernelMock;
 use Rebet\Tests\RebetTestCase;
 

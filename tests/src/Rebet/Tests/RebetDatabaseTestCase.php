@@ -3,7 +3,7 @@ namespace Rebet\Tests;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Strings;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Cursor;

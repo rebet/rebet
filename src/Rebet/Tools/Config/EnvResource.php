@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Exception\LogicException;
@@ -14,10 +14,10 @@ use Rebet\Tools\Strings;
  *  2. Load {$dir_path}/{$base_name}@{$env}.{$suffix} file.
  *  3. Data of 1 is overridden by data of 2 using Arrays::override
  *
- * Furthermore, Rebet\Config\Resource::load() is used for loading resources.
+ * Furthermore, Rebet\Tools\Config\Resource::load() is used for loading resources.
  * So adding a loader to the class will automatically be able to handle the target resource in this class as well .
  *
- * @see Rebet\Config\Resource
+ * @see Rebet\Tools\Config\Resource
  *
  * @package   Rebet
  * @author    github.com/rain-noise

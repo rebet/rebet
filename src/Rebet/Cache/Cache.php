@@ -2,7 +2,7 @@
 namespace Rebet\Cache;
 
 use Rebet\Cache\Adapter\Symfony\FilesystemAdapter;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Cache Class

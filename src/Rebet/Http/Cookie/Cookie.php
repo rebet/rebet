@@ -3,8 +3,8 @@ namespace Rebet\Http\Cookie;
 
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Strings;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
 

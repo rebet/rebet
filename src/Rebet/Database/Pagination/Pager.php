@@ -2,7 +2,7 @@
 namespace Rebet\Database\Pagination;
 
 use Rebet\Tools\Getsetable;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Pager Class

@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Tools\Namespaces;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\RouteAction;

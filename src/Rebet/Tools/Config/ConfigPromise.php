@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 use Rebet\Tools\DotAccessDelegator;
 use Rebet\Tools\Strings;
@@ -10,7 +10,7 @@ use Rebet\Tools\Strings;
  * It is used when you want to do lazy evaluation by putting it in config setting.
  * This object can be constructed using the Config::promise() facade.
  *
- * @see Rebet\Config\Config::promise()
+ * @see Rebet\Tools\Config\Config::promise()
  *
  * @package   Rebet
  * @author    github.com/rain-noise

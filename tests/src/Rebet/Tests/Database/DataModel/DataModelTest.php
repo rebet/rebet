@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Database\Database;
 use Rebet\Database\ResultSet;
 use Rebet\Tools\DateTime\DateTime;

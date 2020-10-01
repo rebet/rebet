@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Filesystem;
 
-use Rebet\Config\Exception\ConfigNotDefineException;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;

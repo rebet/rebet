@@ -4,7 +4,7 @@ namespace Rebet\Tests\Routing;
 use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;

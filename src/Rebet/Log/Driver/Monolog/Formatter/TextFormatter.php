@@ -6,7 +6,7 @@ use Rebet\Tools\Arrays;
 use Rebet\Tools\Callback;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Text Formatter Class

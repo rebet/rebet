@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tools;
 
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Unit Class

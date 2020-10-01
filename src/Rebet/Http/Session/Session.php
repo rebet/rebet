@@ -4,7 +4,7 @@ namespace Rebet\Http\Session;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Securities;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;

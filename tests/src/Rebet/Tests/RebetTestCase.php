@@ -21,7 +21,7 @@ use Rebet\Tools\Reflector;
 use Rebet\Tools\Securities;
 use Rebet\Tools\System;
 use Rebet\Tools\Text;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\ArrayCursorStorage;

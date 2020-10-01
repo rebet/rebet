@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Application;
 
-use Rebet\Config\Config;
-use Rebet\Config\ConfigPromise;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\ConfigPromise;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Application Config Class

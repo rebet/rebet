@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database;
 
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Dao Class

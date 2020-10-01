@@ -4,7 +4,7 @@ namespace Rebet\Log\Driver\Monolog;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
 use Rebet\Tools\Reflector;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;
 use Throwable;

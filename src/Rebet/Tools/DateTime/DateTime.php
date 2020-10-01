@@ -2,7 +2,7 @@
 namespace Rebet\Tools\DateTime;
 
 use DateInterval;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Callback;
 use Rebet\Tools\Convertible;

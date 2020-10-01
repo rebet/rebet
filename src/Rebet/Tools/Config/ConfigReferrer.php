@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 use Rebet\Tools\DotAccessDelegator;
 use Rebet\Tools\Strings;
@@ -12,7 +12,7 @@ use Rebet\Tools\Strings;
  *  - The reference will be unidirectional reference.
  *  - This object can be constructed using Config::refer() facade.
  *
- * @see Rebet\Config\Config::refer()
+ * @see Rebet\Tools\Config\Config::refer()
  *
  * @todo Circular reference detection & exception throw
  *

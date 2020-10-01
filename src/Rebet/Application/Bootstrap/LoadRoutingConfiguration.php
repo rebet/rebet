@@ -3,7 +3,7 @@ namespace Rebet\Application\Bootstrap;
 
 use Rebet\Application\App;
 use Rebet\Application\Kernel;
-use Rebet\Config\EnvResource;
+use Rebet\Tools\Config\EnvResource;
 
 /**
  * Load Routing Configuration Class

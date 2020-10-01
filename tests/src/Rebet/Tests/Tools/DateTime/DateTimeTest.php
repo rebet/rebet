@@ -2,8 +2,8 @@
 namespace Rebet\Tests\Tools\DateTime;
 
 use Rebet\Application\App;
-use Rebet\Config\Config;
-use Rebet\Config\Resource;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Resource;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;

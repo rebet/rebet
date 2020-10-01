@@ -8,7 +8,7 @@ use Rebet\Tools\Path;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
 use Rebet\Tools\Utils;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;

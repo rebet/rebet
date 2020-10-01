@@ -4,7 +4,7 @@ namespace Rebet\Tests\Tools;
 use ArrayObject;
 use Rebet\Tools\Callback;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Config\Layer;
+use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;

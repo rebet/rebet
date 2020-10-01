@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 /**
  * Layer Class

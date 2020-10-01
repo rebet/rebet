@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tools;
 
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Security Utility Class

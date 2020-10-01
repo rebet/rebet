@@ -3,7 +3,7 @@ namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
 use Rebet\Tools\Tinker;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Array Auth Provider Class

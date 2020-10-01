@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Tools\Strings;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Routing\Route\ViewRoute;

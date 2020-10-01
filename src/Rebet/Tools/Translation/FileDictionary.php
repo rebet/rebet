@@ -3,10 +3,10 @@ namespace Rebet\Tools\Translation;
 
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
-use Rebet\Config\Layer;
-use Rebet\Config\LocaleResource;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Config\Layer;
+use Rebet\Tools\Config\LocaleResource;
 
 /**
  * File Dictionary Class
@@ -64,7 +64,7 @@ class FileDictionary implements Dictionary
     /**
      * Resource file loading option
      *
-     * @see Rebet\Config\Resource
+     * @see Rebet\Tools\Config\Resource
      * @var array
      */
     protected $option = [];

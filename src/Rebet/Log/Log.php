@@ -3,7 +3,7 @@ namespace Rebet\Log;
 
 use Exception;
 use Monolog\Handler\StreamHandler;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Log\Driver\Monolog\StderrDriver;

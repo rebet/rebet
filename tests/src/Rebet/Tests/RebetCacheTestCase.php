@@ -8,8 +8,8 @@ use Rebet\Cache\Adapter\Symfony\MemcachedAdapter;
 use Rebet\Cache\Adapter\Symfony\PdoAdapter;
 use Rebet\Cache\Adapter\Symfony\RedisAdapter;
 use Rebet\Cache\Cache;
-use Rebet\Config\Config;
-use Rebet\Config\Layer;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Layer;
 use Rebet\File\Files;
 
 /**

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Inflection;
 
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Inflection\Inflector;
 use Rebet\Tests\RebetTestCase;
 

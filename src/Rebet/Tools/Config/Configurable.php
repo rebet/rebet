@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\OverrideOption;
@@ -27,7 +27,7 @@ use Rebet\Tools\OverrideOption;
  *       ]
  *   ]);
  *
- * @see Rebet\Config\Config
+ * @see Rebet\Tools\Config\Config
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -138,7 +138,7 @@ trait Configurable
     /**
      * Create an instance from the own configuration settings using Reflector::instantiate().
      *
-     * @see Rebet\Config\Config::instantiate()
+     * @see Rebet\Tools\Config\Config::instantiate()
      * @see Rebet\Tools\Reflector::instantiate()
      *
      * @param string $key can contains dot notation

@@ -3,7 +3,7 @@ namespace Rebet\Tests\Tools;
 
 use Rebet\Tools\Decimal;
 use Rebet\Tools\Unit;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;
 
 class UnitTest extends RebetTestCase

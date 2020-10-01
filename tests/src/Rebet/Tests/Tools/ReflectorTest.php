@@ -7,7 +7,7 @@ use Rebet\Tools\DotAccessDelegator;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Tinker;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;

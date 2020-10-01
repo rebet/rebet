@@ -5,7 +5,7 @@ use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local;
 use Rebet\Tools\Path;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Filesystem\Exception\FilesystemException;
 
 /**

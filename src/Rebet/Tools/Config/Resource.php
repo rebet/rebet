@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Config;
+namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Exception\LogicException;
 
@@ -38,7 +38,7 @@ use Rebet\Tools\Exception\LogicException;
  * Otherwise,
  *
  * Config::application([
- *     Rebet\Config\Resource::class => {
+ *     Rebet\Tools\Config\Resource::class => {
  *         'loader' => [
  *             'yaml' => function(string $path, array $option) : array {
  *                  return Symfony\Component\Yaml\Yaml::parse(\file_get_contents($path));
@@ -114,7 +114,7 @@ class Resource
     {
         $loader = self::config("loader.{$type}", false);
         if (empty($loader) || !\is_callable($loader)) {
-            throw new LogicException("Unsupported file type [$type]. Please set loader to Rebet\Config\Resource class.");
+            throw new LogicException("Unsupported file type [$type]. Please set loader to Rebet\Tools\Config\Resource class.");
         }
         return $loader($path, $option);
     }

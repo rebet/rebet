@@ -6,7 +6,7 @@ use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Application\Kernel;
 use Rebet\Application\View\Engine\Blade\BladeCustomizer;
 use Rebet\Application\View\Engine\Twig\TwigCustomizer;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Tools\DateTime\DateTime;

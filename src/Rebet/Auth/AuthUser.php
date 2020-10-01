@@ -7,7 +7,7 @@ use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Json;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Inflection\Inflector;
 
 /**

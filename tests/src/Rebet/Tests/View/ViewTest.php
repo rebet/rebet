@@ -4,7 +4,7 @@ namespace Rebet\Tests\View;
 use Rebet\Application\App;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Tinker;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;

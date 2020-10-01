@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Exception\HttpException;
 
 /**

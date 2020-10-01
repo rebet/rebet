@@ -2,7 +2,7 @@
 namespace Rebet\Tests\Http\Cookie;
 
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Tests\RebetTestCase;

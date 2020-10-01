@@ -1,10 +1,10 @@
 <?php
-namespace Rebet\Tests\Config;
+namespace Rebet\Tests\Tools\Config;
 
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
-use Rebet\Config\Exception\ConfigNotDefineException;
-use Rebet\Config\Layer;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
+use Rebet\Tools\Config\Layer;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigurableTest extends RebetTestCase
@@ -70,7 +70,7 @@ class ConfigurableTest extends RebetTestCase
     public function test_config_blank()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigurableTest_Mock.database is blank or not define.");
 
         ConfigurableTest_Mock::config('database');
     }
@@ -78,7 +78,7 @@ class ConfigurableTest extends RebetTestCase
     public function test_config_blankInStatic()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigurableTest_Mock.database is blank or not define.");
 
         ConfigurableTest_Mock::configInStatic('database');
     }
@@ -86,7 +86,7 @@ class ConfigurableTest extends RebetTestCase
     public function test_config_blankInMember()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigurableTest_Mock.database is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigurableTest_Mock.database is blank or not define.");
 
         $mock = new ConfigurableTest_Mock();
         $mock->configInMember('database');

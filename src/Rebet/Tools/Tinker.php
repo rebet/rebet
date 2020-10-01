@@ -2,7 +2,7 @@
 namespace Rebet\Tools;
 
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 
 /**

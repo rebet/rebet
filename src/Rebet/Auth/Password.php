@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Auth;
 
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Password Class

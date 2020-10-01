@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Config;
+namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Application\App;
-use Rebet\Config\LocaleResource;
+use Rebet\Tools\Config\LocaleResource;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Kind;

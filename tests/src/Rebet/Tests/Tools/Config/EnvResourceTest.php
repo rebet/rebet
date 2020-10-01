@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Config;
+namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Config\EnvResource;
+use Rebet\Tools\Config\EnvResource;
 use Rebet\Tests\RebetTestCase;
 
 class EnvResourceTest extends RebetTestCase

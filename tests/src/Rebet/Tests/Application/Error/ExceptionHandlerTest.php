@@ -4,8 +4,8 @@ namespace Rebet\Tests\Application\Error;
 use Rebet\Application\App;
 use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Config\Config;
-use Rebet\Config\Exception\ConfigNotDefineException;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\Exception\TokenMismatchException;
@@ -203,7 +203,7 @@ class ExceptionHandlerTest extends RebetTestCase
         $this->assertTrue($driver->hasErrorRecords());
         $log = $driver->formatted();
         $this->assertStringContainsString('HTTP 500 Internal Server Error occurred.', $log);
-        $this->assertStringContainsString('Rebet\Config\Exception\ConfigNotDefineException: unit test in', $log);
+        $this->assertStringContainsString('Rebet\Tools\Config\Exception\ConfigNotDefineException: unit test in', $log);
     }
 
     public function test_handle_json()
@@ -237,6 +237,6 @@ class ExceptionHandlerTest extends RebetTestCase
         $this->assertTrue($driver->hasErrorRecords());
         $log = $driver->formatted();
         $this->assertStringContainsString('HTTP 500 Internal Server Error occurred.', $log);
-        $this->assertStringContainsString('Rebet\Config\Exception\ConfigNotDefineException: unit test in', $log);
+        $this->assertStringContainsString('Rebet\Tools\Config\Exception\ConfigNotDefineException: unit test in', $log);
     }
 }

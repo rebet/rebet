@@ -1,11 +1,11 @@
 <?php
-namespace Rebet\Tests\Config;
+namespace Rebet\Tests\Tools\Config;
 
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Config\Config;
-use Rebet\Config\Configurable;
-use Rebet\Config\Exception\ConfigNotDefineException;
-use Rebet\Config\Layer;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
+use Rebet\Tools\Config\Layer;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
 
@@ -179,7 +179,7 @@ class ConfigTest extends RebetTestCase
     public function test_get_blank()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.database is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.database is blank or not define.");
 
         Config::get(ConfigTest_Mock::class, 'database');
     }
@@ -187,7 +187,7 @@ class ConfigTest extends RebetTestCase
     public function test_get_undfine()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.undfine is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.undfine is blank or not define.");
 
         Config::get(ConfigTest_Mock::class, 'undfine');
     }
@@ -195,7 +195,7 @@ class ConfigTest extends RebetTestCase
     public function test_get_frameworkOrverrideBlank()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.driver is blank or not define.");
 
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
@@ -211,7 +211,7 @@ class ConfigTest extends RebetTestCase
     public function test_get_applicationOrverrideBlank()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.driver is blank or not define.");
 
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 
@@ -227,7 +227,7 @@ class ConfigTest extends RebetTestCase
     public function test_get_runtimeOrverrideBlank()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Required config Rebet\Tests\Config\ConfigTest_Mock.driver is blank or not define.");
+        $this->expectExceptionMessage("Required config Rebet\Tests\Tools\Config\ConfigTest_Mock.driver is blank or not define.");
 
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
 

@@ -3,7 +3,7 @@ namespace Rebet\Database;
 
 use Rebet\Tools\Arrays;
 use Rebet\Tools\Reflector;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;

@@ -3,7 +3,7 @@ namespace Rebet\Tests\Validation;
 
 use Rebet\Application\App;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;

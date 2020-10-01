@@ -5,7 +5,7 @@ use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Tools\Namespaces;
 use Rebet\Tools\Reflector;
 use Rebet\Tools\Strings;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Inflection\Inflector;

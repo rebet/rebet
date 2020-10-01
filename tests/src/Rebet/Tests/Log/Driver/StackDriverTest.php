@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Log\Driver;
 
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\StderrDriver;
 use Rebet\Log\Driver\Monolog\TestDriver;

@@ -3,8 +3,8 @@ namespace Rebet\Application\Bootstrap;
 
 use Rebet\Application\App;
 use Rebet\Application\Kernel;
-use Rebet\Config\Config;
-use Rebet\Config\EnvResource;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\EnvResource;
 
 /**
  * Load Application Configuration Class

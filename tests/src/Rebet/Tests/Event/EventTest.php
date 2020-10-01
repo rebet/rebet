@@ -6,7 +6,7 @@ use Rebet\Auth\Event\Authentication;
 use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
-use Rebet\Config\Config;
+use Rebet\Tools\Config\Config;
 use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Tests\RebetTestCase;

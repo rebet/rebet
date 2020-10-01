@@ -1,7 +1,7 @@
 <?php
-namespace Rebet\Tests\Config\Exception;
+namespace Rebet\Tests\Tools\Config\Exception;
 
-use Rebet\Config\Exception\ConfigNotDefineException;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Tests\RebetTestCase;
 
 class ConfigNotDefineExceptionTest extends RebetTestCase

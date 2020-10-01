@@ -3,7 +3,7 @@ namespace Rebet\Routing;
 
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
-use Rebet\Config\Configurable;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\View\View;
 
