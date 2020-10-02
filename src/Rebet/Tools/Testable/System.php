@@ -3,7 +3,7 @@ namespace Rebet\Tools\Testable;
 
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Tinker;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Utility\Arrays;
 
 /**

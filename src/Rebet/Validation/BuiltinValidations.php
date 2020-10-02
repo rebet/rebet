@@ -6,7 +6,7 @@ use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Testable\System;
-use Rebet\Tools\Tinker;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utility\Utils;
 use Rebet\Tools\Config\Configurable;

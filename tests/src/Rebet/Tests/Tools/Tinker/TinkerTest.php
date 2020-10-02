@@ -1,14 +1,14 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Tinker;
 
 use InvalidArgumentException;
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Math\Decimal;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Tinker;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Tinker\Tinker;
+use Rebet\Tools\Utility\Arrays;
 
 class TinkerTest extends RebetTestCase
 {

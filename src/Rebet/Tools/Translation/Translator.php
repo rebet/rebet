@@ -4,7 +4,7 @@ namespace Rebet\Tools\Translation;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Tinker;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Config\Configurable;
 
 /**

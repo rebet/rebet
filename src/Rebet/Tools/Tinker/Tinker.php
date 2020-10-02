@@ -1,5 +1,5 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Tinker;
 
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;

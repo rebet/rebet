@@ -5,7 +5,7 @@ use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Tinker;
+use Rebet\Tools\Tinker\Tinker;
 
 /**
  * Text Class

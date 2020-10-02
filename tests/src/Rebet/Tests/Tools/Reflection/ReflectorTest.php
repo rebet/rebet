@@ -11,7 +11,7 @@ use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Tinker;
+use Rebet\Tools\Tinker\Tinker;
 
 class ReflectorTest extends RebetTestCase
 {

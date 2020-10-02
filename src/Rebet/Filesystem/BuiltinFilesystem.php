@@ -14,7 +14,7 @@ use League\Flysystem\Util\MimeType;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Tinker;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Utility\Utils;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
