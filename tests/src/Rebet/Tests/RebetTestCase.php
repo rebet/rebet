@@ -37,7 +37,7 @@ use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Enum\Enum;
-use Rebet\Tools\Namespaces;
+use Rebet\Tools\Utility\Namespaces;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Template\Text;

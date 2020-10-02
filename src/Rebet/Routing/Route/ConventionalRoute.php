@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Tools\Namespaces;
+use Rebet\Tools\Utility\Namespaces;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Configurable;

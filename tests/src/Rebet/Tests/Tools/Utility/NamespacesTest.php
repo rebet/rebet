@@ -1,9 +1,9 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Utility;
 
-use Rebet\Tools\Namespaces;
-use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Utility\Namespaces;
 
 class NamespacesTest extends RebetTestCase
 {

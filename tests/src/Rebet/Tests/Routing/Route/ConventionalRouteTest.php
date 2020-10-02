@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Routing\Route;
 
-use Rebet\Tools\Namespaces;
+use Rebet\Tools\Utility\Namespaces;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;

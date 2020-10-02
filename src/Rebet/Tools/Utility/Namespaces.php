@@ -1,8 +1,7 @@
 <?php
-namespace Rebet\Tools;
+namespace Rebet\Tools\Utility;
 
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Utility\Strings;
 
 /**
  * Namespaces Class
