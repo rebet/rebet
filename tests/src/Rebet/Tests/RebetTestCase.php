@@ -39,7 +39,7 @@ use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Namespaces;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\System;
+use Rebet\Tools\Testable\System;
 use Rebet\Tools\Template\Text;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Files;

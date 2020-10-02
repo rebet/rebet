@@ -3,7 +3,7 @@ namespace Rebet\Auth;
 
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\System;
+use Rebet\Tools\Testable\System;
 
 /**
  * 認証関連 ユーティリティ クラス

@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Tools;
+namespace Rebet\Tests\Tools\Testable;
 
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\System;
+use Rebet\Tools\Testable\System;
 
 class SystemTest extends RebetTestCase
 {
@@ -13,7 +13,7 @@ class SystemTest extends RebetTestCase
 
     public function test___callStatic()
     {
-        System::emulator('mb_strlen', function (string $str, string $encoding = null) { return mb_strlen($str, $encoding ?? mb_internal_encoding()) * 2; });
+        System::emulator('mb_strlen', function () { return 6; });
 
         System::testing(false);
         $this->assertSame(3, System::mb_strlen('abc'));
