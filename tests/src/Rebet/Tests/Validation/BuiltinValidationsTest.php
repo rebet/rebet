@@ -2,10 +2,10 @@
 namespace Rebet\Tests\Validation;
 
 use Rebet\Application\App;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
@@ -681,7 +681,7 @@ class BuiltinValidationsTest extends RebetTestCase
             // --------------------------------------------
             [[
                 'name'  => 'Url',
-                'data'  => ['null' => null, 'foo' => 'https://github.com/rebet/rebet', 'bar' => 'https://invalid[bar]/rebet', 'baz' => 'https://invalid.local/rebet', 'qux' => ['https://github.com/rebet/rebet', 'https://invalid[bar]/rebet', 'https://invalid.local/rebet']],
+                'data'  => ['null' => null, 'foo' => 'https://sample.local/rebet/rebet', 'bar' => 'https://invalid[bar]/rebet', 'baz' => 'https://invalid.local/rebet', 'qux' => ['https://sample.local/rebet/rebet', 'https://invalid[bar]/rebet', 'https://invalid.local/rebet']],
                 'tests' => [
                     ['nothing', [    ], true , []],
                     ['null'   , [    ], true , []],

@@ -72,8 +72,9 @@ abstract class RebetTestCase extends TestCase
 
     protected function setUp() : void
     {
-        System::initMock();
         Config::clear();
+        System::clear();
+        System::testing(true);
         App::init(new AppHttpKernel(new Structure(__DIR__.'/../../../application')));
         $users = [
             ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'        , 'signin_id' => 'admin'        , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
