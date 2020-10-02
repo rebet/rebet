@@ -3,8 +3,8 @@ namespace Rebet\Tests\Tools\Utility;
 
 use Exception;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Dsn;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\Dsn;
 
 class DsnTest extends RebetTestCase
 {
