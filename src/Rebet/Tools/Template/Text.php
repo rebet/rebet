@@ -1,11 +1,12 @@
 <?php
 namespace Rebet\Tools\Template;
 
-use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Tinker\Tinker;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Json;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Text Class
@@ -74,7 +75,7 @@ use Rebet\Tools\Tinker\Tinker;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Text implements Renderable
+class Text implements Renderable, \JsonSerializable
 {
     /**
      * Tag type of `block`, that contains content like {% tag %}content{% endtag %}
@@ -625,6 +626,14 @@ class Text implements Renderable
             ${$__name} = $__value;
         }
         return Tinker::peel(eval($__code));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function jsonSerialize()
+    {
+        return Json::serialize($this->vars);
     }
 }
 

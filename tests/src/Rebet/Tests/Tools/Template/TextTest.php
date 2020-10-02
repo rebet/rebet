@@ -4,12 +4,12 @@ namespace Rebet\Tests\Tools\Template;
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Template\Text;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Strings;
 
 class TextTest extends RebetTestCase
 {
@@ -714,5 +714,11 @@ EOS
         $this->assertSame('a c d', Text::of('a {% env "development" %}b{% else %}c{% endenv %} d')->render());
         $this->assertSame('a c e', Text::of('a {% env "development" %}b{% elseenv "unittest" %}c{% else %}d{% endenv %} e')->render());
         $this->assertSame('a d e', Text::of('a {% env "development" %}b{% elseenv "production" %}c{% else %}d{% endenv %} e')->render());
+    }
+
+    public function test_jsonSerialize()
+    {
+        $this->assertSame([], Text::of('')->jsonSerialize());
+        $this->assertSame(['foo' => 1], Text::of('')->with(['foo' => 1])->jsonSerialize());
     }
 }
