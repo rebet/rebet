@@ -18,9 +18,6 @@ use Rebet\Cache\Cache;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
-use Rebet\Event\Event;
-use Rebet\Filesystem\Storage;
-use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
@@ -29,6 +26,7 @@ use Rebet\Http\UploadedFile;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Log;
 use Rebet\Log\LogLevel;
+use Rebet\Mail\Mail;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Address;
@@ -36,17 +34,12 @@ use Rebet\Tests\Mock\AppHttpKernel;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tools\Enum\Enum;
-use Rebet\Tools\Utility\Namespaces;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Testable\System;
-use Rebet\Tools\Template\Text;
-use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Files;
+use Rebet\Tools\Utility\Namespaces;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Securities;
-use Rebet\View\Engine\Twig\Node\EmbedNode;
-use Rebet\View\View;
 
 /**
  * RebetTestCase Class
@@ -72,8 +65,7 @@ abstract class RebetTestCase extends TestCase
 
     protected function setUp() : void
     {
-        Config::clear();
-        System::clear();
+        App::clear();
         System::testing(true);
         App::init(new AppHttpKernel(new Structure(__DIR__.'/../../../application')));
         $users = [
@@ -89,12 +81,8 @@ abstract class RebetTestCase extends TestCase
                 'locale'    => 'ja',
             ],
             Log::class => [
+                'unittest' => true,
                 'channels' => [
-                    'default' => [
-                        'driver' => TestDriver::class,
-                        'name'   => 'web',
-                        'level'  => LogLevel::DEBUG,
-                    ],
                     'web' => [
                         'driver' => TestDriver::class,
                         'name'   => 'web',
@@ -161,19 +149,12 @@ abstract class RebetTestCase extends TestCase
                 ],
                 'default_store' => 'array',
             ],
+            Mail::class => [
+                'development' => true,
+                'unittest'    => true,
+            ],
         ]);
-        Enum::clear();
-        Event::clear();
-        Cookie::clear();
-        Request::clear();
-        Session::clear();
-        Router::clear();
-        Translator::clear();
-        EmbedNode::clear();
-        View::clear();
         StderrCapture::clear();
-        Storage::clean();
-        Text::clear();
     }
 
     // protected function assertPreConditions() {}

@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Tests\Log;
 
-use Rebet\Tools\Config\Config;
-
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\StderrDriver;
+
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Driver\NullDriver;
 use Rebet\Log\Log;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\DateTime;
 
 class LogTest extends RebetTestCase
 {
@@ -19,6 +19,7 @@ class LogTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         Config::application([
             Log::class => [
+                'unittest' => false,
                 'channels' => [
                     'test' => [
                         'driver' => TestDriver::class,

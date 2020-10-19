@@ -3,12 +3,13 @@ namespace Rebet\Log;
 
 use Exception;
 use Monolog\Handler\StreamHandler;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Log\Driver\Monolog\StderrDriver;
+use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Driver\NullDriver;
 use Rebet\Log\Driver\StackDriver;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Log Class
@@ -63,15 +64,22 @@ class Log
     public static function defaultConfig()
     {
         return [
+            'unittest' => false,
             'channels' => [
-                'default' => [
+                'stderr' => [
                     'driver' => StderrDriver::class,
-                    'name'   => 'default',
+                    'name'   => 'stderr',
+                    'level'  => LogLevel::DEBUG,
+                ],
+                'test' => [
+                    'driver' => TestDriver::class,
+                    'name'   => 'test',
                     'level'  => LogLevel::DEBUG,
                 ],
             ],
-            'default_channel' => 'default',
-            'fallback_log'    => defined('STDERR') ? STDERR : 'php://stderr',
+            'default_channel'  => 'stderr',
+            'unittest_channel' => 'test',
+            'fallback_log'     => defined('STDERR') ? STDERR : 'php://stderr',
         ];
     }
 
@@ -90,6 +98,45 @@ class Log
     }
 
     /**
+     * Clear the all channels.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$channels = [];
+    }
+
+    /**
+     * Get/Set unittest mode or not.
+     *
+     * @param bool|null $is_unittest (default: null for get unittest mode or not)
+     * @return bool
+     */
+    public static function unittest(?bool $is_unittest = null) : bool
+    {
+        if ($is_unittest === null) {
+            return static::config('unittest');
+        }
+        static::setConfig(['unittest' => $is_unittest]);
+        return $is_unittest;
+    }
+
+    /**
+     * Select the channel according to the configuration.
+     *
+     * @param string|null $channel name that configured in 'Log.channels'. (default: null for depend on configuration 'default_channel')
+     * @return string
+     */
+    protected static function adoptChannel(?string $channel = null) : string
+    {
+        switch (true) {
+            case static::unittest(): return static::config('unittest_channel');
+        }
+        return $channel ?? static::config('default_channel', false, 'default');
+    }
+
+    /**
      * Get the logger for given channel.
      *
      * @param string $channel when the null given return the default channel logger (default: null)
@@ -97,7 +144,7 @@ class Log
      */
     public static function channel(?string $channel = null) : Logger
     {
-        $channel = $channel ?? static::config('default_channel', false, 'default');
+        $channel = static::adoptChannel($channel);
         if ($logger = static::$channels[$channel] ?? null) {
             return $logger;
         }

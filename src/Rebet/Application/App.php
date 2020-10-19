@@ -1,9 +1,23 @@
 <?php
 namespace Rebet\Application;
 
+use Rebet\Event\Event;
+use Rebet\Filesystem\Storage;
+use Rebet\Http\Cookie\Cookie;
+use Rebet\Http\Request;
+use Rebet\Http\Session\Session;
+use Rebet\Log\Log;
+use Rebet\Mail\Mail;
+use Rebet\Routing\Router;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigPromise;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Template\Text;
+use Rebet\Tools\Testable\System;
+use Rebet\Tools\Translation\Translator;
+use Rebet\View\Engine\Twig\Node\EmbedNode;
+use Rebet\View\View;
 
 /**
  * Application Config Class
@@ -226,5 +240,29 @@ class App
     public static function setTimezone(string $timezone) : void
     {
         self::setConfig(['timezone' => $timezone]);
+    }
+
+    /**
+     * Clear the application state.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        Config::clear();
+        System::clear();
+        Enum::clear();
+        Event::clear();
+        Cookie::clear();
+        Request::clear();
+        Session::clear();
+        Router::clear();
+        Translator::clear();
+        EmbedNode::clear();
+        View::clear();
+        Storage::clean();
+        Text::clear();
+        Log::clear();
+        Mail::clear();
     }
 }

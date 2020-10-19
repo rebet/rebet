@@ -4,6 +4,7 @@ namespace Rebet\Tools\Utility;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Resource\Resource;
 
 /**
  * Strings Utility Class
@@ -523,6 +524,21 @@ class Strings
     public static function split(?string $string, string $delimiter, int $size, $padding = null) : array
     {
         return array_pad($string === null ? [] : explode($delimiter, $string, $size), $size, $padding);
+    }
+
+    /**
+     * Convert string to resource using 'php://temp/maxmemory:{$max_memory_size}'
+     *
+     * @param string $data
+     * @param string $max_memory_size (default: 2M)
+     * @return resource
+     */
+    public static function toResource(string $data, int $max_memory_size = 2 * 1024 * 1024)
+    {
+        $fp = fopen("php://temp/maxmemory:{$max_memory_size}", 'r+b');
+        fwrite($fp, $data);
+        rewind($fp);
+        return $fp;
     }
 
     // @todo https://github.com/laravel/framework/blob/v6.15.0/src/Illuminate/Support/Str.php ascii

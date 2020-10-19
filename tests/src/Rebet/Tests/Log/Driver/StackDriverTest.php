@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Tests\Log\Driver;
 
-use Rebet\Tools\Config\Config;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\StderrDriver;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Driver\StackDriver;
 use Rebet\Log\Log;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\DateTime;
 
 class StackDriverTest extends RebetTestCase
 {
@@ -27,6 +27,7 @@ class StackDriverTest extends RebetTestCase
     {
         Config::application([
             Log::class => [
+                'unittest' => false,
                 'channels' => [
                     'test' => [
                         'driver' => TestDriver::class,
