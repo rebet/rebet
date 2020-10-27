@@ -51,7 +51,7 @@ use Rebet\Tools\Utility\Strings;
  *
  * 4. Letterpress::block() : Register block type tag anything you want.
  * ----------
- * This method using syntax tree of Text template, so you can do anything but little bit complexed.
+ * This method using syntax tree of Letterpress template, so you can do anything but little bit complexed.
  * Tag of 'for' also registered by this method.
  * NOTE: The nodes is passed a chunk block of consecutive tags defined in siblings.
  *
@@ -64,7 +64,7 @@ use Rebet\Tools\Utility\Strings;
  *
  * 5. Letterpress::embed() : Register embed type tag (that does not have contents) anything you want.
  * ----------
- * This method using syntax tree of Text template, so you can do anything but little bit complexed.
+ * This method using syntax tree of Letterpress template, so you can do anything but little bit complexed.
  *
  * Letterpress::embed('hello', function (array $node, array $vars) { return trim("Hello ".Letterpress::evaluate($node['code'], $vars))."!"; });
  * => {% hello $name %} become 'Hello Rebet!' when $name is 'Rebet'.
@@ -115,7 +115,7 @@ class Letterpress implements Renderable, \JsonSerializable
     protected $vars = [];
 
     /**
-     * Create Text instance.
+     * Create Letterpress instance.
      *
      * @param string|null $template
      * @throws LogicException when given template has syntax error
@@ -126,7 +126,7 @@ class Letterpress implements Renderable, \JsonSerializable
     }
 
     /**
-     * Create Text instance.
+     * Create Letterpress instance.
      *
      * @param string|null $template
      * @throws LogicException when given template has syntax error
