@@ -72,7 +72,7 @@ class Cache
     {
         return [
             'stores' => [
-                'main' => [
+                'file' => [
                     'adapter'                => FilesystemAdapter::class,
                     'namespace'              => '',
                     'default_lifetime'       => 0,
@@ -83,7 +83,7 @@ class Cache
                     'known_tag_versions_ttl' => 0.15
                 ],
             ],
-            'default_store' => 'main',
+            'default_store' => 'file',
         ];
     }
 

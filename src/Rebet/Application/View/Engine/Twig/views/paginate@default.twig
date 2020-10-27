@@ -1,0 +1,89 @@
+{%- if paginator.hasPages() or paginator.hasTotal() -%}
+    <style>
+        .pagination { margin: 20px; }
+        .pagination .summary { float: left; }
+        .pagination .summary .no-data { font-size: 22px; color: #777; margin-left: 10px; }
+        .pagination .summary .total .count { font-size: 24px; color: #f33; margin-left: 10px; }
+        .pagination .summary .total .unit { font-size: 16px; color: #333; }
+        .pagination .summary .from .count { color: #33f; margin-left: 10px; }
+        .pagination .summary .from .unit { color: #333; }
+        .pagination .summary .to .count { color: #33f; }
+        .pagination .summary .to .unit { color: #333; }
+        .pagination .pager { float: right; font-size: 14px; margin-top: 5px; }
+        .pagination .pager li { display: inline-block; }
+        .pagination .pager li a { border: 1px solid #eee; background-color: #eee; padding: 8px 13px 8px; border-radius: 4px; color: #333; text-decoration: none; }
+        .pagination .pager li a:HOVER { background-color: #666; color: #fff; border-color: #666; }
+        .pagination .pager li span { border: 1px solid #eee; padding: 8px 13px 8px; border-radius: 4px; color: #333; }
+    </style>
+    <nav class="pagination">
+        {#- Page Summary -#}
+        {%- if paginator.hasTotal() -%}
+            <div class="summary">
+                {% lang "pagination.summary" with {'from': paginator.from(), 'to': paginator.to(), 'total': paginator.total()} for paginator.total() %}
+            </div>
+        {%- endif -%}
+
+        {#- Page Navigation -#}
+        {%- if paginator.hasPages() -%}
+            <ul class="pager">
+                {#- First Page Link -#}
+                {%- if paginator.hasLastPage() -%}
+                    {%- if paginator.onFirstPage() -%}
+                        <li class="first-page disabled" aria-disabled="true" aria-label="{% lang 'pagination.first_page' %}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </li>
+                    {%- else -%}
+                        <li class="first-page">
+                            <a href="{{ paginator.firstPageUrl() }}" aria-label="{% lang 'pagination.first_page' %}">&laquo;</a>
+                        </li>
+                    {%- endif -%}
+                {%- endif -%}
+
+                {#- Previous Page Link -#}
+               {%- if paginator.onFirstPage() -%}
+                    <li class="prev-page disabled" aria-disabled="true" aria-label="{% lang 'pagination.prev_page' %}">
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </li>
+                {%- else -%}
+                    <li class="prev-page">
+                        <a href="{{ paginator.prevPageUrl() }}" rel="prev" aria-label="{% lang 'pagination.prev_page' %}">&lsaquo;</a>
+                    </li>
+                {%- endif -%}
+
+                {#- Pagination Elements -#}
+                {%- for page in paginator.focusPages() -%}
+                    {#- Page Links -#}
+                    {%- if page == paginator.page() -%}
+                        <li class="page active" aria-current="page"><span>{{ page }}</span></li>
+                    {%- else -%}
+                        <li class="page"><a href="{{ paginator.pageUrl(page) }}">{{ page }}</a></li>
+                    {%- endif -%}
+                {%- endfor -%}
+
+                {#- Next Page Link -#}
+                {%- if paginator.hasNext() -%}
+                    <li class="next-page">
+                        <a href="{{ paginator.nextPageUrl() }}" rel="next" aria-label="{% lang 'pagination.next_page' %}">&rsaquo;</a>
+                    </li>
+                {%- else -%}
+                    <li class="next-page disabled" aria-disabled="true" aria-label="{% lang 'pagination.next_page' %}">
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </li>
+                {%- endif -%}
+
+                {#- Last Page Link -#}
+                {%- if paginator.hasLastPage() -%}
+                    {%- if paginator.onLastPage() -%}
+                        <li class="last-item disabled" aria-disabled="true" aria-label="{% lang 'pagination.last_page' %}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </li>
+                    {%- else -%}
+                        <li class="last-item">
+                            <a href="{{ paginator.lastPageUrl() }}" aria-label="{% lang 'pagination.last_page' %}">&raquo;</a>
+                        </li>
+                    {%- endif -%}
+                {%- endif -%}
+            </ul>
+        {%- endif -%}
+    </nav>
+{%- endif -%}

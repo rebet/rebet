@@ -6,10 +6,8 @@ use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Application\Kernel;
 use Rebet\Application\View\Engine\Blade\BladeCustomizer;
 use Rebet\Application\View\Engine\Twig\TwigCustomizer;
-use Rebet\Tools\Config\Config;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Storage\Handler\NativeFileSessionHandler;
@@ -17,6 +15,8 @@ use Rebet\Http\Session\Storage\SessionStorage;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
@@ -39,15 +39,6 @@ class LoadFrameworkConfiguration implements Bootstrapper
     {
         Config::framework([
             //---------------------------------------------
-            // App Configure
-            //---------------------------------------------
-            App::class => [
-                'resources' => [
-                    'i18n' => $kernel->structure()->resources('/i18n'),
-                ],
-            ],
-
-            //---------------------------------------------
             // DateTime Configure
             //---------------------------------------------
             DateTime::class => [
@@ -58,7 +49,7 @@ class LoadFrameworkConfiguration implements Bootstrapper
             // Logging Configure
             //---------------------------------------------
             Log::class => [
-                'default_channel' => App::channel() ?? 'default',
+                'default_channel' => App::channel() ?? 'stderr',
             ],
             TextFormatter::class => [
                 'masks' => ['password', 'password_confirm'],
@@ -136,7 +127,7 @@ class LoadFrameworkConfiguration implements Bootstrapper
 
             FileDictionary::class => [
                 'resources' => [
-                    'i18n' => [Config::refer(App::class, 'resources.i18n')],
+                    'i18n' => [$kernel->structure()->resources('/i18n')],
                 ]
             ],
         ]);

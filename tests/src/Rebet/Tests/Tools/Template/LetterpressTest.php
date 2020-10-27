@@ -7,11 +7,11 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Template\Text;
+use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
 
-class TextTest extends RebetTestCase
+class LetterpressTest extends RebetTestCase
 {
     protected function setUp() : void
     {
@@ -238,7 +238,7 @@ class TextTest extends RebetTestCase
             $this->expectException(get_class($expect));
             $this->expectExceptionMessage($expect->getMessage());
         }
-        $this->assertSame($expect, $this->inspect(new Text($template), 'syntax'));
+        $this->assertSame($expect, $this->inspect(new Letterpress($template), 'syntax'));
     }
 
     public function dataEvaluates() : array
@@ -274,20 +274,20 @@ class TextTest extends RebetTestCase
     public function test_evaluate(string $code, array $tests)
     {
         foreach ($tests as $i => [$vars, $expect]) {
-            $this->assertEquals($expect, Text::evaluate($code, $vars), ">> {$code} test #{$i}");
+            $this->assertEquals($expect, Letterpress::evaluate($code, $vars), ">> {$code} test #{$i}");
         }
     }
 
     public function test_eval_if()
     {
         $this->expectOutputString('a');
-        Text::eval('if($a->isInt()) { echo "a"; } else { echo "b"; }', ['a' => 123]);
+        Letterpress::eval('if($a->isInt()) { echo "a"; } else { echo "b"; }', ['a' => 123]);
     }
 
     public function test_eval_foreach()
     {
         $this->expectOutputString('1, 2, 3, ');
-        Text::eval('foreach($a as $v) { echo $v.", "; }', ['a' => [1, 2, 3]]);
+        Letterpress::eval('foreach($a as $v) { echo $v.", "; }', ['a' => [1, 2, 3]]);
     }
 
     public function test_eval_foreachCallback()
@@ -309,7 +309,7 @@ class TextTest extends RebetTestCase
 
 EOS
         );
-        Text::eval(
+        Letterpress::eval(
             'foreach($a as $i => $v) { $__callback->invoke($i, compact(array_keys(get_defined_vars()))); }',
             [
                 'a'          => [1, 2, 3],
@@ -345,6 +345,14 @@ EOS
             ['a D b', 'a {{ $foo->default("D") }} b', []],
             ['a D b', 'a {{ $foo->default("D") }} b', ['foo' => null]],
             ['a 8,888.89 b', 'a {{ $a->add($b)->numberf(2) }} b', ['a' => 1234.567, 'b' => 7654.321]],
+            ['a &amp; b', 'a {{ $a }} b', ['a' => '&']],
+            ['a & b', 'a {! $a !} b', ['a' => '&']],
+            ['a 1 b', 'a {{ $a }} b', ['a' => 1]],
+            ['a 1 b', 'a {! $a !} b', ['a' => 1]],
+            ['a &amp; b & c', 'a {{ $a }} b {! $a !} c', ['a' => '&']],
+            ['a&amp;b&c', 'a {{- $a -}} b {!- $a -!} c', ['a' => '&']],
+            [new LogicException("Invalid placeholder format '{{ ... !}' found."), 'a {{ $a !} b', ['a' => 1]],
+            [new LogicException("Invalid placeholder format '{! ... }}' found."), 'a {! $a }} b', ['a' => 1]],
         ];
     }
 
@@ -353,7 +361,11 @@ EOS
      */
     public function test_expandVars($expect, $template, array $vars = [])
     {
-        $this->assertSame($expect, Text::expandVars($template, $vars));
+        if ($expect instanceof \Exception) {
+            $this->expectException(get_class($expect));
+            $this->expectExceptionMessage($expect->getMessage());
+        }
+        $this->assertSame($expect, Letterpress::expandVars($template, $vars));
     }
 
     public function dataRenders() : array
@@ -566,71 +578,71 @@ EOS
             $this->expectException(get_class($expect));
             $this->expectExceptionMessage($expect->getMessage());
         }
-        $this->assertSame($expect, Text::of($text)->with($vars)->render());
+        $this->assertSame($expect, Letterpress::of($text)->with($vars)->render());
     }
 
     public function test_defined()
     {
-        $this->assertTrue(Text::defined('if'));
-        $this->assertTrue(Text::defined('elseif'));
-        $this->assertFalse(Text::defined('env'));
+        $this->assertTrue(Letterpress::defined('if'));
+        $this->assertTrue(Letterpress::defined('elseif'));
+        $this->assertFalse(Letterpress::defined('env'));
     }
 
     public function test_block()
     {
-        $this->assertFalse(Text::defined('upper'));
+        $this->assertFalse(Letterpress::defined('upper'));
 
-        Text::block('upper', null, function (array $nodes, array $vars) {
+        Letterpress::block('upper', null, function (array $nodes, array $vars) {
             foreach ($nodes as $node) {
-                return strtoupper(Text::process($node['nodes'], $vars));
+                return strtoupper(Letterpress::process($node['nodes'], $vars));
             }
         });
 
-        $this->assertTrue(Text::defined('upper'));
-        $this->assertSame('foo BAR baz', Text::of('foo {% upper %}bar{% endupper %} baz')->render());
+        $this->assertTrue(Letterpress::defined('upper'));
+        $this->assertSame('foo BAR baz', Letterpress::of('foo {% upper %}bar{% endupper %} baz')->render());
     }
 
     public function test_filter()
     {
-        $this->assertFalse(Text::defined('upper'));
+        $this->assertFalse(Letterpress::defined('upper'));
 
-        Text::filter('upper', function (string $body) {
+        Letterpress::filter('upper', function (string $body) {
             return strtoupper($body);
         });
 
-        $this->assertTrue(Text::defined('upper'));
-        $this->assertSame('foo BAR baz', Text::of('foo {% upper %}bar{% endupper %} baz')->render());
+        $this->assertTrue(Letterpress::defined('upper'));
+        $this->assertSame('foo BAR baz', Letterpress::of('foo {% upper %}bar{% endupper %} baz')->render());
 
-        Text::filter('filter', function (string $body, $filter) {
+        Letterpress::filter('filter', function (string $body, $filter) {
             return Reflector::evaluate($filter, array_merge([$body]));
         });
-        $this->assertSame('foo BAR baz', Text::of('foo {% filter "strtoupper" %}bar{% endfilter %} baz')->render());
+        $this->assertSame('foo BAR baz', Letterpress::of('foo {% filter "strtoupper" %}bar{% endfilter %} baz')->render());
 
-        Text::filter('replace', function (string $body, $pattern, $replacement, int $limit = -1) {
+        Letterpress::filter('replace', function (string $body, $pattern, $replacement, int $limit = -1) {
             return preg_replace($pattern, $replacement, $body, $limit);
         });
-        $this->assertSame('foo bAr baz', Text::of('foo {% replace "/a/", "A" %}bar{% endreplace %} baz')->render());
+        $this->assertSame('foo bAr baz', Letterpress::of('foo {% replace "/a/", "A" %}bar{% endreplace %} baz')->render());
     }
 
     public function test_clear()
     {
-        $this->assertTrue(Text::defined('if'));
-        $this->assertTrue(Text::defined('for'));
-        $this->assertFalse(Text::defined('upper'));
+        $this->assertTrue(Letterpress::defined('if'));
+        $this->assertTrue(Letterpress::defined('for'));
+        $this->assertFalse(Letterpress::defined('upper'));
 
-        Text::filter('upper', function (string $body) {
+        Letterpress::filter('upper', function (string $body) {
             return strtoupper($body);
         });
 
-        $this->assertTrue(Text::defined('if'));
-        $this->assertTrue(Text::defined('for'));
-        $this->assertTrue(Text::defined('upper'));
+        $this->assertTrue(Letterpress::defined('if'));
+        $this->assertTrue(Letterpress::defined('for'));
+        $this->assertTrue(Letterpress::defined('upper'));
 
-        Text::clear();
+        Letterpress::clear();
 
-        $this->assertTrue(Text::defined('if'));
-        $this->assertTrue(Text::defined('for'));
-        $this->assertFalse(Text::defined('upper'));
+        $this->assertTrue(Letterpress::defined('if'));
+        $this->assertTrue(Letterpress::defined('for'));
+        $this->assertFalse(Letterpress::defined('upper'));
     }
 
     public function test_block_duplicatedTag()
@@ -638,7 +650,7 @@ EOS
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Tag 'if' is already defined.");
 
-        Text::block('if', null, function (array $nodes, array $vars) {});
+        Letterpress::block('if', null, function (array $nodes, array $vars) {});
     }
 
     public function test_block_unavailableSiblingTag()
@@ -646,22 +658,22 @@ EOS
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Tag 'foo' contains unavailable sibling tags [if, for], these are already defined as tag.");
 
-        Text::block('foo', ['foo' => ['if', 'bar', 'for'], 'if' =>['for'], 'bar' => [], 'for' => []], function (array $nodes, array $vars) {});
+        Letterpress::block('foo', ['foo' => ['if', 'bar', 'for'], 'if' =>['for'], 'bar' => [], 'for' => []], function (array $nodes, array $vars) {});
     }
 
     public function test_embed()
     {
-        $this->assertFalse(Text::defined('hello'));
+        $this->assertFalse(Letterpress::defined('hello'));
 
-        Text::embed('hello', function (array $node, array $vars) {
-            return trim("'Hello ".Text::evaluate($node['code'], $vars))."'";
+        Letterpress::embed('hello', function (array $node, array $vars) {
+            return trim("'Hello ".Letterpress::evaluate($node['code'], $vars))."'";
         });
 
-        $this->assertTrue(Text::defined('hello'));
-        $this->assertSame("foo 'Hello' baz", Text::of('foo {% hello %} baz')->render());
-        $this->assertSame("foo 'Hello World' baz", Text::of('foo {% hello "World" %} baz')->render());
-        $this->assertSame("foo 'Hello Rebet' baz", Text::of('foo {% hello $name %} baz')->with(['name' => 'Rebet'])->render());
-        $text = Text::of('foo {%if $name %}*{% hello $name %}*{% else %}{%hello "Default" %}{%endif%} baz');
+        $this->assertTrue(Letterpress::defined('hello'));
+        $this->assertSame("foo 'Hello' baz", Letterpress::of('foo {% hello %} baz')->render());
+        $this->assertSame("foo 'Hello World' baz", Letterpress::of('foo {% hello "World" %} baz')->render());
+        $this->assertSame("foo 'Hello Rebet' baz", Letterpress::of('foo {% hello $name %} baz')->with(['name' => 'Rebet'])->render());
+        $text = Letterpress::of('foo {%if $name %}*{% hello $name %}*{% else %}{%hello "Default" %}{%endif%} baz');
         $this->assertSame("foo *'Hello Rebet'* baz", $text->with(['name' => 'Rebet'])->render());
         $this->assertSame("foo 'Hello Default' baz", $text->with(['name' => null])->render());
     }
@@ -671,54 +683,54 @@ EOS
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Tag 'if' is already defined.");
 
-        Text::embed('if', function (array $nodes, array $vars) {});
+        Letterpress::embed('if', function (array $nodes, array $vars) {});
     }
 
     public function test_function()
     {
-        $this->assertFalse(Text::defined('hello'));
+        $this->assertFalse(Letterpress::defined('hello'));
 
-        Text::function('hello', function (string $name = '') {
+        Letterpress::function('hello', function (string $name = '') {
             return trim("'Hello {$name}")."'";
         });
 
-        $this->assertTrue(Text::defined('hello'));
-        $this->assertSame("foo 'Hello' baz", Text::of('foo {% hello %} baz')->render());
-        $this->assertSame("foo 'Hello World' baz", Text::of('foo {% hello "World" %} baz')->render());
-        $this->assertSame("foo 'Hello Rebet' baz", Text::of('foo {% hello $name %} baz')->with(['name' => 'Rebet'])->render());
-        $text = Text::of('foo {%if $name %}*{% hello $name %}*{% else %}{%hello "Default" %}{%endif%} baz');
+        $this->assertTrue(Letterpress::defined('hello'));
+        $this->assertSame("foo 'Hello' baz", Letterpress::of('foo {% hello %} baz')->render());
+        $this->assertSame("foo 'Hello World' baz", Letterpress::of('foo {% hello "World" %} baz')->render());
+        $this->assertSame("foo 'Hello Rebet' baz", Letterpress::of('foo {% hello $name %} baz')->with(['name' => 'Rebet'])->render());
+        $text = Letterpress::of('foo {%if $name %}*{% hello $name %}*{% else %}{%hello "Default" %}{%endif%} baz');
         $this->assertSame("foo *'Hello Rebet'* baz", $text->with(['name' => 'Rebet'])->render());
         $this->assertSame("foo 'Hello Default' baz", $text->with(['name' => null])->render());
 
 
-        Text::function('welcome', function () {
+        Letterpress::function('welcome', function () {
             return "Welcome ".(Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name)."!";
         });
         $this->signout();
-        $this->assertSame("Welcome to Rebet!", Text::of('{% welcome %}')->render());
+        $this->assertSame("Welcome to Rebet!", Letterpress::of('{% welcome %}')->render());
         $this->signin();
-        $this->assertSame("Welcome User!", Text::of('{% welcome %}')->render());
+        $this->assertSame("Welcome User!", Letterpress::of('{% welcome %}')->render());
     }
 
     public function test_if()
     {
-        $this->assertFalse(Text::defined('env'));
+        $this->assertFalse(Letterpress::defined('env'));
 
-        Text::if('env', function (string ...$env) {
+        Letterpress::if('env', function (string ...$env) {
             return App::envIn(...$env);
         });
 
-        $this->assertTrue(Text::defined('env'));
-        $this->assertSame('a b c', Text::of('a {% env "unittest" %}b{% endenv %} c')->render());
-        $this->assertSame('a b d', Text::of('a {% env "unittest", "development" %}b{% else %}c{% endenv %} d')->render());
-        $this->assertSame('a c d', Text::of('a {% env "development" %}b{% else %}c{% endenv %} d')->render());
-        $this->assertSame('a c e', Text::of('a {% env "development" %}b{% elseenv "unittest" %}c{% else %}d{% endenv %} e')->render());
-        $this->assertSame('a d e', Text::of('a {% env "development" %}b{% elseenv "production" %}c{% else %}d{% endenv %} e')->render());
+        $this->assertTrue(Letterpress::defined('env'));
+        $this->assertSame('a b c', Letterpress::of('a {% env "unittest" %}b{% endenv %} c')->render());
+        $this->assertSame('a b d', Letterpress::of('a {% env "unittest", "development" %}b{% else %}c{% endenv %} d')->render());
+        $this->assertSame('a c d', Letterpress::of('a {% env "development" %}b{% else %}c{% endenv %} d')->render());
+        $this->assertSame('a c e', Letterpress::of('a {% env "development" %}b{% elseenv "unittest" %}c{% else %}d{% endenv %} e')->render());
+        $this->assertSame('a d e', Letterpress::of('a {% env "development" %}b{% elseenv "production" %}c{% else %}d{% endenv %} e')->render());
     }
 
     public function test_jsonSerialize()
     {
-        $this->assertSame([], Text::of('')->jsonSerialize());
-        $this->assertSame(['foo' => 1], Text::of('')->with(['foo' => 1])->jsonSerialize());
+        $this->assertSame([], Letterpress::of('')->jsonSerialize());
+        $this->assertSame(['foo' => 1], Letterpress::of('')->with(['foo' => 1])->jsonSerialize());
     }
 }

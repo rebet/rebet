@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Database\Pagination;
 
+use Rebet\Database\ResultSet;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Json;
-use Rebet\Database\ResultSet;
 
 /**
  * Paginator Class
@@ -49,6 +49,20 @@ class Paginator extends ResultSet
      * @var int|null
      */
     protected $last_page;
+
+    /**
+     * Start of focus page
+     *
+     * @var int
+     */
+    protected $start_of_focus_page;
+
+    /**
+     * End of focus page
+     *
+     * @var int
+     */
+    protected $end_of_focus_page;
 
     /**
      * from position number
@@ -130,14 +144,27 @@ class Paginator extends ResultSet
         $from = $page === 1 && $count === 0 ? 0 : ($page - 1) * $page_size + 1 ;
         $to   = $from === 0 ? 0 : $from + $count - 1 ;
 
-        $this->each_side       = $each_side;
-        $this->total           = $total;
-        $this->page            = $page;
-        $this->page_size       = $page_size;
-        $this->next_page_count = $next_page_count;
-        $this->last_page       = $last_page;
-        $this->from            = $from;
-        $this->to              = $to;
+        $start_of_focus_page = $page - $each_side;
+        $end_of_focus_page   = $page + $each_side;
+        if ($start_of_focus_page < 1) {
+            $end_of_focus_page   = min($end_of_focus_page - $start_of_focus_page + 1, $page + $next_page_count);
+            $start_of_focus_page = 1;
+        }
+        if ($end_of_focus_page - $page > $next_page_count) {
+            $end_of_focus_page   = $page + $next_page_count;
+            $start_of_focus_page = max(1, $start_of_focus_page - ($each_side - $next_page_count));
+        }
+
+        $this->each_side           = $each_side;
+        $this->total               = $total;
+        $this->page                = $page;
+        $this->page_size           = $page_size;
+        $this->next_page_count     = $next_page_count;
+        $this->last_page           = $last_page;
+        $this->from                = $from;
+        $this->to                  = $to;
+        $this->start_of_focus_page = $start_of_focus_page;
+        $this->end_of_focus_page   = $end_of_focus_page;
     }
 
     /**
@@ -427,28 +454,36 @@ class Paginator extends ResultSet
     }
 
     /**
-     * Get page numbers on each sides
+     * Get start focused page number near the current page that considered the range of each sides.
+     *
+     * @return int
+     */
+    public function startOfFocusPage() : int
+    {
+        return $this->start_of_focus_page;
+    }
+
+    /**
+     * Get end focused page number near the current page that considered the range of each sides.
+     *
+     * @return int
+     */
+    public function endOfFocusPage() : int
+    {
+        return $this->end_of_focus_page;
+    }
+
+    /**
+     * Get focused page numbers near the current page that considered the range of each sides.
      *
      * @return array
      */
-    public function eachSidePages() : array
+    public function focusPages() : array
     {
-        $start = $this->page - $this->each_side;
-        $end   = $this->page + $this->each_side;
-        if ($start < 1) {
-            $end   = min($end - $start + 1, $this->page + $this->next_page_count);
-            $start = 1;
-        }
-        if ($end - $this->page > $this->next_page_count) {
-            $end   = $this->page + $this->next_page_count;
-            $start = max(1, $start - ($this->each_side - $this->next_page_count));
-        }
-
         $list = [];
-        for ($i = $start ; $i <= $end ; $i++) {
+        for ($i = $this->start_of_focus_page ; $i <= $this->end_of_focus_page ; $i++) {
             $list[] = $i;
         }
-
         return $list;
     }
 
@@ -458,32 +493,34 @@ class Paginator extends ResultSet
     public function jsonSerialize()
     {
         $page_urls = [];
-        foreach ($this->eachSidePages() as $page) {
+        foreach ($this->focusPages() as $page) {
             $page_urls[$page] = $this->pageUrl($page);
         }
         return Json::serialize([
-            'has_pages'      => $this->hasPages(),
-            'has_total'      => $this->hasTotal(),
-            'has_prev'       => $this->hasPrev(),
-            'has_next'       => $this->hasNext(),
-            'has_last_page'  => $this->hasLastPage(),
-            'on_first_page'  => $this->onFirstPage(),
-            'on_last_page'   => $this->onLastPage(),
-            'total'          => $this->total(),
-            'page_size'      => $this->pageSize(),
-            'page'           => $this->page(),
-            'prev_page'      => $this->prevPage(),
-            'next_page'      => $this->nextPage(),
-            'last_page'      => $this->lastPage(),
-            'first_page_url' => $this->firstPageUrl(),
-            'prev_page_url'  => $this->prevPageUrl(),
-            'next_page_url'  => $this->nextPageUrl(),
-            'last_page_url'  => $this->lastPageUrl(),
-            'page_urls'      => $page_urls,
-            'each_side'      => $this->eachSide(),
-            'from'           => $this->from(),
-            'to'             => $this->to(),
-            'data'           => $this->toArray(),
+            'has_pages'           => $this->hasPages(),
+            'has_total'           => $this->hasTotal(),
+            'has_prev'            => $this->hasPrev(),
+            'has_next'            => $this->hasNext(),
+            'has_last_page'       => $this->hasLastPage(),
+            'on_first_page'       => $this->onFirstPage(),
+            'on_last_page'        => $this->onLastPage(),
+            'total'               => $this->total(),
+            'page_size'           => $this->pageSize(),
+            'page'                => $this->page(),
+            'prev_page'           => $this->prevPage(),
+            'next_page'           => $this->nextPage(),
+            'last_page'           => $this->lastPage(),
+            'first_page_url'      => $this->firstPageUrl(),
+            'prev_page_url'       => $this->prevPageUrl(),
+            'next_page_url'       => $this->nextPageUrl(),
+            'last_page_url'       => $this->lastPageUrl(),
+            'page_urls'           => $page_urls,
+            'each_side'           => $this->eachSide(),
+            'from'                => $this->from(),
+            'to'                  => $this->to(),
+            'start_of_focus_page' => $this->startOfFocusPage(),
+            'end_of_focus_page'   => $this->endOfFocusPage(),
+            'data'                => $this->toArray(),
         ]);
     }
 }

@@ -1,12 +1,9 @@
 <?php
 namespace Rebet\Application\View\Engine\Twig;
 
-use Rebet\Tools\Utility\Path;
+use Rebet\Application\View\Tag\BuiltinTagProcessors;
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Application\View\Engine\BuiltinTagProcessors;
 use Rebet\Http\Request;
-use Rebet\Tools\Translation\FileDictionary;
-use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Twig\Twig;
 
 /**
@@ -227,9 +224,3 @@ class TwigCustomizer
         $environment->embed('paginate', 'of', ['that'], 'echo(', BuiltinTagProcessors::paginate(), ');');
     }
 }
-
-
-// ---------------------------------------------------------
-// Add library default translation resource
-// ---------------------------------------------------------
-Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'pagination');

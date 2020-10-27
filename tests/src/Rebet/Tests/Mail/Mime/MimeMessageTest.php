@@ -3,7 +3,7 @@ namespace Rebet\Tests\Mail\Mime;
 
 use Rebet\Mail\Mime\MimeMessage;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Template\Text;
+use Rebet\Tools\Template\Letterpress;
 use Swift_ByteStream_ArrayByteStream;
 
 class MimeMessageTest extends RebetTestCase
@@ -11,7 +11,7 @@ class MimeMessageTest extends RebetTestCase
     public function test_getBody()
     {
         $message = new MimeMessage();
-        $body    = Text::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
+        $body    = Letterpress::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
         $message->setBody($body);
         $this->assertSame("This is rendrable body - foo①", $message->getBody());
         $body->with(['value' => 'bar①']);
@@ -27,7 +27,7 @@ class MimeMessageTest extends RebetTestCase
     public function test_getBody_withEncodeCharset()
     {
         $message = new MimeMessage();
-        $body    = Text::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
+        $body    = Letterpress::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
         $message->setBody($body, null, 'iso-2022-jp');
         $this->assertSame("This is rendrable body - foo?", $message->getBody());
         $body->with(['value' => 'bar①']);
@@ -43,7 +43,7 @@ class MimeMessageTest extends RebetTestCase
     public function test_addPart()
     {
         $message = new MimeMessage();
-        $body    = Text::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
+        $body    = Letterpress::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
         $message->addPart($body);
         $this->assertSame("This is rendrable body - foo①", $message->getPart()->getBody());
         $body->with(['value' => 'bar①']);
@@ -53,7 +53,7 @@ class MimeMessageTest extends RebetTestCase
     public function test_addPart_withEncodeCharset()
     {
         $message = new MimeMessage();
-        $body    = Text::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
+        $body    = Letterpress::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
         $message->addPart($body, null, 'iso-2022-jp');
         $this->assertSame("This is rendrable body - foo?", $message->getPart()->getBody());
         $body->with(['value' => 'bar①']);

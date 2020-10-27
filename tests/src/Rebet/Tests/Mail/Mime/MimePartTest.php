@@ -3,14 +3,14 @@ namespace Rebet\Tests\Mail\Mime;
 
 use Rebet\Mail\Mime\MimePart;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Template\Text;
+use Rebet\Tools\Template\Letterpress;
 use Swift_ByteStream_ArrayByteStream;
 
 class MimePartTest extends RebetTestCase
 {
     public function test_getBody()
     {
-        $body = Text::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
+        $body = Letterpress::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
         $part = new MimePart($body);
         $this->assertSame("This is rendrable body - foo①", $part->getBody());
         $body->with(['value' => 'bar①']);
@@ -25,7 +25,7 @@ class MimePartTest extends RebetTestCase
 
     public function test_getBody_withEncodeCharset()
     {
-        $body = Text::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
+        $body = Letterpress::of('This is rendrable body - {{$value}}')->with(['value' => 'foo①']);
         $part = new MimePart($body, null, 'iso-2022-jp');
         $this->assertSame("This is rendrable body - foo?", $part->getBody());
         $body->with(['value' => 'bar①']);

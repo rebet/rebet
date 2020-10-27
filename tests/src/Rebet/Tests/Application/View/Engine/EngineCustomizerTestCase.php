@@ -687,6 +687,62 @@ EOS
                     'template' => 'paginate@bootstrap-4',
                 ],
             ],
+            [
+                [
+                    '/前へ/',
+                    '/次へ/',
+                    '/\/users\/search/',
+                    '/gender=1/',
+                    '/status=2/',
+                ],
+                [
+                    '/該当件数/',
+                    '/最初へ/',
+                    '/最後へ/',
+                ],
+                '/users/search?gender=1&status=2',
+                [
+                    'template' => 'paginate@semantic-ui',
+                ],
+            ],
+            [
+                [
+                    '/前へ/',
+                    '/次へ/',
+                    '/\/users\/search/',
+                    '/gender=1/',
+                    '/status=2/',
+                ],
+                [
+                    '/該当件数/',
+                    '/最初へ/',
+                    '/最後へ/',
+                ],
+                '/users/search?gender=1&status=2',
+                [
+                    'template' => 'paginate@default',
+                ],
+                // 3, 3, 1, 30, 4
+            ],
+            [
+                [
+                    '/前へ/',
+                    '/次へ/',
+                    '/\/users\/search/',
+                    '/gender=1/',
+                    '/status=2/',
+                ],
+                [
+                    '/該当件数/',
+                    '/最初へ/',
+                    '/最後へ/',
+                ],
+                '/users/search?gender=1&status=2',
+                [
+                    'template' => 'paginate@bulma',
+                ],
+                // 3, 3, 5, 30, 4
+            ],
         ];
     }
 
@@ -699,7 +755,7 @@ EOS
 
         // @todo
         $request    = $this->createRequestMock($action);
-        $pagination = $this->render('custom/paginate', ['users' => new Paginator([], $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
+        $pagination = $this->render('custom/paginate', ['users' => new Paginator(array_fill(0, $page_size, 1), $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
         $this->assertRegExpString($expect, $pagination);
         $this->assertNotRegExpString($not_expect, $pagination);
     }

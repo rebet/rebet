@@ -1,14 +1,16 @@
 <?php
-namespace Rebet\Application\View\Engine;
+namespace Rebet\Application\View\Tag;
 
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Tinker\Tinker;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
+use Rebet\Tools\Tinker\Tinker;
+use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Path;
 use Rebet\View\Code\Code;
 use Rebet\View\Tag\CallbackProcessor;
 use Rebet\View\Tag\Processor;
@@ -334,3 +336,9 @@ class BuiltinTagProcessors
         return new CallbackProcessor($processor);
     }
 }
+
+
+// ---------------------------------------------------------
+// Add library default translation resource
+// ---------------------------------------------------------
+Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'pagination');

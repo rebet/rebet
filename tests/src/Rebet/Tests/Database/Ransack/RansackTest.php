@@ -268,7 +268,8 @@ class RansackTest extends RebetDatabaseTestCase
 
         foreach (Ransack::config('predicates') as $driver => $predicates) {
             foreach ($predicates as $predicate => [$themplate, $value_converter, $conjunction]) {
-                $data[] = [$value_converter, "name_{$predicate}", 'foo', [], $driver === 'common' ? [] : [$driver]];
+                $value_converter = is_string($value_converter) ? Ransack::config("value_converters.{$value_converter}") : $value_converter ;
+                $data[]          = [$value_converter, "name_{$predicate}", 'foo', [], $driver === 'common' ? [] : [$driver]];
             }
         }
 

@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Database\Pagination;
 
-use Rebet\Tools\Support\Getsetable;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Support\Getsetable;
 
 /**
  * Pager Class

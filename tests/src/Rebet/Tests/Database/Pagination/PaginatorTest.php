@@ -434,7 +434,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(true, $paginator->hasLastPage());
     }
 
-    public function dataEachSidePages() : array
+    public function dataFocusPages() : array
     {
         return [
             [[1]            , 0,  1,    0, null],
@@ -480,12 +480,15 @@ class PaginatorTest extends RebetTestCase
     }
 
     /**
-     * @dataProvider dataEachSidePages
+     * @dataProvider dataFocusPages
      */
-    public function test_eachSidePages(array $expect, int $each_side, int $page, ?int $total, ?int $next_page_count = null)
+    public function test_focusPages(array $expect, int $each_side, int $page, ?int $total, ?int $next_page_count = null)
     {
-        $paginator = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $each_side, 10, $page, $total, $next_page_count);
-        $this->assertEquals($expect, $paginator->eachSidePages());
+        $paginator   = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $each_side, 10, $page, $total, $next_page_count);
+        $focus_pages = $paginator->focusPages();
+        $this->assertEquals($expect, $focus_pages);
+        $this->assertEquals(reset($focus_pages), $paginator->startOfFocusPage());
+        $this->assertEquals(end($focus_pages), $paginator->endOfFocusPage());
     }
 
     public function test_jsonSerialize()
@@ -519,10 +522,12 @@ class PaginatorTest extends RebetTestCase
                 7 => '/foo?gender=1&page=7',
                 8 => '/foo?gender=1&page=8',
             ],
-            'each_side'      => 3,
-            'from'           => 41,
-            'to'             => 50,
-            'data'           => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'each_side'           => 3,
+            'from'                => 41,
+            'to'                  => 50,
+            'start_of_focus_page' => 2,
+            'end_of_focus_page'   => 8,
+            'data'                => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         ], $paginator->jsonSerialize());
 
         $paginator = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3, 10, 5, null, 2);
@@ -554,10 +559,12 @@ class PaginatorTest extends RebetTestCase
                 6 => '/foo?gender=1&page=6',
                 7 => '/foo?gender=1&page=7',
             ],
-            'each_side'      => 3,
-            'from'           => 41,
-            'to'             => 50,
-            'data'           => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'each_side'           => 3,
+            'from'                => 41,
+            'to'                  => 50,
+            'start_of_focus_page' => 1,
+            'end_of_focus_page'   => 7,
+            'data'                => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         ], $paginator->jsonSerialize());
     }
 }

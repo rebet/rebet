@@ -1,12 +1,9 @@
 <?php
 namespace Rebet\Application\View\Engine\Blade;
 
-use Rebet\Tools\Utility\Path;
+use Rebet\Application\View\Tag\BuiltinTagProcessors;
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Application\View\Engine\BuiltinTagProcessors;
 use Rebet\Http\Request;
-use Rebet\Tools\Translation\FileDictionary;
-use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
@@ -245,9 +242,3 @@ class BladeCustomizer
         // @inject
     }
 }
-
-
-// ---------------------------------------------------------
-// Add library default translation resource
-// ---------------------------------------------------------
-Translator::addResourceTo(FileDictionary::class, Path::normalize(__DIR__.'/i18n'), 'pagination');

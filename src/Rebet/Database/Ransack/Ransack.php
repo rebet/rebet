@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Database\Ransack;
 
+use Rebet\Database\Condition;
+use Rebet\Database\Database;
+use Rebet\Database\Exception\RansackException;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
-use Rebet\Tools\Config\Configurable;
-use Rebet\Database\Condition;
-use Rebet\Database\Database;
-use Rebet\Database\Exception\RansackException;
 
 /**
  * Ransack Class
@@ -112,50 +112,52 @@ class Ransack
 
     public static function defaultConfig()
     {
-        $ignore_converter   = function ($value) { return null; };
-        $contains_converter = function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; };
-        $starts_converter   = function ($value) { return     str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; };
-        $ends_converter     = function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value)    ; };
         return [
             'compound_separator' => '/[\s　]/',
+            'value_converters'   => [
+                'ignore'   => function ($value) { return null; },
+                'contains' => function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; },
+                'starts'   => function ($value) { return     str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; },
+                'ends'     => function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value)    ; },
+            ],
             'predicates'         => [
                 // predicate => [template, value_converter, multiple_columns_conjunction]
                 'common' => [
-                    'eq'           => ["{col} = {val}"                           , null               , 'OR' ],
-                    'not_eq'       => ["{col} <> {val}"                          , null               , 'AND'],
-                    'in'           => ["{col} IN ({val})"                        , null               , 'OR' ],
-                    'not_in'       => ["{col} NOT IN ({val})"                    , null               , 'AND'],
-                    'lt'           => ["{col} < {val}"                           , null               , 'OR' ],
-                    'lteq'         => ["{col} <= {val}"                          , null               , 'OR' ],
-                    'gteq'         => ["{col} >= {val}"                          , null               , 'OR' ],
-                    'gt'           => ["{col} > {val}"                           , null               , 'OR' ],
-                    'from'         => ["{col} >= {val}"                          , null               , 'OR' ],
-                    'to'           => ["{col} <= {val}"                          , null               , 'OR' ],
-                    'contains'     => ["{col} LIKE {val} ESCAPE '|'"             , $contains_converter, 'OR' ],
-                    'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'"         , $contains_converter, 'AND'],
-                    'starts'       => ["{col} LIKE {val} ESCAPE '|'"             , $starts_converter  , 'OR' ],
-                    'not_starts'   => ["{col} NOT LIKE {val} ESCAPE '|'"         , $starts_converter  , 'AND'],
-                    'ends'         => ["{col} LIKE {val} ESCAPE '|'"             , $ends_converter    , 'OR' ],
-                    'not_ends'     => ["{col} NOT LIKE {val} ESCAPE '|'"         , $ends_converter    , 'AND'],
-                    'null'         => ["{col} IS NULL"                           , $ignore_converter  , 'AND'],
-                    'not_null'     => ["{col} IS NOT NULL"                       , $ignore_converter  , 'OR' ],
-                    'blank'        => ["({col} IS NULL OR {col} = '')"           , $ignore_converter  , 'AND'],
-                    'not_blank'    => ["({col} IS NOT NULL AND {col} <> '')"     , $ignore_converter  , 'OR' ],
+                    'eq'           => ["{col} = {val}"                           , null      , 'OR' ],
+                    'not_eq'       => ["{col} <> {val}"                          , null      , 'AND'],
+                    'in'           => ["{col} IN ({val})"                        , null      , 'OR' ],
+                    'not_in'       => ["{col} NOT IN ({val})"                    , null      , 'AND'],
+                    'lt'           => ["{col} < {val}"                           , null      , 'OR' ],
+                    'lteq'         => ["{col} <= {val}"                          , null      , 'OR' ],
+                    'gteq'         => ["{col} >= {val}"                          , null      , 'OR' ],
+                    'gt'           => ["{col} > {val}"                           , null      , 'OR' ],
+                    'from'         => ["{col} >= {val}"                          , null      , 'OR' ],
+                    'to'           => ["{col} <= {val}"                          , null      , 'OR' ],
+                    'contains'     => ["{col} LIKE {val} ESCAPE '|'"             , 'contains', 'OR' ],
+                    'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'contains', 'AND'],
+                    'starts'       => ["{col} LIKE {val} ESCAPE '|'"             , 'starts'  , 'OR' ],
+                    'not_starts'   => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'starts'  , 'AND'],
+                    'ends'         => ["{col} LIKE {val} ESCAPE '|'"             , 'ends'    , 'OR' ],
+                    'not_ends'     => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'ends'    , 'AND'],
+                    'null'         => ["{col} IS NULL"                           , 'ignore'  , 'AND'],
+                    'not_null'     => ["{col} IS NOT NULL"                       , 'ignore'  , 'OR' ],
+                    'blank'        => ["({col} IS NULL OR {col} = '')"           , 'ignore'  , 'AND'],
+                    'not_blank'    => ["({col} IS NOT NULL AND {col} <> '')"     , 'ignore'  , 'OR' ],
                 ],
                 'sqlite' => [
-                    'matches'      => ["{col} REGEXP {val}"                      , null               , 'OR' ],
-                    'not_matches'  => ["{col} NOT REGEXP {val}"                  , null               , 'AND'],
-                    'search'       => ["{col} MATCH {val}"                       , null               , 'OR' ],
+                    'matches'      => ["{col} REGEXP {val}"                      , null      , 'OR' ],
+                    'not_matches'  => ["{col} NOT REGEXP {val}"                  , null      , 'AND'],
+                    'search'       => ["{col} MATCH {val}"                       , null      , 'OR' ],
                 ],
                 'mysql' => [
-                    'matches'      => ["{col} REGEXP {val}"                      , null               , 'OR' ],
-                    'not_matches'  => ["{col} NOT REGEXP {val}"                  , null               , 'AND'],
-                    'search'       => ["MATCH({col}) AGAINST({val})"             , null               , 'OR' ],
+                    'matches'      => ["{col} REGEXP {val}"                      , null      , 'OR' ],
+                    'not_matches'  => ["{col} NOT REGEXP {val}"                  , null      , 'AND'],
+                    'search'       => ["MATCH({col}) AGAINST({val})"             , null      , 'OR' ],
                 ],
                 'pgsql' => [
-                    'matches'      => ["{col} ~ {val}"                           , null               , 'OR' ],
-                    'not_matches'  => ["{col} !~ {val}"                          , null               , 'AND'],
-                    'search'       => ["to_tsvector({col}) @@ to_tsquery({val})" , null               , 'OR' ],
+                    'matches'      => ["{col} ~ {val}"                           , null      , 'OR' ],
+                    'not_matches'  => ["{col} !~ {val}"                          , null      , 'AND'],
+                    'search'       => ["to_tsvector({col}) @@ to_tsquery({val})" , null      , 'OR' ],
                 ],
             ],
             'options' => [
@@ -392,7 +394,7 @@ class Ransack
             if (Strings::endsWith($ransack_predicate, "_{$p}")) {
                 $ransack_predicate = Strings::rtrim($ransack_predicate, "_{$p}");
                 $template          = $t;
-                $value_converter   = $vc;
+                $value_converter   = is_string($vc) ? static::config("value_converters.{$vc}") : $vc ;
                 $predicate         = $p;
                 $conjunction       = $c;
                 break;

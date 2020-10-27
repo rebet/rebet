@@ -13,7 +13,7 @@ use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigPromise;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Enum\Enum;
-use Rebet\Tools\Template\Text;
+use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Translation\Translator;
 use Rebet\View\Engine\Twig\Node\EmbedNode;
@@ -46,10 +46,7 @@ class App
             'locale'          => 'en',
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
-            'resources'       => [
-                'i18n' => null,
-            ],
-            'paginate' => [
+            'paginate'        => [
                 'page_name'        => 'page',
                 'page_size_name'   => 'page_size',
                 'default_template' => 'paginate@bootstrap-4',
@@ -261,7 +258,7 @@ class App
         EmbedNode::clear();
         View::clear();
         Storage::clean();
-        Text::clear();
+        Letterpress::clear();
         Log::clear();
         Mail::clear();
     }

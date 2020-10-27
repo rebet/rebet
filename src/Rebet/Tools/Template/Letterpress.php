@@ -9,15 +9,14 @@ use Rebet\Tools\Utility\Json;
 use Rebet\Tools\Utility\Strings;
 
 /**
- * Text Class
+ * Letterpress Class
  *
- * This class is simple template processor that supported Twig-like tag format.
+ * This class is simple template processor that supported Twig-like (actually not Twig) tag format.
  * Only following features are supported in the initial state.
  * NOTE: All of tags are supporting '-' mark for whitespace control like Twig.
- * NOTE: HTML is not main target for this template, so placeholder do not sanitise defaultly.
  *
  *  - Comment      : {# comment #}
- *  - Plaseholder  : {{ $var }}
+ *  - Placeholder  : {{ $var_with_sanitise }}, {! $var_without_sanitise !}
  *  - If statement : {% if expression %}...{% elseif expression %}...{% else %}...{% endif %}
  *  - For loop     : {% for $list as $k => $v %}...{% else %}...{% endfor %}
  *
@@ -32,42 +31,42 @@ use Rebet\Tools\Utility\Strings;
  * Usually it will be sufficient as a simple template if it has these features.
  * But sometimes we need tags that solve more complex issue, so this template support enhanced tags.
  *
- * 1. Text::filter() : Register easily filter tag that will affect contents text.
+ * 1. Letterpress::filter() : Register easily filter tag that will affect contents text.
  * ----------
- * Text::filter('upper', function(string $contents){ return strtoupper($contents); });
+ * Letterpress::filter('upper', function(string $contents){ return strtoupper($contents); });
  * => {% upper %}abc{% endupper %} become 'ABC'.
  *
- * Text::filter('replace', function (string $contents, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $contents, $limit); });
+ * Letterpress::filter('replace', function (string $contents, $pattern, $replacement, int $limit = -1) { return preg_replace($pattern, $replacement, $contents, $limit); });
  * => {% replace '/b/', 'B' %}abc{% endreplace %} become 'aBc'.
  *
- * 2. Text::if() : Register easily condition tag like 'if'.
+ * 2. Letterpress::if() : Register easily condition tag like 'if'.
  * ----------
- * Text::if('env', function (string ...$env) { return App::envIn(...$env); });
+ * Letterpress::if('env', function (string ...$env) { return App::envIn(...$env); });
  * => {% env "development", "local" %}a{% elseenv "production" %}b{% else %}c{% endenv %} become 'a', 'b' or 'c' depend on environment.
  *
- * 3. Text::function() : Register easily function tag that does not have contents.
+ * 3. Letterpress::function() : Register easily function tag that does not have contents.
  * ----------
- * Text::function('welcome', function () { return "Welcome ".(Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name)."!"; });
+ * Letterpress::function('welcome', function () { return "Welcome ".(Auth::user()->isGuest() ? 'to Rebet' : Auth::user()->name)."!"; });
  * => {% welcome %} become 'Welcome to Rebet!' or 'Welcome Username!' depend on user signin state.
  *
- * 4. Text::block() : Register block type tag anything you want.
+ * 4. Letterpress::block() : Register block type tag anything you want.
  * ----------
  * This method using syntax tree of Text template, so you can do anything but little bit complexed.
  * Tag of 'for' also registered by this method.
  * NOTE: The nodes is passed a chunk block of consecutive tags defined in siblings.
  *
- * Text::block('upper', null, function (array $nodes, array $vars) {
+ * Letterpress::block('upper', null, function (array $nodes, array $vars) {
  *     foreach ($nodes as $node) {
- *        return strtoupper(Text::process($node['nodes'], $vars));
+ *        return strtoupper(Letterpress::process($node['nodes'], $vars));
  *     }
  * });
  * => {% upper %}abc{% endupper %} become 'ABC'.
  *
- * 5. Text::embed() : Register embed type tag (that does not have contents) anything you want.
+ * 5. Letterpress::embed() : Register embed type tag (that does not have contents) anything you want.
  * ----------
  * This method using syntax tree of Text template, so you can do anything but little bit complexed.
  *
- * Text::embed('hello', function (array $node, array $vars) { return trim("Hello ".Text::evaluate($node['code'], $vars))."!"; });
+ * Letterpress::embed('hello', function (array $node, array $vars) { return trim("Hello ".Letterpress::evaluate($node['code'], $vars))."!"; });
  * => {% hello $name %} become 'Hello Rebet!' when $name is 'Rebet'.
  *
  * @package   Rebet
@@ -75,7 +74,7 @@ use Rebet\Tools\Utility\Strings;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Text implements Renderable, \JsonSerializable
+class Letterpress implements Renderable, \JsonSerializable
 {
     /**
      * Tag type of `block`, that contains content like {% tag %}content{% endtag %}
@@ -236,7 +235,7 @@ class Text implements Renderable, \JsonSerializable
             null,
             function (array $nodes, array $vars) use ($filter) {
                 foreach ($nodes as $node) {
-                    return Tinker::peel(Reflector::evaluate($filter, array_merge([Text::process($node['nodes'], $vars)], Text::evaluate('['.$node['code'].']', $vars))));
+                    return Tinker::peel(Reflector::evaluate($filter, array_merge([Letterpress::process($node['nodes'], $vars)], Letterpress::evaluate('['.$node['code'].']', $vars))));
                 }
                 return '';
             }
@@ -261,8 +260,8 @@ class Text implements Renderable, \JsonSerializable
             [$tag => ["else{$tag}", 'else'], "else{$tag}" => ["else{$tag}", 'else'], 'else' => []],
             function (array $nodes, array $vars) use ($test) {
                 foreach ($nodes as $node) {
-                    if ($node['tag'] === 'else' || Tinker::peel(Reflector::evaluate($test, Text::evaluate('['.$node['code'].']', $vars)))) {
-                        return Text::process($node['nodes'], $vars);
+                    if ($node['tag'] === 'else' || Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('['.$node['code'].']', $vars)))) {
+                        return Letterpress::process($node['nodes'], $vars);
                     }
                 }
                 return '';
@@ -286,7 +285,7 @@ class Text implements Renderable, \JsonSerializable
         static::embed(
             $tag,
             function (array $node, array $vars) use ($callback) {
-                return Tinker::peel(Reflector::evaluate($callback, Text::evaluate('['.$node['code'].']', $vars)));
+                return Tinker::peel(Reflector::evaluate($callback, Letterpress::evaluate('['.$node['code'].']', $vars)));
             }
         );
     }
@@ -309,14 +308,14 @@ class Text implements Renderable, \JsonSerializable
                 $contents = '';
                 foreach ($nodes as $node) {
                     if ($node['tag'] === 'else') {
-                        return Text::process($node['nodes'], $vars);
+                        return Letterpress::process($node['nodes'], $vars);
                     }
 
                     $vars['__callback'] = function ($vars) use (&$contents, $node) {
                         $vars      = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
-                        $contents .= Text::process($node['nodes'], $vars);
+                        $contents .= Letterpress::process($node['nodes'], $vars);
                     };
-                    if (Text::eval('$looped = false; foreach('.$node['code'].') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars)) {
+                    if (Letterpress::eval('$looped = false; foreach('.$node['code'].') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars)) {
                         return $contents;
                     }
                 }
@@ -589,11 +588,18 @@ class Text implements Renderable, \JsonSerializable
      * @param string $template
      * @param array|Tinker $vars
      * @return string
+     * @throws LogicException when placeholder format is invalid.
      */
     public static function expandVars(string $template, $vars) : string
     {
-        return preg_replace_callback('/(\s{{-|{{)(?<code>[\s\S]*)(}}|-}}\s)/Uu', function ($matches) use ($vars) {
-            return static::evaluate(trim($matches['code']), $vars);
+        return preg_replace_callback('/(\s{(?<so1>[{!])-|{(?<so2>[{!]))(?<code>[\s\S]*)((?<sc1>[!}])}|-(?<sc2>[!}])}\s)/Uu', function ($matches) use ($vars) {
+            $sanitise_open  = $matches['so1'] ?: $matches['so2'];
+            $sanitise_close = $matches['sc1'] ?: $matches['sc2'];
+            if (($sanitise_open === '!') xor ($sanitise_close === '!')) {
+                throw new LogicException("Invalid placeholder format '{{$sanitise_open} ... {$sanitise_close}}' found.");
+            }
+            $value = static::evaluate(trim($matches['code']), $vars);
+            return $sanitise_open === '!' ? $value : htmlentities($value, ENT_QUOTES, 'UTF-8', false) ;
         }, $template);
     }
 
@@ -637,4 +643,4 @@ class Text implements Renderable, \JsonSerializable
     }
 }
 
-Text::init();
+Letterpress::init();
