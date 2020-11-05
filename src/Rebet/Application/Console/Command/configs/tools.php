@@ -1,6 +1,5 @@
 <?php
 
-use Rebet\Tools\Config\Config;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Reflection\Reflector;
@@ -10,6 +9,7 @@ use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Env;
 use Rebet\Tools\Utility\Namespaces;
 use Rebet\Tools\Utility\Securities;
 use Rebet\Tools\Utility\Strings;
@@ -525,13 +525,13 @@ return [
 
     Securities::class => [
         'hash' => [
-            'salt'       => Config::promise(function () { return getenv('DEFAULT_HASH_SALT') ?? ''; }),
-            'pepper'     => Config::promise(function () { return getenv('DEFAULT_HASH_PEPPER') ?? ''; }),
+            'salt'       => Env::promise('DEFAULT_HASH_SALT'),
+            'pepper'     => Env::promise('DEFAULT_HASH_PEPPER'),
             'algorithm'  => 'SHA256',
             'stretching' => 1000,
         ],
         'crypto' => [
-            'secret_key' => Config::promise(function () { return getenv('SECRET_KEY') ?? null; }),
+            'secret_key' => Env::promise('DEFAULT_SECRET_KEY'),
             'cipher'     => 'AES-256-CBC',
         ],
     ],

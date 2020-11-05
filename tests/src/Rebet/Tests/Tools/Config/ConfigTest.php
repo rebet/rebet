@@ -1,13 +1,13 @@
 <?php
 namespace Rebet\Tests\Tools\Config;
 
-use Rebet\Tools\Exception\LogicException;
+use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
 
 class ConfigTest extends RebetTestCase
 {
@@ -838,12 +838,8 @@ class ConfigTest_MockPromise
     {
         return [
             'promise_not'   => \getenv('PROMISE_TEST') ?: 'default',
-            'promise_once'  => Config::promise(function () {
-                return \getenv('PROMISE_TEST') ?: 'default';
-            }),
-            'promise_every' => Config::promise(function () {
-                return \getenv('PROMISE_TEST') ?: 'default';
-            }, false),
+            'promise_once'  => Config::promise(function () { return \getenv('PROMISE_TEST') ?: 'default'; }),
+            'promise_every' => Config::promise(function () { return \getenv('PROMISE_TEST') ?: 'default'; }, false),
         ];
     }
 }

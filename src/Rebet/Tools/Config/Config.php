@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tools\Config;
 
-use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
-use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Utility\OverrideOption;
+use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\OverrideOption;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
 
@@ -515,14 +515,6 @@ class Config
 
     /**
      * Returns a delay evaluation formula that delays the set value confirmation until its setting is referenced.
-     *
-     * ex)
-     * // When config using getenv is loaded before DotEnv::load()
-     * public static function defaultConfig() {
-     *     return [
-     *         'env' => Config::promise(function(){ return getenv('APP_ENV') ?: 'development' ; }),
-     *     ];
-     * }
      *
      * @param \Closure $promise
      * @param bool $only_once (default: true)

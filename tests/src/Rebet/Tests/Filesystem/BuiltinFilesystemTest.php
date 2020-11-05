@@ -7,12 +7,12 @@ use League\Flysystem\Cached\CacheInterface;
 use League\Flysystem\Filesystem as FlysystemFilesystem;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Application\App;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Filesystem\BuiltinFilesystem;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class BuiltinFilesystemTest extends RebetTestCase
 {
@@ -111,17 +111,17 @@ class BuiltinFilesystemTest extends RebetTestCase
         $path = 'env_1.txt';
         $file = new \SplFileInfo(App::structure()->env('/.env'));
         $this->assertSame($path, $this->filesystem->put($path, $file));
-        $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
+        $this->assertStringStartsWith("APP_ENV=unittest\n", $this->filesystem->get($path));
 
         $path = 'env_1{.ext}';
         $file = new \SplFileInfo(App::structure()->env('/.env'));
         $this->assertSame('env_1.env', $this->filesystem->put($path, $file));
-        $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get('env_1.env'));
+        $this->assertStringStartsWith("APP_ENV=unittest\n", $this->filesystem->get('env_1.env'));
 
         $path = 'env_2.txt';
         $file = fopen(App::structure()->env('/.env'), 'r');
         $this->assertSame($path, $this->filesystem->put($path, $file));
-        $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
+        $this->assertStringStartsWith("APP_ENV=unittest\n", $this->filesystem->get($path));
         fclose($file);
 
         $path   = 'env_3.txt';
@@ -129,7 +129,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $stream = $this->createMock(StreamInterface::class);
         $stream->method('detach')->willReturn($file);
         $this->assertSame($path, $this->filesystem->put($path, $stream));
-        $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
+        $this->assertStringStartsWith("APP_ENV=unittest\n", $this->filesystem->get($path));
         fclose($file);
     }
 
@@ -141,7 +141,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame($contents, $this->filesystem->get($path));
 
         $this->assertSame($path, $this->filesystem->putFile($path, $contents));
-        $this->assertSame("APP_ENV=unittest\n", $this->filesystem->get($path));
+        $this->assertStringStartsWith("APP_ENV=unittest\n", $this->filesystem->get($path));
     }
 
     public function test_getAndSetVisibility()
