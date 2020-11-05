@@ -3,13 +3,6 @@ namespace Rebet\Database\DataModel;
 
 use Closure;
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Reflection\Describable;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Support\Getsetable;
-use Rebet\Tools\Utility\Json;
-use Rebet\Tools\Reflection\Populatable;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Condition;
 use Rebet\Database\Dao;
@@ -19,6 +12,13 @@ use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\Ransack\Ransack;
 use Rebet\Database\ResultSet;
 use Rebet\Inflection\Inflector;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Describable;
+use Rebet\Tools\Reflection\Populatable;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Support\Getsetable;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Json;
 
 /**
  * Data Model Class
@@ -324,6 +324,20 @@ abstract class DataModel
         [$sql, /*param*/] = static::buildSelectSql($db);
         $sql              = $db->appendWhereTo($sql, $where);
 
+        return $db->find($sql, null, $params, $for_update, get_called_class());
+    }
+
+    /**
+     * Find data model by given ransacks conditions that uniquely determines it.
+     *
+     * @param mixed $ransacks conditions that uniquely determines data model.
+     * @param bool $for_update (default: false)
+     * @param Database|string|null $db (default: null)
+     * @return self|null
+     */
+    public static function findBy($ransacks, bool $for_update = false, $db = null) : ?self
+    {
+        [$sql, $params] = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->find($sql, null, $params, $for_update, get_called_class());
     }
 

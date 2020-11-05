@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Database;
 
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
@@ -27,8 +24,11 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Database\Ransack\Ransacker;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Event\Event;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Arrays;
 
 /**
  * Database Class

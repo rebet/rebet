@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Database;
 
+use Rebet\Database\DataModel\DataModel;
 use Rebet\Tools\Support\Arrayable;
 use Rebet\Tools\Utility\Arrays;
-use Rebet\Database\DataModel\DataModel;
 
 /**
  * Result Set Class
@@ -71,5 +71,17 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     {
         $this->items = array_reverse($this->items);
         return $this;
+    }
+
+    /**
+     * Pluck an array of values from a result set items using Arrays::pluck().
+     *
+     * @param int|string|\Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
+     * @param int|string|\Closure|null $key_field Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
+     * @return array
+     */
+    public function pluk($value_field, $key_field = null) : array
+    {
+        return Arrays::pluck($this->items, $value_field, $key_field);
     }
 }

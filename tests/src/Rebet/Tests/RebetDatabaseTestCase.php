@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests;
 
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Config\Config;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Cursor;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Rebet Database Test Case Class
@@ -242,6 +242,7 @@ EOS
     }
 
     protected static $sqlite = null;
+    private $executed_sqls   = [];
 
     protected function setUp() : void
     {
@@ -254,9 +255,9 @@ EOS
                 'default_db' => 'sqlite',
                 'dbs!'       => [
                     'sqlite' => [
-                        'dsn' => function () { return static::$sqlite; },
+                        'dsn'   => function () { return static::$sqlite; },
                         // 'emulated_sql_log' => false,
-                        // 'debug'            => true,
+                        'debug' => true,
                     ],
 
                     // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
@@ -268,7 +269,7 @@ EOS
                             \PDO::ATTR_AUTOCOMMIT => false,
                         ],
                         // 'emulated_sql_log' => false,
-                        // 'debug'            => true,
+                        'debug'    => true,
                     ],
 
                     // CREATE DATABASE rebet_test WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
@@ -281,16 +282,17 @@ EOS
                         'password' => '',
                         'options'  => [],
                         // 'emulated_sql_log' => false,
-                        // 'debug'            => true,
+                        'debug'    => true,
                     ],
                 ]
             ],
             Database::class => [
                 'log_handler' => function (string $db_name, string $sql, array $params = []) {
-                    echo("[{$db_name}] {$sql}\n");
-                    if (!empty($param)) {
-                        echo(Strings::indent("[PARAM]\n".Strings::stringify($params)."\n", '-- '));
-                    }
+                    // echo("[{$db_name}] {$sql}\n");
+                    // if (!empty($param)) {
+                    //     echo(Strings::indent("[PARAM]\n".Strings::stringify($params)."\n", '-- '));
+                    // }
+                    $this->executed_sqls[] = $sql;
                 },
             ],
         ]);
@@ -322,6 +324,19 @@ EOS
 
         Dao::clear();
         Cursor::clear();
+        $this->executed_sqls = [];
+    }
+
+    protected function clearExecutedSqls() : void
+    {
+        $this->executed_sqls = [];
+    }
+
+    protected function executedSqls() : array
+    {
+        $sqls = $this->executed_sqls;
+        $this->clearExecutedSqls();
+        return $sqls;
     }
 
     protected function tables(string $db_name) : array

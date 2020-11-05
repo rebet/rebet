@@ -1,10 +1,9 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
-use Rebet\Tools\Config\Config;
 use Rebet\Database\Database;
+use Rebet\Database\Pagination\Pager;
 use Rebet\Database\ResultSet;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Entity\Article;
 use Rebet\Tests\Mock\Entity\Bank;
 use Rebet\Tests\Mock\Entity\Fortune;
@@ -12,7 +11,10 @@ use Rebet\Tests\Mock\Entity\Group;
 use Rebet\Tests\Mock\Entity\GroupUser;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\Mock\Entity\UserWithAnnot;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
 
 class DataModelTest extends RebetDatabaseTestCase
 {
@@ -52,6 +54,38 @@ class DataModelTest extends RebetDatabaseTestCase
         ][$table_name] ?? [];
     }
 
+    public function test_primaryHash()
+    {
+        $this->assertNotEquals(User::find(1)->primaryHash(), User::find(2)->primaryHash());
+        $this->assertNotEquals(Fortune::find(['gender' => Gender::MALE(), 'birthday' => '2003-02-16'])->primaryHash(), Fortune::find(['gender' => Gender::FEMALE(), 'birthday' => '1990-01-08'])->primaryHash());
+    }
+
+    public function test_primaryValues()
+    {
+        $this->assertEquals(['user_id' => 1], User::find(1)->primaryValues());
+        $this->assertEquals(['gender' => Gender::MALE(), 'birthday' => Date::valueOf('2003-02-16')], Fortune::find(['gender' => Gender::MALE(), 'birthday' => '2003-02-16'])->primaryValues());
+    }
+
+    public function test_foreignHash()
+    {
+        $this->assertEquals(Article::find(1)->foreignHash(User::class), Article::find(2)->foreignHash(User::class));
+        $this->assertNotEquals(Article::find(1)->foreignHash(User::class), Article::find(3)->foreignHash(User::class));
+    }
+
+    public function test_foreignValues()
+    {
+        $this->assertEquals(['user_id' => 1], Article::find(1)->foreignValues(User::class));
+        $this->assertEquals(['user_id' => 1], Article::find(2)->foreignValues(User::class));
+        $this->assertEquals(['user_id' => 2], Article::find(3)->foreignValues(User::class));
+        $this->assertEquals(['gender' => Gender::MALE(), 'birthday' => Date::valueOf('2003-02-16')], User::find(2)->foreignValues(Fortune::class));
+    }
+
+    public function test_pluck()
+    {
+        $this->assertEquals(['user_id' => 1], User::find(1)->pluck('user_id'));
+        $this->assertEquals(['user_id' => 1, 'name' => 'Elody Bode III'], User::find(1)->pluck('user_id', 'name'));
+    }
+
     public function test_belongsResultSet()
     {
         $rs   = new ResultSet([]);
@@ -71,21 +105,128 @@ class DataModelTest extends RebetDatabaseTestCase
         $this->assertSame(['group_id', 'user_id'], GroupUser::primaryKeys());
     }
 
+    public function test_valueOf()
+    {
+        $user = User::find(1);
+        $this->assertEquals(1, $user->user_id);
+        $this->assertEquals('Elody Bode III', $user->name);
+        $this->assertEquals(Gender::FEMALE(), $user->gender);
+        $this->assertEquals(Date::valueOf('1990-01-08'), $user->birthday);
+        $this->assertEquals('elody@s1.rebet.local', $user->email);
+        $this->assertEquals('user', $user->role);
+    }
+
+    public function test_find()
+    {
+        $this->eachDb(function (Database $db) {
+            $user = User::find(1);
+            $this->assertEquals(1, $user->user_id);
+            $this->assertEquals('Elody Bode III', $user->name);
+            $this->assertEquals(Gender::FEMALE(), $user->gender);
+            $this->assertEquals(Date::valueOf('1990-01-08'), $user->birthday);
+            $this->assertEquals('elody@s1.rebet.local', $user->email);
+            $this->assertEquals('user', $user->role);
+
+            $this->clearExecutedSqls();
+
+            $user = User::find(2);
+            $this->assertEquals(2, $user->user_id);
+            $this->assertEquals('Alta Hegmann', $user->name);
+            $this->assertEquals([
+                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '2' LIMIT 1"
+            ], $this->executedSqls());
+
+            // SQLite not support 'FOR UPDATE'.
+            if ($db->driverName() === 'sqlite') {
+                return;
+            }
+
+            $user = User::find(2, true);
+            $this->assertEquals(2, $user->user_id);
+            $this->assertEquals('Alta Hegmann', $user->name);
+            $this->assertEquals([
+                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '2' LIMIT 1 FOR UPDATE"
+            ], $this->executedSqls());
+        });
+    }
+
+    public function test_findBy()
+    {
+        $this->eachDb(function (Database $db) {
+            $user = User::findBy(['user_id' => 1]);
+            $this->assertEquals(1, $user->user_id);
+            $this->assertEquals('Elody Bode III', $user->name);
+            $this->assertEquals(Gender::FEMALE(), $user->gender);
+            $this->assertEquals(Date::valueOf('1990-01-08'), $user->birthday);
+            $this->assertEquals('elody@s1.rebet.local', $user->email);
+            $this->assertEquals('user', $user->role);
+
+            $this->clearExecutedSqls();
+
+            $user = User::findBy(['name' => 'Alta Hegmann']);
+            $this->assertEquals(2, $user->user_id);
+            $this->assertEquals('Alta Hegmann', $user->name);
+            $this->assertEquals([
+                "/* Emulated SQL */ SELECT * FROM users WHERE name = 'Alta Hegmann' LIMIT 1"
+            ], $this->executedSqls());
+
+            // SQLite not support 'FOR UPDATE'.
+            if ($db->driverName() === 'sqlite') {
+                return;
+            }
+
+            $user = User::findBy(['gender' => Gender::MALE(), 'name_contains' => 'Alta'], true);
+            $this->assertEquals(2, $user->user_id);
+            $this->assertEquals('Alta Hegmann', $user->name);
+            $this->assertEquals([
+                "/* Emulated SQL */ SELECT * FROM users WHERE gender = '1' AND name LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE"
+            ], $this->executedSqls());
+        });
+    }
+
+    public function test_select()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertEquals([3, 2, 1], User::select()->pluk('user_id'));
+            $this->assertEquals([3, 2], User::select(['gender' => Gender::MALE()])->pluk('user_id'));
+            $this->assertEquals([2, 3], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'])->pluk('user_id'));
+            $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1)->pluk('user_id'));
+
+            // SQLite not support 'FOR UPDATE'.
+            if ($db->driverName() === 'sqlite') {
+                return;
+            }
+
+            $this->clearExecutedSqls();
+            $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1, true)->pluk('user_id'));
+            $this->assertEquals([
+                "/* Emulated SQL */ SELECT * FROM users WHERE gender = '1' ORDER BY user_id ASC LIMIT 1 FOR UPDATE"
+            ], $this->executedSqls());
+        });
+    }
+
+    public function test_paginate()
+    {
+        $this->eachDb(function (Database $db) {
+            $this->assertEquals([3, 2, 1], User::paginate(Pager::resolve())->pluk('user_id'));
+            $this->assertEquals([1, 2, 3], User::paginate(Pager::resolve(), [], ['user_id' => 'asc'])->pluk('user_id'));
+            $this->assertEquals([3], User::paginate(Pager::resolve()->size(1))->pluk('user_id'));
+            $this->assertEquals([3, 2], User::paginate(Pager::resolve()->size(2))->pluk('user_id'));
+            $this->assertEquals([2], User::paginate(Pager::resolve()->size(1)->page(2))->pluk('user_id'));
+            $this->assertEquals([1], User::paginate(Pager::resolve()->size(2)->page(2))->pluk('user_id'));
+
+            $paginate = Article::paginate(Pager::resolve()->size(2)->page(2)->needTotal(true), ['user_id' => 1]);
+            $this->assertEquals([1], $paginate->pluk('article_id'));
+            $this->assertEquals(3, $paginate->total());
+            $this->assertEquals(1, $paginate->count());
+        });
+    }
+
     public function test_belongsTo()
     {
-        $sqls = [];
-        Config::runtime([
-            Database::class => [
-                'log_handler' => function (string $name, string $sql, array $params = []) use (&$sqls) {
-                    $sqls[] = $sql;
-                    // var_dump($sql);
-                }
-            ],
-        ]);
-        $this->eachDb(function (Database $db) use (&$sqls) {
-            $db->debug(true);
+        $this->eachDb(function (Database $db) {
+            $this->clearExecutedSqls();
 
-            $sqls    = [];
             $article = Article::find(1);
             $user    = $article->user();
             $fortune = $user->fortune();
@@ -95,10 +236,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM articles WHERE article_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $articles        = Article::select();
             $expect_user_ids = [    2,      1,     2,      1,      1];
             $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
@@ -112,11 +252,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
             if ($db->driverName() !== 'sqlite') {
-                $sqls            = [];
                 $articles        = Article::select();
                 $expect_user_ids = [    2,      1,     2,      1,      1];
                 $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
@@ -130,11 +269,10 @@ class DataModelTest extends RebetDatabaseTestCase
                     "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
                     "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1') FOR UPDATE",
                     "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08')) FOR UPDATE",
-                ], $sqls);
+                ], $this->executedSqls());
             }
 
 
-            $sqls            = [];
             $articles        = Article::select();
             $expect_user_ids = [    2,      1,     2,      1,      1];
             $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
@@ -156,10 +294,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $articles        = Article::select();
             $expect_user_ids = [null, null,    3,     2,      1];
             $expect_fortunes = [null, null, null, 'bad', 'good'];
@@ -173,10 +310,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('5', '4', '3', '2', '1')",
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '1992-10-17') OR (gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $articles        = Article::select();
             $expect_user_ids = [    2,      1,     2,      1,      1];
             $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
@@ -190,10 +326,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $articles        = Article::select();
             $expect_user_ids = [    2,      1,     2,      1,      1];
             $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
@@ -215,10 +350,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
                 "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls = [];
             $user = User::find(3);
             $fortune = $user->fortune();
             $this->assertNull($fortune);
@@ -232,26 +366,14 @@ class DataModelTest extends RebetDatabaseTestCase
             $fortune = $user->fortune();
             $this->assertNotNull($fortune);
             $this->assertEquals('soso', $fortune->result);
-
-            $db->debug(false);
         });
     }
 
     public function test_hasOne()
     {
-        $sqls = [];
-        Config::runtime([
-            Database::class => [
-                'log_handler' => function (string $name, string $sql, array $params = []) use (&$sqls) {
-                    $sqls[] = $sql;
-                    // var_dump($sql);
-                }
-            ],
-        ]);
-        $this->eachDb(function (Database $db) use (&$sqls) {
-            $db->debug(true);
+        $this->eachDb(function (Database $db) {
+            $this->clearExecutedSqls();
 
-            $sqls = [];
             $user = User::find(1);
             $bank = $user->bank();
             $this->assertEquals(1, $user->user_id);
@@ -259,10 +381,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM banks WHERE user_id = '1' LIMIT 1",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls = [];
             $user = User::find(2);
             $bank = $user->bank();
             $this->assertNull($bank);
@@ -279,7 +400,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertNotNull($bank);
             $this->assertEquals('bank 2', $bank->name);
 
-            $sqls              = [];
+            $this->clearExecutedSqls();
             $users             = User::select();
             $expect_user_ids   = [   3,        2,           1];
             $expect_bank_names = [null, 'bank 2', 'bank name'];
@@ -291,10 +412,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
                 "/* Emulated SQL */ SELECT * FROM banks WHERE user_id IN ('3', '2', '1')",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls              = [];
             $fortunes          = Fortune::select();
             $expect_fortunes   = ['good'     , 'bad'   ];
             $expect_user_ids   = [          1,        2];
@@ -310,11 +430,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM fortunes ORDER BY gender DESC, birthday DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE ((gender = '2' AND birthday = '1990-01-08') OR (gender = '1' AND birthday = '2003-02-16'))",
                 "/* Emulated SQL */ SELECT * FROM banks WHERE user_id IN ('1', '2')",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
             if ($db->driverName() !== 'sqlite') {
-                $sqls              = [];
                 $fortunes          = Fortune::select();
                 $expect_fortunes   = ['good'     , 'bad'   ];
                 $expect_user_ids   = [          1,        2];
@@ -331,28 +450,16 @@ class DataModelTest extends RebetDatabaseTestCase
                     "/* Emulated SQL */ SELECT * FROM users WHERE ((gender = '2' AND birthday = '1990-01-08') OR (gender = '1' AND birthday = '2003-02-16')) ORDER BY user_id DESC",
                     "/* Emulated SQL */ SELECT * FROM banks WHERE user_id = '1' LIMIT 1 FOR UPDATE",
                     "/* Emulated SQL */ SELECT * FROM banks WHERE user_id = '2' LIMIT 1 FOR UPDATE",
-                ], $sqls);
+                ], $this->executedSqls());
             }
-
-            $db->debug(false);
         });
     }
 
     public function test_hasMany()
     {
-        $sqls = [];
-        Config::runtime([
-            Database::class => [
-                'log_handler' => function (string $name, string $sql, array $params = []) use (&$sqls) {
-                    $sqls[] = $sql;
-                    // var_dump($sql);
-                }
-            ],
-        ]);
-        $this->eachDb(function (Database $db) use (&$sqls) {
-            $db->debug(true);
+        $this->eachDb(function (Database $db) {
+            $this->clearExecutedSqls();
 
-            $sqls               = [];
             $user               = User::find(1);
             $articles           = $user->articles();
             $expect_article_ids = [4, 2, 1];
@@ -363,10 +470,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls               = [];
             $user               = User::find(1);
             $articles           = $user->articles(['subject_contains' => 'foo']);
             $expect_article_ids = [2, 1];
@@ -377,10 +483,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE subject LIKE '%foo%' ESCAPE '|' AND user_id = '1' ORDER BY article_id DESC",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls               = [];
             $user               = User::find(1);
             $articles           = $user->articles([], ['article_id' => 'ASC']);
             $expect_article_ids = [1, 2, 4];
@@ -391,10 +496,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id ASC",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls               = [];
             $user               = User::find(1);
             $articles           = $user->articles([], null, 2);
             $expect_article_ids = [4, 2];
@@ -405,11 +509,10 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC LIMIT 2",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
             if ($db->driverName() !== 'sqlite') {
-                $sqls               = [];
                 $user               = User::find(1);
                 $articles           = $user->articles([], null, null, true);
                 $expect_article_ids = [4, 2, 1];
@@ -420,11 +523,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals([
                     "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
                     "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC FOR UPDATE",
-                ], $sqls);
+                ], $this->executedSqls());
             }
 
 
-            $sqls            = [];
             $users           = User::select();
             $expect_user_ids = [3, 2, 1];
             foreach ($users as $i => $user) {
@@ -449,10 +551,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('3', '2', '1') ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $users           = User::select();
             $expect_user_ids = [3, 2, 1];
             foreach ($users as $i => $user) {
@@ -474,10 +575,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals([
                 "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE subject LIKE '%baz%' ESCAPE '|' AND user_id IN ('3', '2', '1') ORDER BY article_id DESC",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $users           = User::select();
             $expect_user_ids = [3, 2, 1];
             foreach ($users as $i => $user) {
@@ -502,10 +602,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE subject LIKE '%foo%' ESCAPE '|' AND user_id IN ('3', '2', '1') ORDER BY article_id ASC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('1')",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls            = [];
             $users           = User::select();
             $expect_user_ids = [3, 2, 1];
             foreach ($users as $i => $user) {
@@ -530,11 +629,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('3', '2', '1') ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
             if ($db->driverName() !== 'sqlite') {
-                $sqls            = [];
                 $users           = User::select();
                 $expect_user_ids = [3, 2, 1];
                 foreach ($users as $i => $user) {
@@ -559,11 +657,10 @@ class DataModelTest extends RebetDatabaseTestCase
                     "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
                     "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('3', '2', '1') ORDER BY article_id DESC FOR UPDATE",
                     "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-                ], $sqls);
+                ], $this->executedSqls());
             }
 
 
-            $sqls            = [];
             $users           = User::select();
             $expect_user_ids = [3, 2, 1];
             foreach ($users as $i => $user) {
@@ -591,10 +688,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2')",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('1')",
-            ], $sqls);
+            ], $this->executedSqls());
 
 
-            $sqls             = [];
             $fortunes         = Fortune::select();
             $expect_fortuness = ['good', 'bad'];
             foreach ($fortunes as $i => $fortune) {
@@ -627,9 +723,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 "/* Emulated SQL */ SELECT * FROM users WHERE ((gender = '2' AND birthday = '1990-01-08') OR (gender = '1' AND birthday = '2003-02-16')) ORDER BY user_id DESC",
                 "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('1', '2') ORDER BY article_id DESC",
                 "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('1', '2')",
-            ], $sqls);
-
-            $db->debug(false);
+            ], $this->executedSqls());
         });
     }
 }
