@@ -2,8 +2,8 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
-use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Tinker\Tinker;
 
 /**
  * Array Auth Provider Class
@@ -61,7 +61,6 @@ class ArrayProvider extends AuthProvider
      *
      * @param array $users
      * @param string|null $signin_id_name (default: depend on configure)
-     * @param string|null $token_name (default: depend on configure)
      * @param callable|null $precondition function($user):bool (default: depend on configure)
      */
     public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
