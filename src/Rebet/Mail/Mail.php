@@ -45,9 +45,12 @@ class Mail
     public static function defaultConfig()
     {
         return [
-            'development' => false,
-            'unittest'    => false,
-            'initialize'  => [
+            'development'           => false,
+            'unittest'              => false,
+            'default_transport'     => 'smtp',
+            'development_transport' => 'log',
+            'unittest_transport'    => 'test',
+            'initialize'            => [
                 'handler' => null, // function (Swift_DependencyContainer $c) { ... }
                 'default' => [
                     'charset'          => 'utf-8',
@@ -88,9 +91,6 @@ class Mail
                     'plugins'     => [],
                 ],
             ],
-            'default_transport'     => 'smtp',
-            'development_transport' => 'log',
-            'unittest_transport'    => 'test',
             'alternative_generator' => [
                 'text/html' => [
                     'text/plain' => function (string $body, array $options = []) {
