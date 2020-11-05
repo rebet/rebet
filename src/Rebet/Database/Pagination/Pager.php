@@ -95,7 +95,7 @@ class Pager
      * Get and Set count of items per page.
      *
      * @param int|null $size of page (null for get count of items per page)
-     * @var Pager|int
+     * @return Pager|int
      */
     public function size(?int $size = null)
     {
@@ -106,7 +106,7 @@ class Pager
      * Get and Set current page number
      *
      * @param int|null $page number (null for get current page number)
-     * @var Pager|int
+     * @return Pager|int
      */
     public function page(?int $page = null)
     {
@@ -117,7 +117,7 @@ class Pager
      * Get and Set each side page count for this pager.
      *
      * @param int|null $each_side page count (null for get each side page count)
-     * @var Pager|int
+     * @return Pager|int
      */
     public function eachSide(?int $each_side = null)
     {
@@ -128,7 +128,7 @@ class Pager
      * Get and Set need total count or not.
      *
      * @param bool|null $need_total or not (null for get need total)
-     * @var Pager|bool
+     * @return Pager|bool
      */
     public function needTotal(?bool $need_total = null)
     {
@@ -139,7 +139,7 @@ class Pager
      * Get and Set cursor name
      *
      * @param string|null $name of cursor (null for get cursor name)
-     * @var Pager|string|null
+     * @return Pager|string|null
      */
     public function cursor(?string $name = null)
     {

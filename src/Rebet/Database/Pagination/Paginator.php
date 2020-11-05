@@ -454,7 +454,7 @@ class Paginator extends ResultSet
     }
 
     /**
-     * Get start focused page number near the current page that considered the range of each sides.
+     * Get start of focused page number near the current page that considered the range of each sides.
      *
      * @return int
      */
@@ -464,7 +464,7 @@ class Paginator extends ResultSet
     }
 
     /**
-     * Get end focused page number near the current page that considered the range of each sides.
+     * Get end of focused page number near the current page that considered the range of each sides.
      *
      * @return int
      */
