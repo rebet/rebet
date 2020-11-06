@@ -16,7 +16,7 @@ class OverrideOption
     /**
      * @var string of option on replace
      */
-    public const REPLACE = '!';
+    public const REPLACE = '=';
 
     /**
      * @var string of option on prepend (Sequential array only)
@@ -26,7 +26,12 @@ class OverrideOption
     /**
      * @var string of option on apend (Sequential array only)
      */
-    public const APEND = '>';
+    public const APPEND  = '>';
+
+    /**
+     * @var string of option on merge
+     */
+    public const MERGE = '+';
 
     /**
      * No instantiation
@@ -38,12 +43,16 @@ class OverrideOption
     /**
      * Divides the specified key string into pure key names and options.
      *
-     * @param string $key
-     * @return array [string $key, string|null $option]
+     * @param string|int $key
+     * @return array [string|int $key, string|null $option]
      */
-    public static function split(string $key) : array
+    public static function split($key) : array
     {
-        foreach ([self::REPLACE, self::PREPEND, self::APEND] as $option) {
+        if (!is_string($key)) {
+            return [$key, null];
+        }
+
+        foreach ([self::REPLACE, self::PREPEND, self::APPEND, self::MERGE] as $option) {
             if (Strings::endsWith($key, $option)) {
                 return [Strings::rcut($key, mb_strlen($option)), $option];
             }

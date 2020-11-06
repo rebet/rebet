@@ -454,7 +454,7 @@ class TinkerTest extends RebetTestCase
         // Arrays::override
         $this->assertSame(
             ['foo' => 'foo', 'parent' => null, 'number' => 123, 'gender' => Gender::MALE(), 'boolean' => true],
-            $this->map->override(['foo' => 'foo', 'parent!' => null])->return()
+            $this->map->override(['foo' => 'foo', 'parent=' => null])->return()
         );
 
         // Arrays::duplicate

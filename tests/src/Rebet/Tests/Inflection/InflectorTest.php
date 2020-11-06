@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Inflection;
 
-use Rebet\Tools\Config\Config;
 use Rebet\Inflection\Inflector;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 
 /**
  * Tests for the fonction pluralize and singularize are borrowed from doctrine/inflector ver 1.3.x with some modifications.
@@ -516,11 +516,11 @@ class InflectorTest extends RebetTestCase
         $plural_irregular = ['as' => 'ases'];
         Config::application([
             Inflector::class => [
-                'singular!' => [
+                'singular=' => [
                     'rules'       => [['/^(.*)(a|e|o|u)is$/i', '\1\2l']],
                     'uninflected' => $uninflected,
                 ],
-                'plural!' => [
+                'plural=' => [
                     'rules'       => [['/^(.*)(a|e|o|u)l$/i', '\1\2is']],
                     'uninflected' => $uninflected,
                     'irregular'   => $plural_irregular

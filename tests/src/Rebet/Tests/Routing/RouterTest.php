@@ -2,10 +2,6 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Config\Config;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -21,6 +17,10 @@ use Rebet\Routing\Router;
 use Rebet\Tests\Mock\Different\DifferentNamespaceController;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
 use ReflectionException;
@@ -33,7 +33,7 @@ class RouterTest extends RebetTestCase
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         Config::application([
             Router::class => [
-                'middlewares!'             => [],
+                'middlewares='             => [],
                 'default_fallback_handler' => function (Request $request, \Throwable $e) {
                     throw $e;
                 }

@@ -253,7 +253,7 @@ EOS
         Config::application([
             Dao::class => [
                 'default_db' => 'sqlite',
-                'dbs!'       => [
+                'dbs='       => [
                     'sqlite' => [
                         'dsn'   => function () { return static::$sqlite; },
                         // 'emulated_sql_log' => false,

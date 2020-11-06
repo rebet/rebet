@@ -142,7 +142,7 @@ abstract class RebetTestCase extends TestCase
                 'resolver' => function (Pager $pager) { return $pager; }
             ],
             Cache::class => [
-                'stores!' => [
+                'stores=' => [
                     'array' => [
                         'adapter' => ArrayAdapter::class,
                     ],

@@ -38,7 +38,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
         mkdir($this->test_dir, 0777, true);
         Config::application([
             Cache::class => [
-                'stores!' => [
+                'stores=' => [
                     'apcu' => [
                         'adapter'   => ApcuAdapter::class,
                     ],

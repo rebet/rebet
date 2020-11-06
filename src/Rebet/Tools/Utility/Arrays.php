@@ -176,9 +176,10 @@ class Arrays
      *
      * This behavior can be changed by specifying the option below.
      *
-     * 　- The merge behavior of Map or Array can be changed to replacement       by OverrideOption :: REPLACE (= '!').
-     * 　- The merge behavior of        Array can be changed to forward addition  by OverrideOption :: PREPEND (= '<').
-     * 　- The merge behavior of        Array can be changed to backward addition by OverrideOption :: APEND   (= '>').
+     * 　- The merge behavior of Map or Array can be changed to merge             by OverrideOption::MERGE   (= '+').
+     * 　- The merge behavior of Map or Array can be changed to replacement       by OverrideOption::REPLACE (= '=').
+     * 　- The merge behavior of        Array can be changed to forward addition  by OverrideOption::PREPEND (= '<').
+     * 　- The merge behavior of        Array can be changed to backward addition by OverrideOption::APPEND  (= '>').
      *
      * Also, regarding the behavior of an array, you can change the default overall behavior by specifying the above mode for $default_array_override_option.
      *
@@ -201,7 +202,7 @@ class Arrays
      *     'array' => ['c', 'a', 'b'],
      * ]
      *
-     * The above code can also be specified by giving '!', '<', '>' At the end of the difference map key name as shown below.
+     * The above code can also be specified by giving '+', '=', '<', '>' at the end of the difference map key name as shown below.
      *
      * Arrays::override(
      *     [
@@ -209,7 +210,7 @@ class Arrays
      *         'array'  => ['a', 'b'],
      *     ],
      *     [
-     *         'map'    => ['a!' => ['B' => 'B'], 'c' => 'C'],
+     *         'map'    => ['a=' => ['B' => 'B'], 'c' => 'C'],
      *         'array<' => ['c'],
      *     ]
      * );
@@ -219,11 +220,11 @@ class Arrays
      * @param mixed $base
      * @param mixed $diff
      * @param array|string $option
-     * @param string $default_array_override_option Default: OverrideOption::APEND
+     * @param string $default_array_override_option (default: OverrideOption::APPEND)
      * @param \Closure $handler of special override logic(if return null then do nothing). function($base, $diff, $option, $default_array_override_option):mixed (default: null)
      * @return mixed
      */
-    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APEND, ?\Closure $handler = null)
+    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APPEND, ?\Closure $handler = null)
     {
         if ($handler) {
             if ($value = $handler($base, $diff, $option, $default_array_override_option)) {
@@ -237,17 +238,18 @@ class Arrays
 
         $is_base_sequential = static::isSequential($base);
         $is_diff_sequential = static::isSequential($diff);
-        if ($is_base_sequential && $is_diff_sequential) {
-            return static::arrayMerge($base, $diff, \is_string($option) ? $option : $default_array_override_option);
+        $apply_option       = \is_string($option) ? $option : $default_array_override_option ;
+        if ($is_base_sequential && $is_diff_sequential && $apply_option !== OverrideOption::MERGE) {
+            return static::arrayMerge($base, $diff, $apply_option);
         }
 
-        if ($is_base_sequential !== $is_diff_sequential) {
+        if ($is_base_sequential !== $is_diff_sequential && $apply_option !== OverrideOption::MERGE) {
             return empty($diff) ? $base : $diff ;
         }
 
         foreach ($diff as $key => $value) {
             [$key, $apply_option] = OverrideOption::split($key);
-            $apply_option         = $apply_option ?? $option[$key] ?? null ;
+            $apply_option         = $apply_option ?? (is_array($option) ? ($option[$key] ?? null) : null) ;
             if (isset($base[$key])) {
                 $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_override_option, $handler);
             } else {
@@ -280,7 +282,7 @@ class Arrays
                     $merged[$index++] = $value;
                 }
                 return $merged;
-            case OverrideOption::APEND:
+            case OverrideOption::APPEND:
                 foreach ($diff as $value) {
                     $base[] = $value;
                 }

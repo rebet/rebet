@@ -320,10 +320,10 @@ class ConfigTest extends RebetTestCase
 
         Config::framework([
             ConfigTest_MockOption::class => [
-                'map!'   => ['a' => 'A', 'c' => 'C'],
+                'map='   => ['a' => 'A', 'c' => 'C'],
                 'array'  => ['c'],
                 'parent' => [
-                    'map!'   => ['a' => 'aa', 'c' => 'cc'],
+                    'map='   => ['a' => 'aa', 'c' => 'cc'],
                     'array'  => ['cc'],
                 ],
             ]
@@ -385,10 +385,10 @@ class ConfigTest extends RebetTestCase
         Config::framework([
             ConfigTest_MockOption::class => [
                 'map'    => ['a' => 'A', 'c' => 'C'],
-                'array!' => ['c'],
+                'array=' => ['c'],
                 'parent' => [
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
-                    'array!' => ['cc'],
+                    'array=' => ['cc'],
                 ],
             ]
         ]);
@@ -450,7 +450,7 @@ class ConfigTest extends RebetTestCase
             ConfigTest_MockOption::class => [
                 'map'     => ['a' => 'A', 'c' => 'C'],
                 'array'   => ['c'],
-                'parent!' => [
+                'parent=' => [
                     'map'   => ['a' => 'aa', 'c' => 'cc'],
                     'array' => ['cc'],
                 ],
@@ -576,7 +576,7 @@ class ConfigTest extends RebetTestCase
 
         Config::framework([
             ConfigTest_MockOption::class => [
-                'map!'    => ['a' => 'A', 'c' => 'C'],
+                'map='    => ['a' => 'A', 'c' => 'C'],
                 'array'   => ['c'],
                 'parent'  => [
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
@@ -588,7 +588,7 @@ class ConfigTest extends RebetTestCase
         Config::application([
             ConfigTest_MockOption::class => [
                 'map'    => ['d' => 'D'],
-                'array!' => ['d'],
+                'array=' => ['d'],
                 'parent' => [
                     'array' => ['d'],
                     'new'   => 'new',
