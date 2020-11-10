@@ -75,26 +75,6 @@ class Config
     ];
 
     /**
-     * Option setting of config
-     *
-     * option = [
-     *    'Layer' => [
-     *       'Section' => [
-     *           'key' => OverrideOption,
-     *       ],
-     *    ],
-     * ]
-     *
-     * @var array
-     */
-    public static $option = [
-        Layer::LIBRARY     => [],
-        Layer::FRAMEWORK   => [],
-        Layer::APPLICATION => [],
-        Layer::RUNTIME     => [],
-    ];
-
-    /**
      * Compiled option setting
      *
      * compiled = [
@@ -121,12 +101,11 @@ class Config
         if ($section === null) {
             foreach ($layers as $layer) {
                 static::$config[$layer] = [];
-                static::$option[$layer] = [];
             }
             static::$compiled = [];
         } else {
             foreach ($layers as $layer) {
-                unset(static::$config[$layer][$section], static::$option[$layer][$section]);
+                unset(static::$config[$layer][$section]);
             }
             unset(static::$compiled[$section]);
         }
@@ -182,7 +161,7 @@ class Config
                 $compiled = Arrays::override(
                     $compiled,
                     $config,
-                    static::$option[$layer][$section] ?? [],
+                    static::getLibraryConfigOverrideOptions($section),
                     OverrideOption::PREPEND,
                     function ($base, $diff, $option, $default_array_override_option) {
                         if ($base instanceof DotAccessDelegator || $diff instanceof DotAccessDelegator) {
@@ -211,70 +190,16 @@ class Config
      */
     protected static function put(string $layer, array $config) : void
     {
-        $config                 = self::analyze($config, static::$option[$layer]);
-        static::$config[$layer] = Arrays::override(static::$config[$layer], $config, static::$option[$layer], OverrideOption::PREPEND);
         foreach (\array_keys($config) as $section) {
+            static::$config[$layer][$section] = Arrays::override(
+                static::$config[$layer][$section] ?? [],
+                $config[$section],
+                static::getLibraryConfigOverrideOptions($section),
+                OverrideOption::PREPEND
+            );
             static::loadLibraryConfig($section);
             static::compile($section);
         }
-    }
-
-    /**
-     * Analyze configuration settings.
-     *
-     * @param mixed $config
-     * @param array $option
-     * @return mixed
-     */
-    protected static function analyze($config, array &$option)
-    {
-        if (!\is_array($config) || Arrays::isSequential($config)) {
-            return $config;
-        }
-
-        $analyzed = [];
-        foreach ($config as $section => $value) {
-            if (\is_array($value) && !Arrays::isSequential($value)) {
-                $option[$section] = $option[$section] ?? [] ;
-                $value            = static::analyzeSection($value, $option[$section]);
-            }
-
-            $analyzed[$section] = $value;
-        }
-        return $analyzed;
-    }
-
-    /**
-     * Analyze the configuration settings under the section.
-     *
-     * @param array $config
-     * @param array $option
-     * @return void
-     */
-    protected static function analyzeSection(array $config, array &$option)
-    {
-        if (!\is_array($config) || Arrays::isSequential($config)) {
-            return $config;
-        }
-
-        $analyzed = [];
-        foreach ($config as $key => $value) {
-            [$key, $apply_option] = OverrideOption::split($key);
-            if ($apply_option !== null) {
-                $option[$key] = $apply_option;
-            }
-
-            if (\is_array($value) && !Arrays::isSequential($value)) {
-                $nested_option = [];
-                $value         = static::analyzeSection($value, $nested_option);
-                if ($apply_option === null && !empty($nested_option)) {
-                    $option[$key] = $nested_option ;
-                }
-            }
-
-            $analyzed[$key] = $value;
-        }
-        return $analyzed;
     }
 
     /**
@@ -424,8 +349,18 @@ class Config
         if (isset(static::$config[Layer::LIBRARY][$section])) {
             return;
         }
-        static::$option[Layer::LIBRARY][$section] = [];
-        static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? static::analyze($section::defaultConfig(), static::$option[Layer::LIBRARY][$section]) : [] ;
+        static::$config[Layer::LIBRARY][$section] = method_exists($section, 'defaultConfig') ? $section::defaultConfig() : [] ;
+    }
+
+    /**
+     * Get library configuration override options from given section.
+     *
+     * @param string $section
+     * @return array
+     */
+    protected static function getLibraryConfigOverrideOptions(string $section) : array
+    {
+        return method_exists($section, 'defaultConfigOverrideOptions') ? $section::defaultConfigOverrideOptions() : [] ;
     }
 
     /**

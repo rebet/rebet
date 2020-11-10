@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tools\Config;
 
+use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\OverrideOption;
 
@@ -77,9 +78,22 @@ trait Configurable
      *     ]);
      * }
      *
-     * @return array|string
+     * @return array|DotAccessDelegator
      */
     abstract public static function defaultConfig() ;
+
+    /**
+     * Get default config override options.
+     * This method returns an empty setting (or parents setting) by default, so if you want to control the default override behavior you should override this method.
+     * For example, if you are using the configInstantiate() method in your library, the setting should set REPLACE as the default behavior.
+     * You should also define default settings so that application layer settings work naturally if the order of settings that require arrays affects behavior.
+     *
+     * @return array
+     */
+    public static function defaultConfigOverrideOptions() : array
+    {
+        return ($parent = get_parent_class()) && method_exists($parent, 'defaultConfigOverrideOptions') ? parent::defaultConfigOverrideOptions() : [] ;
+    }
 
     /**
      * Copy and differentially override the default config setting from the given class (usually parent::class).
@@ -97,9 +111,7 @@ trait Configurable
      */
     protected static function copyConfigFrom(string $class, array $diff = []) : array
     {
-        $rc   = new \ReflectionClass($class);
-        $base = $rc->getMethod('defaultConfig')->invoke(null);
-        return Arrays::override($base, $diff, [], OverrideOption::PREPEND);
+        return Arrays::override($class::defaultConfig(), $diff, $class::defaultConfigOverrideOptions(), OverrideOption::PREPEND);
     }
 
     /**
@@ -117,7 +129,9 @@ trait Configurable
      */
     protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
     {
-        return Config::promise(function () use ($class, $diff) { return Arrays::override($class::config(), $diff, [], OverrideOption::PREPEND); }, false);
+        return Config::promise(function () use ($class, $diff) {
+            return Arrays::override($class::config(), $diff, $class::defaultConfigOverrideOptions(), OverrideOption::PREPEND);
+        }, false);
     }
 
     /**

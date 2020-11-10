@@ -1,12 +1,12 @@
 <?php
 
 use Rebet\Validation\BuiltinValidations;
-use Rebet\Validation\Validations;
 use Rebet\Validation\Validator;
 
 return [
     BuiltinValidations::class => [
-        'default'   => [
+        'customs' => [],
+        'default' => [
             'DependenceChar' => [
                 'encode' => 'sjis-win'
             ],
@@ -19,7 +19,7 @@ return [
                 'ambiguous_patterns' => [
                     "^" => "^",
                     "$" => "$",
-                    // @todo 同位系の列挙 https://ja.wikipedia.org/wiki/A https://en.wikipedia.org/wiki/A
+                    // @todo Enumeration of isotopes https://ja.wikipedia.org/wiki/A https://en.wikipedia.org/wiki/A
                     "a" => "([aAꜸꜹꜺꜻꜼꜽꜲꜳⱯɐⱭɑɒẚÁáÀàĂăẮắẰằẴẵẲẳÂâẤấẦầẪẫẨẩǍǎÅåǺǻÄäǞǟÃãȦȧǠǡĄąĄ̈ą̈ĀāẢảȀȁȂȃẠạẶặẬậḀḁȺⱥᶏǼǽǢǣᶐΛａＡⒶⓐ🄰🅐🅰@＠🄐⒜])",
                     "b" => "([bBƄƅÞþẞßʙḂḃḄḅḆḇɃƀᵬᶀƁɓƂƃｂＢⒷⓑ🄱🅑🅱])",
                     "c" => "([cCƆɔↃↄꜾꜿĈĉČčĊċÇçḈḉȻȼƇƈɕｃＣⒸⓒ🄲🅒🅲©])",
@@ -146,10 +146,6 @@ return [
                 ],
             ],
         ],
-    ],
-
-    Validations::class => [
-        'customs' => [],
     ],
 
     Validator::class => [

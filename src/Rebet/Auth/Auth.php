@@ -7,15 +7,15 @@ use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
 use Rebet\Auth\Guard\Guard;
-use Rebet\Tools\Utility\Namespaces;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Routing\Router;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\Namespaces;
 
 /**
  * Auth Class

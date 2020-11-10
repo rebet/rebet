@@ -215,6 +215,21 @@ class Arrays
      *     ]
      * );
      *
+     * This way makes it easier to change the override behavior,
+     * but it is only supported in the $option that you can specify wild mark '*' that matches multiple keys.
+     *
+     * Arrays::override(
+     *     [
+     *         'foo' => ['a' => ['bar' => 'a'], 'b' => ['bar' => 'b']],
+     *     ],
+     *     [
+     *         'foo' => ['a' => ['bar' => 'A'], 'b' => ['bar' => 'B']],
+     *     ],
+     *     [
+     *         'foo' => ['*' => ['bar' => OverrideOption::REPLACE]],
+     *     ]
+     * );
+     *
      * @see OverrideOption
      *
      * @param mixed $base
@@ -249,7 +264,7 @@ class Arrays
 
         foreach ($diff as $key => $value) {
             [$key, $apply_option] = OverrideOption::split($key);
-            $apply_option         = $apply_option ?? (is_array($option) ? ($option[$key] ?? null) : null) ;
+            $apply_option         = $apply_option ?? (is_array($option) ? ($option[$key] ?? $option['*'] ?? null) : null) ;
             if (isset($base[$key])) {
                 $base[$key] = static::override($base[$key], $value, $apply_option, $default_array_override_option, $handler);
             } else {

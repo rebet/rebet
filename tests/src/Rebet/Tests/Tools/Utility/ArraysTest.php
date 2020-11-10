@@ -441,6 +441,57 @@ class ArraysTest extends RebetTestCase
         );
     }
 
+    public function test_override_wildCard()
+    {
+        $this->assertSame(
+            [
+                'foo' => [
+                    'a' => [
+                        'r' => ['rc1'],
+                        'm' => ['mc1', 'mb1'],
+                        'p' => ['pc1', 'pa1', 'pb1'],
+                    ],
+                    'b' => [
+                        'r' => ['rc2'],
+                        'm' => ['mc2', 'mb2'],
+                        'p' => ['pc2', 'pa2', 'pb2'],
+                    ],
+                ],
+            ],
+            Arrays::override(
+                [
+                    'foo' => [
+                        'a' => [
+                            'r' => ['ra1', 'rb1'],
+                            'm' => ['ma1', 'mb1'],
+                            'p' => ['pa1', 'pb1'],
+                        ],
+                        'b' => [
+                            'r' => ['ra2', 'rb2'],
+                            'm' => ['ma2', 'mb2'],
+                            'p' => ['pa2', 'pb2'],
+                        ],
+                    ],
+                ],
+                [
+                    'foo' => [
+                        'a' => [
+                            'r' => ['rc1'],
+                            'm' => ['mc1'],
+                            'p' => ['pc1'],
+                        ],
+                        'b' => [
+                            'r' => ['rc2'],
+                            'm' => ['mc2'],
+                            'p' => ['pc2'],
+                        ],
+                    ],
+                ],
+                ['foo' => ['*' => ['r' => OverrideOption::REPLACE, 'm' => OverrideOption::MERGE, 'p' => OverrideOption::PREPEND]]],
+            )
+        );
+    }
+    
     public function test_duplicate()
     {
         $this->assertNull(Arrays::duplicate(null));

@@ -1,19 +1,20 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Math\Decimal;
-use Rebet\Tools\Utility\Path;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Testable\System;
-use Rebet\Tools\Tinker\Tinker;
-use Rebet\Tools\Math\Unit;
-use Rebet\Tools\Utility\Utils;
+use Rebet\Http\UploadedFile;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Http\UploadedFile;
+use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Math\Unit;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Testable\System;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 
 /**
  * BuiltinValidations Class
@@ -23,14 +24,15 @@ use Rebet\Tools\Translation\Translator;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class BuiltinValidations extends Validations
+class BuiltinValidations implements Validations
 {
     use Configurable;
 
     public static function defaultConfig()
     {
-        return static::copyConfigFrom(parent::class, [
-            'default'   => [
+        return [
+            'customs' => [],
+            'default' => [
                 'DependenceChar' => [
                     'encode' => 'sjis-win'
                 ],
@@ -170,7 +172,38 @@ class BuiltinValidations extends Validations
                     ],
                 ],
             ],
-        ]);
+        ];
+    }
+
+    // ====================================================
+    // Register And Validate Methods
+    // ====================================================
+
+    /**
+     * Add custom validation to validations.
+     *
+     * @param string $name
+     * @param \Closure $validation function(Context $c [, args1 [, args2 [, ...]]]) : bool
+     * @return void
+     */
+    public static function register(string $name, \Closure $validation) : void
+    {
+        static::setConfig(['customs' => [$name => $validation]]);
+    }
+
+    /**
+     * Invoke validation the given name.
+     * If registered custom validation is exists then invoke it first.
+     *
+     * @param string $name
+     * @param Context $c
+     * @param mixed ...$args
+     * @return boolean
+     */
+    public function validate(string $name, Context $c, ...$args) : bool
+    {
+        $custom = static::config("customs.{$name}", false, null);
+        return $custom ? $custom($c, ...$args) : Reflector::invoke($this, "validation{$name}", array_merge([$c], $args));
     }
 
     // ====================================================
