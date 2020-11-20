@@ -599,6 +599,7 @@ class Reflector
 
     /**
      * Convert to args array from given positional, named or mixed values list.
+     * NOTE: Named arguments must come after positional arguments.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
      * @param array $values that positional, named or mixed.
@@ -691,11 +692,13 @@ class Reflector
                 unset($values[$idx]);
                 continue;
             }
+
             if (array_key_exists($name, $named)) {
                 $args[$name] = $named[$name];
                 unset($values[$name]);
                 continue;
             }
+
             if ($parameter->isVariadic()) {
                 $args[$name] = array_merge($values);
                 break;
