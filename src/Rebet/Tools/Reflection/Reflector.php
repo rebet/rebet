@@ -3,6 +3,7 @@ namespace Rebet\Tools\Reflection;
 
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Tinker\Tinker;
+use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Strings;
@@ -597,10 +598,10 @@ class Reflector
     }
 
     /**
-     * Convert to args array from given ordered or named values list.
+     * Convert to args array from given positional, named or mixed values list.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array $values that ordered or named.
+     * @param array $values that positional, named or mixed.
      * @param bool $type_convert (default: false)
      * @return array
      */
@@ -643,11 +644,13 @@ class Reflector
     }
 
     /**
-     * Convert to named args array from given ordered args list.
+     * Convert to named args array from given positional (or mixed) args list.
+     * NOTE: Named arguments must come after positional arguments.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array $values that ordered or named.
+     * @param array $values that positional, named or mixed.
      * @return array that named args map
+     * @throws LogicException
      */
     public static function toNamedArgs(array $parameters, array $values) : array
     {
@@ -655,35 +658,47 @@ class Reflector
             return [];
         }
 
-        $orderd = [];
-        $named  = [];
+        $positional = [];
+        $named      = [];
         foreach ($values as $key => $value) {
             if (is_int($key)) {
-                $orderd[$key] = $value;
-            } else {
-                $named[$key] = $value;
+                if (!empty($named)) {
+                    throw new LogicException("Named arguments must come after positional arguments.");
+                }
+                $positional[$key] = $value;
+                continue;
             }
+
+            $named[$key] = $value;
         }
 
         $args = [];
-        foreach ($parameters as $parameter) {
+        foreach ($parameters as $i => $parameter) {
             if (empty($values)) {
                 break;
             }
 
             $name = $parameter->name;
+            if (!empty($positional)) {
+                if (array_key_exists($name, $named)) {
+                    throw new LogicException("Named arguments of '{$name}' duplicate to ".Translator::ordinalize($i + 1, 'en')." positional arguments.");
+                }
+                if ($parameter->isVariadic()) {
+                    $args[$name] = array_merge($values);
+                    break;
+                }
+                $args[$name] = Arrays::remove($positional, $idx = key($positional));
+                unset($values[$idx]);
+                continue;
+            }
             if (array_key_exists($name, $named)) {
                 $args[$name] = $named[$name];
                 unset($values[$name]);
                 continue;
             }
             if ($parameter->isVariadic()) {
-                $args[$name] = array_values($values);
+                $args[$name] = array_merge($values);
                 break;
-            }
-            if (!empty($orderd)) {
-                $args[$name] = Arrays::remove($orderd, $idx = key($orderd));
-                unset($values[$idx]);
             }
         }
         return $args;

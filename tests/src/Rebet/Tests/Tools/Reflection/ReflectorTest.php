@@ -642,6 +642,13 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(['variadic' => [1]], Reflector::toNamedArgs($reflection->getParameters(), [1]));
         $this->assertSame(['variadic' => [1, 2, 3]], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
         $this->assertSame(['variadic' => [[1, 2, 3]]], Reflector::toNamedArgs($reflection->getParameters(), [[1, 2, 3]]));
+        $this->assertSame(['variadic' => [1, 'a' => 2, 'b' => 3]], Reflector::toNamedArgs($reflection->getParameters(), [1, 'a' => 2, 'b' => 3]));
+
+        $function   = function ($foo, $bar = 'bar', string ...$variadic) { return; };
+        $reflection = new \ReflectionFunction($function);
+        $this->assertSame(['foo' => 1], Reflector::toNamedArgs($reflection->getParameters(), [1]));
+        $this->assertSame(['foo' => 1, 'bar' => 2, 'variadic' => [3, 4]], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3, 4]));
+        $this->assertSame(['foo' => 4, 'bar' => 3, 'variadic' => ['qux' => 1, 'baz' => 2]], Reflector::toNamedArgs($reflection->getParameters(), ['qux' => 1, 'baz' => 2, 'bar' => 3, 'foo' => 4]));
 
         $function   = function (string $optional = 'default') { return; };
         $reflection = new \ReflectionFunction($function);
@@ -693,6 +700,26 @@ class ReflectorTest extends RebetTestCase
             ],
             Reflector::toNamedArgs($reflection->getParameters(), ['a', 'b', 'c', 'variadic' => ['e', 'f']])
         );
+    }
+
+    public function test_toNamedArgs_invalidArgsOrder()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Named arguments must come after positional arguments.");
+
+        $function   = function () { return; };
+        $reflection = new \ReflectionFunction($function);
+        Reflector::toNamedArgs($reflection->getParameters(), [1, 'a' => 2, 3]);
+    }
+
+    public function test_toNamedArgs_duplicateArgsPositionalAndNamed()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Named arguments of 'foo' duplicate to 1st positional arguments.");
+
+        $function   = function ($foo) { return; };
+        $reflection = new \ReflectionFunction($function);
+        Reflector::toNamedArgs($reflection->getParameters(), [1, 'foo' => 2]);
     }
 
     public function test_mergeArgs()
