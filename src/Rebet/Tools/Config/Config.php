@@ -370,24 +370,20 @@ class Config
      *
      * @param string $section
      * @param string $key can contains dot notation
-     * @param string|null $target key name for named array instantiation (default: null)
      * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
      * @param mixed $default (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      * @throws LogicException
      */
-    public static function instantiate(string $section, string $key, ?string $target = null, bool $required = true, $default = null)
+    public static function instantiate(string $section, string $key, bool $required = true, $default = null)
     {
         if ($required) {
             if (!static::has($section, $key)) {
                 throw new ConfigNotDefineException("Unable to instantiate '{$key}' in ". Arrays::last(explode('\\', $section)) .". Undefined configure '{$section}.{$key}'.");
             }
-            if ($target !== null && !static::has($section, "{$key}.{$target}")) {
-                throw new ConfigNotDefineException("Unable to instantiate '{$target}' of '{$key}' in ". Arrays::last(explode('\\', $section)) .". Undefined configure '{$section}.{$key}.{$target}'.");
-            }
         }
-        return Reflector::instantiate(self::get($section, $key, $required, $default), $target);
+        return Reflector::instantiate(self::get($section, $key, $required, $default));
     }
 
     /**

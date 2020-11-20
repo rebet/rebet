@@ -84,9 +84,11 @@ abstract class RebetTestCase extends TestCase
                 'unittest' => true,
                 'channels' => [
                     'web' => [
-                        'driver' => TestDriver::class,
-                        'name'   => 'web',
-                        'level'  => LogLevel::DEBUG,
+                        'driver' => [
+                            '@factory' => TestDriver::class,
+                            'name'     => 'web',
+                            'level'    => LogLevel::DEBUG,
+                        ],
                     ],
                 ],
             ],
@@ -106,12 +108,20 @@ abstract class RebetTestCase extends TestCase
                 'authenticator' => [
                     'web' => [
                         'guard'    => SessionGuard::class,
-                        'provider' => [ArrayProvider::class, $users, null, $auth_precondition],
+                        'provider' => [
+                            '@factory'     => ArrayProvider::class,
+                            'users'        => $users,
+                            'precondition' => $auth_precondition
+                        ],
                         'fallback' => '/user/signin', // url or function(Request):Response
                     ],
                     'api' => [
                         'guard'    => TokenGuard::class,
-                        'provider' => [ArrayProvider::class, $users, null, $auth_precondition],
+                        'provider' => [
+                            '@factory'     => ArrayProvider::class,
+                            'users'        => $users,
+                            'precondition' => $auth_precondition
+                        ],
                         'fallback' => function (Request $request) { return Responder::problem(403); }, // url or function(Request):Response
                     ],
                 ],

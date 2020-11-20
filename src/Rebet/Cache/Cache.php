@@ -73,14 +73,9 @@ class Cache
         return [
             'stores' => [
                 'file' => [
-                    'adapter'                => FilesystemAdapter::class,
-                    'namespace'              => '',
-                    'default_lifetime'       => 0,
-                    'directory'              => null,
-                    'marshaller'             => null,
-                    'taggable'               => false,
-                    'tags_pool'              => null,
-                    'known_tag_versions_ttl' => 0.15
+                    'adapter' => [
+                        '@factory' => FilesystemAdapter::class,
+                    ],
                 ],
             ],
             'default_store' => 'file',
@@ -121,7 +116,7 @@ class Cache
     {
         $name = $name ?? static::config('default_store');
         return static::$stores[$name]
-            ?? static::$stores[$name] = new Store($name, static::configInstantiate("stores.{$name}", 'adapter'))
+            ?? static::$stores[$name] = new Store($name, static::configInstantiate("stores.{$name}.adapter"))
             ;
     }
 

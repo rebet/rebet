@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tools\Translation;
 
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Config\Layer;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Resource\LocaleResource;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * File Dictionary Class

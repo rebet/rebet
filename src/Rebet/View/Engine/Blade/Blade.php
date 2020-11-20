@@ -11,8 +11,9 @@ use Illuminate\View\Engines\FileEngine;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
-use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Utility\OverrideOption;
+use Rebet\Tools\Utility\Path;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 use Rebet\View\Engine\Engine;
 
@@ -37,6 +38,13 @@ class Blade implements Engine
             'view_path'   => [],
             'cache_path'  => null,
             'customizers' => [],
+        ];
+    }
+
+    public static function defaultConfigOverrideOptions() : array
+    {
+        return [
+            'customizers' => OverrideOption::APPEND,
         ];
     }
 
@@ -102,7 +110,7 @@ class Blade implements Engine
         });
         Facade::setFacadeApplication($app);
 
-        foreach (array_reverse(static::config('customizers', false, [])) as $customizer) {
+        foreach (static::config('customizers', false, []) as $customizer) {
             call_user_func($customizer, $this);
         }
     }

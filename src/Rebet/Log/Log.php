@@ -64,21 +64,25 @@ class Log
     public static function defaultConfig()
     {
         return [
-            'unittest' => false,
-            'channels' => [
+            'unittest'         => false,
+            'unittest_channel' => 'test',
+            'default_channel'  => 'stderr',
+            'channels'         => [
                 'stderr' => [
-                    'driver' => StderrDriver::class,
-                    'name'   => 'stderr',
-                    'level'  => LogLevel::DEBUG,
+                    'driver' => [
+                        '@factory' => StderrDriver::class,
+                        'name'     => 'stderr',
+                        'level'    => LogLevel::DEBUG,
+                    ],
                 ],
                 'test' => [
-                    'driver' => TestDriver::class,
-                    'name'   => 'test',
-                    'level'  => LogLevel::DEBUG,
+                    'driver' => [
+                        '@factory' => TestDriver::class,
+                        'name'     => 'test',
+                        'level'    => LogLevel::DEBUG,
+                    ],
                 ],
             ],
-            'default_channel'  => 'stderr',
-            'unittest_channel' => 'test',
             'fallback_log'     => defined('STDERR') ? STDERR : 'php://stderr',
         ];
     }
@@ -150,7 +154,7 @@ class Log
         }
 
         try {
-            return static::$channels[$channel] = new Logger(static::configInstantiate("channels.{$channel}", 'driver'));
+            return static::$channels[$channel] = new Logger(static::configInstantiate("channels.{$channel}.driver"));
         } catch (\Exception $e) {
             static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger.", [], $e);
             return new Logger(new NullDriver());

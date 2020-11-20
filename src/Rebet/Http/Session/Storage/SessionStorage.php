@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http\Session\Storage;
 
-use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
+use Rebet\Tools\Config\Configurable;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 /**
@@ -65,6 +65,6 @@ class SessionStorage extends NativeSessionStorage
     public function __construct(array $options = [], ?\SessionHandlerInterface $handler = null, ?MetadataBag $metadata_bag = null)
     {
         $options = array_merge(array_filter(static::config('options'), function ($v) { return $v !== null; }), $options);
-        parent::__construct($options, $handler ?? static::configInstantiate('handler', null, false), $metadata_bag ?? new MetadataBag('_rebet_meta'));
+        parent::__construct($options, $handler ?? static::configInstantiate('handler', false), $metadata_bag ?? new MetadataBag('_rebet_meta'));
     }
 }

@@ -11,21 +11,25 @@ use Rebet\Tools\Utility\Strings;
 
 return [
     Log::class => [
-        'unittest' => false,
-        'channels' => [
+        'unittest'         => false,
+        'unittest_channel' => 'test',
+        'default_channel'  => 'stderr',
+        'channels'         => [
             'stderr' => [
-                'driver' => StderrDriver::class,
-                'name'   => 'stderr',
-                'level'  => LogLevel::DEBUG,
+                'driver' => [
+                    '@factory' => StderrDriver::class,
+                    'name'     => 'stderr',
+                    'level'    => LogLevel::DEBUG,
+                ],
             ],
             'test' => [
-                'driver' => TestDriver::class,
-                'name'   => 'test',
-                'level'  => LogLevel::DEBUG,
+                'driver' => [
+                    '@factory' => TestDriver::class,
+                    'name'     => 'test',
+                    'level'    => LogLevel::DEBUG,
+                ],
             ],
         ],
-        'default_channel'  => 'stderr',
-        'unittest_channel' => 'test',
         'fallback_log'     => defined('STDERR') ? STDERR : 'php://stderr',
     ],
 

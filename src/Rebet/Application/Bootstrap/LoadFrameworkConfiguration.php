@@ -61,10 +61,14 @@ class LoadFrameworkConfiguration implements Bootstrapper
             Storage::class => [
                 'disks' => [
                     'private' => [
-                        'root' => $kernel->structure()->privateStorage(),
+                        'adapter' => [
+                            'root' => $kernel->structure()->privateStorage(),
+                        ],
                     ],
                     'public' => [
-                        'root'       => $kernel->structure()->publicStorage(),
+                        'adapter' => [
+                            'root' => $kernel->structure()->publicStorage(),
+                        ],
                         'filesystem' => [
                             'url' => $kernel->structure()->storageUrl(),
                         ]

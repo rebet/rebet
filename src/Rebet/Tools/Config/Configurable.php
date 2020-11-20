@@ -156,15 +156,14 @@ trait Configurable
      * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
      * @param string $key can contains dot notation
-     * @param string|null $target key name for named array instantiation (default: null)
      * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
      * @param mixed $default (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      */
-    protected static function configInstantiate(string $key, ?string $target = null, bool $required = true, $default = null)
+    protected static function configInstantiate(string $key, bool $required = true, $default = null)
     {
-        return Config::instantiate(static::class, $key, $target, $required, $default);
+        return Config::instantiate(static::class, $key, $required, $default);
     }
 
     /**

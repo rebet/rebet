@@ -12,14 +12,14 @@ use League\Flysystem\Filesystem as FlysystemFilesystem;
 use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Util\MimeType;
 use Psr\Http\Message\StreamInterface;
-use Rebet\Tools\Utility\Path;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Tinker\Tinker;
-use Rebet\Tools\Utility\Utils;
-use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Tinker\Tinker;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -44,7 +44,7 @@ class BuiltinFilesystem implements Filesystem
     public static function defaultConfig()
     {
         return [
-            'driver'  => FlysystemFilesystem::class,
+            'driver' => FlysystemFilesystem::class,
         ];
     }
 

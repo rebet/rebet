@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Filesystem;
 
-use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 
 class StorageTest extends RebetTestCase
 {
@@ -28,7 +28,7 @@ class StorageTest extends RebetTestCase
     public function test_disk_failed()
     {
         $this->expectException(ConfigNotDefineException::class);
-        $this->expectExceptionMessage("Unable to instantiate 'disks.nothing' in Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.nothing'.");
+        $this->expectExceptionMessage("Unable to instantiate 'disks.nothing.adapter' in Storage. Undefined configure 'Rebet\Filesystem\Storage.disks.nothing.adapter'.");
 
         $this->assertInstanceOf(Filesystem::class, Storage::disk('nothing'));
     }

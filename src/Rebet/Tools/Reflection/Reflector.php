@@ -756,31 +756,23 @@ class Reflector
      * The definition objects that instance creation can deal with are as follows.
      *
      *  string :
-     *     {ClassName}::{factoryMathod}
-     *       => Instantiate the target class with a factory method without arguments
-     *     {ClassName}
-     *       => Instantiate the target class with a constructor without arguments
+     *    - {ClassName}
+     *    - {ClassName}::{factoryMathod}
+     *      => Instantiate the target class with a constructor/factory method without arguments.
      *
      *  \Closure :
-     *     function() { ... }
-     *     \Closure::fromCallable( ... )
-     *       => Just return execute result of closure without arguments.
+     *    - function() { ... }
+     *    - \Closure::fromCallable( ... )
+     *      => Just return execute result of closure without arguments.
      *
-     *  ordered array :
-     *     [{ClassName}::{factoryMathod}, arg1, arg2, ...]
-     *       ⇒ Instantiate the target class with a factory method with arguments
-     *     [{ClassName}, arg1, arg2, ...]
-     *       ⇒ Instantiate the target class with a constructor with arguments
-     *     NOTE:
-     *         If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
-     *
-     *  named array :
-     *     ['target' => {ClassName}::{factoryMathod}, 'arg1' => value1, 'arg2' => value2, ...]
-     *       ⇒ Instantiate the target class with a factory method with arguments
-     *     ['target' => {ClassName}, 'arg1' => value1, 'arg2' => value2, ...]
-     *       ⇒ Instantiate the target class with a constructor with arguments
-     *     NOTE:
-     *         If the given args contains '@after' callback `function($instance) { ... }` then invoke the callback with created new instance.
+     *  array :
+     *    {Factory} is able to set string ('{ClassName}', '{ClassName}::{factoryMathod}') or \Closure.
+     *    - [{Factory}, arg1, arg2, ..., '@setup' => function($instance){ ... }]
+     *    - [{Factory}, 'arg1' => value1, 'arg2' => value2, ..., '@setup' => function($instance){ ... }]
+     *    - ['@factory' => {Factory}, 'arg1' => value1, 'arg2' => value2, ..., '@setup' => function($instance){ ... }]
+     *      ⇒ Instantiate the target class with a constructor/factory method/closure with orderd/named arguments.
+     *      NOTE:
+     *        If the given args contains '@setup' callback `function($instance) { ... }` then invoke the callback with created new instance.
      *
      *  brank : (= null, '', [])
      *       ⇒ return null
@@ -789,10 +781,9 @@ class Reflector
      *       ⇒ return input value
      *
      * @param mixed $config
-     * @param string|null $target key name for named array instantiation (default: null)
      * @return mixed
      */
-    public static function instantiate($config, ?string $target = null)
+    public static function instantiate($config)
     {
         if (Utils::isBlank($config)) {
             return null;
@@ -805,17 +796,18 @@ class Reflector
             return empty($method) ? new $class() : $class::$method() ;
         }
         if (is_array($config)) {
-            $factory = static::remove($config, $target ?? 0);
+            $factory = static::remove($config, '@factory') ?? static::remove($config, 0);
             if ($factory === null) {
-                throw new LogicException("Unable to instantiate, because of '{$target}' is undefined.");
+                throw new LogicException("Unable to instantiate, because of '@factory' or zero index valule is undefined.");
             }
+
+            $setup  = static::remove($config, '@setup') ?? Callbacks::echoBack();
+            $config = array_merge($config);
             if (!is_string($factory)) {
-                return $factory;
+                return $setup(is_callable($factory) ? static::evaluate($factory, $config) : $factory);
             }
             [$class, $method] = Strings::split($factory, '::', 2);
-            $after            = static::remove($config, '@after') ?? Callbacks::echoBack();
-            $config           = array_merge($config);
-            return $after(empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config)) ;
+            return $setup(empty($method) ? static::create($class, $config) : static::invoke($class, $method, $config)) ;
         }
         return $config;
     }

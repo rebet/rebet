@@ -7,14 +7,9 @@ return [
     Cache::class => [
         'stores' => [
             'file' => [
-                'adapter'                => FilesystemAdapter::class,
-                'namespace'              => '',
-                'default_lifetime'       => 0,
-                'directory'              => null,
-                'marshaller'             => null,
-                'taggable'               => false,
-                'tags_pool'              => null,
-                'known_tag_versions_ttl' => 0.15
+                'adapter' => [
+                    '@factory' => FilesystemAdapter::class,
+                ],
             ],
         ],
         'default_store' => 'file',

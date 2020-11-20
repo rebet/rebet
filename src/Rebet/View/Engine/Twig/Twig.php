@@ -1,8 +1,9 @@
 <?php
 namespace Rebet\View\Engine\Twig;
 
-use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Utility\OverrideOption;
+use Rebet\Tools\Utility\Path;
 use Rebet\View\Engine\Engine;
 use Rebet\View\Engine\Twig\Environment\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -29,6 +30,13 @@ class Twig implements Engine
             'options'      => [],
             'customizers'  => [],
             'file_suffix'  => '.twig',
+        ];
+    }
+
+    public static function defaultConfigOverrideOptions() : array
+    {
+        return [
+            'customizers' => OverrideOption::APPEND,
         ];
     }
 
@@ -69,7 +77,7 @@ class Twig implements Engine
             $template_dir      = static::config('template_dir') ;
             $options           = static::config('options', false, []) ;
             static::$twig      = new Environment(new FilesystemLoader($template_dir), $options);
-            foreach (array_reverse(static::config('customizers', false, [])) as $customizer) {
+            foreach (static::config('customizers', false, []) as $customizer) {
                 call_user_func($customizer, $this);
             }
         }

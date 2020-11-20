@@ -91,21 +91,23 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('default', Reflector::instantiate(ReflectorTest_Mock::class)->value);
         $this->assertSame('via getInstance()', Reflector::instantiate(ReflectorTest_Mock::class. '::getInstance')->value);
         $this->assertSame('arg', Reflector::instantiate([ReflectorTest_Mock::class, 'arg'])->value);
-        $this->assertSame('arg', Reflector::instantiate(['mock' => ReflectorTest_Mock::class, 'value' => 'arg'], 'mock')->value);
-        $this->assertSame('after', Reflector::instantiate([
-            'mock'   => ReflectorTest_Mock::class,
-            '@after' => function ($mock) {
-                $mock->value = 'after';
+        $this->assertSame('arg', Reflector::instantiate([ReflectorTest_Mock::class, 'value' => 'arg'])->value);
+        $this->assertSame('arg', Reflector::instantiate(['@factory' => ReflectorTest_Mock::class, 'value' => 'arg'])->value);
+        $this->assertSame('setup', Reflector::instantiate([
+            '@factory' => ReflectorTest_Mock::class,
+            '@setup'   => function ($mock) {
+                $mock->value = 'setup';
                 return $mock;
             }
-        ], 'mock')->value);
-        $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class. '::build', 'arg'])->value);
-        $this->assertSame('arg via build()', Reflector::instantiate(['factory' => ReflectorTest_Mock::class. '::build', 'value' => 'arg'], 'factory')->value);
-        $this->assertSame('arg via build() after', Reflector::instantiate([
-            'factory' => ReflectorTest_Mock::class.'::build',
-            'value'   => 'arg',
-            '@after'  => function ($mock) { $mock->value .= ' after'; return $mock; }
-        ], 'factory')->value);
+        ])->value);
+        $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class.'::build', 'arg'])->value);
+        $this->assertSame('arg via build()', Reflector::instantiate([ReflectorTest_Mock::class.'::build', 'value' => 'arg'])->value);
+        $this->assertSame('arg via build()', Reflector::instantiate(['@factory' => ReflectorTest_Mock::class. '::build', 'value' => 'arg'])->value);
+        $this->assertSame('arg via build() setup', Reflector::instantiate([
+            '@factory' => ReflectorTest_Mock::class.'::build',
+            'value'    => 'arg',
+            '@setup'   => function ($mock) { $mock->value .= ' setup'; return $mock; }
+        ])->value);
         $this->assertSame(123, Reflector::instantiate(123));
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
     }

@@ -40,34 +40,50 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
             Cache::class => [
                 'stores=' => [
                     'apcu' => [
-                        'adapter'   => ApcuAdapter::class,
+                        'adapter' => [
+                            '@factory' => ApcuAdapter::class,
+                        ],
                     ],
                     'array' => [
-                        'adapter'   => ArrayAdapter::class,
+                        'adapter' => [
+                            '@factory' => ArrayAdapter::class,
+                        ],
                     ],
                     'file' => [
-                        'adapter'   => FilesystemAdapter::class,
-                        'directory' => $this->test_dir.'/file',
+                        'adapter' => [
+                            '@factory'  => FilesystemAdapter::class,
+                            'directory' => $this->test_dir.'/file',
+                        ],
                     ],
                     'memcached' => [
-                        'adapter'   => MemcachedAdapter::class,
-                        'dsn'       => 'memcached://localhost:11211',
+                        'adapter' => [
+                            '@factory' => MemcachedAdapter::class,
+                            'dsn'      => 'memcached://localhost:11211',
+                        ],
                     ],
                     'pdo-sqlite' => [
-                        'adapter'   => PdoAdapter::class,
-                        'db'        => 'sqlite',
+                        'adapter' => [
+                            '@factory' => PdoAdapter::class,
+                            'db'       => 'sqlite',
+                        ],
                     ],
                     'pdo-mysql' => [
-                        'adapter'   => PdoAdapter::class,
-                        'db'        => 'mysql',
+                        'adapter'   => [
+                            '@factory' => PdoAdapter::class,
+                            'db'       => 'mysql',
+                        ],
                     ],
                     'pdo-pgsql' => [
-                        'adapter'   => PdoAdapter::class,
-                        'db'        => 'pgsql',
+                        'adapter'   => [
+                            '@factory' => PdoAdapter::class,
+                            'db'       => 'pgsql',
+                        ],
                     ],
                     'redis' => [
-                        'adapter'   => RedisAdapter::class,
-                        'dsn'       => 'redis://localhost/0',
+                        'adapter'   => [
+                            '@factory' => RedisAdapter::class,
+                            'dsn'      => 'redis://localhost/0',
+                        ],
                     ],
                 ],
                 'default_store' => 'array',
@@ -88,13 +104,13 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
         $stores = empty($stores) ? array_keys(Cache::config('stores')) : $stores ;
         $skiped = [];
         foreach ($stores as $name) {
-            $adapter = Cache::config("stores.{$name}.adapter");
+            $adapter = Cache::config("stores.{$name}.adapter.@factory");
             if (method_exists($adapter, 'isSupported') && !$adapter::isSupported()) {
                 $skiped[] = $name;
                 continue;
             }
             if ($taggable) {
-                Config::runtime([Cache::class => ['stores' => [$name => ['taggable' => true]]]]);
+                Config::runtime([Cache::class => ['stores' => [$name => ['adapter' => ['taggable' => true]]]]]);
             }
             $store = Cache::store($name);
             if ($store === null) {

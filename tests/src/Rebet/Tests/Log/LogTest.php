@@ -22,19 +22,21 @@ class LogTest extends RebetTestCase
                 'unittest' => false,
                 'channels' => [
                     'test' => [
-                        'driver' => TestDriver::class,
-                        'name'   => 'test',
-                        'level'  => LogLevel::WARNING,
+                        'driver' => [
+                            '@factory' => TestDriver::class,
+                            'name'     => 'test',
+                            'level'    => LogLevel::WARNING,
+                        ],
                     ],
                     'stderr' => [
-                        'driver' => StderrDriver::class,
-                        'name'   => 'stderr',
-                        'level'  => LogLevel::DEBUG,
-                        'format' => "{datetime} [{channel}.{level_name}] {extra.process_id} {message}{context}{extra}{exception}\n",
+                        'driver' => [
+                            '@factory' => StderrDriver::class,
+                            'name'     => 'stderr',
+                            'level'    => LogLevel::DEBUG,
+                            'format'   => "{datetime} [{channel}.{level_name}] {extra.process_id} {message}{context}{extra}{exception}\n",
+                        ],
                     ],
                     'missing_driver' => [
-                        'name'   => 'missing_driver',
-                        'level'  => LogLevel::DEBUG,
                     ]
                 ]
             ]
@@ -56,7 +58,7 @@ class LogTest extends RebetTestCase
         $this->assertContainsStderr(
             [
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'nothing' channel logger",
-                "Unable to instantiate 'channels.nothing' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing'."
+                "Unable to instantiate 'channels.nothing.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing.driver'."
             ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('nothing')->driver());
@@ -65,7 +67,7 @@ class LogTest extends RebetTestCase
         $this->assertContainsStderr(
             [
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'missing_driver' channel logger",
-                "Unable to instantiate 'driver' of 'channels.missing_driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'."
+                "Unable to instantiate 'channels.missing_driver.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'."
             ],
             function () {
                 $this->assertInstanceOf(NullDriver::class, Log::channel('missing_driver')->driver());

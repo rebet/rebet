@@ -29,30 +29,27 @@ return [
         ],
         'transports' => [
             'smtp' => [
-                'transporter' => SmtpTransport::class,
-                'host'        => 'localhost',
-                'port'        => 25,
-                'username'    => null,
-                'password'    => null,
-                'encryption'  => null,
-                'options'     => [],
+                'transporter' => [
+                    '@factory' => SmtpTransport::class,
+                ],
                 'plugins'     => [],
             ],
             'sendmail' => [
-                'transporter' => SendmailTransport::class,
-                'command'     => '/usr/sbin/sendmail -bs',
-                'options'     => [],
+                'transporter' => [
+                    '@factory' => SendmailTransport::class,
+                ],
                 'plugins'     => [],
             ],
             'log' => [
-                'transporter' => LogTransport::class,
-                'logger'      => null,
-                'options'     => [],
+                'transporter' => [
+                    '@factory' => LogTransport::class,
+                ],
                 'plugins'     => [],
             ],
             'test' => [
-                'transporter' => ArrayTransport::class,
-                'options'     => [],
+                'transporter' => [
+                    '@factory' => ArrayTransport::class,
+                ],
                 'plugins'     => [],
             ],
         ],

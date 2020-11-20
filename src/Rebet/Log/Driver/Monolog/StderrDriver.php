@@ -10,7 +10,6 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
  * This class based on Monolog\Handler\StreamHandler for php://stderr.
  *
  * Usage: (Parameter of Constractor)
- *     'driver'          [*] StderrDriver::class,
  *     'name'            [*] string of name (usualy same as channel name),
  *     'level'           [*] string of LogLevel::*,
  *     'format'          [ ] string of format template (default: null for use TextFormat class config)
