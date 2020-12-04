@@ -49,6 +49,5 @@ return [
 
     ArrayProvider::class => [
         'signin_id_name' => 'email',
-        'precondition'   => function ($user) { return true; },
     ],
 ];

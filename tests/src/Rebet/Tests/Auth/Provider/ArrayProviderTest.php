@@ -3,14 +3,15 @@ namespace Rebet\Tests\Auth\Event;
 
 use Rebet\Auth\Password;
 use Rebet\Auth\Provider\ArrayProvider;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\Strings;
 
 class ArrayProviderTest extends RebetTestCase
 {
     private $users;
     private $provider;
+    private $provider_for_admin;
     private $provider_by_signin_id;
     private $provider_exclude_resigned;
 
@@ -24,6 +25,7 @@ class ArrayProviderTest extends RebetTestCase
 
         $this->provider                  = new ArrayProvider($this->users);
         $this->provider_by_signin_id     = new ArrayProvider($this->users, 'signin_id');
+        $this->provider_for_admin        = new ArrayProvider($this->users, 'email', function ($user) { return $user['role'] === 'admin'; });
         $this->provider_exclude_resigned = new ArrayProvider($this->users, 'email', function ($user) { return !isset($user['resigned_at']); });
     }
 
@@ -82,14 +84,13 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertNull($user);
 
 
-        $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user = $this->provider->findByToken('api_token', 'token_1', $precondition);
+        $user = $this->provider_for_admin->findByToken('api_token', 'token_1');
         $this->assertSame(1, $user->id);
 
-        $user = $this->provider->findByToken('api_token', 'token_2', $precondition);
+        $user = $this->provider_for_admin->findByToken('api_token', 'token_2');
         $this->assertNull($user);
 
-        $user = $this->provider->findByToken('api_token', 'token_3', $precondition);
+        $user = $this->provider_for_admin->findByToken('api_token', 'token_3');
         $this->assertNull($user);
     }
 
@@ -103,29 +104,29 @@ class ArrayProviderTest extends RebetTestCase
 
         foreach ($this->users as $expect_user) {
             $signin_id = $expect_user['email'];
-            $passowd   = Strings::latrim($signin_id, '@');
+            $password  = Strings::latrim($signin_id, '@');
 
-            $user = $this->provider->findByCredentials($signin_id, $passowd);
+            $user = $this->provider->findByCredentials($signin_id, $password);
             $this->assertSame($expect_user, $user->raw());
 
             $user = $this->provider->findByCredentials($signin_id, 'invalid_password');
             $this->assertNull($user);
 
-            $user = $this->provider->findByCredentials('invalid_signin_id', $passowd);
+            $user = $this->provider->findByCredentials('invalid_signin_id', $password);
             $this->assertNull($user);
         }
 
         foreach ($this->users as $expect_user) {
             $signin_id = $expect_user['signin_id'];
-            $passowd   = $signin_id;
+            $password  = $signin_id;
 
-            $user = $this->provider_by_signin_id->findByCredentials($signin_id, $passowd);
+            $user = $this->provider_by_signin_id->findByCredentials($signin_id, $password);
             $this->assertSame($expect_user, $user->raw());
 
             $user = $this->provider_by_signin_id->findByCredentials($signin_id, 'invalid_password');
             $this->assertNull($user);
 
-            $user = $this->provider_by_signin_id->findByCredentials('invalid_signin_id', $passowd);
+            $user = $this->provider_by_signin_id->findByCredentials('invalid_signin_id', $password);
             $this->assertNull($user);
         }
 
@@ -139,14 +140,13 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertNull($user);
 
 
-        $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user = $this->provider->findByCredentials('admin@rebet.local', 'admin', $precondition);
+        $user = $this->provider_for_admin->findByCredentials('admin@rebet.local', 'admin');
         $this->assertSame(1, $user->id);
 
-        $user = $this->provider->findByCredentials('user@rebet.local', 'user', $precondition);
+        $user = $this->provider_for_admin->findByCredentials('user@rebet.local', 'user');
         $this->assertNull($user);
 
-        $user = $this->provider->findByCredentials('user.resignd@rebet.local', 'user.resignd', $precondition);
+        $user = $this->provider_for_admin->findByCredentials('user.resignd@rebet.local', 'user.resignd');
         $this->assertNull($user);
     }
 

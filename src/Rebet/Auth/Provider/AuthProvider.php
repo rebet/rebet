@@ -34,11 +34,10 @@ abstract class AuthProvider
      * Find user by token.
      *
      * @param string $token_name
-     * @param string $token
-     * @param mixed $precondition (default: null)
+     * @param string|null $token
      * @return AuthUser|null
      */
-    abstract public function findByToken(string $token_name, ?string $token, $precondition = null) : ?AuthUser ;
+    abstract public function findByToken(string $token_name, ?string $token) : ?AuthUser ;
 
     /**
      * Find user by signin_id and password.
@@ -46,12 +45,11 @@ abstract class AuthProvider
      *
      * @param mixed $signin_id
      * @param string|null $password
-     * @param mixed $precondition (default: null)
      * @return AuthUser|null
      */
-    public function findByCredentials($signin_id, ?string $password, $precondition = null) : ?AuthUser
+    public function findByCredentials($signin_id, ?string $password) : ?AuthUser
     {
-        $user = $this->findBySigninId($signin_id, $precondition);
+        $user = $this->findBySigninId($signin_id);
         if ($user === null) {
             return null;
         }
@@ -72,10 +70,9 @@ abstract class AuthProvider
      * The signin_id may be named 'login_id', 'email', etc.
      *
      * @param mixed $value
-     * @param mixed $precondition (default: null)
      * @return AuthUser|null
      */
-    abstract protected function findBySigninId($signin_id, $precondition = null) : ?AuthUser ;
+    abstract protected function findBySigninId($signin_id) : ?AuthUser ;
 
     /**
      * Save rehash password.
@@ -103,10 +100,9 @@ abstract class AuthProvider
      * If this provider support remember token must be override the method in sub class.
      *
      * @param string|null $token
-     * @param mixed $precondition (default: null)
      * @return AuthUser|null
      */
-    public function findByRememberToken(?string $token, $precondition = null) : ?AuthUser
+    public function findByRememberToken(?string $token) : ?AuthUser
     {
         return null;
     }

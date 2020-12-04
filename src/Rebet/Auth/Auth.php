@@ -83,16 +83,15 @@ class Auth
      * @param Request $request
      * @param mixed $signin_id
      * @param string $password
-     * @param mixed $precondition (default: null)
      * @param string|null $authenticator (default: auth of the route, if not set then use channel name)
      * @return AuthUser|null
      */
-    public static function attempt(Request $request, $signin_id, string $password, $precondition = null, ?string $authenticator = null) : ?AuthUser
+    public static function attempt(Request $request, $signin_id, string $password, ?string $authenticator = null) : ?AuthUser
     {
         $route    = $request->route;
         $auth     = $authenticator ?? ($route ? $route->auth() : null) ?? Router::getCurrentChannel() ;
         $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $user     = $provider->findByCredentials($signin_id, $password, $precondition);
+        $user     = $provider->findByCredentials($signin_id, $password);
 
         if ($user) {
             $user->provider($provider->authenticator($auth));

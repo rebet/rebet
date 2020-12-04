@@ -18,6 +18,7 @@ use Rebet\Tests\Mock\Address;
 use Rebet\Tests\Mock\Entity\Bank;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 
 class AuthTest extends RebetTestCase
 {
@@ -64,12 +65,21 @@ class AuthTest extends RebetTestCase
         $user = Auth::attempt($request, 'user.resigned@rebet.local', 'user.resigned');
         $this->assertNull($user);
 
-        $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user         = Auth::attempt($request, 'user@rebet.local', 'user', $precondition);
+        Config::runtime([
+            Auth::class => [
+                'authenticator' => [
+                    'web' => [
+                        'provider' => [
+                            'precondition' => function ($user) { return $user['role'] === 'admin'; }
+                        ],
+                    ],
+                ],
+            ]
+        ]);
+        $user = Auth::attempt($request, 'user@rebet.local', 'user');
         $this->assertNull($user);
 
-        $precondition = function ($user) { return $user['role'] === 'admin'; };
-        $user         = Auth::attempt($request, 'admin@rebet.local', 'admin', $precondition);
+        $user = Auth::attempt($request, 'admin@rebet.local', 'admin');
         $this->assertSame(1, $user->id);
         $this->assertTrue($user->is('admin'));
     }

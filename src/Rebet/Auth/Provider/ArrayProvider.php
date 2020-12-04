@@ -23,7 +23,6 @@ class ArrayProvider extends AuthProvider
     {
         return [
             'signin_id_name' => 'email',
-            'precondition'   => function ($user) { return true; },
         ];
     }
 
@@ -61,13 +60,13 @@ class ArrayProvider extends AuthProvider
      *
      * @param array $users
      * @param string|null $signin_id_name (default: depend on configure)
-     * @param callable|null $precondition function($user):bool (default: depend on configure)
+     * @param callable|null $precondition function($user):bool {...} (default: `function ($user) { return true; }`)
      */
     public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
     {
         $this->users          = Tinker::with($users, true);
         $this->signin_id_name = $signin_id_name ?? static::config('signin_id_name') ;
-        $this->precondition   = $precondition ?? static::config('precondition');
+        $this->precondition   = $precondition ?? function ($user) { return true; };
     }
 
     /**
@@ -83,11 +82,11 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findByToken(string $token_name, ?string $token, $precondition = null) : ?AuthUser
+    public function findByToken(string $token_name, ?string $token) : ?AuthUser
     {
         return $this->users
             ->where(function ($user) use ($token_name, $token) { return $user[$token_name] == $token; })
-            ->where($precondition ?? $this->precondition)
+            ->where($this->precondition)
             ->first()
             ->return(function ($user) { return new AuthUser($user); });
     }
@@ -95,11 +94,11 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    protected function findBySigninId($signin_id, $precondition = null) : ?AuthUser
+    protected function findBySigninId($signin_id) : ?AuthUser
     {
         return $this->users
             ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })
-            ->where($precondition ?? $this->precondition)
+            ->where($this->precondition)
             ->first()
             ->return(function ($user) { return new AuthUser($user); });
     }
