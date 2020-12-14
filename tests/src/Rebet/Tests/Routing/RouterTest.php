@@ -1069,9 +1069,9 @@ class RouterTest extends RebetTestCase
         $this->assertSame(['user', 'admin'], Reflector::get(Router::rules('web')->roles('user', 'admin'), 'roles', null, true));
     }
 
-    public function test_auth()
+    public function test_guard()
     {
-        $this->assertSame('web', Reflector::get(Router::rules('web')->auth('web'), 'auth', null, true));
+        $this->assertSame('web', Reflector::get(Router::rules('web')->guard('web'), 'guard', null, true));
     }
 }
 

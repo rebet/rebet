@@ -19,7 +19,7 @@ class AddGlobalShareVariableToViewTest extends RebetTestCase
         $middleware  = new AddGlobalShareVariableToView();
         $destination = function ($request) { return Responder::toResponse('OK'); };
 
-        $request  = $this->createRequestMock('/', null, 'web', 'GET', '/prefix');
+        $request  = $this->createRequestMock('/', null, 'web', 'web', 'GET', '/prefix');
         $response = $middleware->handle($request, $destination);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('OK', $response->getContent());

@@ -1,10 +1,11 @@
 <?php
-namespace Rebet\Tests\Auth\Event;
+namespace Rebet\Tests\Auth\Provider;
 
 use Rebet\Auth\Password;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\Securities;
 use Rebet\Tools\Utility\Strings;
 
 class ArrayProviderTest extends RebetTestCase
@@ -17,16 +18,17 @@ class ArrayProviderTest extends RebetTestCase
 
     protected function setUp() : void
     {
+        parent::setUp();
         $this->users = [
-            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
-            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
-            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => 'token_3', 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
+            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hash('api-1'), 'resigned_at' => null], // password: admin
+            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => Securities::hash('api-2'), 'resigned_at' => null], // password: user
+            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => Securities::hash('api-3'), 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
         ];
 
         $this->provider                  = new ArrayProvider($this->users);
         $this->provider_by_signin_id     = new ArrayProvider($this->users, 'signin_id');
-        $this->provider_for_admin        = new ArrayProvider($this->users, 'email', function ($user) { return $user['role'] === 'admin'; });
-        $this->provider_exclude_resigned = new ArrayProvider($this->users, 'email', function ($user) { return !isset($user['resigned_at']); });
+        $this->provider_for_admin        = new ArrayProvider($this->users, 'email', 'api_token', function ($user) { return $user['role'] === 'admin'; });
+        $this->provider_exclude_resigned = new ArrayProvider($this->users, 'email', 'api_token', function ($user) { return !isset($user['resigned_at']); });
     }
 
     public function test___construct()
@@ -58,39 +60,39 @@ class ArrayProviderTest extends RebetTestCase
 
     public function test_findByToken()
     {
-        $user = $this->provider->findByToken('api_token', null);
+        $user = $this->provider->findByToken(null);
         $this->assertNull($user);
 
-        $user = $this->provider->findByToken('api_token', 'invalid_token');
+        $user = $this->provider->findByToken('invalid_token');
         $this->assertNull($user);
 
         foreach ($this->users as $expect_user) {
-            $token = $expect_user['api_token'];
+            $token = "api-".$expect_user['user_id'];
 
-            $user = $this->provider->findByToken('api_token', $token);
+            $user = $this->provider->findByToken($token);
             $this->assertSame($expect_user, $user->raw());
 
-            $user = $this->provider_by_signin_id->findByToken('api_token', $token);
+            $user = $this->provider_by_signin_id->findByToken($token);
             $this->assertSame($expect_user, $user->raw());
         }
 
-        $user = $this->provider_exclude_resigned->findByToken('api_token', 'token_1');
+        $user = $this->provider_exclude_resigned->findByToken('api-1');
         $this->assertSame(1, $user->id);
 
-        $user = $this->provider_exclude_resigned->findByToken('api_token', 'token_2');
+        $user = $this->provider_exclude_resigned->findByToken('api-2');
         $this->assertSame(2, $user->id);
 
-        $user = $this->provider_exclude_resigned->findByToken('api_token', 'token_3');
+        $user = $this->provider_exclude_resigned->findByToken('api-3');
         $this->assertNull($user);
 
 
-        $user = $this->provider_for_admin->findByToken('api_token', 'token_1');
+        $user = $this->provider_for_admin->findByToken('api-1');
         $this->assertSame(1, $user->id);
 
-        $user = $this->provider_for_admin->findByToken('api_token', 'token_2');
+        $user = $this->provider_for_admin->findByToken('api-2');
         $this->assertNull($user);
 
-        $user = $this->provider_for_admin->findByToken('api_token', 'token_3');
+        $user = $this->provider_for_admin->findByToken('api-3');
         $this->assertNull($user);
     }
 
@@ -190,10 +192,10 @@ class ArrayProviderTest extends RebetTestCase
         $this->assertTrue(true);
     }
 
-    public function test_authenticator()
+    public function test_name()
     {
-        $this->assertNull($this->provider->authenticator());
-        $this->assertInstanceOf(ArrayProvider::class, $this->provider->authenticator('web'));
-        $this->assertSame('web', $this->provider->authenticator());
+        $this->assertNull($this->provider->name());
+        $this->assertInstanceOf(ArrayProvider::class, $this->provider->name('web'));
+        $this->assertSame('web', $this->provider->name());
     }
 }

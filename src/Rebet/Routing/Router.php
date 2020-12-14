@@ -1,14 +1,6 @@
 <?php
 namespace Rebet\Routing;
 
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Callbacks;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Utility\Path;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Utility\Utils;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
@@ -19,6 +11,14 @@ use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Route\RedirectRoute;
 use Rebet\Routing\Route\Route;
 use Rebet\Routing\Route\ViewRoute;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
+use Rebet\Tools\Utility\Utils;
 
 /**
  * Router Class
@@ -379,7 +379,7 @@ class Router
         $roles = static::$rules->roles;
         $route->roles(...$roles);
 
-        $route->auth(static::$rules->auth);
+        $route->guard(static::$rules->guard);
     }
 
     /**
@@ -594,11 +594,11 @@ class Router
     protected $roles = [];
 
     /**
-     * The authenticator name for this rules
+     * The guard name for this rules
      *
      * @var string|null
      */
-    protected $auth = null;
+    protected $guard = null;
 
     /**
      * Create a routing rules builder for Router.
@@ -667,14 +667,14 @@ class Router
     }
 
     /**
-     * Set the authenticator name for this rules.
+     * Set the guard name for this rules.
      *
-     * @param string $auth
+     * @param string $name of guard
      * @return self
      */
-    public function auth(string $auth) : self
+    public function guard(string $name) : self
     {
-        $this->auth = $auth;
+        $this->guard = $name;
         return $this;
     }
 

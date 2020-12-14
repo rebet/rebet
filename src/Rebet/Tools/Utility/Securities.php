@@ -20,13 +20,13 @@ class Securities
     {
         return [
             'hash' => [
-                'salt'       => Env::promise('DEFAULT_HASH_SALT'),
-                'pepper'     => Env::promise('DEFAULT_HASH_PEPPER'),
+                'salt'       => Env::promise('DEFAULT_HASH_SALT', null, false),
+                'pepper'     => Env::promise('DEFAULT_HASH_PEPPER', null, false),
                 'algorithm'  => 'SHA256',
                 'stretching' => 1000,
             ],
             'crypto' => [
-                'secret_key' => Env::promise('DEFAULT_SECRET_KEY'),
+                'secret_key' => Env::promise('DEFAULT_SECRET_KEY', null, false),
                 'cipher'     => 'AES-256-CBC',
             ],
         ];

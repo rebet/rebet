@@ -3,9 +3,9 @@ namespace Rebet\Application;
 
 use Rebet\Application\Console\Assistant;
 use Rebet\Application\Error\ExceptionHandler;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Tools\Reflection\Reflector;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

@@ -3,15 +3,14 @@ namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
-use Rebet\Auth\Guard\SessionGuard;
 use Rebet\Auth\Provider\ArrayProvider;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\DateTime\Date;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Entity\Bank;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
 
 class AuthUserTest extends RebetTestCase
 {
@@ -95,19 +94,12 @@ class AuthUserTest extends RebetTestCase
         $this->assertSame('user@rebet.local', $user->charengedSigninId());
     }
 
-    public function test_guard()
-    {
-        $user = new AuthUser($this->object_user_source);
-        $this->assertNull($user->guard());
-        $this->assertInstanceOf(AuthUser::class, $user->guard(new SessionGuard()));
-        $this->assertInstanceOf(SessionGuard::class, $user->guard());
-    }
-
     public function test_provider()
     {
         $user = new AuthUser($this->object_user_source);
         $this->assertNull($user->provider());
-        $this->assertInstanceOf(AuthUser::class, $user->provider(new ArrayProvider([])));
+
+        $user = new AuthUser($this->object_user_source, [], new ArrayProvider([]));
         $this->assertInstanceOf(ArrayProvider::class, $user->provider());
     }
 

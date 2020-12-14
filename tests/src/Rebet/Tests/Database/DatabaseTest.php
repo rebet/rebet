@@ -3,9 +3,7 @@ namespace Rebet\Tests\Database;
 
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Math\Decimal;
-use Rebet\Tools\Config\Config;
+use Rebet\Auth\Password;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Converter\BuiltinConverter;
@@ -27,14 +25,18 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\PdoParameter;
 use Rebet\Database\Ransack\BuiltinRansacker;
-use Rebet\Tools\DateTime\Date;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Event\Event;
 use Rebet\Tests\Mock\Entity\Article;
 use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\Mock\Entity\UserWithAnnot;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Securities;
 use stdClass;
 
 class DatabaseTest extends RebetDatabaseTestCase
@@ -54,38 +56,38 @@ class DatabaseTest extends RebetDatabaseTestCase
     {
         return [
             'users' => [
-                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08', 'email' => 'elody@s1.rebet.local' , 'role' => 'user'],
-                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16', 'email' => 'alta_h@s2.rebet.local', 'role' => 'user'],
-                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user'],
-                ['user_id' => 4 , 'name' => 'Odie Kozey'            , 'gender' => 1, 'birthday' => '2008-03-23', 'email' => 'odie.k@s3.rebet.local', 'role' => 'user'],
-                ['user_id' => 5 , 'name' => 'Shea Douglas'          , 'gender' => 1, 'birthday' => '1988-04-01', 'email' => 'shea.d@s4.rebet.local', 'role' => 'user'],
-                ['user_id' => 6 , 'name' => 'Khalil Hickle'         , 'gender' => 2, 'birthday' => '2013-10-03', 'email' => 'khalil@s0.rebet.local', 'role' => 'user'],
-                ['user_id' => 7 , 'name' => 'Kali Hilll'            , 'gender' => 1, 'birthday' => '2016-08-01', 'email' => 'kali_h@s8.rebet.local', 'role' => 'user'],
-                ['user_id' => 8 , 'name' => 'Kari Kub'              , 'gender' => 2, 'birthday' => '1984-10-21', 'email' => 'kari-k@s0.rebet.local', 'role' => 'user'],
-                ['user_id' => 9 , 'name' => 'Rodger Weimann'        , 'gender' => 1, 'birthday' => '1985-03-21', 'email' => 'rodger@s3.rebet.local', 'role' => 'user'],
-                ['user_id' => 10, 'name' => 'Nicholaus O\'Conner'   , 'gender' => 1, 'birthday' => '2012-01-29', 'email' => 'nichol@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 11, 'name' => 'Troy Smitham'          , 'gender' => 2, 'birthday' => '1996-01-21', 'email' => 'troy-s@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 12, 'name' => 'Kraig Grant'           , 'gender' => 2, 'birthday' => '1987-01-06', 'email' => 'kraig@s1.rebet.local' , 'role' => 'user'],
-                ['user_id' => 13, 'name' => 'Demarcus Bashirian Jr.', 'gender' => 2, 'birthday' => '2014-12-21', 'email' => 'demarc@s2.rebet.local', 'role' => 'user'],
-                ['user_id' => 14, 'name' => 'Percy DuBuque'         , 'gender' => 2, 'birthday' => '1990-11-25', 'email' => 'percy@s1.rebet.local' , 'role' => 'user'],
-                ['user_id' => 15, 'name' => 'Delpha Weber'          , 'gender' => 2, 'birthday' => '2006-01-29', 'email' => 'delpha@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 16, 'name' => 'Marquise Waters'       , 'gender' => 2, 'birthday' => '1989-08-26', 'email' => 'marqui@s8.rebet.local', 'role' => 'user'],
-                ['user_id' => 17, 'name' => 'Jade Stroman'          , 'gender' => 1, 'birthday' => '2013-08-06', 'email' => 'jade-s@s8.rebet.local', 'role' => 'user'],
-                ['user_id' => 18, 'name' => 'Citlalli Jacobs I'     , 'gender' => 2, 'birthday' => '1983-02-09', 'email' => 'citlal@s2.rebet.local', 'role' => 'user'],
-                ['user_id' => 19, 'name' => 'Dannie Rutherford'     , 'gender' => 1, 'birthday' => '1982-07-07', 'email' => 'dannie@s7.rebet.local', 'role' => 'user'],
-                ['user_id' => 20, 'name' => 'Dayton Herzog'         , 'gender' => 2, 'birthday' => '2014-11-24', 'email' => 'dayton@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 21, 'name' => 'Ms. Zoe Hirthe'        , 'gender' => 2, 'birthday' => '1997-02-27', 'email' => 'ms.zo@s2.rebet.local' , 'role' => 'user'],
-                ['user_id' => 22, 'name' => 'Kaleigh Kassulke'      , 'gender' => 2, 'birthday' => '2011-01-23', 'email' => 'kaleig@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 23, 'name' => 'Deron Macejkovic'      , 'gender' => 1, 'birthday' => '2008-06-18', 'email' => 'deron@s6.rebet.local' , 'role' => 'user'],
-                ['user_id' => 24, 'name' => 'Mr. Aisha Quigley'     , 'gender' => 2, 'birthday' => '2007-08-29', 'email' => 'mr.ai@s8.rebet.local' , 'role' => 'user'],
-                ['user_id' => 25, 'name' => 'Eugenia Friesen II'    , 'gender' => 2, 'birthday' => '1999-12-19', 'email' => 'eugeni@s2.rebet.local', 'role' => 'user'],
-                ['user_id' => 26, 'name' => 'Wyman Jaskolski'       , 'gender' => 2, 'birthday' => '2010-07-06', 'email' => 'wyman@s7.rebet.local' , 'role' => 'user'],
-                ['user_id' => 27, 'name' => 'Naomi Batz'            , 'gender' => 2, 'birthday' => '1980-03-06', 'email' => 'naomi@s3.rebet.local' , 'role' => 'user'],
-                ['user_id' => 28, 'name' => 'Miss Bud Koepp'        , 'gender' => 1, 'birthday' => '2014-10-22', 'email' => 'missb@s0.rebet.local' , 'role' => 'user'],
-                ['user_id' => 29, 'name' => 'Ms. Harmon Blick'      , 'gender' => 1, 'birthday' => '1987-03-20', 'email' => 'ms.ha@s3.rebet.local' , 'role' => 'user'],
-                ['user_id' => 30, 'name' => 'Pinkie Kiehn'          , 'gender' => 1, 'birthday' => '2002-01-06', 'email' => 'pinkie@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 31, 'name' => 'Harmony Feil'          , 'gender' => 2, 'birthday' => '2007-11-03', 'email' => 'harmon@s1.rebet.local', 'role' => 'user'],
-                ['user_id' => 32, 'name' => 'River Pagac'           , 'gender' => 2, 'birthday' => '1980-11-20', 'email' => 'river@s1.rebet.local' , 'role' => 'user'],
+                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08', 'email' => 'elody@s1.rebet.local' , 'role' => 'user', 'password' => '$2y$10$iUQ0l38dqjdf.L7OeNpyNuzmYf5qPzXAUwyKhC3G0oqTuUAO5ouci', 'api_token' => 'fe0c1b9ca200d6e01d96f60bab714cbbaffdf89fed5a946ff1b9f024902d2a26'], // password-{user_id}, api-{user_id}
+                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16', 'email' => 'alta_h@s2.rebet.local', 'role' => 'user', 'password' => '$2y$10$xpouw11HAUb3FAEBXYcwm.kcGmF0.FetTqkQQJFiShY2TiVCwEAQW', 'api_token' => '3d9b9b04a60382dd0f0acb2672b3b87acba7e9a9e44c529ba37baebe1cf9a00c'], // password-{user_id}, api-{user_id}
+                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user', 'password' => '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe', 'api_token' => 'df38d2697f917ca9460677a98bfbb8baaeabab8e83b9858ea70d6da10b06ad4d'], // password-{user_id}, api-{user_id}
+                ['user_id' => 4 , 'name' => 'Odie Kozey'            , 'gender' => 1, 'birthday' => '2008-03-23', 'email' => 'odie.k@s3.rebet.local', 'role' => 'user', 'password' => '$2y$10$pWHeMjHNHLuNn8bP.icDUOpre4cUN3jsU5QBn0ywNtrS6zraJnBOK', 'api_token' => 'dcad2c94aab836c65f8d6ea4e6c7b0ff0af31d1f7e18785981513d517869085a'], // password-{user_id}, api-{user_id}
+                ['user_id' => 5 , 'name' => 'Shea Douglas'          , 'gender' => 1, 'birthday' => '1988-04-01', 'email' => 'shea.d@s4.rebet.local', 'role' => 'user', 'password' => '$2y$10$Jp.pzsj0ksry3WJwTzCLaeEEPdt22J70y9ewr9RTPSHWhJ2jFhUS.', 'api_token' => 'e99ad6eb30faa7bbd54b491de5ac209e2f05af8bc8b916cdc0424834cc96288b'], // password-{user_id}, api-{user_id}
+                ['user_id' => 6 , 'name' => 'Khalil Hickle'         , 'gender' => 2, 'birthday' => '2013-10-03', 'email' => 'khalil@s0.rebet.local', 'role' => 'user', 'password' => '$2y$10$XgdlquA5FmPwbh30j2oTcO.NhgXjtAFKcOhj2H6kSKjIe4F9JJ5LG', 'api_token' => '0fe8c74777889959cad3c080f5929312ed2c5aea14e5fa50d606f60d063e3d89'], // password-{user_id}, api-{user_id}
+                ['user_id' => 7 , 'name' => 'Kali Hilll'            , 'gender' => 1, 'birthday' => '2016-08-01', 'email' => 'kali_h@s8.rebet.local', 'role' => 'user', 'password' => '$2y$10$FJjEVWe3hIFWVy.MYlzfxeEGJYuiuIb8h7kwhM4ImeYmqItmCJomW', 'api_token' => '9b499adf9898f41058ea761fcb503b0d65171ef0154ae07ed51e51a6a28bb732'], // password-{user_id}, api-{user_id}
+                ['user_id' => 8 , 'name' => 'Kari Kub'              , 'gender' => 2, 'birthday' => '1984-10-21', 'email' => 'kari-k@s0.rebet.local', 'role' => 'user', 'password' => '$2y$10$E92fQoYqHwm8VwuFLFZTSuCl9sJNBArLmqRV1QIJEjJml5GmNHXhS', 'api_token' => '818554e20e03c6899061395f94176490fce8af5d123d1133027abdf1b7506810'], // password-{user_id}, api-{user_id}
+                ['user_id' => 9 , 'name' => 'Rodger Weimann'        , 'gender' => 1, 'birthday' => '1985-03-21', 'email' => 'rodger@s3.rebet.local', 'role' => 'user', 'password' => '$2y$10$2wY95O/0OYcxt0HkWcGTPuIGL6uNfA0YK.t8HNgcT4x6esI5FcYHq', 'api_token' => '6cd6eb512ffd20346a092c6ae7cdfe045567138137639478de68f4057a01c662'], // password-{user_id}, api-{user_id}
+                ['user_id' => 10, 'name' => 'Nicholaus O\'Conner'   , 'gender' => 1, 'birthday' => '2012-01-29', 'email' => 'nichol@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$8jVKO61WtOcSrUL3TeitwukVWrsBVzBUu.tsSsbGTervIaczBW8de', 'api_token' => '0d94b59702957a5264bbcc98ba607f3c1cc9b69cb0b885e439e092911603cdcf'], // password-{user_id}, api-{user_id}
+                ['user_id' => 11, 'name' => 'Troy Smitham'          , 'gender' => 2, 'birthday' => '1996-01-21', 'email' => 'troy-s@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$NVHzyhTRCvXm/C.HJrcEoujv6CDJ0ebsyv8GaQFTRokS.AwDniATi', 'api_token' => 'a5702cf7884915985d7e2f0ff6b2189d6fbc1c3cbb009789a9234409c8197caa'], // password-{user_id}, api-{user_id}
+                ['user_id' => 12, 'name' => 'Kraig Grant'           , 'gender' => 2, 'birthday' => '1987-01-06', 'email' => 'kraig@s1.rebet.local' , 'role' => 'user', 'password' => '$2y$10$Xu3RdNmbdSJ2NzZB4Qx6EuSYKy8X3uPowvSXMihxYLDlXVwvRwIJO', 'api_token' => 'c91a7280dd59fe5a7254f0a372d58b9316a6aa8ba107be847e59d3c398ab9ff7'], // password-{user_id}, api-{user_id}
+                ['user_id' => 13, 'name' => 'Demarcus Bashirian Jr.', 'gender' => 2, 'birthday' => '2014-12-21', 'email' => 'demarc@s2.rebet.local', 'role' => 'user', 'password' => '$2y$10$YEUk0xFv2MgkWCWc1oRkteSHVGKFN0oC9g5vWzyAYDR.FLOdgbeQu', 'api_token' => '48ed7b40d8911a0869349db79b803c9d49f7f4f691dcdefff777d96a15819fa5'], // password-{user_id}, api-{user_id}
+                ['user_id' => 14, 'name' => 'Percy DuBuque'         , 'gender' => 2, 'birthday' => '1990-11-25', 'email' => 'percy@s1.rebet.local' , 'role' => 'user', 'password' => '$2y$10$AVEo9P3baFu40KsTrKd4Je.TYA8uIwLyH/8IQRg2K9Lq2wv39wA1y', 'api_token' => 'f84ba2c46d909e3efcc56e453958217769bb3bec2229d9475b1de375de618cd0'], // password-{user_id}, api-{user_id}
+                ['user_id' => 15, 'name' => 'Delpha Weber'          , 'gender' => 2, 'birthday' => '2006-01-29', 'email' => 'delpha@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$Frghu40V.AUPpQcMcZnzSe65ehUcDJEmNxjnRo.kJ6hP6jskxAxjy', 'api_token' => '694351210bb4e52a55870c1613c43e3d7dfbb48d711a4e9a425a003d412d9a00'], // password-{user_id}, api-{user_id}
+                ['user_id' => 16, 'name' => 'Marquise Waters'       , 'gender' => 2, 'birthday' => '1989-08-26', 'email' => 'marqui@s8.rebet.local', 'role' => 'user', 'password' => '$2y$10$yH75mfqKBd7V9trk.v2fXO3EVsEXgNl5sJgOXa8X7zahCTzcaRY1K', 'api_token' => '8c1350328ca2c00f2768511af4c78f69e2869fe5014947b7d563902a80b089e2'], // password-{user_id}, api-{user_id}
+                ['user_id' => 17, 'name' => 'Jade Stroman'          , 'gender' => 1, 'birthday' => '2013-08-06', 'email' => 'jade-s@s8.rebet.local', 'role' => 'user', 'password' => '$2y$10$L922Bad/3tJy.frg6xAnzO8NRaksCZxLaI5sAcBX9HvEvtdBCxE5a', 'api_token' => '16fcb04f6a880e990f7362aba97e606f4704f45ca059c230196f9cc38ffd357c'], // password-{user_id}, api-{user_id}
+                ['user_id' => 18, 'name' => 'Citlalli Jacobs I'     , 'gender' => 2, 'birthday' => '1983-02-09', 'email' => 'citlal@s2.rebet.local', 'role' => 'user', 'password' => '$2y$10$8gVp/IFmNO9d01n8JZELx.VNcRW6/QT4vo0dJRmblU4qigHLmjQSy', 'api_token' => '1871973f7139abca2ce7c17028351246f932617a0d3c6ce03da35a5358f024b5'], // password-{user_id}, api-{user_id}
+                ['user_id' => 19, 'name' => 'Dannie Rutherford'     , 'gender' => 1, 'birthday' => '1982-07-07', 'email' => 'dannie@s7.rebet.local', 'role' => 'user', 'password' => '$2y$10$EmhtQku.OxnPJg5LDZNp3unRUXgKjXCj//6Zr24C57Q.4dxwHoHby', 'api_token' => 'f398c948ca3c1f380ade006887f2ba94abd8625728e963a5a28a3ac794173760'], // password-{user_id}, api-{user_id}
+                ['user_id' => 20, 'name' => 'Dayton Herzog'         , 'gender' => 2, 'birthday' => '2014-11-24', 'email' => 'dayton@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$UCzqYzIMlMSPNlyq5DRStOuEZHLP.LHKYmE9xwQasHdR0XGIeM2N2', 'api_token' => '6459389c936e4d04f472ee055f0a7ed51fe9eb35ca1c1bed642b9915cb57bfa4'], // password-{user_id}, api-{user_id}
+                ['user_id' => 21, 'name' => 'Ms. Zoe Hirthe'        , 'gender' => 2, 'birthday' => '1997-02-27', 'email' => 'ms.zo@s2.rebet.local' , 'role' => 'user', 'password' => '$2y$10$TNKnTMo1sO5UYLZGGoMa0.u1Zbk2WTsa80MS62bx3M5MhaJPbvy5y', 'api_token' => '8b3e651cabb6e681d021739a4a5a233e3dba18bba20ab4a11ccd5b935da8c51b'], // password-{user_id}, api-{user_id}
+                ['user_id' => 22, 'name' => 'Kaleigh Kassulke'      , 'gender' => 2, 'birthday' => '2011-01-23', 'email' => 'kaleig@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$AEjrtxBs.d3lO/RuoOK8WuDn44aX29yMJ83fqqZsjfqIrKkICUywy', 'api_token' => '04e6bb083b0abdeab8fb459f061eba53df7cbce820e1105a200509cfbbf6f01a'], // password-{user_id}, api-{user_id}
+                ['user_id' => 23, 'name' => 'Deron Macejkovic'      , 'gender' => 1, 'birthday' => '2008-06-18', 'email' => 'deron@s6.rebet.local' , 'role' => 'user', 'password' => '$2y$10$RWVIWK.mutTLu94U25xtY.MFbFb1BTsB9df2fmtltaW2cgNMHnDVS', 'api_token' => '452b414155d0e31bdf194f71fcbc34ccafd6b4637600700254025763ad003074'], // password-{user_id}, api-{user_id}
+                ['user_id' => 24, 'name' => 'Mr. Aisha Quigley'     , 'gender' => 2, 'birthday' => '2007-08-29', 'email' => 'mr.ai@s8.rebet.local' , 'role' => 'user', 'password' => '$2y$10$OnJZPFb/k7SZk299ugInnuqPoNyqtn.5h0vt5gtw4Tiwnud7nXjJm', 'api_token' => 'ea1b3878ccb4b27b08e9d0c178e691266691b46716693b486350d3164810439f'], // password-{user_id}, api-{user_id}
+                ['user_id' => 25, 'name' => 'Eugenia Friesen II'    , 'gender' => 2, 'birthday' => '1999-12-19', 'email' => 'eugeni@s2.rebet.local', 'role' => 'user', 'password' => '$2y$10$/0fw0.IpdOMyeh/b.c2YNembaKIJBcHoXcp0Y8rVc6IHoWJFVoZDC', 'api_token' => '0a8594dfc13daea1460b0c37eda8d4025356df63033d0bc5656634707dd2214d'], // password-{user_id}, api-{user_id}
+                ['user_id' => 26, 'name' => 'Wyman Jaskolski'       , 'gender' => 2, 'birthday' => '2010-07-06', 'email' => 'wyman@s7.rebet.local' , 'role' => 'user', 'password' => '$2y$10$Ao9ssqxDJOmZ2TQPjps35.4ggfktcQsHu.fu8VnWlfMprqLuM/Diy', 'api_token' => 'e20e27deed731eb44d77cad4115cf3916d77199a9498f52f58804520f91d99df'], // password-{user_id}, api-{user_id}
+                ['user_id' => 27, 'name' => 'Naomi Batz'            , 'gender' => 2, 'birthday' => '1980-03-06', 'email' => 'naomi@s3.rebet.local' , 'role' => 'user', 'password' => '$2y$10$B4XoWWna/5VFEjojuaKBfea0l9wmFsgq3rrUIAdSgmwnUxvkYg/L2', 'api_token' => '7756374111f4b2e5fe28749a952780bc02c7c21f15b2b160b1532aaeae2fa9af'], // password-{user_id}, api-{user_id}
+                ['user_id' => 28, 'name' => 'Miss Bud Koepp'        , 'gender' => 1, 'birthday' => '2014-10-22', 'email' => 'missb@s0.rebet.local' , 'role' => 'user', 'password' => '$2y$10$Sje1S7D8TzWxba1c1Td5HuxgAiGwDRUNS/A30fOABZGGaUtoWvjEi', 'api_token' => '941247c22b8f5edabecd7790af9348710f722cb2af7f92ff4bb1f5691872d277'], // password-{user_id}, api-{user_id}
+                ['user_id' => 29, 'name' => 'Ms. Harmon Blick'      , 'gender' => 1, 'birthday' => '1987-03-20', 'email' => 'ms.ha@s3.rebet.local' , 'role' => 'user', 'password' => '$2y$10$fKUXisEZUlFFDresjfFpQeSusS5kkgfT82.6mXbRhtnK3hKU7BKTS', 'api_token' => '34c3c930ba2873cf52eebed80548e86240bc26652ec9e9691a2083a019cb0ddf'], // password-{user_id}, api-{user_id}
+                ['user_id' => 30, 'name' => 'Pinkie Kiehn'          , 'gender' => 1, 'birthday' => '2002-01-06', 'email' => 'pinkie@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$4.rmfUTMXLiJzf97dbCd.eJvOjHryX/rYadAtl/uaKgQs3u6UJFmy', 'api_token' => '644a3456a000f3dd7b3214a25b1e264282afc71b299e1e221c6001feb85c897d'], // password-{user_id}, api-{user_id}
+                ['user_id' => 31, 'name' => 'Harmony Feil'          , 'gender' => 2, 'birthday' => '2007-11-03', 'email' => 'harmon@s1.rebet.local', 'role' => 'user', 'password' => '$2y$10$GU25bSnYsfK8qN57ilqFM.fsy50iQoHHj4md3AnuU0t87ZatkF2dG', 'api_token' => '80fb7fddf941d11fea7e48f5877c3e989757d6dbac9f80feff2daef288ce1c56'], // password-{user_id}, api-{user_id}
+                ['user_id' => 32, 'name' => 'River Pagac'           , 'gender' => 2, 'birthday' => '1980-11-20', 'email' => 'river@s1.rebet.local' , 'role' => 'user', 'password' => '$2y$10$AypirtnvQ7sKQP/UMnONIegts.IpS1cWgHzQKn0Jub.9AAMKs5.w.', 'api_token' => 'd439fcbdaa35e3566d57d379d26c2d062bb1ec53854acc264dbd15335b2e2672'], // password-{user_id}, api-{user_id}
             ],
         ][$table_name] ?? [];
     }
@@ -424,8 +426,8 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertSame(13, $db->execute("UPDATE users SET gender = 2 WHERE gender = 1"));
             $this->assertSame(0, $db->count("SELECT * FROM users WHERE gender = 1"));
 
-            $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday, email) VALUES (:values)", [
-                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local']
+            $this->assertSame(1, $db->execute("INSERT INTO users (user_id, name, gender, birthday, email, password) VALUES (:values)", [
+                'values' => ['user_id' => 33, 'name' => 'Insert', 'gender' => Gender::MALE(), 'birthday' => Date::createDateTime('1976-04-23'), 'email' => 'foo@bar.local', 'password' => Password::hash('password-33')]
             ]));
 
             $this->assertSame(1, $db->count("SELECT * FROM users WHERE gender = 1"));
@@ -1162,14 +1164,14 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_exist()
+    public function test_exists()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertFalse($db->exist("SELECT * FROM users WHERE user_id = 0"));
-            $this->assertTrue($db->exist("SELECT * FROM users WHERE user_id = 1"));
-            $this->assertTrue($db->exist("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 1]));
-            $this->assertTrue($db->exist("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 2, 3]]));
-            $this->assertFalse($db->exist("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [998, 999]]));
+            $this->assertFalse($db->exists("SELECT * FROM users WHERE user_id = 0"));
+            $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id = 1"));
+            $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id = :user_id", ['user_id' => 1]));
+            $this->assertTrue($db->exists("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 2, 3]]));
+            $this->assertFalse($db->exists("SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [998, 999]]));
         });
     }
 
@@ -1280,6 +1282,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $user->gender   = Gender::FEMALE();
             $user->birthday = new Date('20 years ago');
             $user->email    = 'foo@bar.local';
+            $user->password = Password::hash("password-99");
 
             $creating_event_called = false;
             $created_event_called  = false;
@@ -1300,7 +1303,8 @@ class DatabaseTest extends RebetDatabaseTestCase
 
             $now = DateTime::now()->startsOfSecond();
             $user = new UserWithAnnot();
-            $user->user_id = 999;
+            $user->user_id  = 999;
+            $user->password = Password::hash("password-999");
 
             $creating_event_called = false;
             $created_event_called  = false;
@@ -1514,7 +1518,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_updates()
+    public function test_updateBy()
     {
         $updating_event_called = false;
         $updated_event_called  = false;
@@ -1531,7 +1535,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
             $this->assertFalse($updating_event_called);
             $this->assertFalse($updated_event_called);
-            $this->assertEquals(0, $db->updates(User::class, ['name' => 'foo'], ['user_id' => 9999]));
+            $this->assertEquals(0, $db->updateBy(User::class, ['name' => 'foo'], ['user_id' => 9999]));
             $this->assertTrue($updating_event_called);
             $this->assertFalse($updated_event_called);
 
@@ -1543,7 +1547,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertFalse($updated_event_called);
             $this->assertEquals('Elody Bode III', $user->name);
             $this->assertEquals(null, $user->updated_at);
-            $this->assertEquals(3, $db->updates(User::class, ['name' => 'foo', 'role' => 'admin'], ['user_id_lteq' => 3], [], $now));
+            $this->assertEquals(3, $db->updateBy(User::class, ['name' => 'foo', 'role' => 'admin'], ['user_id_lteq' => 3], [], $now));
             $this->assertTrue($updating_event_called);
             $this->assertTrue($updated_event_called);
             foreach ([1, 2, 3] as $user_id) {
@@ -1557,7 +1561,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_deletes()
+    public function test_deleteBy()
     {
         $deleting_event_called = false;
         $deleted_event_called  = false;
@@ -1574,7 +1578,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
             $this->assertFalse($deleting_event_called);
             $this->assertFalse($deleted_event_called);
-            $this->assertEquals(0, $db->deletes(User::class, ['user_id' => 9999]));
+            $this->assertEquals(0, $db->deleteBy(User::class, ['user_id' => 9999]));
             $this->assertTrue($deleting_event_called);
             $this->assertFalse($deleted_event_called);
 
@@ -1584,7 +1588,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertFalse($deleting_event_called);
             $this->assertFalse($deleted_event_called);
             $this->assertNotNull($user);
-            $this->assertEquals(3, $db->deletes(User::class, ['user_id_lteq' => 3], []));
+            $this->assertEquals(3, $db->deleteBy(User::class, ['user_id_lteq' => 3], []));
             $this->assertTrue($deleting_event_called);
             $this->assertTrue($deleted_event_called);
             foreach ([1, 2, 3] as $user_id) {
@@ -1596,26 +1600,26 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_exists()
+    public function test_existsBy()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertFalse($db->exists(User::class, ['user_id' => 9999]));
-            $this->assertTrue($db->exists(User::class, ['user_id' => 1]));
-            $this->assertTrue($db->exists(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertFalse($db->exists(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
-            $this->assertTrue($db->exists(User::class, ['user_id_lt' => 9999]));
+            $this->assertFalse($db->existsBy(User::class, ['user_id' => 9999]));
+            $this->assertTrue($db->existsBy(User::class, ['user_id' => 1]));
+            $this->assertTrue($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertFalse($db->existsBy(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertTrue($db->existsBy(User::class, ['user_id_lt' => 9999]));
         });
     }
 
-    public function test_counts()
+    public function test_countBy()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertEquals(0, $db->counts(User::class, ['user_id' => 9999]));
-            $this->assertEquals(1, $db->counts(User::class, ['user_id' => 1]));
-            $this->assertEquals(1, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertEquals(0, $db->counts(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
-            $this->assertEquals(2, $db->counts(User::class, ['user_id_lt' => 3]));
-            $this->assertEquals(13, $db->counts(User::class, ['gender' => Gender::MALE()]));
+            $this->assertEquals(0, $db->countBy(User::class, ['user_id' => 9999]));
+            $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1]));
+            $this->assertEquals(1, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertEquals(0, $db->countBy(User::class, ['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertEquals(2, $db->countBy(User::class, ['user_id_lt' => 3]));
+            $this->assertEquals(13, $db->countBy(User::class, ['gender' => Gender::MALE()]));
         });
     }
 

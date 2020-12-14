@@ -2,10 +2,10 @@
 namespace Rebet\Auth\Annotation;
 
 /**
- * Authenticator Annotation
+ * Guard Annotation
  *
  * USAGE:
- *  - @Authenticator("web")
+ *  - @Guard("web")
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -15,7 +15,7 @@ namespace Rebet\Auth\Annotation;
  * @Annotation
  * @Target({"CLASS","METHOD"})
  */
-final class Authenticator
+final class Guard
 {
     /**
      * @var string

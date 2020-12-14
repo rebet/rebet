@@ -2,13 +2,13 @@
 namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Middleware\Routing\AddGlobalShareVariableToView;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Reflection\Reflector;
 
 class RouteTest extends RebetTestCase
 {
@@ -25,7 +25,7 @@ class RouteTest extends RebetTestCase
     public function test___invoke()
     {
         $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
         $response = $route->__invoke($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
@@ -36,7 +36,7 @@ class RouteTest extends RebetTestCase
     {
         $route   = new ConventionalRoute();
         $this->assertNull($route->getAnnotatedMethod());
-        $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
         $am = $route->getAnnotatedMethod();
         $this->assertInstanceOf(AnnotatedMethod::class, $am);
@@ -47,7 +47,7 @@ class RouteTest extends RebetTestCase
     {
         $route   = new ConventionalRoute();
         $this->assertNull($route->annotation(Method::class));
-        $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
         $this->assertInstanceOf(Method::class, $route->annotation(Method::class));
     }
@@ -71,21 +71,21 @@ class RouteTest extends RebetTestCase
         $this->assertSame(['admin', 'guest'], $route->roles());
 
         $route   = new ConventionalRoute();
-        $request = $this->createRequestMock('/test/annotation-role-user', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/test/annotation-role-user', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
         $this->assertSame(['user'], $route->roles());
     }
 
-    public function test_auth()
+    public function test_guard()
     {
         $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
-        $this->assertSame(null, $route->auth());
-        $this->assertInstanceOf(ClosureRoute::class, $route->auth('web'));
-        $this->assertSame('web', $route->auth());
+        $this->assertSame(null, $route->guard());
+        $this->assertInstanceOf(ClosureRoute::class, $route->guard('web'));
+        $this->assertSame('web', $route->guard());
 
         $route   = new ConventionalRoute();
-        $request = $this->createRequestMock('/test/annotation-authenticator-api', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/test/annotation-guard-api', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
-        $this->assertSame('api', $route->auth());
+        $this->assertSame('api', $route->guard());
     }
 }

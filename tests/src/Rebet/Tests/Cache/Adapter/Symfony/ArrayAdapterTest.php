@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;
-use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tests\RebetTestCase;
 
-class ArrayAdapterTest extends RebetDatabaseTestCase
+class ArrayAdapterTest extends RebetTestCase
 {
     public function test___construct()
     {

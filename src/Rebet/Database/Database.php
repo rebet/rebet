@@ -604,7 +604,7 @@ class Database
      * @param array $params (default: null)
      * @return boolean
      */
-    public function exist(string $sql, array $params = []) : bool
+    public function exists(string $sql, array $params = []) : bool
     {
         return $this->query("{$sql} LIMIT 1", $params)->first() !== null;
     }
@@ -838,7 +838,7 @@ class Database
      */
     public function save(Entity $entity, ?DateTime $now = null) : bool
     {
-        return $entity->exist($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
+        return $entity->exists($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
     }
 
     /**
@@ -870,7 +870,7 @@ class Database
      * @param DateTime|null $now (default: null)
      * @return int affected row count
      */
-    public function updates(string $entity, array $changes, $ransack, array $alias = [], ?DateTime $now = null) : int
+    public function updateBy(string $entity, array $changes, $ransack, array $alias = [], ?DateTime $now = null) : int
     {
         $now = $now ?? DateTime::now();
         Event::dispatch(new BatchUpdating($this, $entity, $changes, $ransack, $now));
@@ -902,7 +902,7 @@ class Database
      * @param array $alias (default: [])
      * @return int affected row count
      */
-    public function deletes(string $entity, $ransack, array $alias = []) : int
+    public function deleteBy(string $entity, $ransack, array $alias = []) : int
     {
         Event::dispatch(new BatchDeleting($this, $entity, $ransack));
 
@@ -922,10 +922,10 @@ class Database
      * @param array $alias (default: [])
      * @return bool
      */
-    public function exists(string $entity, $ransack, array $alias = []) : bool
+    public function existsBy(string $entity, $ransack, array $alias = []) : bool
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->exist("SELECT * FROM ".$entity::tabelName().$condition->where(), $condition->params);
+        return $this->exists("SELECT * FROM ".$entity::tabelName().$condition->where(), $condition->params);
     }
 
     /**
@@ -936,7 +936,7 @@ class Database
      * @param array $alias (default: [])
      * @return int
      */
-    public function counts(string $entity, $ransack, array $alias = []) : int
+    public function countBy(string $entity, $ransack, array $alias = []) : int
     {
         $condition = $this->ransacker->build($ransack, $alias);
         return $this->get('count', "SELECT COUNT(*) AS count FROM ".$entity::tabelName().$condition->where(), [], $condition->params);

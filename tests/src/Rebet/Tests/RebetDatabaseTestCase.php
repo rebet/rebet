@@ -25,8 +25,22 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                     birthday TEXT NOT NULL,
                     email TEXT NOT NULL,
                     role TEXT NOT NULL DEFAULT 'user',
+                    password TEXT NOT NULL,
+                    api_token TEXT,
                     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT
+                );
+EOS
+            ,
+            'remember_tokens' => <<<EOS
+                CREATE TABLE IF NOT EXISTS remember_tokens (
+                    provider TEXT NOT NULL,
+                    remember_token TEXT NOT NULL,
+                    remember_id TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT,
+                    PRIMARY KEY(provider, remember_token)
                 );
 EOS
             ,
@@ -95,18 +109,32 @@ EOS
                     birthday DATE NOT NULL,
                     email TEXT NOT NULL,
                     role VARCHAR(6) NOT NULL DEFAULT 'user',
+                    password VARCHAR(255) NOT NULL,
+                    api_token VARCHAR(127),
                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at DATETIME
+                );
+EOS
+            ,
+            'remember_tokens' => <<<EOS
+                CREATE TABLE IF NOT EXISTS remember_tokens (
+                    provider VARCHAR(127) NOT NULL,
+                    remember_token VARCHAR(127) NOT NULL,
+                    remember_id VARCHAR(127) NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME,
+                    PRIMARY KEY(provider, remember_token)
                 );
 EOS
             ,
             'banks' => <<<EOS
                 CREATE TABLE IF NOT EXISTS banks (
                     user_id INTEGER PRIMARY KEY,
-                    name VARCHAR(128) NOT NULL,
-                    branch VARCHAR(128) NOT NULL,
+                    name VARCHAR(127) NOT NULL,
+                    branch VARCHAR(127) NOT NULL,
                     number VARCHAR(7) NOT NULL,
-                    holder VARCHAR(128) NOT NULL,
+                    holder VARCHAR(127) NOT NULL,
                     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at DATETIME
                 );
@@ -165,8 +193,22 @@ EOS
                     birthday DATE NOT NULL,
                     email TEXT NOT NULL,
                     role TEXT NOT NULL DEFAULT 'user',
+                    password TEXT NOT NULL,
+                    api_token TEXT,
                     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP
+                );
+EOS
+            ,
+            'remember_tokens' => <<<EOS
+                CREATE TABLE IF NOT EXISTS remember_tokens (
+                    provider TEXT NOT NULL,
+                    remember_token TEXT NOT NULL,
+                    remember_id TEXT NOT NULL,
+                    expires_at TIMESTAMP NOT NULL,
+                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP,
+                    PRIMARY KEY(provider, remember_token)
                 );
 EOS
             ,

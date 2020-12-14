@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Mock\Controller;
 
-use Rebet\Auth\Annotation\Authenticator;
+use Rebet\Auth\Annotation\Guard;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -138,11 +138,11 @@ class TestController extends Controller
     }
 
     /**
-     * @Authenticator("api")
+     * @Guard("api")
      */
-    public function annotationAuthenticatorApi()
+    public function annotationGuardApi()
     {
-        return "Controller: annotationAuthenticatorApi";
+        return "Controller: annotationGuardApi";
     }
 
     /**

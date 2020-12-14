@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Database\DataModel;
 
-use Rebet\Tools\Utility\Strings;
 use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\Database;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Inflection\Inflector;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\Strings;
 use ReflectionClass;
 
 /**
@@ -224,15 +224,15 @@ abstract class Entity extends DataModel
     }
 
     /**
-     * It check this entity is exist.
+     * It check this entity is exists.
      *
      * @param Database|string|null $db (default: null)
      * @return boolean
      */
-    public function exist($db = null) : bool
+    public function exists($db = null) : bool
     {
         $condition = Database::buildPrimaryWheresFrom($this);
-        return static::db($db)->exist("SELECT * FROM ".static::tabelName().$condition->where(), $condition->params);
+        return static::db($db)->exists("SELECT * FROM ".static::tabelName().$condition->where(), $condition->params);
     }
 
     /**
@@ -293,9 +293,9 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return int affected row count
      */
-    public static function updates(array $changes, $ransack = [], ?DateTime $now = null, $db = null) : int
+    public static function updateBy(array $changes, $ransack = [], ?DateTime $now = null, $db = null) : int
     {
-        return static::db($db)->updates(static::class, $changes, $ransack, static::ransackAliases(), $now);
+        return static::db($db)->updateBy(static::class, $changes, $ransack, static::ransackAliases(), $now);
     }
 
     /**
@@ -305,9 +305,9 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return int affected row count
      */
-    public static function deletes($ransack = [], $db = null) : int
+    public static function deleteBy($ransack = [], $db = null) : int
     {
-        return static::db($db)->deletes(static::class, $ransack, static::ransackAliases());
+        return static::db($db)->deleteBy(static::class, $ransack, static::ransackAliases());
     }
 
     /**
@@ -317,9 +317,9 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public static function exists($ransack, $db = null) : bool
+    public static function existsBy($ransack, $db = null) : bool
     {
-        return static::db($db)->exists(static::class, $ransack, static::ransackAliases());
+        return static::db($db)->existsBy(static::class, $ransack, static::ransackAliases());
     }
 
     /**
@@ -329,9 +329,9 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return int
      */
-    public static function counts($ransack = [], $db = null) : int
+    public static function count($ransack = [], $db = null) : int
     {
-        return static::db($db)->counts(static::class, $ransack, static::ransackAliases());
+        return static::db($db)->countBy(static::class, $ransack, static::ransackAliases());
     }
 
     /**

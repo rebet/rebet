@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Tests\Mock\Entity;
 
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tests\Mock\Enum\Gender;
+use Rebet\Tools\Reflection\Reflector;
 
 class User extends Entity
 {
@@ -32,6 +32,10 @@ class User extends Entity
      * @Defaults("user")
      */
     public $role;
+
+    public $password;
+
+    public $api_token;
 
     /**
      * @PhpType(DateTime::class)

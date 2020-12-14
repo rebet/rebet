@@ -19,7 +19,6 @@ use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
 use Rebet\Http\Request;
-use Rebet\Http\Responder;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\ArraySessionStorage;
 use Rebet\Http\UploadedFile;
@@ -69,12 +68,11 @@ abstract class RebetTestCase extends TestCase
         System::testing(true);
         App::init(new AppHttpKernel(new Structure(__DIR__.'/../../../application')));
         $users = [
-            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'        , 'signin_id' => 'admin'        , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => 'token_1', 'resigned_at' => null], // password: admin
-            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'         , 'signin_id' => 'user'         , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => 'token_2', 'resigned_at' => null], // password: user
-            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User' , 'signin_id' => 'user.resignd' , 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => 'token_3', 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
-            ['user_id' => 4, 'role' => 'user' , 'name' => 'Editable User', 'signin_id' => 'user.editable', 'email' => 'user.editable@rebet.local', 'password' => '$2y$10$3OTm0Ps5BeaYy5YZ619.4.gXwENPc4fVJBnMvBM5/5m/s0H6Nwg0O', 'api_token' => 'token_4', 'resigned_at' => null], // password: user.editable
+            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'        , 'signin_id' => 'admin'        , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hash('token_1'), 'resigned_at' => null], // password: admin
+            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'         , 'signin_id' => 'user'         , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => Securities::hash('token_2'), 'resigned_at' => null], // password: user
+            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User' , 'signin_id' => 'user.resignd' , 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => Securities::hash('token_3'), 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
+            ['user_id' => 4, 'role' => 'user' , 'name' => 'Editable User', 'signin_id' => 'user.editable', 'email' => 'user.editable@rebet.local', 'password' => '$2y$10$3OTm0Ps5BeaYy5YZ619.4.gXwENPc4fVJBnMvBM5/5m/s0H6Nwg0O', 'api_token' => Securities::hash('token_4'), 'resigned_at' => null], // password: user.editable
         ];
-        $auth_precondition = function ($user) { return !isset($user['resigned_at']); };
         Config::application([
             App::class => [
                 'timezone'  => 'UTC',
@@ -105,24 +103,21 @@ abstract class RebetTestCase extends TestCase
                 'storage' => ArrayCursorStorage::class,
             ],
             Auth::class => [
-                'authenticator' => [
-                    'web' => [
-                        'guard'    => SessionGuard::class,
-                        'provider' => [
-                            '@factory'     => ArrayProvider::class,
-                            'users'        => $users,
-                            'precondition' => $auth_precondition
-                        ],
-                        'fallback' => '/user/signin', // url or function(Request):Response
+                'guards' => [
+                    'admin' => [SessionGuard::class, 'provider' => 'admin', 'fallback' => '/admin/signin'],
+                    'web'   => [SessionGuard::class, 'provider' => 'user' , 'fallback' => '/user/signin'],
+                    'api'   => [TokenGuard::class  , 'provider' => 'user'],
+                ],
+                'providers' => [
+                    'user' => [
+                        '@factory'     => ArrayProvider::class,
+                        'users'        => $users,
+                        'precondition' => function ($user) { return !isset($user['resigned_at']); }
                     ],
-                    'api' => [
-                        'guard'    => TokenGuard::class,
-                        'provider' => [
-                            '@factory'     => ArrayProvider::class,
-                            'users'        => $users,
-                            'precondition' => $auth_precondition
-                        ],
-                        'fallback' => function (Request $request) { return Responder::problem(403); }, // url or function(Request):Response
+                    'admin' => [
+                        '@factory'     => ArrayProvider::class,
+                        'users'        => $users,
+                        'precondition' => function ($user) { return !isset($user['resigned_at']) && $user['role'] === 'admin'; }
                     ],
                 ],
                 'roles' => [
@@ -335,8 +330,9 @@ abstract class RebetTestCase extends TestCase
         return Securities::randomCode(mt_rand($min_length, $max_length), $chars);
     }
 
-    protected function createRequestMock($path, $roles = null, $channel = 'web', $method = 'GET', $prefix = '', $route = null) : Request
+    protected function createRequestMock($path, $roles = null, $channel = 'web', $guard = 'web', $method = 'GET', $prefix = '', $route = null) : Request
     {
+        Auth::clear();
         Router::setCurrentChannel($channel);
         Router::activatePrefix($prefix);
         $session = Session::current() ?? new Session();
@@ -344,6 +340,9 @@ abstract class RebetTestCase extends TestCase
         $request = Request::create($path, $method);
         $request->session($session);
         $request->route = $route ?? new ClosureRoute([], $path, function () use ($channel) { return $channel === 'api' ? ['OK'] : 'OK' ; });
+        if ($guard) {
+            $request->route->guard($guard);
+        }
         $request->route->roles(...((array)$roles));
         $request->route->prefix = $prefix;
         return $request;
@@ -351,6 +350,7 @@ abstract class RebetTestCase extends TestCase
 
     protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET', $prefix = '') : Request
     {
+        Auth::clear();
         Router::setCurrentChannel($channel);
         $session = Session::current() ?? new Session();
         $session->start();
@@ -372,10 +372,10 @@ abstract class RebetTestCase extends TestCase
         return $stub;
     }
 
-    protected function signin(Request $request = null, string $signin_id = 'user@rebet.local', string $password = 'user') : Request
+    protected function signin(Request $request = null, string $signin_id = 'user@rebet.local', string $password = 'user', string $fallback = '/user/signin', string $goto = '/') : Request
     {
         $request = $request ?? $this->createRequestMock('/');
-        Auth::signin($request, Auth::attempt($request, $signin_id, $password), '/');
+        Auth::signin($request, Auth::attempt($request, $signin_id, $password), $fallback, $goto);
         return $request;
     }
 

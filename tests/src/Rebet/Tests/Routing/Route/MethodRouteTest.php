@@ -18,28 +18,28 @@ class MethodRouteTest extends RebetTestCase
     public function test_routing()
     {
         $route   = new MethodRoute(['GET'], '/foo', 'Rebet\Tests\Mock\Controller\TestController::index');
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Controller: index', $response->getContent());
 
         $route   = new MethodRoute(['GET'], '/foo', '@controller\TestController::index');
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Controller: index', $response->getContent());
 
         $route   = new MethodRoute(['GET'], '/foo', 'TestController::index');
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Controller: index', $response->getContent());
 
         $route   = new MethodRoute(['GET'], '/foo', 'TestController::staticCall');
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
@@ -47,7 +47,7 @@ class MethodRouteTest extends RebetTestCase
 
         $route   = new MethodRoute(['GET'], '/foo', 'TestController::privateCall');
         $route->accessible(true);
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
@@ -57,7 +57,7 @@ class MethodRouteTest extends RebetTestCase
     public function test_terminate()
     {
         $route   = new MethodRoute(['GET'], '/foo', 'TestController::index');
-        $request = $this->createRequestMock('/foo', null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertSame(0, TestController::$latest->terminate_count);

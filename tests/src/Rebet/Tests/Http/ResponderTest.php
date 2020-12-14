@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Http;
 
 use Rebet\Application\App;
-use Rebet\Tools\Config\Config;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Responder;
@@ -13,6 +12,7 @@ use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Response\StreamedResponse;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
 
@@ -90,7 +90,7 @@ class ResponderTest extends RebetTestCase
      */
     public function test_redirect($expect, $path, $query, $status, $prefix)
     {
-        $request  = $this->createRequestMock("{$prefix}/", null, 'web', 'GET', $prefix);
+        $request  = $this->createRequestMock("{$prefix}/", null, 'web', 'web', 'GET', $prefix);
         $response = Responder::redirect($path, $query, $status, [], $request);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame($expect, $response->getTargetUrl());

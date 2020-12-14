@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Http\Cookie;
 
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\Config;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Exception\LogicException;
 
 class CookieTest extends RebetTestCase
 {
@@ -128,9 +128,17 @@ class CookieTest extends RebetTestCase
     public function test_dequeue()
     {
         Cookie::enqueue(new Cookie('key', 'value', '1 day'));
-        $this->assertEquals(['key' => Cookie::create('key', 'value', '1 day')], Cookie::queued());
-        Cookie::dequeue('key');
+        $this->assertEquals(['key' => $cookie = Cookie::create('key', 'value', '1 day')], Cookie::queued());
+        $this->assertEquals($cookie, Cookie::dequeue('key'));
         $this->assertEquals([], Cookie::queued());
+    }
+
+    public function test_peek()
+    {
+        Cookie::enqueue(new Cookie('key', 'value', '1 day'));
+        $this->assertEquals(['key' => $cookie = Cookie::create('key', 'value', '1 day')], Cookie::queued());
+        $this->assertEquals($cookie, Cookie::peek('key'));
+        $this->assertEquals(['key' => $cookie], Cookie::queued());
     }
 
     public function test_queued()

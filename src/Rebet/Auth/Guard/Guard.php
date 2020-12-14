@@ -1,55 +1,91 @@
 <?php
 namespace Rebet\Auth\Guard;
 
+use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\AuthProvider;
-use Rebet\Http\Request;
 use Rebet\Http\Response;
 
 /**
- * Guard Interface
+ * Guard Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-interface Guard
+abstract class Guard
 {
     /**
-     * Signin a given authenticated user.
+     * Get the name of this guard.
      *
-     * @param Request $request
-     * @param AuthUser $user
-     * @param boolean $remember
-     * @return void
+     * @var string|null
      */
-    public function signin(Request $request, AuthUser $user, bool $remember = false) : void;
+    protected $name = null;
 
     /**
-     * It will sign out the authenticated user.
+     * Authenticated user
      *
-     * @param Request $request
-     * @param AuthUser $user
-     * @param string $redirect_to (default: '/')
-     * @return Response
+     * @var AuthUser|null
      */
-    public function signout(Request $request, AuthUser $user, string $redirect_to = '/') : Response;
+    protected $user = null;
 
     /**
-     * Recall authenticate user from an incoming request.
+     * Auth provider of this guard
      *
-     * @param Request $request
-     * @param AuthProvider $provider
+     * @var AuthProvider
+     */
+    protected $provider;
+
+    /**
+     * Create a guard instance.
+     *
+     * @param string $provider name of configured in `Auth.providers.{name}`.
+     */
+    public function __construct(string $provider)
+    {
+        $this->provider = Auth::provider($provider);
+    }
+
+    /**
+     * Get/Set the name of this guard.
+     *
+     * @param string|null $name (default: null for get name)
+     * @return self|string|null
+     */
+    public function name(?string $name = null)
+    {
+        if ($name === null) {
+            return $this->name;
+        }
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Get authentication provider of this guard.
+     *
+     * @return AuthProvider
+     */
+    public function provider() : AuthProvider
+    {
+        return $this->provider;
+    }
+
+    /**
+     * Get the authenticated user.
+     *
      * @return AuthUser
      */
-    public function authenticate(Request $request, AuthProvider $provider) : AuthUser;
+    public function user() : AuthUser
+    {
+        return $this->user ?? $this->user = AuthUser::guest()->guest($this) ;
+    }
 
     /**
-     * Get and Set authenticator name of this guard.
+     * Authenticate user.
      *
-     * @param string|null $name
-     * @return mixed
+     * @return Response|null response of fallback when authenticate failed
      */
-    public function authenticator(?string $name = null) ;
+    abstract public function authenticate() : ?Response;
 }

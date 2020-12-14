@@ -2,7 +2,7 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Auth\Annotation\Authenticator;
+use Rebet\Auth\Annotation\Guard;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -47,11 +47,11 @@ abstract class Route
     protected $middlewares = [];
 
     /**
-     * Authenticator name for this route.
+     * Guard name for this route.
      *
      * @var string
      */
-    protected $auth = null;
+    protected $guard = null;
 
     /**
      * The roles for this route
@@ -217,18 +217,18 @@ abstract class Route
     }
 
     /**
-     *  Get or set the authenticator name attached to the route.
+     *  Get or set the guard name attached to the route.
      *
-     * @param mixed $auth
+     * @param mixed $guard
      * @return self|array
      */
-    public function auth(?string $auth = null)
+    public function guard(?string $name = null)
     {
-        if ($auth === null) {
-            $authenticator = $this->annotation(Authenticator::class);
-            return $authenticator ? $authenticator->name : $this->auth ;
+        if ($name === null) {
+            $guard = $this->annotation(Guard::class);
+            return $guard ? $guard->name : $this->guard ;
         }
-        $this->auth = $auth;
+        $this->guard = $name;
         return $this;
     }
 }

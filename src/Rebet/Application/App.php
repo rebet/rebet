@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application;
 
+use Rebet\Auth\Auth;
 use Rebet\Event\Event;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Cookie\Cookie;
@@ -261,5 +262,6 @@ class App
         Letterpress::clear();
         Log::clear();
         Mail::clear();
+        Auth::clear();
     }
 }

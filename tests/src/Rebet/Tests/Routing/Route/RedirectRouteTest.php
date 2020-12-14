@@ -46,7 +46,7 @@ class RedirectRouteTest extends RebetTestCase
     public function test_routing($expect, $uri, $destination, $request_uri, $query = [], $status = 302)
     {
         $route   = new RedirectRoute($uri, $destination, $query, $status);
-        $request = $this->createRequestMock($request_uri, null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock($request_uri, null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
         $this->assertInstanceOf(RedirectResponse::class, $response);

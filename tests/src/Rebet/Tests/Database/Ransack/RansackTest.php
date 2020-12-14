@@ -585,6 +585,24 @@ class RansackTest extends RebetDatabaseTestCase
             // --------------
             [
                 new Condition(
+                    'name > :name_after',
+                    ['name_after' => 'foo']
+                ),
+                'name_after', 'foo', [],
+                []
+            ],
+            // --------------
+            [
+                new Condition(
+                    'name < :name_before',
+                    ['name_before' => 'foo']
+                ),
+                'name_before', 'foo', [],
+                []
+            ],
+            // --------------
+            [
+                new Condition(
                     "name LIKE :name_contains ESCAPE '|'",
                     ['name_contains' => '%100|%%']
                 ),

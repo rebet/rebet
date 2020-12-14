@@ -2,13 +2,12 @@
 namespace Rebet\Tests\Database\DataModel;
 
 use InvalidArgumentException;
+use Rebet\Auth\Password;
 use Rebet\Database\Database;
 use Rebet\Database\Event\BatchDeleted;
 use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
 use Rebet\Database\Event\BatchUpdating;
-use Rebet\Tools\DateTime\Date;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Event\Event;
 use Rebet\Tests\Mock\Entity\Article;
 use Rebet\Tests\Mock\Entity\GroupUser;
@@ -17,6 +16,9 @@ use Rebet\Tests\Mock\Entity\UserWithAnnot;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Enum\GroupPosition;
 use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\Securities;
 
 class EntityTest extends RebetDatabaseTestCase
 {
@@ -35,9 +37,9 @@ class EntityTest extends RebetDatabaseTestCase
     {
         return [
             'users' => [
-                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08', 'email' => 'elody@s1.rebet.local' , 'role' => 'user'],
-                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16', 'email' => 'alta_h@s2.rebet.local', 'role' => 'user'],
-                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user'],
+                ['user_id' => 1 , 'name' => 'Elody Bode III'        , 'gender' => 2, 'birthday' => '1990-01-08', 'email' => 'elody@s1.rebet.local' , 'role' => 'user', 'password' => '$2y$10$iUQ0l38dqjdf.L7OeNpyNuzmYf5qPzXAUwyKhC3G0oqTuUAO5ouci', 'api_token' => 'fe0c1b9ca200d6e01d96f60bab714cbbaffdf89fed5a946ff1b9f024902d2a26'], // password-{user_id}, api-{user_id}
+                ['user_id' => 2 , 'name' => 'Alta Hegmann'          , 'gender' => 1, 'birthday' => '2003-02-16', 'email' => 'alta_h@s2.rebet.local', 'role' => 'user', 'password' => '$2y$10$xpouw11HAUb3FAEBXYcwm.kcGmF0.FetTqkQQJFiShY2TiVCwEAQW', 'api_token' => '3d9b9b04a60382dd0f0acb2672b3b87acba7e9a9e44c529ba37baebe1cf9a00c'], // password-{user_id}, api-{user_id}
+                ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user', 'password' => '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe', 'api_token' => 'df38d2697f917ca9460677a98bfbb8baaeabab8e83b9858ea70d6da10b06ad4d'], // password-{user_id}, api-{user_id}
             ],
         ][$table_name] ?? [];
     }
@@ -146,28 +148,28 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(true, $user->isDynamicProperty('nothing'));
     }
 
-    public function test_exist()
+    public function test_exists()
     {
         $this->eachDb(function (Database $db) {
             $user = new User();
-            $this->assertSame(false, $user->exist());
+            $this->assertSame(false, $user->exists());
             $user->user_id = 1;
-            $this->assertSame(true, $user->exist());
+            $this->assertSame(true, $user->exists());
             $user->user_id = 4;
-            $this->assertSame(false, $user->exist());
+            $this->assertSame(false, $user->exists());
 
             $user = User::find(1);
             $this->assertSame(true, $user->delete());
-            $this->assertSame(false, $user->exist());
-            $this->assertSame($db->driverName() === 'mysql' ? false : true, $user->exist('mysql'));
+            $this->assertSame(false, $user->exists());
+            $this->assertSame($db->driverName() === 'mysql' ? false : true, $user->exists('mysql'));
             $this->assertSame(true, $user->create());
 
             $gu = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
-            $this->assertSame(false, $gu->exist());
+            $this->assertSame(false, $gu->exists());
             $this->assertSame(true, $gu->create());
-            $this->assertSame(true, $gu->exist());
+            $this->assertSame(true, $gu->exists());
         });
     }
 
@@ -178,12 +180,13 @@ class EntityTest extends RebetDatabaseTestCase
 
             $user = new UserWithAnnot();
             $user->user_id = 99;
-            $this->assertSame(false, $user->exist());
+            $user->password = Password::hash($user->user_id);
+            $this->assertSame(false, $user->exists());
             $this->assertSame(null, $user->created_at);
 
             $this->assertSame(true, $user->create($now));
 
-            $this->assertSame(true, $user->exist());
+            $this->assertSame(true, $user->exists());
             $this->assertEquals($now, $user->created_at);
 
             $user = UserWithAnnot::find(99);
@@ -192,12 +195,12 @@ class EntityTest extends RebetDatabaseTestCase
             $gu = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
-            $this->assertSame(false, $gu->exist());
+            $this->assertSame(false, $gu->exists());
             $this->assertSame(null, $gu->created_at);
 
             $this->assertSame(true, $gu->create($now));
 
-            $this->assertSame(true, $gu->exist());
+            $this->assertSame(true, $gu->exists());
             $this->assertEquals($now, $gu->created_at);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
@@ -221,9 +224,9 @@ class EntityTest extends RebetDatabaseTestCase
             $gu = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
-            $this->assertSame(false, $gu->exist());
+            $this->assertSame(false, $gu->exists());
             $this->assertSame(true, $gu->create($now));
-            $this->assertSame(true, $gu->exist());
+            $this->assertSame(true, $gu->exists());
             $this->assertSame(null, $gu->updated_at);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
@@ -247,13 +250,14 @@ class EntityTest extends RebetDatabaseTestCase
 
             $user = new UserWithAnnot();
             $user->user_id  = 99;
-            $this->assertSame(false, $user->exist());
+            $user->password = Password::hash($user->user_id);
+            $this->assertSame(false, $user->exists());
             $this->assertSame(null, $user->created_at);
             $this->assertSame(null, $user->updated_at);
 
             $this->assertSame(true, $user->save($now));
 
-            $this->assertSame(true, $user->exist());
+            $this->assertSame(true, $user->exists());
             $this->assertEquals($now, $user->created_at);
             $this->assertSame(null, $user->updated_at);
 
@@ -266,13 +270,13 @@ class EntityTest extends RebetDatabaseTestCase
             $gu = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
-            $this->assertSame(false, $gu->exist());
+            $this->assertSame(false, $gu->exists());
             $this->assertSame(null, $gu->created_at);
             $this->assertSame(null, $gu->updated_at);
 
             $this->assertSame(true, $gu->save($now));
 
-            $this->assertSame(true, $gu->exist());
+            $this->assertSame(true, $gu->exists());
             $this->assertEquals($now, $gu->created_at);
             $this->assertSame(null, $gu->updated_at);
 
@@ -290,22 +294,22 @@ class EntityTest extends RebetDatabaseTestCase
 
             $user = new UserWithAnnot();
             $user->user_id  = 1;
-            $this->assertSame(true, $user->exist());
+            $this->assertSame(true, $user->exists());
             $this->assertSame(true, $user->delete());
-            $this->assertSame(false, $user->exist());
+            $this->assertSame(false, $user->exists());
 
             $gu = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
-            $this->assertSame(false, $gu->exist());
+            $this->assertSame(false, $gu->exists());
             $this->assertSame(true, $gu->save($now));
-            $this->assertSame(true, $gu->exist());
+            $this->assertSame(true, $gu->exists());
             $this->assertSame(true, $gu->delete());
-            $this->assertSame(false, $gu->exist());
+            $this->assertSame(false, $gu->exists());
         });
     }
 
-    public function test_updates()
+    public function test_updateBy()
     {
         $updating_event_called = false;
         $updated_event_called  = false;
@@ -322,7 +326,7 @@ class EntityTest extends RebetDatabaseTestCase
 
             $this->assertFalse($updating_event_called);
             $this->assertFalse($updated_event_called);
-            $this->assertEquals(0, User::updates(['name' => 'foo'], ['user_id' => 9999]));
+            $this->assertEquals(0, User::updateBy(['name' => 'foo'], ['user_id' => 9999]));
             $this->assertTrue($updating_event_called);
             $this->assertFalse($updated_event_called);
 
@@ -331,7 +335,7 @@ class EntityTest extends RebetDatabaseTestCase
             $updated_event_called  = false;
             $this->assertFalse($updating_event_called);
             $this->assertFalse($updated_event_called);
-            $this->assertEquals(2, User::updates(['name' => 'foo', 'role' => 'admin'], ['user_id_lteq' => 2], $now));
+            $this->assertEquals(2, User::updateBy(['name' => 'foo', 'role' => 'admin'], ['user_id_lteq' => 2], $now));
             $this->assertTrue($updating_event_called);
             $this->assertTrue($updated_event_called);
             foreach ([1, 2] as $user_id) {
@@ -345,7 +349,7 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_deletes()
+    public function test_deleteBy()
     {
         $deleting_event_called = false;
         $deleted_event_called  = false;
@@ -362,7 +366,7 @@ class EntityTest extends RebetDatabaseTestCase
 
             $this->assertFalse($deleting_event_called);
             $this->assertFalse($deleted_event_called);
-            $this->assertEquals(0, User::deletes(['user_id' => 9999]));
+            $this->assertEquals(0, User::deleteBy(['user_id' => 9999]));
             $this->assertTrue($deleting_event_called);
             $this->assertFalse($deleted_event_called);
 
@@ -370,7 +374,7 @@ class EntityTest extends RebetDatabaseTestCase
             $deleted_event_called  = false;
             $this->assertFalse($deleting_event_called);
             $this->assertFalse($deleted_event_called);
-            $this->assertEquals(2, User::deletes(['user_id_lteq' => 2]));
+            $this->assertEquals(2, User::deleteBy(['user_id_lteq' => 2]));
             $this->assertTrue($deleting_event_called);
             $this->assertTrue($deleted_event_called);
             foreach ([1, 2] as $user_id) {
@@ -382,27 +386,27 @@ class EntityTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_exists()
+    public function test_existsBy()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertFalse(User::exists(['user_id' => 9999]));
-            $this->assertTrue(User::exists(['user_id' => 1]));
-            $this->assertTrue(User::exists(['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertFalse(User::exists(['user_id' => 1, 'gender' => Gender::MALE()]));
-            $this->assertTrue(User::exists(['user_id_lt' => 9999]));
+            $this->assertFalse(User::existsBy(['user_id' => 9999]));
+            $this->assertTrue(User::existsBy(['user_id' => 1]));
+            $this->assertTrue(User::existsBy(['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertFalse(User::existsBy(['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertTrue(User::existsBy(['user_id_lt' => 9999]));
         });
     }
 
-    public function test_counts()
+    public function test_count()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertEquals(0, User::counts(['user_id' => 9999]));
-            $this->assertEquals(1, User::counts(['user_id' => 1]));
-            $this->assertEquals(1, User::counts(['user_id' => 1, 'gender' => Gender::FEMALE()]));
-            $this->assertEquals(0, User::counts(['user_id' => 1, 'gender' => Gender::MALE()]));
-            $this->assertEquals(2, User::counts(['user_id_lt' => 3]));
-            $this->assertEquals(2, User::counts(['gender' => Gender::MALE()]));
-            $this->assertEquals(3, User::counts());
+            $this->assertEquals(0, User::count(['user_id' => 9999]));
+            $this->assertEquals(1, User::count(['user_id' => 1]));
+            $this->assertEquals(1, User::count(['user_id' => 1, 'gender' => Gender::FEMALE()]));
+            $this->assertEquals(0, User::count(['user_id' => 1, 'gender' => Gender::MALE()]));
+            $this->assertEquals(2, User::count(['user_id_lt' => 3]));
+            $this->assertEquals(2, User::count(['gender' => Gender::MALE()]));
+            $this->assertEquals(3, User::count());
         });
     }
 }

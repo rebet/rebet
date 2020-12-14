@@ -2,15 +2,15 @@
 namespace Rebet\Tests\Middleware\Routing;
 
 use PHPUnit\Framework\AssertionFailedError;
-use Rebet\Tools\Utility\Nets;
-use Rebet\Tools\Utility\Securities;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Exception\TokenMismatchException;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Session\Session;
 use Rebet\Middleware\Routing\VerifyCsrfToken;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Utility\Nets;
+use Rebet\Tools\Utility\Securities;
+use Rebet\Tools\Utility\Strings;
 
 class VerifyCsrfTokenTest extends RebetTestCase
 {
@@ -64,7 +64,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
     {
         $middleware  = new VerifyCsrfToken($excludes);
         $destination = function ($request) { return Responder::toResponse('OK'); };
-        $request     = $this->createRequestMock($path, null, 'web', $method);
+        $request     = $this->createRequestMock($path, null, 'web', 'web', $method);
         $token       = $request->session()->generateToken(...$scope);
         $token       = $token_match ? $token : "X-{$token}" ;
         $key         = $scope_match ? Session::createTokenKey(...$scope) : Session::createTokenKey(...array_merge($scope, ['mismatch'])) ;
@@ -107,7 +107,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
     {
         $middleware  = new VerifyCsrfToken();
         $destination = function ($request) { return Responder::toResponse('OK'); };
-        $request     = $this->createRequestMock('/', null, 'web', 'POST');
+        $request     = $this->createRequestMock('/', null, 'web', 'web', 'POST');
         $token       = $request->session()->generateToken();
         $token_1     = $request->session()->generateToken('article', 'edit', 1);
         $token_2     = $request->session()->generateToken('article', 'edit', 2);
@@ -145,7 +145,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
     {
         $middleware  = new VerifyCsrfToken();
         $destination = function ($request) { return Responder::toResponse('OK'); };
-        $request     = $this->createRequestMock('/', null, 'web', 'POST');
+        $request     = $this->createRequestMock('/', null, 'web', 'web', 'POST');
         $token       = $request->session()->generateToken();
 
         $request->headers->set('X-CSRF-TOKEN', $token);
@@ -158,7 +158,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
     {
         $middleware  = new VerifyCsrfToken([], true);
         $destination = function ($request) { return Responder::toResponse('OK'); };
-        $request     = $this->createRequestMock('/', null, 'web', 'POST');
+        $request     = $this->createRequestMock('/', null, 'web', 'web', 'POST');
         $token       = $request->session()->generateToken();
 
         $request->headers->set('X-XSRF-TOKEN', Nets::encodeBase64Url(Securities::encrypt($token)));
@@ -174,7 +174,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
 
         $middleware  = new VerifyCsrfToken([], false);
         $destination = function ($request) { return Responder::toResponse('OK'); };
-        $request     = $this->createRequestMock('/', null, 'web', 'POST');
+        $request     = $this->createRequestMock('/', null, 'web', 'web', 'POST');
         $token       = $request->session()->generateToken();
 
         $request->headers->set('X-XSRF-TOKEN', Nets::encodeBase64Url(Securities::encrypt($token)));

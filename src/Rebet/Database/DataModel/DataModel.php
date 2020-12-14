@@ -19,6 +19,8 @@ use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Support\Getsetable;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Json;
+use ReflectionObject;
+use ReflectionProperty;
 
 /**
  * Data Model Class
@@ -201,6 +203,40 @@ abstract class DataModel
     public function belongsResultSet(?ResultSet $rs = null)
     {
         return $this->getset('_belongs_result_set', $rs);
+    }
+
+    /**
+     * It checks given other data model primary keys equals this one or not.
+     *
+     * @param DataModel|null $other
+     * @return bool
+     */
+    public function isSameSourceAs(?DataModel $other) : bool
+    {
+        if (!($other instanceof $this)) {
+            return false;
+        }
+        return empty($primaries = $this->primaryValues()) ? false : $primaries == $other->primaryValues();
+    }
+
+    /**
+     * It checks given other data model public properties equals this one or not.
+     *
+     * @param DataModel|null $other
+     * @return bool
+     */
+    public function isSameAs(?DataModel $other) : bool
+    {
+        if (!($other instanceof $this)) {
+            return false;
+        }
+        foreach ((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC) as $rp) {
+            $property = $rp->getName();
+            if ($this->$property != $other->$property) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

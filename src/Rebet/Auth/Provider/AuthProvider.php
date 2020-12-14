@@ -16,11 +16,11 @@ use Rebet\Tools\Utility\Securities;
 abstract class AuthProvider
 {
     /**
-     * Authenticator name of this provider.
+     * The name of this provider.
      *
      * @var string
      */
-    protected $authenticator = null;
+    protected $name = null;
 
     /**
      * Find user by id.
@@ -33,11 +33,10 @@ abstract class AuthProvider
     /**
      * Find user by token.
      *
-     * @param string $token_name
      * @param string|null $token
      * @return AuthUser|null
      */
-    abstract public function findByToken(string $token_name, ?string $token) : ?AuthUser ;
+    abstract public function findByToken(?string $token) : ?AuthUser ;
 
     /**
      * Find user by signin_id and password.
@@ -133,28 +132,39 @@ abstract class AuthProvider
     }
 
     /**
-     * Get and Set authenticator name of this provider.
+     * Get and Set name of this provider.
      *
      * @param string|null $name
      * @return self|string|null
      */
-    public function authenticator(?string $name = null)
+    public function name(?string $name = null)
     {
         if ($name === null) {
-            return $this->authenticator;
+            return $this->name;
         }
-        $this->authenticator = $name;
+        $this->name = $name;
         return $this;
     }
 
     /**
      * Generate token.
      *
-     * @param integer $length (default: 40)
+     * @param integer $length (default: 60)
      * @return string
      */
-    protected function generateToken(int $length = 40) : string
+    protected function generateToken(int $length = 60) : string
     {
         return Securities::randomCode($length);
+    }
+
+    /**
+     * Hash given token.
+     *
+     * @param string $token
+     * @return string|null
+     */
+    protected function hashToken(?string $token) : ?string
+    {
+        return $token ? Securities::hash($token) : null ;
     }
 }

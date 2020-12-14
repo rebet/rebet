@@ -3,8 +3,6 @@ namespace Rebet\Tests\Http;
 
 use BadMethodCallException;
 use Rebet\Application\App;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Config\Config;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Request;
@@ -15,6 +13,8 @@ use Rebet\Http\UserAgent;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Router;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Validation\Valid;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
@@ -261,7 +261,7 @@ class RequestTest extends RebetTestCase
      */
     public function test_getRequestPath($expect, $path, $prefix, bool $withoutPrefix)
     {
-        $request = $this->createRequestMock($path, null, 'web', 'GET', $prefix);
+        $request = $this->createRequestMock($path, null, 'web', 'web', 'GET', $prefix);
         $this->assertSame($expect, $request->getRequestPath($withoutPrefix));
     }
 

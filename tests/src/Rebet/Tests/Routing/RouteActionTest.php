@@ -2,8 +2,6 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -11,6 +9,8 @@ use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\RouteAction;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
 
 class RouteActionTest extends RebetTestCase
 {
@@ -39,7 +39,7 @@ class RouteActionTest extends RebetTestCase
     protected function createRouteActionBasedControllerMock(string $url) : array
     {
         $route   = new ConventionalRoute();
-        $request = $this->createRequestMock($url, null, 'web', 'GET', '', $route);
+        $request = $this->createRequestMock($url, null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
         $route_action = Reflector::get($route, 'route_action', null, true);
         $controller   = Reflector::get($route_action, 'instance', null, true);

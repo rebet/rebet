@@ -3,16 +3,16 @@ namespace Rebet\Tools\DateTime;
 
 use DateInterval;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Callbacks;
-use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
+use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Date Time Class
@@ -119,12 +119,18 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public static function freeze(\Closure $callback, ?DateTime $now = null)
     {
+        $old_test_now          = static::getTestNow();
+        $old_test_now_timezone = static::getTestNowTimezone();
         try {
             $now = $now ?? DateTime::now() ;
             static::setTestNow($now->format('Y-m-d H:i:s.u'), $now->getTimezone()->getName());
             return $callback();
         } finally {
-            static::removeTestNow();
+            if ($old_test_now) {
+                static::setTestNow($old_test_now, $old_test_now_timezone);
+            } else {
+                static::removeTestNow();
+            }
         }
     }
 

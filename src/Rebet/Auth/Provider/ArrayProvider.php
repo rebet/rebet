@@ -2,7 +2,6 @@
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Tinker\Tinker;
 
 /**
@@ -17,15 +16,6 @@ use Rebet\Tools\Tinker\Tinker;
  */
 class ArrayProvider extends AuthProvider
 {
-    use Configurable;
-
-    public static function defaultConfig()
-    {
-        return [
-            'signin_id_name' => 'email',
-        ];
-    }
-
     /**
      * Users map data.
      *
@@ -39,6 +29,13 @@ class ArrayProvider extends AuthProvider
      * @var string
      */
     protected $signin_id_name = null;
+
+    /**
+     * API token attribute name
+     *
+     * @var string
+     */
+    protected $token_name = null;
 
     /**
      * Preconditions for signin id authenticate.
@@ -59,13 +56,15 @@ class ArrayProvider extends AuthProvider
      * And if you want to add other information, you can add attribute to users record.
      *
      * @param array $users
-     * @param string|null $signin_id_name (default: depend on configure)
+     * @param string|null $signin_id_name (default: 'email')
+     * @param string $token_name (default: 'api_token')
      * @param callable|null $precondition function($user):bool {...} (default: `function ($user) { return true; }`)
      */
-    public function __construct(array $users, ?string $signin_id_name = null, ?callable $precondition = null)
+    public function __construct(array $users, ?string $signin_id_name = 'email', string $token_name = 'api_token', ?callable $precondition = null)
     {
         $this->users          = Tinker::with($users, true);
-        $this->signin_id_name = $signin_id_name ?? static::config('signin_id_name') ;
+        $this->signin_id_name = $signin_id_name;
+        $this->token_name     = $token_name;
         $this->precondition   = $precondition ?? function ($user) { return true; };
     }
 
@@ -76,19 +75,19 @@ class ArrayProvider extends AuthProvider
     {
         return $this->users
             ->first(function ($user) use ($id) { return $user['user_id'] == $id; })
-            ->return(function ($user) { return new AuthUser($user); });
+            ->return(function ($user) { return new AuthUser($user, [], $this); });
     }
 
     /**
      * {@inheritDoc}
      */
-    public function findByToken(string $token_name, ?string $token) : ?AuthUser
+    public function findByToken(?string $token) : ?AuthUser
     {
         return $this->users
-            ->where(function ($user) use ($token_name, $token) { return $user[$token_name] == $token; })
+            ->where(function ($user) use ($token) { return $user[$this->token_name] == $this->hashToken($token); })
             ->where($this->precondition)
             ->first()
-            ->return(function ($user) { return new AuthUser($user); });
+            ->return(function ($user) { return new AuthUser($user, [], $this); });
     }
 
     /**
@@ -100,7 +99,7 @@ class ArrayProvider extends AuthProvider
             ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })
             ->where($this->precondition)
             ->first()
-            ->return(function ($user) { return new AuthUser($user); });
+            ->return(function ($user) { return new AuthUser($user, [], $this); });
     }
 
     /**

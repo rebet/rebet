@@ -2,13 +2,11 @@
 namespace Rebet\Auth\Guard;
 
 use Rebet\Auth\AuthUser;
-use Rebet\Auth\Provider\AuthProvider;
-use Rebet\Tools\Config\Configurable;
+use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
-use Rebet\Http\Session\Session;
 
 /**
  * Session Guard Class
@@ -18,110 +16,135 @@ use Rebet\Http\Session\Session;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class SessionGuard implements Guard
+class SessionGuard extends StatefulGuard
 {
-    use Configurable, Guardable;
-
-    public static function defaultConfig()
-    {
-        return [
-            'remember_days' => 0,
-        ];
-    }
-
     /**
-     * Cookie key of remember token.
-     */
-    const COOKIE_KEY_REMEMBER = 'remember';
-
-    /**
-     * Number of days to remember me.
+     * Request of current session.
      *
-     * @var int
+     * @var Request
      */
-    private $remember_days = null;
+    protected $request;
+
+    /**
+     * Fallback url or null for throw AuthenticateException.
+     *
+     * @var string|null
+     */
+    protected $fallback = null;
 
     /**
      * Create a session guard.
      *
-     * @param integer|null $remember_days (default: depend on configure)
+     * @param string $provider name of configured in `Auth.providers.{name}`.
+     * @param string|null $fallback redirect url. (default: null for throw AuthenticateException)
+     * @param int $remember_days (default: 0)
+     * @param Request $request (default: null for Request::current())
      */
-    public function __construct(?int $remember_days = null)
+    public function __construct(string $provider, ?string $fallback = null, int $remember_days = 0, ?Request $request = null)
     {
-        $this->remember_days = $remember_days ?? static::config('remember_days');
+        parent::__construct($provider, $remember_days);
+        $this->fallback = $fallback;
+        $this->request  = $request ?? Request::current();
     }
 
     /**
-     * Create a session key from a given name for this guard.
+     * Get a remember token key for cookie.
      *
-     * @param string $name
      * @return string
      */
-    protected function toSessionKey(string $name) : string
+    protected function rememberTokenKey() : string
     {
-        return 'auth:'.$this->authenticator().':'.$name;
+        return "auth:{$this->name}:remember_token";
+    }
+
+    /**
+     * Get a signin ID key for session.
+     *
+     * @return string
+     */
+    protected function signinIdKey() : string
+    {
+        return "auth:{$this->name}:signin_id";
+    }
+
+    /**
+     * Request Replay Session Key for replay original request that guared by auth when signin success.
+     *
+     * @return string
+     */
+    protected function requestReplayKey() : string
+    {
+        return "auth:{$this->name}:guarded_request";
     }
 
     /**
      * {@inheritDoc}
      */
-    public function signin(Request $request, AuthUser $user, bool $remember = false) : void
+    public function signin(AuthUser $user, string $goto = '/', bool $remember = false) : Response
     {
         if ($user->isGuest()) {
-            return;
+            return $this->fallback();
         }
 
-        $session = $request->session();
-        $session->set($this->toSessionKey('id'), $user->id);
-        $provider = $user->provider();
-        if ($remember && $provider->supportRememberToken()) {
-            $token = $provider->issuingRememberToken($user->id, $this->remember_days);
+        if ($user->provider() !== $this->provider) {
+            throw new AuthenticateException("Can not sign-in by authenticated user who is got by different provider.");
+        }
+
+        $this->user = $user;
+        $this->request->session()->set($this->signinIdKey(), $user->id);
+        if ($remember && $this->provider->supportRememberToken()) {
+            $token = $this->provider->issuingRememberToken($user->id, $this->remember_days);
             if ($token !== null) {
-                Cookie::set(static::COOKIE_KEY_REMEMBER, $token, $this->remember_days === 0 ? 0 : "+{$this->remember_days} day");
+                Cookie::set($this->rememberTokenKey(), $token, $this->remember_days === 0 ? 0 : "+{$this->remember_days} day");
             }
         }
+
+        return $this->request->replay($this->requestReplayKey()) ?? Responder::redirect($goto);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function signout(Request $request, AuthUser $user, string $redirect_to = '/') : Response
+    public function signout(string $goto = '/') : Response
     {
-        if (!$user->isGuest()) {
-            $provider = $user->provider();
-            if ($provider->supportRememberToken()) {
-                $provider->removeRememberToken($request->cookies->get(static::COOKIE_KEY_REMEMBER));
+        if (!$this->user()->isGuest()) {
+            if ($this->provider->supportRememberToken()) {
+                $this->provider->removeRememberToken($this->request->cookies->get($remember_token_key = $this->rememberTokenKey()));
+                Cookie::remove($remember_token_key);
             }
-            $request->session()->remove($this->toSessionKey('id'));
-            Cookie::remove(static::COOKIE_KEY_REMEMBER);
+            $this->request->session()->remove($this->signinIdKey());
+            $this->user    = AuthUser::guest();
         }
-        return Responder::redirect($redirect_to);
+
+        return Responder::redirect($goto);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function authenticate(Request $request, AuthProvider $provider) : AuthUser
+    public function authenticate() : ?Response
     {
-        $session = $request->session();
-        $id      = $session->get($this->toSessionKey('id'));
-        $user    = $provider->findById($id);
-        if ($user) {
-            return $user;
+        $user = $this->provider->findById($this->request->session()->get($this->signinIdKey()));
+        if ($user === null && $this->provider->supportRememberToken()) {
+            $user = $this->provider->findByRememberToken($this->request->cookies->get($this->rememberTokenKey()));
         }
-        if ($provider->supportRememberToken()) {
-            $user = $provider->findByRememberToken($request->cookies->get(static::COOKIE_KEY_REMEMBER));
-        }
-        return $user ? $user : AuthUser::guest();
+        $this->user    = $user ?? AuthUser::guest() ;
+        $allowed_roles = $this->request->route->roles() ?: [];
+        return $this->user->is(...$allowed_roles) ? null : $this->fallback() ;
     }
 
     /**
-     * Get the 'remember me' days period.
+     * Create fallback response.
      *
-     * @return integer of days
+     * @return Response
+     * @throws AuthenticateException when fallback is undefined.
      */
-    public function getRememberDays() : int
+    protected function fallback() : Response
     {
-        return $this->remember_days;
+        if (!$this->fallback) {
+            throw new AuthenticateException("Authentication failed and specific fallback was not defined.");
+        }
+        $this->request->saveAs($this->requestReplayKey());
+        return Responder::redirect($this->fallback);
     }
 }

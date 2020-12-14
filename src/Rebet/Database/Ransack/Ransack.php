@@ -133,6 +133,8 @@ class Ransack
                     'gt'           => ["{col} > {val}"                           , null      , 'OR' ],
                     'from'         => ["{col} >= {val}"                          , null      , 'OR' ],
                     'to'           => ["{col} <= {val}"                          , null      , 'OR' ],
+                    'after'        => ["{col} > {val}"                           , null      , 'OR' ],
+                    'before'       => ["{col} < {val}"                           , null      , 'OR' ],
                     'contains'     => ["{col} LIKE {val} ESCAPE '|'"             , 'contains', 'OR' ],
                     'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'contains', 'AND'],
                     'starts'       => ["{col} LIKE {val} ESCAPE '|'"             , 'starts'  , 'OR' ],

@@ -1,9 +1,8 @@
 <?php
 namespace Rebet\Auth\Guard;
 
+use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
-use Rebet\Auth\Provider\AuthProvider;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -16,85 +15,66 @@ use Rebet\Http\Response;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class TokenGuard implements Guard
+class TokenGuard extends Guard
 {
-    use Configurable, Guardable;
-
-    public static function defaultConfig()
-    {
-        return [
-            'input_key'   => 'api_token',
-            'storage_key' => 'api_token',
-        ];
-    }
+    /**
+     * Request of current session.
+     *
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Input key name.
      *
      * @var string
      */
-    protected $input_key = null;
-
-    /**
-     * Storage key name.
-     *
-     * @var string
-     */
-    protected $storage_key = null;
+    protected $input_key;
 
     /**
      * Create a token guard.
      *
-     * @param string|null $input_key (default: depend on configure)
-     * @param string|null $storage_key (default: depend on configure)
+     * @param string $provider name of configured in `Auth.providers.{name}`.
+     * @param string $input_key (default: 'api_token')
+     * @param Request $request (default: null for Request::current())
      */
-    public function __construct(?string $input_key = null, ?string $storage_key = null)
+    public function __construct(string $provider, string $input_key = 'api_token', ?Request $request = null)
     {
-        $this->input_key   = $input_key ?? static::config('input_key');
-        $this->storage_key = $storage_key ?? static::config('storage_key');
-    }
-
-    /**
-     * This method nothing to do.
-     *
-     * {@inheritDoc}
-     */
-    public function signin(Request $request, AuthUser $user, bool $remember = false) : void
-    {
-        // Nothing to do
-    }
-
-    /**
-     * This method nothing to do and always return JsonResponse of {"result":true}.
-     *
-     * {@inheritDoc}
-     */
-    public function signout(Request $request, AuthUser $user, string $redirect_to = '/') : Response
-    {
-        // Nothing to do (Just return JsonResponse)
-        return Responder::toResponse(['result' => true]);
+        parent::__construct($provider);
+        $this->input_key = $input_key;
+        $this->request   = $request ?? Request::current();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function authenticate(Request $request, AuthProvider $provider) : AuthUser
+    public function authenticate() : ?Response
     {
-        $user = $provider->findByToken($this->storage_key, $this->getTokenFrom($request));
-        return $user ? $user : AuthUser::guest();
+        $this->user    = $this->provider->findByToken($this->token()) ?? AuthUser::guest() ;
+        $allowed_roles = $this->request->route->roles() ?: [];
+        return $this->user->is(...$allowed_roles) ? null : $this->fallback() ;
     }
 
     /**
-     * Get token from given request.
+     * Get token from current request.
      *
-     * @param Request $request
      * @return string|null
      */
-    protected function getTokenFrom(Request $request) : ?string
+    protected function token() : ?string
     {
-        return $request->input($this->input_key) ?:
-               $request->bearerToken() ?:
-               $request->getPassword()
+        return $this->request->input($this->input_key) ?:
+               $this->request->bearerToken() ?:
+               $this->request->getPassword()
                ;
+    }
+
+    /**
+     * Create fallback response.
+     *
+     * @return Response
+     */
+    protected function fallback() : Response
+    {
+        return Responder::problem(403);
     }
 }

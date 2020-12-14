@@ -1,14 +1,13 @@
 <?php
 namespace Rebet\Auth;
 
-use Rebet\Auth\Guard\Guard;
 use Rebet\Auth\Provider\AuthProvider;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Utility\Json;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Inflection\Inflector;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Json;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Auth User Class
@@ -52,14 +51,7 @@ class AuthUser implements \JsonSerializable
     protected $charenged_signin_id = null;
 
     /**
-     * The authenticated guard instance.
-     *
-     * @var Guard
-     */
-    protected $guard = null;
-
-    /**
-     * The authenticated provider instance.
+     * The authenticated provider of this user.
      *
      * @var AuthProvider
      */
@@ -102,15 +94,17 @@ class AuthUser implements \JsonSerializable
      * (If the user source is null or an array, use "user_id" as it is defaultly.)
      *
      * @param mixed $user
-     * @param array $aliases
+     * @param array $aliases (default: [])
+     * @param AuthProvider|null $provider of the given user (default: null)
      */
-    public function __construct($user, array $aliases = [])
+    public function __construct($user, array $aliases = [], ?AuthProvider $provider = null)
     {
         $this->user    = $user;
         $this->aliases = $aliases;
         if (!isset($this->aliases['id'])) {
             $this->aliases['id'] = $user === null || is_array($user) ? 'user_id' : Inflector::primarize((new \ReflectionClass($user))->getShortName());
         }
+        $this->provider = $provider;
     }
 
     /**
@@ -129,31 +123,13 @@ class AuthUser implements \JsonSerializable
     }
 
     /**
-     * Get and Set the Guard instance of this authenticated user.
+     * Get the Auth Provider instance of this authenticated user.
      *
-     * @return self|Guard|null
+     * @return AuthProvider|null
      */
-    public function guard(?Guard $guard = null)
+    public function provider() : ?AuthProvider
     {
-        if ($guard === null) {
-            return $this->guard;
-        }
-        $this->guard = $guard;
-        return $this;
-    }
-
-    /**
-     * Get and Set the AuthProvider instance of this authenticated user.
-     *
-     * @return self|AuthProvider|null
-     */
-    public function provider(?AuthProvider $provider = null)
-    {
-        if ($provider === null) {
-            return $this->provider;
-        }
-        $this->provider = $provider;
-        return $this;
+        return $this->provider;
     }
 
     /**

@@ -2,15 +2,15 @@
 namespace Rebet\Tests\Auth\Annotation;
 
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Auth\Annotation\Authenticator;
+use Rebet\Auth\Annotation\Guard;
 use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
-class AuthenticatorTest extends RebetTestCase
+class GuardTest extends RebetTestCase
 {
     public function test_annotation()
     {
-        $annotation = Authenticator::class;
+        $annotation = Guard::class;
         $ac         = new AnnotatedClass(AnnotatedStub::class);
 
         $a = $ac->annotation($annotation);

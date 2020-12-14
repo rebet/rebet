@@ -6,12 +6,14 @@ use Rebet\Auth\Event\AuthenticateFailed;
 use Rebet\Auth\Event\Signined;
 use Rebet\Auth\Event\SigninFailed;
 use Rebet\Auth\Event\Signouted;
+use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Auth\Guard\Guard;
+use Rebet\Auth\Guard\StatefulGuard;
+use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Event\Event;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
-use Rebet\Routing\Router;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Translation\Translator;
@@ -32,19 +34,9 @@ class Auth
     public static function defaultConfig()
     {
         return [
-            'authenticator' => [
-                'web' => [
-                    'guard'    => null,
-                    'provider' => null,
-                    'fallback' => null, // url or function(Request):Response
-                ],
-                'api' => [
-                    'guard'    => null,
-                    'provider' => null,
-                    'fallback' => null, // url or function(Request):Response
-                ],
-            ],
-            'roles' => [
+            'guards'    => [],
+            'providers' => [],
+            'roles'     => [
                 'all'   => function (AuthUser $user) { return true; },
                 'guest' => function (AuthUser $user) { return $user->isGuest(); },
             ],
@@ -53,11 +45,18 @@ class Auth
     }
 
     /**
-     * Authenticated user
+     * Auth providers
      *
-     * @var AuthUser
+     * @var AuthProvider[]
      */
-    protected static $user = null;
+    protected static $providers = [];
+
+    /**
+     * Auth guards
+     *
+     * @var Guard[]
+     */
+    protected static $guards = [];
 
     /**
      * No instantiation
@@ -69,12 +68,61 @@ class Auth
     /**
      * [Authentication] Get the authenticated user.
      *
-     * @param string $name
-     * @return Guard
+     * @param string $guard (default: null for active guard)
+     * @return AuthUser
      */
-    public static function user() : AuthUser
+    public static function user(?string $guard = null) : AuthUser
     {
-        return static::$user ?? AuthUser::guest() ;
+        $guard = static::guard($guard ?? static::applicableGuard());
+        return $guard ? $guard->user() : AuthUser::guest() ;
+    }
+
+    /**
+     * [Authentication] Get authentication provider of given name.
+     *
+     * @param string $name
+     * @return AuthProvider
+     */
+    public static function provider(string $name) : AuthProvider
+    {
+        return static::$providers[$name] ?? (static::$providers[$name] = static::configInstantiate("providers.{$name}")->name($name)) ;
+    }
+
+    /**
+     * [Authentication] Get authentication guard of given name.
+     *
+     * @param string|null $name
+     * @return Guard|null
+     */
+    public static function guard(?string $name) : ?Guard
+    {
+        if ($name === null) {
+            return null;
+        }
+        return static::$guards[$name] ?? (static::$guards[$name] = static::configInstantiate("guards.{$name}"))->name($name) ;
+    }
+
+    /**
+     * Crear all of guards and providers instance.
+     *
+     * @return void
+     */
+    public static function clear() : void
+    {
+        static::$providers = [];
+        static::$guards    = [];
+    }
+
+    /**
+     * Get applicable guard of this request route.
+     *
+     * @param Request|null $request (default: null for Request::current())
+     * @return string|null
+     */
+    protected static function applicableGuard(?Request $request = null) : ?string
+    {
+        $request = $request ?? Request::current() ;
+        return $request->route ? $request->route->guard() : null ;
     }
 
     /**
@@ -83,24 +131,19 @@ class Auth
      * @param Request $request
      * @param mixed $signin_id
      * @param string $password
-     * @param string|null $authenticator (default: auth of the route, if not set then use channel name)
-     * @return AuthUser|null
+     * @param string|null $guard (default: guard of the route, if not set then use channel name)
+     * @return AuthUser
      */
-    public static function attempt(Request $request, $signin_id, string $password, ?string $authenticator = null) : ?AuthUser
+    public static function attempt(Request $request, $signin_id, string $password, ?string $guard = null) : AuthUser
     {
-        $route    = $request->route;
-        $auth     = $authenticator ?? ($route ? $route->auth() : null) ?? Router::getCurrentChannel() ;
-        $provider = static::configInstantiate("authenticator.{$auth}.provider");
-        $user     = $provider->findByCredentials($signin_id, $password);
-
-        if ($user) {
-            $user->provider($provider->authenticator($auth));
-
-            $guard = static::configInstantiate("authenticator.{$auth}.guard");
-            $user->guard($guard->authenticator($auth));
+        $guard = static::guard($guard ?? static::applicableGuard($request));
+        if ($guard === null) {
+            return AuthUser::guest();
         }
-
-        return $user;
+        if (!($guard instanceof StatefulGuard)) {
+            throw new AuthenticateException("Auth::attempt() supported only StatefulGuard, the given guard '{$guard->name()}' is not StatefulGuard.");
+        }
+        return $guard->attempt($signin_id, $password);
     }
 
     /**
@@ -108,48 +151,53 @@ class Auth
      * If the user who was guarded and redirected to sign in page will success sign in then replay the guarded request, otherwise go to given url.
      *
      * @param Request $request
-     * @param AuthUser|null $user
-     * @param string $fallback url when signin failed
+     * @param AuthUser $user
+     * @param string $backto url when signin failed
      * @param string $goto url when signined (default: '/')
      * @param bool $remember (default: false)
      * @return Response
      * @uses Event::dispatch SigninFailed when signin failed.
      * @uses Event::dispatch Signined when signin success.
      */
-    public static function signin(Request $request, ?AuthUser $user, string $fallback, string $goto = '/', bool $remember = false) : Response
+    public static function signin(Request $request, AuthUser $user, string $backto, string $goto = '/', bool $remember = false) : Response
     {
-        if ($user === null || $user->isGuest()) {
-            Event::dispatch(new SigninFailed($request, $user ? $user->charengedSigninId() : null));
-            return Responder::redirect($fallback)
+        if ($user->isGuest()) {
+            Event::dispatch(new SigninFailed($request, $user->charengedSigninId()));
+            return Responder::redirect($backto)
                     ->with($request->input())
                     ->errors(['signin' => [Translator::get('message.signin_failed')]])
                     ;
         }
 
-        $user->guard()->signin($request, $user, $remember);
-        static::$user = $user;
+        $guard = static::guard(static::applicableGuard($request));
+        if (!($guard instanceof StatefulGuard)) {
+            $name = $guard ? $guard->name() : 'null' ;
+            throw new AuthenticateException("Auth::signin() supported only StatefulGuard, the authenticated user's guard '{$name}' is not StatefulGuard.");
+        }
+
+        $response = $guard->signin($user, $goto, $remember);
         Event::dispatch(new Signined($request, $user, $remember));
-        return $request->replay('guarded_by_auth') ?? Responder::redirect($goto);
+        return $response;
     }
 
     /**
      * [Authentication] It will sign out the authenticated user.
      *
      * @param Request $request
-     * @param string $redirect_to (default: '/')
+     * @param string $goto (default: '/')
      * @return Response
      * @uses Event::dispatch Signouted when signout.
      */
-    public static function signout(Request $request, string $redirect_to = '/') : Response
+    public static function signout(Request $request, string $goto = '/') : Response
     {
-        $user = static::user();
-        if ($user === null || $user->isGuest()) {
-            return Responder::redirect($redirect_to);
+        $guard = static::guard(static::applicableGuard($request));
+        if (!$guard || $guard->user()->isGuest()) {
+            return Responder::redirect($goto);
         }
 
-        $response     = $user->guard()->signout($request, $user, $redirect_to);
-        static::$user = AuthUser::guest();
-        Event::dispatch(new Signouted($request, $user));
+        $signouted_user = $guard->user();
+        $response       = $guard->signout($goto);
+        Event::dispatch(new Signouted($request, $signouted_user));
         return $response;
     }
 
@@ -163,28 +211,16 @@ class Auth
      */
     public static function authenticate(Request $request) : ?Response
     {
-        $route    = $request->route;
-        $auth     = ($route ? $route->auth() : null) ?? Router::getCurrentChannel() ;
-        $guard    = static::configInstantiate("authenticator.{$auth}.guard")->authenticator($auth);
-        $provider = static::configInstantiate("authenticator.{$auth}.provider")->authenticator($auth);
-
-        $user  = $guard->authenticate($request, $provider)->provider($provider)->guard($guard);
-        $roles = $route ? $route->roles() : [] ;
-        if (empty($roles) || static::role($user, ...$roles)) {
-            static::$user = $user;
-            if (!$user->isGuest()) {
-                Event::dispatch(new Authenticated($request, $user));
-            }
+        $guard = static::guard(static::applicableGuard($request));
+        if (!$guard) {
             return null;
         }
-
-        $request->saveAs('guarded_by_auth');
-
-        if (!$user->isGuest()) {
-            Event::dispatch(new AuthenticateFailed($request, $user));
+        if ($fallback = $guard->authenticate()) {
+            Event::dispatch(new AuthenticateFailed($request, $guard->user()));
+            return $fallback;
         }
-        $fallback = static::config("authenticator.{$auth}.fallback");
-        return is_callable($fallback) ? $fallback($request) : Responder::redirect($fallback);
+        Event::dispatch(new Authenticated($request, $guard->user()));
+        return null;
     }
 
     /**

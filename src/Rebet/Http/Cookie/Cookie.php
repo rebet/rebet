@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Http\Cookie;
 
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Utility\Strings;
+use Rebet\Http\Request;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Http\Request;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\Strings;
 use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
 
 /**
@@ -192,15 +192,26 @@ class Cookie extends SymfonyCookie
      */
     public static function dequeue(string $name) : ?self
     {
-        $cookie = static::$queued[$name] ?? null;
+        $cookie = static::peek($name);
         unset(static::$queued[$name]);
         return $cookie;
     }
 
     /**
+     * Get the cookie of given name from queued for next response.
+     *
+     * @param string $name
+     * @return self|null
+     */
+    public static function peek(string $name) : ?self
+    {
+        return static::$queued[$name] ?? null;
+    }
+
+    /**
      *  Get the queued cookies for next response.
      *
-     * @return array
+     * @return self[]
      */
     public static function queued() : array
     {

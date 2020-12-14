@@ -7,9 +7,9 @@ use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
+use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tests\Mock\Enum\Gender;
 
 /**
  * @Table("users")
@@ -47,6 +47,10 @@ class UserWithAnnot extends Entity
      * @Defaults("user")
      */
     public $role;
+
+    public $password;
+
+    public $api_token;
 
     /**
      * @PhpType(DateTime::class)
