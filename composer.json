@@ -27,23 +27,24 @@
         "league/flysystem": "^1.1",
         "league/flysystem-cached-adapter": "^1.1",
         "matomo/device-detector": "^4.0",
-        "monolog/monolog": "^2.1",
+        "monolog/monolog": "^2.2",
         "swiftmailer/swiftmailer": "^6.2",
-        "symfony/cache": "^5.1",
-        "symfony/console": "^5.1",
-        "symfony/http-foundation": "^5.1",
-        "symfony/mime": "^5.1",
-        "vlucas/phpdotenv": "^5.1"
+        "symfony/cache": "^5.2",
+        "symfony/console": "^5.2",
+        "symfony/http-foundation": "^5.2",
+        "symfony/mime": "^5.2",
+        "vlucas/phpdotenv": "^5.2"
     },
     "require-dev": {
-        "illuminate/view": "^7.27",
+        "symfony/cache": "5.2.x-dev",
+        "illuminate/view": "^7.30",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-memory": "^1.0",
         "league/flysystem-sftp": "^1.0",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.3",
+        "phpunit/phpunit": "^9.5",
         "predis/predis": "^1.1",
-        "twig/twig": "^3.0"
+        "twig/twig": "^3.1"
     },
     "autoload": {
         "psr-4": {
@@ -56,7 +57,7 @@
         }
     },
     "suggest": {
-        "illuminate/view": "Required to use the 'Blade' view template engine (^5.7).",
+        "illuminate/view": "Required to use the 'Blade' view template engine (^7.30).",
         "twig/twig": "Required to use the 'Twig' view template engine (^3.1).",
         "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (^1.0).",
         "league/flysystem-sftp": "Required to use the Flysystem SFTP driver (^1.0)."
