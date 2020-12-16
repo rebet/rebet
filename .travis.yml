@@ -1,7 +1,7 @@
 language: php
 php:
-  - 7.3.24
-  - 7.4.12
+  - 7.3
+  - 7.4
 
 services:
   - mysql
@@ -23,7 +23,7 @@ before_script:
   - psql -c 'CREATE DATABASE rebet_test;' -U postgres
 
 script:
-  - vendor/bin/phpunit --testdox --coverage-clover=coverage.xml
+  - vendor/bin/phpunit --debug --coverage-clover=coverage.xml
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -cF php
