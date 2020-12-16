@@ -290,8 +290,8 @@ class HeaderSetTest extends RebetTestCase
     }
 
     /**
-     * @covers HeaderSet::toReadableString
-     * @covers HeaderSet::convertToReadableString
+     * @covers Rebet\Mail\Mime\HeaderSet::toReadableString
+     * @covers Rebet\Mail\Mime\HeaderSet::convertToReadableString
      */
     public function test_toReadableString()
     {

@@ -72,8 +72,8 @@ class MimeMessageTest extends RebetTestCase
     }
 
     /**
-     * @covers MimeMessage::toReadableString
-     * @covers MimeMessage::convertToReadableString
+     * @covers Rebet\Mail\Mime\MimeMessage::toReadableString
+     * @covers Rebet\Mail\Mime\MimeMessage::convertToReadableString
      */
     public function test_toReadableString()
     {
