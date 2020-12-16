@@ -268,15 +268,15 @@ class LetterpressTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataEvaluates
-     */
-    public function test_evaluate(string $code, array $tests)
-    {
-        foreach ($tests as $i => [$vars, $expect]) {
-            $this->assertEquals($expect, Letterpress::evaluate($code, $vars), ">> {$code} test #{$i}");
-        }
-    }
+    // /**
+    //  * @dataProvider dataEvaluates
+    //  */
+    // public function test_evaluate(string $code, array $tests)
+    // {
+    //     foreach ($tests as $i => [$vars, $expect]) {
+    //         $this->assertEquals($expect, Letterpress::evaluate($code, $vars), ">> {$code} test #{$i}");
+    //     }
+    // }
 
     public function test_eval_if()
     {
