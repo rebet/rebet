@@ -2,7 +2,6 @@ language: php
 php:
   - 7.3.24
   - 7.4.12
-  - 7.4.13
 
 services:
   - mysql
@@ -24,7 +23,6 @@ before_script:
   - psql -c 'CREATE DATABASE rebet_test;' -U postgres
 
 script:
-  - php -ini | grep memory_limit
   - vendor/bin/phpunit --testdox --coverage-clover=coverage.xml
 
 after_success:
