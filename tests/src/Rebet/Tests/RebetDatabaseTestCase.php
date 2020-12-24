@@ -38,7 +38,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                 'default_db' => 'sqlite',
                 'dbs='       => [
                     'sqlite' => [
-                        'dsn'   => 'sqlite:/var/lib/sqlite/rebet.db',
+                        'dsn'   => 'sqlite:/tmp/sqlite/rebet.db',
                         // 'emulated_sql_log' => false,
                         'debug' => true,
                     ],

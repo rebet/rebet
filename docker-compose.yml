@@ -15,7 +15,7 @@ services:
       - .:/app
       - work:/app/tests/work
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
-      - ./docker/var/data/sqlite:/var/lib/sqlite
+      - ./docker/var/data/sqlite:/tmp/sqlite
     working_dir: /app
   sqlite:
     build: ./docker/sqlite/
@@ -23,7 +23,7 @@ services:
       SQLITE_DATABASE: rebet.db
       SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
     volumes:
-      - ./docker/var/data/sqlite:/var/lib/sqlite
+      - ./docker/var/data/sqlite:/tmp/sqlite
   mysql:
     image: mysql
     environment:
@@ -48,7 +48,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./docker/var/data/sqlite:/var/lib/sqlite
+      - ./docker/var/data/sqlite:/tmp/sqlite
   memcached:
     image: memcached
   redis:

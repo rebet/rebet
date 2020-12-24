@@ -28,8 +28,8 @@ before_script:
   - mysql -u root < docker/mysql/initdb.d/002_create_tables.sql
   - psql -U postgres < docker/pgsql/initdb.d/001_create_database.sql
   - psql -U postgres < docker/pgsql/initdb.d/002_create_tables.sql
-  - mkdir -p /var/lib/sqlite ; echo ".open /var/lib/sqlite/rebet.db" | sqlite3
-  - sqlite3 /var/lib/sqlite/rebet.db < docker/sqlite/initdb.d/create_tables.sql
+  - mkdir -p /tmp/sqlite ; echo ".open /tmp/sqlite/rebet.db" | sqlite3
+  - sqlite3 /tmp/sqlite/rebet.db < docker/sqlite/initdb.d/create_tables.sql
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
