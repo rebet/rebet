@@ -231,8 +231,9 @@ abstract class Entity extends DataModel
      */
     public function exists($db = null) : bool
     {
-        $condition = Database::buildPrimaryWheresFrom($this);
-        return static::db($db)->exists("SELECT * FROM ".static::tabelName().$condition->where(), $condition->params);
+        $db        = static::db($db);
+        $condition = $db->buildPrimaryWheresFrom($this);
+        return $db->exists("SELECT * FROM ".$db->quoteIdentifier(static::tabelName()).$condition->where(), $condition->params);
     }
 
     /**
@@ -337,8 +338,8 @@ abstract class Entity extends DataModel
     /**
      * {@inheritDoc}
      */
-    protected static function buildSelectAllSql() : string
+    protected static function buildSelectAllSql(Database $db) : string
     {
-        return "SELECT * FROM ".static::tabelName();
+        return "SELECT * FROM ".$db->quoteIdentifier(static::tabelName());
     }
 }

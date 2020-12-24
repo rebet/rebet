@@ -25,11 +25,6 @@ class DataModelTest extends RebetDatabaseTestCase
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    protected function tables(string $db_name) : array
-    {
-        return static::BASIC_TABLES[$db_name] ?? [];
-    }
-
     protected function records(string $db_name, string $table_name) : array
     {
         return [
@@ -177,8 +172,8 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::find(2);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '2' LIMIT 1"
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1"
             ], $this->executedSqls());
 
             // SQLite not support 'FOR UPDATE'.
@@ -189,8 +184,8 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::find(2, true);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '2' LIMIT 1 FOR UPDATE"
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE"
             ], $this->executedSqls());
         });
     }
@@ -211,8 +206,8 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::findBy(['name' => 'Alta Hegmann']);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE name = 'Alta Hegmann' LIMIT 1"
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?name? = 'Alta Hegmann' LIMIT 1"
             ], $this->executedSqls());
 
             // SQLite not support 'FOR UPDATE'.
@@ -223,8 +218,8 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::findBy(['gender' => Gender::MALE(), 'name_contains' => 'Alta'], true);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE gender = '1' AND name LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE"
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE"
             ], $this->executedSqls());
         });
     }
@@ -244,8 +239,8 @@ class DataModelTest extends RebetDatabaseTestCase
 
             $this->clearExecutedSqls();
             $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1, true)->pluk('user_id'));
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE gender = '1' ORDER BY user_id ASC LIMIT 1 FOR UPDATE"
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?gender? = '1' ORDER BY ?user_id? ASC LIMIT 1 FOR UPDATE"
             ], $this->executedSqls());
         });
     }
@@ -277,10 +272,10 @@ class DataModelTest extends RebetDatabaseTestCase
             $fortune = $user->fortune();
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('good', $fortune->result);
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM articles WHERE article_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?article_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
             ], $this->executedSqls());
 
 
@@ -293,10 +288,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))",
             ], $this->executedSqls());
 
 
@@ -310,10 +305,10 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($expect_user_ids[$i], $user->user_id);
                     $this->assertEquals($expect_fortunes[$i], $fortune->result);
                 }
-                $this->assertEquals([
-                    "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
-                    "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1') FOR UPDATE",
-                    "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08')) FOR UPDATE",
+                $this->assertWildcardEach([
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1') FOR UPDATE",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08')) FOR UPDATE",
                 ], $this->executedSqls());
             }
 
@@ -327,18 +322,18 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '2' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '1' AND birthday = '2003-02-16' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '2' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '1' AND birthday = '2003-02-16' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE gender = '2' AND birthday = '1990-01-08' LIMIT 1",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
             ], $this->executedSqls());
 
 
@@ -351,10 +346,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user ? $user->user_id : null);
                 $this->assertEquals($expect_fortunes[$i], $fortune ? $fortune->result : null);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('5', '4', '3', '2', '1')",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '1992-10-17') OR (gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('5', '4', '3', '2', '1')",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '1992-10-17') OR (?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))",
             ], $this->executedSqls());
 
 
@@ -367,10 +362,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user ? $user->user_id : null);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))",
             ], $this->executedSqls());
 
 
@@ -389,12 +384,12 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM articles ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
-                "/* Emulated SQL */ SELECT * FROM fortunes WHERE ((gender = '1' AND birthday = '2003-02-16') OR (gender = '2' AND birthday = '1990-01-08'))",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))",
             ], $this->executedSqls());
 
 
@@ -423,9 +418,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $bank = $user->bank();
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('bank name', $bank->name);
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM banks WHERE user_id = '1' LIMIT 1",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '1' LIMIT 1",
             ], $this->executedSqls());
 
 
@@ -454,9 +449,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_bank_names[$i], $bank ? $bank->name : null);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM banks WHERE user_id IN ('3', '2', '1')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? IN ('3', '2', '1')",
             ], $this->executedSqls());
 
 
@@ -471,10 +466,10 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_bank_names[$i], $bank ? $bank->name : null);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM fortunes ORDER BY gender DESC, birthday DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE ((gender = '2' AND birthday = '1990-01-08') OR (gender = '1' AND birthday = '2003-02-16'))",
-                "/* Emulated SQL */ SELECT * FROM banks WHERE user_id IN ('1', '2')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? ORDER BY ?gender? DESC, ?birthday? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ((?gender? = '2' AND ?birthday? = '1990-01-08') OR (?gender? = '1' AND ?birthday? = '2003-02-16'))",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? IN ('1', '2')",
             ], $this->executedSqls());
 
 
@@ -490,11 +485,11 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($expect_user_ids[$i], $user->user_id);
                     $this->assertEquals($expect_bank_names[$i], $bank ? $bank->name : null);
                 }
-                $this->assertEquals([
-                    "/* Emulated SQL */ SELECT * FROM fortunes ORDER BY gender DESC, birthday DESC",
-                    "/* Emulated SQL */ SELECT * FROM users WHERE ((gender = '2' AND birthday = '1990-01-08') OR (gender = '1' AND birthday = '2003-02-16')) ORDER BY user_id DESC",
-                    "/* Emulated SQL */ SELECT * FROM banks WHERE user_id = '1' LIMIT 1 FOR UPDATE",
-                    "/* Emulated SQL */ SELECT * FROM banks WHERE user_id = '2' LIMIT 1 FOR UPDATE",
+                $this->assertWildcardEach([
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? ORDER BY ?gender? DESC, ?birthday? DESC",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ((?gender? = '2' AND ?birthday? = '1990-01-08') OR (?gender? = '1' AND ?birthday? = '2003-02-16')) ORDER BY ?user_id? DESC",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '1' LIMIT 1 FOR UPDATE",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE",
                 ], $this->executedSqls());
             }
         });
@@ -512,9 +507,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
             ], $this->executedSqls());
 
 
@@ -525,9 +520,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE subject LIKE '%foo%' ESCAPE '|' AND user_id = '1' ORDER BY article_id DESC",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?subject? LIKE '%foo%' ESCAPE '|' AND ?user_id? = '1' ORDER BY ?article_id? DESC",
             ], $this->executedSqls());
 
 
@@ -538,9 +533,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id ASC",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? ASC",
             ], $this->executedSqls());
 
 
@@ -551,9 +546,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC LIMIT 2",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC LIMIT 2",
             ], $this->executedSqls());
 
 
@@ -565,9 +560,9 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals(1, $article->user_id);
                     $this->assertEquals($expect_article_ids[$i], $article->article_id);
                 }
-                $this->assertEquals([
-                    "/* Emulated SQL */ SELECT * FROM users WHERE user_id = '1' LIMIT 1",
-                    "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC FOR UPDATE",
+                $this->assertWildcardEach([
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC FOR UPDATE",
                 ], $this->executedSqls());
             }
 
@@ -592,10 +587,10 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($user->user_id, $owner->user_id);
                 }
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('3', '2', '1') ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
             ], $this->executedSqls());
 
 
@@ -617,9 +612,9 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($expect_article_ids[$j], $article->article_id);
                 }
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE subject LIKE '%baz%' ESCAPE '|' AND user_id IN ('3', '2', '1') ORDER BY article_id DESC",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?subject? LIKE '%baz%' ESCAPE '|' AND ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC",
             ], $this->executedSqls());
 
 
@@ -643,10 +638,10 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($user->user_id, $owner->user_id);
                 }
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE subject LIKE '%foo%' ESCAPE '|' AND user_id IN ('3', '2', '1') ORDER BY article_id ASC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('1')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?subject? LIKE '%foo%' ESCAPE '|' AND ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? ASC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('1')",
             ], $this->executedSqls());
 
 
@@ -670,10 +665,10 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($user->user_id, $owner->user_id);
                 }
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('3', '2', '1') ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
             ], $this->executedSqls());
 
 
@@ -698,10 +693,10 @@ class DataModelTest extends RebetDatabaseTestCase
                         $this->assertEquals($user->user_id, $owner->user_id);
                     }
                 }
-                $this->assertEquals([
-                    "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                    "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('3', '2', '1') ORDER BY article_id DESC FOR UPDATE",
-                    "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2', '1')",
+                $this->assertWildcardEach([
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC FOR UPDATE",
+                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
                 ], $this->executedSqls());
             }
 
@@ -726,13 +721,13 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($user->user_id, $owner->user_id);
                 }
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM users ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '3' ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '2' ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('2')",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id = '1' ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('1')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '3' ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '2' ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2')",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('1')",
             ], $this->executedSqls());
 
 
@@ -763,11 +758,11 @@ class DataModelTest extends RebetDatabaseTestCase
                     }
                 }
             }
-            $this->assertEquals([
-                "/* Emulated SQL */ SELECT * FROM fortunes ORDER BY gender DESC, birthday DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE ((gender = '2' AND birthday = '1990-01-08') OR (gender = '1' AND birthday = '2003-02-16')) ORDER BY user_id DESC",
-                "/* Emulated SQL */ SELECT * FROM articles WHERE user_id IN ('1', '2') ORDER BY article_id DESC",
-                "/* Emulated SQL */ SELECT * FROM users WHERE user_id IN ('1', '2')",
+            $this->assertWildcardEach([
+                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? ORDER BY ?gender? DESC, ?birthday? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ((?gender? = '2' AND ?birthday? = '1990-01-08') OR (?gender? = '1' AND ?birthday? = '2003-02-16')) ORDER BY ?user_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? IN ('1', '2') ORDER BY ?article_id? DESC",
+                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('1', '2')",
             ], $this->executedSqls());
         });
     }

@@ -11,6 +11,11 @@ services:
 
 addons:
   postgresql: "9.6"
+  hosts:
+    - mysql
+    - pgsql
+    - memcached
+    - redis
 
 before_install:
   - phpenv config-add ./tests/travis/php.ini
@@ -19,8 +24,12 @@ install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 before_script:
-  - mysql -uroot -e "CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin"
-  - psql -c 'CREATE DATABASE rebet_test;' -U postgres
+  - mysql -u root < docker/mysql/initdb.d/001_create_database.sql
+  - mysql -u root < docker/mysql/initdb.d/002_create_tables.sql
+  - psql -U postgres < docker/pgsql/initdb.d/001_create_database.sql
+  - psql -U postgres < docker/pgsql/initdb.d/002_create_tables.sql
+  - mkdir -p /var/lib/sqlite ; echo ".open /var/lib/sqlite/rebet.db" | sqlite3
+  - sqlite3 /var/lib/sqlite/rebet.db < docker/sqlite/initdb.d/create_tables.sql
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml

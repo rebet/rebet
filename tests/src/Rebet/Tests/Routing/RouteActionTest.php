@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Routing;
 
 use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Application\App;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -84,6 +85,7 @@ class RouteActionTest extends RebetTestCase
 
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/with-convert-enum-param/1');
 
+        App::setLocale('ja');
         $response = $route_action->invoke($request);
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Controller: withConvertEnumParam - 男性', $response->getContent());

@@ -50,6 +50,11 @@ class Database
             'analyzer'    => BuiltinAnalyzer::class,
             'ransacker'   => BuiltinRansacker::class,
             'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
+            'quoters'     => [
+                'mysql'   => function (string $identifier) { return '`'.$identifier.'`'; },
+                'mssql'   => function (string $identifier) { return '['.$identifier.']'; },
+                'default' => function (string $identifier) { return '"'.$identifier.'"'; },
+            ],
         ];
     }
 
@@ -153,6 +158,17 @@ class Database
     public function driverName() : string
     {
         return $this->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+    }
+
+    /**
+     *  It checks the PDO driver name contains in given names or not.
+     *
+     * @param string ...$names
+     * @return bool
+     */
+    public function driverNameIn(string ...$names) : bool
+    {
+        return in_array($this->driverName(), $names);
     }
 
     /**
@@ -440,6 +456,49 @@ class Database
     }
 
     /**
+     * Quote identifier names.
+     *
+     * @param string $identifier
+     * @return string
+     */
+    public function quoteIdentifier(string $identifier) : string
+    {
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $identifier)) {
+            return $identifier;
+        }
+
+        $quoter = static::config('quoters.'.$this->driverName(), false) ?? static::config('quoters.default') ;
+        return $quoter($identifier);
+    }
+
+    /**
+     * Truncate given table data.
+     * NOTE: This method reset identity number
+     *
+     * @param string $table_name
+     * @param bool $with_vacuum if needed for sqlite (default: true)
+     * @return void
+     */
+    public function truncate(string $table_name, ?bool $with_vacuum = true) : void
+    {
+        $quoted_table_name = $this->quoteIdentifier($table_name);
+        switch ($this->driverName()) {
+            case 'sqlite':
+                $this->execute("DELETE FROM {$quoted_table_name}");
+                $this->execute("DELETE FROM sqlite_sequence WHERE name = :table_name", ['table_name' => $table_name]);
+                if ($with_vacuum) {
+                    $this->execute("VACUUM");
+                }
+            return;
+            case 'pgsql':
+                $this->execute("TRUNCATE TABLE {$quoted_table_name} RESTART IDENTITY");
+            return;
+        }
+
+        $this->execute("TRUNCATE TABLE {$quoted_table_name}");
+    }
+
+    /**
      * Returns the ID of the last inserted row or sequence value of given name
      *
      * @param string|null $name (default: null)
@@ -719,11 +778,11 @@ class Database
                         $entity->$column = $value = Reflector::convert(...$default);
                     }
                 }
-                $columns[] = $column;
+                $columns[] = $this->quoteIdentifier($column);
                 $values[]  = $value;
             }
 
-            $table_name    = $entity::tabelName();
+            $table_name    = $this->quoteIdentifier($entity::tabelName());
             $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
             if ($affected_rows !== 1) {
                 return false;
@@ -770,7 +829,7 @@ class Database
      * @param Entity $entity
      * @return Condition
      */
-    public static function buildPrimaryWheresFrom(Entity $entity) : Condition
+    public function buildPrimaryWheresFrom(Entity $entity) : Condition
     {
         $class    = get_class($entity);
         $primarys = $class::primaryKeys();
@@ -781,7 +840,7 @@ class Database
         $where  = [];
         $params = [];
         foreach ($primarys as $column) {
-            $where[]         = "{$column} = :{$column}";
+            $where[]         = "{$this->quoteIdentifier($column)} = :{$column}";
             $params[$column] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
         }
 
@@ -801,25 +860,25 @@ class Database
         $now = $now ?? DateTime::now();
         Event::dispatch(new Updating($this, $old, $entity));
 
-        $condition = static::buildPrimaryWheresFrom($entity);
+        $condition = $this->buildPrimaryWheresFrom($entity);
         $params    = $condition->params;
         $changes   = $entity->changes();
         $sets      = [];
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
-            $sets[]       = "{$column} = :{$key}";
+            $sets[]       = "{$this->quoteIdentifier($column)} = :{$key}";
             $params[$key] = $value;
         }
 
         if ($entity::UPDATED_AT && !isset($params[$entity::UPDATED_AT])) {
-            $sets[]                        = $entity::UPDATED_AT.' = :'.$entity::UPDATED_AT;
+            $sets[]                        = $this->quoteIdentifier($entity::UPDATED_AT).' = :'.$entity::UPDATED_AT;
             $params[$entity::UPDATED_AT]   = $now;
             $entity->{$entity::UPDATED_AT} = $now;
         } elseif (empty($changes)) {
             return true;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets).$condition->where(), $params);
+        $affected_rows = $this->execute("UPDATE ".$this->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -850,8 +909,8 @@ class Database
     public function delete(Entity $entity) : bool
     {
         Event::dispatch(new Deleting($this, $entity));
-        $condition     = static::buildPrimaryWheresFrom($entity);
-        $affected_rows = $this->execute("DELETE FROM ".$entity->tabelName().$condition->where(), $condition->params);
+        $condition     = $this->buildPrimaryWheresFrom($entity);
+        $affected_rows = $this->execute("DELETE FROM ".$this->quoteIdentifier($entity->tabelName()).$condition->where(), $condition->params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -883,11 +942,11 @@ class Database
         $params    = $condition->params;
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
-            $sets[]       = "{$column} = :{$key}";
+            $sets[]       = "{$this->quoteIdentifier($column)} = :{$key}";
             $params[$key] = $value;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$entity::tabelName()." SET ".join(', ', $sets).$condition->where(), $params);
+        $affected_rows = $this->execute("UPDATE ".$this->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
         }
@@ -907,7 +966,7 @@ class Database
         Event::dispatch(new BatchDeleting($this, $entity, $ransack));
 
         $condition     = $this->ransacker->build($ransack, $alias);
-        $affected_rows = $this->execute("DELETE FROM ".$entity::tabelName().$condition->where(), $condition->params);
+        $affected_rows = $this->execute("DELETE FROM ".$this->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchDeleted($this, $entity, $ransack, $affected_rows));
         }
@@ -925,7 +984,7 @@ class Database
     public function existsBy(string $entity, $ransack, array $alias = []) : bool
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->exists("SELECT * FROM ".$entity::tabelName().$condition->where(), $condition->params);
+        return $this->exists("SELECT * FROM ".$this->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params);
     }
 
     /**
@@ -939,7 +998,7 @@ class Database
     public function countBy(string $entity, $ransack, array $alias = []) : int
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$entity::tabelName().$condition->where(), [], $condition->params);
+        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$this->quoteIdentifier($entity::tabelName()).$condition->where(), [], $condition->params);
     }
 
     /**

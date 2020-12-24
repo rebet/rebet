@@ -36,7 +36,6 @@ use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Securities;
 use stdClass;
 
 class DatabaseTest extends RebetDatabaseTestCase
@@ -45,11 +44,6 @@ class DatabaseTest extends RebetDatabaseTestCase
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
-    }
-
-    protected function tables(string $db_name) : array
-    {
-        return static::BASIC_TABLES[$db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array
@@ -361,7 +355,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $article->body    = 'bar';
             $article->create();
 
-            $this->assertSame('1', $db->lastInsertId());
+            $this->assertSame('1', $db->lastInsertId(), $db->name());
             $this->assertSame('1', $article->article_id);
 
             $article          = new Article();
@@ -1265,7 +1259,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertTrue($db->create($article));
             $this->assertTrue($creating_event_called);
             $this->assertTrue($created_event_called);
-            $this->assertEquals(1, $article->article_id);
+            $this->assertEquals(1, $article->article_id, $db->name());
             $this->assertSame('Test', $article->subject);
             $this->assertSame('This is test via creating', $article->body);
 

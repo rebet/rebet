@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Database\Compiler;
 
-use Rebet\Tools\Utility\Strings;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
@@ -11,6 +10,7 @@ use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\Statement;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Builtin Compiler Class
@@ -205,7 +205,7 @@ class BuiltinCompiler implements Compiler
     {
         $order = [];
         foreach ($order_by as $col => $asc_desc) {
-            $order[] = "{$col} {$asc_desc}";
+            $order[] = "{$this->db->quoteIdentifier($col)} {$asc_desc}";
         }
         return implode(', ', $order);
     }
@@ -239,7 +239,7 @@ class BuiltinCompiler implements Compiler
                 $key          = ":cursor__{$i}__{$j}";
                 $params[$key] = $params[":cursor__0__{$j}"] ?? $this->db->convertToPdo($cursor[$col]);
 
-                $where .= "{$real_col} = {$key} AND ";
+                $where .= "{$this->db->quoteIdentifier($real_col)} = {$key} AND ";
                 $j++;
             }
 
@@ -251,7 +251,7 @@ class BuiltinCompiler implements Compiler
             $key          = ":cursor__{$i}__{$j}";
             $params[$key] = $params[":cursor__0__{$j}"] ?? $this->db->convertToPdo($cursor[$last]);
 
-            $where .= "{$real_last} {$expression} {$key}";
+            $where .= "{$this->db->quoteIdentifier($real_last)} {$expression} {$key}";
             $where .= ")";
             $i++;
         } while (!empty($cursor_cols));

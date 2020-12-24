@@ -2,10 +2,10 @@
 namespace Rebet\Tests\Tools\Enum;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Enum\Enum;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Translation\Translator;
 
 class EnumTest extends RebetTestCase
@@ -16,6 +16,7 @@ class EnumTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
+        App::setLocale('ja');
         $this->male   = Gender::MALE();
         $this->female = Gender::FEMALE();
     }

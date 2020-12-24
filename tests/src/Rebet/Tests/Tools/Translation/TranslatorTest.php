@@ -8,6 +8,12 @@ use Rebet\Tools\Translation\Translator;
 
 class TranslatorTest extends RebetTestCase
 {
+    public function setUp() : void
+    {
+        parent::setUp();
+        App::setLocale('ja');
+    }
+
     public function test_addResourceTo()
     {
         $this->assertFalse(in_array('/path/to/resource', FileDictionary::config('resources.i18n'), true));

@@ -93,20 +93,20 @@ class HttpStatusTest extends RebetTestCase
         $this->assertSame(true, HttpStatus::isServerError(500));
     }
 
-    public function test_abort_ja()
-    {
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage("404 指定のページが見つかりません");
-
-        HttpStatus::abort(404);
-    }
-
     public function test_abort_en()
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage("404 Custom Not Found");
 
-        App::setLocale('en');
+        HttpStatus::abort(404);
+    }
+
+    public function test_abort_ja()
+    {
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage("404 指定のページが見つかりません");
+
+        App::setLocale('ja');
         HttpStatus::abort(404);
     }
 

@@ -26,7 +26,7 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     public function test_resolve()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertEquals(new Condition('name = :name', ['name' => 'foo']), BuiltinRansacker::of($db)->resolve('name', 'foo'));
+            $this->assertEquals(new Condition($db->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($db)->resolve('name', 'foo'));
         });
     }
 
@@ -34,35 +34,35 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     {
         return [
             [
-                new Condition('name = :name', ['name' => 'foo']),
+                '?name? = :name',
+                ['name' => 'foo'],
                 ['name' => 'foo'],
             ],
             [
-                new Condition('name = :name AND gender = :gender', ['name' => 'foo', 'gender' => Gender::MALE()]),
+                '?name? = :name AND ?gender? = :gender',
+                ['name' => 'foo', 'gender' => Gender::MALE()],
                 ['name' => 'foo', 'gender' => Gender::MALE()],
             ],
             [
-                new Condition('name = :name', ['name' => 'foo']),
+                '?name? = :name',
+                ['name' => 'foo'],
                 ['name' => 'foo', 'gender' => null],
             ],
             [
-                new Condition(
-                    'name = :name AND ((gender = :gender_0 AND age > :age_gt_0) OR (gender = :gender_1 AND age <= :age_lteq_1))',
-                    ['name' => 'foo', 'gender_0' => 1, 'age_gt_0' => 20, 'gender_1' => 2, 'age_lteq_1' => 19]
-                ),
+                '?name? = :name AND ((?gender? = :gender_0 AND ?age? > :age_gt_0) OR (?gender? = :gender_1 AND ?age? <= :age_lteq_1))',
+                ['name' => 'foo', 'gender_0' => 1, 'age_gt_0' => 20, 'gender_1' => 2, 'age_lteq_1' => 19],
                 ['name' => 'foo', [['gender' => 1, 'age_gt' => 20], ['gender' => 2, 'age_lteq' => 19]]],
             ],
             [
-                new Condition('name = :name AND resign_at IS NOT NULL', ['name' => 'foo']),
+                '?name? = :name AND ?resign_at? IS NOT NULL',
+                ['name' => 'foo'],
                 ['name' => 'foo', 'resign_at_not_null' => 1],
             ],
             [
-                new Condition(
-                    '(first_name = :name_0 OR last_name = :name_1) AND gender = :gender',
-                    ['name_0' => 'foo', 'name_1' => 'foo', 'gender' => 1]
-                ),
-                ['name' => 'foo', 'gender' => 1],
-                ['name' => ['first_name', 'last_name']]
+                '(?first_name? = :name_0 OR ?last_name? = :name_1) AND ?gender? = :gender',
+                ['name_0' => 'foo', 'name_1' => 'foo', 'gender' => 1],
+                ['name'   => 'foo', 'gender' => 1],
+                ['name'   => ['first_name', 'last_name']]
             ],
         ];
     }
@@ -70,10 +70,12 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     /**
      * @dataProvider dataBuilds
      */
-    public function test_build($expect, $ransack, $alias = [], $extention = null, $dbs = [])
+    public function test_build($expect_sql, $expect_params, $ransack, $alias = [], $extention = null, $dbs = [])
     {
-        $this->eachDb(function (Database $db) use ($expect, $ransack, $alias, $extention) {
-            $this->assertEquals($expect, BuiltinRansacker::of($db)->build($ransack, $alias, $extention));
+        $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention) {
+            $condition = BuiltinRansacker::of($db)->build($ransack, $alias, $extention);
+            $this->assertwildcardString($expect_sql, $condition->sql);
+            $this->assertEquals($expect_params, $condition->params);
         }, ...$dbs);
     }
 }

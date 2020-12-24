@@ -2,10 +2,10 @@
 namespace Rebet\Tests\Http\Response;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Http\Response;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
 
 class ProblemResponseTest extends RebetTestCase
 {
@@ -15,6 +15,10 @@ class ProblemResponseTest extends RebetTestCase
         $this->assertInstanceOf(ProblemResponse::class, $response);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('application/problem+json', $response->getHeader('Content-Type'));
+        $this->assertSame('Custom Not Found', $response->getProblem('title'));
+
+        App::setLocale('ja');
+        $response = new ProblemResponse(404);
         $this->assertSame([
             'status' => 404,
             'title'  => '指定のページが見つかりません',
@@ -29,10 +33,6 @@ class ProblemResponseTest extends RebetTestCase
             'type'   => ProblemResponse::TYPE_FALLBACK_ERRORS,
         ], $response->getProblem());
 
-        App::setLocale('en');
-        $response = new ProblemResponse(404);
-        $this->assertSame('Custom Not Found', $response->getProblem('title'));
-
         App::setLocale('de', 'en');
         $response = new ProblemResponse(404);
         $this->assertSame('Custom Not Found', $response->getProblem('title'));
@@ -44,6 +44,8 @@ class ProblemResponseTest extends RebetTestCase
 
     public function test_detail()
     {
+        App::setLocale('ja');
+
         $response = (new ProblemResponse(404))->detail('Detail');
         $this->assertSame('Detail', $response->getProblem('detail'));
 

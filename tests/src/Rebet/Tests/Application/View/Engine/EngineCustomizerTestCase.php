@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Application\View\Engine;
 
+use Rebet\Application\App;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Http\Session\Session;
 use Rebet\Tests\Mock\Entity\User;
@@ -652,6 +653,7 @@ EOS
 
     public function test_tag_lang()
     {
+        App::setLocale('ja');
         $validator = new BuiltinValidations(); // load validation translate file
         $this->assertSame(
             <<<EOS
@@ -670,6 +672,7 @@ EOS
     {
         return [
             [
+                'ja',
                 [
                     '/前へ/',
                     '/次へ/',
@@ -688,6 +691,7 @@ EOS
                 ],
             ],
             [
+                'ja',
                 [
                     '/前へ/',
                     '/次へ/',
@@ -706,6 +710,7 @@ EOS
                 ],
             ],
             [
+                'ja',
                 [
                     '/前へ/',
                     '/次へ/',
@@ -725,6 +730,7 @@ EOS
                 // 3, 3, 1, 30, 4
             ],
             [
+                'ja',
                 [
                     '/前へ/',
                     '/次へ/',
@@ -749,11 +755,10 @@ EOS
     /**
      * @dataProvider dataPaginates
      */
-    public function test_tag_paginate(array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
+    public function test_tag_paginate(string $locale, array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
     {
-        $this->assertTrue(true);
-
         // @todo
+        App::setLocale($locale);
         $request    = $this->createRequestMock($action);
         $pagination = $this->render('custom/paginate', ['users' => new Paginator(array_fill(0, $page_size, 1), $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
         $this->assertRegExpString($expect, $pagination);

@@ -1,0 +1,55 @@
+version: '3'
+volumes:
+  work:
+services:
+  composer:
+    image: composer
+    environment:
+      COMPOSER_CACHE_DIR: /app/docker/var/cache/composer
+    volumes:
+      - .:/app
+    entrypoint: composer
+  php:
+    build: ./docker/php/
+    volumes:
+      - .:/app
+      - work:/app/tests/work
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/var/data/sqlite:/var/lib/sqlite
+    working_dir: /app
+  sqlite:
+    build: ./docker/sqlite/
+    environment:
+      SQLITE_DATABASE: rebet.db
+      SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
+    volumes:
+      - ./docker/var/data/sqlite:/var/lib/sqlite
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+  pgsql:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: haeckel      # see https://www.adminer.org/#extras https://github.com/vrana/adminer/tree/master/designs
+      ADMINER_PLUGINS: enum-option # see https://www.adminer.org/en/plugins/
+    ports:
+      - 8080:8080
+    volumes:
+      - ./docker/var/data/sqlite:/var/lib/sqlite
+  memcached:
+    image: memcached
+  redis:
+    image: redis

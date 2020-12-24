@@ -510,7 +510,7 @@ return [
         'resource_adder'  => [
             FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
         ],
-        'locale'          => null,
+        'locale'          => locale_get_default(),
         'fallback_locale' => 'en',
         'ordinalize'      => [
             'en' => function (int $num) {

@@ -2,15 +2,17 @@
 namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
 use Monolog\Logger as MonologLogger;
-use Rebet\Tools\DateTime\DateTime;
+use Rebet\Application\App;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class TextFormatterTest extends RebetTestCase
 {
     protected function setUp() : void
     {
         parent::setUp();
+        App::setLocale('ja');
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
     }
 

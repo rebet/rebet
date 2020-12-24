@@ -58,7 +58,8 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                     'memcached' => [
                         'adapter' => [
                             '@factory' => MemcachedAdapter::class,
-                            'dsn'      => 'memcached://localhost:11211',
+                            'dsn'      => 'memcached://memcached:11211',
+                            // 'dsn'      => 'memcached://localhost:11211',
                         ],
                     ],
                     'pdo-sqlite' => [
@@ -82,7 +83,8 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                     'redis' => [
                         'adapter'   => [
                             '@factory' => RedisAdapter::class,
-                            'dsn'      => 'redis://localhost/0',
+                            'dsn'      => 'redis://redis/0',
+                            // 'dsn'      => 'redis://localhost/0',
                         ],
                     ],
                 ],

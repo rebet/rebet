@@ -351,12 +351,12 @@ abstract class DataModel
         $primary_keys     = static::primaryKeys();
         $is_composite_key = count($primary_keys) !== 1 ;
 
+        $db = static::db($db);
         foreach ($primary_keys as $column) {
-            $where[]         = "{$column} = :{$column}";
+            $where[]         = "{$db->quoteIdentifier($column)} = :{$column}";
             $params[$column] = $is_composite_key ? Reflector::get($primaries, $column) : $primaries ;
         }
 
-        $db               = static::db($db);
         [$sql, /*param*/] = static::buildSelectSql($db);
         $sql              = $db->appendWhereTo($sql, $where);
 
@@ -430,15 +430,16 @@ abstract class DataModel
                 $params  = array_merge($params, $condition->params);
             }
         }
-        return [$db->appendWhereTo(static::buildSelectAllSql(), $where), $params];
+        return [$db->appendWhereTo(static::buildSelectAllSql($db), $where), $params];
     }
 
     /**
      * Build data model select all SQL.
      *
+     * @param Database $db
      * @return string of sql
      */
-    abstract protected static function buildSelectAllSql() : string;
+    abstract protected static function buildSelectAllSql(Database $db) : string;
 
     /**
      * Build optimized count SQL using given ransack conditions for paginate.

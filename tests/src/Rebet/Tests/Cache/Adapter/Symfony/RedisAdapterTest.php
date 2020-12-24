@@ -29,6 +29,6 @@ class RedisAdapterTest extends RebetTestCase
 {
     public function test___construct()
     {
-        $this->assertInstanceOf(RedisAdapter::class, new RedisAdapter('redis://localhost'));
+        $this->assertInstanceOf(RedisAdapter::class, new RedisAdapter('redis://redis'));
     }
 }

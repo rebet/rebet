@@ -15,261 +15,6 @@ use Rebet\Tools\Utility\Strings;
  */
 abstract class RebetDatabaseTestCase extends RebetTestCase
 {
-    const BASIC_TABLES = [
-        'sqlite' => [
-            'users' => <<<EOS
-                CREATE TABLE IF NOT EXISTS users (
-                    user_id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    gender INTEGER NOT NULL,
-                    birthday TEXT NOT NULL,
-                    email TEXT NOT NULL,
-                    role TEXT NOT NULL DEFAULT 'user',
-                    password TEXT NOT NULL,
-                    api_token TEXT,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT
-                );
-EOS
-            ,
-            'remember_tokens' => <<<EOS
-                CREATE TABLE IF NOT EXISTS remember_tokens (
-                    provider TEXT NOT NULL,
-                    remember_token TEXT NOT NULL,
-                    remember_id TEXT NOT NULL,
-                    expires_at TEXT NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT,
-                    PRIMARY KEY(provider, remember_token)
-                );
-EOS
-            ,
-            'banks' => <<<EOS
-                CREATE TABLE IF NOT EXISTS banks (
-                    user_id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    branch TEXT NOT NULL,
-                    number TEXT NOT NULL,
-                    holder TEXT NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT
-                );
-EOS
-            ,
-            'articles' => <<<EOS
-                CREATE TABLE IF NOT EXISTS articles (
-                    article_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id INTEGER NOT NULL,
-                    subject TEXT NOT NULL,
-                    body TEXT NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT
-                );
-EOS
-            ,
-            'groups' => <<<EOS
-                CREATE TABLE IF NOT EXISTS groups (
-                    group_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT
-                );
-EOS
-            ,
-            'group_user' => <<<EOS
-                CREATE TABLE IF NOT EXISTS group_user (
-                    group_id INTEGER,
-                    user_id INTEGER,
-                    position INTEGER NOT NULL DEFAULT 3,
-                    join_on TEXT NOT NULL DEFAULT CURRENT_DATE,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT,
-                    PRIMARY KEY(group_id, user_id)
-                );
-EOS
-            ,
-            'fortunes' => <<<EOS
-                CREATE TABLE IF NOT EXISTS fortunes (
-                    gender INTEGER NOT NULL,
-                    birthday TEXT NOT NULL,
-                    result TEXT NOT NULL,
-                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TEXT,
-                    PRIMARY KEY(gender, birthday)
-                );
-EOS
-            ,
-        ],
-        'mysql' => [
-            'users' => <<<EOS
-                CREATE TABLE IF NOT EXISTS users (
-                    user_id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    gender INTEGER NOT NULL,
-                    birthday DATE NOT NULL,
-                    email TEXT NOT NULL,
-                    role VARCHAR(6) NOT NULL DEFAULT 'user',
-                    password VARCHAR(255) NOT NULL,
-                    api_token VARCHAR(127),
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME
-                );
-EOS
-            ,
-            'remember_tokens' => <<<EOS
-                CREATE TABLE IF NOT EXISTS remember_tokens (
-                    provider VARCHAR(127) NOT NULL,
-                    remember_token VARCHAR(127) NOT NULL,
-                    remember_id VARCHAR(127) NOT NULL,
-                    expires_at DATETIME NOT NULL,
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME,
-                    PRIMARY KEY(provider, remember_token)
-                );
-EOS
-            ,
-            'banks' => <<<EOS
-                CREATE TABLE IF NOT EXISTS banks (
-                    user_id INTEGER PRIMARY KEY,
-                    name VARCHAR(127) NOT NULL,
-                    branch VARCHAR(127) NOT NULL,
-                    number VARCHAR(7) NOT NULL,
-                    holder VARCHAR(127) NOT NULL,
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME
-                );
-EOS
-            ,
-            'articles' => <<<EOS
-                CREATE TABLE IF NOT EXISTS articles (
-                    article_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    user_id INTEGER NOT NULL,
-                    subject VARCHAR(30) NOT NULL,
-                    body TEXT NOT NULL,
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME
-                );
-EOS
-            ,
-            'groups' => <<<EOS
-                CREATE TABLE IF NOT EXISTS groups (
-                    groups_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    name TEXT NOT NULL,
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME
-                );
-EOS
-            ,
-            'group_user' => <<<EOS
-                CREATE TABLE IF NOT EXISTS group_user (
-                    group_id INTEGER,
-                    user_id INTEGER,
-                    position INTEGER NOT NULL DEFAULT 3,
-                    join_on DATE NOT NULL,
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME,
-                    PRIMARY KEY(group_id, user_id)
-                );
-EOS
-            ,
-            'fortunes' => <<<EOS
-                CREATE TABLE IF NOT EXISTS fortunes (
-                    gender INTEGER NOT NULL,
-                    birthday DATE NOT NULL,
-                    result TEXT NOT NULL,
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at DATETIME,
-                    PRIMARY KEY(gender, birthday)
-                );
-EOS
-            ,
-        ],
-        'pgsql' => [
-            'users' => <<<EOS
-                CREATE TABLE IF NOT EXISTS users (
-                    user_id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    gender INTEGER NOT NULL,
-                    birthday DATE NOT NULL,
-                    email TEXT NOT NULL,
-                    role TEXT NOT NULL DEFAULT 'user',
-                    password TEXT NOT NULL,
-                    api_token TEXT,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP
-                );
-EOS
-            ,
-            'remember_tokens' => <<<EOS
-                CREATE TABLE IF NOT EXISTS remember_tokens (
-                    provider TEXT NOT NULL,
-                    remember_token TEXT NOT NULL,
-                    remember_id TEXT NOT NULL,
-                    expires_at TIMESTAMP NOT NULL,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP,
-                    PRIMARY KEY(provider, remember_token)
-                );
-EOS
-            ,
-            'banks' => <<<EOS
-                CREATE TABLE IF NOT EXISTS banks (
-                    user_id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    branch TEXT NOT NULL,
-                    number TEXT NOT NULL,
-                    holder TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP
-                );
-EOS
-            ,
-            'articles' => <<<EOS
-                CREATE TABLE IF NOT EXISTS articles (
-                    article_id SERIAL,
-                    user_id INTEGER NOT NULL,
-                    subject VARCHAR(30) NOT NULL,
-                    body TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP
-                );
-EOS
-            ,
-            'groups' => <<<EOS
-                CREATE TABLE IF NOT EXISTS groups (
-                    group_id SERIAL,
-                    name TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP
-                );
-EOS
-            ,
-            'group_user' => <<<EOS
-                CREATE TABLE IF NOT EXISTS group_user (
-                    group_id INTEGER,
-                    user_id INTEGER,
-                    position INTEGER NOT NULL DEFAULT 3,
-                    join_on Date NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP,
-                    PRIMARY KEY(group_id, user_id)
-                );
-EOS
-            ,
-            'fortunes' => <<<EOS
-                CREATE TABLE IF NOT EXISTS fortunes (
-                    gender INTEGER NOT NULL,
-                    birthday DATE NOT NULL,
-                    result TEXT NOT NULL,
-                    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP,
-                    PRIMARY KEY(gender, birthday)
-                );
-EOS
-            ,
-        ],
-    ];
-
     public static function setUpBeforeClass() : void
     {
         parent::setUpBeforeClass();
@@ -283,30 +28,25 @@ EOS
         parent::tearDownAfterClass();
     }
 
-    protected static $sqlite = null;
     private $executed_sqls   = [];
 
     protected function setUp() : void
     {
         parent::setUp();
-        if (!static::$sqlite) {
-            static::$sqlite = new \PDO('sqlite::memory:');
-        }
         Config::application([
             Dao::class => [
                 'default_db' => 'sqlite',
                 'dbs='       => [
                     'sqlite' => [
-                        'dsn'   => function () { return static::$sqlite; },
+                        'dsn'   => 'sqlite:/var/lib/sqlite/rebet.db',
                         // 'emulated_sql_log' => false,
                         'debug' => true,
                     ],
 
-                    // CREATE DATABASE rebet_test DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_bin;
                     'mysql' => [
-                        'dsn'      => 'mysql:host=localhost;dbname=rebet_test;charset=utf8mb4',
-                        'user'     => 'root',
-                        'password' => '',
+                        'dsn'      => 'mysql:host=mysql;dbname=rebet;charset=utf8mb4',
+                        'user'     => 'rebet',
+                        'password' => 'rebet',
                         'options'  => [
                             \PDO::ATTR_AUTOCOMMIT => false,
                         ],
@@ -314,14 +54,10 @@ EOS
                         'debug'    => true,
                     ],
 
-                    // CREATE DATABASE rebet_test WITH OWNER = postgres ENCODING = 'UTF8' CONNECTION LIMIT = -1;
-                    // pg_hba.conf:
-                    //   host    all     postgres             127.0.0.1/32            trust
-                    //   host    all     postgres             ::1/128                 trust
                     'pgsql' => [
-                        'dsn'      => "pgsql:host=localhost;dbname=rebet_test;options='--client_encoding=UTF8'",
-                        'user'     => 'postgres',
-                        'password' => '',
+                        'dsn'      => "pgsql:host=pgsql;dbname=rebet;options='--client_encoding=UTF8'",
+                        'user'     => 'rebet',
+                        'password' => 'rebet',
                         'options'  => [],
                         // 'emulated_sql_log' => false,
                         'debug'    => true,
@@ -340,31 +76,28 @@ EOS
         ]);
 
         Dao::clear();
-
         foreach (array_keys(Dao::config('dbs')) as $db_name) {
             if (!($db = $this->connect($db_name, false))) {
                 continue;
             }
 
             $db->begin();
-            $tables = $this->tables($db_name);
-            foreach ($tables as $table_name => $dml) {
-                $db->execute("DROP TABLE IF EXISTS {$table_name}");
-                $db->execute($dml);
-
-                $records = $this->records($db_name, $table_name);
+            foreach (['users', 'remember_tokens', 'banks', 'articles', 'groups', 'group_user', 'fortunes'] as $table_name) {
+                $db->truncate($table_name, false);
+                $records    = $this->records($db_name, $table_name);
+                $table_name = $db->quoteIdentifier($table_name);
                 foreach ($records as $record) {
                     if (Arrays::isSequential($record)) {
                         $db->execute("INSERT INTO {$table_name} VALUES (:values)", ['values' => $record]);
                     } else {
-                        $db->execute("INSERT INTO {$table_name} (". join(',', array_keys($record)).") VALUES (:values)", ['values' => $record]);
+                        $db->execute("INSERT INTO {$table_name} (". join(',', array_map(function ($v) use ($db) { return $db->quoteIdentifier($v); }, array_keys($record))).") VALUES (:values)", ['values' => $record]);
                     }
                 }
             }
             $db->commit();
         }
-
         Dao::clear();
+
         Cursor::clear();
         $this->executed_sqls = [];
     }
@@ -400,7 +133,7 @@ EOS
 
             $tables = $this->tables($db_name);
             foreach ($tables as $table_name => $dml) {
-                $db->execute("DROP TABLE IF EXISTS {$table_name}");
+                $db->truncate($table_name, false);
             }
         }
         parent::tearDown();

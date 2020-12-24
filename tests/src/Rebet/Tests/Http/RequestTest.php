@@ -85,6 +85,8 @@ class RequestTest extends RebetTestCase
         $this->expectException(FallbackRedirectException::class);
         $this->expectExceptionMessage("Validate Failed.");
 
+        App::setLocale('ja');
+
         $rule = [
             'name' => [
                 'label' => '氏名',

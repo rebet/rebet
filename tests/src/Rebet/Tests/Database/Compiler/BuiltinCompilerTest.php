@@ -7,9 +7,9 @@ use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\PdoParameter;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class BuiltinCompilerTest extends RebetDatabaseTestCase
 {
@@ -25,34 +25,34 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         return [
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user",
+                "SELECT \* FROM user",
                 [],
                 "SELECT * FROM user"
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc']
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY created_at ASC, user_id DESC",
+                "SELECT \* FROM user ORDER BY ?created_at? ASC, ?user_id? DESC",
                 [],
                 "SELECT * FROM user",
                 ['created_at' => 'asc', 'user_id' => 'desc']
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY COALESCE(update_at, created_at) ASC, user_id DESC",
+                "SELECT \* FROM user ORDER BY COALESCE(update_at, created_at) ASC, ?user_id? DESC",
                 [],
                 "SELECT * FROM user",
                 ['COALESCE(update_at, created_at)' => 'asc', 'user_id' => 'desc']
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender = :gender ORDER BY user_id DESC",
+                "SELECT \* FROM user WHERE gender = :gender ORDER BY ?user_id? DESC",
                 [':gender' => PdoParameter::int(1)],
                 "SELECT * FROM user WHERE gender = :gender",
                 ['user_id' => 'desc'],
@@ -60,7 +60,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender = :gender ORDER BY user_id DESC",
+                "SELECT \* FROM user WHERE gender = :gender ORDER BY ?user_id? DESC",
                 [':gender' => PdoParameter::int(1)],
                 "SELECT * FROM user WHERE gender = :gender",
                 ['user_id' => 'desc'],
@@ -68,7 +68,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
+                "SELECT \* FROM user WHERE gender = :gender AND created_at > :created_at",
                 [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06')],
                 "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
@@ -76,7 +76,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['pgsql'],
-                "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
+                "SELECT \* FROM user WHERE gender = :gender AND created_at > :created_at",
                 [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06+0000')],
                 "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
@@ -84,7 +84,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender IN (:gender__0, :gender__1)",
+                "SELECT \* FROM user WHERE gender IN (:gender__0, :gender__1)",
                 [':gender__0' => PdoParameter::int(1), ':gender__1' => PdoParameter::int(2)],
                 "SELECT * FROM user WHERE gender IN (:gender)",
                 null,
@@ -92,7 +92,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender IN (:gender__0)",
+                "SELECT \* FROM user WHERE gender IN (:gender__0)",
                 [':gender__0' => PdoParameter::int(1)],
                 "SELECT * FROM user WHERE gender IN (:gender)",
                 null,
@@ -100,7 +100,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender = :gender__0 AND (gender = :gender__1) AND gender = :gender__2",
+                "SELECT \* FROM user WHERE gender = :gender__0 AND (gender = :gender__1) AND gender = :gender__2",
                 [':gender__0' => PdoParameter::int(1), ':gender__1' => PdoParameter::int(1), ':gender__2' => PdoParameter::int(1)],
                 "SELECT * FROM user WHERE gender = :gender AND (gender = :gender) AND gender = :gender",
                 [],
@@ -108,7 +108,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender IN (:gender__0__0, :gender__0__1) AND gender IN (:gender__1__0, :gender__1__1)",
+                "SELECT \* FROM user WHERE gender IN (:gender__0__0, :gender__0__1) AND gender IN (:gender__1__0, :gender__1__1)",
                 [':gender__0__0' => PdoParameter::int(1), ':gender__0__1' => PdoParameter::int(2), ':gender__1__0' => PdoParameter::int(1), ':gender__1__1' => PdoParameter::int(2)],
                 "SELECT * FROM user WHERE gender IN (:gender) AND gender IN (:gender)",
                 null,
@@ -116,7 +116,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE gender IN (:gender__0, :gender__1)",
+                "SELECT \* FROM user WHERE gender IN (:gender__0, :gender__1)",
                 [':gender__0' => PdoParameter::int(1), ':gender__1' => PdoParameter::int(2)],
                 "SELECT * FROM user WHERE gender IN (:gender)",
                 null,
@@ -140,7 +140,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 11 OFFSET 0",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -149,7 +149,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 11 OFFSET 20",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 11 OFFSET 20",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -158,7 +158,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 16 OFFSET 30",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 16 OFFSET 30",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -167,7 +167,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 21 OFFSET 0",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 21 OFFSET 0",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -176,7 +176,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 41 OFFSET 0",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 41 OFFSET 0",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -185,7 +185,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 61 OFFSET 0",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 61 OFFSET 0",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -194,7 +194,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 51 OFFSET 10",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 51 OFFSET 10",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -203,7 +203,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 41 OFFSET 20",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 41 OFFSET 20",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -212,7 +212,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 31 OFFSET 30",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 31 OFFSET 30",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -221,7 +221,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 31 OFFSET 40",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 31 OFFSET 40",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -230,7 +230,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 31 OFFSET 50",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 31 OFFSET 50",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -239,7 +239,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 11 OFFSET 0",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -248,7 +248,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user ORDER BY user_id DESC LIMIT 11 OFFSET 50",
+                "SELECT \* FROM user ORDER BY ?user_id? DESC LIMIT 11 OFFSET 50",
                 [],
                 "SELECT * FROM user",
                 ['user_id' => 'desc'],
@@ -257,7 +257,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (user_id >= :cursor__0__0) ORDER BY user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user WHERE (?user_id? >= :cursor__0__0) ORDER BY ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::int(21)],
                 "SELECT * FROM user",
                 $order_by = ['user_id' => 'asc'],
@@ -267,7 +267,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE birthday < CURRENT_TIMESTAMP - INTERVAL 20 YEAR AND ((gender = :cursor__0__0 AND user_id >= :cursor__0__1) OR (gender < :cursor__1__0)) ORDER BY gender DESC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user WHERE birthday < CURRENT_TIMESTAMP - INTERVAL 20 YEAR AND ((?gender? = :cursor__0__0 AND ?user_id? >= :cursor__0__1) OR (?gender? < :cursor__1__0)) ORDER BY ?gender? DESC, ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2)],
                 "SELECT * FROM user WHERE birthday < CURRENT_TIMESTAMP - INTERVAL 20 YEAR",
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
@@ -277,7 +277,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user HAVING foo = 1 AND ((user_id >= :cursor__0__0)) ORDER BY user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user HAVING foo = 1 AND ((?user_id? >= :cursor__0__0)) ORDER BY ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::int(21)],
                 "SELECT * FROM user HAVING foo = 1",
                 $order_by = ['user_id' => 'asc'],
@@ -287,7 +287,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE foo = 1 HAVING bar = 1 AND ((user_id >= :cursor__0__0)) ORDER BY user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user WHERE foo = 1 HAVING bar = 1 AND ((?user_id? >= :cursor__0__0)) ORDER BY ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::int(21)],
                 "SELECT * FROM user WHERE foo = 1 HAVING bar = 1",
                 $order_by = ['user_id' => 'asc'],
@@ -297,7 +297,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND update_at = :cursor__0__1 AND user_id >= :cursor__0__2) OR (gender = :cursor__1__0 AND update_at < :cursor__1__1) OR (gender < :cursor__2__0) ORDER BY gender DESC, update_at DESC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user WHERE (?gender? = :cursor__0__0 AND ?update_at? = :cursor__0__1 AND ?user_id? >= :cursor__0__2) OR (?gender? = :cursor__1__0 AND ?update_at? < :cursor__1__1) OR (?gender? < :cursor__2__0) ORDER BY ?gender? DESC, ?update_at? DESC, ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::str('2000-12-18 12:34:56'), ':cursor__0__2' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2), ':cursor__1__1' => PdoParameter::str('2000-12-18 12:34:56'), ':cursor__2__0' => PdoParameter::int(2)],
                 "SELECT * FROM user",
                 $order_by = ['gender' => 'desc', 'update_at' => 'desc', 'user_id' => 'asc'],
@@ -307,7 +307,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['pgsql'],
-                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND update_at = :cursor__0__1 AND user_id >= :cursor__0__2) OR (gender = :cursor__1__0 AND update_at < :cursor__1__1) OR (gender < :cursor__2__0) ORDER BY gender DESC, update_at DESC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \* FROM user WHERE (?gender? = :cursor__0__0 AND ?update_at? = :cursor__0__1 AND ?user_id? >= :cursor__0__2) OR (?gender? = :cursor__1__0 AND ?update_at? < :cursor__1__1) OR (?gender? < :cursor__2__0) ORDER BY ?gender? DESC, ?update_at? DESC, ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::str('2000-12-18 12:34:56+0000'), ':cursor__0__2' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2), ':cursor__1__1' => PdoParameter::str('2000-12-18 12:34:56+0000'), ':cursor__2__0' => PdoParameter::int(2)],
                 "SELECT * FROM user",
                 $order_by = ['gender' => 'desc', 'update_at' => 'desc', 'user_id' => 'asc'],
@@ -317,7 +317,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND user_id >= :cursor__0__1) OR (gender < :cursor__1__0) ORDER BY gender DESC, user_id ASC LIMIT 11 OFFSET 20",
+                "SELECT \* FROM user WHERE (?gender? = :cursor__0__0 AND ?user_id? >= :cursor__0__1) OR (?gender? < :cursor__1__0) ORDER BY ?gender? DESC, ?user_id? ASC LIMIT 11 OFFSET 20",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2)],
                 "SELECT * FROM user",
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
@@ -327,7 +327,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND user_id <= :cursor__0__1) OR (gender > :cursor__1__0) ORDER BY gender ASC, user_id DESC LIMIT 11 OFFSET 10",
+                "SELECT \* FROM user WHERE (?gender? = :cursor__0__0 AND ?user_id? <= :cursor__0__1) OR (?gender? > :cursor__1__0) ORDER BY ?gender? ASC, ?user_id? DESC LIMIT 11 OFFSET 10",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2)],
                 "SELECT * FROM user",
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
@@ -337,7 +337,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (gender = :cursor__0__0 AND user_id <= :cursor__0__1) OR (gender > :cursor__1__0) ORDER BY gender DESC, user_id ASC LIMIT 11 OFFSET 20",
+                "SELECT \* FROM user WHERE (?gender? = :cursor__0__0 AND ?user_id? <= :cursor__0__1) OR (?gender? > :cursor__1__0) ORDER BY ?gender? DESC, ?user_id? ASC LIMIT 11 OFFSET 20",
                 [':cursor__0__0' => PdoParameter::int(2), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::int(2)],
                 "SELECT * FROM user",
                 $order_by = ['gender' => 'desc', 'user_id' => 'asc'],
@@ -347,7 +347,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql', 'pgsql'],
-                "SELECT * FROM user WHERE (user_id <= :cursor__0__0) ORDER BY user_id DESC LIMIT 11 OFFSET 10",
+                "SELECT \* FROM user WHERE (?user_id? <= :cursor__0__0) ORDER BY ?user_id? DESC LIMIT 11 OFFSET 10",
                 [':cursor__0__0' => PdoParameter::int(21)],
                 "SELECT * FROM user",
                 $order_by = ['user_id' => 'asc'],
@@ -357,7 +357,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.created_at = :cursor__0__0 AND article_id >= :cursor__0__1) OR (A.created_at < :cursor__1__0)) ORDER BY article_created_at DESC, article_id ASC LIMIT 11 OFFSET 0",
+                "SELECT U.\*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.created_at = :cursor__0__0 AND ?article_id? >= :cursor__0__1) OR (A.created_at < :cursor__1__0)) ORDER BY ?article_created_at? DESC, ?article_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::str('2001-02-03 04:05:06'), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::str('2001-02-03 04:05:06')],
                 "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
                 $order_by = ['article_created_at' => 'desc', 'article_id' => 'asc'],
@@ -367,7 +367,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['pgsql'],
-                "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.created_at = :cursor__0__0 AND article_id >= :cursor__0__1) OR (A.created_at < :cursor__1__0)) ORDER BY article_created_at DESC, article_id ASC LIMIT 11 OFFSET 0",
+                "SELECT U.\*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1 AND ((A.created_at = :cursor__0__0 AND ?article_id? >= :cursor__0__1) OR (A.created_at < :cursor__1__0)) ORDER BY ?article_created_at? DESC, ?article_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::str('2001-02-03 04:05:06+0000'), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::str('2001-02-03 04:05:06+0000')],
                 "SELECT U.*, A.article_id, A.created_at AS article_created_at FROM user AS U INNER JOIN article AS A USING(user_id) WHERE U.user_id = 1",
                 $order_by = ['article_created_at' => 'desc', 'article_id' => 'asc'],
@@ -377,7 +377,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['sqlite', 'mysql'],
-                "SELECT *, COALESCE(update_at, created_at) as change_at FROM user WHERE (COALESCE(update_at,created_at) = :cursor__0__0 AND user_id >= :cursor__0__1) OR (COALESCE(update_at,created_at) > :cursor__1__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \*, COALESCE(update_at, created_at) as change_at FROM user WHERE (COALESCE(update_at,created_at) = :cursor__0__0 AND ?user_id? >= :cursor__0__1) OR (COALESCE(update_at,created_at) > :cursor__1__0) ORDER BY ?change_at? ASC, ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::str('2001-02-03 04:05:06'), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::str('2001-02-03 04:05:06')],
                 "SELECT *, COALESCE(update_at, created_at) as change_at FROM user",
                 $order_by = ['change_at' => 'asc', 'user_id' => 'asc'],
@@ -387,7 +387,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             ],
             [
                 ['pgsql'],
-                "SELECT *, COALESCE(update_at, created_at) as change_at FROM user WHERE (COALESCE(update_at,created_at) = :cursor__0__0 AND user_id >= :cursor__0__1) OR (COALESCE(update_at,created_at) > :cursor__1__0) ORDER BY change_at ASC, user_id ASC LIMIT 11 OFFSET 0",
+                "SELECT \*, COALESCE(update_at, created_at) as change_at FROM user WHERE (COALESCE(update_at,created_at) = :cursor__0__0 AND ?user_id? >= :cursor__0__1) OR (COALESCE(update_at,created_at) > :cursor__1__0) ORDER BY ?change_at? ASC, ?user_id? ASC LIMIT 11 OFFSET 0",
                 [':cursor__0__0' => PdoParameter::str('2001-02-03 04:05:06+0000'), ':cursor__0__1' => PdoParameter::int(21), ':cursor__1__0' => PdoParameter::str('2001-02-03 04:05:06+0000')],
                 "SELECT *, COALESCE(update_at, created_at) as change_at FROM user",
                 $order_by = ['change_at' => 'asc', 'user_id' => 'asc'],
@@ -408,7 +408,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 return;
             }
             [$compiled_sql, $compiled_params] = $db->compiler()->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-            $this->assertEquals($expect_sql, $compiled_sql, "on DB '{$db->name()}'");
+            $this->assertwildcardString($expect_sql, $compiled_sql, "on DB '{$db->name()}'");
             $this->assertEquals($expect_params, $compiled_params, "on DB '{$db->name()}'");
         });
     }

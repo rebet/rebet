@@ -30,6 +30,7 @@ class RouterTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
+        App::setLocale('ja');
         DateTime::setTestNow('2010-10-20 10:20:30.040050');
         Config::application([
             Router::class => [

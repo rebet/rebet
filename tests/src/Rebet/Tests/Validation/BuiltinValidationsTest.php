@@ -18,8 +18,6 @@ class BuiltinValidationsTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        App::setLocale('en');
-        App::setTimezone('UTC');
         DateTime::setTestNow('2010-01-23 12:34:56');
         $this->validations = new BuiltinValidations();
     }

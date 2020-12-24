@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Routing\Exception;
 
+use Rebet\Application\App;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tests\RebetTestCase;
@@ -15,6 +16,7 @@ class RouteNotFoundExceptionTest extends RebetTestCase
 
     public function test_problem()
     {
+        App::setLocale('ja');
         $e       = new RouteNotFoundException('test');
         $problem = $e->problem();
         $this->assertInstanceOf(ProblemResponse::class, $problem);

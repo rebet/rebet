@@ -213,6 +213,11 @@ class Ransack
     }
 
     /**
+     * @var Database
+     */
+    protected $db;
+
+    /**
      * Original ransack predicate
      *
      * @var string
@@ -285,6 +290,7 @@ class Ransack
     /**
      * Create predicate
      *
+     * @param Database $db
      * @param string $origin
      * @param mixed $value
      * @param string $predicate
@@ -296,8 +302,9 @@ class Ransack
      * @param string|null $option
      * @param string $placeholder_suffix (default: '')
      */
-    protected function __construct(string $origin, $value, string $predicate, string $template, ?\Closure $value_converter, array $columns, string $conjunction, ?string $compound, ?string $option, string $placeholder_suffix = '')
+    protected function __construct(Database $db, string $origin, $value, string $predicate, string $template, ?\Closure $value_converter, array $columns, string $conjunction, ?string $compound, ?string $option, string $placeholder_suffix = '')
     {
+        $this->db                 = $db;
         $this->origin             = $origin;
         $this->value              = $value;
         $this->predicate          = $predicate;
@@ -414,7 +421,7 @@ class Ransack
         }
 
         $columns = static::resolveAlias($ransack_predicate, $alias);
-        return new static($origin, $value, $predicate, $template, $value_converter, $columns, $conjunction, $compound, $option, $placeholder_suffix);
+        return new static($db, $origin, $value, $predicate, $template, $value_converter, $columns, $conjunction, $compound, $option, $placeholder_suffix);
     }
 
     /**
@@ -546,7 +553,10 @@ class Ransack
         if (!$apply_option) {
             return $this->columns;
         }
-        return $this->option ? array_map(function ($v) { return str_replace('{col}', $v, $this->option); }, $this->columns) : $this->columns ;
+        return $this->option
+            ? array_map(function ($v) { return str_replace('{col}', $this->db->quoteIdentifier($v), $this->option); }, $this->columns)
+            : array_map(function ($v) { return $this->db->quoteIdentifier($v); }, $this->columns)
+            ;
     }
 
     /**
@@ -583,7 +593,7 @@ class Ransack
             foreach ($columns as $j => $column) {
                 $idx_j        = $columns_count === 1 ? "" : "_{$j}";
                 $key          = "{$this->origin}{$this->placeholder_suffix}{$idx_i}{$idx_j}";
-                $sub_wheres[] = str_replace(['{col}', '{val}'], [$column, ":{$key}"], $template);
+                $sub_wheres[] = str_replace(['{col}', '{val}'], [$this->db->quoteIdentifier($column), ":{$key}"], $template);
                 if ($value !== null) {
                     $params[$key] = $value ;
                 }

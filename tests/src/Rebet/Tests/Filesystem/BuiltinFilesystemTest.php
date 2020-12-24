@@ -516,13 +516,14 @@ class BuiltinFilesystemTest extends RebetTestCase
     public function test_lastModified()
     {
         $path  = '1.txt';
-        $start = DateTime::now()->setMilliMicro(0);
+        $start = DateTime::now()->setMilliMicro(0)->addMinute(-1);
         $this->filesystem->put($path, "1");
-        $end           = DateTime::now()->setMilliMicro(0);
+        $end           = DateTime::now()->setMilliMicro(0)->addMinute(1);
         $last_modified = $this->filesystem->lastModified($path);
         $this->assertNotNull($last_modified);
-        $this->assertTrue($start <= $last_modified);
-        $this->assertTrue($last_modified <= $end);
+        $message = "NOTE: This test will fail when there is a time difference between the host OS and the Docker container. Please check `docker-compose run --rm php date ; date` the time difference is occurred or not if the test was failed.";
+        $this->assertTrue($start <= $last_modified, $message);
+        $this->assertTrue($last_modified <= $end, $message);
     }
 
     public function test_url_private()

@@ -3,9 +3,9 @@ namespace Rebet\Tests\Application;
 
 use Rebet\Application\App;
 use Rebet\Application\Structure;
-use Rebet\Tools\Config\Config;
 use Rebet\Tests\Mock\KernelMock;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 
 class AppTest extends RebetTestCase
 {
@@ -56,15 +56,15 @@ class AppTest extends RebetTestCase
 
     public function test_getLocale()
     {
-        $this->assertSame('ja', App::getLocale());
+        $this->assertSame('en', App::getLocale());
 
         Config::runtime([
             App::class => [
-                'locale' => 'en',
+                'locale' => 'ja',
             ],
         ]);
 
-        $this->assertSame('en', App::getLocale());
+        $this->assertSame('ja', App::getLocale());
     }
 
     public function test_getFallbackLocale()
@@ -82,7 +82,7 @@ class AppTest extends RebetTestCase
 
     public function test_setLocale()
     {
-        $this->assertSame('ja', App::getLocale());
+        $this->assertSame('en', App::getLocale());
         $this->assertSame('en', App::getFallbackLocale());
         App::setLocale('de');
         $this->assertSame('de', App::getLocale());
@@ -94,8 +94,8 @@ class AppTest extends RebetTestCase
 
     public function test_localeIn()
     {
-        $this->assertTrue(App::localeIn('ja'));
-        $this->assertFalse(App::localeIn('en', 'de'));
+        $this->assertTrue(App::localeIn('en'));
+        $this->assertFalse(App::localeIn('ja', 'de'));
     }
 
     public function test_env()

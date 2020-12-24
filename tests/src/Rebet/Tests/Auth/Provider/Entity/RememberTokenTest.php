@@ -11,11 +11,6 @@ use Rebet\Tools\Utility\Securities;
 
 class RememberTokenTest extends RebetDatabaseTestCase
 {
-    protected function tables(string $db_name) : array
-    {
-        return static::BASIC_TABLES[$db_name] ?? [];
-    }
-
     protected function records(string $db_name, string $table_name) : array
     {
         return [

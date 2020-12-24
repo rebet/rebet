@@ -15,6 +15,7 @@ class ContextTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
+        App::setLocale('ja');
         $this->errors   = [];
         $this->rule_set = [
             'name' => [

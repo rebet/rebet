@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Tools\Reflection;
 
 use OutOfBoundsException;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Stub\JsonSerializableStub;
 use Rebet\Tests\Mock\Stub\ToArrayStub;
@@ -24,6 +25,7 @@ class ReflectorTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
+        App::setLocale('ja');
         $this->array  = ['a', 'b', 'c', null];
         $this->map    = [
             'name'    => 'John Smith',

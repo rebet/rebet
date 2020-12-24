@@ -2,16 +2,16 @@
 namespace Rebet\Tests\Tools\DateTime;
 
 use Rebet\Application\App;
-use Rebet\Tools\Config\Config;
-use Rebet\Tools\Resource\Resource;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tools\DateTime\Month;
+use Rebet\Tools\Resource\Resource;
+use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Translation\Translator;
 
 class DateTimeTest extends RebetTestCase
 {
@@ -594,10 +594,10 @@ class DateTimeTest extends RebetTestCase
         $month = $date->getLocalizedMonth();
         $this->assertInstanceOf(Month::class, $month);
         $this->assertEquals(Month::OCTOBER(), $month);
-        $this->assertSame('10月', "{$month}");
-
-        Translator::setLocale('en');
         $this->assertSame('October', "{$month}");
+
+        Translator::setLocale('ja');
+        $this->assertSame('10月', "{$month}");
     }
 
     public function test_addDay()

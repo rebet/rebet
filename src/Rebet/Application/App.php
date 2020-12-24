@@ -44,7 +44,7 @@ class App
     public static function defaultConfig()
     {
         return [
-            'locale'          => 'en',
+            'locale'          => locale_get_default(),
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'paginate'        => [

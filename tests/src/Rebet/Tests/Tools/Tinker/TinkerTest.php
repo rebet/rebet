@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Tools\Tinker;
 
 use InvalidArgumentException;
+use Rebet\Application\App;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
@@ -32,6 +33,7 @@ class TinkerTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
+        App::setLocale('ja');
         DateTime::setTestNow('2001/02/03 04:05:06');
         $this->null       = Tinker::with(null);
         $this->int        = Tinker::with(123);

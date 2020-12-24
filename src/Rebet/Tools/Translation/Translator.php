@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tools\Translation;
 
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Tinker\Tinker;
-use Rebet\Tools\Config\Configurable;
 
 /**
  * Translator Class
@@ -26,7 +26,7 @@ class Translator
             'resource_adder'  => [
                 FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
             ],
-            'locale'          => null,
+            'locale'          => locale_get_default(),
             'fallback_locale' => 'en',
             'ordinalize'      => [
                 'en' => function (int $num) {

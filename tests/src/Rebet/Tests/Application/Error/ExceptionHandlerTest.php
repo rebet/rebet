@@ -4,8 +4,6 @@ namespace Rebet\Tests\Application\Error;
 use Rebet\Application\App;
 use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Tools\Config\Config;
-use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Http\Exception\TokenMismatchException;
@@ -17,6 +15,8 @@ use Rebet\Http\Response\RedirectResponse;
 use Rebet\Log\Log;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\View;
@@ -54,6 +54,7 @@ class ExceptionHandlerTest extends RebetTestCase
 
     public function test_handle()
     {
+        App::setLocale('ja');
         $reported_count = 0;
         $this->assertSame($reported_count++, $this->handler->reported_count);
 

@@ -2,8 +2,6 @@
 namespace Rebet\Tests;
 
 use org\bovigo\vfs\vfsStream;
-
-
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Rebet\Application\App;
@@ -75,8 +73,8 @@ abstract class RebetTestCase extends TestCase
         ];
         Config::application([
             App::class => [
-                'timezone'  => 'UTC',
-                'locale'    => 'ja',
+                'locale'   => 'en',
+                'timezone' => 'UTC',
             ],
             Log::class => [
                 'unittest' => true,
@@ -319,6 +317,30 @@ abstract class RebetTestCase extends TestCase
         $expects = is_array($expects) ? $expects : [$expects] ;
         foreach ($expects as $expect) {
             $this->assertDoesNotMatchRegularExpression($expect, $actual);
+        }
+    }
+
+    protected function assertwildcardString($expects, string $actual)
+    {
+        $expects = is_array($expects) ? $expects : [$expects] ;
+        foreach ($expects as $expect) {
+            $this->assertTrue(fnmatch($expect, $actual), "Wildcard miss match: expect \"{$expect}\" but actual \"$actual\".");
+        }
+    }
+
+    protected function assertRegExpEach(array $expects, array $actuals)
+    {
+        $this->assertSame(count($expects), count($actuals));
+        foreach ($expects as $i => $expect) {
+            $this->assertMatchesRegularExpression($expect, $actuals[$i]);
+        }
+    }
+
+    protected function assertWildcardEach(array $expects, array $actuals)
+    {
+        $this->assertSame(count($expects), count($actuals));
+        foreach ($expects as $i => $expect) {
+            $this->assertTrue(fnmatch($expect, $actuals[$i]), "Wildcard miss match: expect \"{$expect}\" but actual \"$actuals[$i]\".");
         }
     }
 

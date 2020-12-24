@@ -2,14 +2,14 @@
 namespace Rebet\Tests\Validation;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\Config;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\Mock\Validation\BarValidation;
 use Rebet\Tests\Mock\Validation\FooValidation;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
@@ -287,17 +287,15 @@ class ValidatorTest extends RebetTestCase
      */
     public function test_validateInvoke(array $data, array $rule, bool $expect_valid)
     {
-        App::setLocale('en');
-        $validator    = new Validator($data);
-        $valid_data   = $validator->validate('C', ['target' => ['rule' => [$rule]]]);
+        $validator  = new Validator($data);
+        $valid_data = $validator->validate('C', ['target' => ['rule' => [$rule]]]);
         // $valid_errors = $validator->errors();
         $this->assertSame($expect_valid, !is_null($valid_data));
     }
 
     public function test_validate_argsTypeCheck()
     {
-        App::setLocale('en');
-        $validator  = new Validator(['foo' => 'FOO', 'bar' => 'BAR']);
+        $validator = new Validator(['foo' => 'FOO', 'bar' => 'BAR']);
 
         $valid_data = $validator->validate('C', [
             'foo' => [
@@ -369,9 +367,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_beforeFilter()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => 'foo']);
-
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'before' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
@@ -387,9 +383,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_afterFilter()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => 'foo']);
-
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule'  => [
@@ -405,9 +399,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_convert()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => '2001-01-01']);
-
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule'  => [
@@ -424,9 +416,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_convertWithValidationError()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => 'fooo-01-01']);
-
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule'  => [
@@ -441,9 +431,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_convertWithConvertError()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => '2001-01-01']);
-
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule'  => [
@@ -459,9 +447,7 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_quiet()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => 'abc']);
-
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'rule'  => [
@@ -475,7 +461,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_quietThenElse()
     {
-        App::setLocale('en');
         $rule = [
             'foo' => [
                 'rule'  => [
@@ -501,7 +486,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_then()
     {
-        App::setLocale('en');
         $rule = [
             'foo' => [
                 'rule'  => [
@@ -523,7 +507,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_exitOnError()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
             'foo' => [
@@ -550,7 +533,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_duplicatedMessage()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
             'foo' => [
@@ -569,7 +551,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_typeConsistencyCheck()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => ['abc', 99]]);
         $valid_data = $validator->validate('C', [
             'foo' => [
@@ -605,7 +586,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_inlineLabelAndI18n()
     {
-        App::setLocale('en');
         $validator  = new Validator(['foo' => null]);
         $valid_data = $validator->validate('C', [
             'foo' => [
@@ -643,7 +623,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_nest()
     {
-        App::setLocale('en');
         $rule = [
             'bank' => [
                 'rule'  => [
@@ -771,7 +750,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_nests()
     {
-        App::setLocale('en');
         $rule = [
             'shipping_addresses' => [
                 'label' => 'Shipping',
@@ -812,7 +790,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_crud()
     {
-        App::setLocale('en');
         $rule = [
             'foo'     => ['rule'  => [['C' , 'Ng']]],
             'bar'     => ['rule'  => [[ 'U', 'Ng']]],
@@ -941,7 +918,6 @@ class ValidatorTest extends RebetTestCase
 
     public function test_validate_acceptUndefined()
     {
-        App::setLocale('en');
         $rule = [
             'foo' => [
                 'rule'  => [
@@ -963,7 +939,6 @@ class ValidatorTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid rules format. A 'rule/then/else' list item should be array.");
 
-        App::setLocale('en');
         $validator  = new Validator(['type' => 1]);
         $valid_data = $validator->validate('C', [
             'foo' => [
@@ -977,7 +952,6 @@ class ValidatorTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Invalid rules format. A 'rule/then/else' list item should be array.");
 
-        App::setLocale('en');
         $validator  = new Validator(['type' => 1]);
         $valid_data = $validator->validate('C', [
             'foo' => [

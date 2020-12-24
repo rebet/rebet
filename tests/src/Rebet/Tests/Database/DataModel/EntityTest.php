@@ -18,7 +18,6 @@ use Rebet\Tests\Mock\Enum\GroupPosition;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tools\Utility\Securities;
 
 class EntityTest extends RebetDatabaseTestCase
 {
@@ -26,11 +25,6 @@ class EntityTest extends RebetDatabaseTestCase
     {
         parent::setUp();
         DateTime::setTestNow('2001-02-03 04:05:06');
-    }
-
-    protected function tables(string $db_name) : array
-    {
-        return static::BASIC_TABLES[$db_name] ?? [];
     }
 
     protected function records(string $db_name, string $table_name) : array
