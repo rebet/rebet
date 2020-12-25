@@ -90,6 +90,24 @@ class LetterpressTest extends RebetTestCase
                 ]
             ],
             [
+                "foo /*{#- coment -#}*/ \n\n bar",
+                [
+                    "foo  \n\n bar"
+                ]
+            ],
+            [
+                "foo /*{#-- coment --#}*/ \n\n bar",
+                [
+                    "foo\n bar"
+                ]
+            ],
+            [
+                "foo {#-- coment --#} \n\n bar",
+                [
+                    "foo\n bar"
+                ]
+            ],
+            [
                 "foo {# coment #} bar {# coment\n #} baz",
                 [
                     "foo  bar  baz"
@@ -117,6 +135,36 @@ class LetterpressTest extends RebetTestCase
                     "foo",
                     ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
                         "bar"
+                    ]],
+                    "baz",
+                ]
+            ],
+            [
+                "foo /*{%- if true -%}*/ bar /*{%- endif -%}*/ baz",
+                [
+                    "foo ",
+                    ['tag' => "if", 'code' => "true", 'nodes' => [
+                        " bar "
+                    ]],
+                    " baz",
+                ]
+            ],
+            [
+                "foo /*{%- if true --%}*/ bar /*{%-- endif -%}*/ baz",
+                [
+                    "foo ",
+                    ['tag' => "if", 'code' => "true", 'nodes' => [
+                        "bar"
+                    ]],
+                    " baz",
+                ]
+            ],
+            [
+                "foo\n   //{%-- if true --%}\nbar\n   /*{%-- endif --%}*/\nbaz",
+                [
+                    "foo\n",
+                    ['tag' => "if", 'code' => "true", 'nodes' => [
+                        "bar\n"
                     ]],
                     "baz",
                 ]
@@ -330,9 +378,15 @@ EOS
             ['', '', []],
             ['foo', 'foo', []],
             ['a FOO b', 'a {{ $foo }} b', ['foo' => 'FOO']],
-            ['aFOO b', 'a {{- $foo }} b', ['foo' => 'FOO']],
-            ['a FOOb', 'a {{ $foo -}} b', ['foo' => 'FOO']],
-            ['aFOOb', 'a {{- $foo -}} b', ['foo' => 'FOO']],
+            ['aFOO  b', 'a  {{- $foo }}  b', ['foo' => 'FOO']],
+            ['a  FOOb', 'a  {{ $foo -}}  b', ['foo' => 'FOO']],
+            ['aFOOb', 'a  {{- $foo -}}  b', ['foo' => 'FOO']],
+            ['a /*FOO*/ b', 'a /*{{ $foo }}*/ b', ['foo' => 'FOO']],
+            ['a FOO b', 'a /*{{- $foo -}}*/ b', ['foo' => 'FOO']],
+            ['aFOOb', 'a /*{{-- $foo --}}*/ b', ['foo' => 'FOO']],
+            ["a\n/*FOO*/\nb", "a\n/*{{ \$foo }}*/\nb", ['foo' => 'FOO']],
+            ["a\nFOO\nb", "a\n/*{{- \$foo -}}*/\nb", ['foo' => 'FOO']],
+            ["a\nFOOb", "a\n/*{{-- \$foo --}}*/\nb", ['foo' => 'FOO']],
             ['a  b', 'a {{ $foo }} b', []],
             ['ab', 'a {{- $foo -}} b', []],
             ['a FOO b FOO c', 'a {{ $foo }} b {{ $foo }} c', ['foo' => 'FOO']],
@@ -349,6 +403,12 @@ EOS
             ['a & b', 'a {! $a !} b', ['a' => '&']],
             ['a 1 b', 'a {{ $a }} b', ['a' => 1]],
             ['a 1 b', 'a {! $a !} b', ['a' => 1]],
+            ['a /*FOO*/ b', 'a /*{! $foo !}*/ b', ['foo' => 'FOO']],
+            ['a FOO b', 'a /*{!- $foo -!}*/ b', ['foo' => 'FOO']],
+            ['aFOOb', 'a /*{!-- $foo --!}*/ b', ['foo' => 'FOO']],
+            ["a\n/*FOO*/\nb", "a\n/*{! \$foo !}*/\nb", ['foo' => 'FOO']],
+            ["a\nFOO\nb", "a\n/*{!- \$foo -!}*/\nb", ['foo' => 'FOO']],
+            ["a\nFOOb", "a\n/*{!-- \$foo --!}*/\nb", ['foo' => 'FOO']],
             ['a &amp; b & c', 'a {{ $a }} b {! $a !} c', ['a' => '&']],
             ['a&amp;b&c', 'a {{- $a -}} b {!- $a -!} c', ['a' => '&']],
             [new LogicException("Invalid placeholder format '{{ ... !}' found."), 'a {{ $a !} b', ['a' => 1]],
@@ -417,6 +477,31 @@ EOS
                 "foo\n bar",
             ],
             [
+                "foo /*{#-coment#}*/ bar",
+                [],
+                "foo */ bar",
+            ],
+            [
+                "foo /*{#--coment#}*/ bar",
+                [],
+                "foo*/ bar",
+            ],
+            [
+                "foo\n/*{#-coment#}*/ bar",
+                [],
+                "foo\n*/ bar",
+            ],
+            [
+                "foo\n/*{#--coment#}*/ bar",
+                [],
+                "foo\n*/ bar",
+            ],
+            [
+                "foo\n  /*{#--coment#}*/ bar",
+                [],
+                "foo\n*/ bar",
+            ],
+            [
                 "foo {#coment-#} bar",
                 [],
                 "foo bar",
@@ -430,6 +515,36 @@ EOS
                 "foo {#coment-#} \n\nbar",
                 [],
                 "foo \nbar",
+            ],
+            [
+                "foo /*{#coment-#}*/ bar",
+                [],
+                "foo /* bar",
+            ],
+            [
+                "foo /*{#coment--#}*/ bar",
+                [],
+                "foo /*bar",
+            ],
+            [
+                "foo /*{#coment-#}*/\nbar",
+                [],
+                "foo /*\nbar",
+            ],
+            [
+                "foo /*{#coment--#}*/\nbar",
+                [],
+                "foo /*bar",
+            ],
+            [
+                "foo /*{#coment--#}*/\n\nbar",
+                [],
+                "foo /*\nbar",
+            ],
+            [
+                "foo /*{#coment--#}*/  \n\nbar",
+                [],
+                "foo /*\nbar",
             ],
             [
                 "foo {#- coment -#} \nbar",
@@ -465,6 +580,41 @@ EOS
                 'foo {%- if $foo->isInt() -%} bar {%- endif -%} baz',
                 ['foo' => '123'],
                 "foobaz",
+            ],
+            [
+                'foo <!--{% if $foo->isInt() %}--> bar <!--{% endif %}--> baz',
+                ['foo' => 123],
+                "foo <!----> bar <!----> baz",
+            ],
+            [
+                'foo <!--{%- if $foo->isInt() -%}--> bar <!--{%- endif -%}--> baz',
+                ['foo' => 123],
+                "foo  bar  baz",
+            ],
+            [
+                'foo <!--{%-- if $foo->isInt() --%}--> bar <!--{%-- endif --%}--> baz',
+                ['foo' => 123],
+                "foobarbaz",
+            ],
+            [
+                "foo\n<!--{% if \$foo->isInt() %}-->\nbar\n<!--{% endif %}-->\nbaz",
+                ['foo' => 123],
+                "foo\n<!---->\nbar\n<!---->\nbaz",
+            ],
+            [
+                "foo\n<!--{%- if \$foo->isInt() -%}-->\nbar\n<!--{%- endif -%}-->\nbaz",
+                ['foo' => 123],
+                "foo\n\nbar\n\nbaz",
+            ],
+            [
+                "foo\n<!--{%-- if \$foo->isInt() --%}-->\nbar\n<!--{%-- endif --%}-->\nbaz",
+                ['foo' => 123],
+                "foo\nbar\nbaz",
+            ],
+            [
+                "foo\n  <!--{%-- if \$foo->isInt() --%}-->  \nbar\n  <!--{%-- endif --%}-->  \nbaz",
+                ['foo' => 123],
+                "foo\nbar\nbaz",
             ],
             [
                 'foo {% if $foo->isInt() %} bar {% else %} baz {% endif %} qux',
@@ -565,6 +715,51 @@ EOS
                 'a {% for $a as $i => $av %}{% for $b as $j => $bv %}{{$i}}:{{$av}}-{{$j}}:{{$bv}} {% endfor %}{% endfor %}b',
                 ['a' => ['a', 'b', 'c'], 'b' => ['a' => 1, 'b' => 2]],
                 "a 0:a-a:1 0:a-b:2 1:b-a:1 1:b-b:2 2:c-a:1 2:c-b:2 b",
+            ],
+            [
+                'a {{$foo}} b',
+                ['foo' => 'f'],
+                "a f b",
+            ],
+            [
+                'a {{-$foo-}} b',
+                ['foo' => 'f'],
+                "afb",
+            ],
+            [
+                'a <!--{{$foo}}--> b',
+                ['foo' => 'f'],
+                "a <!--f--> b",
+            ],
+            [
+                'a <!--{{-$foo-}}--> b',
+                ['foo' => 'f'],
+                "a f b",
+            ],
+            [
+                'a <!--{{-- $foo --}}--> b',
+                ['foo' => 'f'],
+                "afb",
+            ],
+            [
+                "a\n<!--{{ \$foo }}-->\nb",
+                ['foo' => 'f'],
+                "a\n<!--f-->\nb",
+            ],
+            [
+                "a\n<!--{{- \$foo -}}-->\nb",
+                ['foo' => 'f'],
+                "a\nf\nb",
+            ],
+            [
+                "a\n<!--{{-- \$foo --}}-->\nb",
+                ['foo' => 'f'],
+                "a\nfb",
+            ],
+            [
+                "a\n  <!--{{-- \$foo --}}-->  \nb",
+                ['foo' => 'f'],
+                "a\nfb",
             ],
         ];
     }

@@ -13,7 +13,6 @@ use Rebet\Tools\Utility\Strings;
  *
  * This class is simple template processor that supported Twig-like (actually not Twig) tag format.
  * Only following features are supported in the initial state.
- * NOTE: All of tags are supporting '-' mark for whitespace control like Twig.
  *
  *  - Comment      : {# comment #}
  *  - Placeholder  : {{ $var_with_sanitise }}, {! $var_without_sanitise !}
@@ -27,6 +26,15 @@ use Rebet\Tools\Utility\Strings;
  *  - {{ $value->isInt() ? 'number' : 'other' }}
  *  - {% if $a->add($b)->gt(100) %}...
  *  - {% for $list->unique() as $value %}...
+ *
+ * And all of tags are supporting '-' mark for whitespace control like Twig.
+ * But the Letterpress '-' option has the ability to delete adjacent strings, too.
+ * Option '-' will delete adjacent strings or whitespace, option '--' will delete adjacent strings followed by whitespace.
+ *
+ *  - #{%-- if $a->is('a') -%}     => line will delete
+ *  - $foo = 0/⋆{!- $foo --!}⋆/ ;  => $foo = 123; (⋆ means *)
+ *
+ * You can use this feature in combination with the comment symbol to embed Letterpress tags without violating the format of the embedded document.
  *
  * Usually it will be sufficient as a simple template if it has these features.
  * But sometimes we need tags that solve more complex issue, so this template support enhanced tags.
@@ -478,7 +486,7 @@ class Letterpress implements Renderable, \JsonSerializable
      */
     protected function removeComments(string $template) : string
     {
-        return preg_replace('/([ \f\r\t]*{#-|{#)([\s\S]*)(#}|-#}([ \f\r\t]*\n|[ \f\r\t]*?))/Uu', '', $template);
+        return preg_replace('/([ \f\r\t]*\S*{#--|([ \f\r\t]*|\S+){#-|{#)([\s\S]*)(#}|-#}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--#}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))/Uu', '', $template);
     }
 
     /**
@@ -489,7 +497,7 @@ class Letterpress implements Renderable, \JsonSerializable
      */
     protected function next(string $leftovers) : array
     {
-        if (preg_match('/^(?<content>[\s\S]*)([ \f\r\t]*?{%-|{%)[\s]*(?<tag>[^\s\-}]+?)(?<code>[\s\S]*)(%}|-%}([ \f\r\t]*\n|[ \f\r\t]*?))(?<leftovers>[\s\S]*)$/Uu', $leftovers, $matches)) {
+        if (preg_match('/^(?<content>[\s\S]*)([ \f\r\t]*?\S*?{%--|([ \f\r\t]*?|\S+?){%-|{%)[\s]*(?<tag>[^\s\-}]+?)(?<code>[\s\S]*)(%}|-%}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--%}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))(?<leftovers>[\s\S]*)$/Uu', $leftovers, $matches)) {
             return [$matches['content'], $matches['tag'], trim($matches['code'] ?? ''), $matches['leftovers']];
         }
         return [$leftovers, null, null, null];
@@ -592,9 +600,9 @@ class Letterpress implements Renderable, \JsonSerializable
      */
     public static function expandVars(string $template, $vars) : string
     {
-        return preg_replace_callback('/(\s{(?<so1>[{!])-|{(?<so2>[{!]))(?<code>[\s\S]*)((?<sc1>[!}])}|-(?<sc2>[!}])}\s)/Uu', function ($matches) use ($vars) {
-            $sanitise_open  = $matches['so1'] ?: $matches['so2'];
-            $sanitise_close = $matches['sc1'] ?: $matches['sc2'];
+        return preg_replace_callback('/([ \f\r\t]*?\S*?{(?<so1>[{!])--|([ \f\r\t]*?|\S+?){(?<so2>[{!])-|{(?<so3>[{!]))(?<code>[\s\S]*)((?<sc1>[!}])}|-(?<sc2>[!}])}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--(?<sc3>[!}])}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))/Uu', function ($matches) use ($vars) {
+            $sanitise_open  = $matches['so1'] ?: $matches['so2'] ?: $matches['so3'];
+            $sanitise_close = $matches['sc1'] ?: $matches['sc2'] ?: $matches['sc3'];
             if (($sanitise_open === '!') xor ($sanitise_close === '!')) {
                 throw new LogicException("Invalid placeholder format '{{$sanitise_open} ... {$sanitise_close}}' found.");
             }

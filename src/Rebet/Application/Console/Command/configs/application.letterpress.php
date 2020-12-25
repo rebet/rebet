@@ -20,8 +20,10 @@ return [
         | The application locale determines the default locale that will be used by the translation
         | package. You are free to set this value to any of the locales which will be supported by
         | the application.
+        | The settings of locale in libary layer use `locale_get_default()`, so you don't need to
+        | set this configuration if you are set 'intl.default_locale' in php.ini.
         */
-        'locale' => locale_get_default(),
+        'locale' => '{!$locale!}',
 
 
         /*
@@ -44,7 +46,7 @@ return [
         | The settings of timezone in libary layer use `date_default_timezone_get()`, so you don't
         | need to set this configuration if you are set 'date.timezone' in php.ini.
         */
-        // 'timezone' => date_default_timezone_get() ?: 'UTC',
+        'timezone' => '{!$timezone!}',
 
 
         /*
