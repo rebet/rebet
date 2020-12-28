@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Console\Command;
 
+use Rebet\Tools\Utility\Strings;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\Helper;
@@ -218,24 +219,60 @@ abstract class Command extends SymfonyCommand
      */
     protected function confirm(string $question, bool $default = false) : bool
     {
-        return !$this->_ask(new ConfirmationQuestion($question, $default));
+        return $this->_ask(new ConfirmationQuestion($question, $default));
     }
 
     /**
      * Prompt the user for input.
      *
      * @param string $question
+     * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
+     * @param bool $required (default: true)
      * @param string|null $default (default: null)
      * @param array|callable|null $choices for auto completion. (default: null)
+     * @param string $retry_message (default: '-> This question is required, try again.')
      * @return mixed
      */
-    protected function ask(string $question, ?string $default = null, $choices = null)
+    protected function ask(string $question, ?string $via_option = null, bool $required = true, ?string $default = null, $choices = null, string $retry_message = 'This question is required, try again.')
     {
+        if ($answer = $this->viaOption($question, $via_option)) {
+            return $answer;
+        }
         $question = new Question($question, $default);
         if ($choices !== null) {
             is_callable($choices) ? $question->setAutocompleterCallback($choices) : $question->setAutocompleterValues($choices);
         }
-        return $this->_ask($question);
+        while (true) {
+            $answer = $this->_ask($question);
+            if ($required && empty(trim($answer))) {
+                $this->error($retry_message);
+                continue;
+            }
+            return $answer;
+        }
+    }
+
+    /**
+     * Get the answer via option if is given.
+     *
+     * @param string $question
+     * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
+     * @param array $availables (default: [])
+     * @return string|null
+     */
+    protected function viaOption(string $question, ?string $via_option = null, array $availables = []) : ?string
+    {
+        if ($via_option) {
+            if ($answer = trim(Strings::startsWith($via_option, '@') ? Strings::ltrim($via_option, '@') : $this->option($via_option))) {
+                if (!empty($availables) && !in_array($answer, $availables, true)) {
+                    return null;
+                }
+                $this->write($question);
+                $this->info("{$answer} (via option)");
+                return $answer;
+            };
+        }
+        return null;
     }
 
     /**
@@ -256,13 +293,17 @@ abstract class Command extends SymfonyCommand
      *
      * @param string $question
      * @param array $choices
+     * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
      * @param string|null $default (default: null)
      * @param int|null $attempts (default: null)
      * @param bool $multiple (default: false)
      * @return string|array
      */
-    protected function choice(string $question, array $choices, $default = null, ?int $attempts = null, $multiple = false)
+    protected function choice(string $question, array $choices, ?string $via_option = null, $default = null, ?int $attempts = null, $multiple = false)
     {
+        if ($answer = $this->viaOption($question, $via_option, $choices)) {
+            return $answer;
+        }
         $question = new ChoiceQuestion($question, $choices, $default);
         return $this->_ask($question->setMaxAttempts($attempts)->setMultiselect($multiple));
     }

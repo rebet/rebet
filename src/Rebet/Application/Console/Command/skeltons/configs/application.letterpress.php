@@ -23,7 +23,7 @@ return [
         | The settings of locale in libary layer use `locale_get_default()`, so you don't need to
         | set this configuration if you are set 'intl.default_locale' in php.ini.
         */
-        'locale' => '{!$locale!}',
+        'locale' => '{! $locale !}',
 
 
         /*
@@ -46,7 +46,7 @@ return [
         | The settings of timezone in libary layer use `date_default_timezone_get()`, so you don't
         | need to set this configuration if you are set 'date.timezone' in php.ini.
         */
-        'timezone' => '{!$timezone!}',
+        'timezone' => '{! $timezone !}',
 
 
         /*
