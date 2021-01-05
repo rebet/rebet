@@ -155,7 +155,7 @@ class EntityTest extends RebetDatabaseTestCase
             $user = User::find(1);
             $this->assertSame(true, $user->delete());
             $this->assertSame(false, $user->exists());
-            $this->assertSame($db->driverName() === 'mysql' ? false : true, $user->exists('mysql'));
+            $this->assertSame($db->name() === 'mysql' ? false : true, $user->exists('mysql'));
             $this->assertSame(true, $user->create());
 
             $gu = new GroupUser();

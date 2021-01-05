@@ -98,6 +98,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertSame('sqlite', Dao::db()->driverName());
         $this->assertSame('sqlite', Dao::db('sqlite')->driverName());
         $this->assertSame('mysql', Dao::db('mysql')->driverName());
+        $this->assertSame('mysql', Dao::db('mariadb')->driverName());
         $this->assertSame('pgsql', Dao::db('pgsql')->driverName());
     }
 

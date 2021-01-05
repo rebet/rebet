@@ -57,7 +57,8 @@ class InitCommand extends Command
             $configs['database'] = $this->choice("* DB Product  : ", [
                 1 => 'sqlite',
                 2 => 'mysql',
-                3 => 'pgsql'
+                3 => 'mariadb',
+                4 => 'pgsql'
             ], 'database');
             $is_sqlite           = $configs['database'] === 'sqlite';
             $default_db_name     = $is_sqlite ? "{$app}.db" : $app ;

@@ -74,6 +74,12 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                             'db'       => 'mysql',
                         ],
                     ],
+                    'pdo-mariadb' => [
+                        'adapter'   => [
+                            '@factory' => PdoAdapter::class,
+                            'db'       => 'mariadb',
+                        ],
+                    ],
                     'pdo-pgsql' => [
                         'adapter'   => [
                             '@factory' => PdoAdapter::class,

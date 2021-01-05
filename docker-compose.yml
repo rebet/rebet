@@ -31,6 +31,13 @@ services:
     volumes:
       - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
   pgsql:
     image: postgres
     environment:

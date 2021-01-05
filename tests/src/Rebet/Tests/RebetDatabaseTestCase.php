@@ -54,6 +54,17 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'debug'    => true,
                     ],
 
+                    'mariadb' => [
+                        'dsn'      => 'mysql:host=mariadb;dbname=rebet;charset=utf8mb4',
+                        'user'     => 'rebet',
+                        'password' => 'rebet',
+                        'options'  => [
+                            \PDO::ATTR_AUTOCOMMIT => false,
+                        ],
+                        // 'emulated_sql_log' => false,
+                        'debug'    => true,
+                    ],
+
                     'pgsql' => [
                         'dsn'      => "pgsql:host=pgsql;dbname=rebet;options='--client_encoding=UTF8'",
                         'user'     => 'rebet',
