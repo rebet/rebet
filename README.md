@@ -38,4 +38,4 @@ And you can use these alias commands.
 | `composer` | `docker-compose run --rm composer`               |
 | `phpunit`  | `docker-compose run --rm php vender/bin/phpunit` |
 | `psysh`    | `docker-compose run --rm php vender/bin/psysh`   |
-| `build`    | `docker-compose build php sqlite`                |
+| `build`    | `docker-compose build php sqlite sqlsrv`         |
