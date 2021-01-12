@@ -47,9 +47,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'dsn'      => 'mysql:host=mysql;dbname=rebet;charset=utf8mb4',
                         'user'     => 'rebet',
                         'password' => 'rebet',
-                        'options'  => [
-                            \PDO::ATTR_AUTOCOMMIT => false,
-                        ],
+                        'options'  => [],
                         // 'emulated_sql_log' => false,
                         'debug'    => true,
                     ],
@@ -58,15 +56,22 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'dsn'      => 'mysql:host=mariadb;dbname=rebet;charset=utf8mb4',
                         'user'     => 'rebet',
                         'password' => 'rebet',
-                        'options'  => [
-                            \PDO::ATTR_AUTOCOMMIT => false,
-                        ],
+                        'options'  => [],
                         // 'emulated_sql_log' => false,
                         'debug'    => true,
                     ],
 
                     'pgsql' => [
                         'dsn'      => "pgsql:host=pgsql;dbname=rebet;options='--client_encoding=UTF8'",
+                        'user'     => 'rebet',
+                        'password' => 'rebet',
+                        'options'  => [],
+                        // 'emulated_sql_log' => false,
+                        'debug'    => true,
+                    ],
+
+                    'sqlsrv' => [
+                        'dsn'      => "sqlsrv:server=sqlsrv;database=rebet",
                         'user'     => 'rebet',
                         'password' => 'rebet',
                         'options'  => [],
@@ -177,7 +182,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                 $skiped[] = $name;
                 continue;
             }
-            $test($db);
+            $test($db, $db->driverName());
         }
         if (!empty($skiped)) {
             $this->markTestSkipped("Database ".implode(", ", $skiped)." was not ready.");

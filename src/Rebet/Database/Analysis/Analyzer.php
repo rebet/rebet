@@ -51,6 +51,13 @@ interface Analyzer
     public function hasGroupBy() : bool;
 
     /**
+     * It checks the target sql has top level ORDER BY clause.
+     *
+     * @return bool
+     */
+    public function hasOrderBy() : bool;
+
+    /**
      * Extract the actual statement (real column name / expression / CASE statement / subquery, etc.) of the column that is aliased in the top level SELECT clause.
      * If the given name is not alias or the given sql is UNION then return given alias as it is.
      *

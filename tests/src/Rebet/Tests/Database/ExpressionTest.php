@@ -2,9 +2,10 @@
 namespace Rebet\Tests\Database;
 
 use Rebet\Database\Expression;
-use Rebet\Tests\RebetTestCase;
+use Rebet\Database\PdoParameter;
+use Rebet\Tests\RebetDatabaseTestCase;
 
-class ExpressionTest extends RebetTestCase
+class ExpressionTest extends RebetDatabaseTestCase
 {
     public function test___construct()
     {
@@ -13,9 +14,41 @@ class ExpressionTest extends RebetTestCase
 
     public function test_of()
     {
-        $expression = Expression::of('GeomFromText({val})', 'POINT(1 1)');
+        $expression = Expression::of('GeomFromText({0})', 'POINT(1 1)');
         $this->assertInstanceOf(Expression::class, $expression);
-        $this->assertSame('GeomFromText({val})', $expression->expression);
-        $this->assertSame('POINT(1 1)', $expression->value);
+    }
+
+    public function dataCompiles() : array
+    {
+        return [
+            ['now()', [], ':foo', Expression::of('now()')],
+            [
+                'GeomFromText(:foo__0)',
+                [
+                    ':foo__0' => PdoParameter::str('POINT(1 1)')
+                ],
+                ':foo',
+                Expression::of('GeomFromText({0})', 'POINT(1 1)')
+            ],
+            [
+                'geometry::STGeomFromText(:foo__0, :foo__1)',
+                [
+                    ':foo__0' => PdoParameter::str('LINESTRING (100 100, 20 180, 180 180)'),
+                    ':foo__1' => PdoParameter::int(0)
+                ],
+                ':foo',
+                Expression::of('geometry::STGeomFromText({0}, {1})', 'LINESTRING (100 100, 20 180, 180 180)', 0)
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataCompiles
+     */
+    public function test_compile($expect_sql, $expect_params, $placeholder, $expression)
+    {
+        [$sql, $params] = $expression->compile($this->connect('mysql'), $placeholder);
+        $this->assertSame($expect_sql, $sql);
+        $this->assertEquals($expect_params, $params);
     }
 }

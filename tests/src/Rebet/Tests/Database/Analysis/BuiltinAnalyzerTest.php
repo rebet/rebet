@@ -95,6 +95,27 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         });
     }
 
+    public function dataHasOrderBys() : array
+    {
+        return [
+            [false , "SELECT * FROM users"],
+            [false , "SELECT * FROM users WHERE name = 'ORDER BY'"],
+            [true  , "SELECT gender, count(*) AS count FROM users ORDER BY gender"],
+            [false , "SELECT * FROM (SELECT gender, count(*) AS count FROM users ORDER BY gender) AS T"],
+        ];
+    }
+
+    /**
+     * @dataProvider dataHasOrderBys
+     */
+    public function test_hasOrderBy(bool $expect, string $sql)
+    {
+        $this->eachDb(function (Database $db) use ($expect, $sql) {
+            $analyser = BuiltinAnalyzer::of($db, $sql);
+            $this->assertSame($expect, $analyser->hasOrderBy());
+        });
+    }
+
     public function dataExtractAliasSelectColumns() : array
     {
         return [

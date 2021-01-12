@@ -1,14 +1,13 @@
 <?php
 namespace Rebet\Database\Converter;
 
-use Rebet\Tools\Math\Decimal;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Database;
-use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Math\Decimal;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Builtin Converter Class
@@ -53,20 +52,17 @@ class BuiltinConverter implements Converter
         if ($value instanceof Enum) {
             $value = $value->value;
         }
-        if ($value instanceof Expression) {
-            $value = $value->value;
-        }
 
-        $driver_name = $this->db->driverName();
+        $driver = $this->db->driverName();
         switch (true) {
             case $value instanceof PdoParameter:       return $value;
             case $value === null:                      return PdoParameter::null();
-            case is_bool($value):                      return $driver_name === 'mysql' ? PdoParameter::int($value ? 1 : 0) : PdoParameter::bool($value);
+            case is_bool($value):                      return $driver === 'mysql' ? PdoParameter::int($value ? 1 : 0) : PdoParameter::bool($value);
             case is_int($value):                       return PdoParameter::int($value);
             case is_float($value):                     return PdoParameter::str($value);
-            case is_resource($value):                  return PdoParameter::lob($value);
+            case is_resource($value):                  return PdoParameter::lob(stream_get_contents($value), $driver === 'sqlsrv' ? \PDO::SQLSRV_ENCODING_BINARY : null);
             case $value instanceof Date:               return PdoParameter::str($value->format("Y-m-d"));
-            case $value instanceof \DateTimeInterface: return PdoParameter::str($value->format($driver_name === 'pgsql' ? "Y-m-d H:i:sO" : "Y-m-d H:i:s"));
+            case $value instanceof \DateTimeInterface: return PdoParameter::str($value->format($driver === 'pgsql' ? "Y-m-d H:i:sO" : "Y-m-d H:i:s"));
             case $value instanceof Decimal:            return PdoParameter::str($value->normalize()->format(true, '.', ''));
         }
 
@@ -80,6 +76,7 @@ class BuiltinConverter implements Converter
      * @see 'mysql'  native_type from http://gcov.php.net/PHP_7_1/lcov_html/ext/pdo_mysql/mysql_statement.c.gcov.php
      * @see 'pgsql'  native_type from http://gcov.php.net/PHP_7_1/lcov_html/ext/pdo_pgsql/pgsql_statement.c.gcov.php and `SELECT TYPNAME FROM PG_TYPE` results.
      * @see 'dblib'  native_type from http://gcov.php.net/PHP_7_1/lcov_html/ext/pdo_dblib/dblib_stmt.c.gcov.php
+     * @see 'sqlsrv' native_type from https://documentation.help/MS-Drivers-PHP-SQL-Server/c02f6942-0484-4567-a78e-fe8aa2053536.htm
      */
     public function toPhpType($value, array $meta = [], ?string $type = null)
     {
@@ -89,21 +86,27 @@ class BuiltinConverter implements Converter
         if ($type !== null) {
             return Reflector::convert($value, $type);
         }
-        switch (strtolower($meta['native_type'] ?? 'unknown')) {
+        $driver = $this->db->driverName();
+        switch ($native_type = strtolower($meta[$driver === 'sqlsrv' ? 'sqlsrv:decl_type' : 'native_type'] ?? 'unknown')) {
             case 'null':             // mysql, sqlite
                 return null;
 
+            case 'sql_variant':      // sqlsrv, dblib
+                return (string)$value;
+
             case 'string':           // mysql, sqlite
             case 'var_string':       // mysql
-            case 'text':             // pgsql, dblib
-            case 'varchar':          // pgsql, dblib
+            case 'text':             // sqlsrv, pgsql, dblib
+            case 'varchar':          // sqlsrv, pgsql, dblib
             case 'bpchar':           // pgsql
             case 'uuid':             // pgsql
+            case 'uniqueidentifier': // sqlsrv, dblib
             case 'pg_lsn':           // pgsql
-            case 'nvarchar':         // dblib
-            case 'char':             // dblib
-            case 'ntext':            // dblib
-            case 'nchar':            // dblib
+            case 'nvarchar':         // sqlsrv, dblib
+            case 'char':             // sqlsrv, dblib
+            case 'ntext':            // sqlsrv, dblib
+            case 'nchar':            // sqlsrv, dblib
+            case 'sql_variant':      // sqlsrv, dblib
                 return (string)$value;
 
             case 'tiny':             // mysql
@@ -117,34 +120,36 @@ class BuiltinConverter implements Converter
             case 'int4':             // pgsql
             case 'int8':             // pgsql
             case 'varbit':           // pgsql
-            case 'uniqueidentifier': // dblib
-            case 'binary':           // dblib
-            case 'tinyint':          // dblib
-            case 'smallint':         // dblib
-            case 'int':              // dblib
+            case 'tinyint':          // sqlsrv, dblib
+            case 'smallint':         // sqlsrv, dblib
+            case 'int':              // sqlsrv, dblib
+            case 'int identity':     // sqlsrv
                 return intval($value) ;
 
             case 'longlong':         // mysql
-            case 'bigint':           // dblib
+            case 'bigint':           // sqlsrv, dblib
                 return PHP_INT_SIZE === 8 ? intval($value) : (string)$value ;
 
-            case 'float':            // mysql, dblib
+            case 'float':            // sqlsrv, mysql, dblib
             case 'double':           // mysql, sqlite
-            case 'real':             // dblib
+            case 'real':             // sqlsrv, dblib
             case 'float4':           // pgsql
             case 'float8':           // pgsql
                 return floatval($value);
 
-            case 'bit':              // mysql, dblib
+            case 'bit':              // sqlsrv, mysql, dblib
+                if ($driver === 'sqlsrv') {
+                    return boolval($value);
+                }
                 $decimal = is_string($value) ? base_convert($value, 2, 10) : intval($value) ;
                 return is_string($value) && mb_strlen($value) < PHP_INT_SIZE * 8 ? intval($decimal) : $decimal ;
 
             case 'bool':             // pgsql
                 return boolval($value);
 
-            case 'decimal':          // mysql, dblib
+            case 'decimal':          // mysql, sqlsrv, dblib
             case 'newdecimal':       // mysql
-            case 'numeric':          // pgsql, dblib
+            case 'numeric':          // pgsql, sqlsrv, dblib
                 return Decimal::of($value);
 
             case 'year':             // mysql
@@ -154,11 +159,24 @@ class BuiltinConverter implements Converter
             case 'newdate':          // mysql
                 return $value === '0000-00-00' ? null : Date::createDateTime($value, ['Y-m-d']) ;
 
-            case 'timestamp':        // mysql, pgsql
-            case 'datetime':         // mysql, dblib
-            case 'datetime2':        // dblib
-            case 'smalldatetime':    // dblib
+            case 'timestamp':        // sqlsrv, mysql, pgsql
+                if ($driver === 'sqlsrv') { // timestamp is rowversion in sqlsrv, it is not DateTime.
+                    return bin2hex($value);
+                }
+                // no break
+            case 'datetime':         // sqlsrv, mysql, dblib
                 return $value === '0000-00-00 00:00:00' ? null : DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']) ;
+
+            case 'datetime2':        // sqlsrv, dblib
+                $value = $meta['precision'] > 6 ? preg_replace('/(\.[0-9]{6})[0-9]+/', '$1', $value) : $value ;
+                return DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']) ;
+
+            case 'smalldatetime':    // sqlsrv, dblib
+                return DateTime::createDateTime($value, ['Y-m-d H:i:s', 'Y-m-d H:i']) ;
+
+            case 'datetimeoffset':   // sqlsrv, dblib
+                $value = $meta['precision'] > 6 ? preg_replace('/(\.[0-9]{6})[0-9]+/', '$1', $value) : $value ;
+                return DateTime::createDateTime($value, ['Y-m-d H:i:s.u P', 'Y-m-d H:i:s.up', 'Y-m-d H:i:s P', 'Y-m-d H:i:sp']) ;
 
             case 'timestamptz':      // pgsql
                 return DateTime::createDateTime($value, ['Y-m-d H:i:sO', 'Y-m-d H:i:sT']) ;
@@ -169,20 +187,22 @@ class BuiltinConverter implements Converter
             // case 'enum':             // mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
             //     return (string)$value;
 
-            case 'xml':              // pgsql, dblib
+            case 'xml':              // sqlsrv, pgsql, dblib
                 return new \SimpleXMLElement($value);
 
             case 'json':             // pgsql
             case 'jsonb':            // pgsql
                 return json_decode($value, true);
 
-            case 'time':             // mysql, pgsql, dblib
+            case 'time':             // sqlsrv, mysql, pgsql, dblib
             case 'timetz':           // pgsql
-            case 'datetimeoffset':   // dblib
             case 'interval':         // pgsql
             case 'tinterval':        // pgsql
                 // @todo Implements Time and Interval class and incorporate
                 return (string)$value;
+
+            case 'udt':              // sqlsrv(hierarchyid, geometry, geography)
+                return null;
 
             case 'geometry':         // mysql, dblib
             case 'box':              // pgsql
@@ -201,8 +221,8 @@ class BuiltinConverter implements Converter
             case 'macaddr8':         // pgsql
                 return (string)$value;
 
-            case 'money':            // dblib, pgsql
-            case 'smallmoney':       // dblib
+            case 'money':            // sqlsrv, dblib, pgsql
+            case 'smallmoney':       // sqlsrv, dblib
                 // @todo Should we remove the currency unit and return a Decimal class, or should we implement a Money class that extended Decimal
                 return (string)$value;
 
@@ -211,8 +231,9 @@ class BuiltinConverter implements Converter
             case 'medium_blob':      // mysql
             case 'long_blob':        // mysql
             case 'blob':             // mysql, sqlite
-            case 'varbinary':        // dblib
-            case 'image':            // dblib
+            case 'binary':           // sqlsrv, dblib
+            case 'varbinary':        // sqlsrv, dblib
+            case 'image':            // sqlsrv, dblib
                 return $value;
 
             case 'tsquery':          // pgsql
@@ -223,7 +244,6 @@ class BuiltinConverter implements Converter
             case 'txid_snapshot':    // pgsql
                 return (string)$value;
 
-            case 'sql_variant':      // dblib
             case 'unknown':          // ALL (dblib)
                 return $value;
         }

@@ -2,6 +2,7 @@
 namespace Rebet\Database\Compiler;
 
 use Rebet\Database\Database;
+use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -60,4 +61,39 @@ interface Compiler
      * @return array [string new_key, [string new_key => new_value]]
      */
     public function convertParam(string $key, $value) : array;
+
+    /**
+     * Append limit offset partial SQL to given SQL.
+     *
+     * @param string $sql
+     * @param int|null $limit
+     * @param int|null $offset (default: null)
+     * @return string
+     */
+    public function appendLimitOffset(string $sql, ?int $limit, ?int $offset = null) : string;
+
+    /**
+     * Append for update partial SQL to given SQL.
+     *
+     * @param string $sql
+     * @return string
+     * @throws DatabaseException if the database does not support `FOR UPDATE`.
+     */
+    public function appendForUpdate(string $sql) : string;
+
+    /**
+     * Create savepoint SQL.
+     *
+     * @param string $name of savepoint
+     * @return string of savepoint SQL
+     */
+    public function savepoint(string $name) : string;
+
+    /**
+     * Create rollback to savepoint SQL.
+     *
+     * @param string $name of savepoint
+     * @return string of rollback to savepoint SQL.
+     */
+    public function rollbackToSavepoint(string $name) : string;
 }

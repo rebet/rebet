@@ -90,6 +90,14 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    public function hasOrderBy() : bool
+    {
+        return isset($this->parser->parsed['ORDER']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function extractAliasSelectColumn(string $alias) : string
     {
         if (isset($this->cache[$alias])) {

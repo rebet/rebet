@@ -1,11 +1,12 @@
 <?php
 namespace Rebet\Database;
 
+use PDOException;
 use Rebet\Annotation\AnnotatedClass;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Statement Class
@@ -89,7 +90,7 @@ class Statement implements \IteratorAggregate
         try {
             foreach ($params as $key => $param) {
                 $param = $param instanceof PdoParameter ? $param : PdoParameter::str($param) ;
-                $this->stmt->bindValue($key, $param->value, $param->type);
+                $this->stmt->bindParam($key, $param->value, $param->type, null, $param->option);
             }
 
             if (! $this->stmt->execute()) {
@@ -128,6 +129,24 @@ class Statement implements \IteratorAggregate
     }
 
     /**
+     * Fetch the statment result data.
+     *
+     * @param int $style (default: \PDO::FETCH_ASSOC)
+     * @return mixed
+     */
+    protected function fetch(int $style = \PDO::FETCH_ASSOC)
+    {
+        try {
+            return $this->stmt->fetch($style);
+        } catch (PDOException $e) {
+            if ($e->getMessage() === 'SQLSTATE[IMSSP]: There are no more rows in the active result set.  Since this result set is not scrollable, no more data may be retrieved.') {
+                return null;
+            }
+            throw $e;
+        }
+    }
+
+    /**
      * Get all result set data as given class object list.
      *
      * @param string $class (default: 'stdClass')
@@ -138,7 +157,7 @@ class Statement implements \IteratorAggregate
         $rs   = [];
         $meta = $this->meta();
         $ac   = new AnnotatedClass($class);
-        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $this->fetch()) {
             $rs[] = $this->convert($row, $class, $meta, $ac);
         }
         return new ResultSet($rs);
@@ -152,7 +171,7 @@ class Statement implements \IteratorAggregate
      */
     public function first(string $class = 'stdClass')
     {
-        return ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) ? $this->convert($row, $class) : null ;
+        return ($row = $this->fetch()) ? $this->convert($row, $class) : null ;
     }
 
     /**
@@ -166,7 +185,7 @@ class Statement implements \IteratorAggregate
     {
         $rs   = [];
         $meta = $this->meta();
-        while ($row = $this->stmt->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) {
+        while ($row = $this->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) {
             $rs[] = $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
         return new ResultSet($rs);
@@ -181,7 +200,7 @@ class Statement implements \IteratorAggregate
      */
     public function firstOf($column, ?string $type = null)
     {
-        return ($row = $this->stmt->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) ? $this->db->convertToPhp($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
+        return ($row = $this->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) ? $this->db->convertToPhp($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
     }
 
     /**
@@ -209,7 +228,7 @@ class Statement implements \IteratorAggregate
         $meta  = $this->meta();
         $class = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
         $ac    = new AnnotatedClass($class);
-        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $this->fetch()) {
             if (call_user_func($callback, $this->convert($row, $class, $meta, $ac)) === false) {
                 break;
             }
@@ -230,7 +249,7 @@ class Statement implements \IteratorAggregate
         $meta     = $this->meta();
         $class    = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
         $ac       = new AnnotatedClass($class);
-        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $this->fetch()) {
             $item = $this->convert($row, $class, $meta, $ac);
             if (call_user_func($callback, $item)) {
                 $filtered[] = $item;
@@ -252,7 +271,7 @@ class Statement implements \IteratorAggregate
         $meta  = $this->meta();
         $class = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
         $ac    = new AnnotatedClass($class);
-        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $this->fetch()) {
             $map[] = call_user_func($callback, $this->convert($row, $class, $meta, $ac));
         }
         return new ResultSet($map);
@@ -272,7 +291,7 @@ class Statement implements \IteratorAggregate
         $meta  = $this->meta();
         $class = Reflector::getTypeHintOf($reducer, 0) ?? 'stdClass';
         $ac    = new AnnotatedClass($class);
-        while ($row = $this->stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $this->fetch()) {
             $carry = call_user_func($reducer, $this->convert($row, $class, $meta, $ac), $carry);
         }
         return $carry;

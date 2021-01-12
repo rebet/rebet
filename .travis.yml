@@ -14,6 +14,7 @@ addons:
   hosts:
     - mysql
     - pgsql
+    - sqlsrv
     - memcached
     - redis
 
@@ -41,6 +42,7 @@ before_script:
   - mkdir -p /tmp/sqlite ; echo ".open /tmp/sqlite/rebet.db" | sqlite3
   - sqlite3 /tmp/sqlite/rebet.db < docker/sqlite/initdb.d/create_tables.sql
   - docker-compose run -d -p ${MARIADB_HOST}:3306:3306 mariadb
+  - docker-compose run -d -p 1433:1433 sqlsrv
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml

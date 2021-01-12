@@ -52,8 +52,30 @@ class Database
             'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
             'quoters'     => [
                 'mysql'   => function (string $identifier) { return '`'.$identifier.'`'; },
-                'mssql'   => function (string $identifier) { return '['.$identifier.']'; },
+                'sqlsrv'  => function (string $identifier) { return '['.$identifier.']'; },
                 'default' => function (string $identifier) { return '"'.$identifier.'"'; },
+            ],
+            'options'     => [
+                'pdo' => [
+                    'sqlsrv'  => [
+                        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                    ],
+                    'default' => [
+                        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                        \PDO::ATTR_EMULATE_PREPARES   => false,
+                        \PDO::ATTR_AUTOCOMMIT         => false,
+                    ],
+                ],
+                'statement' => [
+                    'sqlsrv'  => [
+                        \PDO::ATTR_EMULATE_PREPARES   => false,
+                    ],
+                    'default' => [
+                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                    ],
+                ],
             ],
         ];
     }
@@ -125,9 +147,10 @@ class Database
      */
     public function __construct(string $name, \PDO $pdo, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
     {
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        $options = static::config("options.pdo.".$pdo->getAttribute(\PDO::ATTR_DRIVER_NAME), false) ?? static::config("options.pdo.default", false) ?? [];
+        foreach ($options as $key => $value) {
+            $pdo->setAttribute($key, $value);
+        }
 
         $this->name             = $name;
         $this->pdo              = $pdo;
@@ -184,13 +207,14 @@ class Database
 
     /**
      * Get the client version of this database.
-     * NOTE: This method return PDO drivers attribute of PDO::ATTR_CLIENT_VERSION
+     * NOTE: This method return PDO drivers attribute of PDO::ATTR_CLIENT_VERSION, if the driver returned array then return combineded string `$key=$value;...`.
      *
      * @return string
      */
     public function clientVersion() : string
     {
-        return $this->pdo()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+        $version = $this->pdo()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+        return is_array($version) ? Arrays::implode($version, '; ', '=') : $version ;
     }
 
     /**
@@ -336,6 +360,9 @@ class Database
         if ($param->value === null) {
             return 'NULL';
         }
+        if ($param->type === \PDO::PARAM_LOB) {
+            return 'NULL/*LOB('.strlen($param->value).')*/';
+        }
         return $this->pdo()->quote($param->value, $param->type);
     }
 
@@ -387,7 +414,7 @@ class Database
      */
     public function savepoint(string $name) : self
     {
-        $sql = "SAVEPOINT {$name}";
+        $sql = $this->compiler->savepoint($name);
         $this->pdo()->exec($sql);
         $this->log($sql);
         return $this;
@@ -404,7 +431,7 @@ class Database
     public function rollback(?string $savepoint = null, bool $quiet = true) : self
     {
         try {
-            $sql = $savepoint ? "ROLLBACK TO SAVEPOINT {$savepoint}" : null ;
+            $sql = $savepoint ? $this->compiler->rollbackToSavepoint($savepoint) : null ;
             if (!($sql ? $this->pdo()->exec($sql) : $this->pdo()->rollBack())) {
                 throw $this->exception($this->pdo()->errorInfo(), $sql);
             }
@@ -518,10 +545,7 @@ class Database
     protected function prepare(string $sql) : Statement
     {
         try {
-            $stmt = $this->pdo()->prepare($sql, [
-                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                // \PDO::ATTR_CURSOR             => \PDO::CURSOR_SCROLL,
-            ]);
+            $stmt = $this->pdo()->prepare($sql, static::config("options.statement.".$this->driverName(), false) ?? static::config("options.statement.default", false) ?? []);
             if (!$stmt) {
                 throw $this->exception($this->pdo()->errorInfo(), $sql);
             }
@@ -546,9 +570,9 @@ class Database
     protected function _query(string $sql, $order_by = null, $params = [], ?int $limit = null, bool $for_update = false, ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
         [$sql, $params] = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-        $limit          = $limit && $pager === null ? " LIMIT {$limit}" : "" ;
-        $for_update     = $for_update ? " FOR UPDATE" : "" ;
-        return $this->prepare("{$sql}{$limit}{$for_update}")->execute(Arrays::toArray($params));
+        $sql            = $limit && $pager === null ? $this->compiler->appendLimitOffset($sql, $limit) : $sql ;
+        $sql            = $for_update ?  $this->compiler->appendForUpdate($sql) : $sql ;
+        return $this->prepare($sql)->execute(Arrays::toArray($params));
     }
 
     /**
@@ -665,7 +689,7 @@ class Database
      */
     public function exists(string $sql, array $params = []) : bool
     {
-        return $this->query("{$sql} LIMIT 1", $params)->first() !== null;
+        return $this->query($this->compiler->appendLimitOffset($sql, 1), $params)->first() !== null;
     }
 
     /**

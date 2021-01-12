@@ -22,15 +22,24 @@ class PdoParameter
     public $value;
 
     /**
+     * Driver option.
+     *
+     * @var mixed
+     */
+    public $option;
+
+    /**
      * Create PDO Type instance
      *
      * @param mixed $value
+     * @param mixed $option for driver (default: null)
      * @param int $type (default: \PDO::PARAM_STR)
      */
-    public function __construct($value, int $type = \PDO::PARAM_STR)
+    public function __construct($value, int $type = \PDO::PARAM_STR, $option = null)
     {
-        $this->value = $value;
-        $this->type  = $type;
+        $this->value  = $value;
+        $this->type   = $type;
+        $this->option = $option;
     }
 
     /**
@@ -66,9 +75,9 @@ class PdoParameter
      * @param mixed $value
      * @return self
      */
-    public static function str($value) : self
+    public static function str($value, $option = null) : self
     {
-        return new static($value, \PDO::PARAM_STR);
+        return new static($value, \PDO::PARAM_STR, $option);
     }
 
     /**
@@ -77,9 +86,9 @@ class PdoParameter
      * @param mixed $value
      * @return self
      */
-    public static function int($value) : self
+    public static function int($value, $option = null) : self
     {
-        return new static($value, \PDO::PARAM_INT);
+        return new static($value, \PDO::PARAM_INT, $option);
     }
 
     /**
@@ -88,9 +97,9 @@ class PdoParameter
      * @param mixed $value
      * @return self
      */
-    public static function bool($value) : self
+    public static function bool($value, $option = null) : self
     {
-        return new static($value, \PDO::PARAM_BOOL);
+        return new static($value, \PDO::PARAM_BOOL, $option);
     }
 
     /**
@@ -99,9 +108,9 @@ class PdoParameter
      * @param mixed $value
      * @return self
      */
-    public static function lob($value) : self
+    public static function lob($value, $option = null) : self
     {
-        return new static($value, \PDO::PARAM_LOB);
+        return new static($value, \PDO::PARAM_LOB, $option);
     }
 
     /**
@@ -109,8 +118,8 @@ class PdoParameter
      *
      * @return self
      */
-    public static function null() : self
+    public static function null($option = null) : self
     {
-        return new static(null, \PDO::PARAM_NULL);
+        return new static(null, \PDO::PARAM_NULL, $option);
     }
 }

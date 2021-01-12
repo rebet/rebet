@@ -161,6 +161,10 @@ class Ransack
                     'not_matches'  => ["{col} !~ {val}"                          , null      , 'AND'],
                     'search'       => ["to_tsvector({col}) @@ to_tsquery({val})" , null      , 'OR' ],
                 ],
+                'sqlsrv' => [
+                    'search'       => ["CONTAINS({col}, {val})"                  , null      , 'OR' ],
+                    'meaning'      => ["FREETEXT({col}, {val})"                  , null      , 'OR' ],
+                ],
             ],
             'options' => [
                 'sqlite' => [
@@ -207,6 +211,19 @@ class Ransack
                     'i'   => "DATE_PART('minute', {col})",
                     's'   => "DATE_PART('second', {col})",
                     'dow' => "DATE_PART('dow', {col})",
+                ],
+                'sqlsrv' => [
+                    'len' => 'LEN({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => "DATEDIFF(yy, {col}, GETDATE()) - IIF(GETDATE() >= DATEADD(yy, DATEDIFF(yy, {col}, GETDATE()), {col}), 0, 1)",
+                    'y'   => 'YEAR({col})',
+                    'm'   => 'MONTH({col})',
+                    'd'   => 'DAY({col})',
+                    'h'   => 'DATEPART(hh, {col})',
+                    'i'   => 'DATEPART(mi, {col})',
+                    's'   => 'DATEPART(ss, {col})',
+                    'dow' => 'DATEPART(dw, {col})',
                 ],
             ],
         ];

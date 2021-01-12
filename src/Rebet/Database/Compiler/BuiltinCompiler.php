@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Database\Compiler;
 
+use PHPSQLParser\PHPSQLCreator;
+use PHPSQLParser\PHPSQLParser;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
@@ -110,7 +112,7 @@ class BuiltinCompiler implements Compiler
                 if ($pager) {
                     $offset = $this->offset($pager);
                     $limit  = $this->limit($pager);
-                    $sql    = "{$sql} LIMIT {$limit} OFFSET {$offset}";
+                    $sql    = $this->appendLimitOffset($sql, $limit, $offset);
                 }
             } else {
                 $analyzer                 = $this->db->analyzer($sql);
@@ -128,7 +130,7 @@ class BuiltinCompiler implements Compiler
                 } else {
                     $sql = $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$cursor_sql})" : "{$sql} WHERE {$cursor_sql}" ;
                 }
-                $sql = "{$sql} ORDER BY {$order_sql} LIMIT {$limit} OFFSET {$offset}";
+                $sql = $this->appendLimitOffset("{$sql} ORDER BY {$order_sql}", $limit, $offset);
             }
         }
 
@@ -305,7 +307,7 @@ class BuiltinCompiler implements Compiler
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
         if ($value instanceof Expression) {
-            return [str_replace('{val}', $key, $value->expression), $value->value === null ? [] : [$key => $this->db->convertToPdo($value->value)]];
+            return $value->compile($this->db, $key);
         }
         if (!is_array($value)) {
             return [$key, [$key => $this->db->convertToPdo($value)]];
@@ -315,20 +317,79 @@ class BuiltinCompiler implements Compiler
         $params      = [];
         $index       = 0;
         foreach ($value as $v) {
-            $expression = '{val}';
+            $new_key = "{$key}__{$index}";
+            $index++;
+
             if ($v instanceof Expression) {
-                $expression = $v->expression;
-                $v          = $v->value;
+                [$e, $p]       = $v->compile($this->db, $new_key);
+                $unfold_keys[] = $e;
+                $params        = array_merge($params, $p);
+                continue;
             }
-            if (Strings::contains($expression, '{val}')) {
-                $unfold_key          = "{$key}__{$index}";
-                $params[$unfold_key] = $this->db->convertToPdo($v);
-                $unfold_keys[]       = str_replace('{val}', $unfold_key, $expression);
-                $index++;
-            } else {
-                $unfold_keys[] = $expression;
-            }
+
+            $unfold_keys[]    = $new_key;
+            $params[$new_key] = $this->db->convertToPdo($v);
         }
         return [join(', ', $unfold_keys), $params];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function appendLimitOffset(string $sql, ?int $limit, ?int $offset = null) : string
+    {
+        switch ($this->db->driverName()) {
+            case 'sqlsrv':
+                if (!$limit && !$offset) {
+                    return $sql;
+                }
+                if ($limit && !$offset) {
+                    return preg_replace("#^(([\s]*/\*[\s\S]*(?=\*/)\*/)|([\s]*--.*\n))*([\s]*SELECT)#iu", "$0 TOP {$limit}", $sql, 1);
+                }
+                // Will not check the given SQL has `ORDER BY` phrase or not here.
+                // If the SQL does not have `ORDER BY` then throws Exception when execute SQL.
+                $offset = $offset ? " OFFSET {$offset} ROWS"         : " OFFSET 0 ROWS" ;
+                $limit  = $limit  ? " FETCH NEXT {$limit} ROWS ONLY" : "" ;
+                return "{$sql}{$offset}{$limit}";
+        }
+
+        $limit  = $limit  ? " LIMIT {$limit}"   : "" ;
+        $offset = $offset ? " OFFSET {$offset}" : "" ;
+        return "{$sql}{$limit}{$offset}";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function appendForUpdate(string $sql) : string
+    {
+        switch ($this->db->driverName()) {
+            case 'sqlite': throw new DatabaseException("SQLite does not support `FOR UPDATE`");
+            case 'sqlsrv':
+                $syntax = (new PHPSQLParser())->parse($sql);
+                if ($syntax['FROM'][0]['alias']) {
+                    $syntax['FROM'][0]['alias']['name'] = $syntax['FROM'][0]['alias']['name'].' WITH(UPDLOCK)';
+                } else {
+                    $syntax['FROM'][0]['table'] = $syntax['FROM'][0]['table'].' WITH(UPDLOCK)';
+                }
+                return (new PHPSQLCreator())->create($syntax);
+        }
+        return "{$sql} FOR UPDATE";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function savepoint(string $name) : string
+    {
+        return $this->db->driverNameIn('sqlsrv') ? "SAVE TRANSACTION {$name}" : "SAVEPOINT {$name}" ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rollbackToSavepoint(string $name) : string
+    {
+        return $this->db->driverNameIn('sqlsrv') ? "ROLLBACK TRANSACTION {$name}" : "ROLLBACK TO SAVEPOINT {$name}" ;
     }
 }

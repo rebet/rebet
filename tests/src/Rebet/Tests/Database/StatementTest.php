@@ -67,21 +67,21 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_execute()
     {
         $this->eachDb(function (Database $db) {
-            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute();
             $this->assertInstanceOf(Statement::class, $stmt);
             $rs       = $stmt->all();
             $this->assertSame(3, $rs->count());
 
-            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute(['gender' => 1]);
             $this->assertInstanceOf(Statement::class, $stmt);
             $rs       = $stmt->all();
             $this->assertSame(2, $rs->count());
 
-            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender", [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+            $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute(['gender' => PdoParameter::int(2)]);
             $this->assertInstanceOf(Statement::class, $stmt);
@@ -309,14 +309,15 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_affectedRows()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, $driver) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $count    = $stmt->execute()->affectedRows();
-            if ($db->driverName() == 'sqlite') {
-                $this->assertSame(0, $count, 'on DB '.$db->driverName());
-            } else {
-                $this->assertSame(3, $count, 'on DB '.$db->driverName());
+
+            switch ($driver) {
+                case 'sqlite': $this->assertSame(0, $count, 'on DB '.$driver); break;
+                case 'sqlsrv': $this->assertSame(-1, $count, 'on DB '.$driver); break;
+                default: $this->assertSame(3, $count, 'on DB '.$driver);
             }
 
             $pdo_stmt = $db->pdo()->prepare("INSERT INTO users VALUES(99, 'foo', 2, '1980-01-02', 'foo@bar.rebet.local', 'user', 'dummy', 'dummy', CURRENT_TIMESTAMP, NULL)");

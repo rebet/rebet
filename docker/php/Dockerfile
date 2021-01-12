@@ -6,6 +6,18 @@ RUN apt-get update \
     && pecl install                               memcached redis apcu \
     && docker-php-ext-enable                      memcached redis apcu \
     && docker-php-ext-configure                   gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc)          gd bcmath zip intl pdo_mysql pdo_pgsql \
-    && apt-get clean \
+    && docker-php-ext-install -j$(nproc)          gd bcmath zip intl pdo_mysql pdo_pgsql
+
+# Install SQL Server extensions and depends
+RUN apt-get install -y                 gnupg \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools \
+    && apt-get install -y               unixodbc-dev libgssapi-krb5-2 \
+    && pecl install                     sqlsrv pdo_sqlsrv \
+    && docker-php-ext-enable            sqlsrv pdo_sqlsrv
+
+# Clean
+RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/*

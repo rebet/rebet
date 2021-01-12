@@ -1331,6 +1331,7 @@ class ArraysTest extends RebetTestCase
         $this->assertSame('1／2／3', Arrays::implode([1, 2, 3], '／'));
         $this->assertSame('1, 2, 3', Arrays::implode(new \ArrayObject([1, 2, 3])));
         $this->assertNull(Arrays::implode(Gender::MALE()));
+        $this->assertSame('foo=1 bar=2', Arrays::implode(['foo' => 1, 'bar' => 2], ' ', '='));
     }
 
     public function test_pop()

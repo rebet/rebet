@@ -1134,20 +1134,21 @@ class Arrays
      *
      * @param mixed $iterable
      * @param string $delimiter (default: ', ')
+     * @param string|null $kvs key and value separator (default: null for omit key)
      * @return string|null return null when other than iterable given as $iterable.
      */
-    public static function implode($iterable, string $delimiter = ', ') : ?string
+    public static function implode($iterable, string $delimiter = ', ', ?string $kvs = null) : ?string
     {
         if (!is_iterable($iterable)) {
             return null;
         }
 
         $string = '';
-        foreach ($iterable as $value) {
+        foreach ($iterable as $key => $value) {
             if (is_iterable($value)) {
                 $value = '['.static::implode($value, $delimiter).']';
             }
-            $string .= "{$value}{$delimiter}";
+            $string .= $kvs ? "{$key}{$kvs}{$value}{$delimiter}" : "{$value}{$delimiter}";
         }
         return Strings::rtrim($string, $delimiter, 1);
     }

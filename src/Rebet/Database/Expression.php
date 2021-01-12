@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Database;
 
+use Rebet\Tools\Utility\Strings;
+
 /**
  * Expression Class
  *
@@ -14,34 +16,54 @@ class Expression
     /**
      * @var string of SQL expression
      */
-    public $expression;
+    protected $expression;
 
     /**
-     * @var mixed value
+     * @var array value
      */
-    public $value;
+    protected $values;
 
     /**
      * Create Expression Value instance
      *
-     * @param string $expression template that contains '{val}' placeholder like 'GeomFromText({val})' or just function like 'now()'
-     * @param mixed $value (default: null)
+     * @param string $expression template that contains '{values index}' placeholder like 'GeomFromText({0})' or just function like 'now()'
+     * @param mixed[] ...$values
      */
-    public function __construct(string $expression, $value = null)
+    public function __construct(string $expression, ...$values)
     {
         $this->expression = $expression;
-        $this->value      = $value;
+        $this->values     = $values;
     }
 
     /**
      * Create Expression
      *
-     * @param string $expression template that contains '{val}' placeholder like 'GeomFromText({val})' or just function like 'now()'
-     * @param mixed $value (default: null)
+     * @param string $expression template that contains '{values index}' placeholder like 'GeomFromText({0})' or just function like 'now()'
+     * @param mixed[] ...$values
      * @return self
      */
-    public static function of(string $expression, $value = null) : self
+    public static function of(string $expression, ...$value) : self
     {
-        return new static($expression, $value);
+        return new static($expression, ...$value);
+    }
+
+    /**
+     * Compile expression using given placeholder name.
+     *
+     * @param Database $db
+     * @param string $placeholder name
+     * @return array [string sql, array params]
+     */
+    public function compile(Database $db, string $placeholder) : array
+    {
+        $placeholder = Strings::startsWith($placeholder, ':') ? $placeholder : ":{$placeholder}" ;
+        $expression  = $this->expression;
+        $params      = [];
+        foreach ($this->values as $key => $value) {
+            $new_placeholder          = "{$placeholder}__{$key}";
+            $expression               = str_replace("{{$key}}", "{$new_placeholder}", $expression);
+            $params[$new_placeholder] = $db->convertToPdo($value);
+        }
+        return [$expression, $params];
     }
 }

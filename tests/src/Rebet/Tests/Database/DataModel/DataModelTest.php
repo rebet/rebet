@@ -34,11 +34,11 @@ class DataModelTest extends RebetDatabaseTestCase
                 ['user_id' => 3 , 'name' => 'Damien Kling'          , 'gender' => 1, 'birthday' => '1992-10-17', 'email' => 'damien@s0.rebet.local', 'role' => 'user', 'password' => '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe', 'api_token' => 'df38d2697f917ca9460677a98bfbb8baaeabab8e83b9858ea70d6da10b06ad4d'], // password-{user_id}, api-{user_id}
             ],
             'articles' => [
-                ['article_id' => 1, 'user_id' => 1 , 'subject' => 'article foo     1-1', 'body' => 'body 1-1'],
-                ['article_id' => 2, 'user_id' => 1 , 'subject' => 'article foo bar 1-2', 'body' => 'body 1-2'],
-                ['article_id' => 3, 'user_id' => 2 , 'subject' => 'article bar     2-1', 'body' => 'body 2-1'],
-                ['article_id' => 4, 'user_id' => 1 , 'subject' => 'article baz     1-3', 'body' => 'body 1-3'],
-                ['article_id' => 5, 'user_id' => 2 , 'subject' => 'article baz qux 2-2', 'body' => 'body 2-2'],
+                [/* 'article_id' => 1, */ 'user_id' => 1 , 'subject' => 'article foo     1-1', 'body' => 'body 1-1'],
+                [/* 'article_id' => 2, */ 'user_id' => 1 , 'subject' => 'article foo bar 1-2', 'body' => 'body 1-2'],
+                [/* 'article_id' => 3, */ 'user_id' => 2 , 'subject' => 'article bar     2-1', 'body' => 'body 2-1'],
+                [/* 'article_id' => 4, */ 'user_id' => 1 , 'subject' => 'article baz     1-3', 'body' => 'body 1-3'],
+                [/* 'article_id' => 5, */ 'user_id' => 2 , 'subject' => 'article baz qux 2-2', 'body' => 'body 2-2'],
             ],
             'banks' => [
                 ['user_id' => 1 , 'name' => 'bank name', 'branch' => 'branch name', 'number' => '1234567', 'holder' => 'Elody Bode III'],
@@ -158,7 +158,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_find()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, string $driver) {
             $user = User::find(1);
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
@@ -173,11 +173,13 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1"
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '2'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
             ], $this->executedSqls());
 
             // SQLite not support 'FOR UPDATE'.
-            if ($db->driverName() === 'sqlite') {
+            if ($driver === 'sqlite') {
                 return;
             }
 
@@ -185,14 +187,16 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE"
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WITH(UPDLOCK) WHERE ?user_id? = '2'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE",
             ], $this->executedSqls());
         });
     }
 
     public function test_findBy()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, string $driver) {
             $user = User::findBy(['user_id' => 1]);
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
@@ -207,11 +211,13 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?name? = 'Alta Hegmann' LIMIT 1"
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?name? = 'Alta Hegmann'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?name? = 'Alta Hegmann' LIMIT 1",
             ], $this->executedSqls());
 
             // SQLite not support 'FOR UPDATE'.
-            if ($db->driverName() === 'sqlite') {
+            if ($driver === 'sqlite') {
                 return;
             }
 
@@ -219,28 +225,32 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE"
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WITH(UPDLOCK) WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE",
             ], $this->executedSqls());
         });
     }
 
     public function test_select()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, string $driver) {
             $this->assertEquals([3, 2, 1], User::select()->pluk('user_id'));
             $this->assertEquals([3, 2], User::select(['gender' => Gender::MALE()])->pluk('user_id'));
             $this->assertEquals([2, 3], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'])->pluk('user_id'));
             $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1)->pluk('user_id'));
 
             // SQLite not support 'FOR UPDATE'.
-            if ($db->driverName() === 'sqlite') {
+            if ($driver === 'sqlite') {
                 return;
             }
 
             $this->clearExecutedSqls();
             $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1, true)->pluk('user_id'));
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?gender? = '1' ORDER BY ?user_id? ASC LIMIT 1 FOR UPDATE"
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WITH(UPDLOCK) WHERE ?gender? = '1' ORDER BY ?user_id? ASC",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?gender? = '1' ORDER BY ?user_id? ASC LIMIT 1 FOR UPDATE",
             ], $this->executedSqls());
         });
     }
@@ -264,7 +274,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_belongsTo()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, string $driver) {
             $this->clearExecutedSqls();
 
             $article = Article::find(1);
@@ -273,9 +283,15 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('good', $fortune->result);
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?article_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?articles? WHERE ?article_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?article_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
             ], $this->executedSqls());
 
 
@@ -295,7 +311,7 @@ class DataModelTest extends RebetDatabaseTestCase
             ], $this->executedSqls());
 
 
-            if ($db->driverName() !== 'sqlite') {
+            if ($driver !== 'sqlite') {
                 $articles        = Article::select();
                 $expect_user_ids = [    2,      1,     2,      1,      1];
                 $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
@@ -307,8 +323,12 @@ class DataModelTest extends RebetDatabaseTestCase
                 }
                 $this->assertWildcardEach([
                     "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1') FOR UPDATE",
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08')) FOR UPDATE",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT \* FROM ?users? WITH(UPDLOCK) WHERE ?user_id? IN ('2', '1')",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1') FOR UPDATE",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WITH(UPDLOCK) WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08')) FOR UPDATE",
                 ], $this->executedSqls());
             }
 
@@ -324,16 +344,36 @@ class DataModelTest extends RebetDatabaseTestCase
             }
             $this->assertWildcardEach([
                 "/\* Emulated SQL \*/ SELECT \* FROM ?articles? ORDER BY ?article_id? DESC",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '2'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '2'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '2' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1",
             ], $this->executedSqls());
 
 
@@ -343,7 +383,7 @@ class DataModelTest extends RebetDatabaseTestCase
             foreach ($articles as $i => $article) {
                 $user    = $article->belongsTo(User::class, ['article_id' => 'user_id']);
                 $fortune = $user ? $user->fortune() : null ;
-                $this->assertEquals($expect_user_ids[$i], $user ? $user->user_id : null);
+                $this->assertEquals($expect_user_ids[$i], $user ? $user->user_id : null, "{$article->article_id} on {$driver}");
                 $this->assertEquals($expect_fortunes[$i], $fortune ? $fortune->result : null);
             }
             $this->assertWildcardEach([
@@ -411,7 +451,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_hasOne()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, string $driver) {
             $this->clearExecutedSqls();
 
             $user = User::find(1);
@@ -419,8 +459,12 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('bank name', $bank->name);
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?banks? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '1' LIMIT 1",
             ], $this->executedSqls());
 
 
@@ -473,7 +517,7 @@ class DataModelTest extends RebetDatabaseTestCase
             ], $this->executedSqls());
 
 
-            if ($db->driverName() !== 'sqlite') {
+            if ($driver !== 'sqlite') {
                 $fortunes          = Fortune::select();
                 $expect_fortunes   = ['good'     , 'bad'   ];
                 $expect_user_ids   = [          1,        2];
@@ -488,8 +532,12 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertWildcardEach([
                     "/\* Emulated SQL \*/ SELECT \* FROM ?fortunes? ORDER BY ?gender? DESC, ?birthday? DESC",
                     "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ((?gender? = '2' AND ?birthday? = '1990-01-08') OR (?gender? = '1' AND ?birthday? = '2003-02-16')) ORDER BY ?user_id? DESC",
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '1' LIMIT 1 FOR UPDATE",
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?banks? WITH(UPDLOCK) WHERE ?user_id? = '1'",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '1' LIMIT 1 FOR UPDATE",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?banks? WITH(UPDLOCK) WHERE ?user_id? = '2'",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?banks? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE",
                 ], $this->executedSqls());
             }
         });
@@ -497,7 +545,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_hasMany()
     {
-        $this->eachDb(function (Database $db) {
+        $this->eachDb(function (Database $db, string $driver) {
             $this->clearExecutedSqls();
 
             $user               = User::find(1);
@@ -508,7 +556,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
                 "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
             ], $this->executedSqls());
 
@@ -521,7 +571,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
                 "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?subject? LIKE '%foo%' ESCAPE '|' AND ?user_id? = '1' ORDER BY ?article_id? DESC",
             ], $this->executedSqls());
 
@@ -534,7 +586,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
                 "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? ASC",
             ], $this->executedSqls());
 
@@ -547,12 +601,16 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
             $this->assertWildcardEach([
-                "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC LIMIT 2",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                [
+                    'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 2 \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
+                ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC LIMIT 2",
             ], $this->executedSqls());
 
 
-            if ($db->driverName() !== 'sqlite') {
+            if ($driver !== 'sqlite') {
                 $user               = User::find(1);
                 $articles           = $user->articles([], null, null, true);
                 $expect_article_ids = [4, 2, 1];
@@ -561,8 +619,12 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($expect_article_ids[$i], $article->article_id);
                 }
                 $this->assertWildcardEach([
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC FOR UPDATE",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT TOP 1 \* FROM ?users? WHERE ?user_id? = '1'",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? = '1' LIMIT 1",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WITH(UPDLOCK) WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC FOR UPDATE",
                 ], $this->executedSqls());
             }
 
@@ -695,7 +757,9 @@ class DataModelTest extends RebetDatabaseTestCase
                 }
                 $this->assertWildcardEach([
                     "/\* Emulated SQL \*/ SELECT \* FROM ?users? ORDER BY ?user_id? DESC",
-                    "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC FOR UPDATE",
+                    [
+                        'sqlsrv' => "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WITH(UPDLOCK) WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC",
+                    ][$driver] ?? "/\* Emulated SQL \*/ SELECT \* FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC FOR UPDATE",
                     "/\* Emulated SQL \*/ SELECT \* FROM ?users? WHERE ?user_id? IN ('2', '1')",
                 ], $this->executedSqls());
             }

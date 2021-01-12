@@ -100,6 +100,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertSame('mysql', Dao::db('mysql')->driverName());
         $this->assertSame('mysql', Dao::db('mariadb')->driverName());
         $this->assertSame('pgsql', Dao::db('pgsql')->driverName());
+        $this->assertSame('sqlsrv', Dao::db('sqlsrv')->driverName());
     }
 
     public function test_serverVersion()
@@ -400,9 +401,9 @@ class DatabaseTest extends RebetDatabaseTestCase
      */
     public function test_query($expect, $col, $sql, $params = [])
     {
-        $this->eachDb(function (Database $db) use ($expect, $col, $sql, $params) {
+        $this->eachDb(function (Database $db, $driver) use ($expect, $col, $sql, $params) {
             $rs = $db->query($sql, $params)->allOf($col);
-            $this->assertSame($expect, $rs->toArray());
+            $this->assertSame($expect, $rs->toArray(), "on {$driver}");
         });
     }
 

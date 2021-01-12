@@ -58,7 +58,8 @@ class InitCommand extends Command
                 1 => 'sqlite',
                 2 => 'mysql',
                 3 => 'mariadb',
-                4 => 'pgsql'
+                4 => 'pgsql',
+                5 => 'sqlsrv',
             ], 'database');
             $is_sqlite           = $configs['database'] === 'sqlite';
             $default_db_name     = $is_sqlite ? "{$app}.db" : $app ;
