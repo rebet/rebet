@@ -56,10 +56,6 @@ before_script:
   - docker-compose run -d -p ${MARIADB_HOST}:3306:3306 mariadb
   - docker run --name=sqlsrv -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=P@ssw0rd' -p 1433:1433 -d mcr.microsoft.com/mssql/server
   - MSSQL_SA_PASSWORD=P@ssw0rd /bin/bash docker/sqlsrv/docker-initdb.sh
-  #- sleep 20
-  #- /opt/mssql-tools/bin/sqlcmd -S sqlsrv -U sa -P P@ssw0rd -i docker/sqlsrv/initdb.d/001_create_database.sql
-  #- /opt/mssql-tools/bin/sqlcmd -S sqlsrv -U sa -P P@ssw0rd -i docker/sqlsrv/initdb.d/002_create_user.sql
-  #- /opt/mssql-tools/bin/sqlcmd -S sqlsrv -U sa -P P@ssw0rd -i docker/sqlsrv/initdb.d/003_create_tables.sql
 
 script:
   - vendor/bin/phpunit --stop-on-fail --coverage-clover=coverage.xml
