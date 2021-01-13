@@ -35,8 +35,8 @@ before_install:
   - sudo apt-get update
   - sudo ACCEPT_EULA=Y apt-get install mssql-tools
   - sudo apt-get install unixodbc-dev php-pear
-  - git clone https://github.com/crocos/pecl-build.git $(phpenv root)/plugins/pecl-build
-  - phpenv pecl -v sqlsrv pdo_sqlsrv
+  - git clone https://github.com/berenddeboer/pecl-build.git $(phpenv root)/plugins/pecl-build
+  - phpenv pecl sqlsrv pdo_sqlsrv
   # Add php.ini config
   - phpenv config-add ./tests/travis/php.ini
   # Add mariadb hosts
