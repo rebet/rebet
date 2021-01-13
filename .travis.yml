@@ -35,7 +35,7 @@ before_install:
   - sudo apt-get update
   - sudo ACCEPT_EULA=Y apt-get install mssql-tools
   - sudo apt-get install unixodbc-dev php-pear
-  - sudo phpenv pecl install sqlsrv pdo_sqlsrv
+  - phpenv pecl install sqlsrv pdo_sqlsrv
   # Add php.ini config
   - phpenv config-add ./tests/travis/php.ini
   # Add mariadb hosts
