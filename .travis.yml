@@ -35,7 +35,7 @@ before_install:
   - sudo apt-get update
   - sudo ACCEPT_EULA=Y apt-get install mssql-tools
   - sudo apt-get install unixodbc-dev php-pear
-  - git clone https://github.com/berenddeboer/pecl-build.git $(phpenv root)/plugins/pecl-build
+  - git clone https://github.com/felipecwb/pecl-build.git $(phpenv root)/plugins/pecl-build
   - phpenv pecl sqlsrv
   - phpenv pecl pdo_sqlsrv
   # Add php.ini config
@@ -58,7 +58,7 @@ before_script:
   - sleep 20
 
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.xml
+  - vendor/bin/phpunit --stop-on-fail --coverage-clover=coverage.xml
 
 after_success:
   - bash <(curl -s https://codecov.io/bash) -cF php
