@@ -20,8 +20,6 @@ addons:
 
 env:
   global:
-    - PHP_BUILD_CONFIGURE_OPTS=--with-pear
-    - PHP_BUILD_EXTRA_MAKE_ARGUMENTS=-j4
     - DOCKER_COMPOSE_VERSION=1.27.4
     - MARIADB_HOST=127.0.0.2
 
@@ -37,7 +35,7 @@ before_install:
   - sudo apt-get update
   - sudo ACCEPT_EULA=Y apt-get install mssql-tools
   - sudo apt-get install unixodbc-dev php-pear
-  - sudo pecl install sqlsrv pdo_sqlsrv
+  - sudo phpenv pecl install sqlsrv pdo_sqlsrv
   # Add php.ini config
   - phpenv config-add ./tests/travis/php.ini
   # Add mariadb hosts
