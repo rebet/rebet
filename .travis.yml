@@ -24,11 +24,21 @@ env:
     - MARIADB_HOST=127.0.0.2
 
 before_install:
+  # Install docker-compose
   - sudo rm /usr/local/bin/docker-compose
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  # Install pdo_sqlsrv extension and depends
+  - curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+  - curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-tools.list
+  - sudo apt-get update
+  - sudo ACCEPT_EULA=Y apt-get install mssql-tools
+  - sudo apt-get install unixodbc-dev
+  - sudo pecl install sqlsrv pdo_sqlsrv
+  # Add php.ini config
   - phpenv config-add ./tests/travis/php.ini
+  # Add mariadb hosts
   - echo "${MARIADB_HOST} mariadb" | sudo tee -a /etc/hosts
 
 install:
@@ -43,6 +53,7 @@ before_script:
   - sqlite3 /tmp/sqlite/rebet.db < docker/sqlite/initdb.d/create_tables.sql
   - docker-compose run -d -p ${MARIADB_HOST}:3306:3306 mariadb
   - docker-compose run -d -p 1433:1433 sqlsrv
+  - sleep 20
 
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
