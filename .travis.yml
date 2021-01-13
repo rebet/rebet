@@ -20,6 +20,8 @@ addons:
 
 env:
   global:
+    - PHP_BUILD_CONFIGURE_OPTS=--with-pear
+    - PHP_BUILD_EXTRA_MAKE_ARGUMENTS=-j4
     - DOCKER_COMPOSE_VERSION=1.27.4
     - MARIADB_HOST=127.0.0.2
 
