@@ -8,6 +8,7 @@ use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Converter\Converter;
 use Rebet\Database\DataModel\Entity;
+use Rebet\Database\Driver\Driver;
 use Rebet\Database\Event\BatchDeleted;
 use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
@@ -50,38 +51,6 @@ class Database
             'analyzer'    => BuiltinAnalyzer::class,
             'ransacker'   => BuiltinRansacker::class,
             'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
-            'quoters'     => [
-                'mysql'   => function (string $identifier) { return '`'.$identifier.'`'; },
-                'sqlsrv'  => function (string $identifier) { return '['.$identifier.']'; },
-                'default' => function (string $identifier) { return '"'.$identifier.'"'; },
-            ],
-            'options'     => [
-                'pdo' => [
-                    'mysql' => [
-                        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                        \PDO::ATTR_EMULATE_PREPARES   => false,
-                        \PDO::ATTR_AUTOCOMMIT         => false,
-                    ],
-                    'sqlsrv'  => [
-                        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                    ],
-                    'default' => [
-                        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                        \PDO::ATTR_EMULATE_PREPARES   => false,
-                    ],
-                ],
-                'statement' => [
-                    'sqlsrv'  => [
-                        \PDO::ATTR_EMULATE_PREPARES   => false,
-                    ],
-                    'default' => [
-                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                    ],
-                ],
-            ],
         ];
     }
 
@@ -93,11 +62,11 @@ class Database
     protected $name = null;
 
     /**
-     * The PDO instance.
+     * The PDO Driver instance.
      *
-     * @var \PDO
+     * @var Driver
      */
-    protected $pdo = null;
+    protected $driver = null;
 
     /**
      * Status that logging or not.
@@ -145,20 +114,15 @@ class Database
      * Create database instance using given PDO instance.
      *
      * @param string $name of this database (alias ​​for classification)
-     * @param \PDO $pdo
+     * @param Driver $driver
      * @param bool $debug (default: false)
      * @param bool $emulated_sql_log (default: true)
      * @param callable|null $log_handler function(string $name, string $sql, array $params = []) (default: depend on configure)
      */
-    public function __construct(string $name, \PDO $pdo, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
+    public function __construct(string $name, Driver $driver, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
     {
-        $options = static::config("options.pdo.".$pdo->getAttribute(\PDO::ATTR_DRIVER_NAME), false) ?? static::config("options.pdo.default", false) ?? [];
-        foreach ($options as $key => $value) {
-            $pdo->setAttribute($key, $value);
-        }
-
         $this->name             = $name;
-        $this->pdo              = $pdo;
+        $this->driver           = $driver;
         $this->debug            = $debug;
         $this->emulated_sql_log = $emulated_sql_log;
         $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
@@ -178,6 +142,16 @@ class Database
     }
 
     /**
+     * Get the PDO Driver of this database.
+     *
+     * @return Driver
+     */
+    public function driver() : Driver
+    {
+        return $this->driver;
+    }
+
+    /**
      * Get the PDO driver name of this database.
      * NOTE: This method return PDO drivers attribute of PDO::ATTR_DRIVER_NAME
      *
@@ -185,7 +159,7 @@ class Database
      */
     public function driverName() : string
     {
-        return $this->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        return $this->driver->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
 
     /**
@@ -207,7 +181,7 @@ class Database
      */
     public function serverVersion() : string
     {
-        return $this->pdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        return $this->driver->serverVersion();
     }
 
     /**
@@ -218,8 +192,7 @@ class Database
      */
     public function clientVersion() : string
     {
-        $version = $this->pdo()->getAttribute(\PDO::ATTR_CLIENT_VERSION);
-        return is_array($version) ? Arrays::implode($version, '; ', '=') : $version ;
+        return $this->driver->clientVersion();
     }
 
     /**
@@ -229,10 +202,7 @@ class Database
      */
     public function pdo() : \PDO
     {
-        if ($this->closed()) {
-            throw new DatabaseException("Database [{$this->name}] connection was lost.");
-        }
-        return $this->pdo;
+        return $this->driver->pdo();
     }
 
     /**
@@ -315,7 +285,7 @@ class Database
      */
     public function exception($error, ?string $sql = null, array $params = []) : DatabaseException
     {
-        return DatabaseException::from($this, $error, ...$this->convertForMessage($sql, $params));
+        return DatabaseException::from($this->name(), $error, ...$this->convertForMessage($sql, $params))->db($this);
     }
 
     /**
@@ -368,7 +338,7 @@ class Database
         if ($param->type === \PDO::PARAM_LOB) {
             return 'NULL/*LOB('.strlen($param->value).')*/';
         }
-        return $this->pdo()->quote($param->value, $param->type);
+        return $this->driver->quote($param->value, $param->type);
     }
 
     /**
@@ -399,14 +369,11 @@ class Database
      * Start the transaction.
      *
      * @return self
-     * @throws DatabaseException|\PDOException
+     * @throws DatabaseException
      */
     public function begin() : self
     {
-        if (!$this->pdo()->beginTransaction()) {
-            throw $this->exception($this->pdo()->errorInfo());
-        }
-        $this->log("BEGIN");
+        $this->log($this->driver->begin());
         return $this;
     }
 
@@ -419,9 +386,7 @@ class Database
      */
     public function savepoint(string $name) : self
     {
-        $sql = $this->compiler->savepoint($name);
-        $this->pdo()->exec($sql);
-        $this->log($sql);
+        $this->log($this->driver->savepoint($name));
         return $this;
     }
 
@@ -435,18 +400,7 @@ class Database
      */
     public function rollback(?string $savepoint = null, bool $quiet = true) : self
     {
-        try {
-            $sql = $savepoint ? $this->compiler->rollbackToSavepoint($savepoint) : null ;
-            if (!($sql ? $this->pdo()->exec($sql) : $this->pdo()->rollBack())) {
-                throw $this->exception($this->pdo()->errorInfo(), $sql);
-            }
-            $this->log($sql ?? "ROLLBACK");
-        } catch (\Exception $e) {
-            if (!$quiet) {
-                throw $e;
-            }
-        }
-
+        $this->log($this->driver->rollback($savepoint, $quiet) ?? "-- Rollback failed, but continue processing by quiet mode.");
         return $this;
     }
 
@@ -454,14 +408,11 @@ class Database
      * Commit the transaction.
      *
      * @return self
-     * @throws DatabaseException|\PDOException
+     * @throws DatabaseException
      */
     public function commit() : self
     {
-        if (!$this->pdo()->commit()) {
-            throw $this->exception($this->pdo()->errorInfo());
-        }
-        $this->log("COMMIT");
+        $this->log($this->driver->commit());
         return $this;
     }
 
@@ -495,12 +446,7 @@ class Database
      */
     public function quoteIdentifier(string $identifier) : string
     {
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $identifier)) {
-            return $identifier;
-        }
-
-        $quoter = static::config('quoters.'.$this->driverName(), false) ?? static::config('quoters.default') ;
-        return $quoter($identifier);
+        return $this->driver->quoteIdentifier($identifier);
     }
 
     /**
@@ -513,21 +459,7 @@ class Database
      */
     public function truncate(string $table_name, ?bool $with_vacuum = true) : void
     {
-        $quoted_table_name = $this->quoteIdentifier($table_name);
-        switch ($this->driverName()) {
-            case 'sqlite':
-                $this->execute("DELETE FROM {$quoted_table_name}");
-                $this->execute("DELETE FROM sqlite_sequence WHERE name = :table_name", ['table_name' => $table_name]);
-                if ($with_vacuum) {
-                    $this->execute("VACUUM");
-                }
-            return;
-            case 'pgsql':
-                $this->execute("TRUNCATE TABLE {$quoted_table_name} RESTART IDENTITY");
-            return;
-        }
-
-        $this->execute("TRUNCATE TABLE {$quoted_table_name}");
+        $this->log($this->driver->truncate($table_name, $with_vacuum));
     }
 
     /**
@@ -538,7 +470,7 @@ class Database
      */
     public function lastInsertId(?string $name = null) : string
     {
-        return $this->pdo()->lastInsertId($name);
+        return $this->driver->lastInsertId($name);
     }
 
     /**
@@ -549,15 +481,7 @@ class Database
      */
     protected function prepare(string $sql) : Statement
     {
-        try {
-            $stmt = $this->pdo()->prepare($sql, static::config("options.statement.".$this->driverName(), false) ?? static::config("options.statement.default", false) ?? []);
-            if (!$stmt) {
-                throw $this->exception($this->pdo()->errorInfo(), $sql);
-            }
-            return new Statement($this, $stmt);
-        } catch (\PDOException $e) {
-            throw $this->exception($e, $sql);
-        }
+        return new Statement($this, $this->driver->prepare($sql));
     }
 
     /**
@@ -575,8 +499,8 @@ class Database
     protected function _query(string $sql, $order_by = null, $params = [], ?int $limit = null, bool $for_update = false, ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
         [$sql, $params] = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-        $sql            = $limit && $pager === null ? $this->compiler->appendLimitOffset($sql, $limit) : $sql ;
-        $sql            = $for_update ?  $this->compiler->appendForUpdate($sql) : $sql ;
+        $sql            = $limit && $pager === null ? $this->driver->appendLimitOffset($sql, $limit) : $sql ;
+        $sql            = $for_update ?  $this->driver->appendForUpdate($sql) : $sql ;
         return $this->prepare($sql)->execute(Arrays::toArray($params));
     }
 
@@ -694,7 +618,7 @@ class Database
      */
     public function exists(string $sql, array $params = []) : bool
     {
-        return $this->query($this->compiler->appendLimitOffset($sql, 1), $params)->first() !== null;
+        return $this->query($this->driver->appendLimitOffset($sql, 1), $params)->first() !== null;
     }
 
     /**
@@ -1037,10 +961,7 @@ class Database
      */
     public function close() : void
     {
-        if ($this->pdo) {
-            $this->rollback();
-            $this->pdo = null;
-        }
+        $this->driver->close();
     }
 
     /**
@@ -1050,6 +971,6 @@ class Database
      */
     public function closed() : bool
     {
-        return $this->pdo === null;
+        return $this->driver->closed();
     }
 }

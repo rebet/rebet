@@ -715,7 +715,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     public function test_appendLimitOffset(string $expect, string $sql, ?int $limit = null, ?int $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql'])
     {
         $this->eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
-            $this->assertSame($expect, $db->compiler()->appendLimitOffset($sql, $limit, $offset));
+            $this->assertSame($expect, $db->driver()->appendLimitOffset($sql, $limit, $offset));
         }, ...$dbs);
     }
 }

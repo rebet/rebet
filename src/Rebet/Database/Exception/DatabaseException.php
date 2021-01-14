@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Database\Exception;
 
+use Rebet\Database\Database;
 use Rebet\Tools\Exception\RuntimeException;
 use Rebet\Tools\Support\Getsetable;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Database\Database;
 
 /**
  * Database Exception Class
@@ -64,26 +64,24 @@ class DatabaseException extends RuntimeException
     /**
       * Create the exception using given PDO error info.
       *
-      * @param Database|null $db
+      * @param string $name of database or PDO driver
       * @param array|\PDOException $error
       * @param string|null $sql (default: null)
       * @param array $param (default: [])
       * @return self
       */
-    public static function from(Database $db, $error, ?string $sql = null, array $params = []) : self
+    public static function from(string $name, $error, ?string $sql = null, array $params = []) : self
     {
         $error_info = is_array($error) ? $error : $error->errorInfo ;
-        $sql_state  = $error_info[0] ?? 'UNKOWN' ;
-        $code       = $error_info[1] ?? null ;
-        $message    = $error_info[2] ?? 'Unkown error occured.' ;
-        $name       = $db->name();
-        $driver     = $db->closed() ? 'unkown' : $db->driverName() ;
+        $sql_state  = $error_info[0] ?? '-----' ;
+        $code       = $error_info[1] ?? ($error instanceof \PDOException ? $error->getCode() : null) ;
+        $message    = $error_info[2] ?? ($error instanceof \PDOException ? $error->getMessage() : 'Unkown error occured.') ;
 
         $sql  = empty($sql)    ? '' : "\n--- [SQL] ---\n{$sql}";
         $sql .= empty($params) ? '' : "\n-- [PARAM] --\n".Strings::stringify($params) ;
         $sql .= empty($sql)    ? '' : "\n-------------\n" ;
 
-        $e = (new static("[{$name}/{$driver}: ".($sql_state ?? '-----').($code ? "({$code})" : "")."] {$message}{$sql}"))->db($db)->sqlState($sql_state)->code($code)->appendix($error_info);
+        $e = (new static("[{$name}:{$sql_state}".($code ? "({$code})" : "")."] {$message}{$sql}"))->sqlState($sql_state)->code($code)->appendix($error_info);
         if ($error instanceof \Throwable) {
             $e->caused($error);
         }

@@ -301,7 +301,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
     public function test_rollbackNotQuiet()
     {
-        $this->expectException(\PDOException::class);
+        $this->expectException(DatabaseException::class);
         $this->expectExceptionMessage("There is no active transaction");
 
         Dao::db()->rollback(null, false);
@@ -1629,7 +1629,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                 $this->fail('Never execute');
             } catch (\Exception $e) {
                 $this->assertInstanceOf(DatabaseException::class, $e);
-                $this->assertSame("Database [{$db->name()}] connection was lost.", $e->getMessage());
+                $this->assertwildcardString("\[*\] Database connection was lost.", $e->getMessage());
             }
             Dao::clear($db->name());
         });

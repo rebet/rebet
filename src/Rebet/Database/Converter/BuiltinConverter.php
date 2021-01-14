@@ -137,12 +137,14 @@ class BuiltinConverter implements Converter
             case 'float8':           // pgsql
                 return floatval($value);
 
-            case 'bit':              // sqlsrv, mysql, dblib
+            case 'bit':              // sqlsrv, mysql, dblib, pgsql
                 if ($driver === 'sqlsrv') {
                     return boolval($value);
                 }
-                $decimal = is_string($value) ? base_convert($value, 2, 10) : intval($value) ;
-                return is_string($value) && mb_strlen($value) < PHP_INT_SIZE * 8 ? intval($decimal) : $decimal ;
+                if ($driver === 'pgsql') {
+                    return $meta['precision'] < PHP_INT_SIZE * 8 ? intval(base_convert($value, 2, 10)) : $value ;
+                }
+                return $meta['len'] < PHP_INT_SIZE * 8 ? intval($value) : $value ;
 
             case 'bool':             // pgsql
                 return boolval($value);

@@ -1,7 +1,13 @@
 <?php
 namespace Rebet\Database;
 
+use Rebet\Database\Driver\MysqlDriver;
+use Rebet\Database\Driver\PgsqlDriver;
+use Rebet\Database\Driver\SqliteDriver;
+use Rebet\Database\Driver\SqlsrvDriver;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Utility\Dsn;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Dao Class
@@ -79,7 +85,13 @@ class Dao
     public static function defaultConfig()
     {
         return [
-            'dbs' => [
+            'drivers' => [
+                'sqlite' => SqliteDriver::class,
+                'mysql'  => MysqlDriver::class,
+                'pgsql'  => PgsqlDriver::class,
+                'sqlsrv' => SqlsrvDriver::class,
+            ],
+            'dbs'     => [
                 'main' => [
                     'dsn'              => null,
                     'user'             => null,
@@ -153,19 +165,19 @@ class Dao
             return $update_current_db ? static::$current = $db : $db ;
         }
 
-        $dsn = static::config("dbs.{$name}.dsn");
-        $pdo = is_callable($dsn)
-                ? call_user_func($dsn)
-                : new \PDO(
-                    $dsn,
-                    static::config("dbs.{$name}.user", false),
-                    static::config("dbs.{$name}.password", false),
-                    static::config("dbs.{$name}.options", false, [])
-                );
+        $dsn    = static::config("dbs.{$name}.dsn");
+        $driver = null;
+        if (is_callable($dsn)) {
+            $driver = call_user_func($dsn);
+        } else {
+            $driver_name  = static::config("dbs.{$name}.driver", false) ?? Strings::latrim($dsn, ':') ;
+            $driver_class = static::config("drivers.{$driver_name}");
+            $driver       = $driver_class::create($dsn, static::config("dbs.{$name}.user", false), static::config("dbs.{$name}.password", false), static::config("dbs.{$name}.options", false, []));
+        }
 
         $db = new Database(
             $name,
-            $pdo,
+            $driver,
             static::config("dbs.{$name}.debug", false, false),
             static::config("dbs.{$name}.emulated_sql_log", false, true),
             static::config("dbs.{$name}.log_handler", false, null)
