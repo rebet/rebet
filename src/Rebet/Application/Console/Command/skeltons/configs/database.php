@@ -2,7 +2,6 @@
 
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
-use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Cursor;
@@ -28,7 +27,6 @@ return [
 
     Database::class => [
         'compiler'    => BuiltinCompiler::class,
-        'converter'   => BuiltinConverter::class,
         'analyzer'    => BuiltinAnalyzer::class,
         'ransacker'   => BuiltinRansacker::class,
         'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}

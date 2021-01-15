@@ -5,8 +5,6 @@ use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
-use Rebet\Database\Converter\BuiltinConverter;
-use Rebet\Database\Converter\Converter;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Event\BatchDeleted;
@@ -47,7 +45,6 @@ class Database
     {
         return [
             'compiler'    => BuiltinCompiler::class,
-            'converter'   => BuiltinConverter::class,
             'analyzer'    => BuiltinAnalyzer::class,
             'ransacker'   => BuiltinRansacker::class,
             'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
@@ -97,13 +94,6 @@ class Database
     protected $compiler = null;
 
     /**
-     * Converter of PDO/PHP values.
-     *
-     * @var Converter
-     */
-    protected $converter = null;
-
-    /**
      * Ransacker of this database.
      *
      * @var Ransacker
@@ -126,7 +116,6 @@ class Database
         $this->debug            = $debug;
         $this->emulated_sql_log = $emulated_sql_log;
         $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
-        $this->converter        = static::config('converter')::of($this);
         $this->compiler         = static::config('compiler')::of($this);
         $this->ransacker        = static::config('ransacker')::of($this);
     }
@@ -213,16 +202,6 @@ class Database
     public function compiler() : Compiler
     {
         return $this->compiler;
-    }
-
-    /**
-     * Get the converter of this database.
-     *
-     * @return Converter
-     */
-    public function converter() : Converter
-    {
-        return $this->converter;
     }
 
     /**
@@ -331,7 +310,7 @@ class Database
      */
     protected function convertToSql($value) : string
     {
-        $param = $value instanceof PdoParameter ? $value : $this->converter->toPdoType($value);
+        $param = $value instanceof PdoParameter ? $value : $this->driver->toPdoType($value);
         if ($param->value === null) {
             return 'NULL';
         }
@@ -349,7 +328,7 @@ class Database
      */
     public function convertToPdo($value) : PdoParameter
     {
-        return $this->converter->toPdoType($value);
+        return $this->driver->toPdoType($value);
     }
 
     /**
@@ -362,7 +341,7 @@ class Database
      */
     public function convertToPhp($value, array $meta = [], ?string $type = null)
     {
-        return $this->converter->toPhpType($value, $meta, $type);
+        return $this->driver->toPhpType($value, $meta, $type);
     }
 
     /**

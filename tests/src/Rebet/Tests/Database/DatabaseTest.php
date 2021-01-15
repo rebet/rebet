@@ -9,6 +9,7 @@ use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 use Rebet\Database\Event\BatchDeleted;
 use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
@@ -131,10 +132,10 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
     }
 
-    public function test_converter()
+    public function test_driver()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertInstanceOf(BuiltinConverter::class, $db->converter());
+            $this->assertInstanceOf(Driver::class, $db->driver());
         });
     }
 

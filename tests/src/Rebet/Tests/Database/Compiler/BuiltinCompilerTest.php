@@ -680,42 +680,4 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             $this->assertEquals($expect, $db->compiler()->convertParam($key, $value));
         });
     }
-
-    public function dataAppendLimitOffers() : array
-    {
-        return [
-            ["SELECT * FROM users", "SELECT * FROM users", null, null],
-            ["SELECT * FROM users", "SELECT * FROM users", null, null, ['sqlsrv']],
-
-            ["SELECT * FROM users LIMIT 10", "SELECT * FROM users", 10, null],
-            ["SELECT TOP 10 * FROM users"  , "SELECT * FROM users", 10, null, ['sqlsrv']],
-            ["SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT \n SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT \n SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\nSELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\nSELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\n-- SELECT\nSELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\n-- SELECT\nSELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT */\n-- SELECT\n SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT */\n-- SELECT\n SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\n /* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\n /* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT */\n /* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT */\n /* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\n /* SELECT */\n-- SELECT\n /* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\n /* SELECT */\n-- SELECT\n /* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-
-            ["SELECT * FROM users OFFSET 10", "SELECT * FROM users", null, 10],
-            ["SELECT * FROM users OFFSET 10 ROWS", "SELECT * FROM users", null, 10, ['sqlsrv']],
-            ["SELECT * FROM users ORDER BY user_id OFFSET 10 ROWS", "SELECT * FROM users ORDER BY user_id", null, 10, ['sqlsrv']],
-
-            ["SELECT * FROM users LIMIT 10 OFFSET 100", "SELECT * FROM users", 10, 100],
-            ["SELECT * FROM users OFFSET 100 ROWS FETCH NEXT 10 ROWS ONLY", "SELECT * FROM users", 10, 100, ['sqlsrv']],
-            ["SELECT * FROM users ORDER BY user_id OFFSET 100 ROWS FETCH NEXT 10 ROWS ONLY", "SELECT * FROM users ORDER BY user_id", 10, 100, ['sqlsrv']],
-        ];
-    }
-
-    /**
-     * @dataProvider dataAppendLimitOffers
-     */
-    public function test_appendLimitOffset(string $expect, string $sql, ?int $limit = null, ?int $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql'])
-    {
-        $this->eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
-            $this->assertSame($expect, $db->driver()->appendLimitOffset($sql, $limit, $offset));
-        }, ...$dbs);
-    }
 }

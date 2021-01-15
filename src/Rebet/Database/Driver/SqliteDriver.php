@@ -2,6 +2,7 @@
 namespace Rebet\Database\Driver;
 
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * SQLite3 Driver Class
@@ -55,5 +56,40 @@ class SqliteDriver extends AbstractDriver
     public function appendForUpdate(string $sql) : string
     {
         throw new DatabaseException("SQLite does not support `FOR UPDATE`");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see 'sqlite' native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_sqlite/sqlite_statement.c.gcov.php
+     */
+    public function toPhpType($value, array $meta = [], ?string $type = null)
+    {
+        if ($value === null) {
+            return null;
+        }
+        if ($type !== null) {
+            return Reflector::convert($value, $type);
+        }
+
+        switch ($native_type = strtolower($meta['native_type'] ?? '(native_type missing)')) {
+            case 'null':
+                return null;
+
+            case 'string':
+                return (string)$value;
+
+            case 'integer':
+                return intval($value) ;
+
+            case 'double':
+                return floatval($value);
+
+            case 'blob':
+                return $value;
+        }
+
+        // trigger_error("[".static::SUPPORTED_PDO_DRIVER."] Unknown native type '{$native_type}' found.", E_USER_NOTICE);
+        return $value;
     }
 }

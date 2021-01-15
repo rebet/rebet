@@ -3,6 +3,7 @@ namespace Rebet\Database\Driver;
 
 use PDO;
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Database\PdoParameter;
 
 /**
  * PDO Driver Interface
@@ -175,4 +176,22 @@ interface Driver
      * @throws DatabaseException if the database does not support `FOR UPDATE`.
      */
     public function appendForUpdate(string $sql) : string;
+
+    /**
+     * Convert given PHP type value to PDO data type.
+     *
+     * @param mixed $value
+     * @return PdoParameter
+     */
+    public function toPdoType($value) : PdoParameter;
+
+    /**
+     * Convert given PDO data type to PHP data type.
+     *
+     * @param mixed $value
+     * @param array $meta data of PDO column meta data. (default: [])
+     * @param string|null $type that defined in property annotation. (default: null)
+     * @return mixed
+     */
+    public function toPhpType($value, array $meta = [], ?string $type = null);
 }

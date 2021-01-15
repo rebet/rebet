@@ -3,7 +3,11 @@ namespace Rebet\Database\Driver;
 
 use PDO;
 use Rebet\Database\Exception\DatabaseException;
+use Rebet\Database\PdoParameter;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\DateTime\Date;
+use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Utility\Arrays;
 
 /**
@@ -28,11 +32,28 @@ abstract class AbstractDriver implements Driver
 
     /**
      * Identifier quortes.
-     * NOTE: Please override this property in the sub class, if needed.
+     * NOTE: Please override this property in the sub class, if needed. (default: ['"', '"'])
      *
      * @var string[]
      */
     protected const IDENTIFIER_QUOTES = ['"', '"'];
+
+    /**
+     * PDO date type format.
+     * NOTE: Please override this property in the sub class, if needed. (default: 'Y-m-d')
+     *
+     * @var string
+     */
+    protected const PDO_DATE_FORMAT = 'Y-m-d';
+
+    /**
+     * PDO date time type format.
+     * NOTE: Please override this property in the sub class, if needed. (default: 'Y-m-d H:i:s')
+     *
+     * @var string
+     */
+    protected const PDO_DATETIME_FORMAT = 'Y-m-d H:i:s';
+
 
     /**
      * @var \PDO driver
@@ -290,5 +311,29 @@ abstract class AbstractDriver implements Driver
     public function appendForUpdate(string $sql) : string
     {
         return "{$sql} FOR UPDATE";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toPdoType($value) : PdoParameter
+    {
+        if ($value instanceof Enum) {
+            $value = $value->value;
+        }
+
+        switch (true) {
+            case $value instanceof PdoParameter:       return $value;
+            case $value === null:                      return PdoParameter::null();
+            case is_bool($value):                      return PdoParameter::bool($value);
+            case is_int($value):                       return PdoParameter::int($value);
+            case is_float($value):                     return PdoParameter::str($value);
+            case is_resource($value):                  return PdoParameter::lob(stream_get_contents($value));
+            case $value instanceof Date:               return PdoParameter::str($value->format(static::PDO_DATE_FORMAT));
+            case $value instanceof \DateTimeInterface: return PdoParameter::str($value->format(static::PDO_DATETIME_FORMAT)); // Do NOT convert before Date
+            case $value instanceof Decimal:            return PdoParameter::str($value->normalize()->format(true, '.', ''));
+        }
+
+        return PdoParameter::str($value);
     }
 }
