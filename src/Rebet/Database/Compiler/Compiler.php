@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Database\Compiler;
 
-use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
@@ -19,12 +19,12 @@ use Rebet\Database\Statement;
 interface Compiler
 {
     /**
-     * Get compiler of given database
+     * Get compiler of given PDO driver
      *
-     * @param Database $db
+     * @param Driver $driver
      * @return self
      */
-    public static function of(Database $db) : self;
+    public static function of(Driver $driver) : self;
 
     /**
      * Compile the given SQL template and params to PDO spec (and return result adjust callback closure).

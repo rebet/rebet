@@ -2,7 +2,6 @@
 namespace Rebet\Database;
 
 use Rebet\Database\Analysis\Analyzer;
-use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
 use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\DataModel\Entity;
@@ -45,7 +44,6 @@ class Database
     {
         return [
             'compiler'    => BuiltinCompiler::class,
-            'analyzer'    => BuiltinAnalyzer::class,
             'ransacker'   => BuiltinRansacker::class,
             'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
         ];
@@ -116,7 +114,7 @@ class Database
         $this->debug            = $debug;
         $this->emulated_sql_log = $emulated_sql_log;
         $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
-        $this->compiler         = static::config('compiler')::of($this);
+        $this->compiler         = static::config('compiler')::of($driver);
         $this->ransacker        = static::config('ransacker')::of($this);
     }
 
@@ -212,7 +210,7 @@ class Database
      */
     public function analyzer(string $sql) : Analyzer
     {
-        return static::config('analyzer')::of($this, $sql);
+        return $this->driver->analyzer($sql);
     }
 
     /**
@@ -264,7 +262,7 @@ class Database
      */
     public function exception($error, ?string $sql = null, array $params = []) : DatabaseException
     {
-        return DatabaseException::from($this->name(), $error, ...$this->convertForMessage($sql, $params))->db($this);
+        return DatabaseException::from('db:'.$this->name(), $error, ...$this->convertForMessage($sql, $params))->db($this);
     }
 
     /**
@@ -318,30 +316,6 @@ class Database
             return 'NULL/*LOB('.strlen($param->value).')*/';
         }
         return $this->driver->quote($param->value, $param->type);
-    }
-
-    /**
-     * Convert given PHP type value to PDO data type using converter.
-     *
-     * @param mixed $value
-     * @return PdoParameter
-     */
-    public function convertToPdo($value) : PdoParameter
-    {
-        return $this->driver->toPdoType($value);
-    }
-
-    /**
-     * Convert given PDO type value to PHP data type using converter.
-     *
-     * @param mixed $value
-     * @param array $meta data of PDO column meta data. (default: [])
-     * @param string|null $type that defined in property annotation. (default: null)
-     * @return mixed
-     */
-    public function convertToPhp($value, array $meta = [], ?string $type = null)
-    {
-        return $this->driver->toPhpType($value, $meta, $type);
     }
 
     /**

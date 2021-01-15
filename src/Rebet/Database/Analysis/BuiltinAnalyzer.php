@@ -21,11 +21,6 @@ use Rebet\Database\Database;
 class BuiltinAnalyzer implements Analyzer
 {
     /**
-     * @var Database
-     */
-    protected $db;
-
-    /**
      * @var PHPSQLParser
      */
     protected $parser;
@@ -41,18 +36,9 @@ class BuiltinAnalyzer implements Analyzer
      * @param Database $db
      * @param string $sql
      */
-    protected function __construct(Database $db, string $sql)
+    public function __construct(string $sql)
     {
-        $this->db     = $db;
         $this->parser = new PHPSQLParser($sql);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function of(Database $db, string $sql) : Analyzer
-    {
-        return new static($db, $sql);
     }
 
     /**

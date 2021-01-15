@@ -3,6 +3,7 @@ namespace Rebet\Database\Compiler;
 
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
@@ -32,28 +33,28 @@ use Rebet\Tools\Utility\Strings;
 class BuiltinCompiler implements Compiler
 {
     /**
-     * Database
+     * PDO Driver
      *
-     * @var Database
+     * @var Driver
      */
-    protected $db;
+    protected $driver;
 
     /**
-     * Create Builtin Conpiler of given database.
+     * Create Builtin Conpiler of given PDO driver.
      *
      * @param Database $db
      */
-    public function __construct(Database $db)
+    public function __construct(Driver $driver)
     {
-        $this->db = $db;
+        $this->driver = $driver;
     }
 
     /**
      * {@inheritDoc}
      */
-    public static function of(Database $db) : Compiler
+    public static function of(Driver $driver) : Compiler
     {
-        return new static($db);
+        return new static($driver);
     }
 
     /**
@@ -110,10 +111,10 @@ class BuiltinCompiler implements Compiler
                 if ($pager) {
                     $offset = $this->offset($pager);
                     $limit  = $this->limit($pager);
-                    $sql    = $this->db->driver()->appendLimitOffset($sql, $limit, $offset);
+                    $sql    = $this->driver->appendLimitOffset($sql, $limit, $offset);
                 }
             } else {
-                $analyzer                 = $this->db->analyzer($sql);
+                $analyzer                 = $this->driver->analyzer($sql);
                 $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
                 $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
                 $order_by                 = $forward_feed ? $order_by : ($near_by_first ? $order_by : $order_by->reverse()) ;
@@ -128,7 +129,7 @@ class BuiltinCompiler implements Compiler
                 } else {
                     $sql = $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$cursor_sql})" : "{$sql} WHERE {$cursor_sql}" ;
                 }
-                $sql = $this->db->driver()->appendLimitOffset("{$sql} ORDER BY {$order_sql}", $limit, $offset);
+                $sql = $this->driver->appendLimitOffset("{$sql} ORDER BY {$order_sql}", $limit, $offset);
             }
         }
 
@@ -205,7 +206,7 @@ class BuiltinCompiler implements Compiler
     {
         $order = [];
         foreach ($order_by as $col => $asc_desc) {
-            $order[] = "{$this->db->quoteIdentifier($col)} {$asc_desc}";
+            $order[] = "{$this->driver->quoteIdentifier($col)} {$asc_desc}";
         }
         return implode(', ', $order);
     }
@@ -237,9 +238,9 @@ class BuiltinCompiler implements Compiler
             foreach ($cursor_cols as $col) {
                 $real_col     = $has_group_by ? $col : $analyzer->extractAliasSelectColumn($col) ;
                 $key          = ":cursor__{$i}__{$j}";
-                $params[$key] = $params[":cursor__0__{$j}"] ?? $this->db->convertToPdo($cursor[$col]);
+                $params[$key] = $params[":cursor__0__{$j}"] ?? $this->driver->toPdoType($cursor[$col]);
 
-                $where .= "{$this->db->quoteIdentifier($real_col)} = {$key} AND ";
+                $where .= "{$this->driver->quoteIdentifier($real_col)} = {$key} AND ";
                 $j++;
             }
 
@@ -249,9 +250,9 @@ class BuiltinCompiler implements Compiler
 
             $real_last    = $has_group_by ? $last : $analyzer->extractAliasSelectColumn($last) ;
             $key          = ":cursor__{$i}__{$j}";
-            $params[$key] = $params[":cursor__0__{$j}"] ?? $this->db->convertToPdo($cursor[$last]);
+            $params[$key] = $params[":cursor__0__{$j}"] ?? $this->driver->toPdoType($cursor[$last]);
 
-            $where .= "{$this->db->quoteIdentifier($real_last)} {$expression} {$key}";
+            $where .= "{$this->driver->quoteIdentifier($real_last)} {$expression} {$key}";
             $where .= ")";
             $i++;
         } while (!empty($cursor_cols));
@@ -305,10 +306,10 @@ class BuiltinCompiler implements Compiler
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
         if ($value instanceof Expression) {
-            return $value->compile($this->db, $key);
+            return $value->compile($this->driver, $key);
         }
         if (!is_array($value)) {
-            return [$key, [$key => $this->db->convertToPdo($value)]];
+            return [$key, [$key => $this->driver->toPdoType($value)]];
         }
 
         $unfold_keys = [];
@@ -319,14 +320,14 @@ class BuiltinCompiler implements Compiler
             $index++;
 
             if ($v instanceof Expression) {
-                [$e, $p]       = $v->compile($this->db, $new_key);
+                [$e, $p]       = $v->compile($this->driver, $new_key);
                 $unfold_keys[] = $e;
                 $params        = array_merge($params, $p);
                 continue;
             }
 
             $unfold_keys[]    = $new_key;
-            $params[$new_key] = $this->db->convertToPdo($v);
+            $params[$new_key] = $this->driver->toPdoType($v);
         }
         return [join(', ', $unfold_keys), $params];
     }

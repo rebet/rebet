@@ -6,7 +6,6 @@ use PHPUnit\Framework\AssertionFailedError;
 use Rebet\Auth\Password;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Compiler\BuiltinCompiler;
-use Rebet\Database\Converter\BuiltinConverter;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\Driver;
@@ -24,7 +23,6 @@ use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
-use Rebet\Database\PdoParameter;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Event\Event;
 use Rebet\Tests\Mock\Entity\Article;
@@ -219,19 +217,6 @@ class DatabaseTest extends RebetDatabaseTestCase
 
         $exception = Dao::db('sqlite')->exception($error, $sql, $params);
         $this->assertInstanceOf(DatabaseException::class, $exception);
-    }
-
-    public function test_convertToPdo()
-    {
-        $this->assertInstanceOf(PdoParameter::class, Dao::db('sqlite')->convertToPdo(123));
-    }
-
-    public function test_convertToPhp()
-    {
-        $this->assertEquals(123, Dao::db('sqlite')->convertToPhp(123));
-        $this->assertEquals(new Date('2001-02-03'), Dao::db('sqlite')->convertToPhp('2001-02-03', [], Date::class));
-        $this->assertEquals('2001-02-03', Dao::db('sqlite')->convertToPhp('2001-02-03', ['native_type' => 'string']));
-        $this->assertEquals(new Date('2001-02-03'), Dao::db('mysql')->convertToPhp('2001-02-03', ['native_type' => 'date']));
     }
 
     public function test_beginAndSavepointAndCommitAndRollback()

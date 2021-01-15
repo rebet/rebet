@@ -2,6 +2,8 @@
 namespace Rebet\Database\Driver;
 
 use PDO;
+use Rebet\Database\Analysis\Analyzer;
+use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\PdoParameter;
 use Rebet\Tools\Config\Configurable;
@@ -123,7 +125,7 @@ abstract class AbstractDriver implements Driver
      */
     protected function exception($error, ?string $sql = null, array $params = []) : DatabaseException
     {
-        return DatabaseException::from(static::SUPPORTED_PDO_DRIVER, $error, $sql, $params);
+        return DatabaseException::from('pdo:'.static::SUPPORTED_PDO_DRIVER, $error, $sql, $params);
     }
 
     /**
@@ -335,5 +337,13 @@ abstract class AbstractDriver implements Driver
         }
 
         return PdoParameter::str($value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function analyzer(string $sql) : Analyzer
+    {
+        return new BuiltinAnalyzer($sql);
     }
 }

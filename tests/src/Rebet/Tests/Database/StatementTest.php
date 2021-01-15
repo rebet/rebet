@@ -93,7 +93,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_execute_exception_01()
     {
         $this->expectException(DatabaseException::class);
-        $this->expectExceptionMessage("[sqlite:-----] This is test");
+        $this->expectExceptionMessage("[db:sqlite/-----] This is test");
 
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $pdo_stmt->method('execute')->willThrowException(new PDOException('This is test'));
@@ -106,7 +106,7 @@ class StatementTest extends RebetDatabaseTestCase
     public function test_execute_exception_02()
     {
         $this->expectException(DatabaseException::class);
-        $this->expectExceptionMessage("[sqlite:-----] Unkown error occured.");
+        $this->expectExceptionMessage("[db:sqlite/-----] Unkown error occured.");
 
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $pdo_stmt->method('execute')->willReturn(false);

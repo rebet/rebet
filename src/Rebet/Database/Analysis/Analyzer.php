@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Database\Analysis;
 
-use Rebet\Database\Database;
-
 /**
  * SQL Analyzer Interface
  *
@@ -13,15 +11,6 @@ use Rebet\Database\Database;
  */
 interface Analyzer
 {
-    /**
-     * Get Analyzer of given database sql.
-     *
-     * @param Database $db
-     * @param string $sql
-     * @return self
-     */
-    public static function of(Database $db, string $sql) : self;
-
     /**
      * It checks the target sql is top level UNION [ALL] clause.
      *

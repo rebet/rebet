@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Database\Analysis;
 
 use Rebet\Database\Analysis\BuiltinAnalyzer;
-use Rebet\Database\Database;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinAnalyzerTest extends RebetDatabaseTestCase
@@ -22,10 +21,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_isUnion(bool $expect, string $sql)
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::of($db, $sql);
-            $this->assertSame($expect, $analyser->isUnion());
-        });
+        $analyser = new BuiltinAnalyzer($sql);
+        $this->assertSame($expect, $analyser->isUnion());
     }
 
     public function dataHasWheres() : array
@@ -45,10 +42,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasWhere(bool $expect, string $sql)
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::of($db, $sql);
-            $this->assertSame($expect, $analyser->hasWhere());
-        });
+        $analyser = new BuiltinAnalyzer($sql);
+        $this->assertSame($expect, $analyser->hasWhere());
     }
 
     public function dataHasHavings() : array
@@ -68,10 +63,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasHaving(bool $expect, string $sql)
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::of($db, $sql);
-            $this->assertSame($expect, $analyser->hasHaving());
-        });
+        $analyser = new BuiltinAnalyzer($sql);
+        $this->assertSame($expect, $analyser->hasHaving());
     }
 
     public function dataHasGroupBys() : array
@@ -89,10 +82,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasGroupBy(bool $expect, string $sql)
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::of($db, $sql);
-            $this->assertSame($expect, $analyser->hasGroupBy());
-        });
+        $analyser = new BuiltinAnalyzer($sql);
+        $this->assertSame($expect, $analyser->hasGroupBy());
     }
 
     public function dataHasOrderBys() : array
@@ -110,10 +101,8 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_hasOrderBy(bool $expect, string $sql)
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql) {
-            $analyser = BuiltinAnalyzer::of($db, $sql);
-            $this->assertSame($expect, $analyser->hasOrderBy());
-        });
+        $analyser = new BuiltinAnalyzer($sql);
+        $this->assertSame($expect, $analyser->hasOrderBy());
     }
 
     public function dataExtractAliasSelectColumns() : array
@@ -146,9 +135,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
      */
     public function test_extractAliasSelectColumn(string $expect, string $sql, string $alias)
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql, $alias) {
-            $analyser = BuiltinAnalyzer::of($db, $sql);
-            $this->assertSame($expect, $analyser->extractAliasSelectColumn($alias));
-        });
+        $analyser = new BuiltinAnalyzer($sql);
+        $this->assertSame($expect, $analyser->extractAliasSelectColumn($alias));
     }
 }

@@ -2,6 +2,7 @@
 namespace Rebet\Database\Driver;
 
 use PDO;
+use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\PdoParameter;
 
@@ -194,4 +195,12 @@ interface Driver
      * @return mixed
      */
     public function toPhpType($value, array $meta = [], ?string $type = null);
+
+    /**
+     * Get SQL analyzer of this database.
+     *
+     * @param string $sql
+     * @return Analyzer
+     */
+    public function analyzer(string $sql) : Analyzer;
 }

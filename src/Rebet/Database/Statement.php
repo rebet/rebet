@@ -120,7 +120,7 @@ class Statement implements \IteratorAggregate
         foreach ($row as $column => $value) {
             $am          = $ac->property($column);
             $type        = $am ? $am->annotation(PhpType::class) : null ;
-            $dm->$column = $this->db->convertToPhp($value, $meta[$column] ?? [], $type ? $type->value : null);
+            $dm->$column = $this->db->driver()->toPhpType($value, $meta[$column] ?? [], $type ? $type->value : null);
         }
         if ($dm instanceof Entity) {
             $dm->origin(clone $dm->removeOrigin());
@@ -186,7 +186,7 @@ class Statement implements \IteratorAggregate
         $rs   = [];
         $meta = $this->meta();
         while ($row = $this->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) {
-            $rs[] = $this->db->convertToPhp($row[$column] ?? null, $meta[$column] ?? [], $type);
+            $rs[] = $this->db->driver()->toPhpType($row[$column] ?? null, $meta[$column] ?? [], $type);
         }
         return new ResultSet($rs);
     }
@@ -200,7 +200,7 @@ class Statement implements \IteratorAggregate
      */
     public function firstOf($column, ?string $type = null)
     {
-        return ($row = $this->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) ? $this->db->convertToPhp($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
+        return ($row = $this->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) ? $this->db->driver()->toPhpType($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
     }
 
     /**

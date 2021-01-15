@@ -47,7 +47,7 @@ class ExpressionTest extends RebetDatabaseTestCase
      */
     public function test_compile($expect_sql, $expect_params, $placeholder, $expression)
     {
-        [$sql, $params] = $expression->compile($this->connect('mysql'), $placeholder);
+        [$sql, $params] = $expression->compile($this->connect('mysql')->driver(), $placeholder);
         $this->assertSame($expect_sql, $sql);
         $this->assertEquals($expect_params, $params);
     }

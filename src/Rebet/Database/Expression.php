@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database;
 
+use Rebet\Database\Driver\Driver;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -50,11 +51,11 @@ class Expression
     /**
      * Compile expression using given placeholder name.
      *
-     * @param Database $db
+     * @param Driver $driver
      * @param string $placeholder name
      * @return array [string sql, array params]
      */
-    public function compile(Database $db, string $placeholder) : array
+    public function compile(Driver $driver, string $placeholder) : array
     {
         $placeholder = Strings::startsWith($placeholder, ':') ? $placeholder : ":{$placeholder}" ;
         $expression  = $this->expression;
@@ -62,7 +63,7 @@ class Expression
         foreach ($this->values as $key => $value) {
             $new_placeholder          = "{$placeholder}__{$key}";
             $expression               = str_replace("{{$key}}", "{$new_placeholder}", $expression);
-            $params[$new_placeholder] = $db->convertToPdo($value);
+            $params[$new_placeholder] = $driver->toPdoType($value);
         }
         return [$expression, $params];
     }
