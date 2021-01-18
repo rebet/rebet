@@ -7,6 +7,32 @@ use Rebet\Tools\Reflection\Reflector;
 /**
  * SQLite3 Driver Class
  *
+ * Difference list of all predicates that depended on SQLite3,
+ * NOTE: {@see Rebet\Database\Ransack\Ransack} for common predicates for Ransack Search.
+ *
+ * | No | Ransack Predicate   | Value Type   | Description                                                                        | Example emulated SQL
+ * +----+---------------------+--------------+------------------------------------------------------------------------------------+------------------------------------------
+ * |  4 | {col}_{predicate}   | Any          | Custom predicate by SqliteDriver `ransack.predicates` setting for SQLite3 database | Anything you want
+ * |    | {col}_matches       | String       | POSIX regex match     (need extension)                                             | ['title_matches'     => '^[0-9]+%'] => title REGEXP '^[0-9]+%'
+ * |    | {col}_not_matches   | String       | POSIX regex not match (need extension)                                             | ['title_not_matches' => '^[0-9]+%'] => title NOT REGEXP '^[0-9]+%'
+ * |    | {col}_search        | String       | Full Text Search      (need extension)                                             | ['body_search'       => 'foo'     ] => body MATCH 'foo'
+ * +    +---------------------+--------------+------------------------------------------------------------------------------------+------------------------------------------
+ * |    | *_{option} (option) | Any          | Custom option by SqliteDriver `ransack.options` setting for SQLite3 database       | Anything you want
+ * |    | *_bin      (option) | String       | Binary option depend on configure                                                  | ['body_contains_bin' => 'foo'] => BINARY body LIKE '%foo%' ESCAPE '|'
+ * |    | *_ci       (option) | String       | Case insensitive option depend on configure                                        | ['body_contains_ci'  => 'foo'] => body COLLATE nocase LIKE '%foo%' ESCAPE '|'
+ * |    | *_len      (option) | String       | Length option depend on configure                                                  | ['tag_eq_len'        =>     3] => LENGTH(tag) = 3
+ * |    | *_uc       (option) | String       | Upper case option depend on configure                                              | ['tag_eq_uc'         => 'FOO'] => UPPER(tag) = 'FOO'
+ * |    | *_lc       (option) | String       | Lower case option depend on configure                                              | ['tag_eq_lc'         => 'foo'] => LOWER(tag) = 'foo'
+ * |    | *_age      (option) | DateTime     | Age option depend on configure                                                     | ['birthday_lt_age'   =>    20] => CAST((STRFTIME('%Y%m%d', 'now') - STRFTIME('%Y%m%d', birthday)) / 10000 AS int) < 20
+ * |    | *_y        (option) | DateTime     | Year of date time option depend on configure                                       | ['entry_at_eq_y'     =>  2000] => STRFTIME('%Y', entry_at) = 2000
+ * |    | *_m        (option) | DateTime     | Month of date time option depend on configure                                      | ['entry_at_eq_m'     =>    12] => STRFTIME('%m', entry_at) = 12
+ * |    | *_d        (option) | DateTime     | Day of date time option depend on configure                                        | ['entry_at_eq_d'     =>    12] => STRFTIME('%d', entry_at) = 12
+ * |    | *_h        (option) | DateTime     | Hour of date time option depend on configure                                       | ['entry_at_eq_h'     =>    12] => STRFTIME('%H', entry_at) = 12
+ * |    | *_i        (option) | DateTime     | Minute of date time option depend on configure                                     | ['entry_at_eq_i'     =>    12] => STRFTIME('%M', entry_at) = 12
+ * |    | *_s        (option) | DateTime     | Second of date time option depend on configure                                     | ['entry_at_eq_s'     =>    12] => STRFTIME('%S', entry_at) = 12
+ * |    | *_dow      (option) | DateTime     | Day of week option depend on configure                                             | ['entry_at_eq_dow'   =>     1] => STRFTIME('%w', entry_at) = 1
+ * +----+---------------------+--------------+------------------------------------------------------------------------------------+------------------------------------------
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -25,6 +51,29 @@ class SqliteDriver extends AbstractDriver
                 ],
                 'statement' => [
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                ],
+            ],
+            'ransack' => [
+                'value_converters' => [],
+                'predicates'       => [
+                    'matches'     => ["{col} REGEXP {val}"     , null , 'OR' ],
+                    'not_matches' => ["{col} NOT REGEXP {val}" , null , 'AND'],
+                    'search'      => ["{col} MATCH {val}"      , null , 'OR' ],
+                ],
+                'options'          => [
+                    'bin' => 'BINARY {col}',
+                    'ci'  => '{col} COLLATE nocase',
+                    'len' => 'LENGTH({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => "CAST((STRFTIME('%Y%m%d', 'now') - STRFTIME('%Y%m%d', {col})) / 10000 AS int)",
+                    'y'   => "STRFTIME('%Y', {col})",
+                    'm'   => "STRFTIME('%m', {col})",
+                    'd'   => "STRFTIME('%d', {col})",
+                    'h'   => "STRFTIME('%H', {col})",
+                    'i'   => "STRFTIME('%M', {col})",
+                    's'   => "STRFTIME('%S', {col})",
+                    'dow' => "STRFTIME('%w', {col})",
                 ],
             ],
         ];

@@ -16,14 +16,14 @@ class Condition
      *
      * @var string
      */
-    public $sql = '';
+    protected $sql = '';
 
     /**
      * Partial condition SQL parameters
      *
      * @var array
      */
-    public $params = [];
+    protected $params = [];
 
     /**
      * Create condition query parts.
@@ -35,6 +35,26 @@ class Condition
     {
         $this->sql    = $sql;
         $this->params = $params;
+    }
+
+    /**
+     * Get partial condition SQL sentence.
+     *
+     * @return string
+     */
+    public function sql() : string
+    {
+        return $this->sql;
+    }
+
+    /**
+     * Get partial condition SQL parameters
+     *
+     * @return array
+     */
+    public function params() : array
+    {
+        return $this->params;
     }
 
     /**

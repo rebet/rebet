@@ -3,6 +3,7 @@ namespace Rebet\Database\Ransack;
 
 use Rebet\Database\Condition;
 use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 
 /**
  * Builtin Ransacker Class
@@ -18,28 +19,28 @@ use Rebet\Database\Database;
 class BuiltinRansacker implements Ransacker
 {
     /**
-     * Database
+     * PDO Driver
      *
-     * @var Database
+     * @var Driver
      */
-    protected $db;
+    protected $driver;
 
     /**
-     * Create ransacker of given databasae.
+     * Create ransacker of given PDO driver.
      *
      * @param Database $db
      */
-    public function __construct(Database $db)
+    public function __construct(Driver $driver)
     {
-        $this->db = $db;
+        $this->driver = $driver;
     }
 
     /**
      * {@inheritDoc}
      */
-    public static function of(Database $db) : Ransacker
+    public static function of(Driver $driver) : Ransacker
     {
-        return new static($db);
+        return new static($driver);
     }
 
     /**
@@ -47,7 +48,7 @@ class BuiltinRansacker implements Ransacker
      */
     public function resolve($ransack_predicate, $value, array $alias = [], ?\Closure $extension = null) : ?Condition
     {
-        return Ransack::resolve($this->db, $ransack_predicate, $value, $alias, $extension);
+        return Ransack::resolve($this->driver, $ransack_predicate, $value, $alias, $extension);
     }
 
     /**
@@ -62,10 +63,8 @@ class BuiltinRansacker implements Ransacker
             if (!$condition) {
                 continue;
             }
-            $wheres[] = $condition->sql;
-            if ($condition->params !== null) {
-                $params = array_merge($params, $condition->params);
-            }
+            $wheres[] = $condition->sql();
+            $params   = array_merge($params, $condition->params());
         }
 
         return new Condition(implode(' AND ', $wheres), $params);

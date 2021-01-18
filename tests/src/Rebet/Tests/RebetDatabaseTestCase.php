@@ -101,12 +101,12 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
             foreach (['users', 'remember_tokens', 'banks', 'articles', 'groups', 'group_user', 'fortunes'] as $table_name) {
                 $db->truncate($table_name, false);
                 $records    = $this->records($db_name, $table_name);
-                $table_name = $db->quoteIdentifier($table_name);
+                $table_name = $db->driver()->quoteIdentifier($table_name);
                 foreach ($records as $record) {
                     if (Arrays::isSequential($record)) {
                         $db->execute("INSERT INTO {$table_name} VALUES (:values)", ['values' => $record]);
                     } else {
-                        $db->execute("INSERT INTO {$table_name} (". join(',', array_map(function ($v) use ($db) { return $db->quoteIdentifier($v); }, array_keys($record))).") VALUES (:values)", ['values' => $record]);
+                        $db->execute("INSERT INTO {$table_name} (". join(',', array_map(function ($v) use ($db) { return $db->driver()->quoteIdentifier($v); }, array_keys($record))).") VALUES (:values)", ['values' => $record]);
                     }
                 }
             }

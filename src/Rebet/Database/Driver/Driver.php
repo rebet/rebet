@@ -160,6 +160,15 @@ interface Driver
     public function closed() : bool;
 
     /**
+     * Append where condition to given SQL.
+     *
+     * @param string $sql
+     * @param string|array $where
+     * @return string
+     */
+    public function appendWhereTo(string $sql, $where) : string;
+
+    /**
      * Append limit offset partial SQL to given SQL.
      *
      * @param string $sql
@@ -203,4 +212,28 @@ interface Driver
      * @return Analyzer
      */
     public function analyzer(string $sql) : Analyzer;
+
+    /**
+     * Get ransack value converters depends on this PDO driver.
+     *
+     * @see Rebet\Database\Ransack\Ransack
+     * @return array $name => function($value) { ... }
+     */
+    public function ransackValueConverters() : array;
+
+    /**
+     * Get ransack predicates depends on this PDO driver.
+     *
+     * @see Rebet\Database\Ransack\Ransack
+     * @return array predicate => [template, value_converter, multiple_columns_conjunction]
+     */
+    public function ransackPredicates() : array;
+
+    /**
+     * Get ransack options depends on this PDO driver.
+     *
+     * @see Rebet\Database\Ransack\Ransack
+     * @return array option_name => template
+     */
+    public function ransackOptions() : array;
 }

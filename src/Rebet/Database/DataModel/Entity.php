@@ -233,7 +233,7 @@ abstract class Entity extends DataModel
     {
         $db        = static::db($db);
         $condition = $db->buildPrimaryWheresFrom($this);
-        return $db->exists("SELECT * FROM ".$db->quoteIdentifier(static::tabelName()).$condition->where(), $condition->params);
+        return $db->exists("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()).$condition->where(), $condition->params());
     }
 
     /**
@@ -340,6 +340,6 @@ abstract class Entity extends DataModel
      */
     protected static function buildSelectAllSql(Database $db) : string
     {
-        return "SELECT * FROM ".$db->quoteIdentifier(static::tabelName());
+        return "SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName());
     }
 }

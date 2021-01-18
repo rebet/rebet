@@ -2,7 +2,7 @@
 namespace Rebet\Database\Ransack;
 
 use Rebet\Database\Condition;
-use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 
 /**
  * Ransacker Interface
@@ -15,12 +15,12 @@ use Rebet\Database\Database;
 interface Ransacker
 {
     /**
-     * Get ransacker of given database.
+     * Get ransacker of given PDO driver.
      *
-     * @param Database $db
+     * @param Driver $driver
      * @return self
      */
-    public static function of(Database $db) : self;
+    public static function of(Driver $driver) : self;
 
     /**
      * Resolve 'WHERE' condition expression part from given ransack predicate and value.
@@ -28,7 +28,7 @@ interface Ransacker
      * @param int|string $predicate
      * @param mixed $value
      * @param array $alias (default: [])
-     * @param \Closure|null $extention function(Database $db, Ransack $ransack) : ?array (default: null)
+     * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Condition|null condition or null when ignored
      */
     public function resolve($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?Condition;
@@ -38,7 +38,7 @@ interface Ransacker
      *
      * @param mixed $ransack condition that arrayable
      * @param array $alias (default: [])
-     * @param \Closure|null $extention function(Database $db, Ransack $ransack) : ?array (default: null)
+     * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Condition
      */
     public function build($ransack, array $alias = [], ?\Closure $extention = null) : Condition;

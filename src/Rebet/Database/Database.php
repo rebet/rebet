@@ -115,7 +115,7 @@ class Database
         $this->emulated_sql_log = $emulated_sql_log;
         $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
         $this->compiler         = static::config('compiler')::of($driver);
-        $this->ransacker        = static::config('ransacker')::of($this);
+        $this->ransacker        = static::config('ransacker')::of($driver);
     }
 
     /**
@@ -389,17 +389,6 @@ class Database
         }
 
         return $this;
-    }
-
-    /**
-     * Quote identifier names.
-     *
-     * @param string $identifier
-     * @return string
-     */
-    public function quoteIdentifier(string $identifier) : string
-    {
-        return $this->driver->quoteIdentifier($identifier);
     }
 
     /**
@@ -684,11 +673,11 @@ class Database
                         $entity->$column = $value = Reflector::convert(...$default);
                     }
                 }
-                $columns[] = $this->quoteIdentifier($column);
+                $columns[] = $this->driver->quoteIdentifier($column);
                 $values[]  = $value;
             }
 
-            $table_name    = $this->quoteIdentifier($entity::tabelName());
+            $table_name    = $this->driver->quoteIdentifier($entity::tabelName());
             $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
             if ($affected_rows !== 1) {
                 return false;
@@ -710,26 +699,6 @@ class Database
     }
 
     /**
-     * Append where condition to given SQL.
-     *
-     * @param string $sql
-     * @param array $where
-     * @return string
-     */
-    public function appendWhereTo(string $sql, array $where) : string
-    {
-        if (empty($where)) {
-            return $sql;
-        }
-        $analyzer = $this->analyzer($sql);
-        $where    = implode(' AND ', $where);
-        if ($analyzer->hasGroupBy()) {
-            return $analyzer->hasHaving() ? "{$sql} AND ({$where})" : "{$sql} HAVING {$where}" ;
-        }
-        return $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$where})" : "{$sql} WHERE {$where}" ;
-    }
-
-    /**
      * Build primary where condition and parameters.
      *
      * @param Entity $entity
@@ -746,7 +715,7 @@ class Database
         $where  = [];
         $params = [];
         foreach ($primarys as $column) {
-            $where[]         = "{$this->quoteIdentifier($column)} = :{$column}";
+            $where[]         = "{$this->driver->quoteIdentifier($column)} = :{$column}";
             $params[$column] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
         }
 
@@ -767,24 +736,24 @@ class Database
         Event::dispatch(new Updating($this, $old, $entity));
 
         $condition = $this->buildPrimaryWheresFrom($entity);
-        $params    = $condition->params;
+        $params    = $condition->params();
         $changes   = $entity->changes();
         $sets      = [];
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
-            $sets[]       = "{$this->quoteIdentifier($column)} = :{$key}";
+            $sets[]       = "{$this->driver->quoteIdentifier($column)} = :{$key}";
             $params[$key] = $value;
         }
 
         if ($entity::UPDATED_AT && !isset($params[$entity::UPDATED_AT])) {
-            $sets[]                        = $this->quoteIdentifier($entity::UPDATED_AT).' = :'.$entity::UPDATED_AT;
+            $sets[]                        = $this->driver->quoteIdentifier($entity::UPDATED_AT).' = :'.$entity::UPDATED_AT;
             $params[$entity::UPDATED_AT]   = $now;
             $entity->{$entity::UPDATED_AT} = $now;
         } elseif (empty($changes)) {
             return true;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$this->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
+        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -816,7 +785,7 @@ class Database
     {
         Event::dispatch(new Deleting($this, $entity));
         $condition     = $this->buildPrimaryWheresFrom($entity);
-        $affected_rows = $this->execute("DELETE FROM ".$this->quoteIdentifier($entity->tabelName()).$condition->where(), $condition->params);
+        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity->tabelName()).$condition->where(), $condition->params());
         if ($affected_rows !== 1) {
             return false;
         }
@@ -845,14 +814,14 @@ class Database
 
         $sets      = [];
         $condition = $this->ransacker->build($ransack, $alias);
-        $params    = $condition->params;
+        $params    = $condition->params();
         foreach ($changes as $column => $value) {
             $key          = "v_{$column}";
-            $sets[]       = "{$this->quoteIdentifier($column)} = :{$key}";
+            $sets[]       = "{$this->driver->quoteIdentifier($column)} = :{$key}";
             $params[$key] = $value;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$this->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
+        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
         }
@@ -872,7 +841,7 @@ class Database
         Event::dispatch(new BatchDeleting($this, $entity, $ransack));
 
         $condition     = $this->ransacker->build($ransack, $alias);
-        $affected_rows = $this->execute("DELETE FROM ".$this->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params);
+        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params());
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchDeleted($this, $entity, $ransack, $affected_rows));
         }
@@ -890,7 +859,7 @@ class Database
     public function existsBy(string $entity, $ransack, array $alias = []) : bool
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->exists("SELECT * FROM ".$this->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params);
+        return $this->exists("SELECT * FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params());
     }
 
     /**
@@ -904,7 +873,7 @@ class Database
     public function countBy(string $entity, $ransack, array $alias = []) : int
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$this->quoteIdentifier($entity::tabelName()).$condition->where(), [], $condition->params);
+        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->where(), [], $condition->params());
     }
 
     /**

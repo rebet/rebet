@@ -13,6 +13,29 @@ use Rebet\Tools\Reflection\Reflector;
 /**
  * SQL Server Driver Class
  *
+ * Difference list of all predicates that depended on SQL Server,
+ * NOTE: {@see Rebet\Database\Ransack\Ransack} for common predicates for Ransack Search.
+ *
+ * | No | Ransack Predicate   | Value Type   | Description                                                                           | Example emulated SQL
+ * +----+---------------------+--------------+---------------------------------------------------------------------------------------+------------------------------------------
+ * |  4 | {col}_{predicate}   | Any          | Custom predicate by SqlsrvDriver `ransack.predicates` setting for SQL Server database | Anything you want
+ * |    | {col}_search        | String       | Full Text Search                                                                      | ['body_search'  => 'foo'] => CONTAINS(body, 'foo')
+ * |    | {col}_meaning       | String       | Full Text Search by meaning                                                           | ['body_meaning' => 'foo'] => FREETEXT(body, 'foo')
+ * +    +---------------------+--------------+---------------------------------------------------------------------------------------+------------------------------------------
+ * |    | *_{option} (option) | Any          | Custom option by SqlsrvDriver `ransack.options` setting for SQL Server database       | Anything you want
+ * |    | *_len      (option) | String       | Length option depend on configure                                                     | ['tag_eq_len'      =>     3] => LENGTH(tag) = 3
+ * |    | *_uc       (option) | String       | Upper case option depend on configure                                                 | ['tag_eq_uc'       => 'FOO'] => UPPER(tag) = 'FOO'
+ * |    | *_lc       (option) | String       | Lower case option depend on configure                                                 | ['tag_eq_lc'       => 'foo'] => LOWER(tag) = 'foo'
+ * |    | *_age      (option) | DateTime     | Age option depend on configure                                                        | ['birthday_lt_age' =>    20] => DATEDIFF(yy, birthday, GETDATE()) - IIF(GETDATE() >= DATEADD(yy, DATEDIFF(yy, birthday, GETDATE()), birthday), 0, 1) < 20
+ * |    | *_y        (option) | DateTime     | Year of date time option depend on configure                                          | ['entry_at_eq_y'   =>  2000] => YEAR(entry_at) = 2000
+ * |    | *_m        (option) | DateTime     | Month of date time option depend on configure                                         | ['entry_at_eq_m'   =>    12] => MONTH(entry_at) = 12
+ * |    | *_d        (option) | DateTime     | Day of date time option depend on configure                                           | ['entry_at_eq_d'   =>    12] => DAY(entry_at) = 12
+ * |    | *_h        (option) | DateTime     | Hour of date time option depend on configure                                          | ['entry_at_eq_h'   =>    12] => DATEPART(hh, entry_at) = 12
+ * |    | *_i        (option) | DateTime     | Minute of date time option depend on configure                                        | ['entry_at_eq_i'   =>    12] => DATEPART(mi, entry_at) = 12
+ * |    | *_s        (option) | DateTime     | Second of date time option depend on configure                                        | ['entry_at_eq_s'   =>    12] => DATEPART(ss, entry_at) = 12
+ * |    | *_dow      (option) | DateTime     | Day of week option depend on configure                                                | ['entry_at_eq_dow' =>     1] => DATEPART(dw, entry_at) = 1
+ * +----+---------------------+--------------+---------------------------------------------------------------------------------------+------------------------------------------
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -30,6 +53,26 @@ class SqlsrvDriver extends AbstractDriver
                 ],
                 'statement' => [
                     \PDO::ATTR_EMULATE_PREPARES   => false,
+                ],
+            ],
+            'ransack' => [
+                'value_converters' => [],
+                'predicates'       => [
+                    'search'  => ["CONTAINS({col}, {val})" , null , 'OR' ],
+                    'meaning' => ["FREETEXT({col}, {val})" , null , 'OR' ],
+                ],
+                'options'          => [
+                    'len' => 'LEN({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => "DATEDIFF(yy, {col}, GETDATE()) - IIF(GETDATE() >= DATEADD(yy, DATEDIFF(yy, {col}, GETDATE()), {col}), 0, 1)",
+                    'y'   => 'YEAR({col})',
+                    'm'   => 'MONTH({col})',
+                    'd'   => 'DAY({col})',
+                    'h'   => 'DATEPART(hh, {col})',
+                    'i'   => 'DATEPART(mi, {col})',
+                    's'   => 'DATEPART(ss, {col})',
+                    'dow' => 'DATEPART(dw, {col})',
                 ],
             ],
         ];

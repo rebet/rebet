@@ -2,7 +2,7 @@
 namespace Rebet\Database\Ransack;
 
 use Rebet\Database\Condition;
-use Rebet\Database\Database;
+use Rebet\Database\Driver\Driver;
 use Rebet\Database\Exception\RansackException;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Arrays;
@@ -20,59 +20,44 @@ use Rebet\Tools\Utility\Utils;
  *
  * List of all possible predicates,
  *
- * | No | Ransack Predicate   | Value Type   | Description ([LMP] means only support L=sqlite, M=mysql, P=pgsql)           | Example emulated SQL
- * +----+---------------------+--------------+-----------------------------------------------------------------------------+------------------------------------------
- * |  1 | All                 | Blank        | If value is blank(null, '' or []) then ransack will be ignored              | ['name' => null] => (nothing)
- * |  2 | integer             | 2D Array     | Join sub ransack conditions by 'OR'.                                        | [1 => [['name' => 'a', 'gender' => 1], ['name' => 'b', 'gender' => 2]]] => ((name = 'a' AND gender = 1) OR (name = 'b' AND gender = 2))
- * |  3 | Any                 | Any          | Custom predicate by Ransack extension closure for each resolve              | Anything you want
- * +----+---------------------+--------------+-----------------------------------------------------------------------------+------------------------------------------
- * |  4 | {col}_{predicate}   | Any          | Custom predicate by Ransack `predicates` configure for all convert          | Anything you want
- * |    | {col}_eq            | Not Array    | Equals given value                                                          | ['name_eq'     => 'a'] => name = 'a'
- * |    | {col}_not_eq        | Not Array    | Not equals given value                                                      | ['name_not_eq' => 'a'] => name <> 'a'
- * |    | {col}_in            | Array        | Match any values in array                                                   | ['name_in'     => ['a', 'b']] => name IN ('a', 'b')
- * |    | {col}_not_in        | Array        | NOT match any values in array                                               | ['name_not_in' => ['a', 'b']] => name NOT IN ('a', 'b')
- * |    | {col}_lt            | Not Array    | Less than given value                                                       | ['age_lt'   => 20] => age < 20
- * |    | {col}_lteq          | Not Array    | Less than or equals given value                                             | ['age_lteq' => 20] => age <= 20
- * |    | {col}_gteq          | Not Array    | Grater than or equals given value                                           | ['age_gteq' => 20] => age >= 20
- * |    | {col}_gt            | Not Array    | Grater than given value                                                     | ['age_gt'   => 20] => age > 20
- * |    | {col}_from          | Not Array    | Alias of {col}_gteq                                                         | ['age_from' => 20] => age >= 20
- * |    | {col}_to            | Not Array    | Alias of {col}_lteq                                                         | ['age_to'   => 20] => age <= 20
- * |    | {col}_contains      | String       | Contains given value string                                                 | ['title_contains'     => '100%'] => title LIKE '%100|%%' ESCAPE '|'
- * |    | {col}_not_contains  | String       | Not contains given value string                                             | ['title_not_contains' => '100%'] => title NOT LIKE '%100|%%' ESCAPE '|'
- * |    | {col}_starts        | String       | Starts with given value string                                              | ['title_starts'       => '100%'] => title LIKE '100|%%' ESCAPE '|'
- * |    | {col}_not_starts    | String       | Not starts with given value string                                          | ['title_not_starts'   => '100%'] => title NOT LIKE '100|%%' ESCAPE '|'
- * |    | {col}_ends          | String       | Ends with given value string                                                | ['title_ends'         => '100%'] => title LIKE '%100|%' ESCAPE '|'
- * |    | {col}_not_ends      | String       | Not ends with given value string                                            | ['title_not_ends'     => '100%'] => title NOT LIKE '%100|%' ESCAPE '|'
- * |    | {col}_matches       | String       | [LMP] POSIX regex match     (need extension when sqlite)                    | ['title_matches'     => '^[0-9]+%'] => [LM] title REGEXP '^[0-9]+%'    , [P] title ~ '^[0-9]+%'
- * |    | {col}_not_matches   | String       | [LMP] POSIX regex not match (need extension when sqlite)                    | ['title_not_matches' => '^[0-9]+%'] => [LM] title NOT REGEXP '^[0-9]+%', [P] title !~ '^[0-9]+%'
- * |    | {col}_search        | String       | [LMP] Full Text Search      (need extension when sqlite)                    | ['body_search' => 'foo'] => [L] body MATCH 'foo', [M] MATCH(body) AGAINST('foo'), [P] to_tsvector(body) @@ to_tsquery('foo')
- * |    | {col}_null          | Not Blank    | Is null                                                                     | ['name_null'     => true] => name IS NULL
- * |    | {col}_not_null      | Not Blank    | Is not null                                                                 | ['name_not_null' => true] => name IS NOT NULL
- * |    | {col}_blank         | Not Blank    | Is null or empty                                                            | ['name_blank'    => true] => (name IS NULL OR name = '')
- * |    | {col}_present       | Not Blank    | Is not null and not empty                                                   | ['name_present'  => true] => name IS NOT NULL AND name <> ''
- * |    | {col}               | Array        | Short predicates of {col}_in                                                | ['name' => ['a', 'b']] => name IN ('a', 'b')
- * |    | {col}               | Not Array    | Short predicates of {col}_eq                                                | ['name' => 'a'] => name = 'a'
- * +    +---------------------+--------------+-----------------------------------------------------------------------------+------------------------------------------
- * |    | *_any    (compound) | String/Array | Any compound multiple value join by 'OR'  (space separated string to array) | ['body_contains_any' => ['foo', 'bar']] => (body LIKE '%foo%' ESCAPE '|' OR body LIKE '%bar%' ESCAPE '|')
- * |    | *_all    (compound) | String/Array | All compound multiple value join by 'AND' (space separated string to array) | ['body_contains_all' => 'foo bar']      => (body LIKE '%foo%' ESCAPE '|' AND body LIKE '%bar%' ESCAPE '|')
- * +    +---------------------+--------------+-----------------------------------------------------------------------------+------------------------------------------
- * |    | *_{option} (option) | Any          | [any] Custom option by Ransack `options` configure for all convert          | Anything you want
- * |    | *_bin      (option) | String       | [LM ] Binary option depend on configure                                     | ['body_contains_bin' => 'foo'] => [LM] BINARY body LIKE '%foo%' ESCAPE '|'
- * |    | *_cs       (option) | String       | [ M ] Case sensitive option depend on configure                             | ['body_contains_cs'  => 'foo'] => [M] body COLLATE utf8mb4_bin LIKE '%foo%' ESCAPE '|'
- * |    | *_ci       (option) | String       | [LM ] Case insensitive option depend on configure                           | ['body_contains_ci'  => 'foo'] => [L] body COLLATE nocase LIKE '%foo%' ESCAPE '|', [M] body COLLATE utf8mb4_general_ci LIKE '%foo%' ESCAPE '|'
- * |    | *_fs       (option) | String       | [ M ] Fuzzy search option depend on configure                               | ['body_contains_fs'  => 'foo'] => [M] body COLLATE utf8mb4_unicode_ci LIKE '%foo%' ESCAPE '|'
- * |    | *_len      (option) | String       | [LMP] Length option depend on configure                                     | ['tag_eq_len' => 3    ] => [LP] LENGTH(tag) = 3, [M] CHAR_LENGTH(tag) = 3
- * |    | *_uc       (option) | String       | [LMP] Upper case option depend on configure                                 | ['tag_eq_uc'  => 'FOO'] => [LMP] UPPER(tag) = 'FOO'
- * |    | *_lc       (option) | String       | [LMP] Lower case option depend on configure                                 | ['tag_eq_lc'  => 'foo'] => [LMP] LOWER(tag) = 'foo'
- * |    | *_age      (option) | DateTime     | [LMP] Age option depend on configure                                        | ['birthday_lt_age' =>   20] => [L] CAST((STRFTIME('%Y%m%d', 'now') - STRFTIME('%Y%m%d', birthday)) / 10000 AS int) < 20, [M] TIMESTAMPDIFF(YEAR, birthday, CURRENT_DATE) < 20, [P] DATE_PART('year', AGE(birthday)) < 20
- * |    | *_y        (option) | DateTime     | [LMP] Year of date time option depend on configure                          | ['entry_at_eq_y'   => 2000] => [L] STRFTIME('%Y', entry_at) = 2000, [M] YEAR(entry_at) = 2000  , [P] DATE_PART('year', entry_at) = 2000
- * |    | *_m        (option) | DateTime     | [LMP] Month of date time option depend on configure                         | ['entry_at_eq_m'   =>   12] => [L] STRFTIME('%m', entry_at) = 12  , [M] MONTH(entry_at) = 12   , [P] DATE_PART('month', entry_at) = 12
- * |    | *_d        (option) | DateTime     | [LMP] Day of date time option depend on configure                           | ['entry_at_eq_d'   =>   12] => [L] STRFTIME('%d', entry_at) = 12  , [M] DAY(entry_at) = 12     , [P] DATE_PART('day', entry_at) = 12
- * |    | *_h        (option) | DateTime     | [LMP] Hour of date time option depend on configure                          | ['entry_at_eq_h'   =>   12] => [L] STRFTIME('%H', entry_at) = 12  , [M] HOUR(entry_at) = 12    , [P] DATE_PART('hour', entry_at) = 12
- * |    | *_i        (option) | DateTime     | [LMP] Minute of date time option depend on configure                        | ['entry_at_eq_i'   =>   12] => [L] STRFTIME('%M', entry_at) = 12  , [M] MINUTE(entry_at) = 12  , [P] DATE_PART('minute', entry_at) = 12
- * |    | *_s        (option) | DateTime     | [LMP] Second of date time option depend on configure                        | ['entry_at_eq_s'   =>   12] => [L] STRFTIME('%S', entry_at) = 12  , [M] SECOND(entry_at) = 12  , [P] DATE_PART('second', entry_at) = 12
- * |    | *_dow      (option) | DateTime     | [LMP] Day of week option depend on configure                                | ['entry_at_eq_dow' =>    1] => [L] STRFTIME('%w', entry_at) = 1   , [M] DAYOFWEEK(entry_at) = 1, [P] DATE_PART('dow', entry_at) = 1
- * +----+----------------+--------------+-----------------------------------------------------------------------------+------------------------------------------
+ * | No | Ransack Predicate   | Value Type   | Description ([LMP] means only support L=sqlite, M=mysql, P=pgsql)                | Example emulated SQL
+ * +----+---------------------+--------------+----------------------------------------------------------------------------------+------------------------------------------
+ * |  1 | All                 | Blank        | If value is blank(null, '' or []) then ransack will be ignored                   | ['name' => null] => (nothing)
+ * |  2 | integer             | 2D Array     | Join sub ransack conditions by 'OR'.                                             | [1 => [['name' => 'a', 'gender' => 1], ['name' => 'b', 'gender' => 2]]] => ((name = 'a' AND gender = 1) OR (name = 'b' AND gender = 2))
+ * |  3 | Any                 | Any          | Custom predicate by Ransack extension closure for each resolve                   | Anything you want
+ * +----+---------------------+--------------+----------------------------------------------------------------------------------+------------------------------------------
+ * |  4 | {col}_{predicate}   | Any          | Custom predicate by Ransack `predicates` setting for all databases               | Anything you want
+ * |    | {col}_{predicate}   | Any          | Dependent predicate on Driver `ransack.predicates` setting for specific database | Anything you want (@see XxxxDriver classes)
+ * |    | {col}_eq            | Not Array    | Equals given value                                                               | ['name_eq'            => 'a'       ] => name = 'a'
+ * |    | {col}_not_eq        | Not Array    | Not equals given value                                                           | ['name_not_eq'        => 'a'       ] => name <> 'a'
+ * |    | {col}_in            | Array        | Match any values in array                                                        | ['name_in'            => ['a', 'b']] => name IN ('a', 'b')
+ * |    | {col}_not_in        | Array        | NOT match any values in array                                                    | ['name_not_in'        => ['a', 'b']] => name NOT IN ('a', 'b')
+ * |    | {col}_gt            | Not Array    | Grater than given value                                                          | ['age_gt'             =>  20       ] => age > 20
+ * |    | {col}_lt            | Not Array    | Less than given value                                                            | ['age_lt'             =>  20       ] => age < 20
+ * |    | {col}_gteq          | Not Array    | Grater than or equals given value                                                | ['age_gteq'           =>  20       ] => age >= 20
+ * |    | {col}_lteq          | Not Array    | Less than or equals given value                                                  | ['age_lteq'           =>  20       ] => age <= 20
+ * |    | {col}_after         | Not Array    | Alias of {col}_gt                                                                | ['age_after'          =>  20       ] => age < 20
+ * |    | {col}_before        | Not Array    | Alias of {col}_lt                                                                | ['age_before'         =>  20       ] => age > 20
+ * |    | {col}_from          | Not Array    | Alias of {col}_gteq                                                              | ['age_from'           =>  20       ] => age >= 20
+ * |    | {col}_to            | Not Array    | Alias of {col}_lteq                                                              | ['age_to'             =>  20       ] => age <= 20
+ * |    | {col}_contains      | String       | Contains given value string                                                      | ['title_contains'     => '100%'    ] => title LIKE '%100|%%' ESCAPE '|'
+ * |    | {col}_not_contains  | String       | Not contains given value string                                                  | ['title_not_contains' => '100%'    ] => title NOT LIKE '%100|%%' ESCAPE '|'
+ * |    | {col}_starts        | String       | Starts with given value string                                                   | ['title_starts'       => '100%'    ] => title LIKE '100|%%' ESCAPE '|'
+ * |    | {col}_not_starts    | String       | Not starts with given value string                                               | ['title_not_starts'   => '100%'    ] => title NOT LIKE '100|%%' ESCAPE '|'
+ * |    | {col}_ends          | String       | Ends with given value string                                                     | ['title_ends'         => '100%'    ] => title LIKE '%100|%' ESCAPE '|'
+ * |    | {col}_not_ends      | String       | Not ends with given value string                                                 | ['title_not_ends'     => '100%'    ] => title NOT LIKE '%100|%' ESCAPE '|'
+ * |    | {col}_null          | Not Blank    | Is null                                                                          | ['name_null'          => true      ] => name IS NULL
+ * |    | {col}_not_null      | Not Blank    | Is not null                                                                      | ['name_not_null'      => true      ] => name IS NOT NULL
+ * |    | {col}_blank         | Not Blank    | Is null or empty                                                                 | ['name_blank'         => true      ] => (name IS NULL OR name = '')
+ * |    | {col}_present       | Not Blank    | Is not null and not empty                                                        | ['name_present'       => true      ] => name IS NOT NULL AND name <> ''
+ * |    | {col}               | Array        | Short predicates of {col}_in                                                     | ['name'               => ['a', 'b']] => name IN ('a', 'b')
+ * |    | {col}               | Not Array    | Short predicates of {col}_eq                                                     | ['name'               => 'a'       ] => name = 'a'
+ * +    +---------------------+--------------+----------------------------------------------------------------------------------+------------------------------------------
+ * |    | *_any    (compound) | String/Array | Any compound multiple value join by 'OR'  (space separated string to array)      | ['body_contains_any' => ['foo', 'bar']] => (body LIKE '%foo%' ESCAPE '|' OR body LIKE '%bar%' ESCAPE '|')
+ * |    | *_all    (compound) | String/Array | All compound multiple value join by 'AND' (space separated string to array)      | ['body_contains_all' => 'foo bar'     ] => (body LIKE '%foo%' ESCAPE '|' AND body LIKE '%bar%' ESCAPE '|')
+ * +    +---------------------+--------------+----------------------------------------------------------------------------------+------------------------------------------
+ * |    | *_{option} (option) | Any          | Dependent options on Driver `ransack.options` setting for specific database      | Anything you want (@see XxxxDriver classes)
+ * +----+---------------------+--------------+----------------------------------------------------------------------------------+------------------------------------------
  *
  * Rebet's `Ransack Search` does not support `_and_` and `_or_` conjunctions, but support multiple column aliases.
  * When multiple columns is given by alias, it will be connected by a configured conjunction.
@@ -122,117 +107,36 @@ class Ransack
             ],
             'predicates'         => [
                 // predicate => [template, value_converter, multiple_columns_conjunction]
-                'common' => [
-                    'eq'           => ["{col} = {val}"                           , null      , 'OR' ],
-                    'not_eq'       => ["{col} <> {val}"                          , null      , 'AND'],
-                    'in'           => ["{col} IN ({val})"                        , null      , 'OR' ],
-                    'not_in'       => ["{col} NOT IN ({val})"                    , null      , 'AND'],
-                    'lt'           => ["{col} < {val}"                           , null      , 'OR' ],
-                    'lteq'         => ["{col} <= {val}"                          , null      , 'OR' ],
-                    'gteq'         => ["{col} >= {val}"                          , null      , 'OR' ],
-                    'gt'           => ["{col} > {val}"                           , null      , 'OR' ],
-                    'from'         => ["{col} >= {val}"                          , null      , 'OR' ],
-                    'to'           => ["{col} <= {val}"                          , null      , 'OR' ],
-                    'after'        => ["{col} > {val}"                           , null      , 'OR' ],
-                    'before'       => ["{col} < {val}"                           , null      , 'OR' ],
-                    'contains'     => ["{col} LIKE {val} ESCAPE '|'"             , 'contains', 'OR' ],
-                    'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'contains', 'AND'],
-                    'starts'       => ["{col} LIKE {val} ESCAPE '|'"             , 'starts'  , 'OR' ],
-                    'not_starts'   => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'starts'  , 'AND'],
-                    'ends'         => ["{col} LIKE {val} ESCAPE '|'"             , 'ends'    , 'OR' ],
-                    'not_ends'     => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'ends'    , 'AND'],
-                    'null'         => ["{col} IS NULL"                           , 'ignore'  , 'AND'],
-                    'not_null'     => ["{col} IS NOT NULL"                       , 'ignore'  , 'OR' ],
-                    'blank'        => ["({col} IS NULL OR {col} = '')"           , 'ignore'  , 'AND'],
-                    'not_blank'    => ["({col} IS NOT NULL AND {col} <> '')"     , 'ignore'  , 'OR' ],
-                ],
-                'sqlite' => [
-                    'matches'      => ["{col} REGEXP {val}"                      , null      , 'OR' ],
-                    'not_matches'  => ["{col} NOT REGEXP {val}"                  , null      , 'AND'],
-                    'search'       => ["{col} MATCH {val}"                       , null      , 'OR' ],
-                ],
-                'mysql' => [
-                    'matches'      => ["{col} REGEXP {val}"                      , null      , 'OR' ],
-                    'not_matches'  => ["{col} NOT REGEXP {val}"                  , null      , 'AND'],
-                    'search'       => ["MATCH({col}) AGAINST({val})"             , null      , 'OR' ],
-                ],
-                'pgsql' => [
-                    'matches'      => ["{col} ~ {val}"                           , null      , 'OR' ],
-                    'not_matches'  => ["{col} !~ {val}"                          , null      , 'AND'],
-                    'search'       => ["to_tsvector({col}) @@ to_tsquery({val})" , null      , 'OR' ],
-                ],
-                'sqlsrv' => [
-                    'search'       => ["CONTAINS({col}, {val})"                  , null      , 'OR' ],
-                    'meaning'      => ["FREETEXT({col}, {val})"                  , null      , 'OR' ],
-                ],
-            ],
-            'options' => [
-                'sqlite' => [
-                    'bin' => 'BINARY {col}',
-                    'ci'  => '{col} COLLATE nocase',
-                    'len' => 'LENGTH({col})',
-                    'uc'  => 'UPPER({col})',
-                    'lc'  => 'LOWER({col})',
-                    'age' => "CAST((STRFTIME('%Y%m%d', 'now') - STRFTIME('%Y%m%d', {col})) / 10000 AS int)",
-                    'y'   => "STRFTIME('%Y', {col})",
-                    'm'   => "STRFTIME('%m', {col})",
-                    'd'   => "STRFTIME('%d', {col})",
-                    'h'   => "STRFTIME('%H', {col})",
-                    'i'   => "STRFTIME('%M', {col})",
-                    's'   => "STRFTIME('%S', {col})",
-                    'dow' => "STRFTIME('%w', {col})",
-                ],
-                'mysql' => [
-                    'bin' => 'BINARY {col}',
-                    'cs'  => '{col} COLLATE utf8mb4_bin',
-                    'ci'  => '{col} COLLATE utf8mb4_general_ci',
-                    'fs'  => '{col} COLLATE utf8mb4_unicode_ci',
-                    'len' => 'CHAR_LENGTH({col})',
-                    'uc'  => 'UPPER({col})',
-                    'lc'  => 'LOWER({col})',
-                    'age' => 'TIMESTAMPDIFF(YEAR, {col}, CURRENT_DATE)',
-                    'y'   => 'YEAR({col})',
-                    'm'   => 'MONTH({col})',
-                    'd'   => 'DAY({col})',
-                    'h'   => 'HOUR({col})',
-                    'i'   => 'MINUTE({col})',
-                    's'   => 'SECOND({col})',
-                    'dow' => 'DAYOFWEEK({col})',
-                ],
-                'pgsql' => [
-                    'len' => 'LENGTH({col})',
-                    'uc'  => 'UPPER({col})',
-                    'lc'  => 'LOWER({col})',
-                    'age' => "DATE_PART('year', AGE({col}))",
-                    'y'   => "DATE_PART('year', {col})",
-                    'm'   => "DATE_PART('month', {col})",
-                    'd'   => "DATE_PART('day', {col})",
-                    'h'   => "DATE_PART('hour', {col})",
-                    'i'   => "DATE_PART('minute', {col})",
-                    's'   => "DATE_PART('second', {col})",
-                    'dow' => "DATE_PART('dow', {col})",
-                ],
-                'sqlsrv' => [
-                    'len' => 'LEN({col})',
-                    'uc'  => 'UPPER({col})',
-                    'lc'  => 'LOWER({col})',
-                    'age' => "DATEDIFF(yy, {col}, GETDATE()) - IIF(GETDATE() >= DATEADD(yy, DATEDIFF(yy, {col}, GETDATE()), {col}), 0, 1)",
-                    'y'   => 'YEAR({col})',
-                    'm'   => 'MONTH({col})',
-                    'd'   => 'DAY({col})',
-                    'h'   => 'DATEPART(hh, {col})',
-                    'i'   => 'DATEPART(mi, {col})',
-                    's'   => 'DATEPART(ss, {col})',
-                    'dow' => 'DATEPART(dw, {col})',
-                ],
+                'eq'           => ["{col} = {val}"                           , null      , 'OR' ],
+                'not_eq'       => ["{col} <> {val}"                          , null      , 'AND'],
+                'in'           => ["{col} IN ({val})"                        , null      , 'OR' ],
+                'not_in'       => ["{col} NOT IN ({val})"                    , null      , 'AND'],
+                'gt'           => ["{col} > {val}"                           , null      , 'OR' ],
+                'lt'           => ["{col} < {val}"                           , null      , 'OR' ],
+                'gteq'         => ["{col} >= {val}"                          , null      , 'OR' ],
+                'lteq'         => ["{col} <= {val}"                          , null      , 'OR' ],
+                'after'        => ["{col} > {val}"                           , null      , 'OR' ],
+                'before'       => ["{col} < {val}"                           , null      , 'OR' ],
+                'from'         => ["{col} >= {val}"                          , null      , 'OR' ],
+                'to'           => ["{col} <= {val}"                          , null      , 'OR' ],
+                'contains'     => ["{col} LIKE {val} ESCAPE '|'"             , 'contains', 'OR' ],
+                'not_contains' => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'contains', 'AND'],
+                'starts'       => ["{col} LIKE {val} ESCAPE '|'"             , 'starts'  , 'OR' ],
+                'not_starts'   => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'starts'  , 'AND'],
+                'ends'         => ["{col} LIKE {val} ESCAPE '|'"             , 'ends'    , 'OR' ],
+                'not_ends'     => ["{col} NOT LIKE {val} ESCAPE '|'"         , 'ends'    , 'AND'],
+                'null'         => ["{col} IS NULL"                           , 'ignore'  , 'AND'],
+                'not_null'     => ["{col} IS NOT NULL"                       , 'ignore'  , 'OR' ],
+                'blank'        => ["({col} IS NULL OR {col} = '')"           , 'ignore'  , 'AND'],
+                'not_blank'    => ["({col} IS NOT NULL AND {col} <> '')"     , 'ignore'  , 'OR' ],
             ],
         ];
     }
 
     /**
-     * @var Database
+     * @var Driver
      */
-    protected $db;
+    protected $driver;
 
     /**
      * Original ransack predicate
@@ -307,7 +211,7 @@ class Ransack
     /**
      * Create predicate
      *
-     * @param Database $db
+     * @param Driver $driver
      * @param string $origin
      * @param mixed $value
      * @param string $predicate
@@ -319,9 +223,9 @@ class Ransack
      * @param string|null $option
      * @param string $placeholder_suffix (default: '')
      */
-    protected function __construct(Database $db, string $origin, $value, string $predicate, string $template, ?\Closure $value_converter, array $columns, string $conjunction, ?string $compound, ?string $option, string $placeholder_suffix = '')
+    protected function __construct(Driver $driver, string $origin, $value, string $predicate, string $template, ?\Closure $value_converter, array $columns, string $conjunction, ?string $compound, ?string $option, string $placeholder_suffix = '')
     {
-        $this->db                 = $db;
+        $this->driver             = $driver;
         $this->origin             = $origin;
         $this->value              = $value;
         $this->predicate          = $predicate;
@@ -337,15 +241,15 @@ class Ransack
     /**
      * Resolve given ransack predicate.
      *
-     * @param Database $db
+     * @param Driver $driver
      * @param int|string $ransack_predicate
      * @param mixed $value
      * @param array $alias (default: [])
-     * @param \Closure|null $extension function(Database $db, Ransack $ransack) : Condition { ... } (default: null)
+     * @param \Closure|null $extension function(Ransack $ransack) : Condition { ... } (default: null)
      * @param string $placeholder_suffix (default: '')
      * @return Condition|null
      */
-    public static function resolve(Database $db, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?Condition
+    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?Condition
     {
         //  1 | If value is blank(null, '' or []) then ransack will be ignored
         if (Utils::isBlank($value)) {
@@ -360,9 +264,9 @@ class Ransack
                 $sub_where  = [];
                 $sub_params = [];
                 foreach ($sub_conditions as $k => $v) {
-                    if ($condition = static::resolve($db, $k, $v, $alias, $extension, "{$placeholder_suffix}_{$i}")) {
-                        $sub_where[] = $condition->sql;
-                        $sub_params  = array_merge($sub_params, $condition->params);
+                    if ($condition = static::resolve($driver, $k, $v, $alias, $extension, "{$placeholder_suffix}_{$i}")) {
+                        $sub_where[] = $condition->sql();
+                        $sub_params  = array_merge($sub_params, $condition->params());
                     }
                 }
                 $where[] = '('.implode(' AND ', $sub_where).')';
@@ -371,10 +275,10 @@ class Ransack
             return new Condition('('.implode(' OR ', $where).')', $params);
         }
 
-        $ransack = static::analyze($db, $ransack_predicate, $value, $alias, $placeholder_suffix);
+        $ransack = static::analyze($driver, $ransack_predicate, $value, $alias, $placeholder_suffix);
 
         //  3 | Custom predicate by ransack extension closure for each convert
-        if ($extension && $custom = $extension($db, $ransack)) {
+        if ($extension && $custom = $extension($ransack)) {
             return $custom;
         }
 
@@ -385,19 +289,18 @@ class Ransack
     /**
      * Analyze given ransack predicate.
      *
-     * @param Database $db
+     * @param Driver $driver
      * @param string $ransack_predicate
      * @param mixed $value
      * @param array $alias (default: [])
      * @param string $placeholder_suffix (default: '')
      * @return self
      */
-    public static function analyze(Database $db, string $ransack_predicate, $value, array $alias = [], string $placeholder_suffix = '') : self
+    public static function analyze(Driver $driver, string $ransack_predicate, $value, array $alias = [], string $placeholder_suffix = '') : self
     {
-        $origin      = $ransack_predicate;
-        $option      = null;
-        $driver_name = $db->driverName();
-        foreach (static::config("options.{$driver_name}", false, []) as $o => $ot) {
+        $origin = $ransack_predicate;
+        $option = null;
+        foreach ($driver->ransackOptions() as $o => $ot) {
             if (Strings::endsWith($ransack_predicate, "_{$o}")) {
                 $ransack_predicate = Strings::rtrim($ransack_predicate, "_{$o}");
                 $option            = $ot;
@@ -414,15 +317,23 @@ class Ransack
             }
         }
 
-        $predicates = Arrays::sortKeys(array_merge(static::config("predicates.common", false, []), static::config("predicates.{$driver_name}", false, [])), SORT_DESC, Callbacks::compareLength());
-        $predicate  = null;
+        $predicates       = Arrays::sortKeys(array_merge(static::config("predicates", false, []), $driver->ransackPredicates()), SORT_DESC, Callbacks::compareLength());
+        $value_converters = array_merge(static::config("value_converters"), $driver->ransackValueConverters());
+        $predicate        = null;
         foreach ($predicates as $p => [$t, $vc, $c]) {
             if (Strings::endsWith($ransack_predicate, "_{$p}")) {
                 $ransack_predicate = Strings::rtrim($ransack_predicate, "_{$p}");
                 $template          = $t;
-                $value_converter   = is_string($vc) ? static::config("value_converters.{$vc}") : $vc ;
                 $predicate         = $p;
                 $conjunction       = $c;
+                if (is_string($vc)) {
+                    if (!isset($value_converters[$vc])) {
+                        throw new RansackException("Value converter '{$vc}' not found.");
+                    }
+                    $value_converter = $value_converters[$vc];
+                } else {
+                    $value_converter = $vc ;
+                }
                 break;
             }
         }
@@ -438,7 +349,7 @@ class Ransack
         }
 
         $columns = static::resolveAlias($ransack_predicate, $alias);
-        return new static($db, $origin, $value, $predicate, $template, $value_converter, $columns, $conjunction, $compound, $option, $placeholder_suffix);
+        return new static($driver, $origin, $value, $predicate, $template, $value_converter, $columns, $conjunction, $compound, $option, $placeholder_suffix);
     }
 
     /**
@@ -459,6 +370,16 @@ class Ransack
             }
         }
         return $columns;
+    }
+
+    /**
+     * Get the PDO driver.
+     *
+     * @return Driver
+     */
+    public function driver() : Driver
+    {
+        return $this->driver;
     }
 
     /**
@@ -571,8 +492,8 @@ class Ransack
             return $this->columns;
         }
         return $this->option
-            ? array_map(function ($v) { return str_replace('{col}', $this->db->quoteIdentifier($v), $this->option); }, $this->columns)
-            : array_map(function ($v) { return $this->db->quoteIdentifier($v); }, $this->columns)
+            ? array_map(function ($v) { return str_replace('{col}', $this->driver->quoteIdentifier($v), $this->option); }, $this->columns)
+            : array_map(function ($v) { return $this->driver->quoteIdentifier($v); }, $this->columns)
             ;
     }
 
@@ -610,7 +531,7 @@ class Ransack
             foreach ($columns as $j => $column) {
                 $idx_j        = $columns_count === 1 ? "" : "_{$j}";
                 $key          = "{$this->origin}{$this->placeholder_suffix}{$idx_i}{$idx_j}";
-                $sub_wheres[] = str_replace(['{col}', '{val}'], [$this->db->quoteIdentifier($column), ":{$key}"], $template);
+                $sub_wheres[] = str_replace(['{col}', '{val}'], [$this->driver->quoteIdentifier($column), ":{$key}"], $template);
                 if ($value !== null) {
                     $params[$key] = $value ;
                 }

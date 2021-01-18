@@ -12,21 +12,22 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     public function test___construct()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertInstanceOf(BuiltinRansacker::class, new BuiltinRansacker($db));
+            $this->assertInstanceOf(BuiltinRansacker::class, new BuiltinRansacker($db->driver()));
         });
     }
 
     public function test_of()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertInstanceOf(BuiltinRansacker::class, BuiltinRansacker::of($db));
+            $this->assertInstanceOf(BuiltinRansacker::class, BuiltinRansacker::of($db->driver()));
         });
     }
 
     public function test_resolve()
     {
         $this->eachDb(function (Database $db) {
-            $this->assertEquals(new Condition($db->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($db)->resolve('name', 'foo'));
+            $driver = $db->driver();
+            $this->assertEquals(new Condition($driver->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
         });
     }
 
@@ -73,9 +74,9 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     public function test_build($expect_sql, $expect_params, $ransack, $alias = [], $extention = null, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention) {
-            $condition = BuiltinRansacker::of($db)->build($ransack, $alias, $extention);
-            $this->assertwildcardString($expect_sql, $condition->sql);
-            $this->assertEquals($expect_params, $condition->params);
+            $condition = BuiltinRansacker::of($db->driver())->build($ransack, $alias, $extention);
+            $this->assertwildcardString($expect_sql, $condition->sql());
+            $this->assertEquals($expect_params, $condition->params());
         }, ...$dbs);
     }
 }

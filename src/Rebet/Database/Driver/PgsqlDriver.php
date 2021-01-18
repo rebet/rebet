@@ -9,6 +9,30 @@ use Rebet\Tools\Reflection\Reflector;
 /**
  * PostgreSQL Driver Class
  *
+ * Difference list of all predicates that depended on PostgreSQL,
+ * NOTE: {@see Rebet\Database\Ransack\Ransack} for common predicates for Ransack Search.
+ *
+ * | No | Ransack Predicate   | Value Type   | Description                                                                          | Example emulated SQL
+ * +----+---------------------+--------------+--------------------------------------------------------------------------------------+------------------------------------------
+ * |  4 | {col}_{predicate}   | Any          | Custom predicate by PgsqlDriver `ransack.predicates` setting for PostgreSQL database | Anything you want
+ * |    | {col}_matches       | String       | POSIX regex match                                                                    | ['title_matches'     => '^[0-9]+%'] => title ~ '^[0-9]+%'
+ * |    | {col}_not_matches   | String       | POSIX regex not match                                                                | ['title_not_matches' => '^[0-9]+%'] => title !~ '^[0-9]+%'
+ * |    | {col}_search        | String       | Full Text Search                                                                     | ['body_search'       => 'foo'     ] => to_tsvector(body) @@ to_tsquery('foo')
+ * +    +---------------------+--------------+--------------------------------------------------------------------------------------+------------------------------------------
+ * |    | *_{option} (option) | Any          | Custom option by PgsqlDriver `ransack.options` setting for PostgreSQL database       | Anything you want
+ * |    | *_len      (option) | String       | Length option depend on configure                                                    | ['tag_eq_len'      =>     3] => LENGTH(tag) = 3
+ * |    | *_uc       (option) | String       | Upper case option depend on configure                                                | ['tag_eq_uc'       => 'FOO'] => UPPER(tag) = 'FOO'
+ * |    | *_lc       (option) | String       | Lower case option depend on configure                                                | ['tag_eq_lc'       => 'foo'] => LOWER(tag) = 'foo'
+ * |    | *_age      (option) | DateTime     | Age option depend on configure                                                       | ['birthday_lt_age' =>    20] => DATE_PART('year', AGE(birthday)) < 20
+ * |    | *_y        (option) | DateTime     | Year of date time option depend on configure                                         | ['entry_at_eq_y'   =>  2000] => DATE_PART('year', entry_at) = 2000
+ * |    | *_m        (option) | DateTime     | Month of date time option depend on configure                                        | ['entry_at_eq_m'   =>    12] => DATE_PART('month', entry_at) = 12
+ * |    | *_d        (option) | DateTime     | Day of date time option depend on configure                                          | ['entry_at_eq_d'   =>    12] => DATE_PART('day', entry_at) = 12
+ * |    | *_h        (option) | DateTime     | Hour of date time option depend on configure                                         | ['entry_at_eq_h'   =>    12] => DATE_PART('hour', entry_at) = 12
+ * |    | *_i        (option) | DateTime     | Minute of date time option depend on configure                                       | ['entry_at_eq_i'   =>    12] => DATE_PART('minute', entry_at) = 12
+ * |    | *_s        (option) | DateTime     | Second of date time option depend on configure                                       | ['entry_at_eq_s'   =>    12] => DATE_PART('second', entry_at) = 12
+ * |    | *_dow      (option) | DateTime     | Day of week option depend on configure                                               | ['entry_at_eq_dow' =>     1] => DATE_PART('dow', entry_at) = 1
+ * +----+---------------------+--------------+--------------------------------------------------------------------------------------+------------------------------------------
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -27,6 +51,27 @@ class PgsqlDriver extends AbstractDriver
                 ],
                 'statement' => [
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                ],
+            ],
+            'ransack' => [
+                'value_converters' => [],
+                'predicates'       => [
+                    'matches'     => ["{col} ~ {val}"                           , null , 'OR' ],
+                    'not_matches' => ["{col} !~ {val}"                          , null , 'AND'],
+                    'search'      => ["to_tsvector({col}) @@ to_tsquery({val})" , null , 'OR' ],
+                ],
+                'options'          => [
+                    'len' => 'LENGTH({col})',
+                    'uc'  => 'UPPER({col})',
+                    'lc'  => 'LOWER({col})',
+                    'age' => "DATE_PART('year', AGE({col}))",
+                    'y'   => "DATE_PART('year', {col})",
+                    'm'   => "DATE_PART('month', {col})",
+                    'd'   => "DATE_PART('day', {col})",
+                    'h'   => "DATE_PART('hour', {col})",
+                    'i'   => "DATE_PART('minute', {col})",
+                    's'   => "DATE_PART('second', {col})",
+                    'dow' => "DATE_PART('dow', {col})",
                 ],
             ],
         ];

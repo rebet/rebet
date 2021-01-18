@@ -300,6 +300,22 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
+    public function appendWhereTo(string $sql, $where) : string
+    {
+        if (empty($where)) {
+            return $sql;
+        }
+        $analyzer = $this->analyzer($sql);
+        $where    = is_array($where) ? implode(' AND ', $where) : $where ;
+        if ($analyzer->hasGroupBy()) {
+            return $analyzer->hasHaving() ? "{$sql} AND ({$where})" : "{$sql} HAVING {$where}" ;
+        }
+        return $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$where})" : "{$sql} WHERE {$where}" ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function appendLimitOffset(string $sql, ?int $limit, ?int $offset = null) : string
     {
         $limit  = $limit  ? " LIMIT {$limit}"   : "" ;
@@ -345,5 +361,29 @@ abstract class AbstractDriver implements Driver
     public function analyzer(string $sql) : Analyzer
     {
         return new BuiltinAnalyzer($sql);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function ransackValueConverters() : array
+    {
+        return static::config('ransack.value_converters', false, []);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function ransackPredicates() : array
+    {
+        return static::config('ransack.predicates', false, []);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function ransackOptions() : array
+    {
+        return static::config('ransack.options', false, []);
     }
 }

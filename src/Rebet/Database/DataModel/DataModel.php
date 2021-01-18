@@ -351,14 +351,15 @@ abstract class DataModel
         $primary_keys     = static::primaryKeys();
         $is_composite_key = count($primary_keys) !== 1 ;
 
-        $db = static::db($db);
+        $db     = static::db($db);
+        $driver = $db->driver();
         foreach ($primary_keys as $column) {
-            $where[]         = "{$db->quoteIdentifier($column)} = :{$column}";
+            $where[]         = "{$driver->quoteIdentifier($column)} = :{$column}";
             $params[$column] = $is_composite_key ? Reflector::get($primaries, $column) : $primaries ;
         }
 
         [$sql, /*param*/] = static::buildSelectSql($db);
-        $sql              = $db->appendWhereTo($sql, $where);
+        $sql              = $driver->appendWhereTo($sql, $where);
 
         return $db->find($sql, null, $params, $for_update, get_called_class());
     }
@@ -419,18 +420,8 @@ abstract class DataModel
      */
     protected static function buildSelectSql(Database $db, array $ransacks = []) : array
     {
-        $where     = [];
-        $params    = [];
-        $alises    = static::ransackAliases();
-        $extension = Closure::fromCallable([static::class, 'ransack']);
-        foreach ($ransacks as $predicate => $value) {
-            $condition = $db->ransacker()->resolve($predicate, $value, $alises, $extension);
-            if ($condition) {
-                $where[] = $condition->sql;
-                $params  = array_merge($params, $condition->params);
-            }
-        }
-        return [$db->appendWhereTo(static::buildSelectAllSql($db), $where), $params];
+        $condition = $db->ransacker()->build($ransacks, static::ransackAliases(), Closure::fromCallable([static::class, 'ransack']));
+        return [$db->driver()->appendWhereTo(static::buildSelectAllSql($db), $condition->sql()), $condition->params()];
     }
 
     /**
@@ -471,13 +462,12 @@ abstract class DataModel
      *     case 'has_bank':
      *       return new Condition('EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)') ;
      *   }
-     *   return parent::ransack($db, $ransack);
+     *   return parent::ransack($ransack);
      *
-     * @param Database $db
      * @param Ransack $ransack
      * @return Condition|null
      */
-    protected static function ransack(Database $db, Ransack $ransack) : ?Condition
+    protected static function ransack(Ransack $ransack) : ?Condition
     {
         return null;
     }

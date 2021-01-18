@@ -41,7 +41,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Condition {
                     return null;
                 }
             ],
@@ -49,7 +49,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Condition {
                     return $ransack->convert();
                 }
             ],
@@ -57,7 +57,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? grater than :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Condition {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}');
                     }
@@ -68,7 +68,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? grater than :age_gt',
                 ['age_gt' => 40],
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Condition {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
                     }
@@ -79,7 +79,7 @@ class RansackTest extends RebetDatabaseTestCase
                 'age <> :bar',
                 ['bar' => 20],
                 'age_gt' , 20, [],
-                function (Database $db, Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Condition {
                     if ($ransack->origin() === 'age_gt') {
                         return new Condition('age <> :bar', ['bar' => $ransack->value(true)]);
                     }
@@ -95,12 +95,12 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_resolve($expect_sql, $expect_params, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null)
     {
         $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack_predicate, $value, $alias, $extension) {
-            $ransack = Ransack::resolve($db, $ransack_predicate, $value, $alias, $extension);
+            $condition = Ransack::resolve($db->driver(), $ransack_predicate, $value, $alias, $extension);
             if ($expect_sql === null) {
-                $this->assertNull($ransack);
+                $this->assertNull($condition);
             } else {
-                $this->assertWildcardString($expect_sql, $ransack->sql);
-                $this->assertEquals($expect_params, $ransack->params);
+                $this->assertWildcardString($expect_sql, $condition->sql());
+                $this->assertEquals($expect_params, $condition->params());
             }
         });
     }
@@ -108,7 +108,7 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_analyze()
     {
         $this->eachDb(function (Database $db) {
-            $ransack = Ransack::analyze($db, 'name', 'John');
+            $ransack = Ransack::analyze($db->driver(), 'name', 'John');
             $this->assertInstanceOf(Ransack::class, $ransack);
         });
     }
@@ -118,7 +118,7 @@ class RansackTest extends RebetDatabaseTestCase
         $this->expectException(RansackException::class);
         $this->expectExceptionMessage("Short predicates of 'in' and 'eq' can not contain 'any' and 'all' compound word.");
 
-        Ransack::analyze(Dao::db(), 'name_any', 'John');
+        Ransack::analyze(Dao::db()->driver(), 'name_any', 'John');
     }
 
     public function dataOrigins() : array
@@ -140,7 +140,7 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_origin($ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertSame($ransack_predicate, $ransack->origin());
         }, ...$dbs);
     }
@@ -176,13 +176,14 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_value($expect, $convert, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $convert, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertEquals($expect, $ransack->value($convert));
         }, ...$dbs);
     }
 
     public function dataPredicates() : array
     {
+        $this->setUp();
         $data = [
             ['eq'          , 'name'                , 'foo'         , []                                                           ],
             ['in'          , 'name'                , ['foo', 'bar'], []                                                           ],
@@ -195,11 +196,11 @@ class RansackTest extends RebetDatabaseTestCase
             ['contains'    , 'name_contains_any_cs', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
 
-        foreach (Ransack::config('predicates') as $driver => $predicates) {
-            foreach ($predicates as $predicate => [$themplate, $value_converter, $conjunction]) {
-                $data[] = [$predicate, "name_{$predicate}", 'foo', [], $driver === 'common' ? [] : [$driver]];
+        $this->eachDb(function (Database $db) use (&$data) {
+            foreach ($db->driver()->ransackPredicates() as $predicate => [$themplate, $value_converter, $conjunction]) {
+                $data[] = [$predicate, "name_{$predicate}", 'foo', [], [$db->name()]];
             }
-        }
+        });
 
         return $data;
     }
@@ -210,13 +211,14 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_predicate($expect, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertSame($expect, $ransack->predicate());
         }, ...$dbs);
     }
 
     public function dataTemplates() : array
     {
+        $this->setUp();
         $data = [
             ['{col} = {val}'              , 'name'                , 'foo'         , []                                                           ],
             ['{col} IN ({val})'           , 'name'                , ['foo', 'bar'], []                                                           ],
@@ -229,11 +231,11 @@ class RansackTest extends RebetDatabaseTestCase
             ["{col} LIKE {val} ESCAPE '|'", 'name_contains_any_cs', ['foo', 'bar'], ['name' => ['last_name', 'first_name']], ['mysql', 'mariadb']],
         ];
 
-        foreach (Ransack::config('predicates') as $driver => $predicates) {
-            foreach ($predicates as $predicate => [$themplate, $value_converter, $conjunction]) {
-                $data[] = [$themplate, "name_{$predicate}", 'foo', [], $driver === 'common' ? [] : [$driver]];
+        $this->eachDb(function (Database $db) use (&$data) {
+            foreach ($db->driver()->ransackPredicates() as $predicate => [$themplate, $value_converter, $conjunction]) {
+                $data[] = [$themplate, "name_{$predicate}", 'foo', [], [$db->name()]];
             }
-        }
+        });
 
         return $data;
     }
@@ -244,22 +246,21 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_template($expect, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertSame($expect, $ransack->template());
         }, ...$dbs);
     }
 
     public function dataValueConverters() : array
     {
+        $this->setUp();
         $data = [];
-
-        foreach (Ransack::config('predicates') as $driver => $predicates) {
-            foreach ($predicates as $predicate => [$themplate, $value_converter, $conjunction]) {
+        $this->eachDb(function (Database $db) use (&$data) {
+            foreach ($db->driver()->ransackPredicates() as $predicate => [$themplate, $value_converter, $conjunction]) {
                 $value_converter = is_string($value_converter) ? Ransack::config("value_converters.{$value_converter}") : $value_converter ;
-                $data[]          = [$value_converter, "name_{$predicate}", 'foo', [], $driver === 'common' ? [] : [$driver]];
+                $data[]          = [$value_converter, "name_{$predicate}", 'foo', [], [$db->name()]];
             }
-        }
-
+        });
         return $data;
     }
 
@@ -269,21 +270,20 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_valueConverter($expect, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertEquals($expect, $ransack->valueConverter());
         }, ...$dbs);
     }
 
     public function dataConjunctions() : array
     {
+        $this->setUp();
         $data = [];
-
-        foreach (Ransack::config('predicates') as $driver => $predicates) {
-            foreach ($predicates as $predicate => [$themplate, $value_converter, $conjunction]) {
-                $data[] = [$conjunction, "name_{$predicate}", 'foo', [], $driver === 'common' ? [] : [$driver]];
+        $this->eachDb(function (Database $db) use (&$data) {
+            foreach ($db->driver()->ransackPredicates() as $predicate => [$themplate, $value_converter, $conjunction]) {
+                $data[] = [$conjunction, "name_{$predicate}", 'foo', [], [$db->name()]];
             }
-        }
-
+        });
         return $data;
     }
 
@@ -293,7 +293,7 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_conjunction($expect, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertEquals($expect, $ransack->conjunction());
         }, ...$dbs);
     }
@@ -321,19 +321,20 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_compound($expect, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertSame($expect, $ransack->compound());
         }, ...$dbs);
     }
 
     public function dataOptions() : array
     {
+        $this->setUp();
         $data = [];
-        foreach (Ransack::config('options') as $driver => $options) {
-            foreach ($options as $option => $template) {
-                $data[] = [$template, "name_{$option}", 'foo', [], $driver === 'common' ? [] : [$driver]];
+        $this->eachDb(function (Database $db) use (&$data) {
+            foreach ($db->driver()->ransackOptions() as $option => $template) {
+                $data[] = [$template, "name_{$option}", 'foo', [], [$db->name()]];
             }
-        }
+        });
         return $data;
     }
 
@@ -343,7 +344,7 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_option($expect, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertSame($expect, $ransack->option());
         }, ...$dbs);
     }
@@ -430,7 +431,7 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_columns($expect, $apply_option, $ransack_predicate, $value, $alias, $dbs = [])
     {
         $this->eachDb(function (Database $db) use ($expect, $apply_option, $ransack_predicate, $value, $alias) {
-            $ransack = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $this->assertWildcardEach($expect, $ransack->columns($apply_option));
         }, ...$dbs);
     }
@@ -879,10 +880,10 @@ class RansackTest extends RebetDatabaseTestCase
     public function test_convert($expect_sql, $expect_params, $ransack_predicate, $value, $alias, $dbs, $rantaime_template = null, $rantime_vallue_converter = null)
     {
         $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack_predicate, $value, $alias, $rantaime_template, $rantime_vallue_converter) {
-            $ransack   = Ransack::analyze($db, $ransack_predicate, $value, $alias);
+            $ransack   = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $condition = $ransack->convert($rantaime_template, $rantime_vallue_converter);
-            $this->assertWildcardString($expect_sql, $condition->sql);
-            $this->assertEquals($expect_params, $condition->params);
+            $this->assertWildcardString($expect_sql, $condition->sql());
+            $this->assertEquals($expect_params, $condition->params());
         }, ...$dbs);
     }
 }
