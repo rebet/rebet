@@ -1,6 +1,5 @@
 language: php
 php:
-  - 7.3.24
   - 7.4.12
 
 services:

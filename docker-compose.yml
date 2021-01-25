@@ -58,7 +58,7 @@ services:
       ADMINER_DESIGN: haeckel      # see https://www.adminer.org/#extras https://github.com/vrana/adminer/tree/master/designs
       ADMINER_PLUGINS: enum-option # see https://www.adminer.org/en/plugins/
     ports:
-      - 8080:8080
+      - 18080:8080
     volumes:
       - ./docker/var/data/sqlite:/tmp/sqlite
   memcached:

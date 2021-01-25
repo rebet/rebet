@@ -6,7 +6,6 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Config;
 use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
 use League\Flysystem\Filesystem as FlysystemFilesystem;
 use League\Flysystem\FilesystemInterface;
