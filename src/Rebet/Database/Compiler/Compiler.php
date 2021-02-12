@@ -6,6 +6,7 @@ use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
+use Rebet\Database\Query;
 use Rebet\Database\Statement;
 
 /**
@@ -34,9 +35,9 @@ interface Compiler
      * @param array|object $params can be arrayable (default: [])
      * @param Pager|null $pager (default: null)
      * @param Cursor|null $cursor (default: null)
-     * @return string [string sql, array params]
+     * @return Query of full SQL sentence
      */
-    public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : array;
+    public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Query;
 
     /**
      * Process a statement containing a result set and create a paginator object.
@@ -57,7 +58,7 @@ interface Compiler
      *
      * @param string $key
      * @param mixed $value
-     * @return array [string new_key, [string new_key => new_value]]
+     * @return Query of PDO spec placeholder SQL sentence
      */
-    public function convertParam(string $key, $value) : array;
+    public function convertParam(string $key, $value) : Query;
 }

@@ -166,7 +166,7 @@ interface Driver
      * @param string|array $where
      * @return string
      */
-    public function appendWhereTo(string $sql, $where) : string;
+    public function appendWhere(string $sql, $where) : string;
 
     /**
      * Append limit offset partial SQL to given SQL.

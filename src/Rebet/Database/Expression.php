@@ -53,9 +53,9 @@ class Expression
      *
      * @param Driver $driver
      * @param string $placeholder name
-     * @return array [string sql, array params]
+     * @return Query
      */
-    public function compile(Driver $driver, string $placeholder) : array
+    public function compile(Driver $driver, string $placeholder) : Query
     {
         $placeholder = Strings::startsWith($placeholder, ':') ? $placeholder : ":{$placeholder}" ;
         $expression  = $this->expression;
@@ -65,6 +65,6 @@ class Expression
             $expression               = str_replace("{{$key}}", "{$new_placeholder}", $expression);
             $params[$new_placeholder] = $driver->toPdoType($value);
         }
-        return [$expression, $params];
+        return new Query($driver, $expression, $params);
     }
 }

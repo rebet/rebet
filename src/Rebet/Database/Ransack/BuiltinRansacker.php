@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Database\Ransack;
 
-use Rebet\Database\Condition;
 use Rebet\Database\Database;
 use Rebet\Database\Driver\Driver;
+use Rebet\Database\Query;
 
 /**
  * Builtin Ransacker Class
@@ -46,7 +46,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public function resolve($ransack_predicate, $value, array $alias = [], ?\Closure $extension = null) : ?Condition
+    public function resolve($ransack_predicate, $value, array $alias = [], ?\Closure $extension = null) : ?Query
     {
         return Ransack::resolve($this->driver, $ransack_predicate, $value, $alias, $extension);
     }
@@ -54,7 +54,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public function build($ransack, array $alias = [], ?\Closure $extension = null) : Condition
+    public function build($ransack, array $alias = [], ?\Closure $extension = null) : Query
     {
         $wheres = [];
         $params = [];
@@ -67,6 +67,6 @@ class BuiltinRansacker implements Ransacker
             $params   = array_merge($params, $condition->params());
         }
 
-        return new Condition(implode(' AND ', $wheres), $params);
+        return new Query($this->driver, implode(' AND ', $wheres), $params);
     }
 }

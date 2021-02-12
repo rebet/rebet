@@ -10,6 +10,7 @@ use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
+use Rebet\Database\Query;
 use Rebet\Database\Statement;
 use Rebet\Tools\Utility\Strings;
 
@@ -60,7 +61,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : array
+    public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Query
     {
         // -----------------------------------------------------------------
         // Check params key format and resolve multi placeholder
@@ -90,11 +91,11 @@ class BuiltinCompiler implements Compiler
         // -----------------------------------------------------------------
         $pdo_params = [];
         foreach ($params as $key => $value) {
-            $key                   = ":{$key}";
-            [$pdo_key, $pdo_param] = $this->convertParam($key, $value);
-            $pdo_params            = array_merge($pdo_params, $pdo_param);
-            if ($pdo_key !== $key) {
-                $sql = preg_replace("/{$key}(?=[^a-zA-Z0-9_]|$)/", $pdo_key, $sql);
+            $key        = ":{$key}";
+            $new_param  = $this->convertParam($key, $value);
+            $pdo_params = array_merge($pdo_params, $new_param->params());
+            if ($new_param->sql() !== $key) {
+                $sql = preg_replace("/{$key}(?=[^a-zA-Z0-9_]|$)/", $new_param->sql(), $sql);
             }
         }
 
@@ -114,26 +115,27 @@ class BuiltinCompiler implements Compiler
                     $sql    = $this->driver->appendLimitOffset($sql, $limit, $offset);
                 }
             } else {
-                $analyzer                 = $this->driver->analyzer($sql);
-                $forward_feed             = $pager->page() >= $cursor->pager()->page() ;
-                $near_by_first            = $pager->page() < abs($cursor->pager()->page() - $pager->page());
-                $order_by                 = $forward_feed ? $order_by : ($near_by_first ? $order_by : $order_by->reverse()) ;
-                $order_sql                = $this->compileOrderBy($order_by);
-                [$cursor_sql, $pdo_param] = $this->compileCursor($analyzer, $order_by, $cursor, $forward_feed, $near_by_first);
-                $pdo_params               = array_merge($pdo_params, $pdo_param);
-                $offset                   = $this->offset($pager, $cursor, $forward_feed, $near_by_first);
-                $limit                    = $this->limit($pager, $cursor, $forward_feed, $near_by_first);
-                $sql                      = $analyzer->isUnion() ? "SELECT * FROM ({$sql}) AS T" : $sql ;
+                $analyzer      = $this->driver->analyzer($sql);
+                $forward_feed  = $pager->page() >= $cursor->pager()->page() ;
+                $near_by_first = $pager->page() < abs($cursor->pager()->page() - $pager->page());
+                $order_by      = $forward_feed ? $order_by : ($near_by_first ? $order_by : $order_by->reverse()) ;
+                $order_sql     = $this->compileOrderBy($order_by);
+                $cursor_query  = $this->compileCursor($analyzer, $order_by, $cursor, $forward_feed, $near_by_first);
+                $cursor_where  = $cursor_query->sql();
+                $pdo_params    = array_merge($pdo_params, $cursor_query->params());
+                $offset        = $this->offset($pager, $cursor, $forward_feed, $near_by_first);
+                $limit         = $this->limit($pager, $cursor, $forward_feed, $near_by_first);
+                $sql           = $analyzer->isUnion() ? "SELECT * FROM ({$sql}) AS T" : $sql ;
                 if ($analyzer->hasGroupBy()) {
-                    $sql = $analyzer->hasHaving() ? "{$sql} AND ({$cursor_sql})" : "{$sql} HAVING {$cursor_sql}" ;
+                    $sql = $analyzer->hasHaving() ? "{$sql} AND ({$cursor_where})" : "{$sql} HAVING {$cursor_where}" ;
                 } else {
-                    $sql = $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$cursor_sql})" : "{$sql} WHERE {$cursor_sql}" ;
+                    $sql = $analyzer->hasWhere() || $analyzer->hasHaving() ? "{$sql} AND ({$cursor_where})" : "{$sql} WHERE {$cursor_where}" ;
                 }
                 $sql = $this->driver->appendLimitOffset("{$sql} ORDER BY {$order_sql}", $limit, $offset);
             }
         }
 
-        return [$sql, $pdo_params];
+        return new Query($this->driver, $sql, $pdo_params);
     }
 
     /**
@@ -219,9 +221,9 @@ class BuiltinCompiler implements Compiler
      * @param Cursor $cursor
      * @param bool $forward_feed
      * @param bool $near_by_first
-     * @return array of [$where, $pdo_params]
+     * @return Query of partial where SQL sentence
      */
-    protected function compileCursor(Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : array
+    protected function compileCursor(Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : Query
     {
         $expressions = $forward_feed ? ['ASC' => '>', 'DESC' => '<'] :  ($near_by_first ? ['ASC' => '<', 'DESC' => '>'] :  ['ASC' => '>', 'DESC' => '<']) ;
         $first       = true;
@@ -256,7 +258,7 @@ class BuiltinCompiler implements Compiler
             $where .= ")";
             $i++;
         } while (!empty($cursor_cols));
-        return [$where, $params];
+        return new Query($this->driver, $where, $params);
     }
 
     /**
@@ -302,14 +304,14 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function convertParam(string $key, $value) : array
+    public function convertParam(string $key, $value) : Query
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;
         if ($value instanceof Expression) {
             return $value->compile($this->driver, $key);
         }
         if (!is_array($value)) {
-            return [$key, [$key => $this->driver->toPdoType($value)]];
+            return new Query($this->driver, $key, [$key => $this->driver->toPdoType($value)]);
         }
 
         $unfold_keys = [];
@@ -320,15 +322,15 @@ class BuiltinCompiler implements Compiler
             $index++;
 
             if ($v instanceof Expression) {
-                [$e, $p]       = $v->compile($this->driver, $new_key);
-                $unfold_keys[] = $e;
-                $params        = array_merge($params, $p);
+                $expression    = $v->compile($this->driver, $new_key);
+                $unfold_keys[] = $expression->sql();
+                $params        = array_merge($params, $expression->params());
                 continue;
             }
 
             $unfold_keys[]    = $new_key;
             $params[$new_key] = $this->driver->toPdoType($v);
         }
-        return [join(', ', $unfold_keys), $params];
+        return new Query($this->driver, join(', ', $unfold_keys), $params);
     }
 }

@@ -4,11 +4,11 @@ namespace Rebet\Database\DataModel;
 use Closure;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Database\Annotation\PrimaryKey;
-use Rebet\Database\Condition;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
+use Rebet\Database\Query;
 use Rebet\Database\Ransack\Ransack;
 use Rebet\Database\ResultSet;
 use Rebet\Inflection\Inflector;
@@ -358,10 +358,8 @@ abstract class DataModel
             $params[$column] = $is_composite_key ? Reflector::get($primaries, $column) : $primaries ;
         }
 
-        [$sql, /*param*/] = static::buildSelectSql($db);
-        $sql              = $driver->appendWhereTo($sql, $where);
-
-        return $db->find($sql, null, $params, $for_update, get_called_class());
+        $query = static::buildSelectSql($db)->appendWhere($where, $params);
+        return $db->find($query->sql(), null, $query->params(), $for_update, get_called_class());
     }
 
     /**
@@ -374,8 +372,8 @@ abstract class DataModel
      */
     public static function findBy($ransacks, bool $for_update = false, $db = null) : ?self
     {
-        [$sql, $params] = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
-        return $db->find($sql, null, $params, $for_update, get_called_class());
+        $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
+        return $db->find($query->sql(), null, $query->params(), $for_update, get_called_class());
     }
 
     /**
@@ -390,8 +388,8 @@ abstract class DataModel
      */
     public static function select($ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, $db = null) : ResultSet
     {
-        [$sql, $params] = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
-        return $db->select($sql, $order_by ?? static::defaultOrderBy(), $params, $limit, $for_update, get_called_class());
+        $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
+        return $db->select($query->sql(), $order_by ?? static::defaultOrderBy(), $query->params(), $limit, $for_update, get_called_class());
     }
 
     /**
@@ -406,8 +404,8 @@ abstract class DataModel
      */
     public static function paginate(Pager $pager, $ransacks = [], $order_by = null, bool $for_update = false, $db = null) : Paginator
     {
-        [$sql, $params] = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
-        return $db->paginate($sql, $order_by ?? static::defaultOrderBy(), $pager, $params, $for_update, get_called_class(), static::buildOptimizedCountSql($db, $ransacks));
+        $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
+        return $db->paginate($query->sql(), $order_by ?? static::defaultOrderBy(), $pager, $query->params(), $for_update, get_called_class(), static::buildOptimizedCountSql($db, $ransacks));
     }
 
     /**
@@ -416,21 +414,21 @@ abstract class DataModel
      *
      * @param Database $db
      * @param array $ransacks condition (default: [])
-     * @return array ['sql', params]
+     * @return Query
      */
-    protected static function buildSelectSql(Database $db, array $ransacks = []) : array
+    protected static function buildSelectSql(Database $db, array $ransacks = []) : Query
     {
         $condition = $db->ransacker()->build($ransacks, static::ransackAliases(), Closure::fromCallable([static::class, 'ransack']));
-        return [$db->driver()->appendWhereTo(static::buildSelectAllSql($db), $condition->sql()), $condition->params()];
+        return static::buildSelectAllSql($db)->appendWhere($condition->sql(), $condition->params());
     }
 
     /**
      * Build data model select all SQL.
      *
      * @param Database $db
-     * @return string of sql
+     * @return Query of sql
      */
-    abstract protected static function buildSelectAllSql(Database $db) : string;
+    abstract protected static function buildSelectAllSql(Database $db) : Query;
 
     /**
      * Build optimized count SQL using given ransack conditions for paginate.
@@ -454,20 +452,20 @@ abstract class DataModel
      *       return $ransack->convert("REPLACE({col}, '-', '') = REPLACE({val}, '-', '')");
      *     case 'account_status':
      *       switch($ransack->value()) {
-     *         case AccountStatus::ACTIVE(): return new Condition('U.resign_at IS NULL AND U.locked = 1');
-     *         case AccountStatus::LOCKED(): return new Condition('U.resign_at IS NULL AND U.locked = 2');
-     *         case AccountStatus::RESIGN(): return new Condition('U.resign_at IS NOT NULL'             );
+     *         case AccountStatus::ACTIVE(): return new Query($ransack->driver(), 'U.resign_at IS NULL AND U.locked = 1');
+     *         case AccountStatus::LOCKED(): return new Query($ransack->driver(), 'U.resign_at IS NULL AND U.locked = 2');
+     *         case AccountStatus::RESIGN(): return new Query($ransack->driver(), 'U.resign_at IS NOT NULL'             );
      *       }
-     *       return new Condition(null, null);
+     *       return new Query($ransack->driver(), '');
      *     case 'has_bank':
-     *       return new Condition('EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)') ;
+     *       return new Query($ransack->driver(), 'EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)') ;
      *   }
      *   return parent::ransack($ransack);
      *
      * @param Ransack $ransack
-     * @return Condition|null
+     * @return Query|null
      */
-    protected static function ransack(Ransack $ransack) : ?Condition
+    protected static function ransack(Ransack $ransack) : ?Query
     {
         return null;
     }

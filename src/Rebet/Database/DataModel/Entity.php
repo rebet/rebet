@@ -5,6 +5,7 @@ use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\Database;
+use Rebet\Database\Query;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Reflection\Reflector;
@@ -230,7 +231,7 @@ abstract class Entity extends DataModel
     {
         $db        = static::db($db);
         $condition = $db->buildPrimaryWheresFrom($this);
-        return $db->exists("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()).$condition->where(), $condition->params());
+        return $db->exists("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()).$condition->asWhere(), $condition->params());
     }
 
     /**
@@ -335,8 +336,8 @@ abstract class Entity extends DataModel
     /**
      * {@inheritDoc}
      */
-    protected static function buildSelectAllSql(Database $db) : string
+    protected static function buildSelectAllSql(Database $db) : Query
     {
-        return "SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName());
+        return new Query($db->driver(), "SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()));
     }
 }

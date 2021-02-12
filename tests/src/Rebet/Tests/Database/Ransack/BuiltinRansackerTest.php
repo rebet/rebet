@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Database\Ransack;
 
-use Rebet\Database\Condition;
 use Rebet\Database\Database;
+use Rebet\Database\Query;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -27,7 +27,7 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     {
         $this->eachDb(function (Database $db) {
             $driver = $db->driver();
-            $this->assertEquals(new Condition($driver->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
+            $this->assertEquals(new Query($driver, $driver->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
         });
     }
 

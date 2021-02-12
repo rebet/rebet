@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Database\Ransack;
 
-use Rebet\Database\Condition;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Exception\RansackException;
+use Rebet\Database\Query;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
@@ -245,11 +245,11 @@ class Ransack
      * @param int|string $ransack_predicate
      * @param mixed $value
      * @param array $alias (default: [])
-     * @param \Closure|null $extension function(Ransack $ransack) : Condition { ... } (default: null)
+     * @param \Closure|null $extension function(Ransack $ransack) : Query { ... } (default: null)
      * @param string $placeholder_suffix (default: '')
-     * @return Condition|null
+     * @return Query|null
      */
-    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?Condition
+    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?Query
     {
         //  1 | If value is blank(null, '' or []) then ransack will be ignored
         if (Utils::isBlank($value)) {
@@ -258,21 +258,21 @@ class Ransack
 
         //  2 | Join sub ransack conditions by 'OR'.
         if (is_int($ransack_predicate)) {
-            $where  = [];
+            $wheres = [];
             $params = [];
             foreach ($value as $i => $sub_conditions) {
-                $sub_where  = [];
+                $sub_wheres = [];
                 $sub_params = [];
                 foreach ($sub_conditions as $k => $v) {
-                    if ($condition = static::resolve($driver, $k, $v, $alias, $extension, "{$placeholder_suffix}_{$i}")) {
-                        $sub_where[] = $condition->sql();
-                        $sub_params  = array_merge($sub_params, $condition->params());
+                    if ($sub_condition = static::resolve($driver, $k, $v, $alias, $extension, "{$placeholder_suffix}_{$i}")) {
+                        $sub_wheres[] = $sub_condition->sql();
+                        $sub_params   = array_merge($sub_params, $sub_condition->params());
                     }
                 }
-                $where[] = '('.implode(' AND ', $sub_where).')';
-                $params  = array_merge($params, $sub_params);
+                $wheres[] = '('.implode(' AND ', $sub_wheres).')';
+                $params   = array_merge($params, $sub_params);
             }
-            return new Condition('('.implode(' OR ', $where).')', $params);
+            return new Query($driver, '('.implode(' OR ', $wheres).')', $params);
         }
 
         $ransack = static::analyze($driver, $ransack_predicate, $value, $alias, $placeholder_suffix);
@@ -513,9 +513,9 @@ class Ransack
      *
      * @param string|null $template (default: null)
      * @param \Closure|null $value_converter function(mixed $value) { ... } (default: null)
-     * @return Condition
+     * @return Query
      */
-    public function convert(?string $template = null, ?\Closure $value_converter = null) : Condition
+    public function convert(?string $template = null, ?\Closure $value_converter = null) : Query
     {
         $template        = $template ?? $this->template;
         $params          = [];
@@ -540,6 +540,6 @@ class Ransack
         }
         $sql = count($wheres) === 1 ? $wheres[0] : '('.implode($this->compound === 'any' ? ' OR ' : ' AND ', $wheres).')' ;
 
-        return new Condition($sql, $params);
+        return new Query($this->driver, $sql, $params);
     }
 }

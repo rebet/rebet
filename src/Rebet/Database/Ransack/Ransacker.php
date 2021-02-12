@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Database\Ransack;
 
-use Rebet\Database\Condition;
 use Rebet\Database\Driver\Driver;
+use Rebet\Database\Query;
 
 /**
  * Ransacker Interface
@@ -29,9 +29,9 @@ interface Ransacker
      * @param mixed $value
      * @param array $alias (default: [])
      * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
-     * @return Condition|null condition or null when ignored
+     * @return Query|null condition or null when ignored
      */
-    public function resolve($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?Condition;
+    public function resolve($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?Query;
 
     /**
      * Build 'WHERE' condition expression from given ransack conditions.
@@ -39,7 +39,7 @@ interface Ransacker
      * @param mixed $ransack condition that arrayable
      * @param array $alias (default: [])
      * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
-     * @return Condition
+     * @return Query
      */
-    public function build($ransack, array $alias = [], ?\Closure $extention = null) : Condition;
+    public function build($ransack, array $alias = [], ?\Closure $extention = null) : Query;
 }

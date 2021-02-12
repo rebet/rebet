@@ -300,7 +300,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function appendWhereTo(string $sql, $where) : string
+    public function appendWhere(string $sql, $where) : string
     {
         if (empty($where)) {
             return $sql;

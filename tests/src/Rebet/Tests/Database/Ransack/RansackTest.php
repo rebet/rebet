@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Database\Ransack;
 
-use Rebet\Database\Condition;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\RansackException;
+use Rebet\Database\Query;
 use Rebet\Database\Ransack\Ransack;
 use Rebet\Tests\RebetDatabaseTestCase;
 
@@ -41,7 +41,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Query {
                     return null;
                 }
             ],
@@ -49,7 +49,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Query {
                     return $ransack->convert();
                 }
             ],
@@ -57,7 +57,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? grater than :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Query {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}');
                     }
@@ -68,7 +68,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? grater than :age_gt',
                 ['age_gt' => 40],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Query {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
                     }
@@ -79,9 +79,9 @@ class RansackTest extends RebetDatabaseTestCase
                 'age <> :bar',
                 ['bar' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Condition {
+                function (Ransack $ransack) : ?Query {
                     if ($ransack->origin() === 'age_gt') {
-                        return new Condition('age <> :bar', ['bar' => $ransack->value(true)]);
+                        return new Query($ransack->driver(), 'age <> :bar', ['bar' => $ransack->value(true)]);
                     }
                     return null;
                 }

@@ -278,44 +278,7 @@ class Database
         if ($sql === null) {
             return [null];
         }
-        return $this->emulated_sql_log ? [$this->emulate($sql, $params)] : [$sql, $params] ;
-    }
-
-    /**
-     * Emulate given SQL for logging and exception message.
-     * You should not use this method other than to emulate sql for log output.
-     *
-     * @param string $sql
-     * @param array $params (default: [])
-     * @return string
-     */
-    protected function emulate(string $sql, array $params = []) : string
-    {
-        foreach ($params as $key => $value) {
-            $value = is_array($value) ? join(', ', array_map(function ($v) { return $this->convertToSql($v); }, $value)) : $this->convertToSql($value) ;
-            $sql   = preg_replace("/".preg_quote($key, '/')."(?=[^a-zA-Z0-9_]|$)/", $value, $sql);
-        }
-
-        return "/* Emulated SQL */ ".$sql;
-    }
-
-    /**
-     * Convert given value to SQL string for SQL emulate.
-     * You should not use this method other than to emulate sql for log output.
-     *
-     * @param mixed $value
-     * @return string
-     */
-    protected function convertToSql($value) : string
-    {
-        $param = $value instanceof PdoParameter ? $value : $this->driver->toPdoType($value);
-        if ($param->value === null) {
-            return 'NULL';
-        }
-        if ($param->type === \PDO::PARAM_LOB) {
-            return 'NULL/*LOB('.strlen($param->value).')*/';
-        }
-        return $this->driver->quote($param->value, $param->type);
+        return $this->emulated_sql_log ? [(new Query($this->driver, $sql, $params))->emulate($this->driver)] : [$sql, $params] ;
     }
 
     /**
@@ -440,10 +403,10 @@ class Database
      */
     protected function _query(string $sql, $order_by = null, $params = [], ?int $limit = null, bool $for_update = false, ?Pager $pager = null, ?Cursor $cursor = null) : Statement
     {
-        [$sql, $params] = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-        $sql            = $limit && $pager === null ? $this->driver->appendLimitOffset($sql, $limit) : $sql ;
-        $sql            = $for_update ?  $this->driver->appendForUpdate($sql) : $sql ;
-        return $this->prepare($sql)->execute(Arrays::toArray($params));
+        $query = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
+        $query = $limit && $pager === null ? $query->appendLimitOffset($limit) : $query ;
+        $query = $for_update ? $query->appendForUpdate() : $query ;
+        return $this->prepare($query->sql())->execute($query->params());
     }
 
     /**
@@ -702,9 +665,9 @@ class Database
      * Build primary where condition and parameters.
      *
      * @param Entity $entity
-     * @return Condition
+     * @return Query
      */
-    public function buildPrimaryWheresFrom(Entity $entity) : Condition
+    public function buildPrimaryWheresFrom(Entity $entity) : Query
     {
         $class    = get_class($entity);
         $primarys = $class::primaryKeys();
@@ -712,14 +675,14 @@ class Database
             throw new DatabaseException("Can not build SQL because of {$class} entity do not have any primary keys.");
         }
 
-        $where  = [];
+        $wheres = [];
         $params = [];
         foreach ($primarys as $column) {
-            $where[]         = "{$this->driver->quoteIdentifier($column)} = :{$column}";
+            $wheres[]        = "{$this->driver->quoteIdentifier($column)} = :{$column}";
             $params[$column] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
         }
 
-        return new Condition(join(' AND ', $where), $params);
+        return new Query($this->driver, join(' AND ', $wheres), $params);
     }
 
     /**
@@ -753,7 +716,7 @@ class Database
             return true;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
+        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->asWhere(), $params);
         if ($affected_rows !== 1) {
             return false;
         }
@@ -785,7 +748,7 @@ class Database
     {
         Event::dispatch(new Deleting($this, $entity));
         $condition     = $this->buildPrimaryWheresFrom($entity);
-        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity->tabelName()).$condition->where(), $condition->params());
+        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity->tabelName()).$condition->asWhere(), $condition->params());
         if ($affected_rows !== 1) {
             return false;
         }
@@ -821,7 +784,7 @@ class Database
             $params[$key] = $value;
         }
 
-        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->where(), $params);
+        $affected_rows = $this->execute("UPDATE ".$this->driver->quoteIdentifier($entity::tabelName())." SET ".join(', ', $sets).$condition->asWhere(), $params);
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchUpdated($this, $entity, $changes, $ransack, $now, $affected_rows));
         }
@@ -841,7 +804,7 @@ class Database
         Event::dispatch(new BatchDeleting($this, $entity, $ransack));
 
         $condition     = $this->ransacker->build($ransack, $alias);
-        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params());
+        $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->asWhere(), $condition->params());
         if ($affected_rows !== 0) {
             Event::dispatch(new BatchDeleted($this, $entity, $ransack, $affected_rows));
         }
@@ -859,7 +822,7 @@ class Database
     public function existsBy(string $entity, $ransack, array $alias = []) : bool
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->exists("SELECT * FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->where(), $condition->params());
+        return $this->exists("SELECT * FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->asWhere(), $condition->params());
     }
 
     /**
@@ -873,7 +836,7 @@ class Database
     public function countBy(string $entity, $ransack, array $alias = []) : int
     {
         $condition = $this->ransacker->build($ransack, $alias);
-        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->where(), [], $condition->params());
+        return $this->get('count', "SELECT COUNT(*) AS count FROM ".$this->driver->quoteIdentifier($entity::tabelName()).$condition->asWhere(), [], $condition->params());
     }
 
     /**

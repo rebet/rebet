@@ -1,12 +1,14 @@
 <?php
 namespace Rebet\Tests\Database\Compiler;
 
+use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\PdoParameter;
+use Rebet\Database\Query;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\DateTime;
@@ -634,9 +636,9 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
             if (!in_array($db->name(), $target_db_kinds)) {
                 return;
             }
-            [$compiled_sql, $compiled_params] = $db->compiler()->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-            $this->assertwildcardString($expect_sql, $compiled_sql, "on DB '{$db->name()}'");
-            $this->assertEquals($expect_params, $compiled_params, "on DB '{$db->name()}'");
+            $query = $db->compiler()->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
+            $this->assertwildcardString($expect_sql, $query->sql(), "on DB '{$db->name()}'");
+            $this->assertEquals($expect_params, $query->params(), "on DB '{$db->name()}'");
         });
     }
 
@@ -649,35 +651,35 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     public function dataConvertParams() : array
     {
         return [
-            [[':key', [':key' => PdoParameter::int(1)]], 'key', 1],
-            [[':key', [':key' => PdoParameter::int(1)]], ':key', 1],
-            [[':key', [':key' => PdoParameter::str('abc')]], 'key', 'abc'],
-            [[':key__0, :key__1, :key__2', [':key__0' => PdoParameter::int(1), ':key__1' => PdoParameter::int(2), ':key__2' => PdoParameter::int(3)]], 'key', [1, 2, 3]],
+            [':key', [':key' => PdoParameter::int(1)], 'key', 1],
+            [':key', [':key' => PdoParameter::int(1)], ':key', 1],
+            [':key', [':key' => PdoParameter::str('abc')], 'key', 'abc'],
+            [':key__0, :key__1, :key__2', [':key__0' => PdoParameter::int(1), ':key__1' => PdoParameter::int(2), ':key__2' => PdoParameter::int(3)], 'key', [1, 2, 3]],
             [
+                'nextval(:values__0__0), geometry::STGeomFromText(:values__1__0, :values__1__1), now(), :values__3',
                 [
-                    'nextval(:values__0__0), geometry::STGeomFromText(:values__1__0, :values__1__1), now(), :values__3',
-                    [
-                        ':values__0__0' => PdoParameter::str('serial_seq'),
-                        ':values__1__0' => PdoParameter::str('POINT(1 1)'),
-                        ':values__1__1' => PdoParameter::int(0),
-                        ':values__3'    => PdoParameter::int(1)
-                    ]
+                    ':values__0__0' => PdoParameter::str('serial_seq'),
+                    ':values__1__0' => PdoParameter::str('POINT(1 1)'),
+                    ':values__1__1' => PdoParameter::int(0),
+                    ':values__3'    => PdoParameter::int(1)
                 ],
                 'values',
                 [Expression::of('nextval({0})', 'serial_seq'), Expression::of('geometry::STGeomFromText({0}, {1})', 'POINT(1 1)', 0), Expression::of('now()'), 1]
             ],
-            [['now()', []], 'key', Expression::of('now()')],
-            [['GeomFromText(:key__0)', [':key__0' => PdoParameter::str('POINT(1 1)')]], 'key', Expression::of('GeomFromText({0})', 'POINT(1 1)')],
+            ['now()', [], 'key', Expression::of('now()')],
+            ['GeomFromText(:key__0)', [':key__0' => PdoParameter::str('POINT(1 1)')], 'key', Expression::of('GeomFromText({0})', 'POINT(1 1)')],
         ];
     }
 
     /**
      * @dataProvider dataConvertParams
      */
-    public function test_convertParam(array $expect, string $key, $value)
+    public function test_convertParam(string $expect_sql, array $expect_params, string $key, $value)
     {
-        $this->eachDb(function (Database $db) use ($expect, $key, $value) {
-            $this->assertEquals($expect, $db->compiler()->convertParam($key, $value));
+        $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $key, $value) {
+            $param = $db->compiler()->convertParam($key, $value);
+            $this->assertEquals($expect_sql, $param->sql());
+            $this->assertEquals($expect_params, $param->params());
         });
     }
 }

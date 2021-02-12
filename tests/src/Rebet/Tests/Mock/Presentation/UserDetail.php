@@ -6,6 +6,7 @@ use Rebet\Tools\Utility\Utils;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Database;
 use Rebet\Database\DataModel\Presentation;
+use Rebet\Database\Query;
 use Rebet\Database\ResultSet;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
@@ -59,9 +60,9 @@ class UserDetail extends Presentation
         return parent::buildConditionalExpression($key, $value, Strings::startsWith($key, 'bank_') ? 'B' : 'U');
     }
 
-    protected static function buildSelectAllSql(Database $db) : string
+    protected static function buildSelectAllSql(Database $db) : Query
     {
-        return <<<EOS
+        return new Query($db->driver(), <<<EOS
             SELECT
                 U.*,
                 (SELECT COUNT(*) FROM articles AS A WHERE A.user_id = U.user_id) AS article_count
@@ -69,6 +70,6 @@ class UserDetail extends Presentation
                 users AS U
                 LEFT OUTER JOIN bank AS B
 EOS
-        ;
+        );
     }
 }
