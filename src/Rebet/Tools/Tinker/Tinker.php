@@ -440,7 +440,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             return $this;
         }
         $origin    = $this->origin();
-        $type      = Reflector::getTypeHintOf($filter, 0);
+        $type      = Reflector::getParameterTypeHintOf($filter, 0);
         $converted = Reflector::convert($origin, $type);
         $args      = array_map(function ($value) { return static::peel($value); }, $args);
         try {

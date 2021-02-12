@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Database\Annotation\Defaults;
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
@@ -22,25 +21,18 @@ class GroupUser extends Entity
     public $user_id;
 
     /**
-     * @PhpType(GroupPosition::class)
      * @Defaults(3)
      */
-    public $position;
+    public ?GroupPosition $position = null;
 
     /**
-     * @PhpType(Date::class)
      * @Defaults("today")
      */
-    public $join_on;
+    public ?Date $join_on = null;
 
     /**
-     * @PhpType(DateTime::class)
      * @Defaults("now")
      */
-    public $created_at;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $updated_at;
+    public ?DateTime $created_at = null;
+    public ?DateTime $updated_at = null;
 }

@@ -1075,18 +1075,36 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHint($params[5]));
     }
 
-    public function test_getTypeHintOf()
+    public function test_getParameterTypeHintOf()
     {
         $closure = function ($none, int $int, string $string, callable $callable, \Closure $closure, ReflectorTest_Mock $mock) {
         };
-        $this->assertSame(null, Reflector::getTypeHintOf(null, 0));
-        $this->assertSame(null, Reflector::getTypeHintOf($closure, 0));
-        $this->assertSame('int', Reflector::getTypeHintOf($closure, 1));
-        $this->assertSame('string', Reflector::getTypeHintOf($closure, 2));
-        $this->assertSame('callable', Reflector::getTypeHintOf($closure, 3));
-        $this->assertSame(\Closure::class, Reflector::getTypeHintOf($closure, 4));
-        $this->assertSame(ReflectorTest_Mock::class, Reflector::getTypeHintOf($closure, 5));
-        $this->assertSame(null, Reflector::getTypeHintOf($closure, 6));
+        $this->assertSame(null, Reflector::getParameterTypeHintOf(null, 0));
+        $this->assertSame(null, Reflector::getParameterTypeHintOf($closure, 0));
+        $this->assertSame('int', Reflector::getParameterTypeHintOf($closure, 1));
+        $this->assertSame('string', Reflector::getParameterTypeHintOf($closure, 2));
+        $this->assertSame('callable', Reflector::getParameterTypeHintOf($closure, 3));
+        $this->assertSame(\Closure::class, Reflector::getParameterTypeHintOf($closure, 4));
+        $this->assertSame(ReflectorTest_Mock::class, Reflector::getParameterTypeHintOf($closure, 5));
+        $this->assertSame(null, Reflector::getParameterTypeHintOf($closure, 6));
+    }
+
+    public function test_getPropertyTypeHintOf()
+    {
+        $class = new class {
+            public $none;
+            public int $int;
+            public string $string;
+            public \Closure $class;
+            public ReflectorTest_Mock $mock;
+        };
+        $this->assertSame(null, Reflector::getPropertyTypeHintOf(null, 'int'));
+        $this->assertSame(null, Reflector::getPropertyTypeHintOf($class, 'none'));
+        $this->assertSame('int', Reflector::getPropertyTypeHintOf($class, 'int'));
+        $this->assertSame('string', Reflector::getPropertyTypeHintOf($class, 'string'));
+        $this->assertSame(\Closure::class, Reflector::getPropertyTypeHintOf($class, 'class'));
+        $this->assertSame(ReflectorTest_Mock::class, Reflector::getPropertyTypeHintOf($class, 'mock'));
+        $this->assertSame(null, Reflector::getPropertyTypeHintOf($class, 'nothing'));
     }
 
     public function test_uses()

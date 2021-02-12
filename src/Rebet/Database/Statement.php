@@ -2,8 +2,6 @@
 namespace Rebet\Database;
 
 use PDOException;
-use Rebet\Annotation\AnnotatedClass;
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Tools\Reflection\Reflector;
@@ -109,18 +107,14 @@ class Statement implements \IteratorAggregate
      * @param mixed $row
      * @param string $class
      * @param array|null $meta info of this statement for performance in loop (default: null)
-     * @param AnnotatedClass|null $ac annotated class of given class for performance in loop (default: null)
      * @return void
      */
-    protected function convert($row, string $class, ?array $meta = null, ?AnnotatedClass $ac = null)
+    protected function convert($row, string $class, ?array $meta = null)
     {
         $meta = $meta ?? $this->meta();
-        $ac   = $ac ?? new AnnotatedClass($class);
         $dm   = new $class();
         foreach ($row as $column => $value) {
-            $am          = $ac->property($column);
-            $type        = $am ? $am->annotation(PhpType::class) : null ;
-            $dm->$column = $this->db->driver()->toPhpType($value, $meta[$column] ?? [], $type ? $type->value : null);
+            $dm->$column = $this->db->driver()->toPhpType($value, $meta[$column] ?? [], Reflector::getPropertyTypeHintOf($class, $column));
         }
         if ($dm instanceof Entity) {
             $dm->origin(clone $dm->removeOrigin());
@@ -156,9 +150,8 @@ class Statement implements \IteratorAggregate
     {
         $rs   = [];
         $meta = $this->meta();
-        $ac   = new AnnotatedClass($class);
         while ($row = $this->fetch()) {
-            $rs[] = $this->convert($row, $class, $meta, $ac);
+            $rs[] = $this->convert($row, $class, $meta);
         }
         return new ResultSet($rs);
     }
@@ -226,10 +219,9 @@ class Statement implements \IteratorAggregate
     public function each(callable $callback) : self
     {
         $meta  = $this->meta();
-        $class = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
-        $ac    = new AnnotatedClass($class);
+        $class = Reflector::getParameterTypeHintOf($callback, 0) ?? 'stdClass';
         while ($row = $this->fetch()) {
-            if (call_user_func($callback, $this->convert($row, $class, $meta, $ac)) === false) {
+            if (call_user_func($callback, $this->convert($row, $class, $meta)) === false) {
                 break;
             }
         }
@@ -247,10 +239,9 @@ class Statement implements \IteratorAggregate
     {
         $filtered = [];
         $meta     = $this->meta();
-        $class    = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
-        $ac       = new AnnotatedClass($class);
+        $class    = Reflector::getParameterTypeHintOf($callback, 0) ?? 'stdClass';
         while ($row = $this->fetch()) {
-            $item = $this->convert($row, $class, $meta, $ac);
+            $item = $this->convert($row, $class, $meta);
             if (call_user_func($callback, $item)) {
                 $filtered[] = $item;
             }
@@ -269,10 +260,9 @@ class Statement implements \IteratorAggregate
     {
         $map   = [];
         $meta  = $this->meta();
-        $class = Reflector::getTypeHintOf($callback, 0) ?? 'stdClass';
-        $ac    = new AnnotatedClass($class);
+        $class = Reflector::getParameterTypeHintOf($callback, 0) ?? 'stdClass';
         while ($row = $this->fetch()) {
-            $map[] = call_user_func($callback, $this->convert($row, $class, $meta, $ac));
+            $map[] = call_user_func($callback, $this->convert($row, $class, $meta));
         }
         return new ResultSet($map);
     }
@@ -289,10 +279,9 @@ class Statement implements \IteratorAggregate
     {
         $carry = $initial;
         $meta  = $this->meta();
-        $class = Reflector::getTypeHintOf($reducer, 0) ?? 'stdClass';
-        $ac    = new AnnotatedClass($class);
+        $class = Reflector::getParameterTypeHintOf($reducer, 0) ?? 'stdClass';
         while ($row = $this->fetch()) {
-            $carry = call_user_func($reducer, $this->convert($row, $class, $meta, $ac), $carry);
+            $carry = call_user_func($reducer, $this->convert($row, $class, $meta), $carry);
         }
         return $carry;
     }

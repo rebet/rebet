@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
@@ -13,27 +12,18 @@ class Fortune extends Entity
 {
     /**
      * @PrimaryKey
-     * @PhpType(Gender::class)
      */
-    public $gender;
+    public ?Gender $gender = null;
 
     /**
      * @PrimaryKey
-     * @PhpType(Date::class)
      */
-    public $birthday;
+    public ?Date $birthday = null;
 
     public $result;
 
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $created_at;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $updated_at;
+    public ?DateTime $created_at = null;
+    public ?DateTime $updated_at = null;
 
     public function users($ransack = [], ?int $limit = null, bool $for_update = false, bool $eager_load = true) : array
     {

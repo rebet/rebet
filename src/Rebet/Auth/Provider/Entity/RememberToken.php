@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Auth\Provider\Entity;
 
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\DateTime;
@@ -19,45 +18,29 @@ class RememberToken extends Entity
     /**
      * Auth provider name that created this remember token.
      *
-     * @var string
      * @PrimaryKey
      */
-    public $provider;
+    public ?string $provider = null;
 
     /**
      * Remember token value.
      *
-     * @var string
      * @PrimaryKey
      */
-    public $remember_token;
+    public ?string $remember_token = null;
 
     /**
      * ID that remembered by this remember token's provider.
-     *
-     * @var string|int
      */
-    public $remember_id;
+    public ?string $remember_id = null;
 
     /**
      * Token expired date time.
-     *
-     * @var DateTime
-     * @PhpType(DateTime::class)
      */
-    public $expires_at;
+    public ?DateTime $expires_at = null;
 
-    /**
-     * @var DateTime
-     * @PhpType(DateTime::class)
-     */
-    public $created_at;
-
-    /**
-     * @var DateTime
-     * @PhpType(DateTime::class)
-     */
-    public $updated_at;
+    public ?DateTime $created_at = null;
+    public ?DateTime $updated_at = null;
 
     /**
      * Delete all expoired remember tokens.

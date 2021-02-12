@@ -3,47 +3,27 @@ namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Database;
 use Rebet\Database\DataModel\Presentation;
 use Rebet\Database\ResultSet;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\Mock\Enum\Gender;
 
-class User extends Presentation
+class UserDetail extends Presentation
 {
     /**
      * @PrimaryKey
      */
     public $user_id;
-
     public $name;
-
-    /**
-     * @PhpType(Gender::class)
-     */
-    public $gender;
-
-    /**
-     * @PhpType(Date::class)
-     */
-    public $birthday;
-
+    public Gender $gender;
+    public Date $birthday;
     public $email;
-
     public $role;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $created_at;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $updated_at;
-
+    public DateTime $created_at;
+    public ?DateTime $updated_at;
     public $article_count;
 
     public function age() : ?int
@@ -66,19 +46,6 @@ class User extends Presentation
         return $this->hasMany(Article::class, [], $conditions, null, null, $for_update);
     }
 
-//     protected static function buildSelectSql(array $conditions = []) : array
-//     {
-//         return <<<EOS
-//             SELECT
-//                 U.*,
-//                 (SELECT COUNT(*) FROM articles AS A WHERE A.user_id = U.user_id) AS article_count
-//             FROM
-//                 users AS U
-//                 LEFT OUTER JOIN bank AS B
-    // EOS
-//         ;
-//     }
-
     protected static function buildConditionalExpression($key, $value, ?string $table_alias = null) : array
     {
         if (Utils::isBlank($value)) {
@@ -90,5 +57,18 @@ class User extends Presentation
         }
 
         return parent::buildConditionalExpression($key, $value, Strings::startsWith($key, 'bank_') ? 'B' : 'U');
+    }
+
+    protected static function buildSelectAllSql(Database $db) : string
+    {
+        return <<<EOS
+            SELECT
+                U.*,
+                (SELECT COUNT(*) FROM articles AS A WHERE A.user_id = U.user_id) AS article_count
+            FROM
+                users AS U
+                LEFT OUTER JOIN bank AS B
+EOS
+        ;
     }
 }

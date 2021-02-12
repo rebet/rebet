@@ -119,7 +119,7 @@ class Event
     protected static function resolve($listener) : array
     {
         if (is_callable($listener)) {
-            return [Reflector::getTypeHintOf($listener, 0), $listener];
+            return [Reflector::getParameterTypeHintOf($listener, 0), $listener];
         }
         $listener = Reflector::instantiate($listener);
         if (!method_exists($listener, 'handle')) {

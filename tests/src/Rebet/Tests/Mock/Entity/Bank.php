@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Mock\Entity;
 
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
+use Rebet\Tools\DateTime\DateTime;
 
 class Bank extends Entity
 {
@@ -15,16 +15,8 @@ class Bank extends Entity
     public $branch;
     public $number;
     public $holder;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $created_at;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $updated_at;
+    public ?DateTime $created_at = null;
+    public ?DateTime $updated_at = null;
 
     public function user(bool $for_update = false, bool $eager_load = true) : ?User
     {

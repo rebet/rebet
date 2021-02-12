@@ -557,22 +557,17 @@ class Reflector
 
     /**
      * Get type or class name which is a type hint as a character string.
-     * # If type hint is nothing then return null.
+     * > If type hint is nothing then return null.
      *
-     * @param \ReflectionParameter|null $param
+     * @param \ReflectionParameter|\ReflectionProperty|null $target
      * @return string|null
      */
-    public static function getTypeHint(?\ReflectionParameter $param) : ?string
+    public static function getTypeHint($target) : ?string
     {
-        if ($param === null) {
+        if ($target === null) {
             return null;
         }
-        $type = $param->getType();
-        if (!empty($type)) {
-            return $type->getName();
-        }
-
-        $type = $param->getClass();
+        $type = $target->getType();
         if (!empty($type)) {
             return $type->getName();
         }
@@ -582,19 +577,36 @@ class Reflector
 
     /**
      * Get type or class name which is a type hint as a character string from given function parameter.
-     * # If type hint is nothing then return null.
+     * > If type hint is nothing then return null.
      *
      * @param callable|null $function
      * @param int $param_index
      * @return string|null
      */
-    public static function getTypeHintOf(?callable $function, int $param_index) : ?string
+    public static function getParameterTypeHintOf(?callable $function, int $param_index) : ?string
     {
         if ($function === null) {
             return null;
         }
         $function = new \ReflectionFunction(\Closure::fromCallable($function));
         return static::getTypeHint($function->getParameters()[$param_index] ?? null);
+    }
+
+    /**
+     * Get type or class name which is a type hint as a character string from given class/object property.
+     * > If type hint is nothing then return null.
+     *
+     * @param string|object|null $object_or_class
+     * @param string $property name
+     * @return string|null
+     */
+    public static function getPropertyTypeHintOf($object_or_class, string $property) : ?string
+    {
+        if ($object_or_class === null) {
+            return null;
+        }
+        $class = new \ReflectionClass($object_or_class);
+        return $class->hasProperty($property) ? static::getTypeHint($class->getProperty($property)) : null ;
     }
 
     /**

@@ -2,12 +2,12 @@
 namespace Rebet\Database\DataModel;
 
 use Rebet\Database\Annotation\Defaults;
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\Database;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Strings;
 use ReflectionClass;
 
@@ -143,11 +143,10 @@ abstract class Entity extends DataModel
     }
 
     /**
-     * Get default (@Defaults with/without @PhpType annotated) properties.
+     * Get default (@Defaults with/without property type hint) properties.
      *
-     * @return array [property_name => [default_value, null|php_type(from @PhpType)]]
+     * @return array [property_name => [default_value, null|php_type(from property hint)]]
      * @see Defaults
-     * @see PhpType
      */
     public static function defaults() : array
     {
@@ -160,9 +159,7 @@ abstract class Entity extends DataModel
         foreach ($ac->properties() as $ap) {
             $default = $ap->annotation(Defaults::class);
             if ($default) {
-                $key            = $ap->reflector()->getName();
-                $php_type       = $ap->annotation(PhpType::class);
-                $defaults[$key] = [$default->value, $php_type ? $php_type->value : null];
+                $defaults[$ap->reflector()->getName()] = [$default->value, Reflector::getTypeHint($ap->reflector())];
             }
         }
 

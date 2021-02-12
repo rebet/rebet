@@ -2,7 +2,6 @@
 namespace Rebet\Tests\Mock\Entity;
 
 use Rebet\Database\Annotation\Defaults;
-use Rebet\Database\Annotation\PhpType;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tests\Mock\Enum\Gender;
@@ -13,39 +12,19 @@ use Rebet\Tools\Reflection\Reflector;
 class User extends Entity
 {
     public $user_id;
-
     public $name;
-
-    /**
-     * @PhpType(Gender::class)
-     */
-    public $gender;
-
-    /**
-     * @PhpType(Date::class)
-     */
-    public $birthday;
-
+    public ?Gender $gender = null;
+    public ?Date $birthday = null;
     public $email;
 
     /**
      * @Defaults("user")
      */
     public $role;
-
     public $password;
-
     public $api_token;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $created_at;
-
-    /**
-     * @PhpType(DateTime::class)
-     */
-    public $updated_at;
+    public ?DateTime $created_at = null;
+    public ?DateTime $updated_at = null;
 
     /**
      * @Unmap

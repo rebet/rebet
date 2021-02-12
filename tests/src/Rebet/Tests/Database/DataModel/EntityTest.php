@@ -86,6 +86,11 @@ class EntityTest extends RebetDatabaseTestCase
             'role'       => ['user', null],
             'created_at' => ['now', DateTime::class],
         ], UserWithAnnot::defaults());
+        $this->assertSame([
+            'position'   => [3, GroupPosition::class],
+            'join_on'    => ['today', Date::class],
+            'created_at' => ["now", DateTime::class],
+        ], GroupUser::defaults());
     }
 
     public function test_changes()
@@ -96,8 +101,8 @@ class EntityTest extends RebetDatabaseTestCase
         $this->assertSame(['name' => 'foo'], $user->changes());
         $user->gender = Gender::FEMALE();
         $this->assertSame(['name' => 'foo', 'gender' => Gender::FEMALE()], $user->changes());
-        $user->birthday = '1980-01-02';
-        $this->assertSame(['name' => 'foo', 'gender' => Gender::FEMALE(), 'birthday' => '1980-01-02'], $user->changes());
+        $user->birthday = new Date('1980-01-02');
+        $this->assertEquals(['name' => 'foo', 'gender' => Gender::FEMALE(), 'birthday' => new Date('1980-01-02')], $user->changes());
         $user->birthday = null;
         $this->assertSame(['name' => 'foo', 'gender' => Gender::FEMALE()], $user->changes());
 
