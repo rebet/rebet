@@ -12,6 +12,7 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\Query;
 use Rebet\Database\Statement;
+use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -26,6 +27,9 @@ use Rebet\Tools\Utility\Strings;
  *     ex) NG: SELECT * FROM user WHERE foo = 1 OR bar = 2
  *         OK: SELECT * FROM user WHERE (foo = 1 OR bar = 2)
  *
+ * And this compiler also support `Letterpress` template format.
+ * So, you can use all `Letterpress` tags like 'if' and 'for' (and extended tags) with given params in your SQL.
+ * 
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -63,9 +67,14 @@ class BuiltinCompiler implements Compiler
      */
     public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Query
     {
-        // -----------------------------------------------------------------
-        // Check params key format and resolve multi placeholder
-        // -----------------------------------------------------------------
+        // ---------------------------------------------------------------------
+        // Resolve embedded `Letterpress` tags
+        // ---------------------------------------------------------------------
+        $sql = Letterpress::of($sql)->with($params ?? [])->render();
+
+        // ---------------------------------------------------------------------
+        // Check params key format, non use params and resolve multi placeholder
+        // ---------------------------------------------------------------------
         $params = $params ?? [];
         foreach ($params as $key => $value) {
             if (!preg_match('/[a-zA-Z0-9_]+/', $key)) {
@@ -76,7 +85,11 @@ class BuiltinCompiler implements Compiler
             }
             $holder = ":{$key}";
             $count  = preg_match_all('/'.$holder.'([^a-zA-Z0-9_]|$)/', $sql);
-            if ($count <= 1) {
+            if($count === 0) {
+                unset($params[$key]);
+                continue;
+            }
+            if ($count === 1) {
                 continue;
             }
             for ($i = 0 ; $i < $count ; $i++) {
@@ -86,9 +99,9 @@ class BuiltinCompiler implements Compiler
             unset($params[$key]);
         }
 
-        // -----------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // Resolve array value placeholder and values convert to PDO params
-        // -----------------------------------------------------------------
+        // ---------------------------------------------------------------------
         $pdo_params = [];
         foreach ($params as $key => $value) {
             $key        = ":{$key}";
@@ -99,9 +112,9 @@ class BuiltinCompiler implements Compiler
             }
         }
 
-        // -----------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // Resolve Order By / Pager / Cursor
-        // -----------------------------------------------------------------
+        // ---------------------------------------------------------------------
         if ($order_by) {
             $cursor = $this->verify($pager, $cursor);
 

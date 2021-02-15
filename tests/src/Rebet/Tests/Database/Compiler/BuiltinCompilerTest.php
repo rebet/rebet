@@ -1,14 +1,12 @@
 <?php
 namespace Rebet\Tests\Database\Compiler;
 
-use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\PdoParameter;
-use Rebet\Database\Query;
 use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\DateTime;
@@ -623,6 +621,22 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 null,
                 $pager = Pager::resolve()->page(3),   // {[3]} (4)
                 Cursor::create($order_by, $pager, ['change_at' => DateTime::now(), 'user_id' => 21], null)
+            ],
+            [
+                ['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'],
+                'SELECT \* FROM user WHERE 1=1 AND gender = :gender ORDER BY ?user_id? DESC',
+                [':gender' => PdoParameter::int(1)],
+                'SELECT * FROM user WHERE 1=1{%if $gender%} AND gender = :gender{%endif%}',
+                ['user_id' => 'desc'],
+                ['gender'  => 1]
+            ],
+            [
+                ['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'],
+                'SELECT \* FROM user WHERE 1=1 ORDER BY ?user_id? DESC',
+                [],
+                'SELECT * FROM user WHERE 1=1{%if $gender%} AND gender = :gender{%endif%}',
+                ['user_id' => 'desc'],
+                ['gender'  => null]
             ],
         ];
     }

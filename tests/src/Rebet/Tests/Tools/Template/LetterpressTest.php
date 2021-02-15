@@ -120,6 +120,15 @@ class LetterpressTest extends RebetTestCase
                 ]
             ],
             [
+                "{% if \$user->isAdmin() %} foo {% endif %}",
+                [
+                    '',
+                    ['tag' => "if", 'code' => "\$user->isAdmin()", 'nodes' => [
+                        " foo "
+                    ]],
+                ]
+            ],
+            [
                 "foo {% if \$user->isAdmin() %} bar {% endif %} baz",
                 [
                     "foo ",

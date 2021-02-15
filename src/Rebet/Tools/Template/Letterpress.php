@@ -438,7 +438,9 @@ class Letterpress implements Renderable, \JsonSerializable
                     );
                     }
 
-                    $parent['nodes'][] = null; // Set close tag mark(=null)
+                    if(!empty($leftovers)) {
+                        $parent['nodes'][] = null; // Set close tag mark(=null)
+                    }
                     return [$parent, $leftovers];
                 }
 
