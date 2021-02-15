@@ -5,6 +5,7 @@ use Rebet\Database\Annotation\Defaults;
 use Rebet\Database\Annotation\Table;
 use Rebet\Database\Annotation\Unmap;
 use Rebet\Database\Database;
+use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Query;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\DateTime\DateTime;
@@ -229,8 +230,7 @@ abstract class Entity extends DataModel
      */
     public function exists($db = null) : bool
     {
-        $db        = static::db($db);
-        $condition = $db->buildPrimaryWheresFrom($this);
+        $condition = $this->buildPrimaryWhere($db = static::db($db));
         return $db->exists("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()).$condition->asWhere(), $condition->params());
     }
 
@@ -340,4 +340,28 @@ abstract class Entity extends DataModel
     {
         return new Query($db->driver(), "SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()));
     }
+
+    /**
+     * Build primary where condition and parameters.
+     *
+     * @param Database|string|null $db (default: null)
+     * @return Query
+     */
+    public function buildPrimaryWhere($db = null) : Query
+    {
+        $driver   = static::db($db)->driver();
+        $primarys = static::primaryKeys();
+        if (empty($primarys)) {
+            throw new DatabaseException("Can not build SQL because of ".static::class." entity do not have any primary keys.");
+        }
+
+        $wheres = [];
+        $params = [];
+        foreach ($primarys as $column) {
+            $wheres[]        = "{$driver->quoteIdentifier($column)} = :{$column}";
+            $params[$column] = $this->origin() ? $this->origin()->$column : $this->$column ;
+        }
+
+        return new Query($driver, join(' AND ', $wheres), $params);
+    }    
 }

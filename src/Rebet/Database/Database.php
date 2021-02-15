@@ -662,30 +662,6 @@ class Database
     }
 
     /**
-     * Build primary where condition and parameters.
-     *
-     * @param Entity $entity
-     * @return Query
-     */
-    public function buildPrimaryWheresFrom(Entity $entity) : Query
-    {
-        $class    = get_class($entity);
-        $primarys = $class::primaryKeys();
-        if (empty($primarys)) {
-            throw new DatabaseException("Can not build SQL because of {$class} entity do not have any primary keys.");
-        }
-
-        $wheres = [];
-        $params = [];
-        foreach ($primarys as $column) {
-            $wheres[]        = "{$this->driver->quoteIdentifier($column)} = :{$column}";
-            $params[$column] = $entity->origin() ? $entity->origin()->$column : $entity->$column ;
-        }
-
-        return new Query($this->driver, join(' AND ', $wheres), $params);
-    }
-
-    /**
      * Update given entity changed data.
      *
      * @param Entity $entity
@@ -698,7 +674,7 @@ class Database
         $now = $now ?? DateTime::now();
         Event::dispatch(new Updating($this, $old, $entity));
 
-        $condition = $this->buildPrimaryWheresFrom($entity);
+        $condition = $entity->buildPrimaryWhere($this);
         $params    = $condition->params();
         $changes   = $entity->changes();
         $sets      = [];
@@ -747,7 +723,7 @@ class Database
     public function delete(Entity $entity) : bool
     {
         Event::dispatch(new Deleting($this, $entity));
-        $condition     = $this->buildPrimaryWheresFrom($entity);
+        $condition     = $entity->buildPrimaryWhere($this);
         $affected_rows = $this->execute("DELETE FROM ".$this->driver->quoteIdentifier($entity->tabelName()).$condition->asWhere(), $condition->params());
         if ($affected_rows !== 1) {
             return false;
