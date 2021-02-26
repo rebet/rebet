@@ -2,9 +2,11 @@
 namespace Rebet\Application\Console;
 
 use Rebet\Application\Bootstrap\HandleExceptions;
+use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
+use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -61,8 +63,10 @@ abstract class ConsoleKernel extends ApplicationKernel
         return [
             LoadEnvironmentVariables::class,
             LoadFrameworkConfiguration::class,
+            [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
             LoadApplicationConfiguration::class,
             HandleExceptions::class,
+            LetterpressTagCustomizer::class,
         ];
     }
 

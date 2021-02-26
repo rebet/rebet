@@ -251,7 +251,9 @@ class Letterpress implements Renderable, \JsonSerializable
     }
 
     /**
-     * Register if block type `{% tag condition %} a {% elsetag condition %} b {% else %} c {% endtag %}` tag.
+     * Register `if` block tag and inverted tag like below,
+     *  - `{% tag condition %} a {% elsetag condition %} b {% else %} c {% endtag %}` ,
+     *  - `{% tagnot condition %} a {% elsetagnot condition %} b {% else %} c {% endtagnot %}`.
      *
      * Condition can be write function arguments like `{% tag $arg1, $arg2, ... %}` then call `$test($arg1, $arg2, ...)`
      * Condition can be contained expression like `{% tag $arg1->isInt() ? 'a' : 'b', $arg2 %}` then call `$test('a' or 'b', $arg2)`
@@ -269,6 +271,19 @@ class Letterpress implements Renderable, \JsonSerializable
             function (array $nodes, array $vars) use ($test) {
                 foreach ($nodes as $node) {
                     if ($node['tag'] === 'else' || Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('['.$node['code'].']', $vars)))) {
+                        return Letterpress::process($node['nodes'], $vars);
+                    }
+                }
+                return '';
+            }
+        );
+
+        static::block(
+            "{$tag}not",
+            ["{$tag}not" => ["else{$tag}not", 'else'], "else{$tag}not" => ["else{$tag}not", 'else'], 'else' => []],
+            function (array $nodes, array $vars) use ($test) {
+                foreach ($nodes as $node) {
+                    if ($node['tag'] === 'else' || !Tinker::peel(Reflector::evaluate($test, Letterpress::evaluate('['.$node['code'].']', $vars)))) {
                         return Letterpress::process($node['nodes'], $vars);
                     }
                 }

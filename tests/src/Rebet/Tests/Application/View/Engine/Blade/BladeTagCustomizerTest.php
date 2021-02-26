@@ -9,7 +9,7 @@ use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Engine;
 use Rebet\View\View;
 
-class BladeCustomizerTest extends EngineCustomizerTestCase
+class BladeTagCustomizerTest extends EngineCustomizerTestCase
 {
     protected function createEngine() : Engine
     {

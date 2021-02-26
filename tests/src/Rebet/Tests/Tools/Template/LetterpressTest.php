@@ -789,7 +789,7 @@ EOS
     {
         $this->assertTrue(Letterpress::defined('if'));
         $this->assertTrue(Letterpress::defined('elseif'));
-        $this->assertFalse(Letterpress::defined('env'));
+        $this->assertFalse(Letterpress::defined('nothing'));
     }
 
     public function test_block()
@@ -918,6 +918,7 @@ EOS
 
     public function test_if()
     {
+        Letterpress::clear();
         $this->assertFalse(Letterpress::defined('env'));
 
         Letterpress::if('env', function (string ...$env) {
@@ -930,6 +931,12 @@ EOS
         $this->assertSame('a c d', Letterpress::of('a {% env "development" %}b{% else %}c{% endenv %} d')->render());
         $this->assertSame('a c e', Letterpress::of('a {% env "development" %}b{% elseenv "unittest" %}c{% else %}d{% endenv %} e')->render());
         $this->assertSame('a d e', Letterpress::of('a {% env "development" %}b{% elseenv "production" %}c{% else %}d{% endenv %} e')->render());
+
+        $this->assertSame('a  c', Letterpress::of('a {% envnot "unittest" %}b{% endenvnot %} c')->render());
+        $this->assertSame('a c d', Letterpress::of('a {% envnot "unittest", "development" %}b{% else %}c{% endenvnot %} d')->render());
+        $this->assertSame('a b d', Letterpress::of('a {% envnot "development" %}b{% else %}c{% endenvnot %} d')->render());
+        $this->assertSame('a b e', Letterpress::of('a {% envnot "development" %}b{% elseenvnot "unittest" %}c{% else %}d{% endenvnot %} e')->render());
+        $this->assertSame('a b e', Letterpress::of('a {% envnot "development" %}b{% elseenvnot "production" %}c{% else %}d{% endenvnot %} e')->render());
     }
 
     public function test_jsonSerialize()

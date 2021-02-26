@@ -8,7 +8,7 @@ use Rebet\View\Engine\Engine;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\View;
 
-class TwigCustomizerTest extends EngineCustomizerTestCase
+class TwigTagCustomizerTest extends EngineCustomizerTestCase
 {
     protected function createEngine() : Engine
     {

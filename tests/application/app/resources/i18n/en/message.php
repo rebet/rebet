@@ -15,4 +15,8 @@ return [
     ],
 
     'welcome' => 'Hello, :name.',
+    "sample"  => [
+        "[1]   This is an apple.",
+        "[2,*] There are :amount apples.",
+    ],
 ];

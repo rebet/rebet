@@ -2,20 +2,20 @@
 namespace Rebet\Application\View\Engine\Blade;
 
 use Rebet\Application\View\Tag\BuiltinTagProcessors;
-use Rebet\Database\Pagination\Paginator;
-use Rebet\Http\Request;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 /**
- * Blade custom directives for Rebet
+ * Blade Tag Customizer Class
+ * 
+ * Blade custom directives for Rebet.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class BladeCustomizer
+class BladeTagCustomizer
 {
     /**
      * Define costom directives for Rebet.
@@ -40,7 +40,7 @@ class BladeCustomizer
         // [env/envnot] Check current environment
         // ------------------------------------------------
         // Params:
-        //   $env : string - allow enviroments
+        //   $env : string|string[] - allow enviroments
         // Usage:
         //   @env('local') ... @elseenv('testing') ... @else ... @endenv
         //   @env('local', 'testing') ... @else ... @endenv
@@ -59,7 +59,7 @@ class BladeCustomizer
         // [role/rolenot] Check current users role (Authorization)
         // ------------------------------------------------
         // Params:
-        //   $roles : string - role names
+        //   $roles : string|string[] - role names
         // Usage:
         //   @role('admin') ... @elserole('user') ... @else ... @endrole
         //   @role('user', 'guest') ... @else ... @endrole
@@ -72,7 +72,7 @@ class BladeCustomizer
         // Params:
         //   $action : string        - action name
         //   $target : string|object - target object or class or any name
-        //   $extras : mixed         - extra arguments
+        //   $extras : mixed|mixed[] - extra arguments
         // Usage:
         //   @can('update', $post) ... @elsecan('create', Post::class) ... @else ... @endcan
         //   @can('create', Post::class) ... @else ... @endcan

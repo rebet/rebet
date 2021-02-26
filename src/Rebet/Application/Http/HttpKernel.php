@@ -2,10 +2,12 @@
 namespace Rebet\Application\Http;
 
 use Rebet\Application\Bootstrap\HandleExceptions;
+use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Bootstrap\LoadRoutingConfiguration;
+use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
 use Rebet\Http\Request;
@@ -55,9 +57,11 @@ abstract class HttpKernel extends ApplicationKernel
         return [
             LoadEnvironmentVariables::class,
             LoadFrameworkConfiguration::class,
+            [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
             LoadApplicationConfiguration::class,
             LoadRoutingConfiguration::class,
             HandleExceptions::class,
+            LetterpressTagCustomizer::class,
         ];
     }
 
@@ -112,5 +116,15 @@ abstract class HttpKernel extends ApplicationKernel
     public function report(\Throwable $e) : void
     {
         $this->exceptionHandler()->report($this->request ?? $this->request = Request::createFromGlobals(), $this->response, $e);
+    }
+
+    /**
+     * Get the HTTP request.
+     *
+     * @return Request
+     */
+    public function request() : Request
+    {
+        return $this->request;
     }
 }

@@ -75,6 +75,23 @@ class TinkerTest extends RebetTestCase
         $this->assertInstanceOf(Tinker::class, Tinker::with(123));
     }
 
+    public function test_peel()
+    {
+        $this->assertSame(123, Tinker::peel(123));
+        $this->assertSame(123, Tinker::peel(Tinker::with(123)));
+        $this->assertSame('abc', Tinker::peel('abc'));
+        $this->assertSame('abc', Tinker::peel(Tinker::with('abc')));
+        $this->assertSame([1, 2], Tinker::peel([1, 2]));
+        $this->assertSame([1, 2], Tinker::peel(Tinker::with([1, 2])));
+    }
+
+    public function test_peelAll()
+    {
+        $this->assertSame([1, 2], Tinker::peelAll([1, 2]));
+        $this->assertSame([1, 2], Tinker::peelAll([Tinker::with(1), Tinker::with(2)]));
+        $this->assertSame(['a', 'b'], Tinker::peelAll([Tinker::with('a'), 'b']));
+    }
+
     public function test_promise()
     {
         $source = null;

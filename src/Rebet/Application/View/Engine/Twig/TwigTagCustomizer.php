@@ -2,19 +2,19 @@
 namespace Rebet\Application\View\Engine\Twig;
 
 use Rebet\Application\View\Tag\BuiltinTagProcessors;
-use Rebet\Database\Pagination\Paginator;
-use Rebet\Http\Request;
 use Rebet\View\Engine\Twig\Twig;
 
 /**
- * Twig custom extentions for Rebet
+ * Twig Tag Customizer Class
+ * 
+ * Twig custom extentions for Rebet.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class TwigCustomizer
+class TwigTagCustomizer
 {
     /**
      * define costom extentions for Rebet.
@@ -28,7 +28,7 @@ class TwigCustomizer
         // [env is/env is not] Check current environment
         // ------------------------------------------------
         // Params:
-        //   $env : string|array - allow enviroments
+        //   $env : string|string[] - allow enviroments
         // Usage:
         //   {% env is 'local' %} ... {% elseenv is 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env is 'local', 'testing' %} ... {% else %} ... {% endenv %}
@@ -49,7 +49,7 @@ class TwigCustomizer
         // [role is/role is not] Check current users role (Authorization)
         // ------------------------------------------------
         // Params:
-        //   $roles : string - role names
+        //   $roles : string|string[] - role names
         // Usage:
         //   {% role is 'admin' %} ... {% elserole is 'user' %} ... {% else %} ... {% endrole %}
         //   {% role is 'user', 'guest' %} ... {% else %} ... {% endrole %}
@@ -63,7 +63,7 @@ class TwigCustomizer
         // Params:
         //   $action : string        - action name
         //   $target : string|object - target object or class or any name
-        //   $extras : mixed         - extra arguments
+        //   $extras : mixed|mixed[] - extra arguments
         // Usage:
         //   {% can 'update' $post %} ... {% elsecan 'create' Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'create' Post::class %} ... {% else %} ... {% endcan %}

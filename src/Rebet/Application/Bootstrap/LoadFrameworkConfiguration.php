@@ -4,15 +4,14 @@ namespace Rebet\Application\Bootstrap;
 use Rebet\Application\App;
 use Rebet\Application\Database\Pagination\Storage\SessionCursorStorage;
 use Rebet\Application\Kernel;
-use Rebet\Application\View\Engine\Blade\BladeCustomizer;
-use Rebet\Application\View\Engine\Twig\TwigCustomizer;
+use Rebet\Application\View\Engine\Blade\BladeTagCustomizer;
+use Rebet\Application\View\Engine\Twig\TwigTagCustomizer;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Storage\Handler\NativeFileSessionHandler;
 use Rebet\Http\Session\Storage\SessionStorage;
-use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Log;
 use Rebet\Routing\Router;
 use Rebet\Tools\Config\Config;
@@ -50,9 +49,6 @@ class LoadFrameworkConfiguration implements Bootstrapper
             //---------------------------------------------
             Log::class => [
                 'default_channel' => App::channel() ?? 'stderr',
-            ],
-            TextFormatter::class => [
-                'masks' => ['password', 'password_confirm'],
             ],
 
             //---------------------------------------------
@@ -113,12 +109,12 @@ class LoadFrameworkConfiguration implements Bootstrapper
             //---------------------------------------------
             // Blade template settings
             Blade::class => [
-                'customizers' => [BladeCustomizer::class.'::customize'],
+                'customizers' => [BladeTagCustomizer::class.'::customize'],
             ],
 
             // Twig template settings
             Twig::class => [
-                'customizers' => [TwigCustomizer::class.'::customize'],
+                'customizers' => [TwigTagCustomizer::class.'::customize'],
             ],
 
             //---------------------------------------------

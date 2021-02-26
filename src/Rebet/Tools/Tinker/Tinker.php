@@ -250,11 +250,22 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * Peel the Tinker wrapper of given value if wrapped
      *
      * @param mixed $value
-     * @return void
+     * @return mixed of Tinker peeled value
      */
     public static function peel($value)
     {
         return $value instanceof self ? $value->origin() : $value ;
+    }
+
+    /**
+     * Peel the Tinker wrapper of given all values if wrapped
+     *
+     * @param array $values
+     * @return array of Tinker peeled values
+     */
+    public static function peelAll(array $values) : array
+    {
+        return array_map(function($v){ return static::peel($v); }, $values);
     }
 
     /**
