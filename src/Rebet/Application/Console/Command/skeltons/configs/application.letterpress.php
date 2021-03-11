@@ -11,6 +11,7 @@ return [
     | settings that the application is free to use.
     | Common settings (locale, etc.) are referenced from each module by the framework layer and the
     | settings are linked.
+    | (details @see Rebet\Application\Bootstrap\LoadFrameworkConfiguration)
     */
     App::class => [
         /*

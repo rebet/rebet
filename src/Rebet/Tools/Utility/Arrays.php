@@ -743,7 +743,7 @@ class Arrays
             return iterator_to_array($items);
         }
         if (is_string($items)) {
-            if (is_array($json = json_decode($items))) {
+            if (is_array($json = json_decode($items, true))) {
                 return $json;
             }
         }

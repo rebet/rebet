@@ -377,7 +377,8 @@ EOS
                         echo "[{$i}] {$k} = {$v}\n";
                     }
                 }
-            ]
+            ],
+            false
         );
     }
 
@@ -459,6 +460,36 @@ EOS
                 'foo {{ $var }} bar',
                 ['var' => 'BAZ'],
                 'foo BAZ bar',
+            ],
+            [
+                'foo {{ $var ?? "default" }} bar',
+                ['var' => 'BAZ'],
+                'foo BAZ bar',
+            ],
+            [
+                'foo {{ $var ?? "default" }} bar',
+                ['var' => null],
+                'foo default bar',
+            ],
+            [
+                'foo {{ $var ?? "default" }} bar',
+                [],
+                'foo default bar',
+            ],
+            [
+                'foo {{ $var->default("default") }} bar',
+                ['var' => 'BAZ'],
+                'foo BAZ bar',
+            ],
+            [
+                'foo {{ $var->default("default") }} bar',
+                ['var' => null],
+                'foo default bar',
+            ],
+            [
+                'foo {{ $var->default("default") }} bar',
+                [],
+                'foo default bar',
             ],
             [
                 'foo {{ $var }} bar',
@@ -624,6 +655,41 @@ EOS
                 "foo\n  <!--{%-- if \$foo->isInt() --%}-->  \nbar\n  <!--{%-- endif --%}-->  \nbaz",
                 ['foo' => 123],
                 "foo\nbar\nbaz",
+            ],
+            [
+                'foo {% if $foo %} bar {% else %} baz {% endif %} qux',
+                [],
+                "foo  baz  qux",
+            ],
+            [
+                'foo {% if $foo %} bar {% else %} baz {% endif %} qux',
+                ['foo' => true],
+                "foo  bar  qux",
+            ],
+            [
+                'foo {% if $foo %} bar {% else %} baz {% endif %} qux',
+                ['foo' => false],
+                "foo  baz  qux",
+            ],
+            [
+                'foo {% if $foo->default(true) %} bar {% else %} baz {% endif %} qux',
+                [],
+                "foo  bar  qux",
+            ],
+            [
+                'foo {% if $foo->default(true) %} bar {% else %} baz {% endif %} qux',
+                ['foo' => true],
+                "foo  bar  qux",
+            ],
+            [
+                'foo {% if $foo->default(true) %} bar {% else %} baz {% endif %} qux',
+                ['foo' => false],
+                "foo  baz  qux",
+            ],
+            [
+                'foo {% if $foo && $bar %} bar {% else %} baz {% endif %} qux',
+                ['foo' => true, 'bar' => false],
+                "foo  baz  qux",
             ],
             [
                 'foo {% if $foo->isInt() %} bar {% else %} baz {% endif %} qux',

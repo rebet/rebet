@@ -1,10 +1,12 @@
 <?php
 namespace Rebet\Application\Console\Command;
 
+use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Init Command Class
@@ -19,13 +21,14 @@ class InitCommand extends Command
     const NAME        = 'init';
     const DESCRIPTION = 'Initialize a new Rebet application';
     const OPTIONS     = [
-        ['locale'       , 'l' , InputArgument::OPTIONAL, 'Default application locale.'],
-        ['timezone'     , 'tz', InputArgument::OPTIONAL, 'Default application timezone.'],
-        ['database'     , 'd' , InputArgument::OPTIONAL, 'Database product.'],
-        ['database-name', 'dn', InputArgument::OPTIONAL, 'Database name for local development.'],
-        ['database-user', 'du', InputArgument::OPTIONAL, 'Database user for local development.'],
-        ['database-pass', 'dp', InputArgument::OPTIONAL, 'Database password for local development.'],
-        ['view'         , 've', InputArgument::OPTIONAL, 'View template engine.'],
+        ['locale'       , 'l' , InputOption::VALUE_OPTIONAL, 'Default application locale.'],
+        ['timezone'     , 'tz', InputOption::VALUE_OPTIONAL, 'Default application timezone.'],
+        ['database'     , 'd' , InputOption::VALUE_OPTIONAL, 'Database product.'],
+        ['database-name', 'dn', InputOption::VALUE_OPTIONAL, 'Database name for local development.'],
+        ['database-user', 'du', InputOption::VALUE_OPTIONAL, 'Database user for local development.'],
+        ['database-pass', 'dp', InputOption::VALUE_OPTIONAL, 'Database password for local development.'],
+        ['auth'         , 'a' , InputOption::VALUE_NONE    , 'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
+        ['view'         , 've', InputOption::VALUE_OPTIONAL, 'View template engine.'],
     ];
 
     protected function handle()
@@ -45,37 +48,58 @@ class InitCommand extends Command
         $this->comment('===========================================');
         $this->comment('Please answer questions below.');
 
+
         $this->writeln('');
-        $this->writeln("1) Setup Your Application Configs (1/{$total_step})");
+        $this->writeln("1) Setup Your Application Default Configs (1/{$total_step})");
         $configs['locale']   = $this->ask("* Default Locale   : ", 'locale') ;
         $configs['timezone'] = $this->ask("* Default Timezone : ", 'timezone') ;
+
 
         $this->writeln('');
         $this->writeln("2) Setup Database For Local Development Configs (2/{$total_step})");
         $use_db = false;
         if ($this->option('database') || $this->confirm("Will you use database? [y/n] : ")) {
             $configs['database'] = $this->choice("* DB Product  : ", [
-                1 => 'sqlite',
-                2 => 'mysql',
-                3 => 'mariadb',
-                4 => 'pgsql',
-                5 => 'sqlsrv',
+                'sqlite'  => 'SQLite 3',
+                'mysql'   => 'MySQL',
+                'mariadb' => 'MariaDB',
+                'pgsql'   => 'PostgreSQL',
+                'sqlsrv'  => 'Microsoft SQL Server',
             ], 'database');
-            $is_sqlite           = $configs['database'] === 'sqlite';
-            $default_db_name     = $is_sqlite ? "{$app}.db" : $app ;
-            $configs['db_name']  = $this->ask("* DB Name     : [{$default_db_name}] ", 'database-name', true, $default_db_name);
+            $is_sqlite          = $configs['database'] === 'sqlite';
+            $default_db_name    = $is_sqlite ? "{$app}.db" : $app ;
+            $configs['db_name'] = $this->ask("* DB Name     : [{$default_db_name}] ", 'database-name', true, $default_db_name);
             if (!$is_sqlite) {
-                $configs['db_user']  = $this->ask("* DB User     : [{$app}] ", 'database-user', true, $app);
-                $configs['db_pass']  = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
+                $configs['db_user'] = $this->ask("* DB User     : [{$app}] ", 'database-user', true, $app);
+                $configs['db_pass'] = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
             }
             $use_db = true;
         }
+        $configs['use_db'] = $use_db;
+
 
         $this->writeln('');
-        $this->writeln("3) Setup View Configs (3/{$total_step})");
+        $this->writeln("3) Setup Auth Configs (3/{$total_step})");
+        $use_auth = false;
+        if ($this->option('auth') || $this->confirm("Will you use user auth? [y/n] : ")) {
+            if(!$use_db) {
+                $this->comment("You do not use database, so set ArrayProvider as read only authentication.");
+                $this->comment("Please input an authentication user information that will be written in auth.php configuration file.");
+                $this->writeln("NOTE: If you want to change the password or add new user then you can use Rebet assistant `hash:password` command to create password hash.");
+                $configs['auth_name']     = $this->ask("* Name             : ", null, true);
+                $configs['auth_email']    = $this->ask("* Email            : ", null, true);
+                $configs['auth_password'] = Password::hash($this->password("* Password         : ", "* Confirm Password : "));
+            }
+            $use_auth = true;
+        }
+        $configs['use_auth'] = $use_auth;
+
+
+        $this->writeln('');
+        $this->writeln("4) Setup View Configs (4/{$total_step})");
         $configs['view'] = $this->choice("* View Engine : ", [
-            1 => 'Twig',
-            2 => 'Larabel Blade',
+            'twig'  => 'Twig',
+            'blade' => 'Larabel Blade',
         ], 'view');
 
 

@@ -19,7 +19,7 @@ use Rebet\Tools\Utility\Strings;
  *  - If statement : {% if expression %}...{% elseif expression %}...{% else %}...{% endif %}
  *  - For loop     : {% for $list as $k => $v %}...{% else %}...{% endfor %}
  *
- * This template wrap assigned vars by Tinker class.
+ * This template wrap assigned vars by Tinker class when the variable with arrow operator or array accessor or used by 'for'.
  * So, you can use Tinker filter in template like below.
  *
  *  - {{ $entry_at->datetimef('Y/m/d H:i') }}
@@ -27,10 +27,33 @@ use Rebet\Tools\Utility\Strings;
  *  - {% if $a->add($b)->gt(100) %}...
  *  - {% for $list->unique() as $value %}...
  *
- * And all of tags are supporting '-' mark for whitespace control like Twig.
- * But the Letterpress '-' option has the ability to delete adjacent strings, too.
- * Option '-' will delete adjacent strings or whitespace, option '--' will delete adjacent strings followed by whitespace.
- *
+ * And also you can use code like below,
+ * 
+ *  - {{ $value ?? "default" }}            : In this case $value is not Tinker object, so `??` works as intended.
+ *  - {{ $value->default("default") }}     : In this case $value is Tinker object, so if $value is null or undefined then 'default'.
+ *  - {{ $value["key"] }}                  : In this case $value is Tinker object, so you can chain Tinker filter methods.
+ *  - {{ $value->key }}                    : In this case $value is Tinker object, so you can chain Tinker filter methods.
+ *  - {% if $can_edit %}...                : In this case $can_edit is not Tinker object, so `if` works as intended.
+ *  - {% if $can_edit->default(true) %}... : In this case $can_edit is Tinker object, so if $can_edit is null or undefined then true.
+ *  - {% for $list as $value %}...         : In this case $list is Tinker object, so works fine the `for` loop even if original $list is null or undefined.
+ *  - {% if $a && $b %}...                 : In this case $a and $b are not Tinker object, so `if` works as intended.
+ *  - {% if $a && $b->isInt() %}...        : In this case $a is not Tinker but $b is Tinker object, so $b->isInt() will return boolean (Tinker does not wrap return value by Tinker when the value is boolean), so `if` works as intended.
+ *  - {% if $a->amount %}...               : In this case $a is Tinker, so $a->amount will return Tinker object, but 'if' peel Tinker object, so this code works as intended.
+ * 
+ * But be careful
+ * 
+ *  - {% if $a && $b->amount %}...         : In this case $a is not Tinker but $b is Tinker object, so $b->amount will return Tinker object (Tinker wrap return value by Tinker when the value is not boolean) and '&&' not peel Tinker object, so condition will true even if amount is zero.
+ * 
+ * If you want to do this, you can write {% if $a && $b->amount->gt(0) %}.
+ * 
+ * And all of tags are supporting '-' mark for whitespace control like Twig (but the behavior is not same as Twig).
+ * The Letterpress '-' option has the ability,
+ * 
+ *  - Row-oriented whitespace match: left '-' does not match LF following a blank, but right '-' matches LF following a blank.
+ *  - Delete adjacent strings: '-' will delete adjacent strings or whitespace, '--' will delete adjacent strings followed by whitespace.
+ * 
+ * So you can write like below,
+ * 
  *  - #{%-- if $a->is('a') -%}     => line will delete
  *  - $foo = 0/⋆{!- $foo --!}⋆/ ;  => $foo = 123; (⋆ means *)
  *
@@ -321,7 +344,7 @@ class Letterpress implements Renderable, \JsonSerializable
     public static function init()
     {
         // Define 'if' block tag
-        static::if('if', function ($value) { return $value; });
+        static::if('if', function ($value) { return Tinker::peel($value); });
 
         // Define 'for' block tag
         static::block(
@@ -338,7 +361,7 @@ class Letterpress implements Renderable, \JsonSerializable
                         $vars      = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
                         $contents .= Letterpress::process($node['nodes'], $vars);
                     };
-                    if (Letterpress::eval('$looped = false; foreach('.$node['code'].') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars)) {
+                    if (Letterpress::eval('$looped = false; foreach('.$node['code'].') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars, false)) {
                         return $contents;
                     }
                 }
@@ -589,19 +612,27 @@ class Letterpress implements Renderable, \JsonSerializable
     }
 
     /**
-     * Init undefined variables with null.
-     *
+     * Optimize vars for given code like below,
+     * - Init undefined variables with null.
+     * - Not wrap in Tinker if the value is used as an object with no operations.
+     * - Wrap in Tinker if the value is used as an object with operations. (this is prioritized when value using both way)
+     * 
      * @param string $code
      * @param array $vars
+     * @param bool $alone_var_without_tinker (default: true)
      * @return array
      */
-    public static function undefinedVarsCompletion(string $code, array $vars) : array
+    public static function optimizeVars(string $code, array $vars, bool $alone_var_without_tinker = true) : array
     {
-        if (preg_match_all('/\$(?<candidates>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)/u', $code, $matches)) {
-            foreach ($matches['candidates'] as $candidate) {
-                if (!isset($vars[$candidate])) {
-                    $vars[$candidate] = null;
-                }
+        if (preg_match_all('/(\$(?<accompanies>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)(?=->|\[))|(\$(?<alones>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*))/u', $code, $matches)) {
+            foreach (Arrays::compact($matches['alones']) as $name) {
+                $vars[$name] = $alone_var_without_tinker 
+                    ? (isset($vars[$name]) ? Tinker::peel($vars[$name]) : null)
+                    : Tinker::with(isset($vars[$name]) ? $vars[$name] : null)
+                    ;
+            }
+            foreach (Arrays::compact($matches['accompanies']) as $name) {
+                $vars[$name] = Tinker::with(isset($vars[$name]) ? $vars[$name] : null) ;
             }
         }
         return $vars;
@@ -633,11 +664,12 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @param string $__code
      * @param array|Tinker $__vars
+     * @param bool $__alone_var_without_tinker (default: true)
      * @return mixed
      */
-    public static function evaluate(string $__code, $__vars)
+    public static function evaluate(string $__code, $__vars, bool $__alone_var_without_tinker = true)
     {
-        return empty($__code) ? null : static::eval("return ({$__code});", $__vars);
+        return empty($__code) ? null : static::eval("return ({$__code});", $__vars, $__alone_var_without_tinker);
     }
 
     /**
@@ -645,14 +677,15 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @param string $__code
      * @param array|Tinker $__vars
+     * @param bool $__alone_var_without_tinker (default: true)
      * @return mixed
      */
-    public static function eval(string $__code, $__vars)
+    public static function eval(string $__code, $__vars, bool $__alone_var_without_tinker = true)
     {
         if (empty($__code)) {
             return;
         }
-        $__vars = Tinker::with(static::undefinedVarsCompletion($__code, $__vars));
+        $__vars = static::optimizeVars($__code, $__vars, $__alone_var_without_tinker);
         foreach ($__vars as $__name => $__value) {
             ${$__name} = $__value;
         }

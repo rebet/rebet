@@ -29,6 +29,7 @@ class ArrayProviderTest extends RebetTestCase
         $this->provider_by_signin_id     = new ArrayProvider($this->users, 'signin_id');
         $this->provider_for_admin        = new ArrayProvider($this->users, 'email', 'api_token', function ($user) { return $user['role'] === 'admin'; });
         $this->provider_exclude_resigned = new ArrayProvider($this->users, 'email', 'api_token', function ($user) { return !isset($user['resigned_at']); });
+        $this->provider_with_aliases     = new ArrayProvider($this->users, 'email', 'api_token', null, ['mail_address' => 'email', 'foo' => '@bar']);
     }
 
     public function test___construct()
@@ -55,6 +56,11 @@ class ArrayProviderTest extends RebetTestCase
 
             $user = $this->provider_exclude_resigned->findById($id);
             $this->assertSame($expect_user, $user->raw());
+
+            $user = $this->provider_with_aliases->findById($id);
+            $this->assertSame($expect_user, $user->raw());
+            $this->assertSame($expect_user['email'], $user->mail_address);
+            $this->assertSame('bar', $user->foo);
         }
     }
 

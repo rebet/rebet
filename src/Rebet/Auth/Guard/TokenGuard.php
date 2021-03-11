@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Auth\Guard;
 
-use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;

@@ -34,7 +34,7 @@ abstract class RebetConsoleTestCase extends RebetTestCase
         return new CommandTester($this->app->find($command));
     }
 
-    protected function doRun(string $command)
+    protected function execute(string $command)
     {
         return $this->app->run(new StringInput($command));
     }

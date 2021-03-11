@@ -45,6 +45,13 @@ class ArrayProvider extends AuthProvider
     protected $precondition = null;
 
     /**
+     * Aliases for AuthUser who provided by this provider.
+     *
+     * @var array
+     */
+    protected $aliases = [];
+
+    /**
      * Create a readonly array provider.
      * Users information must have the following data,
      *
@@ -59,13 +66,15 @@ class ArrayProvider extends AuthProvider
      * @param string|null $signin_id_name (default: 'email')
      * @param string $token_name (default: 'api_token')
      * @param callable|null $precondition function($user):bool {...} (default: `function ($user) { return true; }`)
+     * @param array $aliases for AuthUser who provided by this provider. (default: [])
      */
-    public function __construct(array $users, ?string $signin_id_name = 'email', string $token_name = 'api_token', ?callable $precondition = null)
+    public function __construct(array $users, ?string $signin_id_name = 'email', string $token_name = 'api_token', ?callable $precondition = null, array $aliases = [])
     {
         $this->users          = Tinker::with($users, true);
         $this->signin_id_name = $signin_id_name;
         $this->token_name     = $token_name;
         $this->precondition   = $precondition ?? function ($user) { return true; };
+        $this->aliases        = $aliases;
     }
 
     /**
@@ -75,7 +84,7 @@ class ArrayProvider extends AuthProvider
     {
         return $this->users
             ->first(function ($user) use ($id) { return $user['user_id'] == $id; })
-            ->return(function ($user) { return new AuthUser($user, [], $this); });
+            ->return(function ($user) { return new AuthUser($user, $this->aliases, $this); });
     }
 
     /**
@@ -87,7 +96,7 @@ class ArrayProvider extends AuthProvider
             ->where(function ($user) use ($token) { return $user[$this->token_name] == $this->hashToken($token); })
             ->where($this->precondition)
             ->first()
-            ->return(function ($user) { return new AuthUser($user, [], $this); });
+            ->return(function ($user) { return new AuthUser($user, $this->aliases, $this); });
     }
 
     /**
@@ -99,7 +108,7 @@ class ArrayProvider extends AuthProvider
             ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })
             ->where($this->precondition)
             ->first()
-            ->return(function ($user) { return new AuthUser($user, [], $this); });
+            ->return(function ($user) { return new AuthUser($user, $this->aliases, $this); });
     }
 
     /**

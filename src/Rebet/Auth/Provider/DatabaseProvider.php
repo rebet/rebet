@@ -30,7 +30,7 @@ class DatabaseProvider extends AuthProvider
     protected $entity;
 
     /**
-     * Undocumented variable
+     * Aliases for AuthUser who provided by this provider.
      *
      * @var array
      */
@@ -81,7 +81,7 @@ class DatabaseProvider extends AuthProvider
      * @param string $api_token_name (default: 'api_token')
      * @param int|null $expired_remember_token_clean_rate (default: 100)
      * @param array $precondition for ransack conditions (default: [])
-     * @param array $alises for AuthUser (default: [])
+     * @param array $alises for AuthUser who provided by this provider. (default: [])
      * @param string|null $db name configured Dao.dbs (default: null for default database)
      */
     public function __construct(

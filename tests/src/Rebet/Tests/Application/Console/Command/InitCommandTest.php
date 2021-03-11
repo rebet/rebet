@@ -10,7 +10,7 @@ class InitCommandTest extends RebetConsoleTestCase
 
     public function test_execute()
     {
-        // $this->doRun('init');
+        // $this->execute('init');
         $this->assertTrue(true);
 
         // @todo implements
