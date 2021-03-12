@@ -1,6 +1,9 @@
 <?php
 namespace Rebet\Tests\Auth;
 
+use App\Stub\Address;
+use App\Model\Bank;
+use App\Model\User;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Event\Authenticated;
@@ -16,9 +19,6 @@ use Rebet\Event\Event;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
-use Rebet\Tests\Mock\Address;
-use Rebet\Tests\Mock\Entity\Bank;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
@@ -336,7 +336,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame(2, Auth::user()->id);
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
         $this->assertFalse(Auth::policy(Auth::user(), 'create', User::class));
-        $this->assertFalse(Auth::policy(Auth::user(), 'create', '@mock\\Entity\\User'));
+        $this->assertFalse(Auth::policy(Auth::user(), 'create', '@model\\User'));
 
         $user->user_id = 1;
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));
@@ -345,7 +345,7 @@ class AuthTest extends RebetTestCase
         $this->assertTrue(Auth::user()->is('admin'));
 
         $this->assertTrue(Auth::policy(Auth::user(), 'create', User::class));
-        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@mock\\Entity\\User'));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@model\\User'));
 
         $user->user_id = 1;
         $this->assertTrue(Auth::policy(Auth::user(), 'update', $user));
@@ -357,7 +357,7 @@ class AuthTest extends RebetTestCase
         $this->assertSame(4, Auth::user()->id);
 
         $this->assertTrue(Auth::policy(Auth::user(), 'create', User::class));
-        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@mock\\Entity\\User'));
+        $this->assertTrue(Auth::policy(Auth::user(), 'create', '@model\\User'));
 
         $user->user_id = 1;
         $this->assertFalse(Auth::policy(Auth::user(), 'update', $user));

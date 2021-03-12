@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Database\Driver;
 
-use PDO;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\PdoParameter;
+use Rebet\Database\Query;
 
 /**
  * PDO Driver Interface
@@ -236,4 +236,13 @@ interface Driver
      * @return array option_name => template
      */
     public function ransackOptions() : array;
+
+    /**
+     * Create SQL query for this driver.
+     *
+     * @param string $sql
+     * @param array $params (default: [])
+     * @return Query
+     */
+    public function sql(string $sql, array $params = []) : Query;
 }

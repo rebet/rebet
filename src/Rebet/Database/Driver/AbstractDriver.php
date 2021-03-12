@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Database\Driver;
 
-use PDO;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\PdoParameter;
+use Rebet\Database\Query;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\Enum\Enum;
@@ -385,5 +385,13 @@ abstract class AbstractDriver implements Driver
     public function ransackOptions() : array
     {
         return static::config('ransack.options', false, []);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sql(string $sql, array $params = []) : Query
+    {
+        return new Query($this, $sql, $params);
     }
 }

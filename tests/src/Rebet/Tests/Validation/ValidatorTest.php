@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use App\Enum\Gender;
+use App\Validation\BarValidation;
+use App\Validation\FooValidation;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
-use Rebet\Tests\Mock\Enum\Gender;
-use Rebet\Tests\Mock\Validation\BarValidation;
-use Rebet\Tests\Mock\Validation\FooValidation;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;

@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Auth\Annotation;
 
+use App\Stub\AnnotatedStub;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Auth\Annotation\Guard;
-use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
 class GuardTest extends RebetTestCase

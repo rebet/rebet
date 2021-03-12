@@ -1,7 +1,10 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use Exception;
+use App\Model\Article;
+use App\Model\User;
+use App\Model\UserWithAnnot;
+use App\Enum\Gender;
 use PHPUnit\Framework\AssertionFailedError;
 use Rebet\Auth\Password;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
@@ -23,12 +26,9 @@ use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
+use Rebet\Database\Query;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Event\Event;
-use Rebet\Tests\Mock\Entity\Article;
-use Rebet\Tests\Mock\Entity\User;
-use Rebet\Tests\Mock\Entity\UserWithAnnot;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\Date;
@@ -307,11 +307,11 @@ class DatabaseTest extends RebetDatabaseTestCase
                     $user = User::find(1);
                     $this->assertEquals('Carole Stanley', $user->name);
 
-                    throw new Exception("Something error occurred.");
+                    throw new \Exception("Something error occurred.");
                 });
             } catch (AssertionFailedError $e) {
                 throw $e;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->assertEquals("Something error occurred.", $e->getMessage());
             }
 
@@ -1618,6 +1618,17 @@ class DatabaseTest extends RebetDatabaseTestCase
                 $this->assertwildcardString("\[*\] Database connection was lost.", $e->getMessage());
             }
             Dao::clear($db->name());
+        });
+    }
+
+    public function test_sql()
+    {
+        $this->eachDb(function (Database $db) {
+            $query = $db->sql("SELECT * FROM users WHERE gender = :gender", ['gender' => 1]);
+            $this->assertInstanceOf(Query::class, $query);
+            $this->assertSame($db->driver(), $query->driver());
+            $this->assertSame("SELECT * FROM users WHERE gender = :gender", $query->sql());
+            $this->assertEquals(['gender' => 1], $query->params());
         });
     }
 }

@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use Rebet\Tests\Mock\Enum\Gender;
-use Rebet\Tests\Mock\Stub\CountableStub;
-use Rebet\Tests\Mock\Stub\IteratorAggregateStub;
-use Rebet\Tests\Mock\Stub\JsonSerializableStub;
-use Rebet\Tests\Mock\Stub\ToArrayStub;
+use App\Enum\Gender;
+use App\Stub\CountableStub;
+use App\Stub\IteratorAggregateStub;
+use App\Stub\JsonSerializableStub;
+use App\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;

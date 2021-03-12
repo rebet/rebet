@@ -21,14 +21,14 @@ class TokenGuardTest extends RebetTestCase
         $fallback = $guard->authenticate();
         $this->assertNotNull($fallback);
         $this->assertInstanceOf(ProblemResponse::class, $fallback);
-        $this->assertEquals(Responder::problem(403), $fallback);
+        $this->assertEquals(Responder::problem(403)->getProblem(), $fallback->getProblem());
         $this->assertTrue($guard->user()->isGuest());
 
         $request->headers->set('PHP_AUTH_PW', 'token_1');
         $fallback = $guard->authenticate();
         $this->assertNotNull($fallback);
         $this->assertInstanceOf(ProblemResponse::class, $fallback);
-        $this->assertEquals(Responder::problem(403), $fallback);
+        $this->assertEquals(Responder::problem(403)->getProblem(), $fallback->getProblem());
         $this->assertSame(1, $guard->user()->id);
         $this->assertSame('admin', $guard->user()->role);
         $this->assertEquals(Auth::provider('user')->findById(1)->raw(), $guard->user()->raw());
@@ -44,7 +44,7 @@ class TokenGuardTest extends RebetTestCase
         $fallback = $guard->authenticate();
         $this->assertNotNull($fallback);
         $this->assertInstanceOf(ProblemResponse::class, $fallback);
-        $this->assertEquals(Responder::problem(403), $fallback);
+        $this->assertEquals(Responder::problem(403)->getProblem(), $fallback->getProblem());
         $this->assertTrue($guard->user()->isGuest());
 
         $request->request->set('api_token', 'token_4');

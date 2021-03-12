@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use App\Model\User;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
@@ -159,7 +159,7 @@ return [
         | guests here.
         */
         'guest_aliases' => [
-            'name' => function($user) { return Translator::get('labels.guest_name') ?? 'Guest'; },
+            'name' => function($user) { return Translator::get('message.guest_name') ?? 'Guest'; },
             'role' => '@guest',
         ],
 

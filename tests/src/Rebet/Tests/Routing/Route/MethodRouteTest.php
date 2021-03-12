@@ -1,23 +1,23 @@
 <?php
 namespace Rebet\Tests\Routing\Route;
 
+use App\Controller\TestController;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Route\MethodRoute;
-use Rebet\Tests\Mock\Controller\TestController;
 use Rebet\Tests\RebetTestCase;
 
 class MethodRouteTest extends RebetTestCase
 {
     public function test___construct()
     {
-        $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', 'Rebet\Tests\Mock\Controller\TestController::index'));
+        $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', 'App\Controller\TestController::index'));
         $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', '@controller\TestController::index'));
         $this->assertInstanceOf(MethodRoute::class, new MethodRoute(['GET'], '/', 'TestController::index'));
     }
 
     public function test_routing()
     {
-        $route   = new MethodRoute(['GET'], '/foo', 'Rebet\Tests\Mock\Controller\TestController::index');
+        $route   = new MethodRoute(['GET'], '/foo', 'App\Controller\TestController::index');
         $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);

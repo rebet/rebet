@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Routing\Annotation;
 
+use App\Stub\AnnotatedStub;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Routing\Annotation\AliasOnly;
-use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
 class AliasOnlyTest extends RebetTestCase

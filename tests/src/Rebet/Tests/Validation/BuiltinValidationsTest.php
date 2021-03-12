@@ -1,14 +1,13 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use App\Enum\Gender;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
-use Rebet\Validation\Valid;
 use Rebet\Validation\Validator;
 
 class BuiltinValidationsTest extends RebetTestCase

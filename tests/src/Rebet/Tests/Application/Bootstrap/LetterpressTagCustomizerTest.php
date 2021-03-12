@@ -1,10 +1,9 @@
 <?php
 namespace Rebet\Tests\Application\Bootstrap;
 
-use Exception;
+use App\Model\User;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Http\HttpKernel;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Template\Letterpress;
 
@@ -41,8 +40,8 @@ class LetterpressTagCustomizerTest extends RebetTestCase
             // can/cannot
             ["can update"    , "{% can 'update', \$user %}can update{% endcan %}", ['user' => $own]],
             [""              , "{% can 'update', \$user %}can update{% endcan %}", ['user' => $others]],
-            ["can create"    , "{% can 'create', '@mock\\Address', \$addresses %}can create{% else %}can not create{% endcan %}", ['addresses' => [1, 2, 3]]],
-            ["can not create", "{% can 'create', '@mock\\Address', \$addresses %}can create{% else %}can not create{% endcan %}", ['addresses' => [1, 2, 3, 4, 5]]],
+            ["can create"    , "{% can 'create', '@stub\\Address', \$addresses %}can create{% else %}can not create{% endcan %}", ['addresses' => [1, 2, 3]]],
+            ["can not create", "{% can 'create', '@stub\\Address', \$addresses %}can create{% else %}can not create{% endcan %}", ['addresses' => [1, 2, 3, 4, 5]]],
 
             // lang
             ["Hello, Jhon."       , "{% lang 'message.welcome', ['name' => 'Jhon'] %}"],

@@ -1,7 +1,12 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
-use InvalidArgumentException;
+use App\Model\Article;
+use App\Model\GroupUser;
+use App\Model\User;
+use App\Model\UserWithAnnot;
+use App\Enum\Gender;
+use App\Enum\GroupPosition;
 use Rebet\Auth\Password;
 use Rebet\Database\Database;
 use Rebet\Database\Event\BatchDeleted;
@@ -9,12 +14,6 @@ use Rebet\Database\Event\BatchDeleting;
 use Rebet\Database\Event\BatchUpdated;
 use Rebet\Database\Event\BatchUpdating;
 use Rebet\Event\Event;
-use Rebet\Tests\Mock\Entity\Article;
-use Rebet\Tests\Mock\Entity\GroupUser;
-use Rebet\Tests\Mock\Entity\User;
-use Rebet\Tests\Mock\Entity\UserWithAnnot;
-use Rebet\Tests\Mock\Enum\Gender;
-use Rebet\Tests\Mock\Enum\GroupPosition;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
@@ -58,8 +57,8 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_origin_diffrentClass()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Origin must be same class of [Rebet\Tests\Mock\Entity\User].");
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Origin must be same class of [App\Model\User].");
 
         $user  = new User();
         $othre = new UserWithAnnot();

@@ -452,13 +452,13 @@ abstract class DataModel
      *       return $ransack->convert("REPLACE({col}, '-', '') = REPLACE({val}, '-', '')");
      *     case 'account_status':
      *       switch($ransack->value()) {
-     *         case AccountStatus::ACTIVE(): return new Query($ransack->driver(), 'U.resign_at IS NULL AND U.locked = 1');
-     *         case AccountStatus::LOCKED(): return new Query($ransack->driver(), 'U.resign_at IS NULL AND U.locked = 2');
-     *         case AccountStatus::RESIGN(): return new Query($ransack->driver(), 'U.resign_at IS NOT NULL'             );
+     *         case AccountStatus::ACTIVE(): return $ransack->driver()->sql('U.resign_at IS NULL AND U.locked = 1');
+     *         case AccountStatus::LOCKED(): return $ransack->driver()->sql('U.resign_at IS NULL AND U.locked = 2');
+     *         case AccountStatus::RESIGN(): return $ransack->driver()->sql('U.resign_at IS NOT NULL'             );
      *       }
-     *       return new Query($ransack->driver(), '');
+     *       return $ransack->driver()->sql('');
      *     case 'has_bank':
-     *       return new Query($ransack->driver(), 'EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)') ;
+     *       return $ransack->driver()->sql('EXISTS (SELECT * FROM bank AS B WHERE B.user_id = U.user_id)') ;
      *   }
      *   return parent::ransack($ransack);
      *

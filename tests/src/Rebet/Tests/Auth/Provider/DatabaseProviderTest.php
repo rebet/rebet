@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Auth\Provider;
 
+use App\Model\User;
 use Rebet\Auth\Password;
 use Rebet\Auth\Provider\DatabaseProvider;
 use Rebet\Auth\Provider\Entity\RememberToken;
 use Rebet\Database\Database;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Securities;

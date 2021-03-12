@@ -1,11 +1,10 @@
 <?php
 namespace Rebet\Tests\Tools\Reflection;
 
-use OutOfBoundsException;
+use App\Enum\Gender;
+use App\Stub\JsonSerializableStub;
+use App\Stub\ToArrayStub;
 use Rebet\Application\App;
-use Rebet\Tests\Mock\Enum\Gender;
-use Rebet\Tests\Mock\Stub\JsonSerializableStub;
-use Rebet\Tests\Mock\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
@@ -325,7 +324,7 @@ class ReflectorTest extends RebetTestCase
 
     public function test_set_nestedUndefindKeyArray()
     {
-        $this->expectException(OutOfBoundsException::class);
+        $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested parent key 'undefind_key' does not exist.");
 
         Reflector::set($this->map, 'undefind_key.name', 'value');
@@ -339,7 +338,7 @@ class ReflectorTest extends RebetTestCase
 
     public function test_set_undefindKeyObject()
     {
-        $this->expectException(OutOfBoundsException::class);
+        $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
 
         Reflector::set($this->object, 'undefind_key', 'value');
@@ -347,7 +346,7 @@ class ReflectorTest extends RebetTestCase
 
     public function test_set_nestedTerminateUndefindKeyObject()
     {
-        $this->expectException(OutOfBoundsException::class);
+        $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
 
         Reflector::set($this->object, 'partner.undefind_key', 'value');
@@ -355,7 +354,7 @@ class ReflectorTest extends RebetTestCase
 
     public function test_set_nestedUndefindKeyObject()
     {
-        $this->expectException(OutOfBoundsException::class);
+        $this->expectException(\OutOfBoundsException::class);
         $this->expectExceptionMessage("Nested key 'undefind_key' does not exist.");
 
         Reflector::set($this->object, 'undefind_key.partner', 'value');
@@ -549,7 +548,7 @@ class ReflectorTest extends RebetTestCase
     public function test_toArgs_errorConvert()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Parameter gender(=3) can not convert to Rebet\Tests\Mock\Enum\Gender.");
+        $this->expectExceptionMessage("Parameter gender(=3) can not convert to App\Enum\Gender.");
 
         $function = function (Gender $gender) { return; };
         $rf       = new \ReflectionFunction($function);

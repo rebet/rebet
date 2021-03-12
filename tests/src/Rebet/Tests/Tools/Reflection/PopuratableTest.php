@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\Reflection;
 
-use Rebet\Tests\Mock\Address;
-use Rebet\Tests\Mock\Customer;
-use Rebet\Tests\Mock\Entity\Bank;
+use App\Stub\Address;
+use App\Stub\Customer;
+use App\Model\Bank;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\ValidData;
 

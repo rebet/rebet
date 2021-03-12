@@ -338,7 +338,7 @@ abstract class Entity extends DataModel
      */
     protected static function buildSelectAllSql(Database $db) : Query
     {
-        return new Query($db->driver(), "SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()));
+        return $db->sql("SELECT * FROM ".$db->driver()->quoteIdentifier(static::tabelName()));
     }
 
     /**
@@ -362,6 +362,6 @@ abstract class Entity extends DataModel
             $params[$column] = $this->origin() ? $this->origin()->$column : $this->$column ;
         }
 
-        return new Query($driver, join(' AND ', $wheres), $params);
+        return $driver->sql(join(' AND ', $wheres), $params);
     }    
 }

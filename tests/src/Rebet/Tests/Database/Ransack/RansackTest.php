@@ -81,7 +81,7 @@ class RansackTest extends RebetDatabaseTestCase
                 'age_gt' , 20, [],
                 function (Ransack $ransack) : ?Query {
                     if ($ransack->origin() === 'age_gt') {
-                        return new Query($ransack->driver(), 'age <> :bar', ['bar' => $ransack->value(true)]);
+                        return $ransack->driver()->sql('age <> :bar', ['bar' => $ransack->value(true)]);
                     }
                     return null;
                 }

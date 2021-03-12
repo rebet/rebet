@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Database\Annotation;
 
+use App\Stub\AnnotatedStub;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Database\Annotation\Unmap;
-use Rebet\Tests\Mock\Stub\AnnotatedStub;
 use Rebet\Tests\RebetTestCase;
 
 class UnmapTest extends RebetTestCase

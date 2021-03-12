@@ -1,10 +1,11 @@
 <?php
 namespace Rebet\Tests\Database\Driver;
 
+use App\Enum\Gender;
 use Rebet\Application\App;
 use Rebet\Database\Database;
 use Rebet\Database\PdoParameter;
-use Rebet\Tests\Mock\Enum\Gender;
+use Rebet\Database\Query;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
@@ -97,5 +98,15 @@ class DriverTest extends RebetDatabaseTestCase
         $this->eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
             $this->assertSame($expect, $db->driver()->appendLimitOffset($sql, $limit, $offset));
         }, ...$dbs);
+    }
+
+    public function test_sql()
+    {
+        $this->eachDb(function (Database $db) {
+            $query = $db->driver()->sql("SELECT * FROM users WHERE gender = :gender", ['gender' => 1]);
+            $this->assertInstanceOf(Query::class, $query);
+            $this->assertSame("SELECT * FROM users WHERE gender = :gender", $query->sql());
+            $this->assertEquals(['gender' => 1], $query->params());
+        });
     }
 }

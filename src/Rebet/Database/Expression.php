@@ -65,6 +65,6 @@ class Expression
             $expression               = str_replace("{{$key}}", "{$new_placeholder}", $expression);
             $params[$new_placeholder] = $driver->toPdoType($value);
         }
-        return new Query($driver, $expression, $params);
+        return $driver->sql($expression, $params);
     }
 }

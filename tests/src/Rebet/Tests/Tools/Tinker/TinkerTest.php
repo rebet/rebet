@@ -1,15 +1,13 @@
 <?php
 namespace Rebet\Tests\Tools\Tinker;
 
-use InvalidArgumentException;
+use App\Enum\Gender;
 use Rebet\Application\App;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Tinker\Tinker;
-use Rebet\Tools\Utility\Arrays;
 
 class TinkerTest extends RebetTestCase
 {
@@ -966,7 +964,7 @@ EOS
 
     public function test_filters_escapeError()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid escape type [xml] given. The type must be html or url");
 
         $this->string->escape('xml');

@@ -1,6 +1,9 @@
 <?php
 namespace Rebet\Tests;
 
+use App\Model\User;
+use App\Http\AppHttpKernel;
+use App\Stub\Address;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -26,9 +29,6 @@ use Rebet\Log\LogLevel;
 use Rebet\Mail\Mail;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Router;
-use Rebet\Tests\Mock\Address;
-use Rebet\Tests\Mock\AppHttpKernel;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Reflection\Reflector;
@@ -90,8 +90,10 @@ abstract class RebetTestCase extends TestCase
             ],
             Namespaces::class => [
                 'aliases' => [
-                    '@mock'       => 'Rebet\\Tests\\Mock',
-                    '@controller' => '@mock\\Controller',
+                    '@app'        => 'App',
+                    '@controller' => '@app\\Controller',
+                    '@model'      => '@app\\Model',
+                    '@stub'       => '@app\\Stub',
                 ],
             ],
             Session::class => [

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Http;
 
+use App\Enum\Gender;
 use Rebet\Application\App;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Storage;
@@ -10,7 +11,6 @@ use Rebet\Http\Response\JsonResponse;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Response\StreamedResponse;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\View\Engine\Blade\Blade;

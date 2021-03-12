@@ -1,8 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use ArrayObject;
-use Rebet\Tests\Mock\Enum\Gender;
+use App\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Utils;
 
@@ -33,9 +32,9 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(true, Utils::equivalent([1, 2, 3], [1, 2, 3]));
         $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, '2', 3]));
         $this->assertSame(true, Utils::equivalent(['1', 2, 3], [1, Gender::FEMALE(), 3]));
-        $this->assertSame(true, Utils::equivalent([1, 2, 3], new ArrayObject([1, 2, 3])));
-        $this->assertSame(true, Utils::equivalent(new ArrayObject([1, 2, 3]), new ArrayObject([1, 2, 3])));
-        $this->assertSame(true, Utils::equivalent([1, 2, 3], new ArrayObject([1, Gender::FEMALE(), 3])));
+        $this->assertSame(true, Utils::equivalent([1, 2, 3], new \ArrayObject([1, 2, 3])));
+        $this->assertSame(true, Utils::equivalent(new \ArrayObject([1, 2, 3]), new \ArrayObject([1, 2, 3])));
+        $this->assertSame(true, Utils::equivalent([1, 2, 3], new \ArrayObject([1, Gender::FEMALE(), 3])));
         $this->assertSame(false, Utils::equivalent([1, 2, 3], [1, 2]));
 
         $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'c' => 3]));
@@ -49,7 +48,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(false, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], $object)); // Other class without iterable is not treated synonymously with array
 
         $this->assertSame(true, Utils::equivalent([1, [2, 3]], [1, [2, 3]]));
-        $this->assertSame(true, Utils::equivalent([1, [Gender::FEMALE(), 3]], [Gender::MALE(), new ArrayObject([2, 3])]));
+        $this->assertSame(true, Utils::equivalent([1, [Gender::FEMALE(), 3]], [Gender::MALE(), new \ArrayObject([2, 3])]));
     }
 
     public function test_when()

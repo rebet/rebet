@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Application\View\Engine;
 
+use App\Model\User;
 use Rebet\Application\App;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Http\Session\Session;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\View\Engine\Engine;

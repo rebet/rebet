@@ -1,6 +1,6 @@
 <?php
 
-use Rebet\Tests\Mock\Enum\Gender;
+use App\Enum\Gender;
 use Rebet\Validation\Kind;
 
 return [

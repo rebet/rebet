@@ -272,7 +272,7 @@ class Ransack
                 $wheres[] = '('.implode(' AND ', $sub_wheres).')';
                 $params   = array_merge($params, $sub_params);
             }
-            return new Query($driver, '('.implode(' OR ', $wheres).')', $params);
+            return $driver->sql('('.implode(' OR ', $wheres).')', $params);
         }
 
         $ransack = static::analyze($driver, $ransack_predicate, $value, $alias, $placeholder_suffix);
@@ -540,6 +540,6 @@ class Ransack
         }
         $sql = count($wheres) === 1 ? $wheres[0] : '('.implode($this->compound === 'any' ? ' OR ' : ' AND ', $wheres).')' ;
 
-        return new Query($this->driver, $sql, $params);
+        return $this->driver->sql($sql, $params);
     }
 }

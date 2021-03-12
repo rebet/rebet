@@ -67,6 +67,6 @@ class BuiltinRansacker implements Ransacker
             $params   = array_merge($params, $condition->params());
         }
 
-        return new Query($this->driver, implode(' AND ', $wheres), $params);
+        return $this->driver->sql(implode(' AND ', $wheres), $params);
     }
 }

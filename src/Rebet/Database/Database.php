@@ -278,7 +278,7 @@ class Database
         if ($sql === null) {
             return [null];
         }
-        return $this->emulated_sql_log ? [(new Query($this->driver, $sql, $params))->emulate($this->driver)] : [$sql, $params] ;
+        return $this->emulated_sql_log ? [$this->sql($sql, $params)->emulate()] : [$sql, $params] ;
     }
 
     /**
@@ -833,5 +833,17 @@ class Database
     public function closed() : bool
     {
         return $this->driver->closed();
+    }
+
+    /**
+     * Create SQL query for this database driver.
+     *
+     * @param string $sql
+     * @param array $params (default: [])
+     * @return Query
+     */
+    public function sql(string $sql, array $params = []) : Query
+    {
+        return $this->driver->sql($sql, $params);
     }
 }

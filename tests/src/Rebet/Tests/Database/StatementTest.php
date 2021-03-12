@@ -1,21 +1,18 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use PDOException;
-use Rebet\Auth\Password;
+use App\Model\User;
+use App\Enum\Gender;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\PdoParameter;
 use Rebet\Database\ResultSet;
 use Rebet\Database\Statement;
-use Rebet\Tests\Mock\Entity\User;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Arrays;
-use Traversable;
 
 class StatementTest extends RebetDatabaseTestCase
 {
@@ -59,7 +56,7 @@ class StatementTest extends RebetDatabaseTestCase
 
 
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
-        $pdo_stmt->method('columnCount')->willThrowException(new PDOException());
+        $pdo_stmt->method('columnCount')->willThrowException(new \PDOException());
         $stmt = new Statement(Dao::db(), $pdo_stmt);
         $this->assertEquals([], $stmt->meta());
     }
@@ -96,7 +93,7 @@ class StatementTest extends RebetDatabaseTestCase
         $this->expectExceptionMessage("[db:sqlite/-----] This is test");
 
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
-        $pdo_stmt->method('execute')->willThrowException(new PDOException('This is test'));
+        $pdo_stmt->method('execute')->willThrowException(new \PDOException('This is test'));
         $pdo_stmt->method('errorInfo')->willReturn([]);
 
         $stmt = new Statement(Dao::db(), $pdo_stmt);
@@ -395,7 +392,7 @@ class StatementTest extends RebetDatabaseTestCase
         $this->eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
-            $this->assertInstanceOf(Traversable::class, $stmt->getIterator());
+            $this->assertInstanceOf(\Traversable::class, $stmt->getIterator());
         });
     }
 

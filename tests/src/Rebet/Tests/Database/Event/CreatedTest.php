@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Database\Event;
 
+use App\Model\User;
 use Rebet\Database\Event\Created;
 use Rebet\Database\Event\Saved;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class CreatedTest extends RebetDatabaseTestCase

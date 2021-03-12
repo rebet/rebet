@@ -1,18 +1,17 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
-use Rebet\Auth\Password;
+use App\Model\Article;
+use App\Model\Bank;
+use App\Model\Fortune;
+use App\Model\Group;
+use App\Model\GroupUser;
+use App\Model\User;
+use App\Model\UserWithAnnot;
+use App\Enum\Gender;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\ResultSet;
-use Rebet\Tests\Mock\Entity\Article;
-use Rebet\Tests\Mock\Entity\Bank;
-use Rebet\Tests\Mock\Entity\Fortune;
-use Rebet\Tests\Mock\Entity\Group;
-use Rebet\Tests\Mock\Entity\GroupUser;
-use Rebet\Tests\Mock\Entity\User;
-use Rebet\Tests\Mock\Entity\UserWithAnnot;
-use Rebet\Tests\Mock\Enum\Gender;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;

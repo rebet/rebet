@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
+use App\Stub\JsonSerializableStub;
+use App\Stub\ToStringStub;
 use Rebet\Application\App;
-use Rebet\Tests\Mock\Stub\JsonSerializableStub;
-use Rebet\Tests\Mock\Stub\ToStringStub;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
@@ -314,18 +314,18 @@ EOS
             ['2010-10-20 10:20:30', DateTime::now()],
             ['2010-10-20 10:20:30', new \DateTime('2010-10-20 10:20:30')],
             ['2010-10-20 10:20:30', new \DateTimeImmutable('2010-10-20 10:20:30')],
-            ['Rebet\Tests\Mock\Stub\ToStringStub : single line', new ToStringStub('single line')],
+            ['App\Stub\ToStringStub : single line', new ToStringStub('single line')],
             [
                 <<<EOS
 array:1 [
-    0 => Rebet\Tests\Mock\Stub\ToStringStub : single line text in array
+    0 => App\Stub\ToStringStub : single line text in array
 ]
 EOS
                 , [new ToStringStub('single line text in array')]
             ],
             [
                 <<<EOS
-Rebet\Tests\Mock\Stub\ToStringStub : """
+App\Stub\ToStringStub : """
     multi
     line
     text
@@ -336,7 +336,7 @@ EOS
             [
                 <<<EOS
 array:1 [
-    0 => Rebet\Tests\Mock\Stub\ToStringStub : """
+    0 => App\Stub\ToStringStub : """
         multi
         line
         text
@@ -348,11 +348,11 @@ EOS
                 , [new ToStringStub("multi\nline\ntext\nin\narray")]
             ],
             ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, ?int $b, string $c = 'default') : ?bool { return true; }],
-            ['Rebet\Tests\Mock\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
-            ['Rebet\Tests\Mock\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
+            ['App\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
+            ['App\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
             [
                 <<<EOS
-Rebet\Tests\Mock\Stub\JsonSerializableStub : array:1 [
+App\Stub\JsonSerializableStub : array:1 [
     a => A
 ]
 EOS

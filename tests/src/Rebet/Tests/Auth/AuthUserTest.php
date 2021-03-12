@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Auth;
 
+use App\Model\Bank;
+use App\Model\User;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\ArrayProvider;
-use Rebet\Tests\Mock\Entity\Bank;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;

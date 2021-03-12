@@ -148,7 +148,7 @@ class BuiltinCompiler implements Compiler
             }
         }
 
-        return new Query($this->driver, $sql, $pdo_params);
+        return $this->driver->sql($sql, $pdo_params);
     }
 
     /**
@@ -271,7 +271,7 @@ class BuiltinCompiler implements Compiler
             $where .= ")";
             $i++;
         } while (!empty($cursor_cols));
-        return new Query($this->driver, $where, $params);
+        return $this->driver->sql($where, $params);
     }
 
     /**
@@ -324,7 +324,7 @@ class BuiltinCompiler implements Compiler
             return $value->compile($this->driver, $key);
         }
         if (!is_array($value)) {
-            return new Query($this->driver, $key, [$key => $this->driver->toPdoType($value)]);
+            return $this->driver->sql($key, [$key => $this->driver->toPdoType($value)]);
         }
 
         $unfold_keys = [];
@@ -344,6 +344,6 @@ class BuiltinCompiler implements Compiler
             $unfold_keys[]    = $new_key;
             $params[$new_key] = $this->driver->toPdoType($v);
         }
-        return new Query($this->driver, join(', ', $unfold_keys), $params);
+        return $this->driver->sql(join(', ', $unfold_keys), $params);
     }
 }

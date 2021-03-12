@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Database\Event;
 
+use App\Model\User;
 use Rebet\Database\Event\Deleting;
-use Rebet\Tests\Mock\Entity\User;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class DeletingTest extends RebetDatabaseTestCase

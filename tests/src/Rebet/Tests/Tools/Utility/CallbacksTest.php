@@ -1,8 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use ArrayObject;
-use Rebet\Tests\Mock\Enum\Gender;
+use App\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Enum\Enum;
@@ -197,14 +196,14 @@ class CallbacksTest extends RebetTestCase
             [['count' => 123, 'name' => 'foo'], '@count', 123],
             [['count' => 123, 'name' => 'foo'], 'name', 'foo'],
 
-            [new ArrayObject(['a' => 'A']), null, new ArrayObject(['a' => 'A'])],
-            [new ArrayObject(['a' => 'A']), 'a', 'A'],
-            [new ArrayObject(['a' => 'A']), 'b', null],
+            [new \ArrayObject(['a' => 'A']), null, new \ArrayObject(['a' => 'A'])],
+            [new \ArrayObject(['a' => 'A']), 'a', 'A'],
+            [new \ArrayObject(['a' => 'A']), 'b', null],
 
-            [new ArrayObject(['count' => 123, 'name' => 'foo']), null, new ArrayObject(['count' => 123, 'name' => 'foo'])],
-            [new ArrayObject(['count' => 123, 'name' => 'foo']), 'count', 2],
-            [new ArrayObject(['count' => 123, 'name' => 'foo']), '@count', 123],
-            [new ArrayObject(['count' => 123, 'name' => 'foo']), 'name', 'foo'],
+            [new \ArrayObject(['count' => 123, 'name' => 'foo']), null, new \ArrayObject(['count' => 123, 'name' => 'foo'])],
+            [new \ArrayObject(['count' => 123, 'name' => 'foo']), 'count', 2],
+            [new \ArrayObject(['count' => 123, 'name' => 'foo']), '@count', 123],
+            [new \ArrayObject(['count' => 123, 'name' => 'foo']), 'name', 'foo'],
 
         ];
     }
@@ -239,7 +238,7 @@ class CallbacksTest extends RebetTestCase
             ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
             ['CallbacksTest::{closure}(&$a, &...$s)'                                       , function (array &$a, string &...$s) { }, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(Rebet\Tests\Mock\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(App\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
             ['CallbacksTest::{closure}($g)'                                                                               , function (Gender $g) : Enum { return $g; } , false],
         ];
     }
