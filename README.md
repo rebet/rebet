@@ -31,11 +31,11 @@ Before running a unit test, you need to run the `up` and `composer install` comm
 You can also destroy the docker container created with the `down` command when you are done.
 And you can use these alias commands.
 
-| Aliases    | Full Commands                                    |
-| :--------- | :----------------------------------------------- |
-| `up`       | `docker-compose up -d`                           |
-| `down`     | `docker-compose down --volumes --remove-orphans` |
-| `composer` | `docker-compose run --rm composer`               |
-| `phpunit`  | `docker-compose run --rm php vender/bin/phpunit` |
-| `psysh`    | `docker-compose run --rm php vender/bin/psysh`   |
-| `build`    | `docker-compose build php sqlite sqlsrv`         |
+| Aliases    | Full Commands                                                         |
+| :--------- | :-------------------------------------------------------------------- |
+| `up`       | `docker-compose up -d`                                                |
+| `down`     | `docker-compose down --volumes --remove-orphans`                      |
+| `composer` | `docker-compose run --rm composer`                                    |
+| `phpunit`  | `docker-compose run --rm php vender/bin/phpunit -d memory_limit=256M` |
+| `psysh`    | `docker-compose run --rm php vender/bin/psysh`                        |
+| `build`    | `docker-compose build php sqlite sqlsrv`                              |
