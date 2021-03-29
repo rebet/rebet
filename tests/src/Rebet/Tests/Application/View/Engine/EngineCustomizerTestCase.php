@@ -761,7 +761,7 @@ EOS
         App::setLocale($locale);
         $request    = $this->createRequestMock($action);
         $pagination = $this->render('custom/paginate', ['users' => new Paginator(array_fill(0, $page_size, 1), $each_side, $page_size, $page, $total, $next_page_count), 'options' => $options]);
-        $this->assertRegExpString($expect, $pagination);
-        $this->assertNotRegExpString($not_expect, $pagination);
+        $this->assertStringRegExpAll($expect, $pagination);
+        $this->assertStringNotRegExpAny($not_expect, $pagination);
     }
 }

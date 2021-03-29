@@ -34,39 +34,39 @@ class EventTest extends RebetTestCase
 
     public function test_listenAndClear()
     {
-        $this->assertSameStdout('6-a', function () { Event::dispatch('a'); });
-        $this->assertSameStdout('', function () { Event::dispatch(1); });
+        $this->assertStdoutEquals('6-a', function () { Event::dispatch('a'); });
+        $this->assertStdoutEquals('', function () { Event::dispatch(1); });
 
         Event::listen(function (int $event) { echo $event; });
-        $this->assertSameStdout('6-a', function () { Event::dispatch('a'); });
-        $this->assertSameStdout('1', function () { Event::dispatch(1); });
+        $this->assertStdoutEquals('6-a', function () { Event::dispatch('a'); });
+        $this->assertStdoutEquals('1', function () { Event::dispatch(1); });
 
         Event::clear();
-        $this->assertSameStdout('', function () { Event::dispatch('a'); });
-        $this->assertSameStdout('', function () { Event::dispatch(1); });
+        $this->assertStdoutEquals('', function () { Event::dispatch('a'); });
+        $this->assertStdoutEquals('', function () { Event::dispatch(1); });
     }
 
     public function test_dispatch()
     {
-        $this->assertSameStdout(
+        $this->assertStdoutEquals(
             '143',
             function () {
                 Event::dispatch(new Signined(Request::create('/'), AuthUser::guest(), false));
             }
         );
-        $this->assertSameStdout(
+        $this->assertStdoutEquals(
             '23',
             function () {
                 Event::dispatch(new Signouted(Request::create('/'), AuthUser::guest()));
             }
         );
-        $this->assertSameStdout(
+        $this->assertStdoutEquals(
             '6-test',
             function () {
                 Event::dispatch('test');
             }
         );
-        $this->assertSameStdout(
+        $this->assertStdoutEquals(
             '3AB',
             function () {
                 Event::dispatch(new SigninFailed(Request::create('/')));

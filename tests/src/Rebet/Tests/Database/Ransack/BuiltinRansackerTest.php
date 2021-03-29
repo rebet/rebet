@@ -74,7 +74,7 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
     {
         $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention) {
             $condition = BuiltinRansacker::of($db->driver())->build($ransack, $alias, $extention);
-            $this->assertwildcardString($expect_sql, $condition->sql());
+            $this->assertStringWildcardAll($expect_sql, $condition->sql());
             $this->assertEquals($expect_params, $condition->params());
         }, ...$dbs);
     }

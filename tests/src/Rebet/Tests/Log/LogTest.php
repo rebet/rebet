@@ -55,7 +55,7 @@ class LogTest extends RebetTestCase
     public function test_channel_invliad()
     {
         $process_id = getmypid();
-        $this->assertContainsStderr(
+        $this->assertStderrContainsAll(
             [
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'nothing' channel logger",
                 "Unable to instantiate 'channels.nothing.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.nothing.driver'."
@@ -64,7 +64,7 @@ class LogTest extends RebetTestCase
                 $this->assertInstanceOf(NullDriver::class, Log::channel('nothing')->driver());
             }
         );
-        $this->assertContainsStderr(
+        $this->assertStderrContainsAll(
             [
                 "2010-10-20 10:20:30.040050 rebet/{$process_id} [WARNING] Unable to create 'missing_driver' channel logger",
                 "Unable to instantiate 'channels.missing_driver.driver' in Log. Undefined configure 'Rebet\Log\Log.channels.missing_driver.driver'."
@@ -78,7 +78,7 @@ class LogTest extends RebetTestCase
     public function test_stack()
     {
         $process_id = getmypid();
-        $this->assertSameStderr(
+        $this->assertStderrEquals(
             "2010-10-20 10:20:30.040050 [stderr.ERROR] {$process_id} Somthing error happened.\n",
             function () {
                 Log::stack('test', 'stderr')->error('Somthing error happened.');
@@ -89,7 +89,7 @@ class LogTest extends RebetTestCase
             Log::channel('test')->driver()->formatted()
         );
 
-        $this->assertSameStderr(
+        $this->assertStderrEquals(
             "2010-10-20 10:20:30.040050 [stderr.INFO] {$process_id} Somthing infomation.\n",
             function () {
                 Log::stack('test', 'stderr')->info('Somthing infomation.');

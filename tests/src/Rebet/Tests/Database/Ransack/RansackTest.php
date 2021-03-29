@@ -99,7 +99,7 @@ class RansackTest extends RebetDatabaseTestCase
             if ($expect_sql === null) {
                 $this->assertNull($condition);
             } else {
-                $this->assertWildcardString($expect_sql, $condition->sql());
+                $this->assertStringWildcardAll($expect_sql, $condition->sql());
                 $this->assertEquals($expect_params, $condition->params());
             }
         });
@@ -432,7 +432,7 @@ class RansackTest extends RebetDatabaseTestCase
     {
         $this->eachDb(function (Database $db) use ($expect, $apply_option, $ransack_predicate, $value, $alias) {
             $ransack = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
-            $this->assertWildcardEach($expect, $ransack->columns($apply_option));
+            $this->assertStringWildcardEach($expect, $ransack->columns($apply_option));
         }, ...$dbs);
     }
 
@@ -882,7 +882,7 @@ class RansackTest extends RebetDatabaseTestCase
         $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack_predicate, $value, $alias, $rantaime_template, $rantime_vallue_converter) {
             $ransack   = Ransack::analyze($db->driver(), $ransack_predicate, $value, $alias);
             $condition = $ransack->convert($rantaime_template, $rantime_vallue_converter);
-            $this->assertWildcardString($expect_sql, $condition->sql());
+            $this->assertStringWildcardAll($expect_sql, $condition->sql());
             $this->assertEquals($expect_params, $condition->params());
         }, ...$dbs);
     }

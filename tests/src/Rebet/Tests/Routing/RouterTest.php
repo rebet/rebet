@@ -188,7 +188,7 @@ class RouterTest extends RebetTestCase
         $this->assertSame('web', Router::getCurrentChannel());
         Router::setCurrentChannel('api');
         $this->assertSame('api', Router::getCurrentChannel());
-        $this->inject(App::class, 'kernel.channel', 'console');
+        $this->inject(App::class, ['kernel.channel' => 'console']);
         $this->assertSame('api', Router::getCurrentChannel());
     }
 

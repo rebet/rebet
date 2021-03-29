@@ -14,7 +14,7 @@ The following assumes that Docker and Docker Compose are already installed.
 ```sh
 docker-compose up -d
 docker-compose run --rm composer install
-docker-compose run --rm php vender/bin/phpunit
+docker-compose run --rm php vender/bin/phpunit -d memory_limit=256M
 ```
 
 But the `docker-compose` command can sometimes feel lengthy.

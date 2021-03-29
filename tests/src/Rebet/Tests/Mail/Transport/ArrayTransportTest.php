@@ -64,7 +64,7 @@ class ArrayTransportTest extends RebetTestCase
 
         $this->assertSame([$message], $transport->messages());
         $this->assertSame(['always_bcc@bar.com' => null], $message->getBcc());
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: テスト',
                 'Bcc: always_bcc@bar.com',

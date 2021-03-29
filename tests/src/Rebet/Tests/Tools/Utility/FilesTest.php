@@ -33,8 +33,7 @@ class FilesTest extends RebetTestCase
             'var' => [],
         ]);
 
-        $this->test_dir = static::$unittest_cwd.'/FilesTest';
-        Files::removeDir($this->test_dir);
+        $this->test_dir = static::makeSubWorkingDir('/FilesTest');
         mkdir("{$this->test_dir}/parent", 0777, true);
         mkdir("{$this->test_dir}/parent/child", 0777, true);
         file_put_contents("{$this->test_dir}/parent/foo.txt", "foo");

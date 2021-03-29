@@ -424,7 +424,7 @@ class MailTest extends RebetTestCase
 
     public function test_toString()
     {
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: Title',
                 "To: =?utf-8?B?5a6b5YWI?=\r\n =?utf-8?B??= <to@foo.com>",
@@ -437,7 +437,7 @@ class MailTest extends RebetTestCase
 
     public function test_toReadableString()
     {
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: Title',
                 "To: 宛先 <to@foo.com>",

@@ -34,10 +34,11 @@ class Reflector
      * Reflector::get($user, 'bank.name');
      * Reflector::get($user, 'shipping_address.0', $user->address);
      * Reflector::get($_REQUEST, 'opt_in', false);
+     * Reflector::get(Foo::class, 'static_property');
      *
      * @todo Wiled card access like 'array.*.key' support
      *
-     * @param  array|object|null $object
+     * @param  mixed $object
      * @param  int|string $key You can use dot notation
      * @param  mixed $default (default: null)
      * @param  bool $accessible (default: false)
@@ -78,7 +79,7 @@ class Reflector
             return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
         }
 
-        if (is_scalar($object) || !property_exists($object, $current)) {
+        if (!static::canPropertyAccess($object, $current)) {
             return $default;
         }
         $rp = new \ReflectionProperty($object, $current);
@@ -88,6 +89,18 @@ class Reflector
         $rp->setAccessible($accessible);
         $value = $rp->getValue($object);
         return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
+    }
+
+    /**
+     * It checks given parameters that will be able to property access or not.
+     *
+     * @param mixed $target
+     * @param string $property
+     * @return bool
+     */
+    protected static function canPropertyAccess($target, string $property) : bool
+    {
+        return ((\is_string($target) && \class_exists($target)) || \is_object($target)) && \property_exists($target, $property) ;
     }
 
     /**
@@ -130,12 +143,13 @@ class Reflector
      * Reflector::set($user, 'bank.name', 'new bank');
      * Reflector::set($user, 'shipping_address.0', $user->address);
      * Reflector::set($_REQUEST, 'opt_in', false);
+     * Reflector::has(Foo::class, 'static_property', 'value');
      *
      * @param  array|object $object
      * @param  int|string $key You can use dot notation
      * @param  mixed $value
      * @param  bool $accessible (default: false) ... Valid only for objects
-     * @return mixed 値
+     * @return mixed
      * @throws \OutOfBoundsException
      */
     public static function set(&$object, $key, $value, bool $accessible = false) : void
@@ -189,6 +203,7 @@ class Reflector
      * Reflector::has($user, 'bank.name');
      * Reflector::has($user, 'shipping_address.0');
      * Reflector::has($_REQUEST, 'opt_in');
+     * Reflector::has(Foo::class, 'static_property');
      *
      * @param  array|object|null $object
      * @param  int|string $key You can use dot notation
@@ -212,7 +227,7 @@ class Reflector
             }
             $nest_obj = $object[$current];
         } else {
-            if (is_scalar($object) || !property_exists($object, $current)) {
+            if (!static::canPropertyAccess($object, $current)) {
                 return false;
             }
             $rp = new \ReflectionProperty($object, $current);

@@ -50,7 +50,7 @@ class StackDriverTest extends RebetTestCase
 
         $process_id = getmypid();
         $stack      = new StackDriver(['test', 'stderr']);
-        $this->assertSameStderr(
+        $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.ERROR] {$process_id} Somthing error happened.\n",
             function () use ($stack) {
                 $stack->error('Somthing error happened.');
@@ -61,7 +61,7 @@ class StackDriverTest extends RebetTestCase
             Log::channel('test')->driver()->formatted()
         );
 
-        $this->assertSameStderr(
+        $this->assertStderrEquals(
             "2010-10-20 10:20:30.123456 [stderr.INFO] {$process_id} Somthing infomation.\n",
             function () use ($stack) {
                 $stack->info('Somthing infomation.');

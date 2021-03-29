@@ -10,7 +10,6 @@ use Rebet\Cache\Adapter\Symfony\RedisAdapter;
 use Rebet\Cache\Cache;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Layer;
-use Rebet\Tools\Utility\Files;
 
 /**
  * Rebet Cache Test Case Class
@@ -19,8 +18,6 @@ use Rebet\Tools\Utility\Files;
  */
 abstract class RebetCacheTestCase extends RebetDatabaseTestCase
 {
-    protected $test_dir;
-
     public static function setUpBeforeClass() : void
     {
         parent::setUpBeforeClass();
@@ -34,8 +31,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->test_dir = static::$unittest_cwd.'/cache';
-        mkdir($this->test_dir, 0777, true);
+        $test_dir = $this->makeSubWorkingDir('/cache');
         Config::application([
             Cache::class => [
                 'stores=' => [
@@ -52,7 +48,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                     'file' => [
                         'adapter' => [
                             '@factory'  => FilesystemAdapter::class,
-                            'directory' => $this->test_dir.'/file',
+                            'directory' => $test_dir.'/file',
                         ],
                     ],
                     'memcached' => [
@@ -106,12 +102,6 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                 'default_store' => 'array',
             ],
         ]);
-    }
-
-    protected function tearDown() : void
-    {
-        Files::removeDir($this->test_dir);
-        parent::tearDown();
     }
 
     protected function eachStore(\Closure $test, bool $taggable = false, string ...$stores)

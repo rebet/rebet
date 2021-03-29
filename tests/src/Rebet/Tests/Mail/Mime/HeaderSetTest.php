@@ -299,7 +299,7 @@ class HeaderSetTest extends RebetTestCase
         $headers->addTextHeader('Subject', "テスト");
         $headers->addMailboxHeader('To', ['to@foo.com' => '宛先']);
         $headers->addParameterizedHeader('X-Parameterized', 'パラメータ', ['filename' => 'ファイル名']);
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: テスト',
                 'To: 宛先 <to@foo.com>',

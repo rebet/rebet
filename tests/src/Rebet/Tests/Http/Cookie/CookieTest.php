@@ -74,7 +74,7 @@ class CookieTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Request has not been initialized.");
 
-        $this->inject(Request::class, 'current', null);
+        $this->inject(Request::class, ['current' => null]);
         Cookie::has('key');
     }
 
@@ -91,7 +91,7 @@ class CookieTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Request has not been initialized.");
 
-        $this->inject(Request::class, 'current', null);
+        $this->inject(Request::class, ['current' => null]);
         Cookie::get('key');
     }
 

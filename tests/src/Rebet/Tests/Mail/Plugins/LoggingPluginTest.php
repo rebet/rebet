@@ -25,7 +25,7 @@ class LoggingPluginTest extends RebetTestCase
         $event   = new Swift_Events_SendEvent(new ArrayTransport(), $message);
         $event->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
         $plugin->sendPerformed($event);
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: 件名',
                 'To: 宛先 <1@foo.com>',

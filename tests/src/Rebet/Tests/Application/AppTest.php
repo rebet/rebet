@@ -133,23 +133,23 @@ class AppTest extends RebetTestCase
             'default'          => 'default',
         ];
 
-        $this->inject(App::class, 'kernel.channel', 'console');
+        $this->inject(App::class, ['kernel.channel' => 'console']);
         \putenv("APP_ENV=unittest");
         $this->assertSame('console@unittest', App::when($case)->get());
 
-        $this->inject(App::class, 'kernel.channel', 'console');
+        $this->inject(App::class, ['kernel.channel' => 'console']);
         \putenv("APP_ENV=development");
         $this->assertSame('console', App::when($case)->get());
 
-        $this->inject(App::class, 'kernel.channel', 'api');
+        $this->inject(App::class, ['kernel.channel' => 'api']);
         \putenv("APP_ENV=unittest");
         $this->assertSame('unittest', App::when($case)->get());
 
-        $this->inject(App::class, 'kernel.channel', 'web');
+        $this->inject(App::class, ['kernel.channel' => 'web']);
         \putenv("APP_ENV=local");
         $this->assertSame('web@local', App::when($case)->get());
 
-        $this->inject(App::class, 'kernel.channel', 'api');
+        $this->inject(App::class, ['kernel.channel' => 'api']);
         \putenv("APP_ENV=development");
         $this->assertSame('default', App::when($case)->get());
     }

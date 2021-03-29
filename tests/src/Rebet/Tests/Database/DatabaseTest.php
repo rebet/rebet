@@ -1615,7 +1615,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                 $this->fail('Never execute');
             } catch (\Exception $e) {
                 $this->assertInstanceOf(DatabaseException::class, $e);
-                $this->assertwildcardString("\[*\] Database connection was lost.", $e->getMessage());
+                $this->assertStringWildcardAll("\[*\] Database connection was lost.", $e->getMessage());
             }
             Dao::clear($db->name());
         });

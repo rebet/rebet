@@ -54,7 +54,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
     {
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record($record));
-        $this->assertContainsStdout($expect, function () use ($handler) { $handler->send(); });
+        $this->assertStdoutContainsAll($expect, function () use ($handler) { $handler->send(); });
     }
 
     protected function record(array $diff = []) : array
@@ -80,7 +80,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record());
         $handler->close();
-        $this->assertSameStdout('', function () use ($handler) { $handler->send(); });
+        $this->assertStdoutEquals('', function () use ($handler) { $handler->send(); });
     }
 
     public function test_reset()
@@ -88,7 +88,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record());
         $handler->reset();
-        $this->assertSameStdout('', function () use ($handler) { $handler->send(); });
+        $this->assertStdoutEquals('', function () use ($handler) { $handler->send(); });
     }
 
     public function test_clear()
@@ -96,6 +96,6 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         $handler = new SimpleBrowserConsoleHandler();
         $handler->handle($this->record());
         SimpleBrowserConsoleHandler::clear();
-        $this->assertSameStdout('', function () use ($handler) { $handler->send(); });
+        $this->assertStdoutEquals('', function () use ($handler) { $handler->send(); });
     }
 }

@@ -69,7 +69,7 @@ class LogTransportTest extends RebetTestCase
         $transport->send($message);
 
         $this->assertSame(['always_bcc@bar.com' => null], $message->getBcc());
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: テスト',
                 'Bcc: always_bcc@bar.com',

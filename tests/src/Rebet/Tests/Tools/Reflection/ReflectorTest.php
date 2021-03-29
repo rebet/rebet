@@ -167,6 +167,18 @@ class ReflectorTest extends RebetTestCase
         $name = Tinker::with('Bob');
         $view = (object)['data' => ['name' => $name]];
         $this->assertSame($name, Reflector::get($view, 'data.name', null, true));
+
+        $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'static_private'));
+        $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'static_protected'));
+        $this->assertSame("static_public", Reflector::get(ReflectorTest_Accessible::class, 'static_public'));
+        $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'nothing'));
+        $this->assertSame(null, Reflector::get("NothingClass", 'foo'));
+
+        $this->assertSame("static_private", Reflector::get(ReflectorTest_Accessible::class, 'static_private', null, true));
+        $this->assertSame("static_protected", Reflector::get(ReflectorTest_Accessible::class, 'static_protected', null, true));
+        $this->assertSame("static_public", Reflector::get(ReflectorTest_Accessible::class, 'static_public', null, true));
+        $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'nothing', null, true));
+        $this->assertSame(null, Reflector::get("NothingClass", 'foo', null, true));
     }
 
     public function test_has()
@@ -213,6 +225,18 @@ class ReflectorTest extends RebetTestCase
         $this->assertFalse(Reflector::has($this->transparent, 'a.d'));
         $this->assertTrue(Reflector::has($this->transparent, 'b'));
         $this->assertFalse(Reflector::has($this->transparent, 'b.c'));
+
+        $this->assertFalse(Reflector::has(ReflectorTest_Accessible::class, 'static_private'));
+        $this->assertFalse(Reflector::has(ReflectorTest_Accessible::class, 'static_protected'));
+        $this->assertTrue(Reflector::has(ReflectorTest_Accessible::class, 'static_public'));
+        $this->assertFalse(Reflector::has(ReflectorTest_Accessible::class, 'nothing'));
+        $this->assertFalse(Reflector::has("NothingClass", 'foo'));
+
+        $this->assertTrue(Reflector::has(ReflectorTest_Accessible::class, 'static_private', true));
+        $this->assertTrue(Reflector::has(ReflectorTest_Accessible::class, 'static_protected', true));
+        $this->assertTrue(Reflector::has(ReflectorTest_Accessible::class, 'static_public', true));
+        $this->assertFalse(Reflector::has(ReflectorTest_Accessible::class, 'nothing', true));
+        $this->assertFalse(Reflector::has("NothingClass", 'foo', true));
     }
 
     public function test_set()
@@ -264,6 +288,16 @@ class ReflectorTest extends RebetTestCase
 
         Reflector::set($this->transparent, 'b', 'B');
         $this->assertSame(Reflector::get($this->transparent, 'b'), 'B');
+
+        $class = ReflectorTest_Accessible::class;
+        Reflector::set($class, 'static_public', 'updated');
+        $this->assertSame(Reflector::get($class, 'static_public'), 'updated');
+
+        Reflector::set($class, 'static_private', 'updated', true);
+        $this->assertSame(Reflector::get($class, 'static_private', null, true), 'updated');
+
+        Reflector::set($class, 'static_protected', 'updated', true);
+        $this->assertSame(Reflector::get($class, 'static_protected', null, true), 'updated');
     }
 
     public function test_remove()
@@ -1223,6 +1257,10 @@ class ReflectorTest_Invoke
 }
 class ReflectorTest_Accessible
 {
+    private static $static_private     = 'static_private';
+    protected static $static_protected = 'static_protected';
+    public static $static_public       = 'static_public';
+
     private $private     = 'private';
     protected $protected = 'protected';
     public $public       = 'public';

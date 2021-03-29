@@ -83,7 +83,7 @@ class MimeMessageTest extends RebetTestCase
         $message->setFrom(['from@foo.com' => '送り元']);
         $message->setBody('<html><head></head><body><h1>件名</h1><p>本文</p></body></html>', 'text/html');
         $message->addPart("# 件名\n本文", 'text/plain');
-        $this->assertContainsString(
+        $this->assertStringContainsAll(
             [
                 'Subject: テスト',
                 'From: 送り元 <from@foo.com>',
