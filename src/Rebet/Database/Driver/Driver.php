@@ -34,12 +34,13 @@ interface Driver
      */
     public function pdo() : \PDO;
 
-    // /**
-    //  * Get the driver name.
-    //  *
-    //  * @return string
-    //  */
-    // public function name() : string;
+    /**
+     * Get the PDO driver name of this database.
+     * NOTE: This method return PDO drivers attribute of PDO::ATTR_DRIVER_NAME
+     *
+     * @return string
+     */
+    public function name() : string;
 
     /**
      * Get the server version of this database.

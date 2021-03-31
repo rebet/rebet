@@ -379,15 +379,20 @@ trait TestHelper
      * 
      * @param string|string[] $expects
      * @param string $actual
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStringWildcardAll($expects, string $actual, string $message = '') : void
+    public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
         foreach ($expects as $expect) {
-            static::assertTrue(\fnmatch($expect, $actual), "{$message}Failed asserting that wildcard match: expect \"{$expect}\" but actual \"$actual\".");
+            foreach($wildcards as $alias => $real) {
+                $expect = addcslashes($expect, $real);
+                $expect = str_replace($alias, $real, $expect);
+            }
+            static::assertTrue(\fnmatch($expect, $actual), "{$message}Failed asserting that wildcard match: expect \"{$expect}\" but actual \"{$actual}\".");
         }
     }
 
@@ -398,14 +403,19 @@ trait TestHelper
      * 
      * @param string|string[] $expects
      * @param string $actual
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStringNotWildcardAny($expects, string $actual, string $message = '') : void
+    public static function assertStringNotWildcardAny($expects, string $actual, array $wildcards = [], string $message = '') : void
     {
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
         foreach ($expects as $expect) {
+            foreach($wildcards as $real => $alias) {
+                $expect = addcslashes($expect, $real);
+                $expect = str_replace($alias, $real, $expect);
+            }
             static::assertFalse(\fnmatch($expect, $actual), "{$message}Failed asserting that wildcard not match: not expect \"{$expect}\" but actual \"$actual\".");
         }
     }
@@ -417,14 +427,15 @@ trait TestHelper
      *
      * @param string[]|string[][] $expects
      * @param string[] $actuals
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStringWildcardEach(array $expects, array $actuals, string $message = '') : void
+    public static function assertStringWildcardEach(array $expects, array $actuals, array $wildcards = [], string $message = '') : void
     {
         static::assertEquals(count($expects), count($actuals), $message);
         foreach ($expects as $i => $expect) {
-            static::assertStringWildcardAll($expect, $actuals[$i], $message);
+            static::assertStringWildcardAll($expect, $actuals[$i], $wildcards, $message);
         }
     }
 
@@ -518,12 +529,13 @@ trait TestHelper
      *
      * @param string|string[] $expects
      * @param \Closure $test
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStderrWildcardAll($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = '') : void
     {
-        static::assertStringWildcardAll($expects, StderrCapture::via($test), $message);
+        static::assertStringWildcardAll($expects, StderrCapture::via($test), $wildcards, $message);
     }
 
     /**
@@ -533,12 +545,13 @@ trait TestHelper
      *
      * @param string|string[] $expects
      * @param \Closure $test
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStderrNotWildcardAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStderrNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = '') : void
     {
-        static::assertStringNotWildcardAny($expects, StderrCapture::via($test), $message);
+        static::assertStringNotWildcardAny($expects, StderrCapture::via($test), $wildcards, $message);
     }
 
     /**
@@ -631,12 +644,13 @@ trait TestHelper
      *
      * @param string|string[] $expects
      * @param \Closure $test
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStdoutWildcardAll($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = '') : void
     {
-        static::assertStringWildcardAll($expects, StdoutCapture::via($test), $message);
+        static::assertStringWildcardAll($expects, StdoutCapture::via($test), $wildcards, $message);
     }
 
     /**
@@ -646,11 +660,12 @@ trait TestHelper
      *
      * @param string|string[] $expects
      * @param \Closure $test
+     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
      * @param string $message (default: '')
      * @return void
      */
-    public static function assertStdoutNotWildcardAny($expects, \Closure $test, string $message = '') : void
+    public static function assertStdoutNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = '') : void
     {
-        static::assertStringNotWildcardAny($expects, StdoutCapture::via($test), $message);
+        static::assertStringNotWildcardAny($expects, StdoutCapture::via($test), $wildcards, $message);
     }
 }

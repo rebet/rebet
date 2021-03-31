@@ -2,6 +2,7 @@
 namespace Rebet\Database;
 
 use Rebet\Database\Driver\Driver;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Query Class
@@ -145,7 +146,7 @@ class Query
      * Convert given value to SQL string for SQL emulate.
      * You should not use this method other than to emulate sql for log output.
      *
-     * @param Driver $driver
+     * @param mixed $value
      * @return string
      */
     protected function convertToSql($value) : string
@@ -160,4 +161,15 @@ class Query
         return $this->driver->quote($param->value, $param->type);
     }
 
+    /**
+     * Convert to exception/log message string
+     */
+    public function toString()
+    {
+        return "Query[".$this->driver->name()."] {\n".
+               "  sql: ".Strings::indent(Strings::stringify($this->sql), " ", 4).
+               "  params: ".Strings::indent(Strings::stringify($this->params), " ", 4).
+               "}"
+               ;
+    }
 }

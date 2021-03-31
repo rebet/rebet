@@ -166,14 +166,13 @@ class DatabaseTest extends RebetDatabaseTestCase
             Dao::class => [
                 'dbs' => [
                     'sqlite' => [
-                        'dsn'              => 'sqlite::memory:',
-                        'log_handler'      => function (string $n, string $s, array $p = []) use (&$en, &$es, &$ep) {
-                            $en = $n;
-                            $es = $s;
-                            $ep = $p;
+                        'dsn'         => 'sqlite::memory:',
+                        'log_handler' => function (Database $db, Query $query) use (&$en, &$es, &$ep) {
+                            $en = $db->name();
+                            $es = $query->sql();
+                            $ep = $query->params();
                         },
-                        'emulated_sql_log' => false,
-                        'debug'            => true,
+                        'debug'       => true,
                     ]
                 ]
             ]
@@ -195,10 +194,10 @@ class DatabaseTest extends RebetDatabaseTestCase
         $en = null;
         $es = null;
         $ep = null;
-        Dao::db('sqlite')->debug(true, true)->log($sql, $params);
+        Dao::db('sqlite')->debug(true)->log($sql, $params);
         $this->assertSame($en, $name);
-        $this->assertSame($es, $emulated);
-        $this->assertSame($ep, []);
+        $this->assertSame($es, $sql);
+        $this->assertSame($ep, $params);
 
         $en = null;
         $es = null;

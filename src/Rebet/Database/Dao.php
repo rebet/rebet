@@ -6,7 +6,6 @@ use Rebet\Database\Driver\PgsqlDriver;
 use Rebet\Database\Driver\SqliteDriver;
 use Rebet\Database\Driver\SqlsrvDriver;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tools\Utility\Dsn;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -37,7 +36,7 @@ use Rebet\Tools\Utility\Strings;
  * @method static Driver            driver()                                                                                                                                                                    Dynamically call the default database method.
  * @method static Analyzer          analyzer(string $sql)                                                                                                                                                       Dynamically call the default database method.
  * @method static Ransacker         ransacker()                                                                                                                                                                 Dynamically call the default database method.
- * @method static Database          debug(bool $debug = true, ?bool $emulated_sql_log = null)                                                                                                                   Dynamically call the default database method.
+ * @method static Database          debug(bool $debug = true)                                                                                                                   Dynamically call the default database method.
  * @method static void              log(string $sql, array $params = [])                                                                                                                                        Dynamically call the default database method.
  * @method static DatabaseException exception(array|\PDOException $error, ?string $sql = null, array $params = [])                                                                                              Dynamically call the default database method.
  * @method static Database          begin()                                                                                                                                                                     Dynamically call the default database method.
@@ -90,13 +89,12 @@ class Dao
             ],
             'dbs'     => [
                 'main' => [
-                    'dsn'              => null,
-                    'user'             => null,
-                    'password'         => null,
-                    'options'          => [],
-                    'debug'            => false,
-                    'emulated_sql_log' => true,
-                    'log_handler'      => null,
+                    'dsn'         => null,
+                    'user'        => null,
+                    'password'    => null,
+                    'options'     => [],
+                    'debug'       => false,
+                    'log_handler' => null,   // function(Database $db, Query $query) {}
                 ],
             ],
             'default_db' => 'main',
@@ -176,7 +174,6 @@ class Dao
             $name,
             $driver,
             static::config("dbs.{$name}.debug", false, false),
-            static::config("dbs.{$name}.emulated_sql_log", false, true),
             static::config("dbs.{$name}.log_handler", false, null)
         );
 

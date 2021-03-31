@@ -4,6 +4,7 @@ namespace Rebet\Tests;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Cursor;
+use Rebet\Database\Query;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
@@ -39,7 +40,6 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                 'dbs='       => [
                     'sqlite' => [
                         'dsn'   => 'sqlite:/tmp/sqlite/rebet.db',
-                        // 'emulated_sql_log' => false,
                         'debug' => true,
                     ],
 
@@ -48,7 +48,6 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'user'     => 'rebet',
                         'password' => 'rebet',
                         'options'  => [],
-                        // 'emulated_sql_log' => false,
                         'debug'    => true,
                     ],
 
@@ -57,7 +56,6 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'user'     => 'rebet',
                         'password' => 'rebet',
                         'options'  => [],
-                        // 'emulated_sql_log' => false,
                         'debug'    => true,
                     ],
 
@@ -66,7 +64,6 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'user'     => 'rebet',
                         'password' => 'rebet',
                         'options'  => [],
-                        // 'emulated_sql_log' => false,
                         'debug'    => true,
                     ],
 
@@ -75,18 +72,13 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'user'     => 'rebet',
                         'password' => 'rebet',
                         'options'  => [],
-                        // 'emulated_sql_log' => false,
                         'debug'    => true,
                     ],
                 ]
             ],
             Database::class => [
-                'log_handler' => function (string $db_name, string $sql, array $params = []) {
-                    // echo("[{$db_name}] {$sql}\n");
-                    // if (!empty($param)) {
-                    //     echo(Strings::indent("[PARAM]\n".Strings::stringify($params)."\n", '-- '));
-                    // }
-                    $this->executed_sqls[] = $sql;
+                'log_handler' => function (Database $db, Query $query) {
+                    $this->executed_sqls[] = $query->emulate();
                 },
             ],
         ]);

@@ -651,7 +651,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 return;
             }
             $query = $db->compiler()->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
-            $this->assertStringWildcardAll($expect_sql, $query->sql(), "on DB '{$db->name()}'");
+            $this->assertStringWildcardAll($expect_sql, $query->sql(), [], "on DB '{$db->name()}'");
             $this->assertEquals($expect_params, $query->params(), "on DB '{$db->name()}'");
         });
     }

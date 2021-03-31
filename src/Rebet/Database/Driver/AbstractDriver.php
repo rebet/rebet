@@ -101,6 +101,14 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
+    public function name() : string
+    {
+        return $this->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function serverVersion() : string
     {
         return $this->pdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);

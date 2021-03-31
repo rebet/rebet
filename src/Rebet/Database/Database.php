@@ -45,7 +45,7 @@ class Database
         return [
             'compiler'    => BuiltinCompiler::class,
             'ransacker'   => BuiltinRansacker::class,
-            'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
+            'log_handler' => null, // function(Database $db, Query $query) {}
         ];
     }
 
@@ -71,16 +71,9 @@ class Database
     protected $debug = false;
 
     /**
-     * Emulate SQL or not for debug logging.
-     *
-     * @var boolean
-     */
-    protected $emulated_sql_log = true;
-
-    /**
      * SQL logging handler for debug
      *
-     * @var \Closure function(string $db_name, string $sql, array $params = []) {}
+     * @var \Closure function(Database $db, Query $query) {}
      */
     protected $log_handler = null;
 
@@ -104,18 +97,16 @@ class Database
      * @param string $name of this database (alias ​​for classification)
      * @param Driver $driver
      * @param bool $debug (default: false)
-     * @param bool $emulated_sql_log (default: true)
-     * @param callable|null $log_handler function(string $name, string $sql, array $params = []) (default: depend on configure)
+     * @param callable|null $log_handler function(Database $db, Query $query) (default: depend on configure)
      */
-    public function __construct(string $name, Driver $driver, bool $debug = false, bool $emulated_sql_log = true, ?callable $log_handler = null)
+    public function __construct(string $name, Driver $driver, bool $debug = false, ?callable $log_handler = null)
     {
-        $this->name             = $name;
-        $this->driver           = $driver;
-        $this->debug            = $debug;
-        $this->emulated_sql_log = $emulated_sql_log;
-        $this->log_handler      = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
-        $this->compiler         = static::config('compiler')::of($driver);
-        $this->ransacker        = static::config('ransacker')::of($driver);
+        $this->name        = $name;
+        $this->driver      = $driver;
+        $this->debug       = $debug;
+        $this->log_handler = $log_handler ? \Closure::fromCallable($log_handler) : static::config('log_handler') ;
+        $this->compiler    = static::config('compiler')::of($driver);
+        $this->ransacker   = static::config('ransacker')::of($driver);
     }
 
     /**
@@ -146,18 +137,7 @@ class Database
      */
     public function driverName() : string
     {
-        return $this->driver->pdo()->getAttribute(\PDO::ATTR_DRIVER_NAME);
-    }
-
-    /**
-     *  It checks the PDO driver name contains in given names or not.
-     *
-     * @param string ...$names
-     * @return bool
-     */
-    public function driverNameIn(string ...$names) : bool
-    {
-        return in_array($this->driverName(), $names);
+        return $this->driver->name();
     }
 
     /**
@@ -228,13 +208,11 @@ class Database
      * Switch on/off to log output.
      *
      * @param bool $debug (default: true)
-     * @param bool|null $emulated_sql_log (default: null for not change)
      * @return self
      */
-    public function debug(bool $debug = true, ?bool $emulated_sql_log = null) : self
+    public function debug(bool $debug = true) : self
     {
-        $this->debug            = $debug;
-        $this->emulated_sql_log = $emulated_sql_log ?? $this->emulated_sql_log;
+        $this->debug = $debug;
         return $this;
     }
 
@@ -248,7 +226,7 @@ class Database
     public function log(string $sql, array $params = []) : void
     {
         if ($this->debug) {
-            call_user_func($this->log_handler, $this->name, ...$this->convertForMessage($sql, $params));
+            call_user_func($this->log_handler, $this, $this->sql($sql, $params));
         }
     }
 
@@ -262,23 +240,7 @@ class Database
      */
     public function exception($error, ?string $sql = null, array $params = []) : DatabaseException
     {
-        return DatabaseException::from('db:'.$this->name(), $error, ...$this->convertForMessage($sql, $params))->db($this);
-    }
-
-    /**
-     * Convert given SQL and params for log output and exception message.
-     * This method emulate SQL when emulated_sql_log is true.
-     *
-     * @param string|null $sql
-     * @param array $params (default: [])
-     * @return array [emulated_sql] or [sql, params]
-     */
-    protected function convertForMessage(?string $sql, array $params = []) : array
-    {
-        if ($sql === null) {
-            return [null];
-        }
-        return $this->emulated_sql_log ? [$this->sql($sql, $params)->emulate()] : [$sql, $params] ;
+        return DatabaseException::from('db:'.$this->name(), $error, $sql, $params)->db($this);
     }
 
     /**

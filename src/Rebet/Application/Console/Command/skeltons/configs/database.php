@@ -12,13 +12,12 @@ return [
     Dao::class => [
         'dbs' => [
             'main' => [
-                'dsn'              => null,
-                'user'             => null,
-                'password'         => null,
-                'options'          => [],
-                'debug'            => false,
-                'emulated_sql_log' => true,
-                'log_handler'      => null,
+                'dsn'         => null,
+                'user'        => null,
+                'password'    => null,
+                'options'     => [],
+                'debug'       => false,
+                'log_handler' => null,
             ],
         ],
         'default_db' => 'main',
@@ -27,7 +26,7 @@ return [
     Database::class => [
         'compiler'    => BuiltinCompiler::class,
         'ransacker'   => BuiltinRansacker::class,
-        'log_handler' => null, // function(string $db_name, string $sql, array $params = []) {}
+        'log_handler' => null, // function(Database $db, Query $query) {}
     ],
 
     Cursor::class => [
