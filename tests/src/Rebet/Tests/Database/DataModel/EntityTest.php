@@ -227,8 +227,8 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertSame(null, $gu->updated_at);
             $this->assertDatabaseMatches($db, [
                 'group_user' => [
-                    ['group_id' , 'user_id' , 'position' , 'join_on'     , 'created_at' , 'updated_at'],
-                    [         1 ,         1 ,          3 , Date::today() ,        $now  , null        ],
+                    ['group_id' , 'user_id' , 'position'              , 'join_on'     , 'created_at' , 'updated_at'],
+                    [         1 ,         1 , GroupPosition::MEMBER() , Date::today() , $now         , null        ],
                 ]
             ]);
 
@@ -238,11 +238,23 @@ class EntityTest extends RebetDatabaseTestCase
             $gu->position = GroupPosition::LEADER();
             $this->assertSame(true, $gu->update($now));
             $this->assertSame($now, $gu->updated_at);
+            $this->assertDatabaseMatches($db, [
+                'group_user' => [
+                    ['group_id' , 'user_id' , 'position'              , 'join_on'     , 'created_at' , 'updated_at'],
+                    [         1 ,         1 , GroupPosition::LEADER() , Date::today() ,  $now        , $now        ],
+                ]
+            ]);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
             $this->assertEquals($now, $gu->updated_at);
             $this->assertSame(true, $gu->update($new_now = $now->addSecond(1)));
             $this->assertEquals($new_now, $gu->updated_at);
+            $this->assertDatabaseMatches($db, [
+                'group_user' => [
+                    ['group_id' , 'user_id' , 'position'              , 'join_on'     , 'created_at' , 'updated_at'],
+                    [         1 ,         1 , GroupPosition::LEADER() , Date::today() ,  $now        , $new_now    ],
+                ]
+            ]);
         });
     }
 
