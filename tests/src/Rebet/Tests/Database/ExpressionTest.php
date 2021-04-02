@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database;
 
+use Rebet\Database\Dao;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -47,7 +48,7 @@ class ExpressionTest extends RebetDatabaseTestCase
      */
     public function test_compile($expect_sql, $expect_params, $placeholder, Expression $expression)
     {
-        $query = $expression->compile($this->connect('mysql')->driver(), $placeholder);
+        $query = $expression->compile(Dao::db('mysql')->driver(), $placeholder);
         $this->assertSame($expect_sql, $query->sql());
         $this->assertEquals($expect_params, $query->params());
     }

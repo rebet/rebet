@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Event;
 
 use App\Model\User;
+use Rebet\Database\Dao;
 use Rebet\Database\Event\Saved;
 use Rebet\Database\Event\Updated;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -10,7 +11,7 @@ class UpdatedTest extends RebetDatabaseTestCase
 {
     public function test___construct()
     {
-        $db    = $this->connect();
+        $db    = Dao::db();
         $old   = new User();
         $new   = new User();
         $event = new Updated($db, $old, $new);

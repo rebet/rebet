@@ -2,12 +2,9 @@
 namespace Rebet\Tests;
 
 use Rebet\Database\Dao;
-use Rebet\Database\Database;
 use Rebet\Database\Pagination\Cursor;
-use Rebet\Database\Query;
+use Rebet\Database\Testable\DatabaseTestHelper;
 use Rebet\Tools\Config\Config;
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Strings;
 
 /**
  * Rebet Database Test Case Class
@@ -16,20 +13,13 @@ use Rebet\Tools\Utility\Strings;
  */
 abstract class RebetDatabaseTestCase extends RebetTestCase
 {
-    public static function setUpBeforeClass() : void
-    {
-        parent::setUpBeforeClass();
-    }
+    use DatabaseTestHelper;
 
     public static function tearDownAfterClass() : void
     {
-        foreach (array_keys(Dao::config('dbs')) as $db_name) {
-            Dao::db($db_name)->close();
-        }
+        static::tearDownDatabase();
         parent::tearDownAfterClass();
     }
-
-    private $executed_sqls   = [];
 
     protected function setUp() : void
     {
@@ -76,108 +66,9 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                     ],
                 ]
             ],
-            Database::class => [
-                'log_handler' => function (Database $db, Query $query) {
-                    $this->executed_sqls[] = $query->emulate();
-                },
-            ],
         ]);
 
-        Dao::clear();
-        foreach (array_keys(Dao::config('dbs')) as $db_name) {
-            if (!($db = $this->connect($db_name, false))) {
-                continue;
-            }
-
-            $db->begin();
-            foreach (['users', 'remember_tokens', 'banks', 'articles', 'groups', 'group_user', 'fortunes'] as $table_name) {
-                $db->truncate($table_name, false);
-                $records    = $this->records($db_name, $table_name);
-                $table_name = $db->driver()->quoteIdentifier($table_name);
-                foreach ($records as $record) {
-                    if (Arrays::isSequential($record)) {
-                        $db->execute("INSERT INTO {$table_name} VALUES (:values)", ['values' => $record]);
-                    } else {
-                        $db->execute("INSERT INTO {$table_name} (". join(',', array_map(function ($v) use ($db) { return $db->driver()->quoteIdentifier($v); }, array_keys($record))).") VALUES (:values)", ['values' => $record]);
-                    }
-                }
-            }
-            $db->commit();
-        }
-        Dao::clear();
-
         Cursor::clear();
-        $this->executed_sqls = [];
-    }
-
-    protected function clearExecutedSqls() : void
-    {
-        $this->executed_sqls = [];
-    }
-
-    protected function executedSqls() : array
-    {
-        $sqls = $this->executed_sqls;
-        $this->clearExecutedSqls();
-        return $sqls;
-    }
-
-    protected function tables(string $db_name) : array
-    {
-        return [];
-    }
-
-    protected function records(string $db_name, string $table_name) : array
-    {
-        return [];
-    }
-
-    protected function tearDown() : void
-    {
-        foreach (array_keys(Dao::config('dbs')) as $db_name) {
-            if (!($db = $this->connect($db_name, false))) {
-                continue;
-            }
-
-            $tables = $this->tables($db_name);
-            foreach ($tables as $table_name => $dml) {
-                $db->truncate($table_name, false);
-            }
-        }
-        parent::tearDown();
-    }
-
-    /**
-     * @param string|null $db
-     * @param boolean $mark_test_skiped
-     * @return Database|null
-     */
-    protected function connect(?string $db = null, bool $mark_test_skiped = true) : ?Database
-    {
-        try {
-            return Dao::db($db);
-        } catch (\Exception $e) {
-            if ($mark_test_skiped) {
-                $this->markTestSkipped("Database '$db' was not ready: {$e->getMessage()}.\n".$e->getTraceAsString());
-            }
-        }
-        return null;
-    }
-
-    protected function eachDb(\Closure $test, string ...$dbs)
-    {
-        $dbs    = empty($dbs) ? array_keys(Dao::config('dbs')) : $dbs ;
-        $skiped = [];
-        foreach ($dbs as $name) {
-            $db = $this->connect($name);
-            if ($db === null) {
-                $skiped[] = $name;
-                continue;
-            }
-            $test($db, $db->driverName());
-        }
-        if (!empty($skiped)) {
-            $this->markTestSkipped("Database ".implode(", ", $skiped)." was not ready.");
-        }
+        static::setUpDatabase();
     }
 }

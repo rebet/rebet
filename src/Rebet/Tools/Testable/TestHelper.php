@@ -4,6 +4,7 @@ namespace Rebet\Tools\Testable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Files;
 use Rebet\Tools\Utility\Path;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Test Helper Trait
@@ -141,6 +142,21 @@ trait TestHelper
     }
 
     /**
+     * Invoke a method of given object/class
+     * This method can be accessed non-public method.
+     *
+     * @param string|object $object
+     * @param string $method
+     * @param array $args that ordered or named (default: [])
+     * @param boolean $type_convert (default: false)
+     * @return mixed
+     */
+    public static function invoke($object, string $method, array $args = [], bool $type_convert = false)
+    {
+        return Reflector::invoke($object, $method, $args, true, $type_convert);
+    }
+
+    /**
      * It checks that current OS environment is Windows or not.
      *
      * @return bool
@@ -159,21 +175,6 @@ trait TestHelper
     public static function memory(string $format = "\nMemory(current/peak): %01.2f / %01.2f MB ") : string
     {
         return sprintf($format, memory_get_usage() / 1048576, memory_get_peak_usage() / 1048576);
-    }
-
-    /**
-     * Invoke a method of given object/class
-     * This method can be accessed non-public method.
-     *
-     * @param string|object $object
-     * @param string $method
-     * @param array $args that ordered or named (default: [])
-     * @param boolean $type_convert (default: false)
-     * @return mixed
-     */
-    public static function invoke($object, string $method, array $args = [], bool $type_convert = false)
-    {
-        return Reflector::invoke($object, $method, $args, true, $type_convert);
     }
 
     // ========================================================================
@@ -211,14 +212,9 @@ trait TestHelper
     public abstract static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void;
 
     /**
-     * @see PHPUnit\Framework\Assert::assertTrue
+     * @see PHPUnit\Framework\Assert::fail
      */
-    public abstract static function assertTrue($condition, string $message = ''): void;
-
-    /**
-     * @see PHPUnit\Framework\Assert::assertFalse
-     */
-    public abstract static function assertFalse($condition, string $message = ''): void;
+    public abstract static function fail(string $message = ''): void;
 
     // ========================================================================
     // Extended assertions
@@ -388,11 +384,13 @@ trait TestHelper
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
         foreach ($expects as $expect) {
-            foreach($wildcards as $alias => $real) {
+            foreach($wildcards as $real => $alias) {
                 $expect = addcslashes($expect, $real);
                 $expect = str_replace($alias, $real, $expect);
             }
-            static::assertTrue(\fnmatch($expect, $actual), "{$message}Failed asserting that wildcard match: expect \"{$expect}\" but actual \"{$actual}\".");
+            if(!\fnmatch($expect, $actual)) {
+                static::fail("{$message}Failed asserting that wildcard match: expect \"{$expect}\" but actual \"{$actual}\".");
+            }
         }
     }
 
@@ -416,7 +414,9 @@ trait TestHelper
                 $expect = addcslashes($expect, $real);
                 $expect = str_replace($alias, $real, $expect);
             }
-            static::assertFalse(\fnmatch($expect, $actual), "{$message}Failed asserting that wildcard not match: not expect \"{$expect}\" but actual \"$actual\".");
+            if(\fnmatch($expect, $actual)) {
+                static::fail("{$message}Failed asserting that wildcard not match: not expect \"{$expect}\" but actual \"$actual\".");
+            }
         }
     }
 

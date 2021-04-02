@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Driver;
 
 use Rebet\Application\App;
+use Rebet\Database\Dao;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -21,9 +22,7 @@ class SqlsrvDriverTest extends RebetDatabaseTestCase
 
     public function test_toPhpType()
     {
-        if (!($db = $this->connect('sqlsrv'))) {
-            return;
-        }
+        $db = Dao::db('sqlsrv');
         $db->execute("DROP TABLE IF EXISTS native_types;");
         $dml = <<<EOS
             CREATE TABLE native_types (

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\Driver;
 
+use Rebet\Database\Dao;
 use Rebet\Database\Expression;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
@@ -19,9 +20,7 @@ class PgsqlDriverTest extends RebetDatabaseTestCase
 
     public function test_toPhpType()
     {
-        if (!($db = $this->connect('pgsql'))) {
-            return;
-        }
+        $db = Dao::db('pgsql');
         $db->execute("DROP TABLE IF EXISTS native_types;");
         $dml = <<<EOS
             CREATE TABLE IF NOT EXISTS native_types (

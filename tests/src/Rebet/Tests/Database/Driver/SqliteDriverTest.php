@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\Driver;
 
+use Rebet\Database\Dao;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Reflection\Reflector;
@@ -15,9 +16,7 @@ class SqliteDriverTest extends RebetDatabaseTestCase
 
     public function test_toPhpType()
     {
-        if (!($db = $this->connect('sqlite'))) {
-            return;
-        }
+        $db = Dao::db('sqlite');
         $dml = <<<EOS
             CREATE TABLE IF NOT EXISTS native_types (
                 type_integer INTEGER,

@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Event;
 
 use App\Model\User;
+use Rebet\Database\Dao;
 use Rebet\Database\Event\Deleting;
 use Rebet\Tests\RebetDatabaseTestCase;
 
@@ -9,7 +10,7 @@ class DeletingTest extends RebetDatabaseTestCase
 {
     public function test___construct()
     {
-        $db     = $this->connect();
+        $db     = Dao::db();
         $entity = new User();
         $event  = new Deleting($db, $entity);
         $this->assertInstanceOf(Deleting::class, $event);

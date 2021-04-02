@@ -217,6 +217,16 @@ class Database
     }
 
     /**
+     * It checks that debug log output is active or not.
+     *
+     * @return bool
+     */
+    public function isDebug() : bool
+    {
+        return $this->debug;
+    }
+
+    /**
      * Output SQL log.
      *
      * @param string $sql
@@ -784,7 +794,9 @@ class Database
      */
     public function close() : void
     {
-        $this->driver->close();
+        if(!$this->closed()) {
+            $this->driver->close();
+        }
     }
 
     /**
