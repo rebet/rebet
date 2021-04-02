@@ -225,6 +225,12 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertSame(true, $gu->create($now));
             $this->assertSame(true, $gu->exists());
             $this->assertSame(null, $gu->updated_at);
+            $this->assertDatabaseMatches($db, [
+                'group_user' => [
+                    ['group_id' , 'user_id' , 'position' , 'join_on'     , 'created_at' , 'updated_at'],
+                    [         1 ,         1 ,          3 , Date::today() ,        $now  , null        ],
+                ]
+            ]);
 
             $gu = GroupUser::find(['user_id' => 1, 'group_id' => 1]);
             $this->assertSame(GroupPosition::MEMBER(), $gu->position);

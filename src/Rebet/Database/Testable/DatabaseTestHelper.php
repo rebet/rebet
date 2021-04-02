@@ -217,8 +217,7 @@ trait DatabaseTestHelper
         $is_debug = $db->isDebug();
         $db->debug(false);
         $message  = empty($message) ? $message : "{$message}\n" ;
-        foreach ($expects as $table_name => $data) {
-            $rows    = $data[$table_name] ?? [];
+        foreach ($expects as $table_name => $rows) {
             $columns = array_shift($rows) ?? [];
             $table   = $db->driver()->quoteIdentifier($table_name);
             if($strict) {
@@ -226,30 +225,30 @@ trait DatabaseTestHelper
                 $expect_count = count($rows);
                 if($expect_count != $actual_count) {
                     static::fail(
-                        "{$message}Failed asserting that table '{$table}' rows count: expect \"{$expect_count}\" but actual \"{$actual_count}\".\n".
+                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows count: expect \"{$expect_count}\" but actual \"{$actual_count}\".\n".
                         "\n".
                         "---------- [ Full data of {$table_name} ] ----------\n".
-                        Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC'])).
+                        Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC']))."\n".
                         "----------------------------------------------------\n"
                     );
                 }
             }
             foreach ($rows as $row) {
                 $params = array_combine($columns, $row);
-                $sql    = "SELECT * FROM {$table} WHERE true";
+                $sql    = "SELECT * FROM {$table} WHERE 1=1";
                 foreach($params as $column => $value) {
                     $sql .= " AND ".$db->driver()->quoteIdentifier($column).($value === null ? " IS NULL" : " = :{$column}") ;
                 }
                 if(!$db->exists($sql, $params)) {
                     static::fail(
-                        "{$message}Failed asserting that table '{$table_name}' rows miss match: expect \n".
-                        Strings::stringify($params)."\n".
+                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows miss match: expect \n".
+                        Strings::indent(Strings::stringify($params), " ", 4)."\n".
                         "but SQL \n".
-                        $db->sql($sql, $params)->emulate()."\n".
+                        Strings::indent($db->sql($sql, $params)->emulate(), ">> ")."\n".
                         "was not hit any data.\n".
                         "\n".
                         "---------- [ Full data of {$table_name} ] ----------\n".
-                        Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC'])).
+                        Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC']))."\n".
                         "----------------------------------------------------\n"
                     );
                 }
