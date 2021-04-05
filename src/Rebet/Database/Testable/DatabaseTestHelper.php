@@ -5,6 +5,7 @@ use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Query;
 use Rebet\Tools\Config\Config;
+use Rebet\Tools\Utility\Json;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -206,8 +207,10 @@ trait DatabaseTestHelper
      *    'table_name_2' => null,    // Define value as null or [] if you want to check data is not exists.
      * ]
      * 
+     * NOTE: Expect data MUST be included primary keys.
+     * 
      * @param Database $db
-     * @param array $expects
+     * @param array $expects data (MUST be included primary keys)
      * @param bool $strict if true then check rows count are same. (default: true)
      * @param string $message (default: '')
      * @return void
@@ -220,6 +223,9 @@ trait DatabaseTestHelper
         foreach ($expects as $table_name => $rows) {
             $columns = array_shift($rows) ?? [];
             $table   = $db->driver()->quoteIdentifier($table_name);
+            if($rows != array_unique($rows, SORT_REGULAR)) {
+                static::fail("{$message}Failed asserting that table '{$table_name}' on {$db->name()} duplicate expect data were contains.");
+            }
             if($strict) {
                 $actual_count = $db->count("SELECT * FROM {$table}");
                 $expect_count = count($rows);
@@ -239,13 +245,13 @@ trait DatabaseTestHelper
                 foreach($params as $column => $value) {
                     $sql .= " AND ".$db->driver()->quoteIdentifier($column).($value === null ? " IS NULL" : " = :{$column}") ;
                 }
-                if(!$db->exists($sql, $params)) {
+                if(($count = $db->count($sql, $params)) != 1) {
                     static::fail(
-                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows miss match: expect \n".
+                        "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows ".($count === 0 ? "miss match" : "too many match").": expect \n".
                         Strings::indent(Strings::stringify($params), " ", 4)."\n".
                         "but SQL \n".
                         Strings::indent($db->sql($sql, $params)->emulate(), ">> ")."\n".
-                        "was not hit any data.\n".
+                        ($count === 0 ? "was not hit any data.\n" : "was hit {$count} data.\n").
                         "\n".
                         "---------- [ Full data of {$table_name} ] ----------\n".
                         Strings::stringify($db->select("SELECT * FROM {$table}", [reset($columns) => 'ASC']))."\n".
