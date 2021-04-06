@@ -8,8 +8,8 @@ use Rebet\Cache\Adapter\Symfony\MemcachedAdapter;
 use Rebet\Cache\Adapter\Symfony\PdoAdapter;
 use Rebet\Cache\Adapter\Symfony\RedisAdapter;
 use Rebet\Cache\Cache;
+use Rebet\Cache\Testable\CacheTestHelper;
 use Rebet\Tools\Config\Config;
-use Rebet\Tools\Config\Layer;
 
 /**
  * Rebet Cache Test Case Class
@@ -18,15 +18,7 @@ use Rebet\Tools\Config\Layer;
  */
 abstract class RebetCacheTestCase extends RebetDatabaseTestCase
 {
-    public static function setUpBeforeClass() : void
-    {
-        parent::setUpBeforeClass();
-    }
-
-    public static function tearDownAfterClass() : void
-    {
-        parent::tearDownAfterClass();
-    }
+    use CacheTestHelper;
 
     protected function setUp() : void
     {
@@ -95,41 +87,11 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                         'adapter'   => [
                             '@factory' => RedisAdapter::class,
                             'dsn'      => 'redis://redis/0',
-                            // 'dsn'      => 'redis://localhost/0',
                         ],
                     ],
                 ],
                 'default_store' => 'array',
             ],
         ]);
-    }
-
-    protected function eachStore(\Closure $test, bool $taggable = false, string ...$stores)
-    {
-        Config::clear(Cache::class, Layer::RUNTIME);
-        Cache::clear();
-        $stores = empty($stores) ? array_keys(Cache::config('stores')) : $stores ;
-        $skiped = [];
-        foreach ($stores as $name) {
-            $adapter = Cache::config("stores.{$name}.adapter.@factory");
-            if (method_exists($adapter, 'isSupported') && !$adapter::isSupported()) {
-                $skiped[] = $name;
-                continue;
-            }
-            if ($taggable) {
-                Config::runtime([Cache::class => ['stores' => [$name => ['adapter' => ['taggable' => true]]]]]);
-            }
-            $store = Cache::store($name);
-            if ($store === null) {
-                $skiped[] = $name;
-                continue;
-            }
-            $store->flush();
-            $test($store, "on {$name}");
-            $store->flush();
-        }
-        if (!empty($skiped)) {
-            $this->markTestSkipped("Cache store ".implode(", ", $skiped)." was not ready.");
-        }
     }
 }

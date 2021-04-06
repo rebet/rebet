@@ -15,7 +15,8 @@ class TagSetTest extends RebetCacheTestCase
 
     public function test_retrieve()
     {
-        $this->eachStore(function (Store $store, $msg) {
+        $this->eachStore(function (Store $store, $store_name) {
+            $msg = ">> [{$store_name}] : ";
             $this->assertSame(null, $store->get('foo'), $msg);
             $this->assertSame('foo', $store->tags('F')->retrieve('foo', '10min', 'foo'), $msg);
             $this->assertSame('foo', $store->get('foo'), $msg);
@@ -31,7 +32,8 @@ class TagSetTest extends RebetCacheTestCase
 
     public function test_put()
     {
-        $this->eachStore(function (Store $store, $msg) {
+        $this->eachStore(function (Store $store, $store_name) {
+            $msg = ">> [{$store_name}] : ";
             $this->assertSame(null, $store->get('foo'), $msg);
             $this->assertSame(null, $store->get('bar'), $msg);
             $this->assertSame(null, $store->get('baz'), $msg);
@@ -52,7 +54,8 @@ class TagSetTest extends RebetCacheTestCase
 
     public function test_flush()
     {
-        $this->eachStore(function (Store $store, $msg) {
+        $this->eachStore(function (Store $store, $store_name) {
+            $msg = ">> [{$store_name}] : ";
             $this->assertSame(true, $store->tags('A')->put(['a' => 'A'], 100), $msg);
             $this->assertSame(true, $store->tags('A', 'B')->put(['ab' => 'AB'], 100), $msg);
             $this->assertSame(true, $store->tags('B', 'C')->put(['bc' => 'BC'], 100), $msg);
