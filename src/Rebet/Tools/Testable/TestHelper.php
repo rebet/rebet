@@ -212,6 +212,11 @@ trait TestHelper
     public abstract static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void;
 
     /**
+     * @see PHPUnit\Framework\Assert::assertTrue
+     */
+    public abstract static function assertTrue($condition, string $message = ''): void;
+
+    /**
      * @see PHPUnit\Framework\Assert::fail
      */
     public abstract static function fail(string $message = ''): void;
@@ -219,6 +224,16 @@ trait TestHelper
     // ========================================================================
     // Extended assertions
     // ========================================================================
+
+    /**
+     * Asserts that always success.
+     *
+     * @return void
+     */
+    public static function success() : void 
+    {
+        static::assertTrue(true);
+    }
 
     /**
      * Asserts that two string variables are equal.
@@ -392,6 +407,7 @@ trait TestHelper
                 static::fail("{$message}Failed asserting that wildcard match: expect \"{$expect}\" but actual \"{$actual}\".");
             }
         }
+        static::success();
     }
 
     /**
@@ -418,6 +434,7 @@ trait TestHelper
                 static::fail("{$message}Failed asserting that wildcard not match: not expect \"{$expect}\" but actual \"$actual\".");
             }
         }
+        static::success();
     }
 
     /**

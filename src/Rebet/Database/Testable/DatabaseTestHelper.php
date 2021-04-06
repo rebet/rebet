@@ -163,6 +163,11 @@ trait DatabaseTestHelper
     // ========================================================================
 
     /**
+     * @see Rebet\Tools\Testable\TestHelper::success
+     */
+    public abstract static function success() : void ;
+
+    /**
      * @see Rebet\Tools\Testable\TestHelper::assertStringWildcardAll
      */
     public abstract static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void;
@@ -260,6 +265,7 @@ trait DatabaseTestHelper
                 }
             }
         }
+        static::success();
         $db->debug($is_debug);
     }
 }
