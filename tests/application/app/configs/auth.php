@@ -37,6 +37,8 @@ return [
             ],
         ],
         'roles' => [
+            'all'      => function (AuthUser $user) { return true; },
+            'guest'    => function (AuthUser $user) { return $user->isGuest(); },
             'admin'    => function (AuthUser $user) { return $user->role === 'admin'; },
             'user'     => function (AuthUser $user) { return $user->role === 'user'; },
             'editable' => function (AuthUser $user) { return $user->id === 4; },

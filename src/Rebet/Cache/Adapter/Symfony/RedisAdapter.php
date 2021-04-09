@@ -6,7 +6,7 @@ use Symfony\Component\Cache\Adapter\RedisAdapter as SymfonyRedisAdapter;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 
 /**
- * Memcached Adapter Class
+ * Redis Adapter Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -16,7 +16,7 @@ use Symfony\Component\Cache\Marshaller\MarshallerInterface;
 class RedisAdapter extends AbstractSymfonyAdapter
 {
     /**
-     * Create Memcached Adapter
+     * Create Redis Adapter
      *
      * List of available options:
      *  * class          : Specifies the connection library to return, either \Redis or \Predis\Client.                                                                [default: null for \Redis if can use, otherwise \Predis\Client]
@@ -35,9 +35,9 @@ class RedisAdapter extends AbstractSymfonyAdapter
      * NOTE: When using the Predis library some additional Predis-specific options are available. Reference the Predis Connection Parameters documentation for more information.
      *       @see https://github.com/predis/predis/wiki/Connection-Parameters#list-of-connection-parameters
      *
-     * @param array[]|string|string[] $dsn An array of dsns, a DSN, or an array of DSNs formatted below (default: 'redis://localhost')
-     *                                     - redis://[pass@][ip|host|socket[:port]][/db-index]
-     *                                     - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
+     * @param string $dsn a DSN formatted below (default: 'redis://localhost')
+     *               - redis://[pass@][ip|host|socket[:port]][/db-index]
+     *               - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
      * @param array $options for connect redis. (default: [])  @see Symfony\Component\Cache\Traits\RedisTrait::$defaultConnectionOptions
      * @param string $namespace (default: '')
      * @param int|string $default_lifetime that time unit labeled string like '12min', or int seconds. (default: 0)

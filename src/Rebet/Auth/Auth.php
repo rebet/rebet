@@ -31,16 +31,17 @@ class Auth
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see Rebet\Application\Console\Command\skeltons\configs\auth.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
             'guards'    => [],
             'providers' => [],
-            'roles'     => [
-                'all'   => function (AuthUser $user) { return true; },
-                'guest' => function (AuthUser $user) { return $user->isGuest(); },
-            ],
-            'policies' => [],
+            'roles'     => [],
+            'policies'  => [],
         ];
     }
 

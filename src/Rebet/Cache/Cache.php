@@ -68,17 +68,15 @@ class Cache
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see Rebet\Application\Console\Command\skeltons\configs\cache.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
-            'stores' => [
-                'file' => [
-                    'adapter' => [
-                        '@factory' => FilesystemAdapter::class,
-                    ],
-                ],
-            ],
-            'default_store' => 'file',
+            'default_store' => null,
+            'stores'        => [],
         ];
     }
 

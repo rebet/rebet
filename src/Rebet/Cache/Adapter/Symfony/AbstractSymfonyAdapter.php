@@ -31,16 +31,16 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * Create Adapter depend on symfony/cache modules.
      *
-     * @param ApixAdapter $adputer
+     * @param AdapterInterface $adapter
      * @param bool $taggable (default: false)
      * @param null|string|CacheItemPoolInterface $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
      * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
-    public function __construct(AdapterInterface $adputer, bool $taggable = false, $tags_pool = null, float $known_tag_versions_ttl = 0.15)
+    public function __construct(AdapterInterface $adapter, bool $taggable = false, $tags_pool = null, float $known_tag_versions_ttl = 0.15)
     {
         switch (true) {
             case $tags_pool === null:
-                $tags_pool = $adputer;
+                $tags_pool = $adapter;
             break;
             case $tags_pool instanceof CacheItemPoolInterface:
                 $tags_pool = new ProxyAdapter($tags_pool);
@@ -52,11 +52,11 @@ abstract class AbstractSymfonyAdapter implements Adapter
         if ($taggable) {
             $this->pool =
                 // PdoAdapter for pgsql can not contains '\0' for cache_item_id, so change TAGS_PREFIX.
-                new class($adputer, $tags_pool, $known_tag_versions_ttl) extends TagAwareAdapter {
+                new class($adapter, $tags_pool, $known_tag_versions_ttl) extends TagAwareAdapter {
                     const TAGS_PREFIX = " [tags] ";
                 };
         } else {
-            $this->pool = $adputer;
+            $this->pool = $adapter;
         }
     }
 

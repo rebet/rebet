@@ -15,6 +15,10 @@ class Password
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see Rebet\Application\Console\Command\skeltons\configs\auth.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

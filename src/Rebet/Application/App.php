@@ -41,6 +41,10 @@ class App
      */
     protected static $kernel;
 
+    /**
+     * {@inheritDoc}
+     * @see Rebet\Application\Console\Command\skeltons\configs\application.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

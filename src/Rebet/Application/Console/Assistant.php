@@ -2,6 +2,7 @@
 namespace Rebet\Application\Console;
 
 use Rebet\Application\Console\Command\EnvCommand;
+use Rebet\Application\Console\Command\HashPasswordCommand;
 use Rebet\Application\Console\Command\InitCommand;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Configurable;
@@ -19,12 +20,17 @@ class Assistant extends Application
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see Rebet\Application\Console\Command\skeltons\configs\application.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
             'commands' => [
                 InitCommand::class,
                 EnvCommand::class,
+                HashPasswordCommand::class
             ],
         ];
     }

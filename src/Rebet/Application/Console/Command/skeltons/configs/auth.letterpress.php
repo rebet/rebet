@@ -23,9 +23,9 @@ return [
     */
     Auth::class => [
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Authentication Guards
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | You may define every authentication guard for your application.
         | Default configuration has been defined for you here which uses session storage and the 
         | `user` authentication provider.
@@ -33,22 +33,23 @@ return [
         | Supported:
         |  - @see Rebet\Auth\Guard\SessionGuard
         |  - @see Rebet\Auth\Guard\TokenGuard
+        |  - and also you can use any auth guard that extended Rebet\Auth\Guard\Guard.
         */
         'guards' => [
             //{%-- if $use_auth -%}
             'user:web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
             'user:api' => [TokenGuard::class  , 'provider' => 'user'],
             //{%-- else -%}
-            // 'user.web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
-            // 'user.api' => [TokenGuard::class  , 'provider' => 'user'],
+            // 'user:web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
+            // 'user:api' => [TokenGuard::class  , 'provider' => 'user'],
             //{%-- endif -%}
         ],
 
 
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Authentication Providers
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | All authentication gaurds have an authentication provider.
         | This defines how the users are actually retrieved out of your database or other storage
         | mechanisms used by this application.
@@ -60,6 +61,7 @@ return [
         | Supported:
         |  - @see Rebet\Auth\Provider\ArrayProvider
         |  - @see Rebet\Auth\Provider\DatabaseProvider
+        |  - and also you can use any auth provider that extended Rebet\Auth\Provider\AuthProvider.
         */
         'providers' => [
             //{%-- if $use_auth -%}
@@ -92,9 +94,9 @@ return [
 
 
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | User Roles
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Define the role of the user.
         | You can use the roles defined here to control access to actions using routing and
         | controller annotations.
@@ -116,9 +118,9 @@ return [
 
 
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Model Control Policies
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Policies can define authorization logic for specific models and resources.
         | 
         | You can use `Auth::policy()` and `Auth::user()->can()` methods, or 'can' tag in views to
@@ -151,9 +153,9 @@ return [
     */
     AuthUser::class => [
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Guest User Aliases
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Define an alias for the guest user.
         | If you have specific auth user properties defined on your system, define values for
         | guests here.
@@ -165,9 +167,9 @@ return [
 
 
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Aliases Max Recursion Depth
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Normally, it is not necessary to change the setting, but if necessary, change the setting.
         */
         // 'aliases_max_recursion_depth' => 20,
@@ -183,18 +185,18 @@ return [
     */
     Password::class => [
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Password Algorithm
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Please specify the PHP constant of PASSWORD_*.
         */
         // 'algorithm' => PASSWORD_DEFAULT,
 
 
         /*
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Password Algorithm Options
-        |------------------------------------------------------------------------------------------
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | The contents of the options that can be specified differ for each algorithm, so refer to
         | the PHP Doc of the specified algorithm for the contents of the options.
         */
