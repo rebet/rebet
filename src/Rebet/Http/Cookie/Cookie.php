@@ -2,7 +2,6 @@
 namespace Rebet\Http\Cookie;
 
 use Rebet\Http\Request;
-use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Strings;

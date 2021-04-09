@@ -5,7 +5,6 @@ use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -82,7 +81,7 @@ class InitCommand extends Command
         $this->writeln("3) Setup Auth Configs (3/{$total_step})");
         $use_auth = false;
         if ($this->option('auth') || $this->confirm("Will you use user auth? [y/n] : ")) {
-            if(!$use_db) {
+            if (!$use_db) {
                 $this->comment("You do not use database, so set ArrayProvider as read only authentication.");
                 $this->comment("Please input an authentication user information that will be written in auth.php configuration file.");
                 $this->writeln("NOTE: If you want to change the password or add new user then you can use Rebet assistant `hash:password` command to create password hash.");

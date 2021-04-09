@@ -122,7 +122,7 @@ class Strings
      * @param int|null $max (default: null)
      * @return string|null
      */
-    public static function ltrim(?string  $str, string $prefix = ' ', ?int $max = null) : ?string
+    public static function ltrim(?string $str, string $prefix = ' ', ?int $max = null) : ?string
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
         return $str === null ? null : preg_replace("/\A(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);

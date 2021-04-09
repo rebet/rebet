@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Http\Session\Session;
+use Rebet\Tools\Utility\Strings;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 /**

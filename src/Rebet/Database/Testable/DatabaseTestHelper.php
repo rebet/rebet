@@ -9,14 +9,14 @@ use Rebet\Tools\Utility\Strings;
 
 /**
  * Database Test Helper Trait
- * 
- * The assertion methods are declared static and can be invoked from any context, for instance, 
+ *
+ * The assertion methods are declared static and can be invoked from any context, for instance,
  * using static::assert*() or $this->assert*() in a class that use TestHelper.
  *
  * It expect this trait to be used in below,
  *  - Class that extended PHPUnit\Framework\TestCase(actual PHPUnit\Framework\Assert) class.
  *  - Class that used Rebet\Tools\Testable\TestHelper trait.
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -51,12 +51,12 @@ trait DatabaseTestHelper
      */
     public static function tearDownDatabase() : void
     {
-        static::eachDb(function(Database $db){
+        static::eachDb(function (Database $db) {
             $db->close();
         });
         Dao::clear();
     }
-    
+
     /**
      * Apply tests to all or given defined databases.
      *
@@ -76,7 +76,7 @@ trait DatabaseTestHelper
     /**
      * Setup dataset by given data.
      * This method is expected to be called in setUp() or each test method.
-     * The data format is 
+     * The data format is
      * [
      *    'table_name' => [
      *        ['col1', 'col2', ...], // header columns section
@@ -94,10 +94,10 @@ trait DatabaseTestHelper
     public static function setUpDataSet(array $data, bool $with_truncate = true) : void
     {
         Dao::clear();
-        static::eachDb(function(Database $db) use ($data, $with_truncate) {
+        static::eachDb(function (Database $db) use ($data, $with_truncate) {
             $db->begin();
             foreach (array_keys($data) as $table_name) {
-                if($with_truncate) {
+                if ($with_truncate) {
                     $db->truncate($table_name, false);
                 }
                 $records    = $data[$table_name] ?? [];
@@ -122,7 +122,7 @@ trait DatabaseTestHelper
     {
         echo "\n";
         echo "---------- [ Executed Queries ] ----------\n";
-        foreach(static::$executed_queries as $i => $query) {
+        foreach (static::$executed_queries as $i => $query) {
             echo "[".$query->driver()->name().": {$i}] >> ".($emulate ? $query->emulate() : $query->toString())."\n";
         }
         echo "------------------------------------------\n";
@@ -155,7 +155,7 @@ trait DatabaseTestHelper
     /**
      * @see PHPUnit\Framework\Assert::fail
      */
-    public abstract static function fail(string $message = ''): void;
+    abstract public static function fail(string $message = '') : void;
 
     // ========================================================================
     // Dependent Rebet\Tools\Testable\TestHelper methods and assertions
@@ -164,12 +164,12 @@ trait DatabaseTestHelper
     /**
      * @see Rebet\Tools\Testable\TestHelper::success
      */
-    public abstract static function success() : void ;
+    abstract public static function success() : void ;
 
     /**
      * @see Rebet\Tools\Testable\TestHelper::assertStringWildcardAll
      */
-    public abstract static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void;
+    abstract public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void;
 
     // ========================================================================
     // Extended assertions
@@ -200,7 +200,7 @@ trait DatabaseTestHelper
     /**
      * Asserts that database records matches.
      *
-     * The expects data format is 
+     * The expects data format is
      * [
      *    'table_name' => [
      *        ['col1', 'col2', ...], // Header columns section
@@ -210,9 +210,9 @@ trait DatabaseTestHelper
      *    ],
      *    'table_name_2' => null,    // Define value as null or [] if you want to check data is not exists.
      * ]
-     * 
+     *
      * NOTE: Expect data MUST be included primary keys.
-     * 
+     *
      * @param Database $db
      * @param array $expects data (MUST be included primary keys)
      * @param bool $strict if true then check rows count are same. (default: true)
@@ -227,13 +227,13 @@ trait DatabaseTestHelper
         foreach ($expects as $table_name => $rows) {
             $columns = array_shift($rows) ?? [];
             $table   = $db->driver()->quoteIdentifier($table_name);
-            if($rows != array_unique($rows, SORT_REGULAR)) {
+            if ($rows != array_unique($rows, SORT_REGULAR)) {
                 static::fail("{$message}Failed asserting that table '{$table_name}' on {$db->name()} duplicate expect data were contains.");
             }
-            if($strict) {
+            if ($strict) {
                 $actual_count = $db->count("SELECT * FROM {$table}");
                 $expect_count = count($rows);
-                if($expect_count != $actual_count) {
+                if ($expect_count != $actual_count) {
                     static::fail(
                         "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows count: expect \"{$expect_count}\" but actual \"{$actual_count}\".\n".
                         "\n".
@@ -246,10 +246,10 @@ trait DatabaseTestHelper
             foreach ($rows as $row) {
                 $params = array_combine($columns, $row);
                 $sql    = "SELECT * FROM {$table} WHERE 1=1";
-                foreach($params as $column => $value) {
+                foreach ($params as $column => $value) {
                     $sql .= " AND ".$db->driver()->quoteIdentifier($column).($value === null ? " IS NULL" : " = :{$column}") ;
                 }
-                if(($count = $db->count($sql, $params)) != 1) {
+                if (($count = $db->count($sql, $params)) != 1) {
                     static::fail(
                         "{$message}Failed asserting that table '{$table_name}' on {$db->name()} rows ".($count === 0 ? "miss match" : "too many match").": expect \n".
                         Strings::indent(Strings::stringify($params), " ", 4)."\n".

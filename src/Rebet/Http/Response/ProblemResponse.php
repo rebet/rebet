@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Http\Response;
 
+use Rebet\Http\HttpStatus;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Http\HttpStatus;
 use Rebet\Tools\Translation\Translator;
 
 /**

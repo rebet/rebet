@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Config\Configurable;
 
 /**
  * Validator Class

@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Tools\Utility\Namespaces;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\RouteAction;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Utility\Namespaces;
 
 /**
  * MethodRoute class

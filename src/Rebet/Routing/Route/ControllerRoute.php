@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Request;
 use Rebet\Inflection\Inflector;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Controller Route Class

@@ -290,7 +290,7 @@ abstract class Command extends SymfonyCommand
 
     /**
      * Prompt the user for password input.
-     * 
+     *
      * @param string $input_massage (default: "> Input password   : ")
      * @param string $confirm_message (default: "> Confirm password : ")
      * @param bool $fallback (default: true)
@@ -300,13 +300,13 @@ abstract class Command extends SymfonyCommand
     {
         while (true) {
             $password = $this->secret($input_massage, $fallback);
-            if(empty($password)) {
+            if (empty($password)) {
                 $this->error('Password is required, try again.');
                 continue;
             }
 
             $password_confirm = $this->secret($confirm_message, $fallback);
-            if($password === $password_confirm) {
+            if ($password === $password_confirm) {
                 return $password;
             }
             $this->error("Inputted password does not match, try again.");

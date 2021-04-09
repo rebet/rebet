@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Inflection;
 
-use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
-use Rebet\Tools\Config\Configurable;
 
 /**
  * Inflector Class

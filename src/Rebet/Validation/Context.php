@@ -1,13 +1,13 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Tools\Utility\Arrays;
+use Rebet\Inflection\Inflector;
+use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
-use Rebet\Tools\Enum\Enum;
-use Rebet\Inflection\Inflector;
-use Rebet\Tools\Translation\Translator;
 
 /**
  * Validate Context Class

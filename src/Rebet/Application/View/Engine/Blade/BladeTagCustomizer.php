@@ -7,7 +7,7 @@ use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 
 /**
  * Blade Tag Customizer Class
- * 
+ *
  * Blade custom directives for Rebet.
  *
  * @package   Rebet

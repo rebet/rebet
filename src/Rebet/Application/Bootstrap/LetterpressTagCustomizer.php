@@ -31,7 +31,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% env 'local' %} ... {% elseenv 'testing' %} ... {% else %} ... {% endenv %}
         //   {% env 'local', 'testing' %} ... {% else %} ... {% endenv %}
         $processor = BuiltinTagProcessors::env();
-        Letterpress::if('env', function(string ...$env) use ($processor) {
+        Letterpress::if('env', function (string ...$env) use ($processor) {
             return $processor->execute($env);
         });
 
@@ -42,7 +42,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   (none)
         // Usage:
         //   {% prefix %}
-        Letterpress::function('prefix', function() use ($kernel) {
+        Letterpress::function('prefix', function () use ($kernel) {
             return $kernel instanceof HttpKernel ? $kernel->request()->getRoutePrefix() : '' ;
         });
 
@@ -56,7 +56,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% role 'user', 'guest' %} ... {% else %} ... {% endrole %}
         //   {% role 'user', 'guest:post-editable' %} ... {% else %} ... {% endrole %}
         $processor = BuiltinTagProcessors::role();
-        Letterpress::if('role', function(string ...$roles) use ($processor) {
+        Letterpress::if('role', function (string ...$roles) use ($processor) {
             return $processor->execute($roles);
         });
 
@@ -72,7 +72,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% can 'create', Post::class %} ... {% else %} ... {% endcan %}
         //   {% can 'update', 'remark', $post %} ... {% else %} ... {% endcan %}
         $processor = BuiltinTagProcessors::can();
-        Letterpress::if('can', function(string $action, $target, ...$extras) use ($processor) {
+        Letterpress::if('can', function (string $action, $target, ...$extras) use ($processor) {
             return $processor->execute([$action, Tinker::peel($target), ...Tinker::peelAll($extras)]);
         });
 
@@ -92,7 +92,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% 'messages.tags', ['tags' => $tags], count($tags) %}
         //   {% 'messages.tags', ['tags' => $tags], count($tags), 'en' %}
         $processor = BuiltinTagProcessors::lang();
-        Letterpress::function('lang', function(string $key, $replacement = [], $selector = null, ?string $locale = null) use ($processor) {
+        Letterpress::function('lang', function (string $key, $replacement = [], $selector = null, ?string $locale = null) use ($processor) {
             return $processor->execute([$key, is_array($replacement) ? Tinker::peelAll($replacement) : Tinker::peel($replacement), Tinker::peel($selector), $locale]);
         });
     }

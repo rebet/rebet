@@ -2,10 +2,6 @@
 namespace Rebet\Routing\Route;
 
 use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Tools\Utility\Namespaces;
-use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Inflection\Inflector;
@@ -17,6 +13,10 @@ use Rebet\Routing\Annotation\Where;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
 use Rebet\Routing\Router;
+use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Namespaces;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Conventional Route class

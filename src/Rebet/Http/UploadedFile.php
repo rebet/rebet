@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Tools\Utility\Strings;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;
+use Rebet\Tools\Utility\Strings;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 use Symfony\Component\Mime\MimeTypes;
 

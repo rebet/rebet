@@ -4,10 +4,10 @@ namespace Rebet\Log\Driver\Monolog\Handler;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger as MonologLogger;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Testable\System;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
+use Rebet\Tools\Testable\System;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Simple Browser Console Handler Class

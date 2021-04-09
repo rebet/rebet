@@ -265,7 +265,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      */
     public static function peelAll(array $values) : array
     {
-        return array_map(function($v){ return static::peel($v); }, $values);
+        return array_map(function ($v) { return static::peel($v); }, $values);
     }
 
     /**

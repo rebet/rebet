@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Cache;
 
-use Rebet\Cache\Adapter\Symfony\FilesystemAdapter;
 use Rebet\Tools\Config\Configurable;
 
 /**

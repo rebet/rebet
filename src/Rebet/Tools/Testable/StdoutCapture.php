@@ -24,7 +24,8 @@ class StdoutCapture extends AbstractCapture
     /**
      * {@inheritDoc}
      */
-    public static function stop() : string {
+    public static function stop() : string
+    {
         return parent::stop().\ob_get_clean();
     }
 

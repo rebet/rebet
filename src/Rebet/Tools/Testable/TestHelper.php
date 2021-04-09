@@ -4,16 +4,15 @@ namespace Rebet\Tools\Testable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Files;
 use Rebet\Tools\Utility\Path;
-use Rebet\Tools\Utility\Strings;
 
 /**
  * Test Helper Trait
- * 
- * The assertion methods are declared static and can be invoked from any context, for instance, 
+ *
+ * The assertion methods are declared static and can be invoked from any context, for instance,
  * using static::assert*() or $this->assert*() in a class that use TestHelper.
  *
  * It expect this trait to be used in classes that extended PHPUnit\Framework\TestCase(actual PHPUnit\Framework\Assert).
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -37,7 +36,7 @@ trait TestHelper
      * @param string $base_working_dir for testing
      * @return string new current directory absolute path
      */
-    public static function setUpWorkingDir(string $base_working_dir) : string 
+    public static function setUpWorkingDir(string $base_working_dir) : string
     {
         static::$original_working_dir = Path::normalize(getcwd());
         static::$test_working_dir     = Path::normalize($base_working_dir.'/'.getmypid());
@@ -62,7 +61,7 @@ trait TestHelper
         if (!file_exists($sub_working_dir)) {
             mkdir($sub_working_dir, 0777, true);
         } else {
-            if($clean) {
+            if ($clean) {
                 Files::removeDir($sub_working_dir, false);
             }
         }
@@ -87,7 +86,7 @@ trait TestHelper
      */
     public static function tearDownWorkingDir() : string
     {
-        if(static::$original_working_dir) {
+        if (static::$original_working_dir) {
             chdir(static::$original_working_dir);
             Files::removeDir(static::$test_working_dir);
         }
@@ -135,7 +134,7 @@ trait TestHelper
      */
     public static function inject($target, array $values)
     {
-        foreach($values as $key => $value) {
+        foreach ($values as $key => $value) {
             Reflector::set($target, $key, $value, true);
         }
         return $target;
@@ -184,42 +183,42 @@ trait TestHelper
     /**
      * @see PHPUnit\Framework\Assert::assertEquals
      */
-    public abstract static function assertEquals($expected, $actual, string $message = ''): void;
+    abstract public static function assertEquals($expected, $actual, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertNotEquals
      */
-    public abstract static function assertNotEquals($expected, $actual, string $message = ''): void;
+    abstract public static function assertNotEquals($expected, $actual, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertStringContainsString
      */
-    public abstract static function assertStringContainsString(string $needle, string $haystack, string $message = ''): void;
+    abstract public static function assertStringContainsString(string $needle, string $haystack, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertStringNotContainsString
      */
-    public abstract static function assertStringNotContainsString(string $needle, string $haystack, string $message = ''): void;
+    abstract public static function assertStringNotContainsString(string $needle, string $haystack, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertMatchesRegularExpression
      */
-    public abstract static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void;
+    abstract public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertDoesNotMatchRegularExpression
      */
-    public abstract static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void;
+    abstract public static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::assertTrue
      */
-    public abstract static function assertTrue($condition, string $message = ''): void;
+    abstract public static function assertTrue($condition, string $message = '') : void;
 
     /**
      * @see PHPUnit\Framework\Assert::fail
      */
-    public abstract static function fail(string $message = ''): void;
+    abstract public static function fail(string $message = '') : void;
 
     // ========================================================================
     // Extended assertions
@@ -230,7 +229,7 @@ trait TestHelper
      *
      * @return void
      */
-    public static function success() : void 
+    public static function success() : void
     {
         static::assertTrue(true);
     }
@@ -387,7 +386,7 @@ trait TestHelper
      * Asserts that an actual string matches expected wildcards.
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
-     * 
+     *
      * @param string|string[] $expects
      * @param string $actual
      * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
@@ -399,11 +398,11 @@ trait TestHelper
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
         foreach ($expects as $expect) {
-            foreach($wildcards as $real => $alias) {
+            foreach ($wildcards as $real => $alias) {
                 $expect = addcslashes($expect, $real);
                 $expect = str_replace($alias, $real, $expect);
             }
-            if(!\fnmatch($expect, $actual)) {
+            if (!\fnmatch($expect, $actual)) {
                 static::fail("{$message}Failed asserting that wildcard match: expect \"{$expect}\" but actual \"{$actual}\".");
             }
         }
@@ -414,7 +413,7 @@ trait TestHelper
      * Asserts that an actual string matches expected wildcards.
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
-     * 
+     *
      * @param string|string[] $expects
      * @param string $actual
      * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
@@ -426,11 +425,11 @@ trait TestHelper
         $expects = is_array($expects) ? $expects : [$expects] ;
         $message = empty($message) ? $message : "{$message}\n" ;
         foreach ($expects as $expect) {
-            foreach($wildcards as $real => $alias) {
+            foreach ($wildcards as $real => $alias) {
                 $expect = addcslashes($expect, $real);
                 $expect = str_replace($alias, $real, $expect);
             }
-            if(\fnmatch($expect, $actual)) {
+            if (\fnmatch($expect, $actual)) {
                 static::fail("{$message}Failed asserting that wildcard not match: not expect \"{$expect}\" but actual \"$actual\".");
             }
         }

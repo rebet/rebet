@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Tools\Config\Configurable;
 use Rebet\Http\Exception\HttpException;
+use Rebet\Tools\Config\Configurable;
 
 /**
  * Http Status Class

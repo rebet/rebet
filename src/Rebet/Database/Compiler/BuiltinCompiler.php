@@ -29,7 +29,7 @@ use Rebet\Tools\Utility\Strings;
  *
  * And this compiler also support `Letterpress` template format.
  * So, you can use all `Letterpress` tags like 'if' and 'for' (and extended tags) with given params in your SQL.
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -85,7 +85,7 @@ class BuiltinCompiler implements Compiler
             }
             $holder = ":{$key}";
             $count  = preg_match_all('/'.$holder.'([^a-zA-Z0-9_]|$)/', $sql);
-            if($count === 0) {
+            if ($count === 0) {
                 unset($params[$key]);
                 continue;
             }

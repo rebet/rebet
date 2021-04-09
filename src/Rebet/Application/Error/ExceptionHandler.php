@@ -2,7 +2,6 @@
 namespace Rebet\Application\Error;
 
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Tools\Tinker\Tinker;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Exception\HttpException;
@@ -16,6 +15,7 @@ use Rebet\Http\Response\ProblemResponse;
 use Rebet\Log\Log;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\FallbackHandler;
+use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Translation\Translator;
 use Rebet\View\View;
 use Symfony\Component\Console\Input\ArgvInput;

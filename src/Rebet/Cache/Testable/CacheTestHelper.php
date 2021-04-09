@@ -7,14 +7,14 @@ use Rebet\Tools\Config\Layer;
 
 /**
  * Cache Test Helper Trait
- * 
- * The assertion methods are declared static and can be invoked from any context, for instance, 
+ *
+ * The assertion methods are declared static and can be invoked from any context, for instance,
  * using static::assert*() or $this->assert*() in a class that use TestHelper.
  *
  * It expect this trait to be used in below,
  *  - Class that extended PHPUnit\Framework\TestCase(actual PHPUnit\Framework\Assert) class.
  *  - Class that used Rebet\Tools\Testable\TestHelper trait.
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -58,5 +58,4 @@ trait CacheTestHelper
     // ========================================================================
     // Extended assertions
     // ========================================================================
-
 }

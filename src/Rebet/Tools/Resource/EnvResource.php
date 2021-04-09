@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tools\Resource;
 
-use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
 
 /**

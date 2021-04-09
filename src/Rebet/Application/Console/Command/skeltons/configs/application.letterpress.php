@@ -97,7 +97,7 @@ return [
         | Here you may defines console application commands to use via rebet assistant.
         | For example, by implementing the periodical execution job required by the application as a
         | command and registering it here, it can be executed like `rebet app:data-clean`.
-        | 
+        |
         | NOTE: Preinstalled commands are you can find in Assistant::defaultConfig().
         */
         'commands' => [

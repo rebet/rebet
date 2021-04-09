@@ -17,7 +17,7 @@ return [
     |==============================================================================================
     | This section defines authentication and authorization settings.
     | You may change these defaults as required, but they're a good start for many applications.
-    | 
+    |
     | See below for more detailed configuration examples for this file:
     | @see Rebet\Application\Console\Command\skeltons\configs\auth.letterpress.php
     */
@@ -27,9 +27,9 @@ return [
         | Authentication Guards
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | You may define every authentication guard for your application.
-        | Default configuration has been defined for you here which uses session storage and the 
+        | Default configuration has been defined for you here which uses session storage and the
         | `user` authentication provider.
-        | 
+        |
         | Supported:
         |  - @see Rebet\Auth\Guard\SessionGuard
         |  - @see Rebet\Auth\Guard\TokenGuard
@@ -53,11 +53,11 @@ return [
         | All authentication gaurds have an authentication provider.
         | This defines how the users are actually retrieved out of your database or other storage
         | mechanisms used by this application.
-        | 
+        |
         | If you have multiple user tables or models you may configure multiple sources which
         | represent each model / table. These sources may then be assigned to any extra
         | authentication guards you have defined.
-        | 
+        |
         | Supported:
         |  - @see Rebet\Auth\Provider\ArrayProvider
         |  - @see Rebet\Auth\Provider\DatabaseProvider
@@ -78,7 +78,7 @@ return [
                     // If you want to add new user then write user information here.
                     // NOTE: You can use Rebet assistant `hash:password` command to create password hash.
                 ],
-                'precondition' => function($user) { return $user['active'] ?? false; },
+                'precondition' => function ($user) { return $user['active'] ?? false; },
                 'alises'       => ['role' => '@user'],
                 //{%-- endif -%}
             ],
@@ -100,7 +100,7 @@ return [
         | Define the role of the user.
         | You can use the roles defined here to control access to actions using routing and
         | controller annotations.
-        | 
+        |
         | You can also use `Auth::role()` and `Auth::user()->is()` methods, or `role` tag in views
         | to see if the target user belongs to a role.
         */
@@ -122,7 +122,7 @@ return [
         | Model Control Policies
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Policies can define authorization logic for specific models and resources.
-        | 
+        |
         | You can use `Auth::policy()` and `Auth::user()->can()` methods, or 'can' tag in views to
         | see if the target user was allowed given action.
         */
@@ -161,7 +161,7 @@ return [
         | guests here.
         */
         'guest_aliases' => [
-            'name' => function($user) { return Translator::get('message.guest_name') ?? 'Guest'; },
+            'name' => function ($user) { return Translator::get('message.guest_name') ?? 'Guest'; },
             'role' => '@guest',
         ],
 

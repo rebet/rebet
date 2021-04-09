@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Http;
 
-use Rebet\Tools\Template\Renderable;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Filesystem\Storage;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\JsonResponse;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Response\StreamedResponse;
+use Rebet\Tools\Template\Renderable;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Responder Class

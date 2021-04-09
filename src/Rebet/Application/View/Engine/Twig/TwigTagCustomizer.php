@@ -6,7 +6,7 @@ use Rebet\View\Engine\Twig\Twig;
 
 /**
  * Twig Tag Customizer Class
- * 
+ *
  * Twig custom extentions for Rebet.
  *
  * @package   Rebet

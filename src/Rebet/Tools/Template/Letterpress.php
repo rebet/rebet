@@ -28,7 +28,7 @@ use Rebet\Tools\Utility\Strings;
  *  - {% for $list->unique() as $value %}...
  *
  * And also you can use code like below,
- * 
+ *
  *  - {{ $value ?? "default" }}            : In this case $value is not Tinker object, so `??` works as intended.
  *  - {{ $value->default("default") }}     : In this case $value is Tinker object, so if $value is null or undefined then 'default'.
  *  - {{ $value["key"] }}                  : In this case $value is Tinker object, so you can chain Tinker filter methods.
@@ -39,21 +39,21 @@ use Rebet\Tools\Utility\Strings;
  *  - {% if $a && $b %}...                 : In this case $a and $b are not Tinker object, so `if` works as intended.
  *  - {% if $a && $b->isInt() %}...        : In this case $a is not Tinker but $b is Tinker object, so $b->isInt() will return boolean (Tinker does not wrap return value by Tinker when the value is boolean), so `if` works as intended.
  *  - {% if $a->amount %}...               : In this case $a is Tinker, so $a->amount will return Tinker object, but 'if' peel Tinker object, so this code works as intended.
- * 
+ *
  * But be careful
- * 
+ *
  *  - {% if $a && $b->amount %}...         : In this case $a is not Tinker but $b is Tinker object, so $b->amount will return Tinker object (Tinker wrap return value by Tinker when the value is not boolean) and '&&' not peel Tinker object, so condition will true even if amount is zero.
- * 
+ *
  * If you want to do this, you can write {% if $a && $b->amount->gt(0) %}.
- * 
+ *
  * And all of tags are supporting '-' mark for whitespace control like Twig (but the behavior is not same as Twig).
  * The Letterpress '-' option has the ability,
- * 
+ *
  *  - Row-oriented whitespace match: left '-' does not match LF following a blank, but right '-' matches LF following a blank.
  *  - Delete adjacent strings: '-' will delete adjacent strings or whitespace, '--' will delete adjacent strings followed by whitespace.
- * 
+ *
  * So you can write like below,
- * 
+ *
  *  - #{%-- if $a->is('a') -%}     => line will delete
  *  - $foo = 0/⋆{!- $foo --!}⋆/ ;  => $foo = 123; (⋆ means *)
  *
@@ -473,10 +473,10 @@ class Letterpress implements Renderable, \JsonSerializable
                             $close_tag === 'end'
                         ? "Missing open tag {% ".Strings::ltrim($tag, 'end')." %} , {% {$tag} %} found."
                         : "Missing close tag {% {$close_tag} %}, {% {$tag} %} found."
-                    );
+                        );
                     }
 
-                    if(!empty($leftovers)) {
+                    if (!empty($leftovers)) {
                         $parent['nodes'][] = null; // Set close tag mark(=null)
                     }
                     return [$parent, $leftovers];
@@ -616,7 +616,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * - Init undefined variables with null.
      * - Not wrap in Tinker if the value is used as an object with no operations.
      * - Wrap in Tinker if the value is used as an object with operations. (this is prioritized when value using both way)
-     * 
+     *
      * @param string $code
      * @param array $vars
      * @param bool $alone_var_without_tinker (default: true)
@@ -626,7 +626,7 @@ class Letterpress implements Renderable, \JsonSerializable
     {
         if (preg_match_all('/(\$(?<accompanies>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)(?=->|\[))|(\$(?<alones>[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*))/u', $code, $matches)) {
             foreach (Arrays::compact($matches['alones']) as $name) {
-                $vars[$name] = $alone_var_without_tinker 
+                $vars[$name] = $alone_var_without_tinker
                     ? (isset($vars[$name]) ? Tinker::peel($vars[$name]) : null)
                     : Tinker::with(isset($vars[$name]) ? $vars[$name] : null)
                     ;

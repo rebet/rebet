@@ -363,5 +363,5 @@ abstract class Entity extends DataModel
         }
 
         return $driver->sql(join(' AND ', $wheres), $params);
-    }    
+    }
 }

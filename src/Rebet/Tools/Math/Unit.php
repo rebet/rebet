@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tools\Math;
 
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Callbacks;
 
 /**
  * Unit Class

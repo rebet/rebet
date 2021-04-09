@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Routing\Route;
 
+use Rebet\Http\Request;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
-use Rebet\Http\Request;
-use Rebet\Routing\Exception\RouteNotFoundException;
 
 /**
  * Declarative Route class

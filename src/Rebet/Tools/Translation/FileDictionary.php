@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tools\Translation;
 
-use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Reflection\Reflector;

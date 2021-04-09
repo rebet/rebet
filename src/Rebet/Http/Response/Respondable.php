@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Http\Response;
 
-use Rebet\Tools\Utility\Arrays;
-use Rebet\Tools\Utility\Strings;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Response;
+use Rebet\Tools\Utility\Arrays;
+use Rebet\Tools\Utility\Strings;
 
 /**
  * Respondable trait

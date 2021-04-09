@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Routing\Exception;
 
-use Rebet\Tools\Exception\RuntimeException;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
+use Rebet\Tools\Exception\RuntimeException;
 use Rebet\Tools\Translation\Translator;
 
 /**

@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Event;
 
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Event Class

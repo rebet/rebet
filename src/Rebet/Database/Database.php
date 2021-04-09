@@ -26,7 +26,6 @@ use Rebet\Event\Event;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Utility\Arrays;
 
 /**
  * Database Class
@@ -794,7 +793,7 @@ class Database
      */
     public function close() : void
     {
-        if(!$this->closed()) {
+        if (!$this->closed()) {
             $this->driver->close();
         }
     }

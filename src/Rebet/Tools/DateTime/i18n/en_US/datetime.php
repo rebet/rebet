@@ -1,6 +1,6 @@
 <?php
-use Rebet\Tools\Utility\Path;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Utility\Path;
 
 /**
  * DateTime translation settings for English (en_US).

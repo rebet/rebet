@@ -32,7 +32,7 @@ abstract class AbstractCapture extends \php_user_filter
      */
     public static function start() : void
     {
-        self::$message     = '';
+        self::$message    = '';
         self::$is_capture = true;
     }
 
@@ -45,7 +45,7 @@ abstract class AbstractCapture extends \php_user_filter
     {
         self::$is_capture = false;
         $captured         = self::$message;
-        self::$message     = '';
+        self::$message    = '';
         return $captured;
     }
 
@@ -55,7 +55,8 @@ abstract class AbstractCapture extends \php_user_filter
      * @param \Closure $process
      * @return string
      */
-    public static function via(\Closure $process) : string {
+    public static function via(\Closure $process) : string
+    {
         static::start();
         $process();
         return static::stop();
