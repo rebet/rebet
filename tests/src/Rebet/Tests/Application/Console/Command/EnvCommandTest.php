@@ -6,11 +6,11 @@ use Rebet\Tests\RebetConsoleTestCase;
 
 class EnvCommandTest extends RebetConsoleTestCase
 {
-    const COMMANDS = [EnvCommand::class];
+    const AVIRABLE_COMMANDS = [EnvCommand::class];
 
     public function test_execute()
     {
-        $tester = $this->getTester(EnvCommand::NAME);
+        $tester = $this->getCommandTester(EnvCommand::NAME);
         $status = $tester->execute([]);
         $this->assertSame(0, $status);
         $this->assertSame("Current application environment: unittest.".PHP_EOL, $tester->getDisplay());

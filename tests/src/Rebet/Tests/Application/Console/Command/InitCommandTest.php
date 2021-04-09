@@ -6,7 +6,7 @@ use Rebet\Tests\RebetConsoleTestCase;
 
 class InitCommandTest extends RebetConsoleTestCase
 {
-    const COMMANDS = [InitCommand::class];
+    const AVIRABLE_COMMANDS = [InitCommand::class];
 
     public function test_execute()
     {
@@ -14,7 +14,7 @@ class InitCommandTest extends RebetConsoleTestCase
         $this->assertTrue(true);
 
         // @todo implements
-        // $tester = $this->getTester(InitCommand::NAME);
+        // $tester = $this->getCommandTester(InitCommand::NAME);
         // $status = $tester->execute([]);
         // $this->assertSame(0, $status);
         // $this->assertSame("Application ready! Build something amazing.".PHP_EOL, $tester->getDisplay());

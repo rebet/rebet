@@ -8,7 +8,7 @@ use Rebet\Tools\Utility\Strings;
 
 class HashPasswordCommandTest extends RebetConsoleTestCase
 {
-    const COMMANDS = [HashPasswordCommand::class];
+    const AVIRABLE_COMMANDS = [HashPasswordCommand::class];
 
     // public function test_run()
     // {
@@ -30,7 +30,7 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
      */
     public function test_execute(string $password, array $options = [])
     {
-        $tester = $this->getTester(HashPasswordCommand::NAME);
+        $tester = $this->getCommandTester(HashPasswordCommand::NAME);
         $status = $tester->execute(array_merge(['password' => $password], $options));
         $this->assertSame(0, $status);
         $display = $tester->getDisplay();
@@ -40,7 +40,7 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
 
     public function test_execute_jsonError()
     {
-        $tester = $this->getTester(HashPasswordCommand::NAME);
+        $tester = $this->getCommandTester(HashPasswordCommand::NAME);
         $status = $tester->execute(['password' => 'foobar', '--option' => '{cost: 8}']);
         $this->assertSame(1, $status);
         $display = $tester->getDisplay();

@@ -1,9 +1,7 @@
 <?php
 namespace Rebet\Tests;
 
-use Rebet\Console\Application;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Tester\CommandTester;
+use Rebet\Console\Testable\ConsoleTestHelper;
 
 /**
  * Rebet Console Test Case Class
@@ -12,30 +10,12 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 abstract class RebetConsoleTestCase extends RebetTestCase
 {
-    /**
-     * @var array of test commands
-     */
-    const COMMANDS = [];
+    use ConsoleTestHelper;
 
-    /** @var Application */
-    protected $app;
+    const AVIRABLE_COMMANDS = [];
 
-    protected function setUp() : void
-    {
+    public function setUp() : void {
         parent::setUp();
-        $this->app = new Application();
-        foreach (static::COMMANDS as $command) {
-            $this->app->add(new $command);
-        }
-    }
-
-    protected function getTester(string $command) : CommandTester
-    {
-        return new CommandTester($this->app->find($command));
-    }
-
-    protected function execute(string $command)
-    {
-        return $this->app->run(new StringInput($command));
+        $this->setUpConsole(...static::AVIRABLE_COMMANDS);
     }
 }
