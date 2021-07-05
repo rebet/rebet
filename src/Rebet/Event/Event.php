@@ -18,6 +18,10 @@ class Event
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/event.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

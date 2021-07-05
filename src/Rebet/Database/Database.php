@@ -584,6 +584,8 @@ class Database
      * @param Entity $entity
      * @param DateTime|null $now (default: null for DateTime::now())
      * @return bool
+     * @uses Event::dispatch Creating when before data create.
+     * @uses Event::dispatch Created when after data created.
      */
     public function create(Entity &$entity, ?DateTime $now = null) : bool
     {
@@ -642,6 +644,8 @@ class Database
      * @param Entity $entity
      * @param DateTime|null $now (default: null for DateTime::now())
      * @return bool
+     * @uses Event::dispatch Updating when before data update.
+     * @uses Event::dispatch Updated when after data updated.
      */
     public function update(Entity &$entity, ?DateTime $now = null) : bool
     {
@@ -694,6 +698,8 @@ class Database
      *
      * @param Entity $entity
      * @return bool
+     * @uses Event::dispatch Deleting when before data delete.
+     * @uses Event::dispatch Deleted when after data delete.
      */
     public function delete(Entity $entity) : bool
     {
@@ -717,6 +723,8 @@ class Database
      * @param array $alias (default: [])
      * @param DateTime|null $now (default: null)
      * @return int affected row count
+     * @uses Event::dispatch BatchUpdating when before batch update.
+     * @uses Event::dispatch BatchUpdated when after batch update.
      */
     public function updateBy(string $entity, array $changes, $ransack, array $alias = [], ?DateTime $now = null) : int
     {
@@ -749,6 +757,8 @@ class Database
      * @param mixed $ransack conditions that arrayable
      * @param array $alias (default: [])
      * @return int affected row count
+     * @uses Event::dispatch BatchDeleting when before batch delete.
+     * @uses Event::dispatch BatchDeleted when after batch delete.
      */
     public function deleteBy(string $entity, $ransack, array $alias = []) : int
     {
