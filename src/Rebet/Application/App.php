@@ -23,7 +23,7 @@ use Rebet\View\View;
 /**
  * Application Config Class
  *
- * Define and manage application and framework configuration settings.
+ * Define and manage application configuration settings.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -43,7 +43,7 @@ class App
 
     /**
      * {@inheritDoc}
-     * @see Rebet\Application\Console\Command\skeltons\configs\application.letterpress.php
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/application.letterpress.php
      */
     public static function defaultConfig()
     {
@@ -53,7 +53,6 @@ class App
             'timezone'        => date_default_timezone_get() ?: 'UTC',
             'paginate'        => [
                 'page_name'        => 'page',
-                'page_size_name'   => 'page_size',
                 'default_template' => 'paginate@bootstrap-4',
             ],
         ];
@@ -80,7 +79,7 @@ class App
     }
 
     /**
-     * initialize App and set framework configure.
+     * initialize App and set configure.
      *
      * @param Kernel $kernel
      * @return Kernel

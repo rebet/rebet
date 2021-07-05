@@ -16,10 +16,15 @@ class Pager
 {
     use Configurable, Getsetable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/database.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
             'default_page_size'  => 10,
+            'max_page_size'      => 100,
             'default_each_side'  => 0,
             'default_need_total' => false,
             'resolver'           => null,   // function(Pager $pager) : Pager { ... }
@@ -64,20 +69,14 @@ class Pager
 
     /**
      * Create Pager instance.
-     *
-     * @param int $page must be greater equal 1 (default: 1)
-     * @param int|null $size must be greater equal 1 (default: depend on configure)
-     * @param int|null $each_side must be greater equal 1 (default: depend on configure)
-     * @param bool|null $need_total (default: depend on configure)
-     * @param string|null $cursor name (default: null for do not use cursor)
      */
-    public function __construct(int $page = 1, ?int $size = null, ?int $each_side = null, ?bool $need_total = null, ?string $cursor = null)
+    public function __construct()
     {
-        $this->page       = max(1, $page);
-        $this->size       = max(1, $size ?? static::config('default_page_size'));
-        $this->each_side  = max(0, $each_side ?? static::config('default_each_side'));
-        $this->need_total = $need_total ?? static::config('default_need_total');
-        $this->cursor     = $cursor;
+        $this->page(1)
+             ->size(static::config('default_page_size'), true)
+             ->eachSide(static::config('default_each_side'))
+             ->needTotal(static::config('default_need_total'))
+             ;
     }
 
     /**
@@ -95,11 +94,12 @@ class Pager
      * Get and Set count of items per page.
      *
      * @param int|null $size of page (null for get count of items per page)
+     * @param bool $limit_exceedable for max page size (default: false)
      * @return Pager|int
      */
-    public function size(?int $size = null)
+    public function size(?int $size = null, bool $limit_exceedable = false)
     {
-        return $this->getset('size', $size === null ? null : max(1, $size));
+        return $this->getset('size', $size === null ? null : min(max(1, $size), $limit_exceedable ? PHP_INT_MAX : static::config('max_page_size')));
     }
 
     /**

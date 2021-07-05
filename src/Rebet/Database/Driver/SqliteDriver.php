@@ -40,6 +40,10 @@ use Rebet\Tools\Reflection\Reflector;
  */
 class SqliteDriver extends AbstractDriver
 {
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/database.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

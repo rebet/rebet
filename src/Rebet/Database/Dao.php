@@ -79,26 +79,21 @@ class Dao
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/database.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
-            'drivers' => [
+            'default_db' => null,
+            'dbs'        => [],
+            'drivers'    => [
                 'sqlite' => SqliteDriver::class,
                 'mysql'  => MysqlDriver::class,
                 'pgsql'  => PgsqlDriver::class,
                 'sqlsrv' => SqlsrvDriver::class,
             ],
-            'dbs'     => [
-                'main' => [
-                    'dsn'         => null,
-                    'user'        => null,
-                    'password'    => null,
-                    'options'     => [],
-                    'debug'       => false,
-                    'log_handler' => null,   // function(Database $db, Query $query) {}
-                ],
-            ],
-            'default_db' => 'main',
         ];
     }
 

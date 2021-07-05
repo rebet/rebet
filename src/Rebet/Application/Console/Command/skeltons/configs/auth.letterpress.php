@@ -1,6 +1,8 @@
 <?php
 
-use App\Model\User;
+//{%-- if $use_auth && $use_db -%}
+use App\Model\Entity\User;
+//{%-- endif -%}
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
@@ -10,6 +12,26 @@ use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Auth\Provider\DatabaseProvider;
 use Rebet\Tools\Translation\Translator;
 
+/*
+|##################################################################################################
+| Auth Package Configurations
+|##################################################################################################
+| This file defines configuration for classes in Rebet\Auth package.
+|
+| The Rebet configuration file provides multiple ways to describe environment-dependent settings.
+| You can use these methods when set environment-dependent settings.
+|
+| 1. Use `Env::promise('KEY')` to get value from `.env` file for each environment.
+| 2. Use `App::when(['env' => value, ...])` to switch value by channel and environment.
+| 3. Use `auth@{env}.php` file to override environment dependency value of `auth.php`
+|
+| You can also use `Config::refer()` to refer to the settings of other classes, use
+| `Config::promise()` to get the settings by lazy evaluation, and have the values evaluated each
+| time the settings are referenced.
+|
+| NOTE: If you want to get other default setting samples of configuration file, try check here.
+|       https://github.com/rebet/rebet/tree/master/src/Rebet/Application/Console/Command/skeltons/configs
+*/
 return [
     /*
     |==============================================================================================
@@ -36,13 +58,10 @@ return [
         |  - and also you can use any auth guard that extended Rebet\Auth\Guard\Guard.
         */
         'guards' => [
-            //{%-- if $use_auth -%}
+            //{%-- commentif !$use_auth -%}
             'user:web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
             'user:api' => [TokenGuard::class  , 'provider' => 'user'],
-            //{%-- else -%}
-            // 'user:web' => [SessionGuard::class, 'provider' => 'user', 'fallback' => '/signin'],
-            // 'user:api' => [TokenGuard::class  , 'provider' => 'user'],
-            //{%-- endif -%}
+            //{%-- endcommentif -%}
         ],
 
 
@@ -105,15 +124,11 @@ return [
         | to see if the target user belongs to a role.
         */
         'roles' => [
-            //{%-- if $use_auth -%}
+            //{%-- commentif !$use_auth -%}
             'all'   => function (AuthUser $user) { return true; },
             'guest' => function (AuthUser $user) { return $user->isGuest(); },
             'user'  => function (AuthUser $user) { return $user->role === 'user'; },
-            //{%-- else -%}
-            // 'all'   => function (AuthUser $user) { return true; },
-            // 'guest' => function (AuthUser $user) { return $user->isGuest(); },
-            // 'user'  => function (AuthUser $user) { return $user->role === 'user'; },
-            //{%-- endif -%}
+            //{%-- endcommentif -%}
         ],
 
 
@@ -127,17 +142,12 @@ return [
         | see if the target user was allowed given action.
         */
         'policies' => [
-            //{%-- if $use_auth && $use_db -%}
+            //{%-- commentif !($use_auth && $use_db) -%}
             User::class => [
                 // '@before' => function (AuthUser $user, $target, string $action) { return $user->is('admin'); },
                 'update' => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
             ],
-            //{%-- else -%}
-            // User::class => [
-            //     // '@before' => function (AuthUser $user, $target, string $action) { return $user->is('admin'); },
-            //     'update' => function (AuthUser $user, User $target) { return $user->id === $target->user_id; },
-            // ],
-            //{%-- endif -%}
+            //{%-- endcommentif -%}
         ],
     ],
 

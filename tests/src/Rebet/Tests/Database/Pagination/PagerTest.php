@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Tests\Database\Pagination;
 
-use Rebet\Tools\Config\Config;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 
 class PagerTest extends RebetTestCase
 {
     public function test___construct()
     {
-        $this->assertInstanceOf(Pager::class, new Pager(1));
+        $this->assertInstanceOf(Pager::class, new Pager());
     }
 
     public function test_resolve()

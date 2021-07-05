@@ -20,14 +20,20 @@ class InitCommand extends Command
     const NAME        = 'init';
     const DESCRIPTION = 'Initialize a new Rebet application';
     const OPTIONS     = [
-        ['locale'       , 'l' , InputOption::VALUE_OPTIONAL, 'Default application locale.'],
-        ['timezone'     , 'tz', InputOption::VALUE_OPTIONAL, 'Default application timezone.'],
-        ['database'     , 'd' , InputOption::VALUE_OPTIONAL, 'Database product.'],
-        ['database-name', 'dn', InputOption::VALUE_OPTIONAL, 'Database name for local development.'],
-        ['database-user', 'du', InputOption::VALUE_OPTIONAL, 'Database user for local development.'],
-        ['database-pass', 'dp', InputOption::VALUE_OPTIONAL, 'Database password for local development.'],
-        ['auth'         , 'a' , InputOption::VALUE_NONE    , 'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
-        ['view'         , 've', InputOption::VALUE_OPTIONAL, 'View template engine.'],
+        ['locale'        , 'l' , InputOption::VALUE_OPTIONAL, 'Default application locale.'],
+        ['timezone'      , 'tz', InputOption::VALUE_OPTIONAL, 'Default application timezone.'],
+        ['database'      , 'd' , InputOption::VALUE_OPTIONAL, 'Database product.'],
+        ['database-name' , 'dn', InputOption::VALUE_OPTIONAL, 'Database name for local development.'],
+        ['database-user' , 'du', InputOption::VALUE_OPTIONAL, 'Database user for local development.'],
+        ['database-pass' , 'dp', InputOption::VALUE_OPTIONAL, 'Database password for local development.'],
+        ['auth'          , 'a' , InputOption::VALUE_NONE    , 'Use user auth (when do not use database then use ArrayProvider as read only authentication)'],
+        ['view'          , 've', InputOption::VALUE_OPTIONAL, 'View template engine.'],
+        ['cache'         , 'c' , InputOption::VALUE_OPTIONAL, 'Cache store product.'],
+        ['memcached-user', 'mu', InputOption::VALUE_OPTIONAL, 'Memcached user for local development.'],
+        ['memcached-pass', 'mp', InputOption::VALUE_OPTIONAL, 'Memcached password for local development.'],
+        ['site-domain'   , 'sd', InputOption::VALUE_OPTIONAL, 'Nginx site domain for local development.'],
+        ['http-port'     , 'p' , InputOption::VALUE_OPTIONAL, 'Nginx http port number for local development.'],
+        ['https-port'    , 'sp', InputOption::VALUE_OPTIONAL, 'Nginx https port number for local development.'],
     ];
 
     protected function handle()
@@ -37,7 +43,7 @@ class InitCommand extends Command
         // @todo https://techblog.istyle.co.jp/archives/97
         // @todo https://github.com/laravel/framework/blob/7.x/src/Illuminate/Foundation/Console/EnvironmentCommand.php
 
-        $total_step = 4;
+        $total_step = 6;
 
         $configs['cwd'] = $cwd = Path::normalize(getcwd());
         $configs['app'] = $app = basename($cwd);
@@ -66,8 +72,7 @@ class InitCommand extends Command
                 'sqlsrv'  => 'Microsoft SQL Server',
             ], 'database');
             $is_sqlite          = $configs['database'] === 'sqlite';
-            $default_db_name    = $is_sqlite ? "{$app}.db" : $app ;
-            $configs['db_name'] = $this->ask("* DB Name     : [{$default_db_name}] ", 'database-name', true, $default_db_name);
+            $configs['db_name'] = $this->ask("* DB Name     : [{$app}] ", 'database-name', true, $app);
             if (!$is_sqlite) {
                 $configs['db_user'] = $this->ask("* DB User     : [{$app}] ", 'database-user', true, $app);
                 $configs['db_pass'] = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
@@ -75,6 +80,10 @@ class InitCommand extends Command
             $use_db = true;
         }
         $configs['use_db'] = $use_db;
+        if (!$use_db) {
+            $configs['database'] = 'mysql';
+            $configs['db_name']  = $app;
+        }
 
 
         $this->writeln('');
@@ -103,10 +112,56 @@ class InitCommand extends Command
 
 
         $this->writeln('');
+        $this->writeln("5) Setup Cache Store For Local Development Configs (5/{$total_step})");
+        $use_cache = false;
+        if ($this->option('cache') || $this->confirm("Will you use cache store? [y/n] : ")) {
+            $configs['cache'] = $this->choice(
+                "* Cache Store : ",
+                [
+                    'apcu'      => 'APCu',
+                ] +
+                ($use_db ? ['database'  => 'Database'] : []) +
+                [
+                    'file'      => 'File System',
+                    'memcached' => 'Memcached',
+                    'redis'     => 'Redis',
+                ],
+                'cache'
+            );
+            if ($configs['cache'] == 'memcached') {
+                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$app}] ", 'memcached-user', true, $app);
+                $configs['memcached_pass'] = $this->ask("* Memcached Password : [P@ssw0rd] ", 'memcached-pass', true, 'P@ssw0rd');
+            }
+            $use_cache = true;
+        }
+        $configs['use_cache'] = $use_cache;
+        if (!$use_cache) {
+            $configs['cache']          = 'memcached';
+            $configs['memcached_user'] = $app;
+        }
+
+
+        $this->writeln('');
+        $this->writeln("6) Setup Nginx For Local Development Configs (6/{$total_step})");
+        $configs['site_domain'] = $this->ask("* Site Domain : [{$app}.local] ", 'site-domain', true, "{$app}.local");
+        $configs['http_port']   = $this->ask("* HTTP  Port  : [80] ", 'http-port', true, '80');
+        $configs['https_port']  = $this->ask("* HTTPS Port  : [443] ", 'https-port', true, '443');
+
+        $this->writeln('');
         $this->comment('You are inputed -------');
         $this->comment(Strings::stringify($configs));
         $this->comment('-----------------------');
 
+        $site_url = 'https://'.$configs['site_domain'].($configs['https_port'] == '443' ? '' : ":{$configs['https_port']}");
+        $this->info('-----------------------');
+        $this->info("Let's add `127.0.0.1 {$configs['site_domain']}` to your hosts file.");
+        $this->info("Then access:");
+        $this->info(" - Site Top : {$site_url}");
+        if($use_db && $configs['database'] !== 'sqlite') {
+            $this->info(" - Adminer  : {$site_url}/adminer/");
+        }
+        $this->info('-----------------------');
+        
         $this->comment('Application ready! Build something amazing.');
     }
 }

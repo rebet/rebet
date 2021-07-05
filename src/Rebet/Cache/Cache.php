@@ -69,7 +69,7 @@ class Cache
 
     /**
      * {@inheritDoc}
-     * @see Rebet\Application\Console\Command\skeltons\configs\cache.letterpress.php
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/cache.letterpress.php
      */
     public static function defaultConfig()
     {

@@ -17,6 +17,7 @@ services:
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
       - ./docker/var/data/sqlite:/tmp/sqlite
     working_dir: /app
+    tty: true
   sqlite:
     build: ./docker/sqlite/
     environment:
@@ -24,6 +25,7 @@ services:
       SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
     volumes:
       - ./docker/var/data/sqlite:/tmp/sqlite
+    tty: true
   mysql:
     image: mysql
     environment:

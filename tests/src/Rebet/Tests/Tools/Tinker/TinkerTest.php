@@ -737,6 +737,13 @@ class TinkerTest extends RebetTestCase
         $this->assertSame(true, $this->float->lte(1234.5678, 2));
         $this->assertSame(true, $this->float->lte(1234.56781, 2));
 
+        // Tinker.filter.customs.not
+        $this->assertSame(true, $this->null->not());
+        $this->assertSame(true, Tinker::with(false)->not());
+        $this->assertSame(false, Tinker::with(true)->not());
+        $this->assertSame(true, Tinker::with(0)->not());
+        $this->assertSame(false, Tinker::with(1)->not());
+
         // Tinker.filter.customs.add
         $this->assertSame(null, $this->null->add(null)->value()->return());
         $this->assertSame(null, $this->null->add(1)->value()->return());

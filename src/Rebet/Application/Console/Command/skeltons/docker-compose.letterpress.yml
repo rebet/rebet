@@ -1,0 +1,213 @@
+#==================================================================================================
+# Rebet Application Docker Compose Settings for Local Development
+#==================================================================================================
+# Please rewrite the settings according to your development status.
+#
+# If you want to get other default setting samples of configuration file, try check here.
+# https://github.com/rebet/rebet/tree/master/src/Rebet/Application/Console/Command/skeltons/docker
+#
+version: '3'
+volumes:
+  # Working file storage volumes for unit test.
+  work:
+services:
+  # ---------------------------------------------------------------------------
+  # Composer Settings
+  # ---------------------------------------------------------------------------
+  composer:
+    image: composer
+    environment:
+      COMPOSER_CACHE_DIR: /app/docker/var/cache/composer
+    volumes:
+      - .:/app
+    entrypoint: composer
+  
+  # ---------------------------------------------------------------------------
+  # Nginx Settings
+  # ---------------------------------------------------------------------------
+  nginx:
+    build: ./docker/nginx/
+    restart: always
+    volumes:
+      - ./app:/app
+      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "{! $http_port !}:80"
+      - "{! $https_port !}:443"
+    extra_hosts:
+      - "{! $site_domain !}:127.0.0.1"
+  
+  # ---------------------------------------------------------------------------
+  # PHP-FPM Settings
+  # ---------------------------------------------------------------------------
+  php:
+    build: ./docker/php/
+    volumes:
+      - .:/app
+      - work:/app/tests/work
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      #{%-- if $use_db && $database == 'sqlite' -%}
+      - ./docker/var/data/sqlite:/tmp/sqlite
+      - ./docker/var/data/sqlite4ut:/tmp/sqlite4ut
+      #{%-- endif -%}
+    working_dir: /app
+  
+  #{%-- if $use_db -%}
+  #{%-- if $database == 'sqlite' -%}
+  # ---------------------------------------------------------------------------
+  # SQLite 3 for Local Development Settings
+  # ---------------------------------------------------------------------------
+  sqlite:
+    build: ./docker/sqlite/
+    environment:
+      SQLITE_DATABASE: '{! $db_name !}.db'
+      SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
+    volumes:
+      - ./docker/var/data/sqlite:/tmp/sqlite
+    tty: true
+
+  # ---------------------------------------------------------------------------
+  # SQLite 3 for Unit Test Settings
+  # ---------------------------------------------------------------------------
+  sqlite4ut:
+    build: ./docker/sqlite/
+    environment:
+      SQLITE_DATABASE: '{! $db_name !}.db'
+      SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
+    volumes:
+      - ./docker/var/data/sqlite4ut:/tmp/sqlite
+    tty: true
+  
+  #{%-- endif -%}
+  #{%-- if $database == 'mysql' -%}
+  # ---------------------------------------------------------------------------
+  # MySQL for Local Development Settings
+  # ---------------------------------------------------------------------------
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+    volumes:
+      - ./docker/var/data/mysql:/var/lib/mysql
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+
+  # ---------------------------------------------------------------------------
+  # MySQL for Unit Test Settings
+  # ---------------------------------------------------------------------------
+  mysql4ut:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+    volumes:
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+  
+  #{%-- endif -%}
+  #{%-- if $database == 'mariadb' -%}
+  # ---------------------------------------------------------------------------
+  # MariaDB for Local Development Settings
+  # ---------------------------------------------------------------------------
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+    volumes:
+      - ./docker/var/data/mariadb:/var/lib/mysql
+      - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
+  
+  # ---------------------------------------------------------------------------
+  # MariaDB for Unit Test Settings
+  # ---------------------------------------------------------------------------
+  mariadb4ut:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+    volumes:
+      - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
+  
+  #{%-- endif -%}
+  #{%-- if $database == 'pgsql' -%}
+  # ---------------------------------------------------------------------------
+  # PostgreSQL for Local Development Settings
+  # ---------------------------------------------------------------------------
+  pgsql:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - ./docker/var/data/pgsql:/var/lib/postgresql/data
+      - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
+  
+  # ---------------------------------------------------------------------------
+  # PostgreSQL for Unit Test Settings
+  # ---------------------------------------------------------------------------
+  pgsql4ut:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
+  
+  #{%-- endif -%}
+  #{%-- if $database == 'sqlsrv' -%}
+  # ---------------------------------------------------------------------------
+  # Microsoft SQL Server for Local Development Settings
+  # ---------------------------------------------------------------------------
+  sqlsrv:
+    build: ./docker/sqlsrv/
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: P@ssw0rd
+    volumes:
+      - ./docker/var/data/sqlsrv:/var/opt/mssql/data
+  
+  # ---------------------------------------------------------------------------
+  # Microsoft SQL Server for Unit Test Settings
+  # ---------------------------------------------------------------------------
+  sqlsrv4ut:
+    build: ./docker/sqlsrv/
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: P@ssw0rd
+  
+  #{%-- endif -%}
+  #{%-- if $database != 'sqlite' -%}
+  # ---------------------------------------------------------------------------
+  # Adminer (Database Management Tool) Settings
+  # ---------------------------------------------------------------------------
+  # You can access Adminer via `https://{! $site_domain !}/adminer/`.
+  adminer:
+    image: adminer:latest
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: "{! $database !}"
+      ADMINER_DESIGN: hever        # see https://www.adminer.org/#extras, https://github.com/vrana/adminer/tree/master/designs
+      ADMINER_PLUGINS: enum-option # see https://www.adminer.org/en/plugins/
+  
+  #{%-- endif -%}
+  #{%-- endif -%}
+  #{%-- if $use_cache -%}
+  #{%-- if $cache == 'memcached' -%}
+  # ---------------------------------------------------------------------------
+  # Memcached Settings
+  # ---------------------------------------------------------------------------
+  memcached:
+    image: memcached
+  
+  #{%-- endif -%}
+  #{%-- if $cache == 'redis' -%}
+  # ---------------------------------------------------------------------------
+  # Redis Settings
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis
+  
+  #{%-- endif -%}
+  #{%-- endif -%}

@@ -2,12 +2,12 @@
 namespace Rebet\Tests\Application\Bootstrap;
 
 use App\Model\User;
+use function PHPUnit\Framework\assertSame;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Http\HttpKernel;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Template\Letterpress;
 
-use function PHPUnit\Framework\assertSame;
+use Rebet\Tools\Template\Letterpress;
 
 class LetterpressTagCustomizerTest extends RebetTestCase
 {
@@ -50,9 +50,232 @@ class LetterpressTagCustomizerTest extends RebetTestCase
             ["ようこそ、太郎様"    , "{% lang 'message.welcome', ['name' => \$name], 'locale' => \$locale %}", ['name' => '太郎', 'locale' => 'ja']],
             ["This is an apple."  , "{% lang 'message.sample', ['amount' => \$amount], \$amount %}", ['amount' => 1]],
             ["There are 3 apples.", "{% lang 'message.sample', ['amount' => \$amount], \$amount %}", ['amount' => 3]],
-       ];
+
+            // commentif
+            [
+                <<<EOS
+                // line 1
+
+EOS
+                , <<<EOS
+                //{%-- commentif true -%}
+                line 1
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                line 1
+
+EOS
+                , <<<EOS
+                //{%-- commentif false -%}
+                line 1
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                // line 1
+                //     indented line 2
+                // 
+                // line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif true -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            // commentif
+            [
+                <<<EOS
+            //     line 1
+            //         indented line 2
+            // 
+            // line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif true -%}
+                line 1
+                    indented line 2
+
+            line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                line 1
+                    indented line 2
+
+                line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif false -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                # line 1
+                #     indented line 2
+                # 
+                # line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif true, '# ' -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                # --- Something headline comment here ---
+                # line 1
+                #     indented line 2
+                # 
+                # line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif true, '# ', '--- Something headline comment here ---' -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                line 1
+                    indented line 2
+
+                line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif false, '# ', '--- Something headline comment here ---' -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+//                 line 1
+//                     indented line 2
+// 
+//                 line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif true, 'indent' => false -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+# --- Something headline comment here ---
+#                 line 1
+#                     indented line 2
+# 
+#                 line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif true, '# ', '--- Something headline comment here ---', false -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+            ],
+            [
+                <<<EOS
+                // line 1
+                //     indented line 2
+                // 
+                // line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif \$use_db->not() -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+                , ['use_db' => false]
+            ],
+            [
+                <<<EOS
+                line 1
+                    indented line 2
+
+                line 4
+
+EOS
+                , <<<EOS
+                //{%-- commentif \$use_db->not() -%}
+                line 1
+                    indented line 2
+
+                line 4
+                //{%-- endcommentif -%}
+EOS
+                , ['use_db' => true]
+            ],
+            [
+                <<<EOS
+                line 1
+
+EOS
+                , <<<EOS
+                //{%-- commentif !\$use_db -%}
+                line 1
+                //{%-- endcommentif -%}
+EOS
+                , ['use_db' => true]
+            ],
+            [
+                <<<EOS
+                line 1
+
+EOS
+                , <<<EOS
+                //{%-- commentif \$foo || \$bar -%}
+                line 1
+                //{%-- endcommentif -%}
+EOS
+                , ['foo' => false, 'bar' => false]
+            ],
+        ];
     }
-    
+
     /**
      * @dataProvider dataBootstrapWithHttpKernels
      */

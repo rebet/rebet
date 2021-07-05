@@ -23,7 +23,7 @@ class AuthUser implements \JsonSerializable
 
     /**
      * {@inheritDoc}
-     * @see Rebet\Application\Console\Command\skeltons\configs\auth.letterpress.php
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/auth.letterpress.php
      */
     public static function defaultConfig()
     {

@@ -20,7 +20,7 @@ use Rebet\Tools\Utility\Utils;
  *
  * List of all possible predicates,
  *
- * | No | Ransack Predicate   | Value Type   | Description ([LMP] means only support L=sqlite, M=mysql, P=pgsql)                | Example emulated SQL
+ * | No | Ransack Predicate   | Value Type   | Description                                                                      | Example emulated SQL
  * +----+---------------------+--------------+----------------------------------------------------------------------------------+------------------------------------------
  * |  1 | All                 | Blank        | If value is blank(null, '' or []) then ransack will be ignored                   | ['name' => null] => (nothing)
  * |  2 | integer             | 2D Array     | Join sub ransack conditions by 'OR'.                                             | [1 => [['name' => 'a', 'gender' => 1], ['name' => 'b', 'gender' => 2]]] => ((name = 'a' AND gender = 1) OR (name = 'b' AND gender = 2))
@@ -95,6 +95,10 @@ class Ransack
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/database.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

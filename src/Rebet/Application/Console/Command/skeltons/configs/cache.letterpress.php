@@ -1,5 +1,6 @@
 <?php
 
+use Rebet\Application\App;
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;
 use Rebet\Cache\Adapter\Symfony\FilesystemAdapter;
@@ -9,6 +10,26 @@ use Rebet\Cache\Adapter\Symfony\RedisAdapter;
 use Rebet\Cache\Cache;
 use Rebet\Tools\Utility\Env;
 
+/*
+|##################################################################################################
+| Cache Package Configurations
+|##################################################################################################
+| This file defines configuration for classes in Rebet\Cache package.
+|
+| The Rebet configuration file provides multiple ways to describe environment-dependent settings.
+| You can use these methods when set environment-dependent settings.
+|
+| 1. Use `Env::promise('KEY')` to get value from `.env` file for each environment.
+| 2. Use `App::when(['env' => value, ...])` to switch value by channel and environment.
+| 3. Use `cache@{env}.php` file to override environment dependency value of `cache.php`
+|
+| You can also use `Config::refer()` to refer to the settings of other classes, use
+| `Config::promise()` to get the settings by lazy evaluation, and have the values evaluated each
+| time the settings are referenced.
+|
+| NOTE: If you want to get other default setting samples of configuration file, try check here.
+|       https://github.com/rebet/rebet/tree/master/src/Rebet/Application/Console/Command/skeltons/configs
+*/
 return [
     /*
     |==============================================================================================
@@ -26,7 +47,9 @@ return [
         | library. This connection is used when another is not explicitly specified when executing
         | a given caching function.
         */
-        'default_store' => 'file',
+        //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
+        'default_store' => '{! $cache !}',
+        //{%-- endcommentif -%}
 
 
         /*
@@ -47,6 +70,7 @@ return [
         |  - and also you can use any cache adapter that implemented Rebet\Cache\Adapter\Adapter.
         */
         'stores' => [
+            //{%-- if $cache == 'apcu' -%}
             /*
             |--------------------------------------------------------------------------------------
             | APCu Cache Store
@@ -54,6 +78,7 @@ return [
             | A cache store based on APCu.
             | If you want to use this adapter then you have to install and enabled APCu extension.
             */
+            //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'apcu' => [
                 'adapter' => [
                     '@factory' => ApcuAdapter::class,
@@ -66,32 +91,16 @@ return [
                     // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
                 ],
             ],
-
-            /*
-            |--------------------------------------------------------------------------------------
-            | Array Cache Store
-            |--------------------------------------------------------------------------------------
-            | A cache store based on array in memory.
-            | This adapter is primarily intended for testing use.
-            */
-            'array' => [
-                'adapter' => [
-                    '@factory' => ArrayAdapter::class,
-                    // --- You can change only what you need for these default options ---
-                    // 'namespace'              => '',
-                    // 'default_lifetime'       => 0,     // You can set time unit labeled string like '12min', or int seconds.
-                    // 'taggable'               => false,
-                    // 'tags_pool'              => null,  // [when taggable] You can set name that `Cache.stores.{name}` or CacheItemPoolInterface instance.
-                    // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
-                ],
-            ],
-
+            //{%-- endcommentif -%}
+            //{%-- endif -%}
+            //{%-- if $cache == 'file' -%}
             /*
             |--------------------------------------------------------------------------------------
             | File Cache Store
             |--------------------------------------------------------------------------------------
             | A cache store based on a file system.
             */
+            //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'file' => [
                 'adapter' => [
                     '@factory' => FilesystemAdapter::class,
@@ -105,20 +114,25 @@ return [
                     // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
                 ],
             ],
-
+            //{%-- endcommentif -%}
+            //{%-- endif -%}
+            //{%-- if $cache == 'memcached' -%}
             /*
             |--------------------------------------------------------------------------------------
             | Memcached Cache Store
             |--------------------------------------------------------------------------------------
             | A cache store based on a Memcached.
+            | If you want to use this adapter then you have to install and enabled Memcached
+            | extension.
             */
+            //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'memcached' => [
                 'adapter' => [
                     '@factory' => MemcachedAdapter::class,
-                    'dsn'      => [
-                        // --- A servers (ex: ['localhost', 11211, 33]) or a DSN (ex: 'memcached://user:pass@localhost?weight=33') ---
-                        Env::promise('MEMCACHED_DSN', 'memcached://localhost:11211'),
-                    ],
+                    'dsn'      => App::when([
+                        'local'      => 'memcached://memcached:11211',
+                        'production' => ['memcached://localhost:11211', /* Secondary DSN if exists */],
+                    ]),
                     'options'  => [
                         'username' => Env::promise('MEMCACHED_USERNAME'),
                         'password' => Env::promise('MEMCACHED_PASSWORD'),
@@ -136,13 +150,16 @@ return [
                     // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
                 ],
             ],
-
+            //{%-- endcommentif -%}
+            //{%-- endif -%}
+            //{%-- if $cache == 'database' -%}
             /*
             |--------------------------------------------------------------------------------------
             | Database (PDO) Cache Store
             |--------------------------------------------------------------------------------------
             | A cache store based on a database.
             */
+            //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'database' => [
                 'adapter' => [
                     '@factory' => PdoAdapter::class,
@@ -163,7 +180,9 @@ return [
                     // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
                 ],
             ],
-
+            //{%-- endcommentif -%}
+            //{%-- endif -%}
+            //{%-- if $cache == 'redis' -%}
             /*
             |--------------------------------------------------------------------------------------
             | Redis Cache Store
@@ -176,10 +195,14 @@ return [
             |  - redis://[pass@][ip|host|socket[:port]][/db-index]
             |  - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
             */
+            //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'redis' => [
                 'adapter'   => [
                     '@factory' => RedisAdapter::class,
-                    'dsn'      => Env::promise('REDIS_DSN', 'redis://localhost/0'),
+                    'dsn'      => App::when([
+                        'local'      => 'redis://redis/0',
+                        'production' => 'redis://localhost/0',
+                    ]),
                     // --- You can change only what you need for these default options ---
                     // 'options'  => [
                     //     // --- You can set any other options supported by Rebet\Cache\Adapter\Symfony\RedisAdapter::__construct() ---
@@ -194,6 +217,30 @@ return [
                     // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
                 ],
             ],
+            //{%-- endcommentif -%}
+            //{%-- endif -%}
+
+
+            /*
+            |--------------------------------------------------------------------------------------
+            | Array Cache Store
+            |--------------------------------------------------------------------------------------
+            | A cache store based on array in memory.
+            | This adapter is primarily intended for testing use.
+            */
+            //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
+            'array' => [
+                'adapter' => [
+                    '@factory' => ArrayAdapter::class,
+                    // --- You can change only what you need for these default options ---
+                    // 'namespace'              => '',
+                    // 'default_lifetime'       => 0,     // You can set time unit labeled string like '12min', or int seconds.
+                    // 'taggable'               => false,
+                    // 'tags_pool'              => null,  // [when taggable] You can set name that `Cache.stores.{name}` or CacheItemPoolInterface instance.
+                    // 'known_tag_versions_ttl' => 0.15,  // [when taggable]
+                ],
+            ],
+            //{%-- endcommentif -%}
         ],
     ],
 ];

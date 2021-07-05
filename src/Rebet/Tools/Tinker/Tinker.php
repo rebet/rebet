@@ -131,7 +131,10 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 'delegaters' => [
                     Reflector::class => ['convert'],
                     Utils::class     => ['isBlank', 'bvl', 'isEmpty', 'evl'],
-                    Strings::class   => ['lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith', 'contains', 'match', 'wildmatch', 'split'],
+                    Strings::class   => [
+                        'lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith',
+                        'contains', 'match', 'wildmatch', 'split'
+                    ],
                     Arrays::class    => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'unique',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
@@ -165,6 +168,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'gte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
                     'lt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
                     'lte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
+                    'not'       => function (?bool $value) { return !$value; },
                     'add'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
                     'sub'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
                     'mul'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
