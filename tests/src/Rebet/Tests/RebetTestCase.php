@@ -37,7 +37,7 @@ abstract class RebetTestCase extends TestCase
     {
         App::clear();
         System::testing(true);
-        App::init(new AppHttpKernel(new Structure(__DIR__.'/../../../application')));
+        App::init(new AppHttpKernel(new Structure(__DIR__.'/../../../app')));
     }
 
     // protected function assertPreConditions() {}

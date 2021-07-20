@@ -3,6 +3,7 @@ use Rebet\Application\App;
 use Rebet\Application\Console\Assistant;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Http\Request;
+use Rebet\Tools\Utility\Env;
 
 /*
 |##################################################################################################
@@ -37,6 +38,16 @@ return [
     | (details @see Rebet\Application\Bootstrap\LoadFrameworkConfiguration)
     */
     App::class => [
+        /*
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        | Application Domain
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        | The application domain.
+        | The settings of domain in libary layer use `localhost`.
+        */
+        'domain' => Env::get('APP_DOMAIN', 'localhost'),
+
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Application Locale

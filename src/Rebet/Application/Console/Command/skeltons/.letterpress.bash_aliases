@@ -4,7 +4,7 @@
 # =========================================================
 alias up="docker-compose up -d"
 alias down="docker-compose down --volumes --remove-orphans"
-alias composer="docker-compose run --rm composer"
+alias composer="docker-compose run --rm composer --ignore-platform-reqs"
 alias phpunit="docker-compose exec php vendor/bin/phpunit -d memory_limit=256M"
 alias psysh="docker-compose exec php vendor/bin/psysh"
 alias nginx="docker-compose exec nginx bash"

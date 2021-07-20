@@ -54,7 +54,7 @@
     "autoload-dev": {
         "psr-4": {
             "Rebet\\Tests\\": "tests/src/Rebet/Tests/",
-            "App\\": "tests/application/app/modules/App/"
+            "App\\": "tests/app/core/modules/App/"
         }
     },
     "suggest": {

@@ -17,20 +17,21 @@ services:
   composer:
     image: composer
     environment:
-      COMPOSER_CACHE_DIR: /app/docker/var/cache/composer
+      COMPOSER_CACHE_DIR: /project/env/local/docker/var/cache/composer
     volumes:
-      - .:/app
+      - .:/project
+    working_dir: /project
     entrypoint: composer
   
   # ---------------------------------------------------------------------------
   # Nginx Settings
   # ---------------------------------------------------------------------------
   nginx:
-    build: ./docker/nginx/
+    build: ./env/local/docker/nginx/
     restart: always
     volumes:
-      - ./app:/app
-      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/project
+      - ./env/local/docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "{! $http_port !}:80"
       - "{! $https_port !}:443"
@@ -41,16 +42,16 @@ services:
   # PHP-FPM Settings
   # ---------------------------------------------------------------------------
   php:
-    build: ./docker/php/
+    build: ./env/local/docker/php/
     volumes:
-      - .:/app
-      - work:/app/tests/work
-      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - .:/project
+      - work:/project/src/tests/work
+      - ./env/local/docker/php/php.ini:/usr/local/etc/php/php.ini
       #{%-- if $use_db && $database == 'sqlite' -%}
-      - ./docker/var/data/sqlite:/tmp/sqlite
-      - ./docker/var/data/sqlite4ut:/tmp/sqlite4ut
+      - ./env/local/docker/var/data/sqlite:/tmp/sqlite
+      - ./env/local/docker/var/data/sqlite4ut:/tmp/sqlite4ut
       #{%-- endif -%}
-    working_dir: /app
+    working_dir: /project
   
   #{%-- if $use_db -%}
   #{%-- if $database == 'sqlite' -%}
@@ -58,24 +59,24 @@ services:
   # SQLite 3 for Local Development Settings
   # ---------------------------------------------------------------------------
   sqlite:
-    build: ./docker/sqlite/
+    build: ./env/local/docker/sqlite/
     environment:
       SQLITE_DATABASE: '{! $db_name !}.db'
       SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
     volumes:
-      - ./docker/var/data/sqlite:/tmp/sqlite
+      - ./env/local/docker/var/data/sqlite:/tmp/sqlite
     tty: true
 
   # ---------------------------------------------------------------------------
   # SQLite 3 for Unit Test Settings
   # ---------------------------------------------------------------------------
   sqlite4ut:
-    build: ./docker/sqlite/
+    build: ./env/local/docker/sqlite/
     environment:
       SQLITE_DATABASE: '{! $db_name !}.db'
       SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
     volumes:
-      - ./docker/var/data/sqlite4ut:/tmp/sqlite
+      - ./env/local/docker/var/data/sqlite4ut:/tmp/sqlite
     tty: true
   
   #{%-- endif -%}
@@ -88,9 +89,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
     volumes:
-      - ./docker/var/data/mysql:/var/lib/mysql
-      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./env/local/docker/var/data/mysql:/var/lib/mysql
+      - ./env/local/docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./env/local/docker/mysql/conf.d:/etc/mysql/conf.d
 
   # ---------------------------------------------------------------------------
   # MySQL for Unit Test Settings
@@ -100,8 +101,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
     volumes:
-      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./env/local/docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./env/local/docker/mysql/conf.d:/etc/mysql/conf.d
   
   #{%-- endif -%}
   #{%-- if $database == 'mariadb' -%}
@@ -113,9 +114,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
     volumes:
-      - ./docker/var/data/mariadb:/var/lib/mysql
-      - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
+      - ./env/local/docker/var/data/mariadb:/var/lib/mysql
+      - ./env/local/docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
+      - ./env/local/docker/mariadb/conf.d:/etc/mysql/conf.d
   
   # ---------------------------------------------------------------------------
   # MariaDB for Unit Test Settings
@@ -125,8 +126,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
     volumes:
-      - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
+      - ./env/local/docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
+      - ./env/local/docker/mariadb/conf.d:/etc/mysql/conf.d
   
   #{%-- endif -%}
   #{%-- if $database == 'pgsql' -%}
@@ -140,8 +141,8 @@ services:
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
-      - ./docker/var/data/pgsql:/var/lib/postgresql/data
-      - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
+      - ./env/local/docker/var/data/pgsql:/var/lib/postgresql/data
+      - ./env/local/docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
   
   # ---------------------------------------------------------------------------
   # PostgreSQL for Unit Test Settings
@@ -153,7 +154,7 @@ services:
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
-      - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
+      - ./env/local/docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
   
   #{%-- endif -%}
   #{%-- if $database == 'sqlsrv' -%}
@@ -161,18 +162,18 @@ services:
   # Microsoft SQL Server for Local Development Settings
   # ---------------------------------------------------------------------------
   sqlsrv:
-    build: ./docker/sqlsrv/
+    build: ./env/local/docker/sqlsrv/
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: P@ssw0rd
     volumes:
-      - ./docker/var/data/sqlsrv:/var/opt/mssql/data
+      - ./env/local/docker/var/data/sqlsrv:/var/opt/mssql/data
   
   # ---------------------------------------------------------------------------
   # Microsoft SQL Server for Unit Test Settings
   # ---------------------------------------------------------------------------
   sqlsrv4ut:
-    build: ./docker/sqlsrv/
+    build: ./env/local/docker/sqlsrv/
     environment:
       ACCEPT_EULA: Y
       MSSQL_SA_PASSWORD: P@ssw0rd

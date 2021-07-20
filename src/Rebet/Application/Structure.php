@@ -55,74 +55,74 @@ class Structure
 
     /**
      * Get environment file path
-     * Defaultly this method return "{Structure::root()}/app/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function env(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/app')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core')}/{$relative_path}");
     }
 
     /**
      * Get application bootstrap modules path
-     * Defaultly this method return "{Structure::root()}/app/bootstrap/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/bootstrap/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function bootstrap(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/app/bootstrap')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core/bootstrap')}/{$relative_path}");
     }
 
     /**
      * Get application config path
-     * Defaultly this method return "{Structure::root()}/app/configs/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/configs/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function configs(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/app/configs')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core/configs')}/{$relative_path}");
     }
 
     /**
      * Get application resources path
-     * Defaultly this method return "{Structure::root()}/app/resources/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/resources/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function resources(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/app/resources')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core/resources')}/{$relative_path}");
     }
 
     /**
      * Get application routes configuration path
-     * Defaultly this method return "{Structure::root()}/app/routes/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/routes/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function routes(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/app/routes')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core/routes')}/{$relative_path}");
     }
 
     /**
      * Get application views path
-     * Defaultly this method return "{Structure::root()}/app/views/{$relative_path}", you can override this method if you want.
+     * Defaultly this method return "{Structure::root()}/core/views/{$relative_path}", you can override this method if you want.
      *
      * @param string|null $relative_path (default: null)
      * @return string
      */
     public function views(?string $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/app/views')}/{$relative_path}");
+        return Path::normalize("{$this->path('/core/views')}/{$relative_path}");
     }
 
     /**

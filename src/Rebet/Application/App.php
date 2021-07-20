@@ -17,6 +17,7 @@ use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Translation\Translator;
+use Rebet\Tools\Utility\Env;
 use Rebet\View\Engine\Twig\Node\EmbedNode;
 use Rebet\View\View;
 
@@ -48,6 +49,7 @@ class App
     public static function defaultConfig()
     {
         return [
+            'domain'          => 'localhost',
             'locale'          => locale_get_default(),
             'fallback_locale' => 'en',
             'timezone'        => date_default_timezone_get() ?: 'UTC',
@@ -147,6 +149,16 @@ class App
     }
 
     /**
+     * Get the application domain.
+     *
+     * @return string
+     */
+    public static function domain() : string
+    {
+        return self::config('domain');
+    }
+
+    /**
      * Determine whether it is a specific locale.
      *
      * @param string ...$locale
@@ -164,7 +176,7 @@ class App
      */
     public static function env() : string
     {
-        return getenv('APP_ENV') ?: 'development';
+        return Env::get('APP_ENV', 'development');
     }
 
     /**
