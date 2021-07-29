@@ -12,9 +12,9 @@ It is currently under development and has not been released yet.
 The following assumes that Docker and Docker Compose are already installed.
 
 ```sh
+docker-compose run --rm composer install --ignore-platform-reqs
 docker-compose up -d
-docker-compose run --rm composer install
-docker-compose exec php vender/bin/phpunit -d memory_limit=256M
+docker-compose exec php vender/bin/phpunit -d memory_limit=256M tests/src/
 ```
 
 But the `docker-compose` command can sometimes feel lengthy.
@@ -22,9 +22,9 @@ So we have prepared `.bash_aliases` that defines abbreviated commands, please us
 
 ```sh
 . .bash_aliases
-up
 composer install
-phpunit
+up
+phpunit tests/src/
 ```
 
 Before running a unit test, you need to run the `up` and `composer install` commands (once only).
@@ -35,7 +35,7 @@ And you can use these alias commands.
 | :---------- | :---------------------------------------------------------------- |
 | `up`        | `docker-compose up -d`                                            |
 | `down`      | `docker-compose down --volumes --remove-orphans`                  |
-| `composer`  | `docker-compose run --rm composer`                                |
+| `composer`  | `docker-compose run --rm composer --ignore-platform-reqs`         |
 | `phpunit`   | `docker-compose exec php vender/bin/phpunit -d memory_limit=256M` |
 | `psysh`     | `docker-compose exec php vender/bin/psysh`                        |
 | `build`     | `docker-compose build`                                            |

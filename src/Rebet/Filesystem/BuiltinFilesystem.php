@@ -40,6 +40,10 @@ class BuiltinFilesystem implements Filesystem
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/filesystem.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

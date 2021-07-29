@@ -67,7 +67,7 @@ class App
      */
     public static function kernel() : Kernel
     {
-        return static::$kernel ;
+        return static::$kernel;
     }
 
     /**

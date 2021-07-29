@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Filesystem\Exception;
 
-use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
+use League\Flysystem\Exception as FlysystemException;
 use Rebet\Tools\Exception\RuntimeException;
 
 /**
@@ -20,12 +20,12 @@ class FilesystemException extends RuntimeException
     }
 
     /**
-     * Create exception from League\Flysystem\FileNotFoundException
+     * Create exception from League\Flysystem\Exception
      *
-     * @param FlysystemFileNotFoundException $e
+     * @param FlysystemException $e
      * @return self
      */
-    public static function from(FlysystemFileNotFoundException $e) : self
+    public static function from(FlysystemException $e) : self
     {
         return new static($e->getMessage(), $e);
     }

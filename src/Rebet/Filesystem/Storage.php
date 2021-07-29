@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Filesystem;
 
-use League\Flysystem\Adapter\Local;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Path;
@@ -23,31 +22,17 @@ class Storage
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/filesystem.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
             'filesystem'   => BuiltinFilesystem::class,
-            'private_disk' => 'private',
-            'public_disk'  => 'public',
-            'disks'        => [
-                'private'  => [
-                    'adapter'    => [
-                        '@factory' => Local::class,
-                        'root'     => Path::normalize(sys_get_temp_dir().'/rebet/strage/private'),
-                    ],
-                    'filesystem' => null,
-                ],
-                'public' => [
-                    'adapter'    => [
-                        '@factory' => Local::class,
-                        'root'     => Path::normalize(sys_get_temp_dir().'/rebet/strage/public'),
-                    ],
-                    'filesystem' => [
-                        'visibility' => 'public',
-                        'url'        => null,
-                    ],
-                ],
-            ],
+            'private_disk' => null,
+            'public_disk'  => null,
+            'disks'        => [],
         ];
     }
 
@@ -81,7 +66,7 @@ class Storage
 
         return static::$disks[$name] = new $filesystem(
             static::configInstantiate("disks.{$name}.adapter"),
-            static::config("disks.{$name}.filesystem", false, null)
+            static::config("disks.{$name}.config", false, null)
         );
     }
 

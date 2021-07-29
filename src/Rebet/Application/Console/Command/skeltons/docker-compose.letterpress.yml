@@ -45,7 +45,7 @@ services:
     build: ./env/local/docker/php/
     volumes:
       - .:/project
-      - work:/project/src/tests/work
+      - work:/project/tests/work
       - ./env/local/docker/php/php.ini:/usr/local/etc/php/php.ini
       #{%-- if $use_db && $database == 'sqlite' -%}
       - ./env/local/docker/var/data/sqlite:/tmp/sqlite

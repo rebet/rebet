@@ -60,8 +60,7 @@
     "suggest": {
         "illuminate/view": "Required to use the 'Blade' view template engine (^8.24).",
         "twig/twig": "Required to use the 'Twig' view template engine (^3.2).",
-        "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (^1.0).",
-        "league/flysystem-sftp": "Required to use the Flysystem SFTP driver (^1.0)."
+        "league/flysystem-*": "Required to use the any other Flysystem driver like Cached[cached-adapter], AWS S3[aws-s3-v3], InMemory[memory], SFTP[sftp], and others (^1.0)."
     },
     "config": {
         "sort-packages": true

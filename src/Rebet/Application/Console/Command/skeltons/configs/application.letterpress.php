@@ -45,7 +45,7 @@ return [
         | The application domain.
         | The settings of domain in libary layer use `localhost`.
         */
-        'domain' => Env::get('APP_DOMAIN', 'localhost'),
+        'domain' => Env::promise('APP_DOMAIN', 'localhost'),
 
 
         /*
