@@ -158,7 +158,7 @@ interface Response
      * @throws \InvalidArgumentException When the HTTP status code is not valid
      * @final
      */
-    public function setStatusCode(int $code, $text = null);
+    public function setStatusCode(int $code, string $text = null);
 
     /**
      * Retrieves the status code for the current web response.

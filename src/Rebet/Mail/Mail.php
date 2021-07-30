@@ -4,7 +4,7 @@ namespace Rebet\Mail;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
-use Egulias\EmailValidator\Validation\SpoofCheckValidation;
+use Egulias\EmailValidator\Validation\Extra\SpoofCheckValidation;
 use Html2Text\Html2Text;
 use Rebet\Mail\Mime\HeaderSet;
 use Rebet\Mail\Mime\MimeMessage;

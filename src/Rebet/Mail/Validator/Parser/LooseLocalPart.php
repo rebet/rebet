@@ -2,12 +2,18 @@
 namespace Rebet\Mail\Validator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;
-use Egulias\EmailValidator\Exception\ConsecutiveDot;
-use Egulias\EmailValidator\Exception\DotAtEnd;
-use Egulias\EmailValidator\Exception\DotAtStart;
-use Egulias\EmailValidator\Exception\UnopenedComment;
+use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
+use Egulias\EmailValidator\Result\Reason\DotAtEnd;
+use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Egulias\EmailValidator\Parser\LocalPart;
+use Egulias\EmailValidator\Result\InvalidEmail;
+use Egulias\EmailValidator\Result\Result;
+use Egulias\EmailValidator\Result\ValidEmail;
 use Egulias\EmailValidator\Warning\LocalTooLong;
+use Rebet\Mail\Validator\Warning\ConsecutiveDotWarning;
+use Rebet\Mail\Validator\Warning\DotAtEndWarning;
+use Rebet\Mail\Validator\Warning\DotAtStartWarning;
+use Rebet\Tools\Reflection\Reflector;
 
 /**
  * Loose Local Part Class
@@ -28,7 +34,7 @@ class LooseLocalPart extends LocalPart
      * Create Loose Local Part Parser.
      *
      * @param EmailLexer $lexer
-     * @param string[] $ignores errors you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
+     * @param string[] $ignores error reasons you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
      */
     public function __construct(EmailLexer $lexer, array $ignores = [])
     {
@@ -37,84 +43,80 @@ class LooseLocalPart extends LocalPart
     }
 
     /**
-     * Throw the given exception of InvalidEmail, but if the given exception is included in ignore list, then the exception register warnings and not throw.
-     *
-     * @param string $exception class name of InvalidEmail subclass
-     * @return void
-     */
-    protected function throw(string $exception) : void
-    {
-        if (!in_array($exception, $this->ignores)) {
-            throw new $exception();
-        }
-        $this->warnings[$exception::CODE] = new $exception();
-    }
-
-    /**
      * {@inheritDoc}
      */
-    public function parse($localPart)
+    public function parse() : Result
     {
-        $parseDQuote       = true;
-        $closingQuote      = false;
-        $openedParenthesis = 0;
-        $totalLength       = 0;
+        $this->lexer->startRecording();
 
         while ($this->lexer->token['type'] !== EmailLexer::S_AT && null !== $this->lexer->token['type']) {
-            if ($this->lexer->token['type'] === EmailLexer::S_DOT && null === $this->lexer->getPrevious()['type']) {
-                $this->throw(DotAtStart::class);
-            }
-
-            $closingQuote = $this->checkDQUOTE($closingQuote);
-            if ($closingQuote && $parseDQuote) {
-                $parseDQuote = $this->parseDoubleQuote();
-            }
-
-            if ($this->lexer->token['type'] === EmailLexer::S_OPENPARENTHESIS) {
-                $this->parseComments();
-                $openedParenthesis += $this->getOpenedParenthesis();
-            }
-
-            if ($this->lexer->token['type'] === EmailLexer::S_CLOSEPARENTHESIS) {
-                if ($openedParenthesis === 0) {
-                    throw new UnopenedComment();
+            if (Reflector::invoke($this, 'hasDotAtStart', [], true)) {
+                if (!in_array(DotAtStart::class, $this->ignores)) {
+                    return new InvalidEmail(new DotAtStart(), $this->lexer->token['value']);
                 }
-
-                $openedParenthesis--;
+                $this->warnings[DotAtStartWarning::CODE] = new DotAtStartWarning();
             }
 
-            $this->checkConsecutiveDots();
+            if ($this->lexer->token['type'] === EmailLexer::S_DQUOTE) {
+                $dquoteParsingResult = Reflector::invoke($this, 'parseDoubleQuote', [], true);
+
+                //Invalid double quote parsing
+                if($dquoteParsingResult->isInvalid()) {
+                    return $dquoteParsingResult;
+                }
+            }
+
+            if ($this->lexer->token['type'] === EmailLexer::S_OPENPARENTHESIS || 
+                $this->lexer->token['type'] === EmailLexer::S_CLOSEPARENTHESIS ) {
+                $commentsResult = $this->parseComments();
+
+                //Invalid comment parsing
+                if($commentsResult->isInvalid()) {
+                    return $commentsResult;
+                }
+            }
+
+            if ($this->lexer->token['type'] === EmailLexer::S_DOT && $this->lexer->isNextToken(EmailLexer::S_DOT)) {
+                if (!in_array(ConsecutiveDot::class, $this->ignores)) {
+                    return new InvalidEmail(new ConsecutiveDot(), $this->lexer->token['value']);
+                }
+                $this->warnings[ConsecutiveDotWarning::CODE] = new ConsecutiveDotWarning();
+            }
 
             if ($this->lexer->token['type'] === EmailLexer::S_DOT &&
                 $this->lexer->isNextToken(EmailLexer::S_AT)
             ) {
-                $this->throw(DotAtEnd::class);
+                if (!in_array(DotAtEnd::class, $this->ignores)) {
+                    return new InvalidEmail(new DotAtEnd(), $this->lexer->token['value']);
+                }
+                $this->warnings[DotAtEndWarning::CODE] = new DotAtEndWarning();
             }
 
-            $this->warnEscaping();
-            $this->isInvalidToken($this->lexer->token, $closingQuote);
-
-            if ($this->isFWS()) {
-                $this->parseFWS();
+            $resultEscaping = Reflector::invoke($this, 'validateEscaping', [], true);
+            if ($resultEscaping->isInvalid()) {
+                return $resultEscaping;
             }
 
-            $totalLength += strlen($this->lexer->token['value']);
+            $resultToken = $this->validateTokens(false);
+            if ($resultToken->isInvalid()) {
+                return $resultToken;
+            }
+
+            $resultFWS = Reflector::invoke($this, 'parseLocalFWS', [], true);
+            if($resultFWS->isInvalid()) {
+                return $resultFWS;
+            }
+
             $this->lexer->moveNext();
         }
 
-        if ($totalLength > LocalTooLong::LOCAL_PART_LENGTH) {
+        $this->lexer->stopRecording();
+        $this->localPart = rtrim($this->lexer->getAccumulatedValues(), '@');
+        if (strlen($this->localPart) > LocalTooLong::LOCAL_PART_LENGTH) {
             $this->warnings[LocalTooLong::CODE] = new LocalTooLong();
         }
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function checkConsecutiveDots()
-    {
-        if ($this->lexer->token['type'] === EmailLexer::S_DOT && $this->lexer->isNextToken(EmailLexer::S_DOT)) {
-            $this->throw(ConsecutiveDot::class);
-        }
+        return new ValidEmail();
     }
 
     /**

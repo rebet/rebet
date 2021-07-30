@@ -2,12 +2,12 @@
 namespace Rebet\Mail\Validator\Validation;
 
 use Egulias\EmailValidator\EmailLexer;
-use Egulias\EmailValidator\EmailParser;
-use Egulias\EmailValidator\Exception\ConsecutiveDot;
-use Egulias\EmailValidator\Exception\DotAtEnd;
-use Egulias\EmailValidator\Exception\DotAtStart;
-use Egulias\EmailValidator\Exception\InvalidEmail;
+use Egulias\EmailValidator\Result\InvalidEmail;
+use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
+use Egulias\EmailValidator\Result\Reason\DotAtEnd;
+use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Egulias\EmailValidator\Validation\EmailValidation;
+use Egulias\EmailValidator\Warning\Warning;
 use Rebet\Mail\Validator\Parser\LooseEmailParser;
 use Rebet\Tools\Config\Configurable;
 
@@ -35,12 +35,7 @@ class LooseRFCValidation implements EmailValidation
     }
 
     /**
-     * @var EmailParser|null
-     */
-    protected $parser;
-
-    /**
-     * @var array
+     * @var Warning[]
      */
     protected $warnings = [];
 
@@ -67,24 +62,23 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
-    public function isValid($email, EmailLexer $emailLexer)
+    public function isValid($email, EmailLexer $emailLexer) : bool
     {
-        $this->parser = new LooseEmailParser($emailLexer, $this->ignores);
-        try {
-            $this->parser->parse((string)$email);
-        } catch (InvalidEmail $invalid) {
-            $this->error = $invalid;
+        $parser = new LooseEmailParser($emailLexer, $this->ignores);
+        $result = $parser->parse((string)$email);
+        if($result->isInvalid()) {
+            $this->error = $result;
             return false;
         }
 
-        $this->warnings = $this->parser->getWarnings();
+        $this->warnings = $parser->getWarnings();
         return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getError()
+    public function getError() : ?InvalidEmail
     {
         return $this->error;
     }
@@ -92,7 +86,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
-    public function getWarnings()
+    public function getWarnings() : array
     {
         return $this->warnings;
     }

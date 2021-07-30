@@ -2,8 +2,8 @@
 namespace Rebet\Tests\Mail\Validator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;
-use Egulias\EmailValidator\Exception\DotAtEnd;
-use Egulias\EmailValidator\Exception\DotAtStart;
+use Egulias\EmailValidator\Result\Reason\DotAtEnd;
+use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Rebet\Mail\Validator\Parser\LooseEmailParser;
 use Rebet\Tests\RebetTestCase;
 

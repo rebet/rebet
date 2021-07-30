@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Mail\Validator\Validation;
 
 use Egulias\EmailValidator\EmailLexer;
-use Egulias\EmailValidator\Exception\ConsecutiveDot;
-use Egulias\EmailValidator\Exception\DotAtEnd;
-use Egulias\EmailValidator\Exception\DotAtStart;
+use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
+use Egulias\EmailValidator\Result\Reason\DotAtEnd;
+use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Rebet\Mail\Validator\Validation\LooseRFCValidation;
 use Rebet\Tests\RebetTestCase;
 
@@ -34,10 +34,6 @@ class LooseRFCValidationTest extends RebetTestCase
      */
     public function test_isValid($expect, string $mail_address, ?array $ignores = null)
     {
-        if ($expect instanceof \Exception) {
-            $this->expectException(get_class($expect));
-        }
-
         $validation = new LooseRFCValidation($ignores);
         $lexer      = new EmailLexer();
         $lexer->setInput($mail_address);

@@ -2,11 +2,14 @@
 namespace Rebet\Tests\Mail\Validator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;
-use Egulias\EmailValidator\Exception\ConsecutiveDot;
-use Egulias\EmailValidator\Exception\DotAtEnd;
-use Egulias\EmailValidator\Exception\DotAtStart;
+use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
+use Egulias\EmailValidator\Result\Reason\DotAtEnd;
+use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Egulias\EmailValidator\Warning\QuotedString;
 use Rebet\Mail\Validator\Parser\LooseLocalPart;
+use Rebet\Mail\Validator\Warning\ConsecutiveDotWarning;
+use Rebet\Mail\Validator\Warning\DotAtEndWarning;
+use Rebet\Mail\Validator\Warning\DotAtStartWarning;
 use Rebet\Tests\RebetTestCase;
 
 class LooseLocalPartTest extends RebetTestCase
@@ -26,25 +29,25 @@ class LooseLocalPartTest extends RebetTestCase
     {
         return [
             [
-                new DotAtStart(), '.invalid.rfc.mail@foo.com',
+                new DotAtStart(), '.invalid.rfc.mail@foo.com', []
             ],
             [
-                true, '.invalid.rfc.mail@foo.com', [DotAtStart::class]
+                null, '.invalid.rfc.mail@foo.com', [DotAtStart::class], [DotAtStartWarning::class]
             ],
             [
-                new ConsecutiveDot(), '.invalid..rfc.mail@foo.com', [DotAtStart::class]
+                new ConsecutiveDot(), '.invalid..rfc.mail@foo.com', [DotAtStart::class], [DotAtStartWarning::class]
             ],
             [
-                true, '.invalid..rfc.mail@foo.com', [DotAtStart::class, ConsecutiveDot::class]
+                null, '.invalid..rfc.mail@foo.com', [DotAtStart::class, ConsecutiveDot::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class]
             ],
             [
-                new DotAtEnd(), '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class]
+                new DotAtEnd(), '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class]
             ],
             [
-                true, '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class, DotAtEnd::class]
+                null, '.invalid..rfc.mail.@foo.com', [DotAtStart::class, ConsecutiveDot::class, DotAtEnd::class], [DotAtStartWarning::class, ConsecutiveDotWarning::class, DotAtEndWarning::class]
             ],
             [
-                true, '".invalid..rfc.mail."@foo.com', [], [QuotedString::class]
+                null, '".invalid..rfc.mail."@foo.com', [], [QuotedString::class]
             ],
         ];
     }
@@ -52,18 +55,20 @@ class LooseLocalPartTest extends RebetTestCase
     /**
      * @dataProvider dataParses
      */
-    public function test_parse($expect, ?string $mail_address, array $ignores = [], ?array $warnings = null)
+    public function test_parse($expect, ?string $mail_address, array $ignores, ?array $warnings = null)
     {
-        if ($expect instanceof \Exception) {
-            $this->expectException(get_class($expect));
-        }
         $lexer = new EmailLexer();
         $lexer->setInput($mail_address);
         $lexer->moveNext();
         $lexer->moveNext();
         $parser = new LooseLocalPart($lexer, $ignores);
-        $parser->parse($mail_address);
-        $this->assertTrue(true);
+        $result = $parser->parse($mail_address);
+        if($expect !== null) {
+            $this->assertTrue($result->isInvalid());
+            $this->assertEquals($expect, $result->reason());
+        } else {
+            $this->assertTrue($result->isValid());
+        }
         $this->assertSame($warnings ?? $ignores, array_values(array_map(function ($v) { return get_class($v); }, $parser->getWarnings())));
     }
 }
