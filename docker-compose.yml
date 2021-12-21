@@ -1,32 +1,24 @@
 version: '3'
 volumes:
+  vendor:
+  history:
   work:
   var:
 services:
-  composer:
-    image: composer
-    environment:
-      COMPOSER_CACHE_DIR: /app/docker/var/cache/composer
-    volumes:
-      - .:/app
-    entrypoint: composer
   php:
-    build: ./docker/php/
+    build:
+      context: ./docker
+      dockerfile: ./php/Dockerfile
     volumes:
-      - .:/app
-      - work:/app/tests/work
-      - var:/app/tests/app/var
+      - .:/rebet
+      - vendor:/rebet/vendor
+      - history:/rebet/.history
+      - work:/rebet/tests/work
+      - var:/rebet/tests/app/var
+      - ./docker/php/.bashrc:/root/.bashrc
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
-      - ./docker/var/data/sqlite:/tmp/sqlite
-    working_dir: /app
-    tty: true
-  sqlite:
-    build: ./docker/sqlite/
-    environment:
-      SQLITE_DATABASE: rebet.db
-      SQLITE_CREATE_TABLES: initdb.d/create_tables.sql
-    volumes:
-      - ./docker/var/data/sqlite:/tmp/sqlite
+      - ./docker/php/conf.d/20-xdebug.ini:/usr/local/etc/php/conf.d/20-xdebug.ini
+    working_dir: /rebet
     tty: true
   mysql:
     image: mysql
@@ -57,14 +49,11 @@ services:
       MSSQL_SA_PASSWORD: P@ssw0rd
   adminer:
     image: adminer
-    restart: always
     environment:
       ADMINER_DESIGN: haeckel      # see https://www.adminer.org/#extras https://github.com/vrana/adminer/tree/master/designs
       ADMINER_PLUGINS: enum-option # see https://www.adminer.org/en/plugins/
     ports:
       - 18080:8080
-    volumes:
-      - ./docker/var/data/sqlite:/tmp/sqlite
   memcached:
     image: memcached
   redis:

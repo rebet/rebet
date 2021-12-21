@@ -1,0 +1,16 @@
+{
+    "name": "Rebet",
+    "dockerComposeFile": ["../docker-compose.yml"],
+    "service": "php",
+    "workspaceFolder": "/rebet",
+    "settings": {},
+    "extensions": [
+		"mikestead.dotenv",
+		"felixfbecker.php-debug",
+		"neilbrayfield.php-docblocker",
+		"bmewburn.vscode-intelephense-client",
+		"mhutchie.git-graph",
+		"junstyle.php-cs-fixer",
+		"xyz.local-history",
+	],
+}

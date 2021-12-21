@@ -9,34 +9,23 @@ It is currently under development and has not been released yet.
 
 ## Local Environment Unit Tests Guaid
 
-The following assumes that Docker and Docker Compose are already installed.
+The following assumes that Docker, Docker Compose and VSCode (include Remote Containers extension) are already installed.
 
-```sh
-docker-compose run --rm composer install --ignore-platform-reqs
-docker-compose up -d
-docker-compose exec php vender/bin/phpunit -d memory_limit=256M tests/src/
-```
+1. Open a project by `File > Open Folder... > /path/to/rebet` with VSCode
+2. Click `><` (green background button) at the bottom left of VSCode and select `Reopen in Container...` under `Remote-Containers` 
+    * `Starting Dev Container (show log): Starting container` to appear in the lower right corner as the Docker container build begins, so wait for finish build.
+3. And then type command below,
+   ```sh
+   composer install
+   phpunit
+   ```
 
-But the `docker-compose` command can sometimes feel lengthy.
-So we have prepared `.bash_aliases` that defines abbreviated commands, please use them as follows if necessary.
+We have prepared `.bashrc` that defines abbreviated alias commands like below,
 
-```sh
-. .bash_aliases
-composer install
-up
-phpunit tests/src/
-```
-
-Before running a unit test, you need to run the `up` and `composer install` commands (once only).
-You can also destroy the docker container created with the `down` command when you are done.
-And you can use these alias commands.
-
-| Aliases     | Full Commands                                                     |
-| :---------- | :---------------------------------------------------------------- |
-| `up`        | `docker-compose up -d`                                            |
-| `down`      | `docker-compose down --volumes --remove-orphans`                  |
-| `composer`  | `docker-compose run --rm composer --ignore-platform-reqs`         |
-| `phpunit`   | `docker-compose exec php vender/bin/phpunit -d memory_limit=256M` |
-| `psysh`     | `docker-compose exec php vender/bin/psysh`                        |
-| `build`     | `docker-compose build`                                            |
-| `build-all` | `docker-compose build php sqlite sqlsrv`                          |
+| Aliases     | Full Commands                                                                 |
+| :---------- | :---------------------------------------------------------------------------- |
+| `ls`        | `ls --color=auto`                                                             |
+| `ll`        | `ls -l`                                                                       |
+| `phpunit`   | `php -d memory_limit=256M -d xdebug.start_with_request=no vendor/bin/phpunit` |
+| `x-phpunit` | `php -d memory_limit=256M vendor/bin/phpunit`                                 |
+| `psysh`     | `php vendor/bin/psysh`                                                        |
