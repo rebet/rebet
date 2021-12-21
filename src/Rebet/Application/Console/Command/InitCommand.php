@@ -3,6 +3,7 @@ namespace Rebet\Application\Console\Command;
 
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
+use Rebet\Inflection\Inflector;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 use Symfony\Component\Console\Input\InputOption;
@@ -46,8 +47,7 @@ class InitCommand extends Command
         $total_step = 7;
         $step       = 0;
 
-        $configs['cwd'] = $cwd = Path::normalize(getcwd());
-        $configs['app'] = $app = basename($cwd);
+        $configs['cwd']       = $cwd = Path::normalize(getcwd());
 
         $this->comment('===========================================');
         $this->comment(' Welcome to Rebet Application Initializing ');
@@ -57,18 +57,19 @@ class InitCommand extends Command
 
         $step++;
         $this->writeln('');
-        $this->writeln("{$step}) Setup Your Application Domain for Local Development ({$step}/{$total_step})");
-        $this->comment(" - If you already have production domain, then type it with prefix `local.` (ex local.{$app}.com)");
-        $this->comment(" - If you don't have production domain yet, then type app name with suffix `.local` (ex {$app}.local)");
-        $this->comment(" - If you don't care local development doamin, then type `localhost`");
-        $configs['domain'] = $domain = $this->ask("* Application Domain for Local Development : ", 'domain', true);
+        $this->writeln("{$step}) Setup Your Application Default Configs ({$step}/{$total_step})");
+        $configs['code_name'] = $code_name = $this->ask("* Application Code Name : ", null, true, Inflector::kebabize(basename($cwd))) ;
+        $configs['locale']    = $this->ask("* Default Locale        : ", 'locale') ;
+        $configs['timezone']  = $this->ask("* Default Timezone      : ", 'timezone') ;
 
 
         $step++;
         $this->writeln('');
-        $this->writeln("{$step}) Setup Your Application Default Configs ({$step}/{$total_step})");
-        $configs['locale']   = $this->ask("* Default Locale   : ", 'locale') ;
-        $configs['timezone'] = $this->ask("* Default Timezone : ", 'timezone') ;
+        $this->writeln("{$step}) Setup Your Application Domain for Local Development ({$step}/{$total_step})");
+        $this->comment(" - If you already have production domain, then type it with prefix `local.` (ex local.{$code_name}.com)");
+        $this->comment(" - If you don't have production domain yet, then type app name with suffix `.local` (ex {$code_name}.local)");
+        $this->comment(" - If you don't care local development doamin, then type `localhost`");
+        $configs['domain'] = $domain = $this->ask("* Application Domain for Local Development : ", 'domain', true);
 
 
         $step++;
@@ -85,9 +86,9 @@ class InitCommand extends Command
                 'sqlsrv'  => 'Microsoft SQL Server',
             ], 'database');
             $is_sqlite          = $configs['database'] === 'sqlite';
-            $configs['db_name'] = $this->ask("* DB Name     : [{$app}] ", 'database-name', true, $app);
+            $configs['db_name'] = $this->ask("* DB Name     : [{$code_name}] ", 'database-name', true, $code_name);
             if (!$is_sqlite) {
-                $configs['db_user'] = $this->ask("* DB User     : [{$app}] ", 'database-user', true, $app);
+                $configs['db_user'] = $this->ask("* DB User     : [{$code_name}] ", 'database-user', true, $code_name);
                 $configs['db_pass'] = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
             }
             $use_db = true;
@@ -95,7 +96,7 @@ class InitCommand extends Command
         $configs['use_db'] = $use_db;
         if (!$use_db) {
             $configs['database'] = 'mysql';
-            $configs['db_name']  = $app;
+            $configs['db_name']  = $code_name;
         }
 
 
@@ -145,7 +146,7 @@ class InitCommand extends Command
                 'cache'
             );
             if ($configs['cache'] == 'memcached') {
-                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$app}] ", 'memcached-user', true, $app);
+                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$code_name}] ", 'memcached-user', true, $code_name);
                 $configs['memcached_pass'] = $this->ask("* Memcached Password : [P@ssw0rd] ", 'memcached-pass', true, 'P@ssw0rd');
             }
             $use_cache = true;
@@ -153,7 +154,7 @@ class InitCommand extends Command
         $configs['use_cache'] = $use_cache;
         if (!$use_cache) {
             $configs['cache']          = 'memcached';
-            $configs['memcached_user'] = $app;
+            $configs['memcached_user'] = $code_name;
         }
 
 

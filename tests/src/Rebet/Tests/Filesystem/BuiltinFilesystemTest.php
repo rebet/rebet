@@ -23,7 +23,7 @@ class BuiltinFilesystemTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->root       = App::structure()->resources('/adhoc/Filesystem/BuiltinFilesystem');
+        $this->root       = App::structure()->storage('/test/Filesystem/BuiltinFilesystem');
         $this->filesystem = new BuiltinFilesystem(new Local($this->root));
     }
 
@@ -74,8 +74,8 @@ class BuiltinFilesystemTest extends RebetTestCase
 
     public function test_path()
     {
-        $this->assertSame(App::structure()->resources('/adhoc/Filesystem/BuiltinFilesystem'), $this->filesystem->path());
-        $this->assertSame(App::structure()->resources('/adhoc/Filesystem/BuiltinFilesystem/hello.txt'), $this->filesystem->path('hello.txt'));
+        $this->assertSame(App::structure()->storage('/test/Filesystem/BuiltinFilesystem'), $this->filesystem->path());
+        $this->assertSame(App::structure()->storage('/test/Filesystem/BuiltinFilesystem/hello.txt'), $this->filesystem->path('hello.txt'));
     }
 
     public function test_get()

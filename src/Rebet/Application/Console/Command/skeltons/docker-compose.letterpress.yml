@@ -164,7 +164,7 @@ services:
   sqlsrv:
     build: ./env/local/docker/sqlsrv/
     environment:
-      ACCEPT_EULA: Y
+      ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: P@ssw0rd
     volumes:
       - ./env/local/docker/var/data/sqlsrv:/var/opt/mssql/data
@@ -175,7 +175,7 @@ services:
   sqlsrv4ut:
     build: ./env/local/docker/sqlsrv/
     environment:
-      ACCEPT_EULA: Y
+      ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: P@ssw0rd
   
   #{%-- endif -%}

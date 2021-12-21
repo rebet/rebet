@@ -149,6 +149,16 @@ class App
     }
 
     /**
+     * Get the application code name.
+     *
+     * @return string
+     */
+    public static function codeName() : string
+    {
+        return self::config('code_name');
+    }
+
+    /**
      * Get the application domain.
      *
      * @return string

@@ -1,6 +1,7 @@
 version: '3'
 volumes:
   work:
+  var:
 services:
   composer:
     image: composer
@@ -14,6 +15,7 @@ services:
     volumes:
       - .:/app
       - work:/app/tests/work
+      - var:/app/tests/app/var
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
       - ./docker/var/data/sqlite:/tmp/sqlite
     working_dir: /app
@@ -51,7 +53,7 @@ services:
   sqlsrv:
     build: ./docker/sqlsrv/
     environment:
-      ACCEPT_EULA: Y
+      ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: P@ssw0rd
   adminer:
     image: adminer

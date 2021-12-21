@@ -19,13 +19,17 @@ class Cookie extends SymfonyCookie
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/http.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
             'expire'    => 0,
-            'path'      => function ($path) { return (Request::current() ? Request::current()->getRoutePrefix() : '').$path; },
+            'path'      => fn($path) => (Request::current() ? Request::current()->getRoutePrefix() : '').$path,
             'domain'    => null,
-            'secure'    => false,
+            'secure'    => null,
             'http_only' => true,
             'raw'       => false,
             'samesite'  => self::SAMESITE_LAX,
@@ -70,7 +74,7 @@ class Cookie extends SymfonyCookie
             $expire ?? static::config('expire'),
             static::convertPath($path),
             $domain ?? static::config('domain', false),
-            $secure ?? static::config('secure'),
+            $secure ?? static::config('secure', false),
             $http_only ?? static::config('http_only'),
             $raw ?? static::config('raw'),
             $samesite ?? static::config('samesite', false)
@@ -140,7 +144,6 @@ class Cookie extends SymfonyCookie
      *
      * Set a cookie via this method then
      *  - the path   will be set to current route prefix, if it is empty then '/'
-     *  - the secure will be set to true
      * defaultly.
      *
      * @param string $name

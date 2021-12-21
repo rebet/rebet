@@ -18,6 +18,10 @@ class HttpStatus
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/http.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [

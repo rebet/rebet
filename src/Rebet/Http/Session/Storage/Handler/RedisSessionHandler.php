@@ -16,10 +16,15 @@ class RedisSessionHandler extends SymfonyRedisSessionHandler
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/http.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
             'prefix' => 'rebet',
+            'ttl'    => null,
         ];
     }
 
