@@ -17,7 +17,7 @@ use Rebet\Tools\Config\Config;
 |
 | 1. Use `Env::promise('KEY')` to get value from `.env` file for each environment.
 | 2. Use `App::when(['env' => value, ...])` to switch value by channel and environment.
-| 3. Use `event@{env}.php` file to override environment dependency value of `event.php`
+| 3. Use `filesystem@{env}.php` file to override environment dependency value of `filesystem.php`
 |
 | You can also use `Config::refer()` to refer to the settings of other classes, use
 | `Config::promise()` to get the settings by lazy evaluation, and have the values evaluated each

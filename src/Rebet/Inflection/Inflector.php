@@ -10,7 +10,7 @@ use Rebet\Tools\Utility\Utils;
 /**
  * Inflector Class
  *
- * Fonction pluralize and singularize implementation are borrowed from doctrine/inflector ver 1.3.x with some modifications.
+ * Function pluralize and singularize implementation are borrowed from doctrine/inflector ver 1.3.x with some modifications.
  * And the Inflector of Rebet dosen't have rules() interface because of the rules become Configurable.
  * So if you want to custamaize a rule, you can use Config settings like below;
  *
@@ -57,6 +57,10 @@ class Inflector
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/inflection.letterpress.php
+     */
     public static function defaultConfig()
     {
         return [
