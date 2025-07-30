@@ -370,20 +370,32 @@ class Config
      *
      * @param string $section
      * @param string $key can contains dot notation
+     * @param array $runtime_args that override defined configuration args (default: [])
      * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
      * @param mixed $default (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      * @throws LogicException
      */
-    public static function instantiate(string $section, string $key, bool $required = true, $default = null)
+    public static function instantiate(string $section, string $key, array $runtime_args = [], bool $required = true, $default = null)
     {
         if ($required) {
             if (!static::has($section, $key)) {
                 throw new ConfigNotDefineException("Unable to instantiate '{$key}' in ". Arrays::last(explode('\\', $section)) .". Undefined configure '{$section}.{$key}'.");
             }
         }
-        return Reflector::instantiate(self::get($section, $key, $required, $default));
+        $config = self::get($section, $key, $required, $default);
+        if (!empty($runtime_args)) {
+            if (is_string($config) || $config instanceof \Closure) {
+                $config = array_merge(['@factory' => $config], $runtime_args);
+            } elseif (is_array($config)) {
+                $config = array_merge($config, $runtime_args);
+            } else {
+                // Do nothing.
+                // If a meaningless runtime argument is passed, continue processing as it is.
+            }
+        }
+        return Reflector::instantiate($config);
     }
 
     /**

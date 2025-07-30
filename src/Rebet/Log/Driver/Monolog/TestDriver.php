@@ -11,7 +11,6 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
  *
  * Usage: (Parameter of Constractor)
  *     'driver'          [*] StderrDriver::class,
- *     'name'            [*] string of name (usualy same as channel name),
  *     'level'           [*] string of LogLevel::*,
  *     'format'          [ ] string of format template (default: null for use TextFormat class config)
  *     'stringifiers'    [ ] placeholder stringify setting of format template (default: [] for use TextFormat class config)
@@ -88,17 +87,16 @@ class TestDriver extends MonologDriver
     /**
      * Create logging driver for test.
      *
-     * @param string $name
      * @param string $level
      * @param string|null $format (default: null)
      * @param array $stringifiers (default: [])
      * @param boolean $bubble (default: true)
      */
-    public function __construct(string $name, string $level, string $format = null, array $stringifiers = [], bool $bubble = true)
+    public function __construct(string $level, string $format = null, array $stringifiers = [], bool $bubble = true)
     {
         $this->handler = new TestHandler($level, $bubble);
         $this->handler->setFormatter(new TextFormatter($format, $stringifiers));
-        parent::__construct($name, $level, [$this->handler]);
+        parent::__construct([$this->handler]);
     }
 
     /**

@@ -3,7 +3,7 @@ FROM php:7.4-fpm
 # Install DevContainer/Development tools and depends
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git openssh-client vim unzip \
-    && pecl install xdebug \
+    && pecl install xdebug-3.1.6 \
     && docker-php-ext-enable xdebug
 
 # Install Required extensions and depends
@@ -17,16 +17,6 @@ RUN apt-get install -y --no-install-recommends mariadb-client \
 
 # Install PostgreSQL extensions and depends
 RUN docker-php-ext-install -j$(nproc) pdo_pgsql
-
-# Install SQL Server extensions and depends
-RUN apt-get install -y                  gnupg \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/ubuntu/21.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
-    && apt-get install -y               unixodbc-dev \
-    && ACCEPT_EULA=Y apt-get install -y mssql-tools \
-    && pecl install                     sqlsrv pdo_sqlsrv \
-    && docker-php-ext-enable            sqlsrv pdo_sqlsrv
 
 # Install Memcached extensions and depends
 RUN apt-get install -y --no-install-recommends libmemcached-dev \

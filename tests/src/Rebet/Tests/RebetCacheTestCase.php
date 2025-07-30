@@ -73,16 +73,6 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
                             'db'       => 'pgsql',
                         ],
                     ],
-                    // ----------------------------------
-                    // @todo Symfony Cache ver 5.2.1 has problem on createTable() when use sqlsrv PDO, so this code comment out currently.
-                    // @see https://github.com/symfony/symfony/issues/39793
-                    // ----------------------------------
-                    // 'pdo-sqlsrv' => [
-                    //     'adapter'   => [
-                    //         '@factory' => PdoAdapter::class,
-                    //         'db'       => 'sqlsrv',
-                    //     ],
-                    // ],
                     'redis' => [
                         'adapter'   => [
                             '@factory' => RedisAdapter::class,

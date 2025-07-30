@@ -410,9 +410,9 @@ class ConfigurableTest_Mock
         static::setConfig(['driver' => $driver]);
     }
 
-    public static function instantiate(string $key)
+    public static function instantiate(string $key, array $runtime_args = [])
     {
-        return static::configInstantiate($key);
+        return static::configInstantiate($key, $runtime_args);
     }
 
     public static function clear(string ...$layers)

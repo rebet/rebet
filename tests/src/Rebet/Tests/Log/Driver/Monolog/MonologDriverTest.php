@@ -19,16 +19,24 @@ class MonologDriverTest extends RebetTestCase
 
     public function test___construct()
     {
-        $driver = new MonologDriver('web', LogLevel::DEBUG);
+        $driver = new MonologDriver();
         $this->assertInstanceOf(MonologDriver::class, $driver);
         $this->assertInstanceOf(ProcessIdProcessor::class, $driver->popProcessor());
+    }
+
+    public function test_setName()
+    {
+        $driver = new MonologDriver();
+        $this->assertSame('rebet', $driver->getName());
+        $this->assertInstanceOf(MonologDriver::class, $driver->setName('test'));
+        $this->assertSame('test', $driver->getName());
     }
 
     public function test_addRecord()
     {
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
         $handler = new TestHandler();
-        $driver  = new MonologDriver('test', LogLevel::DEBUG, [$handler]);
+        $driver  = new MonologDriver([$handler]);
         $driver->addRecord(MonologLogger::DEBUG, "TEST");
         $datetime = $handler->getRecords()[0]['datetime'] ?? null ;
         $this->assertNotNull($datetime);

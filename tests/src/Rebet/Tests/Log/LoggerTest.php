@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Log;
 
+use Psr\Log\Test\TestLogger;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Logger;
@@ -17,18 +18,31 @@ class LoggerTest extends RebetTestCase
 
     public function test___construct()
     {
-        $this->assertInstanceOf(Logger::class, new Logger(new TestDriver('test', LogLevel::DEBUG)));
+        $this->assertInstanceOf(Logger::class, new Logger(new TestDriver(LogLevel::DEBUG)));
     }
 
     public function test_driver()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertInstanceOf(TestDriver::class, $logger->driver());
+    }
+
+    public function test_name()
+    {
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
+        $this->assertEquals('rebet', $logger->name());
+        $this->assertInstanceOf(Logger::class, $logger->name('test'));
+        $this->assertEquals('test', $logger->name());
+
+        $logger = new Logger(new TestLogger());
+        $this->assertEquals(null, $logger->name());
+        $this->assertInstanceOf(Logger::class, $logger->name('test'));
+        $this->assertEquals(null, $logger->name());
     }
 
     public function test_emergency()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasEmergencyRecords());
         $logger->emergency('emergency');
         $this->assertTrue($logger->driver()->hasEmergencyRecords());
@@ -36,7 +50,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_alert()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasAlertRecords());
         $logger->alert('alert');
         $this->assertTrue($logger->driver()->hasAlertRecords());
@@ -44,7 +58,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_critical()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasCriticalRecords());
         $logger->critical('critical');
         $this->assertTrue($logger->driver()->hasCriticalRecords());
@@ -52,7 +66,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_error()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasErrorRecords());
         $logger->error('error');
         $this->assertTrue($logger->driver()->hasErrorRecords());
@@ -60,7 +74,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_warning()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasWarningRecords());
         $logger->warning('warning');
         $this->assertTrue($logger->driver()->hasWarningRecords());
@@ -68,7 +82,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_notice()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasNoticeRecords());
         $logger->notice('notice');
         $this->assertTrue($logger->driver()->hasNoticeRecords());
@@ -76,7 +90,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_info()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasInfoRecords());
         $logger->info('info');
         $this->assertTrue($logger->driver()->hasInfoRecords());
@@ -84,7 +98,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_debug()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasDebugRecords());
         $logger->debug('debug');
         $this->assertTrue($logger->driver()->hasDebugRecords());
@@ -92,7 +106,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_log()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasDebugRecords());
         $logger->log(LogLevel::ERROR, 'message', [], new \Exception('exception'));
         $this->assertTrue($logger->driver()->hasErrorRecords());
@@ -101,7 +115,7 @@ class LoggerTest extends RebetTestCase
 
     public function test_memory()
     {
-        $logger = new Logger(new TestDriver('test', LogLevel::DEBUG));
+        $logger = new Logger(new TestDriver(LogLevel::DEBUG));
         $this->assertFalse($logger->driver()->hasDebugRecords());
         $logger->memory('message');
         $this->assertTrue($logger->driver()->hasDebugRecords());

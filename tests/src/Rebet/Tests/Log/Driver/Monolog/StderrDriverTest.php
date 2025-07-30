@@ -11,7 +11,7 @@ class StderrDriverTest extends RebetTestCase
 {
     public function test___construct()
     {
-        $driver = new StderrDriver('web', LogLevel::DEBUG);
+        $driver = new StderrDriver(LogLevel::DEBUG);
         $this->assertInstanceOf(StderrDriver::class, $driver);
         $this->assertInstanceOf(ProcessIdProcessor::class, $driver->popProcessor());
         $handler = $driver->popHandler();

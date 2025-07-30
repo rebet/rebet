@@ -7,7 +7,6 @@ use Rebet\Database\Database;
 use Rebet\Database\Driver\MysqlDriver;
 use Rebet\Database\Driver\PgsqlDriver;
 use Rebet\Database\Driver\SqliteDriver;
-use Rebet\Database\Driver\SqlsrvDriver;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Query;
@@ -218,40 +217,6 @@ return [
             ],
             //{%-- endcommentif -%}
             //{%-- endif -%}
-            //{%-- if $database == 'sqlsrv' -%}
-            /*
-            |--------------------------------------------------------------------------------------
-            | Microsoft SQL Server Connection
-            |--------------------------------------------------------------------------------------
-            | A databse connection for Microsoft SQL Server.
-            */
-            //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-            'sqlsrv' => [
-                'dsn' => App::when([
-                    'local'      => 'sqlsrv:server=sqlsrv;database={! $db_name !}',
-                    'production' => 'sqlsrv:server=localhost;database={! $db_name !}',
-                ]),
-                'user'     => Env::promise('DB_USERNAME'),
-                'password' => Env::promise('DB_PASSWORD'),
-                'debug'    => App::when([
-                    'local'      => true,
-                    'production' => false,
-                ]),
-                // --- You can change only what you need for these default options ---
-                // 'driver'   => 'sqlsrv',
-                // 'options=' => [
-                //     'pdo' => [
-                //         \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-                //         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                //     ],
-                //     'statement' => [
-                //         \PDO::ATTR_EMULATE_PREPARES   => false,
-                //     ],
-                // ],
-                // 'log_handler' => function (Database $db, Query $query) { Log::debug("[".$db->name()."] SQL: ".$query->emulate()); },
-            ],
-            //{%-- endcommentif -%}
-            //{%-- endif -%}
         ],
 
 
@@ -267,7 +232,6 @@ return [
         |  - 'sqlite' => Rebet\Database\Driver\SqliteDriver::class
         |  - 'mysql'  => Rebet\Database\Driver\MysqlDriver::class
         |  - 'pgsql'  => Rebet\Database\Driver\PgsqlDriver::class
-        |  - 'sqlsrv' => Rebet\Database\Driver\SqlsrvDriver::class
         */
         'drivers' => [
             // 'driver_name' => YourDatabaseDriver::class,
@@ -810,114 +774,6 @@ return [
                 // 'i'   => "DATE_PART('minute', {col})",
                 // 's'   => "DATE_PART('second', {col})",
                 // 'dow' => "DATE_PART('dow', {col})",
-            ],
-        ],
-    ],
-    //{%-- endcommentif -%}
-    //{%-- endif -%}
-    //{%-- if $database == 'sqlsrv' -%}
-    /*
-    |==============================================================================================
-    | Databse Driver Configuration [for Microsoft SQL Server]
-    |==============================================================================================
-    | This section defines database driver configuration settings for Microsoft SQL Server.
-    | Normally, it is not necessary to change the setting, but you can add/change the default
-    | options and datbase dependent ransack search behavior you want.
-    |
-    | See Rebet\Database\Driver\SqlsrvDriver's class comments for a detailed specification and
-    | examples of ransack search.
-    */
-    //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
-    SqlsrvDriver::class => [
-        /*
-        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | Default PDO Options
-        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | Normally, it is not necessary to change the setting, but you can change the default PDO
-        | options you want.
-        |
-        | Preinstalled PDO Options:
-        |  - Items commented out below
-        */
-        // 'options=' => [
-        //     'pdo' => [
-        //         \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-        //         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-        //     ],
-        //     'statement' => [
-        //         \PDO::ATTR_EMULATE_PREPARES   => false,
-        //     ],
-        // ],
-
-
-        /*
-        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | Ransack Search Configuration [for Microsoft SQL Server]
-        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | Normally, it is not necessary to change the setting, but you can add/change the ransack
-        | search behavior you want.
-        */
-        'ransack' => [
-            /*
-            |--------------------------------------------------------------------------------------
-            | Dependent Value Converters
-            |--------------------------------------------------------------------------------------
-            | Here, we define a database dependent converter that converts the values required for
-            | performing a ransack search.
-            | You can also override the common value converter defined in `Ransack.value_converters`
-            | here.
-            */
-            'value_converters' => [
-                // You can add/override only what you need
-            ],
-
-
-            /*
-            |--------------------------------------------------------------------------------------
-            | Dependent Ransack Predicates
-            |--------------------------------------------------------------------------------------
-            | Here, we define a database dependent ransack predicates.
-            | The format is the same as `Ransack.predicates`.
-            | You can also override the common behavior defined in `Ransack.predicates` here.
-            |
-            | Preinstalled Rredicates:
-            |  - Items commented out below
-            */
-            'predicates' => [
-                // --- You can add/change/override only what you need for these default converters ---
-                // 'search'  => ["CONTAINS({col}, {val})" , null , 'OR' ],
-                // 'meaning' => ["FREETEXT({col}, {val})" , null , 'OR' ],
-            ],
-
-
-            /*
-            |--------------------------------------------------------------------------------------
-            | Ransack Options
-            |--------------------------------------------------------------------------------------
-            | Here, we define a database dependent ransack options.
-            |
-            | We sometimes want to convert column values when doing a search in SQL. Typical
-            | examples of this are date part extraction, age calculation, and ambiguous search by
-            | changing collate in some DBs. Ransack options support the conversion process for
-            | these column values, which can be used in combination with Ransack predicates. In
-            | other words, this allows you to search for'birthday_lt_age' or'payment_at_eq_y'.
-            |
-            | Preinstalled Ransack Options:
-            |  - Items commented out below
-            */
-            'options' => [
-                // --- You can add/change only what you need for these ransack options ---
-                // 'len' => 'LEN({col})',
-                // 'uc'  => 'UPPER({col})',
-                // 'lc'  => 'LOWER({col})',
-                // 'age' => "DATEDIFF(yy, {col}, GETDATE()) - IIF(GETDATE() >= DATEADD(yy, DATEDIFF(yy, {col}, GETDATE()), {col}), 0, 1)",
-                // 'y'   => 'YEAR({col})',
-                // 'm'   => 'MONTH({col})',
-                // 'd'   => 'DAY({col})',
-                // 'h'   => 'DATEPART(hh, {col})',
-                // 'i'   => 'DATEPART(mi, {col})',
-                // 's'   => 'DATEPART(ss, {col})',
-                // 'dow' => 'DATEPART(dw, {col})',
             ],
         ],
     ],

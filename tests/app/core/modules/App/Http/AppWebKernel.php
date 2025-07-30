@@ -7,16 +7,15 @@ use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
-use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Bootstrap\LoadRoutingConfiguration;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Error\ExceptionHandler;
-use Rebet\Application\Http\HttpKernel;
+use Rebet\Application\Http\WebKernel;
 
 /**
- * AppHttpKernel For Unit Tests
+ * AppWebKernel For Unit Tests
  */
-class AppHttpKernel extends HttpKernel 
+class AppWebKernel extends WebKernel 
 {
     public function bootstrap() : void
     {
@@ -30,7 +29,6 @@ class AppHttpKernel extends HttpKernel
     {
         return [
             LoadEnvironmentVariables::class,
-            LoadFrameworkConfiguration::class,
             [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
             LoadApplicationConfiguration::class,
             LoadRoutingConfiguration::class,

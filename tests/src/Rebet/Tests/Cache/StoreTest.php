@@ -9,19 +9,6 @@ use Rebet\Tools\Utility\Securities;
 
 class StoreTest extends RebetCacheTestCase
 {
-    public function test_checkSymfonyCachePdoAdapterCreateTableWhenUseSqlsrvPdo()
-    {
-        // If this test will be fail, that means [@see https://github.com/symfony/symfony/issues/39793] is fixed.
-        // In this case remove this test, and remove comment syntax of 'pdo-sqlsrv' store settings in RebetCacheTestCase.
-        $this->expectException(\PDOException::class);
-        $this->expectExceptionMessage("SQLSTATE[IMSSP]: This function is not implemented by this driver.");
-
-        $pdo = new \PDO('sqlsrv:server=sqlsrv;database=rebet', 'rebet', 'rebet');
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $adapter = new \Symfony\Component\Cache\Adapter\PdoAdapter($pdo);
-        $adapter->createTable();
-    }
-
     public function test___construct()
     {
         $this->assertInstanceOf(Store::class, new Store('test', new ArrayAdapter()));

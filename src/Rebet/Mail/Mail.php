@@ -6,6 +6,8 @@ use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Egulias\EmailValidator\Validation\Extra\SpoofCheckValidation;
 use Html2Text\Html2Text;
+use Rebet\Mail\Encoder\Base64Encoder;
+use Rebet\Mail\Mime\HeaderEncoder\Base64HeaderEncoder;
 use Rebet\Mail\Mime\HeaderSet;
 use Rebet\Mail\Mime\MimeMessage;
 use Rebet\Mail\Mime\MimePart;
@@ -53,7 +55,7 @@ class Mail
             'initialize'            => [
                 'handler' => null, // function (Swift_DependencyContainer $c) { ... }
                 'default' => [
-                    'charset'          => 'utf-8',
+                    'charset'          => 'UTF-8',
                     'idright'          => null,
                     'content_encoder'  => 'mime.base64contentencoder',
                     'header_encoder'   => 'mime.base64headerencoder',
@@ -245,6 +247,9 @@ class Mail
             ->withDependencies([
                 'mime.idgenerator.idright',
             ])
+
+            ->register('mime.base64headerencoder')
+            ->asSharedInstanceOf(Base64HeaderEncoder::class)
 
             ->register('mime.base64encoder')
             ->asSharedInstanceOf(Swift_Encoder_Base64Encoder::class)

@@ -4,7 +4,6 @@ namespace Rebet\Database;
 use Rebet\Database\Driver\MysqlDriver;
 use Rebet\Database\Driver\PgsqlDriver;
 use Rebet\Database\Driver\SqliteDriver;
-use Rebet\Database\Driver\SqlsrvDriver;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Strings;
 
@@ -92,7 +91,6 @@ class Dao
                 'sqlite' => SqliteDriver::class,
                 'mysql'  => MysqlDriver::class,
                 'pgsql'  => PgsqlDriver::class,
-                'sqlsrv' => SqlsrvDriver::class,
             ],
         ];
     }

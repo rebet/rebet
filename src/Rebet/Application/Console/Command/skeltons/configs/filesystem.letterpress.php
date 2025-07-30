@@ -4,7 +4,6 @@ use League\Flysystem\Adapter\Local;
 use Rebet\Application\App;
 use Rebet\Filesystem\BuiltinFilesystem;
 use Rebet\Filesystem\Storage;
-use Rebet\Tools\Config\Config;
 
 /*
 |##################################################################################################
@@ -114,7 +113,7 @@ return [
             'private' => [
                 'adapter' => [
                     '@factory' => Local::class,
-                    'root'     => Config::promise(fn() => App::structure()->privateStorage()),
+                    'root'     => App::structure()->privateStorage(),
                     // --- You can change only what you need for these default options ---
                     // 'writeFlags'   => LOCK_EX,
                     // 'linkHandling' => Local::DISALLOW_LINKS,
@@ -132,7 +131,7 @@ return [
             'public' => [
                 'adapter' => [
                     '@factory' => Local::class,
-                    'root'     => Config::promise(fn() => App::structure()->publicStorage()),
+                    'root'     => App::structure()->publicStorage(),
                     // --- You can change only what you need for these default options ---
                     // 'writeFlags'   => LOCK_EX,
                     // 'linkHandling' => Local::DISALLOW_LINKS,
@@ -140,7 +139,7 @@ return [
                 ],
                 'config' => [
                     'visibility' => 'public',
-                    'url'        => Config::promise(fn() => App::structure()->storageUrl()),
+                    'url'        => App::structure()->storageUrl(),
                 ],
             ],
         ],

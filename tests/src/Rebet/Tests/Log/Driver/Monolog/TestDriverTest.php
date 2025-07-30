@@ -18,7 +18,7 @@ class TestDriverTest extends RebetTestCase
 
     public function test___construct()
     {
-        $driver = new TestDriver('web', LogLevel::DEBUG);
+        $driver = new TestDriver(LogLevel::DEBUG);
         $this->assertInstanceOf(TestDriver::class, $driver);
 
         $this->assertInstanceOf(ProcessIdProcessor::class, $driver->popProcessor());
@@ -28,7 +28,7 @@ class TestDriverTest extends RebetTestCase
 
     public function test___call()
     {
-        $driver = new TestDriver('web', LogLevel::DEBUG);
+        $driver = new TestDriver(LogLevel::DEBUG);
         $this->assertFalse($driver->hasDebugRecords());
         $driver->log(LogLevel::DEBUG, 'TEST');
         $this->assertTRue($driver->hasDebugRecords());
@@ -37,7 +37,25 @@ class TestDriverTest extends RebetTestCase
     public function test_formatted()
     {
         $process_id = getmypid();
-        $driver     = new TestDriver('web', LogLevel::DEBUG);
+        $driver     = new TestDriver(LogLevel::DEBUG);
+        $driver->log(LogLevel::DEBUG, 'Line 1');
+        $driver->log(LogLevel::INFO, 'Line 2');
+        $this->assertSame(
+            <<<EOS
+2010-10-20 10:20:30.123456 rebet/{$process_id} [DEBUG] Line 1
+2010-10-20 10:20:30.123456 rebet/{$process_id} [INFO] Line 2
+
+EOS
+            ,
+            $driver->formatted()
+        );
+    }
+
+    public function test_formatted_with_setName()
+    {
+        $process_id = getmypid();
+        $driver     = new TestDriver(LogLevel::DEBUG);
+        $driver->setName('web');
         $driver->log(LogLevel::DEBUG, 'Line 1');
         $driver->log(LogLevel::INFO, 'Line 2');
         $this->assertSame(

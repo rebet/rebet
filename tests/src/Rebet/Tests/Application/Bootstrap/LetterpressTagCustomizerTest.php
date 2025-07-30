@@ -4,14 +4,14 @@ namespace Rebet\Tests\Application\Bootstrap;
 use App\Model\User;
 use function PHPUnit\Framework\assertSame;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
-use Rebet\Application\Http\HttpKernel;
+use Rebet\Application\Http\WebKernel;
 use Rebet\Tests\RebetTestCase;
 
 use Rebet\Tools\Template\Letterpress;
 
 class LetterpressTagCustomizerTest extends RebetTestCase
 {
-    public function dataBootstrapWithHttpKernels() : array
+    public function dataBootstrapWithWebKernels() : array
     {
         $own          = new User();
         $own->user_id = 2;
@@ -277,13 +277,13 @@ EOS
     }
 
     /**
-     * @dataProvider dataBootstrapWithHttpKernels
+     * @dataProvider dataBootstrapWithWebKernels
      */
-    public function test_bootstrap_withHttpKernel($expect, $template, $params = [])
+    public function test_bootstrap_withWebKernel($expect, $template, $params = [])
     {
         $request = $this->createRequestMock('/', 'user', 'web', 'web', 'GET', '/prefix');
         $this->signin($request);
-        $kernel  = $this->createMock(HttpKernel::class);
+        $kernel  = $this->createMock(WebKernel::class);
         $kernel->method('request')->willReturn($request);
 
         Letterpress::clear();

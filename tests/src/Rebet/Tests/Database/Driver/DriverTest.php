@@ -26,23 +26,22 @@ class DriverTest extends RebetDatabaseTestCase
         $path = App::structure()->public('/assets/img/72x72.png');
         $file = file_get_contents($path, 'r');
         return [
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::int(1), PdoParameter::int(1)],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::int(1), 1],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::str('a'), 'a'],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::int(1), Gender::MALE()],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::null(), null],
-            [['sqlite', 'pgsql', 'sqlsrv'], PdoParameter::bool(true), true],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), PdoParameter::int(1)],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), 1],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('a'), 'a'],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::int(1), Gender::MALE()],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::null(), null],
+            [['sqlite', 'pgsql'], PdoParameter::bool(true), true],
             [['mysql', 'mariadb'], PdoParameter::int(1), true],
-            [['sqlite', 'pgsql', 'sqlsrv'], PdoParameter::bool(false), false],
+            [['sqlite', 'pgsql'], PdoParameter::bool(false), false],
             [['mysql', 'mariadb'], PdoParameter::int(0), false],
             [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::lob($file), function () use ($path) { return fopen($path, 'r'); }],
-            [['sqlsrv'], PdoParameter::lob($file, \PDO::SQLSRV_ENCODING_BINARY), function () use ($path) { return fopen($path, 'r'); }],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::str('2001-02-03'), Date::today()],
-            [['sqlite', 'mysql', 'mariadb', 'sqlsrv'], PdoParameter::str('2001-02-03 04:05:06'), DateTime::now()],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('2001-02-03'), Date::today()],
+            [['sqlite', 'mysql', 'mariadb'], PdoParameter::str('2001-02-03 04:05:06'), DateTime::now()],
             [['pgsql'], PdoParameter::str('2001-02-03 04:05:06+0000'), DateTime::now()],
-            [['sqlite', 'mysql', 'mariadb', 'sqlsrv'], PdoParameter::str('2001-02-03 04:05:06'), new \DateTime('2001-02-03 04:05:06', new DateTimeZone('Asia/Tokyo'))],
+            [['sqlite', 'mysql', 'mariadb'], PdoParameter::str('2001-02-03 04:05:06'), new \DateTime('2001-02-03 04:05:06', new DateTimeZone('Asia/Tokyo'))],
             [['pgsql'], PdoParameter::str('2001-02-03 04:05:06+0900'), new \DateTime('2001-02-03 04:05:06', new DateTimeZone('Asia/Tokyo'))],
-            [['sqlite', 'mysql', 'mariadb', 'pgsql', 'sqlsrv'], PdoParameter::str('1234.5678'), new Decimal('1,234.5678')],
+            [['sqlite', 'mysql', 'mariadb', 'pgsql'], PdoParameter::str('1234.5678'), new Decimal('1,234.5678')],
         ];
     }
 
@@ -66,27 +65,9 @@ class DriverTest extends RebetDatabaseTestCase
     {
         return [
             ["SELECT * FROM users", "SELECT * FROM users", null, null],
-            ["SELECT * FROM users", "SELECT * FROM users", null, null, ['sqlsrv']],
-
             ["SELECT * FROM users LIMIT 10", "SELECT * FROM users", 10, null],
-            ["SELECT TOP 10 * FROM users"  , "SELECT * FROM users", 10, null, ['sqlsrv']],
-            ["SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT \n SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT \n SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\nSELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\nSELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\n-- SELECT\nSELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\n-- SELECT\nSELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT */\n-- SELECT\n SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT */\n-- SELECT\n SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\n /* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\n /* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["/* SELECT */\n /* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "/* SELECT */\n /* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-            ["-- SELECT\n /* SELECT */\n-- SELECT\n /* SELECT */ SELECT TOP 10 * FROM (SELECT * FROM users) AS T"  , "-- SELECT\n /* SELECT */\n-- SELECT\n /* SELECT */ SELECT * FROM (SELECT * FROM users) AS T", 10, null, ['sqlsrv']],
-
             ["SELECT * FROM users OFFSET 10", "SELECT * FROM users", null, 10],
-            ["SELECT * FROM users OFFSET 10 ROWS", "SELECT * FROM users", null, 10, ['sqlsrv']],
-            ["SELECT * FROM users ORDER BY user_id OFFSET 10 ROWS", "SELECT * FROM users ORDER BY user_id", null, 10, ['sqlsrv']],
-
             ["SELECT * FROM users LIMIT 10 OFFSET 100", "SELECT * FROM users", 10, 100],
-            ["SELECT * FROM users OFFSET 100 ROWS FETCH NEXT 10 ROWS ONLY", "SELECT * FROM users", 10, 100, ['sqlsrv']],
-            ["SELECT * FROM users ORDER BY user_id OFFSET 100 ROWS FETCH NEXT 10 ROWS ONLY", "SELECT * FROM users ORDER BY user_id", 10, 100, ['sqlsrv']],
         ];
     }
 

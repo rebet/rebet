@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Application\Bootstrap;
 
-use Rebet\Application\Http\HttpKernel;
+use Rebet\Application\Http\WebKernel;
 use Rebet\Application\Kernel;
 use Rebet\Application\View\Tag\BuiltinTagProcessors;
 use Rebet\Tools\Template\Letterpress;
@@ -44,7 +44,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         // Usage:
         //   {% prefix %}
         Letterpress::function('prefix', function () use ($kernel) {
-            return $kernel instanceof HttpKernel ? $kernel->request()->getRoutePrefix() : '' ;
+            return $kernel instanceof WebKernel ? $kernel->request()->getRoutePrefix() : '' ;
         });
 
         // ------------------------------------------------

@@ -175,9 +175,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::find(2);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '2'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1");
 
             // SQLite not support 'FOR UPDATE'.
             if ($driver === 'sqlite') {
@@ -187,9 +185,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::find(2, true);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WITH(UPDLOCK) WHERE ?user_id? = '2'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE");
         });
     }
 
@@ -209,9 +205,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::findBy(['name' => 'Alta Hegmann']);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?name? = 'Alta Hegmann' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?name? = 'Alta Hegmann'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?name? = 'Alta Hegmann' LIMIT 1");
 
             // SQLite not support 'FOR UPDATE'.
             if ($driver === 'sqlite') {
@@ -221,9 +215,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $user = User::findBy(['gender' => Gender::MALE(), 'name_contains' => 'Alta'], true);
             $this->assertEquals(2, $user->user_id);
             $this->assertEquals('Alta Hegmann', $user->name);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WITH(UPDLOCK) WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?gender? = '1' AND ?name? LIKE '%Alta%' ESCAPE '|' LIMIT 1 FOR UPDATE");
         });
     }
 
@@ -242,9 +234,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
             $this->clearExecutedQueries();
             $this->assertEquals([2], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'], 1, true)->pluk('user_id'));
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?gender? = '1' ORDER BY ?user_id? ASC LIMIT 1 FOR UPDATE", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WITH(UPDLOCK) WHERE ?gender? = '1' ORDER BY ?user_id? ASC"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?gender? = '1' ORDER BY ?user_id? ASC LIMIT 1 FOR UPDATE");
         });
     }
 
@@ -275,15 +265,9 @@ class DataModelTest extends RebetDatabaseTestCase
             $fortune = $user->fortune();
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('good', $fortune->result);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?article_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?articles? WHERE ?article_id? = '1'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?article_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1");
 
 
             $articles        = Article::select();
@@ -311,12 +295,8 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals($expect_fortunes[$i], $fortune->result);
                 }
                 $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? ORDER BY ?article_id? DESC");
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? IN ('2', '1') FOR UPDATE", [
-                    'sqlsrv' => "SELECT * FROM ?users? WITH(UPDLOCK) WHERE ?user_id? IN ('2', '1')"
-                ]);
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08')) FOR UPDATE", [
-                    'sqlsrv' => "SELECT * FROM ?fortunes? WITH(UPDLOCK) WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))"
-                ]);
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? IN ('2', '1') FOR UPDATE");
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08')) FOR UPDATE");
             }
 
 
@@ -330,36 +310,16 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
             }
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? ORDER BY ?article_id? DESC");
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '2'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '2'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '2' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '1' AND ?birthday? = '2003-02-16' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ?gender? = '2' AND ?birthday? = '1990-01-08' LIMIT 1");
 
 
             $articles        = Article::select();
@@ -437,12 +397,8 @@ class DataModelTest extends RebetDatabaseTestCase
             $bank = $user->bank();
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('bank name', $bank->name);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'"
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?banks? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?banks? WHERE ?user_id? = '1'"
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?banks? WHERE ?user_id? = '1' LIMIT 1");
 
 
             $user = User::find(2);
@@ -504,12 +460,8 @@ class DataModelTest extends RebetDatabaseTestCase
                 }
                 $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? ORDER BY ?gender? DESC, ?birthday? DESC");
                 $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ((?gender? = '2' AND ?birthday? = '1990-01-08') OR (?gender? = '1' AND ?birthday? = '2003-02-16')) ORDER BY ?user_id? DESC");
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?banks? WHERE ?user_id? = '1' LIMIT 1 FOR UPDATE", [
-                    'sqlsrv' => "SELECT TOP 1 * FROM ?banks? WITH(UPDLOCK) WHERE ?user_id? = '1'",
-                ]);
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?banks? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE", [
-                    'sqlsrv' => "SELECT TOP 1 * FROM ?banks? WITH(UPDLOCK) WHERE ?user_id? = '2'",
-                ]);
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?banks? WHERE ?user_id? = '1' LIMIT 1 FOR UPDATE");
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?banks? WHERE ?user_id? = '2' LIMIT 1 FOR UPDATE");
             }
         });
     }
@@ -526,9 +478,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'",
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC");
 
 
@@ -539,9 +489,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'",
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?subject? LIKE '%foo%' ESCAPE '|' AND ?user_id? = '1' ORDER BY ?article_id? DESC");
 
 
@@ -552,9 +500,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'",
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? ASC");
 
 
@@ -565,12 +511,8 @@ class DataModelTest extends RebetDatabaseTestCase
                 $this->assertEquals(1, $article->user_id);
                 $this->assertEquals($expect_article_ids[$i], $article->article_id);
             }
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'",
-            ]);
-            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC LIMIT 2", [
-                'sqlsrv' => "SELECT TOP 2 * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
-            ]);
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+            $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC LIMIT 2");
 
 
             if ($driver !== 'sqlite') {
@@ -581,12 +523,8 @@ class DataModelTest extends RebetDatabaseTestCase
                     $this->assertEquals(1, $article->user_id);
                     $this->assertEquals($expect_article_ids[$i], $article->article_id);
                 }
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1", [
-                    'sqlsrv' => "SELECT TOP 1 * FROM ?users? WHERE ?user_id? = '1'",
-                ]);
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC FOR UPDATE", [
-                    'sqlsrv' => "SELECT * FROM ?articles? WITH(UPDLOCK) WHERE ?user_id? = '1' ORDER BY ?article_id? DESC",
-                ]);
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? = '1' LIMIT 1");
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? = '1' ORDER BY ?article_id? DESC FOR UPDATE");
             }
 
 
@@ -709,9 +647,7 @@ class DataModelTest extends RebetDatabaseTestCase
                     }
                 }
                 $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? ORDER BY ?user_id? DESC");
-                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC FOR UPDATE", [
-                    'sqlsrv' => "SELECT * FROM ?articles? WITH(UPDLOCK) WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC",
-                ]);
+                $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?articles? WHERE ?user_id? IN ('3', '2', '1') ORDER BY ?article_id? DESC FOR UPDATE");
                 $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?users? WHERE ?user_id? IN ('2', '1')");
             }
 

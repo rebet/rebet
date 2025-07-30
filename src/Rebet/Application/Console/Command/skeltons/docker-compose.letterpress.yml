@@ -157,28 +157,6 @@ services:
       - ./env/local/docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
   
   #{%-- endif -%}
-  #{%-- if $database == 'sqlsrv' -%}
-  # ---------------------------------------------------------------------------
-  # Microsoft SQL Server for Local Development Settings
-  # ---------------------------------------------------------------------------
-  sqlsrv:
-    build: ./env/local/docker/sqlsrv/
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: P@ssw0rd
-    volumes:
-      - ./env/local/docker/var/data/sqlsrv:/var/opt/mssql/data
-  
-  # ---------------------------------------------------------------------------
-  # Microsoft SQL Server for Unit Test Settings
-  # ---------------------------------------------------------------------------
-  sqlsrv4ut:
-    build: ./env/local/docker/sqlsrv/
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: P@ssw0rd
-  
-  #{%-- endif -%}
   #{%-- if $database != 'sqlite' -%}
   # ---------------------------------------------------------------------------
   # Adminer (Database Management Tool) Settings

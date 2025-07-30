@@ -12,7 +12,6 @@ use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
  *
  * Usage: (Parameter of Constractor)
  *     'driver'               [*] FileDriver::class,
- *     'name'                 [*] string of name (usualy same as channel name),
  *     'level'                [*] string of LogLevel::*,
  *     'filename'             [*] string of file path,
  *     'filename_format'      [ ] string of filename_format that contains {filename} and {date} placeholder (default: '{filename}-{date}'),
@@ -35,7 +34,6 @@ class FileDriver extends MonologDriver
     /**
      * Create File ouput logging driver.
      *
-     * @param string $name
      * @param string $level
      * @param string $filename
      * @param string $filename_format (default: '{filename}-{date}')
@@ -49,7 +47,6 @@ class FileDriver extends MonologDriver
      * @param boolean $bubble (default: true)
      */
     public function __construct(
-        string $name,
         string $level,
         string $filename,
         string $filename_format      = '{filename}-{date}',
@@ -73,6 +70,6 @@ class FileDriver extends MonologDriver
             $handlers[] = $sbch;
         }
 
-        parent::__construct($name, $level, $handlers);
+        parent::__construct($handlers);
     }
 }

@@ -5,7 +5,6 @@ use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
-use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Bootstrap\LoadRoutingConfiguration;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
@@ -15,14 +14,14 @@ use Rebet\Http\Response;
 use Rebet\Routing\Router;
 
 /**
- * HTTP Kernel Class
+ * Web Kernel Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class HttpKernel extends ApplicationKernel
+abstract class WebKernel extends ApplicationKernel
 {
     /**
      * Current handling request.
@@ -56,7 +55,6 @@ abstract class HttpKernel extends ApplicationKernel
     {
         return [
             LoadEnvironmentVariables::class,
-            LoadFrameworkConfiguration::class,
             [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
             LoadApplicationConfiguration::class,
             LoadRoutingConfiguration::class,

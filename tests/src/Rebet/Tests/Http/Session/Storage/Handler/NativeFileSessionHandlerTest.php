@@ -16,6 +16,7 @@ class NativeFileSessionHandlerTest extends RebetTestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test___construct()
     {

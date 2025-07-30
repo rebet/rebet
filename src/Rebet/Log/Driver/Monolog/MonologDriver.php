@@ -3,6 +3,7 @@ namespace Rebet\Log\Driver\Monolog;
 
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
+use Rebet\Log\Driver\NameableDriver;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;
@@ -18,8 +19,6 @@ use Throwable;
  *
  * Usage: (Parameter of Constractor)
  *   'driver'     [*] MonologDriver::class,
- *   'name'       [*] string of name (usualy same as channel name),
- *   'level'      [*] string of LogLevel::*,
  *   'handlers'   [ ] HandlerInterface[] for optional stack of handlers, the first one in the array is called first, etc. (default: [])
  *   'processors' [ ] array of callable processors. (default: [])
  *
@@ -28,7 +27,7 @@ use Throwable;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class MonologDriver extends MonologLogger
+class MonologDriver extends MonologLogger implements NameableDriver
 {
     use Configurable;
 
@@ -44,16 +43,14 @@ class MonologDriver extends MonologLogger
     /**
      * Create logger using given handlers.
      *
-     * @param string $name
-     * @param string $level
      * @param array $handlers (default: [])
      * @param array $processors (default: [])
      * @param string|\DateTimeZone|null $timezone (default: null for use Datetime.default_timezone configure)
      */
-    public function __construct(string $name, string $level, array $handlers = [], array $processors = [], $timezone = null)
+    public function __construct(array $handlers = [], array $processors = [], $timezone = null)
     {
-        parent::__construct($name, $handlers, $processors, new DateTimeZone($timezone ?? DateTime::config('default_timezone')));
-        $extra_args = compact('name', 'level');
+        // The default logger name is 'rebet', but usually overridden the channel name by Log
+        parent::__construct('rebet', $handlers, $processors, new DateTimeZone($timezone ?? DateTime::config('default_timezone')));
         foreach (static::config('processors', false, []) as $processor) {
             if (is_callable($processor)) {
                 $this->pushProcessor($processor);
@@ -61,6 +58,15 @@ class MonologDriver extends MonologLogger
             }
             $this->pushProcessor(Reflector::instantiate($processor));
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setName(string $name) : self
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests;
 
-use App\Http\AppHttpKernel;
+use App\AppStructure;
+use App\Http\AppWebKernel;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Rebet\Application\App;
-use Rebet\Application\Structure;
 use Rebet\Auth\Auth;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
@@ -28,14 +28,14 @@ abstract class RebetTestCase extends TestCase
 
     public static function setUpBeforeClass() : void
     {
-        static::setUpWorkingDir((new Structure(__DIR__.'/../../../'))->path('/work'));
+        static::setUpWorkingDir((new AppStructure(__DIR__.'/../../../'))->path('/work'));
     }
 
     protected function setUp() : void
     {
         App::clear();
         System::testing(true);
-        App::init(new AppHttpKernel(new Structure(__DIR__.'/../../../app')));
+        App::init(new AppWebKernel(new AppStructure(__DIR__.'/../../../app')));
     }
 
     // protected function assertPreConditions() {}

@@ -1,5 +1,6 @@
 <?php
 
+use Rebet\Application\App;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\Route\MethodRoute;
 use Rebet\Routing\Router;
@@ -8,8 +9,8 @@ use Rebet\Routing\ViewSelector;
 return [
     Router::class => [
         'middlewares'              => [],
-        'default_fallback_handler' => null,
-        'current_channel'          => null,
+        'current_channel'          => App::channel(),
+        'default_fallback_handler' => App::kernel()->exceptionHandler(),
     ],
 
     ViewSelector::class => [

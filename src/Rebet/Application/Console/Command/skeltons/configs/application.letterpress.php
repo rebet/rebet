@@ -33,9 +33,8 @@ return [
     |==============================================================================================
     | This section defines common settings that affect the entire application and specific user
     | settings that the application is free to use.
-    | Common settings (locale, etc.) are referenced from each module by the framework layer and the
+    | Common settings (locale, etc.) are referenced from each package configuration and the
     | settings are linked.
-    | (details @see Rebet\Application\Bootstrap\LoadFrameworkConfiguration)
     */
     App::class => [
         /*

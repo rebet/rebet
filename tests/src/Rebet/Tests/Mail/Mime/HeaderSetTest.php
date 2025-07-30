@@ -137,14 +137,14 @@ class HeaderSetTest extends RebetTestCase
         $this->assertFalse($this->headers->has($name));
         $this->assertInstanceOf(HeaderSet::class, $this->headers->addMailboxHeader($name, $value));
         $this->assertTrue($this->headers->has($name));
-        $this->assertSame("{$name}: =?utf-8?B?44Oe44Or44OB44OQ44Kk44OI5paH5a2X?=\r\n =?utf-8?B??= <user1@domain.com>\r\n", $this->headers->get($name)->toString());
+        $this->assertSame("{$name}: =?UTF-8?B?44Oe44Or44OB44OQ44Kk44OI5paH5a2X?=\r\n <user1@domain.com>\r\n", $this->headers->get($name)->toString());
 
         $name  = 'X-Add-Test-Mailbox-5';
         $value = 'マルチバイト文字 <user1@domain.com>';
         $this->assertFalse($this->headers->has($name));
         $this->assertInstanceOf(HeaderSet::class, $this->headers->addMailboxHeader($name, $value));
         $this->assertTrue($this->headers->has($name));
-        $this->assertSame("{$name}: =?utf-8?B?44Oe44Or44OB44OQ44Kk44OI5paH5a2X?=\r\n =?utf-8?B??= <user1@domain.com>\r\n", $this->headers->get($name)->toString());
+        $this->assertSame("{$name}: =?UTF-8?B?44Oe44Or44OB44OQ44Kk44OI5paH5a2X?=\r\n <user1@domain.com>\r\n", $this->headers->get($name)->toString());
 
         $name  = 'X-Add-Test-Mailbox-Multi-1';
         $value = ['user1@domain.com', 'user2@domain.com'];

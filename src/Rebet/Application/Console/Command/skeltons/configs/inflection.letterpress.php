@@ -87,16 +87,16 @@ return [
             |--------------------------------------------------------------------------------------
             | Irregular conversion rules of pluralize are defined by exact match strings.
             | For example,
-            |   - 'atlas'        => 'atlases',
-            |   - 'brother'      => 'brothers',
-            |   - 'foot'         => 'feet',
+            |   - 'atlas'   => 'atlases',
+            |   - 'brother' => 'brothers',
+            |   - 'foot'    => 'feet',
             | and so on.
             |
             | This rule is applied from the top of the definition.
             | NOTE: The custom rules defined here append/override the default definitions.
             */
             // 'irregular' => [
-            //     // ex) 'singular'     => 'plural',
+            //     // ex) 'singular' => 'plural',
             // ],
         ],
 
@@ -152,16 +152,16 @@ return [
             |--------------------------------------------------------------------------------------
             | Irregular conversion rules of singularize are defined by exact match strings.
             | For example,
-            |   - 'abuses'       => 'abuse',
-            |   - 'emphases'     => 'emphasis',
-            |   - 'waves'        => 'wave',
+            |   - 'abuses'   => 'abuse',
+            |   - 'emphases' => 'emphasis',
+            |   - 'waves'    => 'wave',
             | and so on.
             |
             | This rule is applied from the top of the definition.
             | NOTE: The custom rules defined here append/override the default definitions.
             */
             // 'irregular' => [
-            //     // ex) 'plural'     => 'singular',
+            //     // ex) 'plural' => 'singular',
             // ],
         ],
 

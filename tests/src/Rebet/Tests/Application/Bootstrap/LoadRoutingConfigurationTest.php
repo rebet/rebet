@@ -11,9 +11,6 @@ use Rebet\Tests\RebetTestCase;
 
 class LoadRoutingConfigurationTest extends RebetTestCase
 {
-    /**
-     * @runInSeparateProcess
-     */
     public function test_bootstrap()
     {
         $request = $this->createRequestMock('/hello');

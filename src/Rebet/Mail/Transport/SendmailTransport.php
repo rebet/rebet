@@ -24,11 +24,8 @@ class SendmailTransport extends Swift_SendmailTransport
     use PluginAccessible, PluginOptionable;
 
     /**
-     * @param string $host (default: 'localhost')
-     * @param int $port (default: 25)
-     * @param string|null $username (default: null)
-     * @param string|null $password (default: null)
-     * @param array $options (default: [])
+     * @param string $command (default: null for use 'sendmail_path' of php.ini , if it is not set then '/usr/sbin/sendmail -bs')
+     * @param array  $options (default: [])
      *   - string       'source_ip'
      *   - string       'local_domain'
      *   - string       'sender'            : Use Swift_Plugins_ImpersonatePlugin [?]
@@ -40,9 +37,9 @@ class SendmailTransport extends Swift_SendmailTransport
      *   - string|array 'always_bcc'        : Use AlwaysBccPlugin [?]
      * @param string|null $encryption null, 'tls' or 'ssl' (default: null for choose default by port number)
      */
-    public function __construct(string $command = '/usr/sbin/sendmail -bs', array $options = [])
+    public function __construct(string $command = null, array $options = [])
     {
-        parent::__construct($command);
+        parent::__construct($command ?? ini_get('sendmail_path') ?? '/usr/sbin/sendmail -bs');
         foreach ($options as $option => $value) {
             if ($this->apply($option, $value)) {
                 continue;

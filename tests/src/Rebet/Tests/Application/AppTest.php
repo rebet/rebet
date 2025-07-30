@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Application;
 
+use App\AppStructure;
 use App\Stub\KernelStub;
 use Rebet\Application\App;
-use Rebet\Application\Structure;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 
@@ -16,40 +16,40 @@ class AppTest extends RebetTestCase
 
     public function test_init()
     {
-        $kernel = App::init(new KernelStub(new Structure('/var/www/app'), 'web'));
+        $kernel = App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
         $this->assertSame($kernel, App::kernel());
         $this->assertSame('web', App::channel());
     }
 
     public function test_root()
     {
-        App::init(new KernelStub(new Structure('/var/www/app'), 'web'));
+        App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
         $this->assertSame('/var/www/app', App::root());
 
-        App::init(new KernelStub(new Structure('c:\\var\\www\\app'), 'web'));
+        App::init(new KernelStub(new AppStructure('c:\\var\\www\\app'), 'web'));
         $this->assertSame('c:/var/www/app', App::root());
 
-        App::init(new KernelStub(new Structure('vfs://var/www/app'), 'web'));
+        App::init(new KernelStub(new AppStructure('vfs://var/www/app'), 'web'));
         $this->assertSame('vfs://var/www/app', App::root());
     }
 
     public function test_path()
     {
-        App::init(new KernelStub(new Structure('/var/www/app'), 'web'));
+        App::init(new KernelStub(new AppStructure('/var/www/app'), 'web'));
         $this->assertSame('/var/www/app/var/logs', App::path('/var/logs'));
         $this->assertSame('/var/www/app/var/logs', App::path('var/logs'));
         $this->assertSame('/var/www/.env', App::path('/../.env'));
         $this->assertSame('/var/www/.env', App::path('../.env'));
 
-        App::init(new KernelStub(new Structure('c:\\var\\www\\app\\'), 'web'));
+        App::init(new KernelStub(new AppStructure('c:\\var\\www\\app\\'), 'web'));
         $this->assertSame('c:/var/www/app/var/logs', App::path('/var/logs'));
         $this->assertSame('c:/var/www/.env', App::path('../.env'));
 
-        App::init(new KernelStub(new Structure('file:\\\\var\\www\\app'), 'web'));
+        App::init(new KernelStub(new AppStructure('file:\\\\var\\www\\app'), 'web'));
         $this->assertSame('file://var/www/app/var/logs', App::path('/var/logs'));
         $this->assertSame('file://var/www/.env', App::path('../.env'));
 
-        App::init(new KernelStub(new Structure('file:\\\\c:\\var\\www\\app\\'), 'web'));
+        App::init(new KernelStub(new AppStructure('file:\\\\c:\\var\\www\\app\\'), 'web'));
         $this->assertSame('file://c:/var/www/app/var/logs', App::path('/var/logs'));
         $this->assertSame('file://c:/var/www/.env', App::path('../.env'));
     }

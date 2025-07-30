@@ -81,7 +81,7 @@ class App
     }
 
     /**
-     * initialize App and set configure.
+     * Initialize App and set configure.
      *
      * @param Kernel $kernel
      * @return Kernel

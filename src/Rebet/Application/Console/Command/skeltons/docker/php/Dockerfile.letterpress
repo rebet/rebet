@@ -22,18 +22,6 @@ RUN apt-get install -y --no-install-recommends mariadb-client \
 RUN docker-php-ext-install -j$(nproc) pdo_pgsql
 
 #{%-- endif -%}
-#{%-- if $database == 'sqlsrv' -%}
-# Install SQL Server extensions and depends
-RUN apt-get install -y                  gnupg \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
-    && ACCEPT_EULA=Y apt-get install -y mssql-tools \
-    && apt-get install -y               unixodbc-dev \
-    && pecl install                     sqlsrv pdo_sqlsrv \
-    && docker-php-ext-enable            sqlsrv pdo_sqlsrv
-
-#{%-- endif -%}
 #{%-- if $cache == 'memcached' -%}
 # Install Memcached extensions and depends
 RUN apt-get install -y --no-install-recommends libmemcached-dev \

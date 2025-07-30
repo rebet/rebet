@@ -858,19 +858,6 @@ class RansackTest extends RebetDatabaseTestCase
                 'name_search', 'foo', [],
                 ['pgsql']
             ],
-            [
-                "CONTAINS(?name?, :name_search)",
-                ['name_search' => 'foo'],
-                'name_search', 'foo', [],
-                ['sqlsrv']
-            ],
-            // --------------
-            [
-                "FREETEXT(?name?, :name_meaning)",
-                ['name_meaning' => 'foo'],
-                'name_meaning', 'foo', [],
-                ['sqlsrv']
-            ],
         ];
     }
 

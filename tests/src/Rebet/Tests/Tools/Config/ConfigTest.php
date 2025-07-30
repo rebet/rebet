@@ -26,6 +26,11 @@ class ConfigTest extends RebetTestCase
     {
         $this->assertSame('default', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate')->value);
         $this->assertSame('arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_arg')->value);
+        $this->assertSame('map', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_map')->value);
+
+        $this->assertSame('runtime_arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate', ['runtime_arg'])->value);
+        $this->assertSame('arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_arg', ['runtime_arg'])->value);                    // append 2nd args, so do not change parameter
+        $this->assertSame('runtime_arg', Config::instantiate(ConfigTest_MockInstantiate::class, 'mock_instantiate_map', ['value' => 'runtime_arg'])->value);
     }
 
     public function test_clear()
@@ -865,6 +870,7 @@ class ConfigTest_MockInstantiate
         return [
             'mock_instantiate'     => ConfigTest_MockInstantiate::class,
             'mock_instantiate_arg' => [ConfigTest_MockInstantiate::class, 'arg'],
+            'mock_instantiate_map' => [ConfigTest_MockInstantiate::class, 'value' => 'map'],
         ];
     }
 

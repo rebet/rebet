@@ -83,7 +83,6 @@ class InitCommand extends Command
                 'mysql'   => 'MySQL',
                 'mariadb' => 'MariaDB',
                 'pgsql'   => 'PostgreSQL',
-                'sqlsrv'  => 'Microsoft SQL Server',
             ], 'database');
             $is_sqlite          = $configs['database'] === 'sqlite';
             $configs['db_name'] = $this->ask("* DB Name     : [{$code_name}] ", 'database-name', true, $code_name);

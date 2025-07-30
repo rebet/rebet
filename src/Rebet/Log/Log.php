@@ -7,6 +7,7 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Log\Driver\Monolog\StderrDriver;
 use Rebet\Log\Driver\Monolog\TestDriver;
+use Rebet\Log\Driver\NameableDriver;
 use Rebet\Log\Driver\NullDriver;
 use Rebet\Log\Driver\StackDriver;
 use Rebet\Tools\Config\Configurable;
@@ -71,14 +72,12 @@ class Log
                 'stderr' => [
                     'driver' => [
                         '@factory' => StderrDriver::class,
-                        'name'     => 'stderr',
                         'level'    => LogLevel::DEBUG,
                     ],
                 ],
                 'test' => [
                     'driver' => [
                         '@factory' => TestDriver::class,
-                        'name'     => 'test',
                         'level'    => LogLevel::DEBUG,
                     ],
                 ],
@@ -137,7 +136,7 @@ class Log
         switch (true) {
             case static::unittest(): return static::config('unittest_channel');
         }
-        return $channel ?? static::config('default_channel', false, 'default');
+        return $channel ?? static::config('default_channel', false, 'stderr');
     }
 
     /**
@@ -154,7 +153,11 @@ class Log
         }
 
         try {
-            return static::$channels[$channel] = new Logger(static::configInstantiate("channels.{$channel}.driver"));
+            $driver = static::configInstantiate("channels.{$channel}.driver");
+            if ($driver instanceof NameableDriver) {
+                $driver->setName($channel);
+            }
+            return static::$channels[$channel] = new Logger($driver);
         } catch (\Exception $e) {
             static::fallbackLogger()->warning("Unable to create '{$channel}' channel logger.", [], $e);
             return new Logger(new NullDriver());
@@ -181,7 +184,7 @@ class Log
     {
         $handler = new StreamHandler(static::config('fallback_log', false, 'php://stderr'));
         $handler->setFormatter(new TextFormatter());
-        return new Logger(new MonologDriver('rebet', LogLevel::DEBUG, [$handler]));
+        return new Logger(new MonologDriver([$handler]));
     }
 
     /**

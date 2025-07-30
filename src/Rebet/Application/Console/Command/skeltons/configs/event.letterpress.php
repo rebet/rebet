@@ -74,7 +74,7 @@ return [
         |  - Callable with type hinting of event class like `function(EventClass $event) { ... }`
         */
         'listeners' => [
-            // YourEventListener::class or function(Event $event) { ... }
+            // YourEventListener::class or function(EventClass $event) { ... }
         ],
     ],
 ];

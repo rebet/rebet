@@ -5,7 +5,6 @@ use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
-use Rebet\Application\Bootstrap\LoadFrameworkConfiguration;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
@@ -14,14 +13,14 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
- * Console Kernel Class
+ * CLI (Command Line Interface) Kernel Class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class ConsoleKernel extends ApplicationKernel
+abstract class CliKernel extends ApplicationKernel
 {
     /**
      * Current handling input
@@ -48,9 +47,9 @@ abstract class ConsoleKernel extends ApplicationKernel
      * {@inheritDoc}
      *
      * @param Structure $structure
-     * @param string $channel (default: 'console')
+     * @param string $channel (default: 'cli')
      */
-    public function __construct(Structure $structure, string $channel = 'console')
+    public function __construct(Structure $structure, string $channel = 'cli')
     {
         parent::__construct($structure, $channel);
     }
@@ -62,7 +61,6 @@ abstract class ConsoleKernel extends ApplicationKernel
     {
         return [
             LoadEnvironmentVariables::class,
-            LoadFrameworkConfiguration::class,
             [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
             LoadApplicationConfiguration::class,
             HandleExceptions::class,

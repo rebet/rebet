@@ -98,7 +98,6 @@ class DatabaseTest extends RebetDatabaseTestCase
         $this->assertSame('mysql', Dao::db('mysql')->driverName());
         $this->assertSame('mysql', Dao::db('mariadb')->driverName());
         $this->assertSame('pgsql', Dao::db('pgsql')->driverName());
-        $this->assertSame('sqlsrv', Dao::db('sqlsrv')->driverName());
     }
 
     public function test_serverVersion()

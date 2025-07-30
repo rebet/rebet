@@ -18,7 +18,7 @@ return [
         'initialize'  => [
             'handler' => null, // function (Swift_DependencyContainer $c) { ... }
             'default' => [
-                'charset'          => 'utf-8',
+                'charset'          => 'UTF-8',
                 'idright'          => null,
                 'content_encoder'  => 'mime.base64contentencoder',
                 'header_encoder'   => 'mime.base64headerencoder',

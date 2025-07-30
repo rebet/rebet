@@ -8,6 +8,7 @@ class SessionStorageTest extends RebetTestCase
 {
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function test___construct()
     {

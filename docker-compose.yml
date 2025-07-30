@@ -42,11 +42,6 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
       - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
-  sqlsrv:
-    build: ./docker/sqlsrv/
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: P@ssw0rd
   adminer:
     image: adminer
     environment:

@@ -56,14 +56,6 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
                         'options'  => [],
                         'debug'    => true,
                     ],
-
-                    'sqlsrv' => [
-                        'dsn'      => "sqlsrv:server=sqlsrv;database=rebet",
-                        'user'     => 'rebet',
-                        'password' => 'rebet',
-                        'options'  => [],
-                        'debug'    => true,
-                    ],
                 ]
             ],
         ]);

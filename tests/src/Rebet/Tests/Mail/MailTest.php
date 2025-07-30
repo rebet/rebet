@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Mail;
 
 use Rebet\Application\App;
+use Rebet\Log\Log;
 use Rebet\Mail\Mail;
 use Rebet\Mail\Mailer;
 use Rebet\Mail\Mime\HeaderSet;
@@ -82,7 +83,7 @@ class MailTest extends RebetTestCase
         $this->assertInstanceOf(Swift_DependencyContainer::class, $c = Mail::container());
         $this->assertSame(true, $this->inspect(Mail::class, 'initialized'));
 
-        $this->assertSame('utf-8', $c->lookup('properties.charset'));
+        $this->assertSame('UTF-8', $c->lookup('properties.charset'));
         $this->assertSame('test', $c->lookup('test.value'));
     }
 
@@ -246,13 +247,13 @@ class MailTest extends RebetTestCase
         $this->assertSame('text/plain', $mail->contentType());
         $this->assertInstanceOf(Mail::class, $mail->contentType('text/html'));
         $this->assertSame('text/html', $mail->contentType());
-        $this->assertSame("Content-Type: text/html; charset=utf-8\r\n", $mail->headers()->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: text/html; charset=UTF-8\r\n", $mail->headers()->get('Content-Type')->toString());
     }
 
     public function test_charset()
     {
         $mail = new Mail();
-        $this->assertSame('utf-8', $mail->charset());
+        $this->assertSame('UTF-8', $mail->charset());
         $this->assertInstanceOf(Mail::class, $mail->charset('is-2022-jp'));
         $this->assertSame('is-2022-jp', $mail->charset());
         $this->assertSame("Content-Type: text/plain; charset=is-2022-jp\r\n", $mail->headers()->get('Content-Type')->toString());
@@ -264,7 +265,7 @@ class MailTest extends RebetTestCase
         $this->assertSame(null, $mail->format());
         $this->assertInstanceOf(Mail::class, $mail->format('flowed'));
         $this->assertSame('flowed', $mail->format());
-        $this->assertSame("Content-Type: text/plain; charset=utf-8; format=flowed\r\n", $mail->headers()->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: text/plain; charset=UTF-8; format=flowed\r\n", $mail->headers()->get('Content-Type')->toString());
     }
 
     public function test_delsp()
@@ -273,7 +274,7 @@ class MailTest extends RebetTestCase
         $this->assertSame(false, $mail->delsp());
         $this->assertInstanceOf(Mail::class, $mail->delsp(true));
         $this->assertSame(true, $mail->delsp());
-        $this->assertSame("Content-Type: text/plain; charset=utf-8; delsp=yes\r\n", $mail->headers()->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: text/plain; charset=UTF-8; delsp=yes\r\n", $mail->headers()->get('Content-Type')->toString());
     }
 
     public function test_encoder()
@@ -317,7 +318,7 @@ class MailTest extends RebetTestCase
         $mail = new Mail();
         $this->assertInstanceOf(Mail::class, $mail->attach(App::structure()->public('/assets/img/72x72.png'), 'ファイル名.png'));
         $headers = $mail->message()->getPart()->getHeaders();
-        $this->assertSame("Content-Type: image/png; name=\"=?utf-8?B?44OV44Kh44Kk44Or5ZCNLnBuZw==?=\"\r\n", $headers->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: image/png; name=\"=?UTF-8?B?44OV44Kh44Kk44Or5ZCNLnBuZw==?=\"\r\n", $headers->get('Content-Type')->toString());
         $this->assertStringContainsString("attachment", $headers->get('Content-Disposition')->toString());
     }
 
@@ -326,7 +327,7 @@ class MailTest extends RebetTestCase
         $mail = new Mail();
         $this->assertInstanceOf(Mail::class, $mail->attachData('本文', 'ファイル名.txt'));
         $headers = $mail->message()->getPart()->getHeaders();
-        $this->assertSame("Content-Type: application/octet-stream;\r\n name=\"=?utf-8?B?44OV44Kh44Kk44Or5ZCNLnR4dA==?=\"\r\n", $headers->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: application/octet-stream;\r\n name=\"=?UTF-8?B?44OV44Kh44Kk44Or5ZCNLnR4dA==?=\"\r\n", $headers->get('Content-Type')->toString());
         $this->assertStringContainsString("attachment", $headers->get('Content-Disposition')->toString());
     }
 
@@ -337,7 +338,7 @@ class MailTest extends RebetTestCase
         $this->assertStringStartsWith('cid:', $cid = $mail->embed(App::structure()->public('/assets/img/72x72.png'), 'ファイル名.png'));
         $headers = $mail->message()->getPart()->getHeaders();
         $this->assertSame($cid, $mail->cid('ファイル名.png'));
-        $this->assertSame("Content-Type: image/png; name=\"=?utf-8?B?44OV44Kh44Kk44Or5ZCNLnBuZw==?=\"\r\n", $headers->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: image/png; name=\"=?UTF-8?B?44OV44Kh44Kk44Or5ZCNLnBuZw==?=\"\r\n", $headers->get('Content-Type')->toString());
         $this->assertSame("Content-ID: <".Strings::ltrim($cid, 'cid:').">\r\n", $headers->get('Content-ID')->toString());
         $this->assertStringContainsString("inline", $headers->get('Content-Disposition')->toString());
 
@@ -353,7 +354,7 @@ class MailTest extends RebetTestCase
         $this->assertStringStartsWith('cid:', $cid = $mail->embedData('本文', 'ファイル名.txt'));
         $headers = $mail->message()->getPart()->getHeaders();
         $this->assertSame($cid, $mail->cid('ファイル名.txt'));
-        $this->assertSame("Content-Type: application/octet-stream;\r\n name=\"=?utf-8?B?44OV44Kh44Kk44Or5ZCNLnR4dA==?=\"\r\n", $headers->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: application/octet-stream;\r\n name=\"=?UTF-8?B?44OV44Kh44Kk44Or5ZCNLnR4dA==?=\"\r\n", $headers->get('Content-Type')->toString());
         $this->assertSame("Content-ID: <".Strings::ltrim($cid, 'cid:').">\r\n", $headers->get('Content-ID')->toString());
         $this->assertStringContainsString("inline", $headers->get('Content-Disposition')->toString());
     }
@@ -372,11 +373,11 @@ class MailTest extends RebetTestCase
     {
         $mail = Mail::text();
         $this->assertInstanceOf(Mail::class, $mail->body('Body'));
-        $this->assertSame("Content-Type: text/plain; charset=utf-8\r\n", $mail->headers()->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: text/plain; charset=UTF-8\r\n", $mail->headers()->get('Content-Type')->toString());
 
         $mail = Mail::html();
         $this->assertInstanceOf(Mail::class, $mail->body('Body'));
-        $this->assertSame("Content-Type: text/html; charset=utf-8\r\n", $mail->headers()->get('Content-Type')->toString());
+        $this->assertSame("Content-Type: text/html; charset=UTF-8\r\n", $mail->headers()->get('Content-Type')->toString());
 
         $mail = Mail::html();
         $this->assertInstanceOf(Mail::class, $mail->body('Body', 'text/plain', 'iso-2022-jp'));
@@ -427,7 +428,7 @@ class MailTest extends RebetTestCase
         $this->assertStringContainsAll(
             [
                 'Subject: Title',
-                "To: =?utf-8?B?5a6b5YWI?=\r\n =?utf-8?B??= <to@foo.com>",
+                "To: =?UTF-8?B?5a6b5YWI?= <to@foo.com>",
                 'Qk9EWQ==',
                 'PGI+Ym9keTwvYj4='
             ],

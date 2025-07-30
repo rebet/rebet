@@ -24,14 +24,12 @@ class LogTest extends RebetTestCase
                     'test' => [
                         'driver' => [
                             '@factory' => TestDriver::class,
-                            'name'     => 'test',
                             'level'    => LogLevel::WARNING,
                         ],
                     ],
                     'stderr' => [
                         'driver' => [
                             '@factory' => StderrDriver::class,
-                            'name'     => 'stderr',
                             'level'    => LogLevel::DEBUG,
                             'format'   => "{datetime} [{channel}.{level_name}] {extra.process_id} {message}{context}{extra}{exception}\n",
                         ],

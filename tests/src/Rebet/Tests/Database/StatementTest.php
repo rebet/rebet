@@ -316,7 +316,6 @@ class StatementTest extends RebetDatabaseTestCase
 
             switch ($driver) {
                 case 'sqlite': $this->assertSame(0, $count, 'on DB '.$driver); break;
-                case 'sqlsrv': $this->assertSame(-1, $count, 'on DB '.$driver); break;
                 default: $this->assertSame(3, $count, 'on DB '.$driver);
             }
 

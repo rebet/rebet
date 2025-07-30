@@ -2,6 +2,7 @@
 namespace Rebet\Log;
 
 use Psr\Log\LoggerInterface as PsrLogger;
+use Rebet\Log\Driver\NameableDriver;
 
 /**
  * Logger Class
@@ -38,6 +39,26 @@ class Logger
     public function driver() : PsrLogger
     {
         return $this->driver;
+    }
+
+    /**
+     * Get/Set the logger name if the driver of logger implemented NameableDriver interface.
+     * NOTE: If the driver not implemented NameableDriver then this method return null when get and do nothing when set.
+     *
+     * @param string|null $name (default: null for get name)
+     * @return null|string|self
+     */
+    public function name(?string $name = null) 
+    {
+        if ($name == null) {
+            return $this->driver instanceof NameableDriver ? $this->driver->getName() : null ;
+        }
+
+        if ($this->driver instanceof NameableDriver) {
+            $this->driver->setName($name);
+        }
+
+        return $this;
     }
 
     /**

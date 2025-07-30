@@ -12,5 +12,6 @@
 		"mhutchie.git-graph",
 		"junstyle.php-cs-fixer",
 		"xyz.local-history",
+		"oderwat.indent-rainbow",
 	],
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Rebet\Application\App;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Reflection\Reflector;
@@ -18,7 +20,7 @@ use Rebet\Tools\Utility\Utils;
 return [
     DateTime::class => [
         'default_format'             => 'Y-m-d H:i:s',
-        'default_timezone'           => date_default_timezone_get() ?: 'UTC',
+        'default_timezone'           => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
         'acceptable_datetime_format' => [
             'Y-m-d H:i:s.u',
             'Y-m-d H:i:s',
@@ -501,7 +503,7 @@ return [
 
     FileDictionary::class => [
         'resources' => [
-            // 'i18n' => FileDictionary::$resouce_dirs,
+            'i18n' => [App::structure()->resources('/i18n')],
         ],
     ],
 
@@ -510,8 +512,8 @@ return [
         'resource_adder'  => [
             FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
         ],
-        'locale'          => locale_get_default(),
-        'fallback_locale' => 'en',
+        'locale'          => Config::refer(App::class, 'locale'),
+        'fallback_locale' => Config::refer(App::class, 'fallback_locale'),
         'ordinalize'      => [
             'en' => function (int $num) {
                 return in_array($num % 100, [11, 12, 13]) ? $num.'th' : $num.(['th', 'st', 'nd', 'rd'][$num % 10] ?? 'th');

@@ -13,7 +13,6 @@ addons:
   hosts:
     - mysql
     - pgsql
-    - sqlsrv
     - memcached
     - redis
 
@@ -28,15 +27,6 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
-  # Install pdo_sqlsrv extension and depends
-  - curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-  - curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-tools.list
-  - sudo apt-get update
-  - sudo ACCEPT_EULA=Y apt-get install mssql-tools
-  - sudo apt-get install unixodbc-dev
-  - git clone https://github.com/felipecwb/pecl-build.git $(phpenv root)/plugins/pecl-build
-  - phpenv pecl sqlsrv
-  - phpenv pecl pdo_sqlsrv
   # Add php.ini config
   - phpenv config-add ./tests/travis/php.ini
   # Add mariadb hosts
@@ -53,8 +43,6 @@ before_script:
   - mkdir -p /tmp/sqlite ; echo ".open /tmp/sqlite/rebet.db" | sqlite3
   - sqlite3 /tmp/sqlite/rebet.db < docker/sqlite/initdb.d/create_tables.sql
   - docker-compose run -d -p ${MARIADB_HOST}:3306:3306 mariadb
-  - docker run --name=sqlsrv -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=P@ssw0rd' -p 1433:1433 -d mcr.microsoft.com/mssql/server
-  - MSSQL_SA_PASSWORD=P@ssw0rd /bin/bash docker/sqlsrv/docker-initdb.sh
 
 script:
   - vendor/bin/phpunit --stop-on-fail --coverage-clover=coverage.xml
