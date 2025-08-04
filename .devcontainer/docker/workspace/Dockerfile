@@ -52,10 +52,6 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq --no-install-recommends install sqlite3=3.* \
 	&& mkdir -p /tmp/sqlite \
     && chown -R ${USER_NAME}:${USER_NAME} /tmp/sqlite
-#COPY ./sqlite /tmp/sqlite
-# RUN echo ".open /tmp/sqlite/rebet.db" | sqlite3 \
-#     && sqlite3 /tmp/sqlite/rebet.db < /tmp/sqlite/initdb/create_tables.sql \
-#     && chown -R ${USER_NAME}:${USER_NAME} /tmp/sqlite
 
 # Clean
 RUN apt-get clean \
