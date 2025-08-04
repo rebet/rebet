@@ -1,0 +1,74 @@
+version: '3'
+volumes:
+  mariadb:
+  mysql:
+  pgsql:
+  sqlite:
+  redis:
+services:
+  # Workspace for Dev Container Development
+  workspace:
+    build:
+      context: ./docker/workspace
+    hostname: rebet-workspace
+    volumes:
+      - ../:/workspace
+      - ./docker/workspace/config/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/workspace/config/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./docker/workspace/config/.bash_aliases:/home/vscode/.bash_aliases
+      - sqlite:/tmp/sqlite
+    working_dir: /workspace
+    tty: true
+
+  # DB Containers for Unit Tests
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    hostname: rebet-mariadb
+    volumes:
+      - ./docker/mariadb/initdb:/docker-entrypoint-initdb.d
+      - ./docker/mariadb/config:/etc/mysql/conf.d
+      - mariadb:/var/lib/mysql
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    hostname: rebet-mysql
+    volumes:
+      - ./docker/mysql/initdb:/docker-entrypoint-initdb.d
+      - ./docker/mysql/config:/etc/mysql/conf.d
+      - mysql:/var/lib/mysql
+  pgsql:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    hostname: rebet-postgress
+    volumes:
+      - ./docker/pgsql/initdb:/docker-entrypoint-initdb.d
+      - pgsql:/var/lib/postgresql/data
+
+  # KVS Containers for Unit Tests
+  memcached:
+    image: memcached
+    hostname: rebet-memcached
+  redis:
+    image: redis
+    hostname: rebet-redis
+    volumes:
+      - redis:/data
+
+  # Adminer Container for Web-based database administration tool
+  adminer:
+    image: adminer
+    environment:
+      ADMINER_DESIGN: haeckel # see https://www.adminer.org/#extras https://github.com/vrana/adminer/tree/master/designs
+      ADMINER_PLUGINS: "enum-option tables-filter tinymce" # see https://www.adminer.org/en/plugins/
+    hostname: rebet-adminer
+    ports:
+      - 18080:8080
+    volumes:
+      - sqlite:/tmp/sqlite
+      - ./docker/adminer/plugins/login-password-less.php:/var/www/html/plugins-enabled/login-password-less.php

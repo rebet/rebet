@@ -1,17 +1,39 @@
 {
-    "name": "Rebet",
-    "dockerComposeFile": ["../docker-compose.yml"],
-    "service": "php",
-    "workspaceFolder": "/rebet",
-    "settings": {},
-    "extensions": [
-		"mikestead.dotenv",
-		"felixfbecker.php-debug",
-		"neilbrayfield.php-docblocker",
-		"bmewburn.vscode-intelephense-client",
-		"mhutchie.git-graph",
-		"junstyle.php-cs-fixer",
-		"xyz.local-history",
-		"oderwat.indent-rainbow",
-	],
+    "name": "rebet/rebet",
+    "dockerComposeFile": ["docker-compose.yml"],
+    "service": "workspace",
+    "forwardPorts": [ 9003 ],
+    "workspaceFolder": "/workspace",
+	"remoteUser": "vscode",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "php.validate.enable": false,
+                "php.suggest.basic": false,
+                "php-cs-fixer.onsave": true,
+                "php-cs-fixer.executablePath": "~/.composer/vendor/bin/php-cs-fixer",
+                "[php]": {
+                    "editor.formatOnSave": true,
+                    "editor.defaultFormatter": "junstyle.php-cs-fixer"
+                },
+                "search.exclude": {
+                    "**/.history": true
+                }
+            },
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "donjayamanne.githistory",
+                "EditorConfig.EditorConfig",
+                "junstyle.php-cs-fixer",
+                "mikestead.dotenv",
+                "mhutchie.git-graph",
+                "neilbrayfield.php-docblocker",
+                "oderwat.indent-rainbow",
+                "xdebug.php-debug",
+                "xyz.local-history",
+                "usernamehw.errorlens"
+            ]
+        }
+    },
+    "postCreateCommand": "/bin/bash ./.devcontainer/post_create_command.sh"
 }
