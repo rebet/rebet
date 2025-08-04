@@ -16,16 +16,18 @@ The following assumes that Docker, Docker Compose and VSCode (include Remote Con
     * `Starting Dev Container (show log): Starting container` to appear in the lower right corner as the Docker container build begins, so wait for finish build.
 3. And then type command below,
    ```sh
-   composer install
    phpunit
    ```
 
-We have prepared `.bashrc` that defines abbreviated alias commands like below,
+We have prepared `.bash_aliases` that defines abbreviated alias commands like below,
 
-| Aliases     | Full Commands                                                                 |
-| :---------- | :---------------------------------------------------------------------------- |
-| `ls`        | `ls --color=auto`                                                             |
-| `ll`        | `ls -l`                                                                       |
-| `phpunit`   | `php -d memory_limit=256M -d xdebug.start_with_request=no vendor/bin/phpunit` |
-| `x-phpunit` | `php -d memory_limit=256M vendor/bin/phpunit`                                 |
-| `psysh`     | `php vendor/bin/psysh`                                                        |
+| Aliases          | Full Commands                                                                                              |
+| :--------------- | :--------------------------------------------------------------------------------------------------------- |
+| `ls`             | `ls --color=auto`                                                                                          |
+| `ll`             | `ls -l`                                                                                                    |
+| `la`             | `ls -A`                                                                                                    |
+| `php-cs-fixer-f` | `php-cs-fixer fix --config=/workspace/.php-cs-fixer.dist.php`                                              |
+| `psysh-app`      | `psysh /workspace/vendor/autoload.php`                                                                     |
+| `phpunit`        | `php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit`                   |
+| `phpunit-sof`    | `php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit --stop-on-failure` |
+| `phpunit-xd`     | `php -d memory_limit=256M /workspace/vendor/bin/phpunit`                                                   |
