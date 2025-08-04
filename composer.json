@@ -43,7 +43,6 @@
         "mikey179/vfsstream": "^1.6",
         "phpunit/phpunit": "^9.5",
         "predis/predis": "^1.1",
-        "psy/psysh": "^0.10.6",
         "twig/twig": "^3.2"
     },
     "autoload": {
