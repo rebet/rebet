@@ -65,7 +65,7 @@ services:
     image: adminer
     environment:
       ADMINER_DESIGN: haeckel # see https://www.adminer.org/#extras https://github.com/vrana/adminer/tree/master/designs
-      ADMINER_PLUGINS: "enum-option tables-filter tinymce" # see https://www.adminer.org/en/plugins/
+      ADMINER_PLUGINS: "enum-option tables-filter" # see https://www.adminer.org/en/plugins/
     hostname: rebet-adminer
     ports:
       - 18080:8080
