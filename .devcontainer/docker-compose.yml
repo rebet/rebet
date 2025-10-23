@@ -48,7 +48,7 @@ services:
     hostname: rebet-postgress
     volumes:
       - ./docker/pgsql/initdb:/docker-entrypoint-initdb.d
-      - pgsql:/var/lib/postgresql/data
+      - pgsql:/var/lib/postgresql
 
   # KVS Containers for Unit Tests
   memcached:
