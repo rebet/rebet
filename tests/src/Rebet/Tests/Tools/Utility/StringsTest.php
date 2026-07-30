@@ -279,33 +279,33 @@ class StringsTest extends RebetTestCase
             ['single line text', 'single line text'],
             [
                 <<<EOS
-array:1 [
-    0 => single line text in array
-]
-EOS
-                , ['single line text in array']
+                array:1 [
+                    0 => single line text in array
+                ]
+                EOS,
+                ['single line text in array']
             ],
             [
                 <<<EOS
-multi
-line
-text
-EOS
-                , "multi\nline\ntext"
+                multi
+                line
+                text
+                EOS,
+                "multi\nline\ntext"
             ],
             [
                 <<<EOS
-array:1 [
-    0 => """
-        multi
-        line
-        text
-        in
-        array
-    """
-]
-EOS
-                , ["multi\nline\ntext\nin\narray"]
+                array:1 [
+                    0 => """
+                        multi
+                        line
+                        text
+                        in
+                        array
+                    """
+                ]
+                EOS,
+                ["multi\nline\ntext\nin\narray"]
             ],
             ['123', 123],
             ['123.456', 123.456],
@@ -317,115 +317,115 @@ EOS
             ['App\Stub\ToStringStub : single line', new ToStringStub('single line')],
             [
                 <<<EOS
-array:1 [
-    0 => App\Stub\ToStringStub : single line text in array
-]
-EOS
-                , [new ToStringStub('single line text in array')]
+                array:1 [
+                    0 => App\Stub\ToStringStub : single line text in array
+                ]
+                EOS,
+                [new ToStringStub('single line text in array')]
             ],
             [
                 <<<EOS
-App\Stub\ToStringStub : """
-    multi
-    line
-    text
-"""
-EOS
-                , new ToStringStub("multi\nline\ntext")
+                App\Stub\ToStringStub : """
+                    multi
+                    line
+                    text
+                """
+                EOS,
+                new ToStringStub("multi\nline\ntext")
             ],
             [
                 <<<EOS
-array:1 [
-    0 => App\Stub\ToStringStub : """
-        multi
-        line
-        text
-        in
-        array
-    """
-]
-EOS
-                , [new ToStringStub("multi\nline\ntext\nin\narray")]
+                array:1 [
+                    0 => App\Stub\ToStringStub : """
+                        multi
+                        line
+                        text
+                        in
+                        array
+                    """
+                ]
+                EOS,
+                [new ToStringStub("multi\nline\ntext\nin\narray")]
             ],
             ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, ?int $b, string $c = 'default') : ?bool { return true; }],
             ['App\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
             ['App\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
             [
                 <<<EOS
-App\Stub\JsonSerializableStub : array:1 [
-    a => A
-]
-EOS
-                , new JsonSerializableStub(['a' => 'A'])
+                App\Stub\JsonSerializableStub : array:1 [
+                    a => A
+                ]
+                EOS,
+                new JsonSerializableStub(['a' => 'A'])
             ],
             ['[]', []],
             [
                 <<<EOS
-array:3 [
-    0 => 1,
-    1 => 2,
-    2 => 3
-]
-EOS
-                , [1, 2, 3]
+                array:3 [
+                    0 => 1,
+                    1 => 2,
+                    2 => 3
+                ]
+                EOS,
+                [1, 2, 3]
             ],
             [
                 <<<EOS
-array:3 [
-    a => A,
-    b => B,
-    c => C
-]
-EOS
-                , ['a' => 'A', 'b' => 'B', 'c' => 'C']
+                array:3 [
+                    a => A,
+                    b => B,
+                    c => C
+                ]
+                EOS,
+                ['a' => 'A', 'b' => 'B', 'c' => 'C']
             ],
             [
                 <<<EOS
-array:2 [
-    0 => 1,
-    1 => array:2 [
-        0 => 2,
-        1 => array:1 [
-            0 => 3
-        ]
-    ]
-]
-EOS
-                , [1, [2, [3]]]
+                array:2 [
+                    0 => 1,
+                    1 => array:2 [
+                        0 => 2,
+                        1 => array:1 [
+                            0 => 3
+                        ]
+                    ]
+                ]
+                EOS,
+                [1, [2, [3]]]
             ],
             [
                 <<<EOS
-ArrayObject:3 [
-    0 => 1,
-    1 => 2,
-    2 => 3
-]
-EOS
-                , new \ArrayObject([1, 2, 3])
+                ArrayObject:3 [
+                    0 => 1,
+                    1 => 2,
+                    2 => 3
+                ]
+                EOS,
+                new \ArrayObject([1, 2, 3])
             ],
             ['<instance of Rebet\Tests\Tools\Utility\StringsTest_Mock>', new StringsTest_Mock()],
             [
                 <<<EOS
-array:3 [
-    a => ********,
-    b => B,
-    c => C
-]
-EOS
-                , ['a' => 'A', 'b' => 'B', 'c' => 'C'], ['a']
+                array:3 [
+                    a => ********,
+                    b => B,
+                    c => C
+                ]
+                EOS,
+                ['a' => 'A', 'b' => 'B', 'c' => 'C'], ['a']
             ],
             [
                 <<<EOS
-array:3 [
-    a => *,
-    b => array:2 [
-        a => *,
-        b => B
-    ],
-    c => *
-]
-EOS
-                , ['a' => 'A', 'b' => ['a' => 'A', 'b' => 'B'], 'c' => 'C'], ['a', 'c'], '*'
+                array:3 [
+                    a => *,
+                    b => array:2 [
+                        a => *,
+                        b => B
+                    ],
+                    c => *
+                ]
+                EOS,
+                ['a' => 'A', 'b' => ['a' => 'A', 'b' => 'B'], 'c' => 'C'], ['a', 'c'], '*'
             ],
         ];
     }

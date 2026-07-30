@@ -812,21 +812,21 @@ class TinkerTest extends RebetTestCase
         // Tinker.filter.customs.dump
         $this->assertSame('null', $this->null->dump()->return());
         $this->assertSame(<<<EOS
-array:3 [
-    0 => 1,
-    1 => 2,
-    2 => 3
-]
-EOS
-        , $this->array->dump()->return());
+        array:3 [
+            0 => 1,
+            1 => 2,
+            2 => 3
+        ]
+        EOS,
+        $this->array->dump()->return());
         $this->assertSame(<<<EOS
-array:3 [
-    0 => 1,
-    1 => ***,
-    2 => 3
-]
-EOS
-        , $this->array->dump([1], '***')->return());
+        array:3 [
+            0 => 1,
+            1 => ***,
+            2 => 3
+        ]
+        EOS,
+        $this->array->dump([1], '***')->return());
 
         // Tinker.filter.customs.invoke
         $this->assertNull($this->null->invoke('Test')->return());

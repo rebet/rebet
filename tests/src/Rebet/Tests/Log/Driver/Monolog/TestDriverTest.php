@@ -42,11 +42,10 @@ class TestDriverTest extends RebetTestCase
         $driver->log(LogLevel::INFO, 'Line 2');
         $this->assertSame(
             <<<EOS
-2010-10-20 10:20:30.123456 rebet/{$process_id} [DEBUG] Line 1
-2010-10-20 10:20:30.123456 rebet/{$process_id} [INFO] Line 2
+            2010-10-20 10:20:30.123456 rebet/{$process_id} [DEBUG] Line 1
+            2010-10-20 10:20:30.123456 rebet/{$process_id} [INFO] Line 2
 
-EOS
-            ,
+            EOS,
             $driver->formatted()
         );
     }
@@ -60,11 +59,10 @@ EOS
         $driver->log(LogLevel::INFO, 'Line 2');
         $this->assertSame(
             <<<EOS
-2010-10-20 10:20:30.123456 web/{$process_id} [DEBUG] Line 1
-2010-10-20 10:20:30.123456 web/{$process_id} [INFO] Line 2
+            2010-10-20 10:20:30.123456 web/{$process_id} [DEBUG] Line 1
+            2010-10-20 10:20:30.123456 web/{$process_id} [INFO] Line 2
 
-EOS
-            ,
+            EOS,
             $driver->formatted()
         );
     }

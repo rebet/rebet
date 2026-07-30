@@ -35,21 +35,19 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         \putenv("APP_ENV=unittest");
         $this->assertSame(
             <<<EOS
-unittest
-unittest or local
-Not production.
-EOS
-            ,
+            unittest
+            unittest or local
+            Not production.
+            EOS,
             $this->render('custom/env')
         );
 
         \putenv("APP_ENV=local");
         $this->assertSame(
             <<<EOS
-unittest or local
-Not production.
-EOS
-            ,
+            unittest or local
+            Not production.
+            EOS,
             $this->render('custom/env')
         );
     }
@@ -65,9 +63,8 @@ EOS
     {
         $this->assertSame(
             <<<EOS
-Guest
-EOS
-            ,
+            Guest
+            EOS,
             $this->render('custom/role')
         );
 
@@ -76,11 +73,10 @@ EOS
 
         $this->assertSame(
             <<<EOS
-user
-admin or user
-Not Guest.
-EOS
-            ,
+            user
+            admin or user
+            Not Guest.
+            EOS,
             $this->render('custom/role')
         );
         $this->signout();
@@ -88,12 +84,11 @@ EOS
         $this->signin($request, 'user.editable@rebet.local', 'user.editable');
         $this->assertSame(
             <<<EOS
-user
-user and editable
-admin or user
-Not Guest.
-EOS
-            ,
+            user
+            user and editable
+            admin or user
+            Not Guest.
+            EOS,
             $this->render('custom/role')
         );
         $this->signout();
@@ -101,11 +96,10 @@ EOS
         $this->signin($request, 'admin@rebet.local', 'admin');
         $this->assertSame(
             <<<EOS
-admin
-admin or user
-Not Guest.
-EOS
-            ,
+            admin
+            admin or user
+            Not Guest.
+            EOS,
             $this->render('custom/role')
         );
     }
@@ -117,10 +111,9 @@ EOS
 
         $this->assertSame(
             <<<EOS
-can not update user
-Can not create an address when the user is guest or the addresses count greater equal 5.
-EOS
-            ,
+            can not update user
+            Can not create an address when the user is guest or the addresses count greater equal 5.
+            EOS,
             $this->render('custom/can', ['user' => $user, 'addresses' => []])
         );
 
@@ -129,10 +122,9 @@ EOS
 
         $this->assertSame(
             <<<EOS
-can update user
-Can create an address when the addresses count less than 5.
-EOS
-            ,
+            can update user
+            Can create an address when the addresses count less than 5.
+            EOS,
             $this->render('custom/can', ['user' => $user, 'addresses' => []])
         );
         $this->signout();
@@ -140,13 +132,12 @@ EOS
         $this->signin($request, 'user.editable@rebet.local', 'user.editable');
         $this->assertSame(
             <<<EOS
-can not update user
-can create user(absolute class name 1)
-can create user(absolute class name 2)
-can create user(relative class name)
-Can create an address when the addresses count less than 5.
-EOS
-            ,
+            can not update user
+            can create user(absolute class name 1)
+            can create user(absolute class name 2)
+            can create user(relative class name)
+            Can create an address when the addresses count less than 5.
+            EOS,
             $this->render('custom/can', ['user' => $user, 'addresses' => []])
         );
         $this->signout();
@@ -154,25 +145,23 @@ EOS
         $this->signin($request, 'admin@rebet.local', 'admin');
         $this->assertSame(
             <<<EOS
-can update user
-can create user(absolute class name 1)
-can create user(absolute class name 2)
-can create user(relative class name)
-Can create an address when the addresses count less than 5.
-EOS
-            ,
+            can update user
+            can create user(absolute class name 1)
+            can create user(absolute class name 2)
+            can create user(relative class name)
+            Can create an address when the addresses count less than 5.
+            EOS,
             $this->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4]])
         );
 
         $this->assertSame(
             <<<EOS
-can update user
-can create user(absolute class name 1)
-can create user(absolute class name 2)
-can create user(relative class name)
-Can not create an address when the user is guest or the addresses count greater equal 5.
-EOS
-            ,
+            can update user
+            can create user(absolute class name 1)
+            can create user(absolute class name 2)
+            can create user(relative class name)
+            Can not create an address when the user is guest or the addresses count greater equal 5.
+            EOS,
             $this->render('custom/can', ['user' => $user, 'addresses' => [1, 2, 3, 4, 5]])
         );
     }
@@ -181,13 +170,12 @@ EOS
     {
         $this->assertSame(
             <<<EOS
-[1] 
-[2] name
-[3] 
-[4]  ;
-[5] ---===
-EOS
-            ,
+            [1] 
+            [2] name
+            [3] 
+            [4]  ;
+            [5] ---===
+            EOS,
             $this->render('custom/field')
         );
     }
@@ -198,9 +186,8 @@ EOS
 
         $this->assertSame(
             <<<EOS
-Has not any error.
-EOS
-            ,
+            Has not any error.
+            EOS,
             $this->render('custom/errors', ['errors' => $errors])
         );
 
@@ -212,11 +199,10 @@ EOS
 
         $this->assertSame(
             <<<EOS
-Has some error.
-Has some error about 'name'.
-Has some error about 'name' (Under field of 'email').
-EOS
-            ,
+            Has some error.
+            Has some error about 'name'.
+            Has some error about 'name' (Under field of 'email').
+            EOS,
             $this->render('custom/errors', ['errors' => $errors])
         );
 
@@ -228,11 +214,10 @@ EOS
 
         $this->assertSame(
             <<<EOS
-Has some error.
-Has some error about 'email'.
-Has some error about 'email' (Under field of 'email').
-EOS
-            ,
+            Has some error.
+            Has some error about 'email'.
+            Has some error about 'email' (Under field of 'email').
+            EOS,
             $this->render('custom/errors', ['errors' => $errors])
         );
 
@@ -247,13 +232,12 @@ EOS
 
         $this->assertSame(
             <<<EOS
-Has some error.
-Has some error about 'name'.
-Has some error about 'email'.
-Has some error about 'email' (Under field of 'email').
-Has some error about 'name' (Under field of 'email').
-EOS
-            ,
+            Has some error.
+            Has some error about 'name'.
+            Has some error about 'email'.
+            Has some error about 'email' (Under field of 'email').
+            Has some error about 'name' (Under field of 'email').
+            EOS,
             $this->render('custom/errors', ['errors' => $errors])
         );
     }
@@ -264,16 +248,15 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] 
-[2] 
-[3] 
-[4] 
-[5] 
-[6] 
-[7] 
-[8] 
-EOS
-            ,
+            [1] 
+            [2] 
+            [3] 
+            [4] 
+            [5] 
+            [6] 
+            [7] 
+            [8] 
+            EOS,
             $this->render('custom/error', ['errors' => $errors])
         );
 
@@ -285,21 +268,20 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
-[2] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
-[3] =====
- * The name field is required.
- * The name may not be greater than 20 characters.
-=====
-[4] <ul class="error"> * The name field is required.
- * The name may not be greater than 20 characters.
-</ul>
-[5] 
-[6] 
-[7] 
-[8] 
-EOS
-            ,
+            [1] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
+            [2] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
+            [3] =====
+             * The name field is required.
+             * The name may not be greater than 20 characters.
+            =====
+            [4] <ul class="error"> * The name field is required.
+             * The name may not be greater than 20 characters.
+            </ul>
+            [5] 
+            [6] 
+            [7] 
+            [8] 
+            EOS,
             $this->render('custom/error', ['errors' => $errors])
         );
 
@@ -311,21 +293,20 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
-[2] 
-[3] 
-[4] 
-[5] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
-[6] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
-[7] =====
- * The email field is required.
- * The email may not be greater than 255 characters.
-=====
-[8] <ul class="error"> * The email field is required.
- * The email may not be greater than 255 characters.
-</ul>
-EOS
-            ,
+            [1] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+            [2] 
+            [3] 
+            [4] 
+            [5] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+            [6] <ul class="error"><li>The email field is required.</li><li>The email may not be greater than 255 characters.</li></ul>
+            [7] =====
+             * The email field is required.
+             * The email may not be greater than 255 characters.
+            =====
+            [8] <ul class="error"> * The email field is required.
+             * The email may not be greater than 255 characters.
+            </ul>
+            EOS,
             $this->render('custom/error', ['errors' => $errors])
         );
 
@@ -340,24 +321,23 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li><li>The email field is required.</li></ul>
-[2] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
-[3] =====
- * The name field is required.
- * The name may not be greater than 20 characters.
-=====
-[4] <ul class="error"> * The name field is required.
- * The name may not be greater than 20 characters.
-</ul>
-[5] <ul class="error"><li>The email field is required.</li></ul>
-[6] <ul class="error"><li>The email field is required.</li></ul>
-[7] =====
- * The email field is required.
-=====
-[8] <ul class="error"> * The email field is required.
-</ul>
-EOS
-            ,
+            [1] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li><li>The email field is required.</li></ul>
+            [2] <ul class="error"><li>The name field is required.</li><li>The name may not be greater than 20 characters.</li></ul>
+            [3] =====
+             * The name field is required.
+             * The name may not be greater than 20 characters.
+            =====
+            [4] <ul class="error"> * The name field is required.
+             * The name may not be greater than 20 characters.
+            </ul>
+            [5] <ul class="error"><li>The email field is required.</li></ul>
+            [6] <ul class="error"><li>The email field is required.</li></ul>
+            [7] =====
+             * The email field is required.
+            =====
+            [8] <ul class="error"> * The email field is required.
+            </ul>
+            EOS,
             $this->render('custom/error', ['errors' => $errors])
         );
     }
@@ -368,13 +348,12 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] 
-[2] name has not error
-[3] email has not error
-[4] 
-[5] email has not error in field
-EOS
-            ,
+            [1] 
+            [2] name has not error
+            [3] email has not error
+            [4] 
+            [5] email has not error in field
+            EOS,
             $this->render('custom/iferror', ['errors' => $errors])
         );
 
@@ -386,13 +365,12 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] name has error
-[2] name has error
-[3] email has not error
-[4] 
-[5] email has not error in field
-EOS
-            ,
+            [1] name has error
+            [2] name has error
+            [3] email has not error
+            [4] 
+            [5] email has not error in field
+            EOS,
             $this->render('custom/iferror', ['errors' => $errors])
         );
 
@@ -404,13 +382,12 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] 
-[2] name has not error
-[3] email has error
-[4] email has error in field
-[5] email has error in field
-EOS
-            ,
+            [1] 
+            [2] name has not error
+            [3] email has error
+            [4] email has error in field
+            [5] email has error in field
+            EOS,
             $this->render('custom/iferror', ['errors' => $errors])
         );
 
@@ -425,13 +402,12 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] name has error
-[2] name has error
-[3] email has error
-[4] email has error in field
-[5] email has error in field
-EOS
-            ,
+            [1] name has error
+            [2] name has error
+            [3] email has error
+            [4] email has error in field
+            [5] email has error in field
+            EOS,
             $this->render('custom/iferror', ['errors' => $errors])
         );
     }
@@ -442,12 +418,11 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] 
-[2] #333
-[3] 
-[4] 
-EOS
-            ,
+            [1] 
+            [2] #333
+            [3] 
+            [4] 
+            EOS,
             $this->render('custom/e', ['errors' => $errors])
         );
 
@@ -459,12 +434,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] is-danger
-[2] red
-[3] 
-[4] 
-EOS
-            ,
+            [1] is-danger
+            [2] red
+            [3] 
+            [4] 
+            EOS,
             $this->render('custom/e', ['errors' => $errors])
         );
 
@@ -476,12 +450,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] 
-[2] #333
-[3] is-danger
-[4] is-danger
-EOS
-            ,
+            [1] 
+            [2] #333
+            [3] is-danger
+            [4] is-danger
+            EOS,
             $this->render('custom/e', ['errors' => $errors])
         );
 
@@ -496,12 +469,11 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] is-danger
-[2] red
-[3] is-danger
-[4] is-danger
-EOS
-            ,
+            [1] is-danger
+            [2] red
+            [3] is-danger
+            [4] is-danger
+            EOS,
             $this->render('custom/e', ['errors' => $errors])
         );
     }
@@ -512,13 +484,12 @@ EOS
 
         $this->assertSame(
             <<<EOS
-[1] 
-[2] default
-[3] default
-[4] 
-[5] default
-EOS
-            ,
+            [1] 
+            [2] default
+            [3] default
+            [4] 
+            [5] default
+            EOS,
             $this->render('custom/input', ['input' => $input])
         );
 
@@ -527,13 +498,12 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] Name
-[2] Name
-[3] default
-[4] 
-[5] default
-EOS
-            ,
+            [1] Name
+            [2] Name
+            [3] default
+            [4] 
+            [5] default
+            EOS,
             $this->render('custom/input', ['input' => $input])
         );
 
@@ -542,13 +512,12 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] 
-[2] default
-[3] test@rebet.local
-[4] test@rebet.local
-[5] test@rebet.local
-EOS
-            ,
+            [1] 
+            [2] default
+            [3] test@rebet.local
+            [4] test@rebet.local
+            [5] test@rebet.local
+            EOS,
             $this->render('custom/input', ['input' => $input])
         );
 
@@ -558,13 +527,12 @@ EOS
         ];
         $this->assertSame(
             <<<EOS
-[1] Name
-[2] Name
-[3] test@rebet.local
-[4] test@rebet.local
-[5] test@rebet.local
-EOS
-            ,
+            [1] Name
+            [2] Name
+            [3] test@rebet.local
+            [4] test@rebet.local
+            [5] test@rebet.local
+            EOS,
             $this->render('custom/input', ['input' => $input])
         );
     }
@@ -583,12 +551,11 @@ EOS
         $direct_1_token = $session->token('direct', 1);
         $this->assertSame(
             <<<EOS
-[1] {$reusable_token}
-[2] {$user_edit_token}
-[3] {$article_edit_1_token}
-[4] {$direct_1_token}
-EOS
-            ,
+            [1] {$reusable_token}
+            [2] {$user_edit_token}
+            [3] {$article_edit_1_token}
+            [4] {$direct_1_token}
+            EOS,
             $actual
         );
 
@@ -596,12 +563,11 @@ EOS
         $direct_2_token = $session->token('direct', 2);
         $this->assertSame(
             <<<EOS
-[1] {$reusable_token}
-[2] {$user_edit_token}
-[3] {$article_edit_2_token}
-[4] {$direct_2_token}
-EOS
-            ,
+            [1] {$reusable_token}
+            [2] {$user_edit_token}
+            [3] {$article_edit_2_token}
+            [4] {$direct_2_token}
+            EOS,
             $actual
         );
     }
@@ -625,12 +591,11 @@ EOS
         $direct_1_token_key = Session::createTokenKey('direct', 1);
         $this->assertSame(
             <<<EOS
-[1] <input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" />
-[2] <input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" />
-[3] <input type="hidden" name="{$article_edit_1_token_key}" value="{$article_edit_1_token}" />
-[4] <input type="hidden" name="{$direct_1_token_key}" value="{$direct_1_token}" />
-EOS
-            ,
+            [1] <input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" />
+            [2] <input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" />
+            [3] <input type="hidden" name="{$article_edit_1_token_key}" value="{$article_edit_1_token}" />
+            [4] <input type="hidden" name="{$direct_1_token_key}" value="{$direct_1_token}" />
+            EOS,
             $actual
         );
 
@@ -639,12 +604,11 @@ EOS
         $direct_2_token_key = Session::createTokenKey('direct', 2);
         $this->assertSame(
             <<<EOS
-[1] <input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" />
-[2] <input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" />
-[3] <input type="hidden" name="{$article_edit_2_token_key}" value="{$article_edit_2_token}" />
-[4] <input type="hidden" name="{$direct_2_token_key}" value="{$direct_2_token}" />
-EOS
-            ,
+            [1] <input type="hidden" name="{$reusable_token_key}" value="{$reusable_token}" />
+            [2] <input type="hidden" name="{$user_edit_token_key}" value="{$user_edit_token}" />
+            [3] <input type="hidden" name="{$article_edit_2_token_key}" value="{$article_edit_2_token}" />
+            [4] <input type="hidden" name="{$direct_2_token_key}" value="{$direct_2_token}" />
+            EOS,
             $actual
         );
     }
@@ -655,13 +619,12 @@ EOS
         $validator = new BuiltinValidations(); // load validation translate file
         $this->assertSame(
             <<<EOS
-[1] ようこそ、Jhon様
-[2] タグは1個以下で選択して下さい。
-[3] タグは3個以下で選択して下さい。
-[4] The Tag may not have more than 1 item.
-[5] The Tag may not have more than 3 items.
-EOS
-            ,
+            [1] ようこそ、Jhon様
+            [2] タグは1個以下で選択して下さい。
+            [3] タグは3個以下で選択して下さい。
+            [4] The Tag may not have more than 1 item.
+            [5] The Tag may not have more than 3 items.
+            EOS,
             $this->render('custom/lang')
         );
     }

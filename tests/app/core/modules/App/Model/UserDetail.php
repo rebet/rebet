@@ -61,14 +61,15 @@ class UserDetail extends Presentation
 
     protected static function buildSelectAllSql(Database $db) : Query
     {
-        return $db->sql(<<<EOS
+        return $db->sql(
+            <<<EOS
             SELECT
                 U.*,
                 (SELECT COUNT(*) FROM articles AS A WHERE A.user_id = U.user_id) AS article_count
             FROM
                 users AS U
                 LEFT OUTER JOIN bank AS B
-EOS
+            EOS
         );
     }
 }

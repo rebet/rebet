@@ -33,248 +33,248 @@ class EmbedTokenParserTest extends RebetTestCase
                 new EmbedTokenParser('hello', null, null, 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", []) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", []) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, [], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello "a" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, [','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello "a", "b" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a", "b"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a", "b"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, [''], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello "a" "b" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a", "b"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a", "b"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello "world" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello name %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null)]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null)]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello name, "!" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null), "!"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null), "!"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => [',', 'and']], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello you, he and name %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["you"] ?? null), (\$context["he"] ?? null), (\$context["name"] ?? null)]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["you"] ?? null), (\$context["he"] ?? null), (\$context["name"] ?? null)]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello [you, he, name], "!" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [[(\$context["you"] ?? null), (\$context["he"] ?? null), (\$context["name"] ?? null)], "!"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [[(\$context["you"] ?? null), (\$context["he"] ?? null), (\$context["name"] ?? null)], "!"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', ['foo']),
                 '{% hello %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null)]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null)]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', ['foo']),
                 '{% hello "world" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null), "world"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null), "world"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['...' => ','], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', ['foo']),
                 '{% hello "world", bar %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null), "world", (\$context["bar"] ?? null)]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null), "world", (\$context["bar"] ?? null)]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "admin" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "admin", "user"%}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "admin", "user"%}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "admin" or "user"%}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is not "admin" %}',
                 <<<EOS
-// line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin"]) )) {
+                // line 1
+                if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin"]) )) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'in', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role in "admin", "user" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'in', ['...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role not in "admin", "user" %}',
                 <<<EOS
-// line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) )) {
+                // line 1
+                if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) )) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "a", "b", "c", "d" or "e" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['...' => [',', 'or']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "a", "b", "c", ("d" or "e") %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", ("d" || "e")]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", ("d" || "e")]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['or', ':', '...' => ','], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "a" or "b" : "c", "d", "e" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['with', '...' => [',', 'and']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "a" with "b", "c", "d" and "e" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('role', 'is', ['with', '...' => [',', 'and']], 'if(', new CallbackProcessor(function ($role) { return true; }), ") {\n"),
                 '{% role is "a" with "b", "c", "d", "e" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('can', '', [], 'if(', new CallbackProcessor(function ($action) { return true; }), ") {\n"),
                 '{% can "update" %}',
                 <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) ) {
+                // line 1
+                if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) ) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('can', '', [], 'if(', new CallbackProcessor(function ($action) { return true; }), ") {\n"),
                 '{% can not "update" %}',
                 <<<EOS
-// line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) )) {
+                // line 1
+                if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) )) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('can', null, [], 'if(', new CallbackProcessor(function ($action) { return true; }), ") {\n"),
                 '{% can not "update" %}',
                 <<<EOS
-// line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) )) {
+                // line 1
+                if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) )) {
 
-EOS
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['??'], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';'),
                 '{% hello "world" ?? "default" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world", "default"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world", "default"]) ;
+                EOS
             ],
             [
                 new EmbedTokenParser('hello', null, ['??'], 'echo', new CallbackProcessor(function (...$args) { return "Hello dummy"; }), ';', [], true),
                 '{% hello ?? "default" %}',
                 <<<EOS
-// line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["default"]) ;
-EOS
+                // line 1
+                echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["default"]) ;
+                EOS
             ],
         ];
     }

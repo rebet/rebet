@@ -66,9 +66,8 @@ class BladeTest extends RebetTestCase
     {
         $this->assertSame(
             <<<EOS
-Hello, Samantha.
-EOS
-            ,
+            Hello, Samantha.
+            EOS,
             EofLineFeed::TRIM()->process($this->blade->render('welcome', ['name' => 'Samantha']))
         );
     }
@@ -78,43 +77,43 @@ EOS
         return [
             [
                 <<<EOS
-Title:
-Unit Test
-Section:
-    - Main Section
-    - Sub Section
-Content:
-    This is content.
-EOS
-                , 'builtin/child'
-                , []
+                Title:
+                Unit Test
+                Section:
+                    - Main Section
+                    - Sub Section
+                Content:
+                    This is content.
+                EOS,
+                'builtin/child',
+                []
             ],
             [
                 <<<EOS
-Component Test
-* Forbidden *
------
-You are not allowed to access this resource!
-EOS
-                , 'builtin/component'
-                , []
+                Component Test
+                * Forbidden *
+                -----
+                You are not allowed to access this resource!
+                EOS,
+                'builtin/component',
+                []
             ],
             [
                 <<<EOS
-Component Args Test
-* Forbidden *
------
-You are not allowed to access this resource!
-EOS
-                , 'builtin/component-args'
-                , []
+                Component Args Test
+                * Forbidden *
+                -----
+                You are not allowed to access this resource!
+                EOS,
+                'builtin/component-args',
+                []
             ],
             [
                 <<<EOS
-var app = [1,2,3];
-EOS
-                , 'builtin/json'
-                , ['array' => [1, 2, 3]]
+                var app = [1,2,3];
+                EOS,
+                'builtin/json',
+                ['array' => [1, 2, 3]]
             ],
         ];
     }

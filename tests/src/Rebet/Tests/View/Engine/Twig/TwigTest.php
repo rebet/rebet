@@ -64,9 +64,8 @@ class TwigTest extends RebetTestCase
     {
         $this->assertSame(
             <<<EOS
-Hello, Samantha.
-EOS
-            ,
+            Hello, Samantha.
+            EOS,
             $this->twig->render('welcome', ['name' => 'Samantha'])
         );
     }

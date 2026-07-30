@@ -27,9 +27,8 @@ class EnvironmentTest extends RebetTestCase
         $this->env->raw('hello', "echo('Hello');");
         $source   = '{% hello %}';
         $expect   = <<<EOS
-echo('Hello');
-EOS
-        ;
+        echo('Hello');
+        EOS;
         $this->assertSame($expect, $this->renderPhpCode($source));
     }
 
@@ -51,37 +50,33 @@ EOS
 
         $this->assertSame(
             <<<EOS
-// line 1
-echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", []) );
-EOS
-            ,
+            // line 1
+            echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", []) );
+            EOS,
             $this->renderPhpCode('{% hello %}')
         );
 
         $this->assertSame(
             <<<EOS
-// line 1
-echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world"]) );
-EOS
-            ,
+            // line 1
+            echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world"]) );
+            EOS,
             $this->renderPhpCode('{% hello "world" %}')
         );
 
         $this->assertSame(
             <<<EOS
-// line 1
-echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null)]) );
-EOS
-            ,
+            // line 1
+            echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null)]) );
+            EOS,
             $this->renderPhpCode('{% hello name %}')
         );
 
         $this->assertSame(
             <<<EOS
-// line 1
-echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["greet" => "Good by"]) );
-EOS
-            ,
+            // line 1
+            echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["greet" => "Good by"]) );
+            EOS,
             $this->renderPhpCode('{% hello greet="Good by" %}')
         );
     }
@@ -92,61 +87,59 @@ EOS
 
         $this->assertSame(
             <<<EOS
-// line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", ["local"]) ) {
-// line 2
-yield "    LOCAL
-";
-// line 3
-} elseif( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", ["testing"]) ) {
-// line 4
-yield "    TESTING
-";
-}
+            // line 1
+            if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", ["local"]) ) {
+            // line 2
+            yield "    LOCAL
+            ";
+            // line 3
+            } elseif( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", ["testing"]) ) {
+            // line 4
+            yield "    TESTING
+            ";
+            }
 
-EOS
-            ,
+            EOS,
             $this->renderPhpCode(
                 <<<EOS
-{% env is "local" %}
-    LOCAL
-{% elseenv is "testing" %}
-    TESTING
-{% endenv %}
-EOS
+                {% env is "local" %}
+                    LOCAL
+                {% elseenv is "testing" %}
+                    TESTING
+                {% endenv %}
+                EOS
             )
         );
 
         $this->assertSame(
             <<<EOS
-// line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", ["local"]) )) {
-// line 2
-yield "    LOCAL
-";
-// line 3
-} elseif(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", ["testing"]) )) {
-// line 4
-yield "    TESTING
-";
-} else {
-// line 6
-yield "    OTHER
-";
-}
+            // line 1
+            if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", ["local"]) )) {
+            // line 2
+            yield "    LOCAL
+            ";
+            // line 3
+            } elseif(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", ["testing"]) )) {
+            // line 4
+            yield "    TESTING
+            ";
+            } else {
+            // line 6
+            yield "    OTHER
+            ";
+            }
 
-EOS
-            ,
+            EOS,
             $this->renderPhpCode(
                 <<<EOS
-{% env is not "local" %}
-    LOCAL
-{% elseenv is not "testing" %}
-    TESTING
-{% else %}
-    OTHER
-{% endenv %}
-EOS
+                {% env is not "local" %}
+                    LOCAL
+                {% elseenv is not "testing" %}
+                    TESTING
+                {% else %}
+                    OTHER
+                {% endenv %}
+                EOS
             )
         );
     }

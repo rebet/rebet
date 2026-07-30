@@ -348,20 +348,20 @@ class LetterpressTest extends RebetTestCase
     {
         $this->expectOutputString(
             <<<EOS
-[0] a = [1,2,3]
-[0] b = b
-[0] i = 0
-[0] v = 1
-[1] a = [1,2,3]
-[1] b = b
-[1] i = 1
-[1] v = 2
-[2] a = [1,2,3]
-[2] b = b
-[2] i = 2
-[2] v = 3
+            [0] a = [1,2,3]
+            [0] b = b
+            [0] i = 0
+            [0] v = 1
+            [1] a = [1,2,3]
+            [1] b = b
+            [1] i = 1
+            [1] v = 2
+            [2] a = [1,2,3]
+            [2] b = b
+            [2] i = 2
+            [2] v = 3
 
-EOS
+            EOS
         );
         Letterpress::eval(
             'foreach($a as $i => $v) { $__callback->invoke($i, compact(array_keys(get_defined_vars()))); }',
