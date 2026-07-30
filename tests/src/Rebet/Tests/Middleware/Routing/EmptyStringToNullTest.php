@@ -18,7 +18,7 @@ class EmptyStringToNullTest extends RebetTestCase
         $middleware  = new EmptyStringToNull();
         $destination = function ($request) { return Responder::toResponse('OK'); };
 
-        $request  = $this->createRequestMock('/');
+        $request = $this->createRequestMock('/');
         $request->query->add([
             'q_null'         => null,
             'q_empty_string' => '',

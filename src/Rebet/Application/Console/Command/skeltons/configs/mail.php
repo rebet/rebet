@@ -32,25 +32,25 @@ return [
                 'transporter' => [
                     '@factory' => SmtpTransport::class,
                 ],
-                'plugins'     => [],
+                'plugins' => [],
             ],
             'sendmail' => [
                 'transporter' => [
                     '@factory' => SendmailTransport::class,
                 ],
-                'plugins'     => [],
+                'plugins' => [],
             ],
             'log' => [
                 'transporter' => [
                     '@factory' => LogTransport::class,
                 ],
-                'plugins'     => [],
+                'plugins' => [],
             ],
             'test' => [
                 'transporter' => [
                     '@factory' => ArrayTransport::class,
                 ],
-                'plugins'     => [],
+                'plugins' => [],
             ],
         ],
         'default_transport'     => 'smtp',

@@ -52,7 +52,7 @@ class Securities
     public static function randomCode(int $length, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
     {
         $res = "";
-        for ($i=0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $res .= $chars[mt_rand(0, strlen($chars) - 1)];
         }
         return $res;

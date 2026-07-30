@@ -41,17 +41,16 @@ abstract class AbstractSymfonyAdapter implements Adapter
         switch (true) {
             case $tags_pool === null:
                 $tags_pool = $adapter;
-            break;
+                break;
             case $tags_pool instanceof CacheItemPoolInterface:
                 $tags_pool = new ProxyAdapter($tags_pool);
-            break;
+                break;
             case is_string($tags_pool):
                 $tags_pool = new ProxyAdapter(Cache::store($tags_pool)->adapter());
-            break;
+                break;
         }
         if ($taggable) {
-            $this->pool =
-                // PdoAdapter for pgsql can not contains '\0' for cache_item_id, so change TAGS_PREFIX.
+            $this->pool = // PdoAdapter for pgsql can not contains '\0' for cache_item_id, so change TAGS_PREFIX.
                 new class($adapter, $tags_pool, $known_tag_versions_ttl) extends TagAwareAdapter {
                     const TAGS_PREFIX = " [tags] ";
                 };

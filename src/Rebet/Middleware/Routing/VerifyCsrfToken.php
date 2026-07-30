@@ -113,7 +113,7 @@ class VerifyCsrfToken
         $token = $request->input('_token')
               ?: $request->getHeader('X-CSRF-TOKEN')
               ?: ($this->is_support_xsrf ? Securities::decrypt(Nets::decodeBase64Url($request->getHeader('X-XSRF-TOKEN') ?? '')) : null)
-              ;
+        ;
         if ($token) {
             return ['_token', $token];
         }

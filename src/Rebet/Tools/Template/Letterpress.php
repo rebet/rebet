@@ -189,7 +189,7 @@ class Letterpress implements Renderable, \JsonSerializable
     {
         return isset(static::$tag_set[$tag])
             || in_array($tag, Arrays::flatten(Arrays::pluck(static::$tag_set, 'siblings')))
-            ;
+        ;
     }
 
     /**
@@ -358,7 +358,7 @@ class Letterpress implements Renderable, \JsonSerializable
                     }
 
                     $vars['__callback'] = function ($vars) use (&$contents, $node) {
-                        $vars      = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
+                        $vars = Arrays::where($vars, function ($v, $k) { return !Strings::startsWith($k, '__'); });
                         $contents .= Letterpress::process($node['nodes'], $vars);
                     };
                     if (Letterpress::eval('$looped = false; foreach('.$node['code'].') { $looped = true; $__callback->invoke(compact(array_keys(get_defined_vars()))); }; return $looped;', $vars, false)) {
@@ -485,7 +485,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 // Handle embed tag.
                 if ((static::$tag_set[$tag]['type'] ?? null) === static::EMBED_TAG) {
                     if ($prev) {
-                        $prev['nodes'][]   = ['tag' => $tag, 'code' => $code, 'nodes' => []];
+                        $prev['nodes'][] = ['tag' => $tag, 'code' => $code, 'nodes' => []];
                     } else {
                         $parent['nodes'][] = ['tag' => $tag, 'code' => $code, 'nodes' => []];
                     }
@@ -563,7 +563,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 // Process block node first if block (and siblings) node stacked.
                 if (!empty($family)) {
                     $contents .= call_user_func(static::$tag_set[$open_tag]['handler'], $family, $vars);
-                    $family    = [];
+                    $family = [];
                 }
 
                 $contents .= static::expandVars($node, $vars);
@@ -577,7 +577,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 // Process block node first if block (and siblings) node stacked.
                 if (!empty($family)) {
                     $contents .= call_user_func(static::$tag_set[$open_tag]['handler'], $family, $vars);
-                    $family    = [];
+                    $family = [];
                 }
 
                 $contents .= call_user_func(static::$tag_set[$tag]['handler'], $node, $vars);
@@ -629,7 +629,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 $vars[$name] = $alone_var_without_tinker
                     ? (isset($vars[$name]) ? Tinker::peel($vars[$name]) : null)
                     : Tinker::with(isset($vars[$name]) ? $vars[$name] : null)
-                    ;
+                ;
             }
             foreach (Arrays::compact($matches['accompanies']) as $name) {
                 $vars[$name] = Tinker::with(isset($vars[$name]) ? $vars[$name] : null) ;

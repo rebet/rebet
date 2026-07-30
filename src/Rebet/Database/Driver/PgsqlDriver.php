@@ -64,7 +64,7 @@ class PgsqlDriver extends AbstractDriver
                     'not_matches' => ["{col} !~ {val}"                          , null , 'AND'],
                     'search'      => ["to_tsvector({col}) @@ to_tsquery({val})" , null , 'OR' ],
                 ],
-                'options'          => [
+                'options' => [
                     'len' => 'LENGTH({col})',
                     'uc'  => 'UPPER({col})',
                     'lc'  => 'LOWER({col})',

@@ -266,8 +266,8 @@ return [
     | required.
     */
     MongoDbSessionHandler::class => [
-        'database'     => null,
-        'collection'   => null,
+        'database'   => null,
+        'collection' => null,
         // --- You can change only what you need for these default options ---
         // 'id_field'     => '_id',
         // 'data_field'   => 'data',
@@ -289,7 +289,7 @@ return [
     |  * expiretime : The time to live in seconds.                                          [default: 86400]
     */
     MemcachedSessionHandler::class => [
-        'prefix'     => App::codeName(),
+        'prefix' => App::codeName(),
         // --- You can change only what you need for these default options ---
         // 'expiretime' => 86400,
     ],

@@ -23,7 +23,7 @@ class RawNode extends Node
      */
     public function __construct(string $code, int $lineno = 0, ?string $tag = null)
     {
-        parent::__construct([], ['code'  => $code ], $lineno, $tag);
+        parent::__construct([], ['code' => $code ], $lineno, $tag);
     }
 
     /**

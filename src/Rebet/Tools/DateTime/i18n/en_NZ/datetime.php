@@ -30,7 +30,7 @@ return [
         return $datetime->getHour() < 12
                 ? ($uppercase ? 'AM' : 'am')
                 : ($uppercase ? 'PM' : 'pm')
-                ;
+        ;
     },
     '@formats' => [
         'Xt'   => 'h:i xA',

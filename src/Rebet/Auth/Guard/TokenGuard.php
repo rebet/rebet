@@ -64,7 +64,7 @@ class TokenGuard extends Guard
         return $this->request->input($this->input_key) ?:
                $this->request->bearerToken() ?:
                $this->request->getPassword()
-               ;
+        ;
     }
 
     /**

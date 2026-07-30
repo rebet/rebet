@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime\Exception;
 
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Response\ProblemResponse;
 use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Session\Session;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Reflection\Reflector;
 
 class FallbackRedirectExceptionTest extends RebetTestCase
 {

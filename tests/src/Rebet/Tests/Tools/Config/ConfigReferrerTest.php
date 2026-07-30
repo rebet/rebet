@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Tools\Config;
 
+use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigReferrer;
 use Rebet\Tools\Config\Configurable;
-use Rebet\Tests\RebetTestCase;
 
 class ConfigReferrerTest_Mock
 {

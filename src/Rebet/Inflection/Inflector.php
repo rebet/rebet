@@ -288,7 +288,7 @@ class Inflector
     public static function reset() : void
     {
         static::clearConfig();
-        static::$cache    = [
+        static::$cache = [
             'pluralize'   => [],
             'singularize' => [],
         ];

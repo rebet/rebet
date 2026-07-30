@@ -14,7 +14,8 @@ abstract class RebetConsoleTestCase extends RebetTestCase
 
     const AVIRABLE_COMMANDS = [];
 
-    public function setUp() : void {
+    public function setUp() : void
+    {
         parent::setUp();
         $this->setUpConsole(...static::AVIRABLE_COMMANDS);
     }

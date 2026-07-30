@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\Reflection;
 
+use App\Model\Bank;
 use App\Stub\Address;
 use App\Stub\Customer;
-use App\Model\Bank;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\ValidData;
 
@@ -15,10 +15,10 @@ class PopulatableTest extends RebetTestCase
     {
         parent::setUp();
         $this->valid_data = new ValidData([
-            'name'               => 'John Smith',
-            'altanate_name'      => 'JOHN SMITH',
-            'birthday'           => '1987-01-23',
-            'bank'               => [
+            'name'          => 'John Smith',
+            'altanate_name' => 'JOHN SMITH',
+            'birthday'      => '1987-01-23',
+            'bank'          => [
                 'name'       => 'SampleBank',
                 'short_name' => 'SB',
                 'branch'     => 'FooBranch',
@@ -91,11 +91,11 @@ class PopulatableTest extends RebetTestCase
                     'prefecture' => '01',
                     'address'    => '1-2-3, Sample street, Test city',
                     'bank'       => [
-                        'name'       => 'SampleBank',
-                        'branch'     => 'FooBranch',
-                        'number'     => '1234567',
-                        'holder'     => 'John Smith',
-                        'location'   => [
+                        'name'     => 'SampleBank',
+                        'branch'   => 'FooBranch',
+                        'number'   => '1234567',
+                        'holder'   => 'John Smith',
+                        'location' => [
                             'zip'        => '1230003',
                             'prefecture' => '03',
                             'address'    => '2171 Scenic Way Springfield, IL 62701',
@@ -107,10 +107,10 @@ class PopulatableTest extends RebetTestCase
                     'prefecture' => '31',
                     'address'    => 'Baz bldg 12F, 1-2, Bar street, Foo city',
                     'bank'       => [
-                        'name'       => 'FooBarBank',
-                        'branch'     => 'BarBranch',
-                        'number'     => '7654321',
-                        'holder'     => 'Jane Smith',
+                        'name'   => 'FooBarBank',
+                        'branch' => 'BarBranch',
+                        'number' => '7654321',
+                        'holder' => 'Jane Smith',
                     ],
                 ]
             ],

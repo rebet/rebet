@@ -167,12 +167,12 @@ class FlashBagTest extends RebetTestCase
 
         $bag->remove('name');
         $this->assertSame([
-            'map'  => ['b' => 'B']
+            'map' => ['b' => 'B']
         ], $bag->peekAll());
 
         $bag->remove('nothing');
         $this->assertSame([
-            'map'  => ['b' => 'B']
+            'map' => ['b' => 'B']
         ], $bag->peekAll());
     }
 }

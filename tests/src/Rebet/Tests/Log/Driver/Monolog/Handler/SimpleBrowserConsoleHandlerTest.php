@@ -4,9 +4,9 @@ namespace Rebet\Tests\Log\Driver\Monolog\Handler;
 use Monolog\Logger as MonologLogger;
 use Monolog\LogRecord;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class SimpleBrowserConsoleHandlerTest extends RebetTestCase
 {
@@ -65,10 +65,10 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
                 'test'     => 'Foo Bar',
                 'datetime' => DateTime::now(),
             ],
-            'level'   => MonologLogger::DEBUG,
-            'channel' => 'web',
+            'level'    => MonologLogger::DEBUG,
+            'channel'  => 'web',
             'datetime' => DateTime::now(), // Use Rebet DateTime class for create datetime.
-            'extra'   => [
+            'extra'    => [
                 'process_id' => getmypid()
             ],
         ], $diff);

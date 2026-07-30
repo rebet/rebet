@@ -10,7 +10,7 @@ class BarValidation extends Rule
     {
         return [
             'bar' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED]
                 ]
             ],

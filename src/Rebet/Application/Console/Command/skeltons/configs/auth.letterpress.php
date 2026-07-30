@@ -91,8 +91,8 @@ return [
                 'precondition' => ['resign_at_null' => true],
                 'alises'       => ['role' => '@user'],
                 //{%-- else -%}
-                '@factory'     => ArrayProvider::class,
-                'users'        => [
+                '@factory' => ArrayProvider::class,
+                'users'    => [
                     ['user_id' => 1, 'active' => true, 'name' => '{! $auth_name !}', 'email' => '{! $auth_email !}', 'password' => '{! $auth_password !}'],
                     // If you want to add new user then write user information here.
                     // NOTE: You can use Rebet assistant `hash:password` command to create password hash.

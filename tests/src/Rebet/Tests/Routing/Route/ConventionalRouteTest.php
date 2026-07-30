@@ -28,7 +28,7 @@ class ConventionalRouteTest extends RebetTestCase
             'aliases'                    => [
                 '/howto' => '/misc/howto'
             ],
-            'accessible'                 => true,
+            'accessible' => true,
         ]);
         $this->assertSame(Namespaces::resolve('@app'), Reflector::get($route, 'namespace', null, true));
         $this->assertSame('admin', Reflector::get($route, 'default_part_of_controller', null, true));
@@ -54,9 +54,9 @@ class ConventionalRouteTest extends RebetTestCase
             ['Controller: publicCall', '/test/public-call'],
             ['Controller: withParam - 123', '/test/with-param/123'],
             ['Controller: withOptionalParam - default', '/test/with-optional-param'],
-            ['Controller: withParam - 123', '/param/123', ['aliases' => [ '/param' => '/test/with-param' ]]],
+            ['Controller: withParam - 123', '/param/123', ['aliases'        => [ '/param' => '/test/with-param' ]]],
             ['Controller: privateCall', '/test/private-call', ['accessible' => true]],
-            ['Controller: annotationAliasOnly', '/alias', ['aliases' => ['/alias' => '/test/annotation-alias-only']]],
+            ['Controller: annotationAliasOnly', '/alias', ['aliases'        => ['/alias' => '/test/annotation-alias-only']]],
             ['Controller: annotationWhere - abc', '/test/annotation-where/abc'],
             ['Controller: annotationChannelApi', '/test/annotation-channel-api', [], 'api'],
             ['Controller: annotationMethodGet', '/test/annotation-method-get'],
@@ -143,7 +143,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: App\Controller\TestController::withParam not found. Routing parameter 'id' value '123' not match /^[a-z]*$/.");
 
-        $route   = new ConventionalRoute();
+        $route = new ConventionalRoute();
         $route->where('id', '/^[a-z]*$/');
         $request = $this->createRequestMock('/test/with-param/123', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);

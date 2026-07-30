@@ -14,8 +14,8 @@ class RuleTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->rule       = new UserValidation();
-        $this->errors     = [];
+        $this->rule   = new UserValidation();
+        $this->errors = [];
     }
 
     public function test_cunstract()

@@ -39,7 +39,7 @@ class ExceptionHandlerTest extends RebetTestCase
             ],
         ]);
 
-        $this->handler             = new class extends ExceptionHandler {
+        $this->handler = new class extends ExceptionHandler {
             public $reported_count = 0;
 
             protected function reportHttp(Request $request, ?Response $response, \Throwable $e) : void

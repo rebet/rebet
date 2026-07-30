@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
+use App\Enum\Gender;
+use App\Enum\GroupPosition;
 use App\Model\Article;
 use App\Model\GroupUser;
 use App\Model\User;
 use App\Model\UserWithAnnot;
-use App\Enum\Gender;
-use App\Enum\GroupPosition;
 use Rebet\Auth\Password;
 use Rebet\Database\Database;
 use Rebet\Database\Event\BatchDeleted;
@@ -161,7 +161,7 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertSame($db->name() === 'mysql' ? false : true, $user->exists('mysql'));
             $this->assertSame(true, $user->create());
 
-            $gu = new GroupUser();
+            $gu           = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
             $this->assertSame(false, $gu->exists());
@@ -175,8 +175,8 @@ class EntityTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
-            $user = new UserWithAnnot();
-            $user->user_id = 99;
+            $user           = new UserWithAnnot();
+            $user->user_id  = 99;
             $user->password = Password::hash($user->user_id);
             $this->assertSame(false, $user->exists());
             $this->assertSame(null, $user->created_at);
@@ -189,7 +189,7 @@ class EntityTest extends RebetDatabaseTestCase
             $user = UserWithAnnot::find(99);
             $this->assertEquals($now, $user->created_at);
 
-            $gu = new GroupUser();
+            $gu           = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
             $this->assertSame(false, $gu->exists());
@@ -218,7 +218,7 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertSame(Gender::MALE(), $user->gender);
             $this->assertSame($now, $user->updated_at);
 
-            $gu = new GroupUser();
+            $gu           = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
             $this->assertSame(false, $gu->exists());
@@ -263,7 +263,7 @@ class EntityTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
-            $user = new UserWithAnnot();
+            $user           = new UserWithAnnot();
             $user->user_id  = 99;
             $user->password = Password::hash($user->user_id);
             $this->assertSame(false, $user->exists());
@@ -282,7 +282,7 @@ class EntityTest extends RebetDatabaseTestCase
             $this->assertEquals($new_now, $user->updated_at);
 
 
-            $gu = new GroupUser();
+            $gu           = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
             $this->assertSame(false, $gu->exists());
@@ -307,13 +307,13 @@ class EntityTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
-            $user = new UserWithAnnot();
-            $user->user_id  = 1;
+            $user          = new UserWithAnnot();
+            $user->user_id = 1;
             $this->assertSame(true, $user->exists());
             $this->assertSame(true, $user->delete());
             $this->assertSame(false, $user->exists());
 
-            $gu = new GroupUser();
+            $gu           = new GroupUser();
             $gu->user_id  = 1;
             $gu->group_id = 1;
             $this->assertSame(false, $gu->exists());

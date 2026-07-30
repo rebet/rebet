@@ -22,8 +22,8 @@ class Translator
     public static function defaultConfig()
     {
         return [
-            'dictionary'      => FileDictionary::class,
-            'resource_adder'  => [
+            'dictionary'     => FileDictionary::class,
+            'resource_adder' => [
                 FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
             ],
             'locale'          => \locale_get_default(),

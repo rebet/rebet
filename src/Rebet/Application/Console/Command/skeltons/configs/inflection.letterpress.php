@@ -32,7 +32,7 @@ return [
     |
     | In most cases you will not need to change this setting, but the default setting is not perfect.
     | Therefore, if the word conversion does not work, add or change this setting.
-    | 
+    |
     | @see Rebet\Inflection\Inflector::defaultConfig() for all of default definitions.
     */
     Inflector::class => [

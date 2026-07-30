@@ -2,11 +2,11 @@
 namespace Rebet\Tests\Routing\Route;
 
 use Rebet\Application\App;
-use Rebet\Tools\Config\Config;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ViewRoute;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
 

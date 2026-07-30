@@ -109,7 +109,7 @@ class TextFormatterTest extends RebetTestCase
                 ]
             ],
             ["2010年10月20日(水) 10:20:30.123456 web/ [DEBUG] Log Message.\n", [], null, [
-                '{datetime}'  => function (DateTime $val) { return $val->format('Xddd Xttt'); },
+                '{datetime}' => function (DateTime $val) { return $val->format('Xddd Xttt'); },
             ]],
         ];
     }
@@ -118,12 +118,12 @@ class TextFormatterTest extends RebetTestCase
     public function test_format($expect, array $record = [], ?string $format = null, array $stringifiers = [])
     {
         $record = array_merge([
-            'message' => 'Log Message.',
-            'context' => [],
-            'level'   => MonologLogger::DEBUG,
-            'channel' => 'web',
+            'message'  => 'Log Message.',
+            'context'  => [],
+            'level'    => MonologLogger::DEBUG,
+            'channel'  => 'web',
             'datetime' => DateTime::now(), // Use Rebet DateTime class for create datetime.
-            'extra'   => [],
+            'extra'    => [],
         ], $record);
         $log_record = new LogRecord(
             datetime: $record['datetime'],

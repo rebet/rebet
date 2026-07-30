@@ -265,8 +265,8 @@ class ConfigTest extends RebetTestCase
                 'map'    => ['a' => 'A', 'c' => 'C'],
                 'array'  => ['c'],
                 'parent' => [
-                    'map'    => ['a' => 'aa', 'c' => 'cc'],
-                    'array'  => ['cc'],
+                    'map'   => ['a' => 'aa', 'c' => 'cc'],
+                    'array' => ['cc'],
                 ],
             ]
         ]);
@@ -276,8 +276,8 @@ class ConfigTest extends RebetTestCase
                 'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
                 'array'  => ['c', 'a', 'b'],
                 'parent' => [
-                    'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                    'array'  => ['cc', 'a', 'b'],
+                    'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                    'array' => ['cc', 'a', 'b'],
                 ],
             ],
             Config::get(ConfigTest_MockOption::class)
@@ -292,8 +292,8 @@ class ConfigTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                'array'  => ['cc', 'a', 'b'],
+                'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                'array' => ['cc', 'a', 'b'],
             ],
             Config::get(ConfigTest_MockOption::class, 'parent')
         );
@@ -329,8 +329,8 @@ class ConfigTest extends RebetTestCase
                 'map='   => ['a' => 'A', 'c' => 'C'],
                 'array'  => ['c'],
                 'parent' => [
-                    'map='   => ['a' => 'aa', 'c' => 'cc'],
-                    'array'  => ['cc'],
+                    'map='  => ['a' => 'aa', 'c' => 'cc'],
+                    'array' => ['cc'],
                 ],
             ]
         ]);
@@ -340,8 +340,8 @@ class ConfigTest extends RebetTestCase
                 'map'    => ['a' => 'A', 'c' => 'C'],
                 'array'  => ['c', 'a', 'b'],
                 'parent' => [
-                    'map'    => ['a' => 'aa', 'c' => 'cc'],
-                    'array'  => ['cc', 'a', 'b'],
+                    'map'   => ['a' => 'aa', 'c' => 'cc'],
+                    'array' => ['cc', 'a', 'b'],
                 ],
             ],
             Config::get(ConfigTest_MockOption::class)
@@ -356,8 +356,8 @@ class ConfigTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'map'    => ['a' => 'aa', 'c' => 'cc'],
-                'array'  => ['cc', 'a', 'b'],
+                'map'   => ['a' => 'aa', 'c' => 'cc'],
+                'array' => ['cc', 'a', 'b'],
             ],
             Config::get(ConfigTest_MockOption::class, 'parent')
         );
@@ -404,8 +404,8 @@ class ConfigTest extends RebetTestCase
                 'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
                 'array'  => ['c'],
                 'parent' => [
-                    'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                    'array'  => ['cc'],
+                    'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                    'array' => ['cc'],
                 ],
             ],
             Config::get(ConfigTest_MockOption::class)
@@ -420,8 +420,8 @@ class ConfigTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                'array'  => ['cc'],
+                'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                'array' => ['cc'],
             ],
             Config::get(ConfigTest_MockOption::class, 'parent')
         );
@@ -468,8 +468,8 @@ class ConfigTest extends RebetTestCase
                 'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
                 'array'  => ['c', 'a', 'b'],
                 'parent' => [
-                    'map'    => ['a' => 'aa', 'c' => 'cc'],
-                    'array'  => ['cc'],
+                    'map'   => ['a' => 'aa', 'c' => 'cc'],
+                    'array' => ['cc'],
                 ],
             ],
             Config::get(ConfigTest_MockOption::class)
@@ -484,8 +484,8 @@ class ConfigTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'map'    => ['a' => 'aa', 'c' => 'cc'],
-                'array'  => ['cc'],
+                'map'   => ['a' => 'aa', 'c' => 'cc'],
+                'array' => ['cc'],
             ],
             Config::get(ConfigTest_MockOption::class, 'parent')
         );
@@ -532,8 +532,8 @@ class ConfigTest extends RebetTestCase
                 'map'    => ['a' => 'A', 'b' => 'b', 'c' => 'C'],
                 'array'  => ['c', 'a', 'b'],
                 'parent' => [
-                    'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                    'array'  => ['cc', 'a', 'b'],
+                    'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                    'array' => ['cc', 'a', 'b'],
                 ],
             ],
             Config::get(ConfigTest_MockOption::class)
@@ -548,8 +548,8 @@ class ConfigTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'map'    => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
-                'array'  => ['cc', 'a', 'b'],
+                'map'   => ['a' => 'aa', 'b' => 'b', 'c' => 'cc'],
+                'array' => ['cc', 'a', 'b'],
             ],
             Config::get(ConfigTest_MockOption::class, 'parent')
         );
@@ -582,9 +582,9 @@ class ConfigTest extends RebetTestCase
 
         Config::framework([
             ConfigTest_MockOption::class => [
-                'map='    => ['a' => 'A', 'c' => 'C'],
-                'array'   => ['c'],
-                'parent'  => [
+                'map='   => ['a' => 'A', 'c' => 'C'],
+                'array'  => ['c'],
+                'parent' => [
                     'map'    => ['a' => 'aa', 'c' => 'cc'],
                     'array>' => ['cc'],
                 ],
@@ -606,7 +606,7 @@ class ConfigTest extends RebetTestCase
             ConfigTest_MockOption::class => [
                 'array>' => ['e'],
                 'parent' => [
-                    'new'   => 'NEW',
+                    'new' => 'NEW',
                 ],
             ]
         ]);
@@ -819,8 +819,8 @@ class ConfigTest_MockOption
             'map'    => ['a' => 'a', 'b' => 'b'],
             'array'  => ['a', 'b'],
             'parent' => [
-                'map'    => ['a' => 'a', 'b' => 'b'],
-                'array'  => ['a', 'b'],
+                'map'   => ['a' => 'a', 'b' => 'b'],
+                'array' => ['a', 'b'],
             ],
         ];
     }

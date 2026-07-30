@@ -1,9 +1,7 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use App\AppStructure;
 use App\Enum\Gender;
-use App\Http\AppWebKernel;
 use App\Validation\BarValidation;
 use App\Validation\FooValidation;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -69,7 +67,7 @@ class ValidatorTest extends RebetTestCase
         $bmp_im   = imagecreatetruecolor(2, 2);
         imagebmp($bmp_im, $bmp_path);
         imagedestroy($bmp_im);
-        $zip_path = $fixture_dir.'/foo.zip';
+        $zip_path    = $fixture_dir.'/foo.zip';
         $zip_archive = new \ZipArchive();
         $zip_archive->open($zip_path, \ZipArchive::CREATE);
         $zip_archive->addFromString('a.txt', 'hello');
@@ -328,7 +326,7 @@ class ValidatorTest extends RebetTestCase
 
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED]
                 ]
             ]
@@ -339,12 +337,12 @@ class ValidatorTest extends RebetTestCase
 
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED]
                 ]
             ],
             'bar' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED]
                 ]
             ]
@@ -356,14 +354,14 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             [
                 'foo' => [
-                    'rule'  => [
+                    'rule' => [
                         ['C', Valid::REQUIRED]
                     ]
                 ]
             ],
             [
                 'bar' => [
-                    'rule'  => [
+                    'rule' => [
                         ['C', Valid::REQUIRED]
                     ]
                 ]
@@ -400,7 +398,7 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', [
             'foo' => [
                 'before' => function ($value) { return is_string($value) ? strtoupper($value) : $value ; },
-                'rule'  => [
+                'rule'   => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::REGEX, '/^[A-Z]+$/'],
                 ]
@@ -415,7 +413,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'foo']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::ALPHA],
                 ],
@@ -431,7 +429,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => '2001-01-01']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                 ],
@@ -448,7 +446,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'fooo-01-01']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                 ],
@@ -463,7 +461,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => '2001-01-01']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED],
                     ['C', Valid::DATETIME],
                 ],
@@ -479,7 +477,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::NUMBER.'?'],
                 ]
             ]
@@ -492,7 +490,7 @@ class ValidatorTest extends RebetTestCase
     {
         $rule = [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::NUMBER.'?', 'then' => [
                         ['C', Valid::NUMBER_GREATER_THAN, 100]
                     ], 'else' => [
@@ -517,7 +515,7 @@ class ValidatorTest extends RebetTestCase
     {
         $rule = [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', 'Number', 'then' => [['C', Valid::NUMBER_GREATER_THAN, 100]], 'else' => [['C', 'Ng']]],
                 ]
             ]
@@ -539,7 +537,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', 'Number'],
                     ['C', 'Ng'],
                 ]
@@ -550,7 +548,7 @@ class ValidatorTest extends RebetTestCase
 
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', 'Number:!'], // with '!' option
                     ['C', 'Ng'],
                 ]
@@ -565,7 +563,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => 'abc']);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', 'Ng', '@Error message 1.'],
                     ['C', 'Ng', '@Error message 2.'],
                     ['C', 'Ng', '@Error message 1.'],
@@ -583,7 +581,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => ['abc', 99]]);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', 'Number'],
                 ]
             ]
@@ -593,7 +591,7 @@ class ValidatorTest extends RebetTestCase
 
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::NUMBER_GREATER_THAN, 100]
                 ]
             ]
@@ -603,7 +601,7 @@ class ValidatorTest extends RebetTestCase
 
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', 'Number'],
                     ['C', Valid::NUMBER_GREATER_THAN, 100]
                 ]
@@ -618,7 +616,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['foo' => null]);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED],
                 ]
             ]
@@ -654,12 +652,12 @@ class ValidatorTest extends RebetTestCase
     {
         $rule = [
             'bank' => [
-                'rule'  => [
+                'rule' => [
                     ['CU', Valid::REQUIRED],
                 ],
                 'nest' => [
                     'name' => [
-                        'rule'  => [
+                        'rule' => [
                             ['CU', Valid::REQUIRED],
                             ['CU', Valid::MAX_LENGTH, 20],
                         ],
@@ -689,7 +687,7 @@ class ValidatorTest extends RebetTestCase
                 'label' => 'BANK',
                 'nest'  => [
                     'name' => [
-                        'rule'  => [
+                        'rule' => [
                             ['CU', Valid::REQUIRED],
                         ],
                     ]
@@ -705,7 +703,7 @@ class ValidatorTest extends RebetTestCase
             'bank' => [
                 'label' => 'BANK',
                 'nest'  => [
-                    'name'  => [
+                    'name' => [
                         'label' => 'Custom Name',
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
@@ -723,7 +721,7 @@ class ValidatorTest extends RebetTestCase
             'bank' => [
                 'label' => 'BANK',
                 'nest'  => [
-                    'name'  => [
+                    'name' => [
                         'label' => 'Custom :parent Name',
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
@@ -744,7 +742,7 @@ class ValidatorTest extends RebetTestCase
             'bank' => [
                 'label' => 'BANK',
                 'nest'  => [
-                    'name'  => [
+                    'name' => [
                         'label' => 'Custom Name',
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
@@ -762,7 +760,7 @@ class ValidatorTest extends RebetTestCase
             'bank' => [
                 'label' => 'BANK',
                 'nest'  => [
-                    'name'  => [
+                    'name' => [
                         'label' => 'Custom :parent Name',
                         'rule'  => [
                             ['CU', Valid::REQUIRED],
@@ -788,12 +786,12 @@ class ValidatorTest extends RebetTestCase
                 ],
                 'nests' => [
                     'zip' => [
-                        'rule'  => [
+                        'rule' => [
                             ['CU', Valid::REQUIRED],
                         ],
                     ],
                     'address' => [
-                        'rule'  => [
+                        'rule' => [
                             ['CU', Valid::REQUIRED],
                         ],
                     ],
@@ -801,7 +799,7 @@ class ValidatorTest extends RebetTestCase
             ],
         ];
 
-        $validator  = new Validator(['shipping_addresses' => [
+        $validator = new Validator(['shipping_addresses' => [
             ['zip' => '9990071', 'address' => null],
             ['zip' => null, 'address' => 'Address to home'],
         ]]);
@@ -820,33 +818,33 @@ class ValidatorTest extends RebetTestCase
     public function test_validate_crud()
     {
         $rule = [
-            'foo'     => ['rule'  => [['C' , 'Ng']]],
-            'bar'     => ['rule'  => [[ 'U', 'Ng']]],
-            'baz'     => ['rule'  => [['CU', 'Ng']]],
-            'qux'     => ['rule'  => [['C' , 'Ok:?',
+            'foo' => ['rule' => [['C' , 'Ng']]],
+            'bar' => ['rule' => [[ 'U', 'Ng']]],
+            'baz' => ['rule' => [['CU', 'Ng']]],
+            'qux' => ['rule' => [['C' , 'Ok:?',
                 'then' => [['C', 'Ng', '@C ok then C ng'], ['U', 'Ng', '@C ok then U ng']],
                 'else' => [['C', 'Ng', '@C ok else C ng'], ['U', 'Ng', '@C ok else U ng']],
             ]]],
-            'quxx'    => ['rule'  => [['U' , 'Ok:?',
+            'quxx' => ['rule' => [['U' , 'Ok:?',
                 'then' => [['C', 'Ng', '@U ok then C ng'], ['U', 'Ng', '@U ok then U ng']],
                 'else' => [['C', 'Ng', '@U ok else C ng'], ['U', 'Ng', '@U ok else U ng']],
             ]]],
-            'parent'  => [
+            'parent' => [
                 'rule' => [['C', 'Ng']],
                 'nest' => [
-                    'foo'     => ['rule'  => [['C' , 'Ng']]],
-                    'bar'     => ['rule'  => [[ 'U', 'Ng']]],
-                    'baz'     => ['rule'  => [['CU', 'Ng']]],
-                    'qux'     => ['rule'  => [['C' , 'Ok:?',
+                    'foo' => ['rule' => [['C' , 'Ng']]],
+                    'bar' => ['rule' => [[ 'U', 'Ng']]],
+                    'baz' => ['rule' => [['CU', 'Ng']]],
+                    'qux' => ['rule' => [['C' , 'Ok:?',
                         'then' => [['C', 'Ng', '@C ok then C ng'], ['U', 'Ng', '@C ok then U ng']],
                         'else' => [['C', 'Ng', '@C ok else C ng'], ['U', 'Ng', '@C ok else U ng']],
                     ]]],
                     'children' => [
                         'rule'  => [['U', 'Ng']],
                         'nests' => [
-                            'foo' => ['rule'  => [['C' , 'Ng']]],
-                            'bar' => ['rule'  => [[ 'U', 'Ng']]],
-                            'baz' => ['rule'  => [['CU', 'Ng']]],
+                            'foo' => ['rule' => [['C' , 'Ng']]],
+                            'bar' => ['rule' => [[ 'U', 'Ng']]],
+                            'baz' => ['rule' => [['CU', 'Ng']]],
                         ]
                     ],
                 ],
@@ -854,18 +852,18 @@ class ValidatorTest extends RebetTestCase
             'parents' => [
                 'rule'  => [['U', 'Ng']],
                 'nests' => [
-                    'foo'    => ['rule'  => [['C' , 'Ng']]],
-                    'bar'    => ['rule'  => [[ 'U', 'Ng']]],
-                    'baz'    => ['rule'  => [['CU', 'Ng']]],
-                    'quxx'   => ['rule'  => [[ 'U' , 'Ok:?',
+                    'foo'  => ['rule' => [['C' , 'Ng']]],
+                    'bar'  => ['rule' => [[ 'U', 'Ng']]],
+                    'baz'  => ['rule' => [['CU', 'Ng']]],
+                    'quxx' => ['rule' => [[ 'U' , 'Ok:?',
                         'then' => [['C', 'Ng', '@U ok then C ng'], ['U', 'Ng', '@U ok then U ng']],
                         'else' => [['C', 'Ng', '@U ok else C ng'], ['U', 'Ng', '@U ok else U ng']],
                     ]]],
                     'child' => [
                         'nest' => [
-                            'foo' => ['rule'  => [['C' , 'Ng']]],
-                            'bar' => ['rule'  => [[ 'U', 'Ng']]],
-                            'baz' => ['rule'  => [['CU', 'Ng']]],
+                            'foo' => ['rule' => [['C' , 'Ng']]],
+                            'bar' => ['rule' => [[ 'U', 'Ng']]],
+                            'baz' => ['rule' => [['CU', 'Ng']]],
                         ],
                     ],
                 ]
@@ -905,9 +903,9 @@ class ValidatorTest extends RebetTestCase
         $valid_data = $validator->validate('C', $rule);
         $this->assertNull($valid_data);
         $this->assertSame([
-            'foo'                   => ["The Foo is NG."],
-            'baz'                   => ["The Baz is NG."],
-            'qux'                   => ["C ok then C ng"],
+            'foo' => ["The Foo is NG."],
+            'baz' => ["The Baz is NG."],
+            'qux' => ["C ok then C ng"],
 
             'parent'                => ["The Parent is NG."],
             'parent.foo'            => ["The Parent Foo is NG."],
@@ -916,19 +914,19 @@ class ValidatorTest extends RebetTestCase
             'parent.children.0.foo' => ["The Parent Children Foo is NG."],
             'parent.children.0.baz' => ["The Parent Children Baz is NG."],
 
-            'parents.0.foo'         => ["The Parents Foo is NG."],
-            'parents.0.baz'         => ["The Parents Baz is NG."],
-            'parents.0.child.foo'   => ["The Parents Child Foo is NG."],
-            'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
+            'parents.0.foo'       => ["The Parents Foo is NG."],
+            'parents.0.baz'       => ["The Parents Baz is NG."],
+            'parents.0.child.foo' => ["The Parents Child Foo is NG."],
+            'parents.0.child.baz' => ["The Parents Child Baz is NG."],
         ], $validator->errors());
 
         $validator  = new Validator($data);
         $valid_data = $validator->validate('U', $rule);
         $this->assertNull($valid_data);
         $this->assertSame([
-            'bar'                   => ["The Bar is NG."],
-            'baz'                   => ["The Baz is NG."],
-            'quxx'                  => ["U ok then U ng"],
+            'bar'  => ["The Bar is NG."],
+            'baz'  => ["The Baz is NG."],
+            'quxx' => ["U ok then U ng"],
 
             'parent.bar'            => ["The Parent Bar is NG."],
             'parent.baz'            => ["The Parent Baz is NG."],
@@ -936,12 +934,12 @@ class ValidatorTest extends RebetTestCase
             'parent.children.0.bar' => ["The Parent Children Bar is NG."],
             'parent.children.0.baz' => ["The Parent Children Baz is NG."],
 
-            'parents'               => ["The Parents is NG."],
-            'parents.0.bar'         => ["The Parents Bar is NG."],
-            'parents.0.baz'         => ["The Parents Baz is NG."],
-            'parents.0.quxx'        => ["U ok then U ng"],
-            'parents.0.child.bar'   => ["The Parents Child Bar is NG."],
-            'parents.0.child.baz'   => ["The Parents Child Baz is NG."],
+            'parents'             => ["The Parents is NG."],
+            'parents.0.bar'       => ["The Parents Bar is NG."],
+            'parents.0.baz'       => ["The Parents Baz is NG."],
+            'parents.0.quxx'      => ["U ok then U ng"],
+            'parents.0.child.bar' => ["The Parents Child Bar is NG."],
+            'parents.0.child.baz' => ["The Parents Child Baz is NG."],
         ], $validator->errors());
     }
 
@@ -949,7 +947,7 @@ class ValidatorTest extends RebetTestCase
     {
         $rule = [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED],
                 ]
             ]
@@ -971,7 +969,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['type' => 1]);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => ['C', Valid::IF, 'type', 1, 'then' => 'invalid format'],
+                'rule' => ['C', Valid::IF, 'type', 1, 'then' => 'invalid format'],
             ]
         ]);
     }
@@ -984,7 +982,7 @@ class ValidatorTest extends RebetTestCase
         $validator  = new Validator(['type' => 1]);
         $valid_data = $validator->validate('C', [
             'foo' => [
-                'rule'  => ['C', Valid::IF, 'type', 2, 'else' => 'invalid format'],
+                'rule' => ['C', Valid::IF, 'type', 2, 'else' => 'invalid format'],
             ]
         ]);
     }

@@ -86,13 +86,13 @@ class DatabaseProvider extends AuthProvider
      */
     public function __construct(
         string $entity,
-        string $signin_id_name                  = 'email',
-        string $password_name                   = 'password',
-        string $api_token_name                  = 'api_token',
+        string $signin_id_name = 'email',
+        string $password_name = 'password',
+        string $api_token_name = 'api_token',
         ?int $expired_remember_token_clean_rate = 100,
-        array $precondition                     = [],
-        array $alises                           = [],
-        ?string $db                             = null
+        array $precondition = [],
+        array $alises = [],
+        ?string $db = null
     ) {
         $this->entity                            = $entity;
         $this->signin_id_name                    = $signin_id_name;

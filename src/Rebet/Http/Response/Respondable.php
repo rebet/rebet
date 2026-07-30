@@ -56,10 +56,10 @@ trait Respondable
         $cookies = [];
         foreach ($this->headers->getCookies() as $cookie) {
             if (
-                    $cookie->getName() === $name
-                    && ($cookie->getPath() === $path || Strings::wildmatch($cookie->getPath() ?? '', $path))
-                    && ($cookie->getDomain() === $domain || Strings::wildmatch($cookie->getDomain() ?? '', $domain))
-                ) {
+                $cookie->getName() === $name
+                && ($cookie->getPath() === $path || Strings::wildmatch($cookie->getPath() ?? '', $path))
+                && ($cookie->getDomain() === $domain || Strings::wildmatch($cookie->getDomain() ?? '', $domain))
+            ) {
                 $cookies[] = $cookie;
             }
         }

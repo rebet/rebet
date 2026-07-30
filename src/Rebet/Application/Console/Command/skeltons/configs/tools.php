@@ -33,10 +33,10 @@ return [
             'Y/m/d',
             'Ymd',
         ],
-        'test_now'                   => null,
-        'test_now_timezone'          => null,
-        'test_now_format'            => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
-        'custom_formats'             => [
+        'test_now'          => null,
+        'test_now_timezone' => null,
+        'test_now_format'   => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
+        'custom_formats'    => [
             'xwww' => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label'); },
             'xww'  => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_short'); },
             'xw'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },
@@ -306,7 +306,7 @@ return [
 
     Resource::class => [
         'loader' => [
-            'php'  => function (string $path, array $option) {
+            'php' => function (string $path, array $option) {
                 if (!\file_exists($path)) {
                     return null;
                 }
@@ -319,13 +319,13 @@ return [
                 }
                 return \json_decode(\file_get_contents($path), true);
             },
-            'ini'  => function (string $path, array $option) {
+            'ini' => function (string $path, array $option) {
                 if (!\file_exists($path)) {
                     return null;
                 }
                 return \parse_ini_file($path, $option['process_sections'] ?? true, $option['scanner_mode'] ?? INI_SCANNER_TYPED);
             },
-            'txt'  => function (string $path, array $option) {
+            'txt' => function (string $path, array $option) {
                 if (!\file_exists($path)) {
                     return null;
                 }
@@ -389,7 +389,7 @@ return [
                                 case DNS_A & $type && $vt === 'A': return true;
                                 case DNS_CNAME & $type && $vt === 'CNAME': return true;
                                 case DNS_HINFO & $type && $vt === 'HINFO': return true;
-                                // case DNS_CAA & $type && $vt === 'CAA': return true; // PHP Warning:  Use of undefined constant DNS_CAA - assumed 'DNS_CAA' (this will throw an Error in a future version of PHP)
+                                    // case DNS_CAA & $type && $vt === 'CAA': return true; // PHP Warning:  Use of undefined constant DNS_CAA - assumed 'DNS_CAA' (this will throw an Error in a future version of PHP)
                                 case DNS_MX & $type && $vt === 'MX': return true;
                                 case DNS_NS & $type && $vt === 'NS': return true;
                                 case DNS_PTR & $type && $vt === 'PTR': return true;
@@ -439,9 +439,9 @@ return [
             ],
             'customs' => [
                 // You can use php built-in functions as filters when the 1st argument is for value.
-                'nvl'      => function ($value, $default) { return $value ?? $default; },
-                'default'  => function ($value, $default) { return $value ?? $default; },
-                'escape'   => function (string $value, string $type = 'html') {
+                'nvl'     => function ($value, $default) { return $value ?? $default; },
+                'default' => function ($value, $default) { return $value ?? $default; },
+                'escape'  => function (string $value, string $type = 'html') {
                     switch ($type) {
                         case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                         case 'url': return urlencode($value);
@@ -486,8 +486,8 @@ return [
                     $test = is_callable($test) ? call_user_func($test, $value) : $test ;
                     return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                 },
-                'case'      => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
-                'length'    => function ($value) {
+                'case'   => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
+                'length' => function ($value) {
                     switch (true) {
                         case $value === null:    return null;
                         case is_numeric($value): return mb_strlen((string)$value);
@@ -495,8 +495,8 @@ return [
                     }
                     return Arrays::count($value);
                 },
-                'values'    => function (array $value) { return array_values($value); },
-                'keys'      => function (array $value) { return array_keys($value); },
+                'values' => function (array $value) { return array_values($value); },
+                'keys'   => function (array $value) { return array_keys($value); },
             ],
         ],
     ],
@@ -508,8 +508,8 @@ return [
     ],
 
     Translator::class => [
-        'dictionary'      => FileDictionary::class,
-        'resource_adder'  => [
+        'dictionary'     => FileDictionary::class,
+        'resource_adder' => [
             FileDictionary::class => function (FileDictionary $dictionary, ...$args) { $dictionary->addLibraryResource(...$args); },
         ],
         'locale'          => Config::refer(App::class, 'locale'),

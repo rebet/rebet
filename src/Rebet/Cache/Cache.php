@@ -114,7 +114,7 @@ class Cache
         $name = $name ?? static::config('default_store');
         return static::$stores[$name]
             ?? static::$stores[$name] = new Store($name, static::configInstantiate("stores.{$name}.adapter"))
-            ;
+        ;
     }
 
     /**

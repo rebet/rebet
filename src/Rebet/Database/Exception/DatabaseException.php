@@ -77,7 +77,7 @@ class DatabaseException extends RuntimeException
         $code       = $error_info[1] ?? ($error instanceof \PDOException ? $error->getCode() : null) ;
         $message    = $error_info[2] ?? ($error instanceof \PDOException ? $error->getMessage() : 'Unkown error occured.') ;
 
-        $sql  = empty($sql)    ? '' : "\n--- [SQL] ---\n{$sql}";
+        $sql = empty($sql)    ? '' : "\n--- [SQL] ---\n{$sql}";
         $sql .= empty($params) ? '' : "\n-- [PARAM] --\n".Strings::stringify($params) ;
         $sql .= empty($sql)    ? '' : "\n-------------\n" ;
 

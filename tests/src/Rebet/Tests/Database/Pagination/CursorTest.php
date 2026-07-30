@@ -3,8 +3,8 @@ namespace Rebet\Tests\Database\Pagination;
 
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class CursorTest extends RebetTestCase
 {
@@ -71,7 +71,7 @@ class CursorTest extends RebetTestCase
         $pager = Pager::resolve()->size(3)->page(5);
         $a     = new Cursor($pager, ['gender' => 1, 'user_id' => 123], 1);
         sleep(1);
-        $b     = new Cursor($pager, ['gender' => 1, 'user_id' => 123], 1);
+        $b = new Cursor($pager, ['gender' => 1, 'user_id' => 123], 1);
         $this->assertFalse($a == $b);
         $this->assertTrue($a->equals($b));
         $this->assertFalse($a->equals(null));

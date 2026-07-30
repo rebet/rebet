@@ -43,13 +43,20 @@ trait PluginOptionable
         }
 
         switch ($option) {
-            case 'sender':            $this->registerPlugin(new Swift_Plugins_ImpersonatePlugin($value)); break;
-            case 'redirecting':       $this->registerPlugin(Reflector::create(Swift_Plugins_RedirectingPlugin::class, $value)); break;
-            case 'antiflood':         $this->registerPlugin(Reflector::create(Swift_Plugins_AntiFloodPlugin::class, $value)); break;
-            case 'bandwidth_monitor': $value ? $this->registerPlugin(new Swift_Plugins_BandwidthMonitorPlugin()) : null; break;
-            case 'throttle':          $this->registerPlugin(Reflector::create(Swift_Plugins_ThrottlerPlugin::class, $value)); break;
-            case 'logging':           $this->registerPlugin(new LoggingPlugin(is_string($value) ? $value : null)); break;
-            case 'always_bcc':        $this->registerPlugin(new AlwaysBccPlugin($value)); break;
+            case 'sender':            $this->registerPlugin(new Swift_Plugins_ImpersonatePlugin($value));
+                break;
+            case 'redirecting':       $this->registerPlugin(Reflector::create(Swift_Plugins_RedirectingPlugin::class, $value));
+                break;
+            case 'antiflood':         $this->registerPlugin(Reflector::create(Swift_Plugins_AntiFloodPlugin::class, $value));
+                break;
+            case 'bandwidth_monitor': $value ? $this->registerPlugin(new Swift_Plugins_BandwidthMonitorPlugin()) : null;
+                break;
+            case 'throttle':          $this->registerPlugin(Reflector::create(Swift_Plugins_ThrottlerPlugin::class, $value));
+                break;
+            case 'logging':           $this->registerPlugin(new LoggingPlugin(is_string($value) ? $value : null));
+                break;
+            case 'always_bcc':        $this->registerPlugin(new AlwaysBccPlugin($value));
+                break;
             default: return false;
         }
         return true;

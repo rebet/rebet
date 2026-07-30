@@ -2,10 +2,10 @@
 namespace Rebet\Tests\View;
 
 use Rebet\Application\App;
+use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Tinker\Tinker;
-use Rebet\Tools\Config\Config;
-use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Twig\Twig;
 use Rebet\View\EofLineFeed;

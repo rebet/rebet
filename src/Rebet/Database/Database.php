@@ -618,7 +618,7 @@ class Database
             }
 
             $table_name    = $this->driver->quoteIdentifier($entity::tabelName());
-            $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values'=> $values]);
+            $affected_rows = $this->execute("INSERT INTO {$table_name} (".join(',', $columns).") VALUES (:values)", ['values' => $values]);
             if ($affected_rows !== 1) {
                 return false;
             }

@@ -37,8 +37,8 @@ class ArrayPool implements AdapterInterface
     {
         $this->item_creator = \Closure::bind(
             static function ($key, $value, $isHit, $tags) {
-                $item = new CacheItem();
-                $item->key = $key;
+                $item        = new CacheItem();
+                $item->key   = $key;
                 $item->value = $value;
                 $item->isHit = $isHit;
                 if (null !== $tags) {

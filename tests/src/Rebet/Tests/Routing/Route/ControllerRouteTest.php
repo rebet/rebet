@@ -24,7 +24,7 @@ class ControllerRouteTest extends RebetTestCase
 
     public function test_routing()
     {
-        $route   = new ControllerRoute('/test', TestController::class);
+        $route = new ControllerRoute('/test', TestController::class);
 
         $request = $this->createRequestMock('/test/public-call', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));

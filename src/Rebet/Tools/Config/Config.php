@@ -390,10 +390,10 @@ class Config
                 $config = array_merge(['@factory' => $config], $runtime_args);
             } elseif (is_array($config)) {
                 $config = array_merge($config, $runtime_args);
-            } else {
-                // Do nothing.
-                // If a meaningless runtime argument is passed, continue processing as it is.
             }
+            // Do nothing.
+            // If a meaningless runtime argument is passed, continue processing as it is.
+
         }
         return Reflector::instantiate($config);
     }

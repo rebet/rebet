@@ -7,7 +7,7 @@ use Swift_Mime_HeaderEncoder;
 
 /**
  * Base 64 Header Encode class
- * 
+ *
  * It uses mb_encode_mimeheader instead of default encodeString.
  * This class is used to avoid the problem of garbled characters in multi-byte
  * character strings such as Japanese when the subject line is long.

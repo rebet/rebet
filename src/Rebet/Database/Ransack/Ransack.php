@@ -109,7 +109,7 @@ class Ransack
                 'starts'   => function ($value) { return     str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value).'%'; },
                 'ends'     => function ($value) { return '%'.str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value)    ; },
             ],
-            'predicates'         => [
+            'predicates' => [
                 // predicate => [template, value_converter, multiple_columns_conjunction]
                 'eq'           => ["{col} = {val}"                           , null      , 'OR' ],
                 'not_eq'       => ["{col} <> {val}"                          , null      , 'AND'],
@@ -498,7 +498,7 @@ class Ransack
         return $this->option
             ? array_map(function ($v) { return str_replace('{col}', $this->driver->quoteIdentifier($v), $this->option); }, $this->columns)
             : array_map(function ($v) { return $this->driver->quoteIdentifier($v); }, $this->columns)
-            ;
+        ;
     }
 
     /**
@@ -521,13 +521,13 @@ class Ransack
      */
     public function convert(?string $template = null, ?\Closure $value_converter = null) : Query
     {
-        $template        = $template ?? $this->template;
-        $params          = [];
-        $wheres          = [];
-        $columns         = $this->columns();
-        $columns_count   = count($columns);
-        $values          = $this->compound ? $this->value(true, $value_converter) : [$this->value(true, $value_converter)];
-        $values_count    = count($values);
+        $template      = $template ?? $this->template;
+        $params        = [];
+        $wheres        = [];
+        $columns       = $this->columns();
+        $columns_count = count($columns);
+        $values        = $this->compound ? $this->value(true, $value_converter) : [$this->value(true, $value_converter)];
+        $values_count  = count($values);
 
         foreach ($values as $i => $value) {
             $idx_i      = $values_count === 1 ? "" : "_{$i}";

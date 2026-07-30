@@ -35,12 +35,12 @@ class LooseEmailParser extends EmailParser
     /**
      * {@inheritDoc}
      */
-    protected function parseLeftFromAt(): Result
+    protected function parseLeftFromAt() : Result
     {
         $localPartParser = new LooseLocalPart($this->lexer, $this->ignores);
         $localPartResult = $localPartParser->parse();
         $this->localPart = $localPartParser->localPart();
-        $this->warnings = array_merge($localPartParser->getWarnings(), $this->warnings);
+        $this->warnings  = array_merge($localPartParser->getWarnings(), $this->warnings);
 
         return $localPartResult;
     }

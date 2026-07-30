@@ -206,6 +206,6 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             && Utils::equivalent($this->cursor, $cursor->cursor)
             && $this->pager == $cursor->pager
             && $this->next_page_count == $cursor->next_page_count
-            ;
+        ;
     }
 }

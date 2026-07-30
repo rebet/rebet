@@ -45,7 +45,7 @@ class MethodRouteTest extends RebetTestCase
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Controller: staticCall', $response->getContent());
 
-        $route   = new MethodRoute(['GET'], '/foo', 'TestController::privateCall');
+        $route = new MethodRoute(['GET'], '/foo', 'TestController::privateCall');
         $route->accessible(true);
         $request = $this->createRequestMock('/foo', null, 'web', 'web', 'GET', '', $route);
         $this->assertTrue($route->match($request));

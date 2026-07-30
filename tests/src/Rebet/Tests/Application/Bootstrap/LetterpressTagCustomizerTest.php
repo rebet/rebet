@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Application\Bootstrap;
 
 use App\Model\User;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 use function PHPUnit\Framework\assertSame;
+
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Http\WebKernel;
 use Rebet\Tests\RebetTestCase;
@@ -41,17 +41,17 @@ class LetterpressTagCustomizerTest extends RebetTestCase
 
             // can/cannot
             ["can update"    , "{% can 'update', \$user %}can update{% endcan %}", ['user' => $own]],
-            [""              , "{% can 'update', \$user %}can update{% endcan %}", ['user' => $others]],
+            [""              , "{% can 'update', \$user %}can update{% endcan %}", ['user'                                                     => $others]],
             ["can create"    , "{% can 'create', '@stub\\Address', \$addresses %}can create{% else %}can not create{% endcan %}", ['addresses' => [1, 2, 3]]],
             ["can not create", "{% can 'create', '@stub\\Address', \$addresses %}can create{% else %}can not create{% endcan %}", ['addresses' => [1, 2, 3, 4, 5]]],
 
             // lang
             ["Hello, Jhon."       , "{% lang 'message.welcome', ['name' => 'Jhon'] %}"],
-            ["Hello, Jhon."       , "{% lang 'message.welcome', ['name' => \$name] %}", ['name' => 'Jhon']],
-            ["Hello, Jhon."       , "{% lang 'message.welcome', \$user %}", ['user' => ['name' => 'Jhon']]],
+            ["Hello, Jhon."       , "{% lang 'message.welcome', ['name' => \$name] %}", ['name'                        => 'Jhon']],
+            ["Hello, Jhon."       , "{% lang 'message.welcome', \$user %}", ['user'                                    => ['name' => 'Jhon']]],
             ["ようこそ、太郎様"    , "{% lang 'message.welcome', ['name' => \$name], 'locale' => \$locale %}", ['name' => '太郎', 'locale' => 'ja']],
-            ["This is an apple."  , "{% lang 'message.sample', ['amount' => \$amount], \$amount %}", ['amount' => 1]],
-            ["There are 3 apples.", "{% lang 'message.sample', ['amount' => \$amount], \$amount %}", ['amount' => 3]],
+            ["This is an apple."  , "{% lang 'message.sample', ['amount' => \$amount], \$amount %}", ['amount'         => 1]],
+            ["There are 3 apples.", "{% lang 'message.sample', ['amount' => \$amount], \$amount %}", ['amount'         => 3]],
 
             // commentif
             [
@@ -283,7 +283,7 @@ class LetterpressTagCustomizerTest extends RebetTestCase
     {
         $request = $this->createRequestMock('/', 'user', 'web', 'web', 'GET', '/prefix');
         $this->signin($request);
-        $kernel  = $this->createMock(WebKernel::class);
+        $kernel = $this->createMock(WebKernel::class);
         $kernel->method('request')->willReturn($request);
 
         Letterpress::reset();

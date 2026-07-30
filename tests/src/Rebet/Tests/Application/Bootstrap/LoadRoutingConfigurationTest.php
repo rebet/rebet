@@ -17,7 +17,7 @@ class LoadRoutingConfigurationTest extends RebetTestCase
         try {
             $response = Router::handle($request);
             $this->fail('Never reached.');
-        } catch(RouteNotFoundException $e) {
+        } catch (RouteNotFoundException $e) {
             $this->assertSame('Route GET /hello not found.', $e->getMessage());
         }
 
@@ -25,7 +25,7 @@ class LoadRoutingConfigurationTest extends RebetTestCase
         $structure->method('routes')->willReturn(App::structure()->resources('/adhoc/Application/Bootstrap/LoadRoutingConfiguration'));
         $kernel = $this->createMock(Kernel::class);
         $kernel->method('structure')->willReturn($structure);
-        
+
         $bootstrapper = new LoadRoutingConfiguration();
         $bootstrapper->bootstrap($kernel);
 

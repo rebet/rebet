@@ -2,7 +2,6 @@
 namespace Rebet\Database\Compiler;
 
 use Rebet\Database\Analysis\Analyzer;
-use Rebet\Database\Database;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Expression;
@@ -248,8 +247,8 @@ class BuiltinCompiler implements Compiler
         $i            = 0;
         do {
             $where .= $first ? "(" : " OR (" ;
-            $last   = array_pop($cursor_cols);
-            $j      = 0;
+            $last = array_pop($cursor_cols);
+            $j    = 0;
             foreach ($cursor_cols as $col) {
                 $real_col     = $has_group_by ? $col : $analyzer->extractAliasSelectColumn($col) ;
                 $key          = ":cursor__{$i}__{$j}";
@@ -259,9 +258,9 @@ class BuiltinCompiler implements Compiler
                 $j++;
             }
 
-            $expression  = $expressions[$order_by[$last]];
+            $expression = $expressions[$order_by[$last]];
             $expression .= $first ? '=' : '' ;
-            $first       = false;
+            $first = false;
 
             $real_last    = $has_group_by ? $last : $analyzer->extractAliasSelectColumn($last) ;
             $key          = ":cursor__{$i}__{$j}";

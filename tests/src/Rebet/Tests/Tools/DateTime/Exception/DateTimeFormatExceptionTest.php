@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime\Exception;
 
-use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 
 class DateTimeFormatExceptionTest extends RebetTestCase
 {

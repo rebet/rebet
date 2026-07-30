@@ -57,7 +57,7 @@ class TinkerTest extends RebetTestCase
             'gender'  => Gender::MALE(),
             'boolean' => true,
         ]);
-        $this->rs          = Tinker::with([
+        $this->rs = Tinker::with([
             new TinkerTest_User(1, 'Foo', 'First', 'foo@hoge.com', Gender::MALE(), new DateTime('1976-08-12')),
             new TinkerTest_User(2, 'Bar', 'Second', 'bar@moge.net', Gender::FEMALE(), new DateTime('1993-11-27')),
             new TinkerTest_User(3, 'Baz', 'Third', 'baz@piyo.co.jp', Gender::MALE(), new DateTime('2000-02-05')),
@@ -811,22 +811,26 @@ class TinkerTest extends RebetTestCase
 
         // Tinker.filter.customs.dump
         $this->assertSame('null', $this->null->dump()->return());
-        $this->assertSame(<<<EOS
+        $this->assertSame(
+            <<<EOS
         array:3 [
             0 => 1,
             1 => 2,
             2 => 3
         ]
         EOS,
-        $this->array->dump()->return());
-        $this->assertSame(<<<EOS
+            $this->array->dump()->return()
+        );
+        $this->assertSame(
+            <<<EOS
         array:3 [
             0 => 1,
             1 => ***,
             2 => 3
         ]
         EOS,
-        $this->array->dump([1], '***')->return());
+            $this->array->dump([1], '***')->return()
+        );
 
         // Tinker.filter.customs.invoke
         $this->assertNull($this->null->invoke('Test')->return());

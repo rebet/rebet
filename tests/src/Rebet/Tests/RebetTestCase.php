@@ -47,7 +47,8 @@ abstract class RebetTestCase extends TestCase
 
     // protected function assertPostConditions() {}
 
-    protected function tearDown() : void {
+    protected function tearDown() : void
+    {
         restore_error_handler();     // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
         restore_exception_handler(); // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
     }

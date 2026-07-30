@@ -12,11 +12,14 @@ class HandleExceptionsTest extends RebetTestCase
         $fallbacked_exception = null;
         $reported_exception   = null;
         $is_terminated        = false;
-        $kernel = $this->createMock(Kernel::class);
-        $kernel->method('fallback')->willReturnCallback(function ($e) use (&$fallbacked_exception) { $fallbacked_exception = $e; return 1; });
+        $kernel               = $this->createMock(Kernel::class);
+        $kernel->method('fallback')->willReturnCallback(function ($e) use (&$fallbacked_exception) {
+            $fallbacked_exception = $e;
+            return 1;
+        });
         $kernel->method('report')->willReturnCallback(function ($e) use (&$reported_exception) { $reported_exception = $e; });
         $kernel->method('terminate')->willReturnCallback(function () use (&$is_terminated) { $is_terminated = true; });
-        
+
         $bootstrapper = new HandleExceptions();
         $bootstrapper->bootstrap($kernel);
 
@@ -24,7 +27,7 @@ class HandleExceptionsTest extends RebetTestCase
         $error_handler = set_error_handler(null);
         try {
             $error_handler(E_USER_ERROR, 'Error message', '/path/to/error/file.php', 12);
-        } catch(\ErrorException $e) {
+        } catch (\ErrorException $e) {
             $this->assertInstanceOf(\ErrorException::class, $e);
             $this->assertSame($e->getCode(), 0);
             $this->assertSame($e->getSeverity(), E_USER_ERROR);

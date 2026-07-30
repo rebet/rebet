@@ -86,7 +86,7 @@ class Log
                     ],
                 ],
             ],
-            'fallback_log'     => defined('STDERR') ? STDERR : 'php://stderr',
+            'fallback_log' => defined('STDERR') ? STDERR : 'php://stderr',
         ];
     }
 

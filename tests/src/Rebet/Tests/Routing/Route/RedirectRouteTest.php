@@ -34,7 +34,7 @@ class RedirectRouteTest extends RebetTestCase
             ['/destination', '/redirect/{id?}', '/destination/{id}', '/redirect'],
             ['/destination/a/b', '/redirect/{from?}/{to?}', '/destination/{from}/{to}', '/redirect/a/b'],
             ['/destination/a?to=b', '/redirect/{from}/{to}', '/destination/{from}', '/redirect/a/b'],
-            ['/destination?page=1', '/redirect', '/destination', '/redirect', ['page' => 1]],
+            ['/destination?page=1', '/redirect', '/destination', '/redirect', ['page'                 => 1]],
             ['/destination?page=1&id=123', '/redirect/{id}', '/destination', '/redirect/123', ['page' => 1]],
             ['/destination?page=1&id=123', '/redirect/{id}', '/destination?page=1', '/redirect/123'],
             ['/destination', '/redirect', '/destination', '/redirect', [], 301],

@@ -47,7 +47,7 @@ class InitCommand extends Command
         $total_step = 7;
         $step       = 0;
 
-        $configs['cwd']       = $cwd = Path::normalize(getcwd());
+        $configs['cwd'] = $cwd = Path::normalize(getcwd());
 
         $this->comment('===========================================');
         $this->comment(' Welcome to Rebet Application Initializing ');
@@ -134,9 +134,9 @@ class InitCommand extends Command
             $configs['cache'] = $this->choice(
                 "* Cache Store : ",
                 [
-                    'apcu'      => 'APCu',
+                    'apcu' => 'APCu',
                 ] +
-                ($use_db ? ['database'  => 'Database'] : []) +
+                ($use_db ? ['database' => 'Database'] : []) +
                 [
                     'file'      => 'File System',
                     'memcached' => 'Memcached',
@@ -173,11 +173,11 @@ class InitCommand extends Command
         $this->info("Let's add `127.0.0.1 {$domain}` to your hosts file.");
         $this->info("Then access:");
         $this->info(" - Site Top : {$app_url}");
-        if($use_db && !$is_sqlite) {
+        if ($use_db && !$is_sqlite) {
             $this->info(" - Adminer  : {$app_url}/adminer/");
         }
         $this->info('-----------------------');
-        
+
         $this->comment('Application ready! Build something amazing.');
     }
 }

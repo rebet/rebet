@@ -54,7 +54,7 @@ class SecuritiesTest extends RebetTestCase
 
     public function test_encrypt()
     {
-        for ($i=0; $i < 20; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $plain     = Securities::randomCode(mt_rand(12, 32));
             $secretKey = Securities::randomCode(mt_rand(3, 8));
             $encrypted = Securities::encrypt($plain, $secretKey);
@@ -71,7 +71,7 @@ class SecuritiesTest extends RebetTestCase
 
     public function test_decrypt()
     {
-        for ($i=0; $i < 20; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $plain     = Securities::randomCode(mt_rand(12, 32));
             $secretKey = Securities::randomCode(mt_rand(3, 8));
             $encrypted = Securities::encrypt($plain, $secretKey);

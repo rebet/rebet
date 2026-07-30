@@ -7,3 +7,5 @@ Thumbs.db
 /.vscode/
 /nbproject/
 /.history/
+/.phpunit.cache/
+.php-cs-fixer.cache

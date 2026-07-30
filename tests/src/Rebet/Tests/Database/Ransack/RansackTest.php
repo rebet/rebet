@@ -24,19 +24,19 @@ class RansackTest extends RebetDatabaseTestCase
             ],
             [
                 '((?name? = :name_0 AND ?age? > :age_gt_0) OR (?name? = :name_1 AND ?age? > :age_gt_1))',
-                ['name_0' => 'foo', 'age_gt_0' => 20, 'name_1' => 'bar', 'age_gt_1' => 18],
+                ['name_0'    => 'foo', 'age_gt_0' => 20, 'name_1' => 'bar', 'age_gt_1' => 18],
                 0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]]
             ],
             [
                 '((((?name? = :name_0_0) OR (?name? = :name_0_1)) AND ?age? > :age_gt_0) OR (?name? = :name_1 AND ?age? > :age_gt_1))',
-                ['name_0_0' => 'foo', 'name_0_1' => 'bar', 'age_gt_0' => 20, 'name_1' => 'baz', 'age_gt_1' => 18],
+                ['name_0_0'    => 'foo', 'name_0_1' => 'bar', 'age_gt_0' => 20, 'name_1' => 'baz', 'age_gt_1' => 18],
                 0 , [[[['name' => 'foo'], ['name' => 'bar']], 'age_gt' => 20], ['name' => 'baz', 'age_gt' => 18]]
             ],
             [
                 '(((?last_name? = :name_0_0 OR ?first_name? = :name_0_1) AND ?age? > :age_gt_0) OR ((?last_name? = :name_1_0 OR ?first_name? = :name_1_1) AND ?age? > :age_gt_1))',
-                ['name_0_0' => 'foo', 'name_0_1' => 'foo', 'age_gt_0' => 20, 'name_1_0' => 'bar', 'name_1_1' => 'bar', 'age_gt_1' => 18],
+                ['name_0_0'  => 'foo', 'name_0_1' => 'foo', 'age_gt_0' => 20, 'name_1_0' => 'bar', 'name_1_1' => 'bar', 'age_gt_1' => 18],
                 0 , [['name' => 'foo', 'age_gt' => 20], ['name' => 'bar', 'age_gt' => 18]],
-                ['name' => ['last_name', 'first_name']]
+                ['name'      => ['last_name', 'first_name']]
             ],
             [
                 '?age? > :age_gt',

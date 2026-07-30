@@ -228,7 +228,7 @@ trait DatabaseTestHelper
     {
         $is_debug = $db->isDebug();
         $db->debug(false);
-        $message  = empty($message) ? $message : "{$message}\n" ;
+        $message = empty($message) ? $message : "{$message}\n" ;
         foreach ($expects as $table_name => $rows) {
             $columns = array_shift($rows) ?? [];
             $table   = $db->driver()->quoteIdentifier($table_name);

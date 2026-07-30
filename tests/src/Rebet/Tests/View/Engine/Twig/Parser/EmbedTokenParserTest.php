@@ -342,7 +342,7 @@ class EmbedTokenParserTest extends RebetTestCase
 
     protected function renderPhpCode(TokenParserInterface $parser, string $source) : string
     {
-        $env      = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
+        $env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
         $env->addTokenParser($parser);
         $stream   = $env->tokenize(new Source($source, ''));
         $parser   = new Parser($env);

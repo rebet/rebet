@@ -48,10 +48,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 'Y/m/d',
                 'Ymd',
             ],
-            'test_now'                   => null,
-            'test_now_timezone'          => null,
-            'test_now_format'            => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
-            'custom_formats'             => [
+            'test_now'          => null,
+            'test_now_timezone' => null,
+            'test_now_format'   => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
+            'custom_formats'    => [
                 'xwww' => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label'); },
                 'xww'  => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_short'); },
                 'xw'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },

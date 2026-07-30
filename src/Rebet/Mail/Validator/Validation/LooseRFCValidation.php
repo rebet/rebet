@@ -66,7 +66,7 @@ class LooseRFCValidation implements EmailValidation
     {
         $parser = new LooseEmailParser($emailLexer, $this->ignores);
         $result = $parser->parse((string)$email);
-        if($result->isInvalid()) {
+        if ($result->isInvalid()) {
             $this->error = $result;
             return false;
         }

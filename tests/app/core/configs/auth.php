@@ -50,7 +50,7 @@ return [
                 'create'  => function (AuthUser $user) { return $user->is('editable'); },
             ],
             Address::class => [
-                'create'  => function (AuthUser $user, string $target, array $addresses) {
+                'create' => function (AuthUser $user, string $target, array $addresses) {
                     return !$user->isGuest() && count($addresses) < 5 ;
                 },
             ]

@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime;
 
+use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
-use Rebet\Tests\RebetTestCase;
 
 class DateTest extends RebetTestCase
 {

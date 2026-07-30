@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Tools\Testable;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Testable\StdoutCapture;
-
 use function PHPUnit\Framework\assertEquals;
+use Rebet\Tests\RebetTestCase;
+
+use Rebet\Tools\Testable\StdoutCapture;
 
 class StdoutCaptureTest extends RebetTestCase
 {
@@ -24,7 +24,7 @@ class StdoutCaptureTest extends RebetTestCase
 
     public function test_via()
     {
-        $captured = StdoutCapture::via(function(){
+        $captured = StdoutCapture::via(function () {
             echo 'foo';
             fputs(STDOUT, 'bar');
             $stdout = fopen('php://stdout', 'w');

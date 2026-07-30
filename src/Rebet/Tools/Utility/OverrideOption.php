@@ -26,7 +26,7 @@ class OverrideOption
     /**
      * @var string of option on apend (Sequential array only)
      */
-    public const APPEND  = '>';
+    public const APPEND = '>';
 
     /**
      * @var string of option on merge

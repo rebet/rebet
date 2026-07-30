@@ -2,11 +2,11 @@
 namespace Rebet\Mail\Validator\Parser;
 
 use Egulias\EmailValidator\EmailLexer;
+use Egulias\EmailValidator\Parser\LocalPart;
+use Egulias\EmailValidator\Result\InvalidEmail;
 use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
 use Egulias\EmailValidator\Result\Reason\DotAtEnd;
 use Egulias\EmailValidator\Result\Reason\DotAtStart;
-use Egulias\EmailValidator\Parser\LocalPart;
-use Egulias\EmailValidator\Result\InvalidEmail;
 use Egulias\EmailValidator\Result\Result;
 use Egulias\EmailValidator\Result\ValidEmail;
 use Egulias\EmailValidator\Warning\LocalTooLong;
@@ -69,17 +69,17 @@ class LooseLocalPart extends LocalPart
                 $dquoteParsingResult = Reflector::invoke($this, 'parseDoubleQuote', [], true);
 
                 //Invalid double quote parsing
-                if($dquoteParsingResult->isInvalid()) {
+                if ($dquoteParsingResult->isInvalid()) {
                     return $dquoteParsingResult;
                 }
             }
 
-            if ($this->lexer->token['type'] === EmailLexer::S_OPENPARENTHESIS || 
-                $this->lexer->token['type'] === EmailLexer::S_CLOSEPARENTHESIS ) {
+            if ($this->lexer->token['type'] === EmailLexer::S_OPENPARENTHESIS ||
+                $this->lexer->token['type'] === EmailLexer::S_CLOSEPARENTHESIS) {
                 $commentsResult = $this->parseComments();
 
                 //Invalid comment parsing
-                if($commentsResult->isInvalid()) {
+                if ($commentsResult->isInvalid()) {
                     return $commentsResult;
                 }
             }
@@ -111,7 +111,7 @@ class LooseLocalPart extends LocalPart
             }
 
             $resultFWS = Reflector::invoke($this, 'parseLocalFWS', [], true);
-            if($resultFWS->isInvalid()) {
+            if ($resultFWS->isInvalid()) {
                 return $resultFWS;
             }
 

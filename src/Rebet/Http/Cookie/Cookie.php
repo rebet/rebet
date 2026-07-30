@@ -27,7 +27,7 @@ class Cookie extends SymfonyCookie
     {
         return [
             'expire'    => 0,
-            'path'      => fn($path) => (Request::current() ? Request::current()->getRoutePrefix() : '').$path,
+            'path'      => fn ($path) => (Request::current() ? Request::current()->getRoutePrefix() : '').$path,
             'domain'    => null,
             'secure'    => null,
             'http_only' => true,

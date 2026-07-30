@@ -25,8 +25,8 @@ class EnvironmentTest extends RebetTestCase
     public function test_raw()
     {
         $this->env->raw('hello', "echo('Hello');");
-        $source   = '{% hello %}';
-        $expect   = <<<EOS
+        $source = '{% hello %}';
+        $expect = <<<EOS
         echo('Hello');
         EOS;
         $this->assertSame($expect, $this->renderPhpCode($source));

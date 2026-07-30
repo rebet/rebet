@@ -2,11 +2,11 @@
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\RotatingFileHandler;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\FileDriver;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class FileDriverTest extends RebetTestCase
 {

@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Validation;
 
-use Rebet\Auth\Annotation\Role;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
@@ -60,12 +59,14 @@ class Validator
         static::setConfig(['nested_attribute_auto_format' => $nested_attribute_auto_format]);
     }
 
-    public static function validateValue($value, array $rule) : array {
+    public static function validateValue($value, array $rule) : array
+    {
 
     }
 
-    public static function validateValueBy($value, $rules, string $field, string $crud) : array {
-        
+    public static function validateValueBy($value, $rules, string $field, string $crud) : array
+    {
+
     }
 
     /**

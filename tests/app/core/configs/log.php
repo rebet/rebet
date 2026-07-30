@@ -7,9 +7,9 @@ use Rebet\Log\LogLevel;
 
 return [
     Log::class => [
-        'unittest' => true,
+        'unittest'        => true,
         'default_channel' => App::channel() ?? 'stderr',
-        'channels' => [
+        'channels'        => [
             'web' => [
                 'driver' => [
                     '@factory' => TestDriver::class,

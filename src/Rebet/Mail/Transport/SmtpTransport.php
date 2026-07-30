@@ -66,7 +66,8 @@ class SmtpTransport extends Swift_SmtpTransport
                 continue;
             }
             switch ($option) {
-                case 'stream_options':    $stream_options = $value; break;
+                case 'stream_options':    $stream_options = $value;
+                    break;
                 case 'disable_ca_check':  break;
                 case 'pop_before_smtp':
                     $crypto = $value['crypto'] ?? static::DEFAULT_PORT_ENCRYPTION[$value['port'] ?? 110] ?? null;
@@ -80,7 +81,7 @@ class SmtpTransport extends Swift_SmtpTransport
                     }
                     $plugin->bindSmtp($this);
                     $this->registerPlugin($plugin);
-                break;
+                    break;
                 default:
                     $setter = 'set'.Inflector::pascalize($option);
                     if (method_exists($this, $setter)) {
@@ -88,7 +89,7 @@ class SmtpTransport extends Swift_SmtpTransport
                         break;
                     }
                     throw new LogicException("Invalid option '{$option}' was given.");
-                break;
+                    break;
             }
         }
         if ($options['disable_ca_check'] ?? false) {

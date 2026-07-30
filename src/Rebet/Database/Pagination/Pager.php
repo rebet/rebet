@@ -76,7 +76,7 @@ class Pager
              ->size(static::config('default_page_size'), true)
              ->eachSide(static::config('default_each_side'))
              ->needTotal(static::config('default_need_total'))
-             ;
+        ;
     }
 
     /**
@@ -194,6 +194,6 @@ class Pager
             && $this->each_side === $pager->each_side
             && $this->need_total === $pager->need_total
             && $this->cursor === $pager->cursor
-            ;
+        ;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Auth;
 
-use App\Stub\Address;
 use App\Model\Bank;
 use App\Model\User;
+use App\Stub\Address;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Event\Authenticated;
@@ -189,8 +189,8 @@ class AuthTest extends RebetTestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/', $response->getTargetUrl());
 
-        $request  = $this->signin();
-        $user     = Auth::user();
+        $request = $this->signin();
+        $user    = Auth::user();
         $this->assertSame(2, $user->id);
 
         $response = Auth::signout($request, '/signouted');

@@ -9,15 +9,15 @@ return [
         'private_disk' => 'private',
         'public_disk'  => 'public',
         'disks'        => [
-            'private'  => [
-                'adapter'    => [
+            'private' => [
+                'adapter' => [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->privateStorage(),
                 ],
                 'config' => null,
             ],
             'public' => [
-                'adapter'    => [
+                'adapter' => [
                     '@factory' => LocalFilesystemAdapter::class,
                     'location' => App::structure()->publicStorage(),
                 ],

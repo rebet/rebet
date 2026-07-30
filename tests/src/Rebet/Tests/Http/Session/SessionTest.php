@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests\Http\Session;
 
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Http\Session\Session;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 class SessionTest extends RebetTestCase
@@ -19,7 +19,7 @@ class SessionTest extends RebetTestCase
     public function test_reset()
     {
         $this->assertSame(null, Session::current());
-        $session   = new Session();
+        $session = new Session();
         $session->set('foo', 'Foo');
         $attribute = $session->attribute();
         $this->assertSame($session, Session::current());
@@ -330,9 +330,9 @@ class SessionTest extends RebetTestCase
         $this->assertSame(
             [
                 [['*'], ['a' => 'A']],
-                [['*'], ['b' => 'B']],
-                [['/user/edit'], ['b' => 'b', 'c' => 'c']],
-                [['/user/*'], ['c' => 'C']],
+                [['*'], ['b'                            => 'B']],
+                [['/user/edit'], ['b'                   => 'b', 'c' => 'c']],
+                [['/user/*'], ['c'                      => 'C']],
                 [['/blog/register', '/blog/copy'], ['d' => 'D']],
             ],
             $session->flash()->peek('_inherit_input')

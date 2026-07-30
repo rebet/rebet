@@ -66,8 +66,8 @@ class ResponderTest extends RebetTestCase
         return [
             ['/redirect/to', '/redirect/to', [], 302, ''],
             ['/redirect/to', '@/redirect/to', [], 302, ''],
-            ['/redirect/to?key=value', '/redirect/to', ['key' => 'value'], 302, ''],
-            ['/redirect/to?key=value', '@/redirect/to', ['key' => 'value'], 302, ''],
+            ['/redirect/to?key=value', '/redirect/to', ['key'                 => 'value'], 302, ''],
+            ['/redirect/to?key=value', '@/redirect/to', ['key'                => 'value'], 302, ''],
             ['/redirect/to?foo=bar&key=value', '/redirect/to?foo=bar', ['key' => 'value'], 302, ''],
             ['/redirect/to', '/redirect/to', [], 307, ''],
             ['/redirect/to', '@/redirect/to', [], 307, ''],

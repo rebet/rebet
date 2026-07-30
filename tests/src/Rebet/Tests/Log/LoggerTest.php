@@ -2,11 +2,11 @@
 namespace Rebet\Tests\Log;
 
 use Psr\Log\NullLogger;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Logger;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class LoggerTest extends RebetTestCase
 {

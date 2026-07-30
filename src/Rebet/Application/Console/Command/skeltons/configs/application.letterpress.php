@@ -217,7 +217,7 @@ return [
                 return $pager
                     ->page($request->get(App::config('paginate.page_name')) ?? 1)
                     ->size($request->get(App::config('paginate.page_size_name')) ?? App::config('paginate.default_page_size'))
-                    ;
+                ;
             },
         ],
 

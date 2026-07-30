@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\Exception;
 
+use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\RebetException;
 use Rebet\Tools\Exception\RuntimeException;
-use Rebet\Tests\RebetTestCase;
 
 class RuntimeExceptionTest extends RebetTestCase
 {

@@ -348,7 +348,7 @@ class Decimal
                     case '√': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
                 }
                 throw new LogicException("Invalid formula [{$formula}] was given.");
-       }
+        }
 
         throw new LogicException("Invalid mode [{$mode}] was given.");
     }

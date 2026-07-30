@@ -75,7 +75,7 @@ return [
         | Log Channels
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Here you may configure the log channels for your application.
-        | Out of the box, Rebet uses the Monolog PHP logging library. This gives you a variety of 
+        | Out of the box, Rebet uses the Monolog PHP logging library. This gives you a variety of
         | powerful log handlers / formatters to utilize.
         |
         | Provided Drivers:
@@ -136,8 +136,8 @@ return [
             */
             'app' => [
                 'driver' => [
-                    '@factory'             => FileDriver::class,
-                    'level'                => App::when([
+                    '@factory' => FileDriver::class,
+                    'level'    => App::when([
                         'local'   => LogLevel::DEBUG,
                         'default' => LogLevel::ERROR,
                     ]),
@@ -228,10 +228,10 @@ return [
         | Default Applied Processors
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | This setting is default applied processors for MonologDriver (and sub classes).
-        | If you want to add extra information to log message, you can use '{extra.xxxx}' placeholder 
+        | If you want to add extra information to log message, you can use '{extra.xxxx}' placeholder
         | that suplieded information from XxxxProcessor implemented Monolog\Processor\ProcessorInterface.
         | And you can also use all of processors in Monolog\Processor package.
-        | 
+        |
         | Provided Processors:
         | - {extra.git.[branch|commit])}                  : Monolog\Processor\GitProcessor::class
         | - {extra.hostname}                              : Monolog\Processor\HostnameProcessor::class
@@ -265,7 +265,7 @@ return [
         | You can use extra information, if you applied XxxxProcessor to `MonologDriver.processors`.
         | (See `MonologDriver.processors` comments for more detailed information about 'extra.xxxx')
         |
-        | In default, '{extra}' placeholder replaced by extra information text that stringified by 
+        | In default, '{extra}' placeholder replaced by extra information text that stringified by
         | function of 'stringifiers.{extra}'.
         | And other placeholders also.
         */
@@ -276,8 +276,8 @@ return [
         | Default Placeholder Stringifier Function
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | This setting is default stringifier function for replace log message placeholders.
-        | It applies this function if each placeholder's stringifier are not defined in 
-        | `TextFormatter.stringifiers`. 
+        | It applies this function if each placeholder's stringifier are not defined in
+        | `TextFormatter.stringifiers`.
         */
         // 'default_stringifier' => function ($val, array $masks, string $masked_label) { return Strings::stringify($val, $masks, $masked_label); },
 
@@ -325,7 +325,7 @@ return [
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Property Names That Need Masking
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        | If you want to be masking some properties like 'password' in context/extra on log message, 
+        | If you want to be masking some properties like 'password' in context/extra on log message,
         | you can do that by these properties write here.
         */
         'masks' => ['password', 'password_confirm'],

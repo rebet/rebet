@@ -481,7 +481,7 @@ class BuiltinFilesystem implements Filesystem
             })
             ->values()
             ->return()
-            ;
+        ;
     }
 
     /**

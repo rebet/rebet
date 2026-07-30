@@ -361,7 +361,7 @@ class DateTimeTest extends RebetTestCase
         $new  = $date->add(new \DateInterval('P1D'));
         $this->assertInstanceOf(DateTime::class, $new);
 
-        $new  = $date->add('P1D');
+        $new = $date->add('P1D');
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-21 10:20:30', $new->format('Y-m-d H:i:s'));
     }
@@ -434,7 +434,7 @@ class DateTimeTest extends RebetTestCase
         $new  = $date->sub(new \DateInterval('P1D'));
         $this->assertInstanceOf(DateTime::class, $new);
 
-        $new  = $date->sub('P1D');
+        $new = $date->sub('P1D');
         $this->assertInstanceOf(DateTime::class, $new);
         $this->assertSame('2010-10-19 10:20:30', $new->format('Y-m-d H:i:s'));
     }

@@ -64,7 +64,7 @@ class SqliteDriver extends AbstractDriver
                     'not_matches' => ["{col} NOT REGEXP {val}" , null , 'AND'],
                     'search'      => ["{col} MATCH {val}"      , null , 'OR' ],
                 ],
-                'options'          => [
+                'options' => [
                     'bin' => 'BINARY {col}',
                     'ci'  => '{col} COLLATE nocase',
                     'len' => 'LENGTH({col})',

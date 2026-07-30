@@ -2,9 +2,9 @@
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\Config;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
 use Rebet\View\Tag\CallbackProcessor;
@@ -21,8 +21,8 @@ class BladeCompilerTest extends RebetTestCase
         parent::setUp();
         Config::application([
             Blade::class => [
-                'view_path>'  => [App::structure()->views('/blade')],
-                'cache_path'  => static::makeSubWorkingDir('cache'),
+                'view_path>' => [App::structure()->views('/blade')],
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
 

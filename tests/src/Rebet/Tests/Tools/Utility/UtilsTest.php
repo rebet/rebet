@@ -40,7 +40,7 @@ class UtilsTest extends RebetTestCase
         $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'c' => 3]));
         $this->assertSame(true, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], (object)['a' => 1, 'b' => 2, 'c' => 3])); // stdClass can be treated synonymous with array even if it is not iterable
         $this->assertSame(false, Utils::equivalent(['a' => 1, 'b' => 2, 'c' => 3], ['a' => 1, 'b' => 2, 'C' => 3]));
-        $object       = new class {
+        $object = new class {
             public $a = 1;
             public $b = 2;
             public $c = 3;

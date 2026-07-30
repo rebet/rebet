@@ -3,8 +3,8 @@ namespace Rebet\Log\Driver\Monolog\Handler;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\LogRecord;
 use Monolog\Logger as MonologLogger;
+use Monolog\LogRecord;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Tools\Testable\System;
@@ -105,7 +105,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    public function reset(): void
+    public function reset() : void
     {
         static::clear();
     }
@@ -156,7 +156,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     {
         $script = [];
         foreach (static::$records as $record) {
-            $formatted = $record->formatted ?? $record->message;
+            $formatted                    = $record->formatted ?? $record->message;
             [$headline, $details]         = Strings::split($formatted, "\n", 2);
             [$method, $h_style, $d_style] = static::OUTPUT_STYLES[$record->level->value ?? MonologDriver::DEBUG];
 

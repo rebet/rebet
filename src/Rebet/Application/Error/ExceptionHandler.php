@@ -268,8 +268,8 @@ class ExceptionHandler extends FallbackHandler
             }
         }
 
-        $home   = $request->getRoutePrefix().'/' ;
-        $title  = Tinker::with($title, true)->escape()->nl2br();
+        $home  = $request->getRoutePrefix().'/' ;
+        $title = Tinker::with($title, true)->escape()->nl2br();
         if (!$custom_title) {
             $title = $title->stringf('<span class="status">'.$status.'</span>%s');
         }

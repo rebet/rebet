@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests\Http\Response;
 
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Http\Response\Respondable;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Reflection\Reflector;
 
 class RespondableTest extends RebetTestCase
 {

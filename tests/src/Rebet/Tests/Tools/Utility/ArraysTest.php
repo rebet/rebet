@@ -26,7 +26,7 @@ class ArraysTest extends RebetTestCase
         $list = ['a', 'b', 'c', 'd', 'e', 'f'];
         sort($list);
         $size = count($list);
-        for ($i=0; $i <= $size; $i++) {
+        for ($i = 0; $i <= $size; $i++) {
             [$actual_winner, $actual_loser] = Arrays::random($list, $i);
             $this->assertSame($i, count($actual_winner));
             $this->assertSame($size - $i, count($actual_loser));
@@ -492,7 +492,7 @@ class ArraysTest extends RebetTestCase
             )
         );
     }
-    
+
     public function test_duplicate()
     {
         $this->assertNull(Arrays::duplicate(null));
@@ -601,14 +601,14 @@ class ArraysTest extends RebetTestCase
     {
         $array = [0, null, [], '', false, 500];
         $array = Arrays::compact($array);
-        $this->assertEquals([0 => 0, 4 => false, 5=> 500], $array);
+        $this->assertEquals([0 => 0, 4 => false, 5 => 500], $array);
     }
 
     public function test_unique()
     {
         $array = [1, 1, 2, 3, 2, '3', 4];
         $array = Arrays::unique($array);
-        $this->assertEquals([0 => 1, 2 => 2, 3 => 3, 6=> 4], $array);
+        $this->assertEquals([0 => 1, 2 => 2, 3 => 3, 6 => 4], $array);
     }
 
     public function test_remove()

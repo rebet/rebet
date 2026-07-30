@@ -14,13 +14,13 @@ use Rebet\Application\Error\ExceptionHandler;
 /**
  * AppCliKernel For Unit Tests
  */
-class AppCliKernel extends CliKernel 
+class AppCliKernel extends CliKernel
 {
     public function bootstrap() : void
     {
         parent::bootstrap();
     }
-	
+
     /**
      * {@inheritDoc}
      */
@@ -34,7 +34,7 @@ class AppCliKernel extends CliKernel
             LetterpressTagCustomizer::class,
         ];
     }
-    
+
     public function exceptionHandler() : ExceptionHandler
     {
         return new AppExceptionHandler();

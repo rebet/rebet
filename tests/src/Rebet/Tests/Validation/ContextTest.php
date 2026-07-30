@@ -319,7 +319,7 @@ class ContextTest extends RebetTestCase
                         'child' => null,
                     ]
                 ],
-                'bank'      => [
+                'bank' => [
                     'bank_name' => 'Sample Bank',
                     'branch'    => [
                         'code' => '123',

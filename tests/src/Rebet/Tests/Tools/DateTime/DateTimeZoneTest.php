@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime;
 
-use Rebet\Tools\DateTime\DateTimeZone;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTimeZone;
 
 class DateTimeZoneTest extends RebetTestCase
 {
     public function test_construct()
     {
-        $rebet  = new DateTimeZone("UTC");
+        $rebet = new DateTimeZone("UTC");
         $this->assertSame("UTC", $rebet->getName());
 
         $origin = new \DateTimeZone("UTC");
@@ -21,7 +21,7 @@ class DateTimeZoneTest extends RebetTestCase
 
     public function test_valueOf()
     {
-        $rebet  = DateTimeZone::valueOf("UTC");
+        $rebet = DateTimeZone::valueOf("UTC");
         $this->assertSame("UTC", $rebet->getName());
     }
 

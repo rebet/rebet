@@ -71,7 +71,7 @@ class MysqlDriver extends AbstractDriver
                     'not_matches' => ["{col} NOT REGEXP {val}"      , null , 'AND'],
                     'search'      => ["MATCH({col}) AGAINST({val})" , null , 'OR' ],
                 ],
-                'options'          => [
+                'options' => [
                     'bin' => 'BINARY {col}',
                     'cs'  => '{col} COLLATE utf8mb4_bin',
                     'ci'  => '{col} COLLATE utf8mb4_general_ci',
@@ -173,11 +173,11 @@ class MysqlDriver extends AbstractDriver
             case 'datetime':
                 return $value === '0000-00-00 00:00:00' ? null : DateTime::createDateTime($value, ['Y-m-d H:i:s.u', 'Y-m-d H:i:s']) ;
 
-            // case 'set':              // mysql (It not works currently because of mysql PDO return 'string' for SET column)
-            //     return explode(',', $value);
+                // case 'set':              // mysql (It not works currently because of mysql PDO return 'string' for SET column)
+                //     return explode(',', $value);
 
-            // case 'enum':             // mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
-            //     return (string)$value;
+                // case 'enum':             // mysql (It not works currently because of mysql PDO return 'string' for ENUM column)
+                //     return (string)$value;
 
             case 'time':
                 // @todo Implements Time and Interval class and incorporate

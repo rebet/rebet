@@ -2,9 +2,9 @@
 namespace Rebet\Tests\Application\View\Engine\Blade;
 
 use Rebet\Application\App;
-use Rebet\Tools\Exception\LogicException;
-use Rebet\Tools\Config\Config;
 use Rebet\Tests\Application\View\Engine\EngineCustomizerTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\Engine\Engine;
 use Rebet\View\View;
@@ -18,8 +18,8 @@ class BladeTagCustomizerTest extends EngineCustomizerTestCase
                 'engine' => Blade::class,
             ],
             Blade::class => [
-                'view_path>'  => [App::structure()->views('/blade')],
-                'cache_path'  => static::makeSubWorkingDir('cache'),
+                'view_path>' => [App::structure()->views('/blade')],
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
 

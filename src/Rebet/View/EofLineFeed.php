@@ -26,7 +26,7 @@ class EofLineFeed extends Enum
     /**
      * EOF line feed processing : Trim CR/LF then append one LF
      */
-    const ONE  = [3, 'one'];
+    const ONE = [3, 'one'];
 
     /**
      * Process EOF line feeds.

@@ -16,7 +16,7 @@ class LoadEnvironmentVariablesTest extends RebetTestCase
         $structure->method('env')->willReturn(App::structure()->resources('/adhoc/Application/Bootstrap/LoadEnvironmentVariables'));
         $kernel = $this->createMock(Kernel::class);
         $kernel->method('structure')->willReturn($structure);
-        
+
         $this->assertNull(Env::get('CUSTOM_VALUE'));
 
         $bootstrapper = new LoadEnvironmentVariables();

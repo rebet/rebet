@@ -15,13 +15,13 @@ use Rebet\Application\Http\WebKernel;
 /**
  * AppWebKernel For Unit Tests
  */
-class AppWebKernel extends WebKernel 
+class AppWebKernel extends WebKernel
 {
     public function bootstrap() : void
     {
         parent::bootstrap();
     }
-	
+
     /**
      * {@inheritDoc}
      */
@@ -36,7 +36,7 @@ class AppWebKernel extends WebKernel
             LetterpressTagCustomizer::class,
         ];
     }
-    
+
     public function exceptionHandler() : ExceptionHandler
     {
         return new AppExceptionHandler();

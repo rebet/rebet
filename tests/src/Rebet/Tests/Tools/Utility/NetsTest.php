@@ -25,7 +25,7 @@ class NetsTest extends RebetTestCase
             $this->assertSame($encoded, Nets::encodeBase64Url($plain));
         }
 
-        for ($i=0; $i < 100; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $plain   = $this->_randomCode(12, 32);
             $encoded = Nets::encodeBase64Url($plain);
             $decoded = Nets::decodeBase64Url($encoded);
@@ -46,7 +46,7 @@ class NetsTest extends RebetTestCase
             $this->assertSame($plain, Nets::decodeBase64Url($encoded));
         }
 
-        for ($i=0; $i < 100; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $plain   = $this->_randomCode(12, 32);
             $encoded = Nets::encodeBase64Url($plain);
             $decoded = Nets::decodeBase64Url($encoded);

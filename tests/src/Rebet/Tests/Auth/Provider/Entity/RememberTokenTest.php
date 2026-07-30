@@ -9,7 +9,8 @@ use Rebet\Tools\Utility\Securities;
 
 class RememberTokenTest extends RebetDatabaseTestCase
 {
-    protected function setUp() : void {
+    protected function setUp() : void
+    {
         parent::setUp();
         $this->setUpDataSet([
             'users' => [

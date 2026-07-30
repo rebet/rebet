@@ -171,6 +171,6 @@ class Query
                "  sql: ".Strings::indent(Strings::stringify($this->sql), " ", 4).
                "  params: ".Strings::indent(Strings::stringify($this->params), " ", 4).
                "}"
-               ;
+        ;
     }
 }

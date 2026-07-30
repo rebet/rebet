@@ -49,7 +49,7 @@ class ControllerRoute extends ConventionalRoute
             $this->action    = new \ReflectionClass($controller);
             $this->namespace = $this->action->getNamespaceName();
         } catch (\ReflectionException $e) {
-            $this->action    = new \ReflectionClass($this->namespace.'\\'.$controller);
+            $this->action = new \ReflectionClass($this->namespace.'\\'.$controller);
         }
     }
 

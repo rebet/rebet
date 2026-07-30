@@ -223,7 +223,7 @@ class HeaderSetTest extends RebetTestCase
     {
         $factory = Swift_DependencyContainer::getInstance()->lookup('mime.headerfactory');
 
-        $name ='X-Foo';
+        $name = 'X-Foo';
         $this->assertFalse($this->headers->has($name));
         $this->assertInstanceOf(HeaderSet::class, $this->headers->set($factory->createTextHeader($name, 'bar')));
         $this->assertTrue($this->headers->has($name));

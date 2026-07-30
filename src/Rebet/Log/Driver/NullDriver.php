@@ -2,7 +2,6 @@
 namespace Rebet\Log\Driver;
 
 use Psr\Log\AbstractLogger as PsrAbstractLogger;
-use Rebet\Log\Log;
 
 /**
  * Null Driver Class

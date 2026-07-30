@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\Exception;
 
+use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Exception\RebetException;
-use Rebet\Tests\RebetTestCase;
 
 class LogicExceptionTest extends RebetTestCase
 {

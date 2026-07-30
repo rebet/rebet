@@ -74,7 +74,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06')],
                 "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
-                ['gender'  => Gender::MALE(), 'created_at' => DateTime::now()]
+                ['gender' => Gender::MALE(), 'created_at' => DateTime::now()]
             ],
             [
                 ['pgsql'],
@@ -82,7 +82,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender' => PdoParameter::int(1), ':created_at' => PdoParameter::str('2001-02-03 04:05:06+0000')],
                 "SELECT * FROM user WHERE gender = :gender AND created_at > :created_at",
                 null,
-                ['gender'  => Gender::MALE(), 'created_at' => DateTime::now()]
+                ['gender' => Gender::MALE(), 'created_at' => DateTime::now()]
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -106,7 +106,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
                 [':gender__0' => PdoParameter::int(1), ':gender__1' => PdoParameter::int(1), ':gender__2' => PdoParameter::int(1)],
                 "SELECT * FROM user WHERE gender = :gender AND (gender = :gender) AND gender = :gender",
                 [],
-                ['gender'  => 1]
+                ['gender' => 1]
             ],
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -439,8 +439,8 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     {
         return [
             [':key', [':key' => PdoParameter::int(1)], 'key', 1],
-            [':key', [':key' => PdoParameter::int(1)], ':key', 1],
-            [':key', [':key' => PdoParameter::str('abc')], 'key', 'abc'],
+            [':key', [':key'                         => PdoParameter::int(1)], ':key', 1],
+            [':key', [':key'                         => PdoParameter::str('abc')], 'key', 'abc'],
             [':key__0, :key__1, :key__2', [':key__0' => PdoParameter::int(1), ':key__1' => PdoParameter::int(2), ':key__2' => PdoParameter::int(3)], 'key', [1, 2, 3]],
             [
                 'nextval(:values__0__0), geometry::STGeomFromText(:values__1__0, :values__1__1), now(), :values__3',

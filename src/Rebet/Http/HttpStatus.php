@@ -97,22 +97,22 @@ class HttpStatus
     /**
      * 2xx (Successful) class
      */
-    const SUCCESSFUL    = 2;
+    const SUCCESSFUL = 2;
 
     /**
      * 3xx (Redirection) class
      */
-    const REDIRECTION   = 3;
+    const REDIRECTION = 3;
 
     /**
      * 4xx (Client Error) class
      */
-    const CLIENT_ERROR  = 4;
+    const CLIENT_ERROR = 4;
 
     /**
      * 5xx (Server Error) class
      */
-    const SERVER_ERROR  = 5;
+    const SERVER_ERROR = 5;
 
     /**
      * No instantiation

@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Pipeline;
 
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Exception\LogicException;
 
 class PipelineTest extends RebetTestCase
 {

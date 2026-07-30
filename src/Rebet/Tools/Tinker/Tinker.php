@@ -135,7 +135,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         'lcut', 'rcut', 'clip', 'indent', 'ltrim', 'rtrim', 'trim', 'mbtrim', 'startsWith', 'endsWith',
                         'contains', 'match', 'wildmatch', 'split'
                     ],
-                    Arrays::class    => [
+                    Arrays::class => [
                         'pluck', 'override', 'duplicate', 'crossJoin', 'only', 'except', 'where', 'compact', 'unique',
                         'first', 'last', 'flatten', 'prepend', 'shuffle', 'map', 'reduce', 'diff', 'intersect',
                         'every', 'groupBy', 'union', 'min', 'max', 'sort', 'sortBy', 'sortKeys', 'sum', 'avg',
@@ -144,9 +144,9 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                 ],
                 'customs' => [
                     // You can use php built-in functions as filters when the 1st argument is for value.
-                    'nvl'      => function ($value, $default) { return $value ?? $default; },
-                    'default'  => function ($value, $default) { return $value ?? $default; },
-                    'escape'   => function (string $value, string $type = 'html') {
+                    'nvl'     => function ($value, $default) { return $value ?? $default; },
+                    'default' => function ($value, $default) { return $value ?? $default; },
+                    'escape'  => function (string $value, string $type = 'html') {
                         switch ($type) {
                             case 'html': return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                             case 'url': return urlencode($value);
@@ -192,8 +192,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         $test = is_callable($test) ? call_user_func($test, $value) : $test ;
                         return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                     },
-                    'case'      => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
-                    'length'    => function ($value) {
+                    'case'   => function ($value, array $map, $default = null) { return $map[$value] ?? $default ?? $value; },
+                    'length' => function ($value) {
                         switch (true) {
                             case $value === null:    return null;
                             case is_numeric($value): return mb_strlen((string)$value);
@@ -201,8 +201,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                         }
                         return Arrays::count($value);
                     },
-                    'values'    => function (array $value) { return array_values($value); },
-                    'keys'      => function (array $value) { return array_keys($value); },
+                    'values' => function (array $value) { return array_values($value); },
+                    'keys'   => function (array $value) { return array_keys($value); },
                 ],
             ],
         ];

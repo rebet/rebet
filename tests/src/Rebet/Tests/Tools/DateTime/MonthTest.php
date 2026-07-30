@@ -2,8 +2,8 @@
 namespace Rebet\Tests\Tools\DateTime;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rebet\Tools\DateTime\Month;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\Month;
 use Rebet\Tools\Translation\Translator;
 
 class MonthTest extends RebetTestCase

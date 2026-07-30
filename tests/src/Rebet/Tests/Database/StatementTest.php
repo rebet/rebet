@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use App\Model\User;
 use App\Enum\Gender;
+use App\Model\User;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
@@ -71,21 +71,21 @@ class StatementTest extends RebetDatabaseTestCase
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute();
             $this->assertInstanceOf(Statement::class, $stmt);
-            $rs       = $stmt->all();
+            $rs = $stmt->all();
             $this->assertSame(3, $rs->count());
 
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute(['gender' => 1]);
             $this->assertInstanceOf(Statement::class, $stmt);
-            $rs       = $stmt->all();
+            $rs = $stmt->all();
             $this->assertSame(2, $rs->count());
 
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users WHERE gender = :gender");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute(['gender' => PdoParameter::int(2)]);
             $this->assertInstanceOf(Statement::class, $stmt);
-            $rs       = $stmt->all();
+            $rs = $stmt->all();
             $this->assertSame(1, $rs->count());
         });
     }
@@ -135,7 +135,7 @@ class StatementTest extends RebetDatabaseTestCase
                 $this->assertInstanceOf(DateTime::class, $rs[0]->created_at);
             }
 
-            $rs       = $stmt->all();
+            $rs = $stmt->all();
             $this->assertTrue($rs->empty());
 
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
@@ -193,7 +193,7 @@ class StatementTest extends RebetDatabaseTestCase
             $this->assertSame(3, $rs->count());
             $this->assertSame([1, 2, 3], $rs->toArray());
 
-            $rs       = $stmt->allOf('user_id');
+            $rs = $stmt->allOf('user_id');
             $this->assertTrue($rs->empty());
 
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
@@ -315,7 +315,8 @@ class StatementTest extends RebetDatabaseTestCase
             $count    = $stmt->execute()->affectedRows();
 
             switch ($driver) {
-                case 'sqlite': $this->assertSame(0, $count, 'on DB '.$driver); break;
+                case 'sqlite': $this->assertSame(0, $count, 'on DB '.$driver);
+                    break;
                 default: $this->assertSame(3, $count, 'on DB '.$driver);
             }
 
@@ -336,7 +337,7 @@ class StatementTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
-            $i = 1;
+            $i        = 1;
             $stmt->execute()->each(function (User $user) use (&$i) {
                 $this->assertEquals($i++, $user->user_id);
                 $this->assertInstanceOf(User::class, $user);

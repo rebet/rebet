@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Tools\Config;
 
-use Rebet\Tools\Config\ConfigPromise;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\ConfigPromise;
 
 class ConfigPromiseTest extends RebetTestCase
 {
@@ -13,7 +13,7 @@ class ConfigPromiseTest extends RebetTestCase
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
-        $this->promise_once  = new ConfigPromise(function () {
+        $this->promise_once = new ConfigPromise(function () {
             return \getenv('PROMISE_TEST') ?: 'default';
         });
         $this->promise_every = new ConfigPromise(function () {

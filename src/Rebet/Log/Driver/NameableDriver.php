@@ -34,5 +34,5 @@ interface NameableDriver extends PsrLogger
      * @param string $name
      * @return PsrLogger
      */
-    public function withName(string $name): PsrLogger;
+    public function withName(string $name) : PsrLogger;
 }

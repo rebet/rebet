@@ -796,7 +796,7 @@ class Arrays
         return $comparator
             ? array_udiff($array, static::toArray($items) ?? [], $comparator)
             : array_diff($array, static::toArray($items) ?? [])
-            ;
+        ;
     }
 
     /**
@@ -815,7 +815,7 @@ class Arrays
         return $comparator
             ? array_uintersect($array, static::toArray($items) ?? [], $comparator)
             : array_intersect($array, static::toArray($items) ?? [])
-            ;
+        ;
     }
 
     /**

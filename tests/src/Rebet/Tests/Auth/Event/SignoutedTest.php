@@ -11,9 +11,9 @@ class SignoutedTest extends RebetTestCase
 {
     public function test___construct()
     {
-        $request  = Request::create('/');
-        $user     = AuthUser::guest();
-        $event    = new Signouted($request, $user);
+        $request = Request::create('/');
+        $user    = AuthUser::guest();
+        $event   = new Signouted($request, $user);
         $this->assertInstanceOf(Signouted::class, $event);
         $this->assertInstanceOf(Authentication::class, $event);
         $this->assertSame($request, $event->request);

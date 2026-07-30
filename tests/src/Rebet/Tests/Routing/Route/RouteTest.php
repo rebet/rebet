@@ -34,7 +34,7 @@ class RouteTest extends RebetTestCase
 
     public function test_getAnnotatedMethod()
     {
-        $route   = new ConventionalRoute();
+        $route = new ConventionalRoute();
         $this->assertNull($route->getAnnotatedMethod());
         $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
@@ -45,7 +45,7 @@ class RouteTest extends RebetTestCase
 
     public function test_annotation()
     {
-        $route   = new ConventionalRoute();
+        $route = new ConventionalRoute();
         $this->assertNull($route->annotation(Method::class));
         $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
@@ -54,7 +54,7 @@ class RouteTest extends RebetTestCase
 
     public function test_middlewares()
     {
-        $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame([], $route->middlewares());
         $middleware = new AddGlobalShareVariableToView();
         $this->assertInstanceOf(ClosureRoute::class, $route->middlewares($middleware));
@@ -63,7 +63,7 @@ class RouteTest extends RebetTestCase
 
     public function test_roles()
     {
-        $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame([], $route->roles());
         $this->assertInstanceOf(ClosureRoute::class, $route->roles('user'));
         $this->assertSame(['user'], $route->roles());
@@ -78,7 +78,7 @@ class RouteTest extends RebetTestCase
 
     public function test_guard()
     {
-        $route   = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
+        $route = new ClosureRoute(['GET'], '/foo', function () { return 'Hello World.'; });
         $this->assertSame(null, $route->guard());
         $this->assertInstanceOf(ClosureRoute::class, $route->guard('web'));
         $this->assertSame('web', $route->guard());

@@ -556,7 +556,7 @@ class EnumTest_AcceptStatus extends Enum
                 if ($current === self::WAITING()) {
                     return [self::WAITING(), self::ACCEPTED(), self::REJECTED()];
                 }
-                    return [$current];
+                return [$current];
 
             case 'admin':
                 return self::lists();

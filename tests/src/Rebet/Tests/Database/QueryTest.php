@@ -16,7 +16,7 @@ class QueryTest extends RebetDatabaseTestCase
     public function test_asWhere()
     {
         $driver = Dao::db()->driver();
-        $query = new Query($driver, '');
+        $query  = new Query($driver, '');
         $this->assertEquals('', $query->asWhere());
 
         $query = new Query($driver, 'param = :param', ['param' => 'value']);

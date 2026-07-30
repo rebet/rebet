@@ -2,13 +2,13 @@
 namespace Rebet\Tests\Routing;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rebet\Tools\Utility\Strings;
-use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Routing\Route\ViewRoute;
 use Rebet\Routing\ViewSelector;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\Config\Config;
+use Rebet\Tools\Utility\Strings;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
 

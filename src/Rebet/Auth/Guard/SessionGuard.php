@@ -113,7 +113,7 @@ class SessionGuard extends StatefulGuard
                 Cookie::remove($remember_token_key);
             }
             $this->request->session()->remove($this->signinIdKey());
-            $this->user    = AuthUser::guest();
+            $this->user = AuthUser::guest();
         }
 
         return Responder::redirect($goto);

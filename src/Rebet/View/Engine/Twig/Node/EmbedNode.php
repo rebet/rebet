@@ -112,6 +112,6 @@ class EmbedNode extends Node
             ->raw(") ")
             ->raw($invert ? ')' : '')
             ->raw($this->getAttribute('close'))
-            ;
+        ;
     }
 }

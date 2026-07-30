@@ -42,7 +42,7 @@ class ArrayableTest extends RebetTestCase
         $this->assertSame(true, $this->map->has('a'));
         $this->assertSame(false, $this->map->has('d'));
 
-        $map  = new ArrayableTest_Mock(['a' => 'A', 'b' => 'B', 'c' => null]);
+        $map = new ArrayableTest_Mock(['a' => 'A', 'b' => 'B', 'c' => null]);
         $this->assertSame(true, $map->has('c'));
     }
 
@@ -128,7 +128,7 @@ class ArrayableTest_Mock implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     use Arrayable;
 
-    protected $container  = [];
+    protected $container = [];
 
     public function __construct(array $array = [])
     {

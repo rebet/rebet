@@ -133,7 +133,7 @@ return [
                         'local'      => 'memcached://memcached:11211',
                         'production' => ['memcached://localhost:11211', /* Secondary DSN if exists */],
                     ]),
-                    'options'  => [
+                    'options' => [
                         'username' => Env::promise('MEMCACHED_USERNAME'),
                         'password' => Env::promise('MEMCACHED_PASSWORD'),
                         // --- You can set any other options supported by Symfony\Component\Cache\Adapter\MemcachedAdapter::createConnection() ---
@@ -197,7 +197,7 @@ return [
             */
             //{%-- commentif !$use_cache, '// ', '--- Please uncomment if you want to use cache ---' -%}
             'redis' => [
-                'adapter'   => [
+                'adapter' => [
                     '@factory' => RedisAdapter::class,
                     'dsn'      => App::when([
                         'local'      => 'redis://redis/0',

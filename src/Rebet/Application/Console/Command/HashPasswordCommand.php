@@ -21,7 +21,7 @@ class HashPasswordCommand extends Command
     const ARGUMENTS   = [
         ['password', InputArgument::REQUIRED, 'Password that you want to hash'],
     ];
-    const OPTIONS     = [
+    const OPTIONS = [
         ['algorithm', 'a', InputOption::VALUE_OPTIONAL, 'Hash algorithm'],
         ['option'   , 'o', InputOption::VALUE_OPTIONAL, 'Algorithm option (JSON)'],
     ];

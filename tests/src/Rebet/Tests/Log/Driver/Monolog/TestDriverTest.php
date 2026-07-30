@@ -3,10 +3,10 @@ namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\TestHandler;
 use Monolog\Processor\ProcessIdProcessor;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class TestDriverTest extends RebetTestCase
 {

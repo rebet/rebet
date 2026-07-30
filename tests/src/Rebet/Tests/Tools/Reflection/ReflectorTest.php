@@ -25,8 +25,8 @@ class ReflectorTest extends RebetTestCase
     {
         parent::setUp();
         App::setLocale('ja');
-        $this->array  = ['a', 'b', 'c', null];
-        $this->map    = [
+        $this->array = ['a', 'b', 'c', null];
+        $this->map   = [
             'name'    => 'John Smith',
             'gender'  => 'male',
             'hobbies' => ['game', 'outdoor'],
@@ -107,7 +107,10 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('arg via build() setup', Reflector::instantiate([
             '@factory' => ReflectorTest_Mock::class.'::build',
             'value'    => 'arg',
-            '@setup'   => function ($mock) { $mock->value .= ' setup'; return $mock; }
+            '@setup'   => function ($mock) {
+                $mock->value .= ' setup';
+                return $mock;
+            }
         ])->value);
         $this->assertSame(123, Reflector::instantiate(123));
         $this->assertSame('instantiated', Reflector::instantiate(new ReflectorTest_Mock('instantiated'))->value);
@@ -565,8 +568,8 @@ class ReflectorTest extends RebetTestCase
         $this->expectExceptionMessage("Parameter 'mixed' is requierd.");
 
         $function = function ($mixed) { return; };
-        $rf   = new \ReflectionFunction($function);
-        $args = Reflector::toArgs($rf->getParameters(), []);
+        $rf       = new \ReflectionFunction($function);
+        $args     = Reflector::toArgs($rf->getParameters(), []);
     }
 
     public function test_toArgs_errorNullable()
@@ -694,7 +697,7 @@ class ReflectorTest extends RebetTestCase
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(
             [
-                'mixed'    => 'a',
+                'mixed' => 'a',
             ],
             Reflector::toNamedArgs($reflection->getParameters(), ['a'])
         );
@@ -791,8 +794,8 @@ class ReflectorTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'string'   => 'b',
-                'mixed'    => 'A',
+                'string' => 'b',
+                'mixed'  => 'A',
             ],
             Reflector::mergeArgs($parameters, ['string' => 'b'], ['A'])
         );
@@ -806,7 +809,7 @@ class ReflectorTest extends RebetTestCase
         );
         $this->assertSame(
             [
-                'string'   => 'B',
+                'string' => 'B',
             ],
             Reflector::mergeArgs($parameters, ['string' => 'b'], ['string' => 'B'])
         );
@@ -918,7 +921,7 @@ class ReflectorTest extends RebetTestCase
 
         $jsonArray = new JsonSerializableStub([1, 2]);
         $this->assertSame('[1,2]', Reflector::convert($jsonArray, $type));
-        $toString  = new ReflectorTest_Mock();
+        $toString = new ReflectorTest_Mock();
         $this->assertSame('default', Reflector::convert($toString, $type));
 
         $this->assertSame(null, Reflector::convert(new ToArrayStub([1, 2]), $type));

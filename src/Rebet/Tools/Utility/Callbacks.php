@@ -129,7 +129,7 @@ class Callbacks
             $string .= $type_hint === null ? "{$name}, " : "{$type_hint} {$name}, " ;
         }
         if (!empty($parameters)) {
-            $string  = Strings::rcut($string, 2);
+            $string = Strings::rcut($string, 2);
         }
         $string .= ')';
 

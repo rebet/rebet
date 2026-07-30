@@ -14,13 +14,13 @@ class CommandTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->hello          = new class() extends Command {
+        $this->hello = new class() extends Command {
             const NAME        = 'Hello';
             const DESCRIPTION = 'Say Hello.';
             const ARGUMENTS   = [
                 ['to', InputArgument::OPTIONAL, 'Say hello to someone.']
             ];
-            const OPTIONS     = [
+            const OPTIONS = [
                 ['meeting-time', 'mt', InputArgument::OPTIONAL, 'Meeting time of morning, noon or evening.'],
                 ['command', 'c', InputArgument::OPTIONAL, 'Command to display', 'comment'],
             ];
@@ -28,10 +28,14 @@ class CommandTest extends RebetTestCase
             protected function handle()
             {
                 switch ($this->option('meeting-time') ?? 'unknown') {
-                    case 'morning': $hello = "Good morning"; break;
-                    case 'noon':    $hello = "Good after noon"; break;
-                    case 'evening': $hello = "Good evening"; break;
-                    default: $hello        = 'Hello'; break;
+                    case 'morning': $hello = "Good morning";
+                        break;
+                    case 'noon':    $hello = "Good after noon";
+                        break;
+                    case 'evening': $hello = "Good evening";
+                        break;
+                    default: $hello = 'Hello';
+                        break;
                 }
                 if ($to = $this->argument('to')) {
                     $hello = "{$hello} {$to}";

@@ -70,7 +70,7 @@ class BladeCompiler extends LaravelBladeCompiler
             return $binds
                 ? "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$binds}, {$expression}]) {$close} ?>{$lf}"
                 : "<?php {$open} \Illuminate\Support\Facades\Blade::execute('{$name}', [{$expression}]) {$close} ?>{$lf}"
-                ;
+            ;
         });
     }
 

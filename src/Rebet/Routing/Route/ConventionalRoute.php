@@ -230,7 +230,7 @@ class ConventionalRoute extends Route
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not accessible.");
         }
 
-        $am   = AnnotatedMethod::of($method);
+        $am = AnnotatedMethod::of($method);
         if ($am->annotation(NotRouting::class)) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.");
         }

@@ -49,15 +49,15 @@ class FileDriver extends MonologDriver
     public function __construct(
         string $level,
         string $filename,
-        string $filename_format      = '{filename}-{date}',
+        string $filename_format = '{filename}-{date}',
         string $filename_date_format = 'Y-m-d',
-        int $max_files               = 0,
-        int $file_permission         = 0644,
-        bool $use_locking            = false,
-        bool $with_browser_console   = false,
-        ?string $format              = null,
-        array $stringifiers          = [],
-        bool $bubble                 = true
+        int $max_files = 0,
+        int $file_permission = 0644,
+        bool $use_locking = false,
+        bool $with_browser_console = false,
+        ?string $format = null,
+        array $stringifiers = [],
+        bool $bubble = true
     ) {
         $rfh = new RotatingFileHandler($filename, $max_files, $level, $bubble, $file_permission, $use_locking);
         $rfh->setFilenameFormat($filename_format, $filename_date_format);

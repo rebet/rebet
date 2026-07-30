@@ -276,7 +276,7 @@ class RequestTest extends RebetTestCase
         $response = Router::handle($request);
         $this->assertSame('/prefix', $request->getRoutePrefix());
 
-        $request  = Request::create('/prefix/bar');
+        $request = Request::create('/prefix/bar');
         try {
             $response = Router::handle($request);
         } catch (\Exception $e) {

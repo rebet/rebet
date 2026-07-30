@@ -137,7 +137,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *     ],
      * ]
      */
-    private static $enum_map_cache  = [];
+    private static $enum_map_cache = [];
 
     /**
      * Value of enum.

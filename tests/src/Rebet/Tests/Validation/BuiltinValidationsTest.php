@@ -216,7 +216,7 @@ class BuiltinValidationsTest extends RebetTestCase
                 'name'  => 'Required',
                 'data'  => ['null' => null, 'empty_string' => '', 'empty_array' => [], 'zero' => 0, 'zero_string' => '0', 'false' => false, 'array' => [1]],
                 'tests' => [
-                    ['nothing'     , [], false, ['nothing'      => ["The Nothing field is required."]]],
+                    ['nothing'     , [], false, ['nothing' => ["The Nothing field is required."]]],
                     ['null'        , [], false, ['null'         => ["The Null field is required."]]],
                     ['empty_string', [], false, ['empty_string' => ["The Empty String field is required."]]],
                     ['empty_array' , [], false, ['empty_array'  => ["The Empty Array field is required."]]],
@@ -413,8 +413,8 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['null'   , ['/^[0-9]+$/'          ], true , []],
                     ['foo'    , ['/^[0-9]+$/'          ], true , []],
                     ['bar'    , ['/^[0-9]+$/'          ], true , []],
-                    ['baz'    , ['/^[0-9]+$/'          ], false, ['baz'  => ["The Baz format is invalid."]]],
-                    ['baz'    , ['/^[0-9]+$/', 'digits'], false, ['baz'  => ["The Baz must be digits."]]],
+                    ['baz'    , ['/^[0-9]+$/'          ], false, ['baz' => ["The Baz format is invalid."]]],
+                    ['baz'    , ['/^[0-9]+$/', 'digits'], false, ['baz' => ["The Baz must be digits."]]],
                     ['qux'    , ['/^[0-9]+$/'          ], true , []],
                     ['quux'   , ['/^[0-9]+$/'          ], false, ['quux' => [
                         "The 2nd Quux (abc) format is invalid.",
@@ -436,10 +436,10 @@ class BuiltinValidationsTest extends RebetTestCase
                 'tests' => [
                     ['nothing', ['/^[0-9]+$/'          ], true , []],
                     ['null'   , ['/^[0-9]+$/'          ], true , []],
-                    ['foo'    , ['/^[0-9]+$/'          ], false, ['foo'  => ["The Foo format is invalid."]]],
+                    ['foo'    , ['/^[0-9]+$/'          ], false, ['foo' => ["The Foo format is invalid."]]],
                     ['bar'    , ['/^[0-9]+$/'          ], true , []],
-                    ['baz'    , ['/^[0-9]+$/'          ], false, ['baz'  => ["The Baz format is invalid."]]],
-                    ['baz'    , ['/^[0-9]+$/', 'digits'], false, ['baz'  => ["The Baz must contain non-digits characters."]]],
+                    ['baz'    , ['/^[0-9]+$/'          ], false, ['baz' => ["The Baz format is invalid."]]],
+                    ['baz'    , ['/^[0-9]+$/', 'digits'], false, ['baz' => ["The Baz must contain non-digits characters."]]],
                     ['qux'    , ['/^[0-9]+$/'          ], true , []],
                     ['quux'   , ['/^[0-9]+$/'          ], false, ['quux' => [
                         "The 2nd Quux (123) format is invalid.",
@@ -554,8 +554,8 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['null'   , [2], true , []],
                     ['foo'    , [2], true , []],
                     ['bar'    , [2], true , []],
-                    ['baz'    , [2], false, ['baz'    => ["The Baz must be real number (up to 2 decimal places)."]]],
-                    ['qux'    , [2], false, ['qux'    => ["The Qux must be real number (up to 2 decimal places)."]]],
+                    ['baz'    , [2], false, ['baz' => ["The Baz must be real number (up to 2 decimal places)."]]],
+                    ['qux'    , [2], false, ['qux' => ["The Qux must be real number (up to 2 decimal places)."]]],
                     ['quux'   , [2], true , []],
                     ['foobar' , [2], false, ['foobar' => [
                         "The 2nd Foobar (123.230) must be real number (up to 2 decimal places).",
@@ -573,14 +573,14 @@ class BuiltinValidationsTest extends RebetTestCase
                 'tests' => [
                     ['nothing', [10    ], true , []],
                     ['null'   , [10    ], true , []],
-                    ['foo'    , [10    ], false, ['foo'    => ["The Foo must be less than 10."]]],
-                    ['foo'    , [':bar'], false, ['foo'    => ["The Foo must be less than Bar."]]],
+                    ['foo'    , [10    ], false, ['foo' => ["The Foo must be less than 10."]]],
+                    ['foo'    , [':bar'], false, ['foo' => ["The Foo must be less than Bar."]]],
                     ['bar'    , [10    ], true , []],
-                    ['baz'    , [10    ], false, ['baz'    => ["The Baz must be less than 10."]]],
-                    ['qux'    , [10    ], false, ['qux'    => ["The Qux must be less than 10."]]],
-                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux must be less than 10 with precision up to 1 decimal places."]]],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['baz'    , [10    ], false, ['baz'  => ["The Baz must be less than 10."]]],
+                    ['qux'    , [10    ], false, ['qux'  => ["The Qux must be less than 10."]]],
+                    ['qux'    , [10, 1 ], false, ['qux'  => ["The Qux must be less than 10 with precision up to 1 decimal places."]]],
+                    ['quux'   , [10    ], false, ['quux' => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux' => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be number.",
                         "The 2nd Foobar (10) must be less than 10.",
@@ -604,13 +604,13 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['nothing', [10    ], true , []],
                     ['null'   , [10    ], true , []],
                     ['foo'    , [10    ], true , []],
-                    ['foo'    , [':bar'], false, ['foo'    => ["The Foo may not be greater than Bar."]]],
+                    ['foo'    , [':bar'], false, ['foo' => ["The Foo may not be greater than Bar."]]],
                     ['bar'    , [10    ], true , []],
-                    ['baz'    , [10    ], false, ['baz'    => ["The Baz may not be greater than 10."]]],
-                    ['qux'    , [10    ], false, ['qux'    => ["The Qux may not be greater than 10."]]],
-                    ['qux'    , [10, 1 ], false, ['qux'    => ["The Qux may not be greater than 10 with precision up to 1 decimal places."]]],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['baz'    , [10    ], false, ['baz'  => ["The Baz may not be greater than 10."]]],
+                    ['qux'    , [10    ], false, ['qux'  => ["The Qux may not be greater than 10."]]],
+                    ['qux'    , [10, 1 ], false, ['qux'  => ["The Qux may not be greater than 10 with precision up to 1 decimal places."]]],
+                    ['quux'   , [10    ], false, ['quux' => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux' => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be number.",
                         "The 4th Foobar (123) may not be greater than 10.",
@@ -632,16 +632,16 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['nothing', [10         ], true , []],
                     ['null'   , [10         ], true , []],
                     ['foo'    , [10         ], true , []],
-                    ['foo'    , [':bar'     ], false, ['foo'    => ["The Foo must be equal Bar."]]],
+                    ['foo'    , [':bar'     ], false, ['foo' => ["The Foo must be equal Bar."]]],
                     ['bar'    , [-11        ], true , []],
-                    ['baz'    , [10         ], false, ['baz'    => ["The Baz must be equal 10."]]],
+                    ['baz'    , [10         ], false, ['baz' => ["The Baz must be equal 10."]]],
                     ['baz'    , [10, 0      ], true , []],
-                    ['baz'    , [10, 1      ], false, ['baz'    => ["The Baz must be equal 10 with precision up to 1 decimal places."]]],
-                    ['qux'    , ['10.124'   ], false, ['qux'    => ["The Qux must be equal 10.124."]]],
-                    ['qux'    , ['10.124', 3], false, ['qux'    => ["The Qux must be equal 10.124 with precision up to 3 decimal places."]]],
+                    ['baz'    , [10, 1      ], false, ['baz' => ["The Baz must be equal 10 with precision up to 1 decimal places."]]],
+                    ['qux'    , ['10.124'   ], false, ['qux' => ["The Qux must be equal 10.124."]]],
+                    ['qux'    , ['10.124', 3], false, ['qux' => ["The Qux must be equal 10.124 with precision up to 3 decimal places."]]],
                     ['qux'    , ['10.124', 2], true , []],
-                    ['quux'   , [10         ], false, ['quux'   => ["The Quux must be number."]]],
-                    ['quux'   , [10, 1      ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10         ], false, ['quux' => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1      ], false, ['quux' => ["The Quux must be number."]]],
                     ['foobar' , [10         ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be number.",
                         "The 3rd Foobar (10.3) must be equal 10.",
@@ -669,14 +669,14 @@ class BuiltinValidationsTest extends RebetTestCase
                 'tests' => [
                     ['nothing', [10    ], true , []],
                     ['null'   , [10    ], true , []],
-                    ['foo'    , [10    ], false, ['foo'    => ["The Foo must be greater than 10."]]],
-                    ['foo'    , [':baz'], false, ['foo'    => ["The Foo must be greater than Baz."]]],
-                    ['bar'    , [10    ], false, ['bar'    => ["The Bar must be greater than 10."]]],
+                    ['foo'    , [10    ], false, ['foo' => ["The Foo must be greater than 10."]]],
+                    ['foo'    , [':baz'], false, ['foo' => ["The Foo must be greater than Baz."]]],
+                    ['bar'    , [10    ], false, ['bar' => ["The Bar must be greater than 10."]]],
                     ['baz'    , [10    ], true , []],
                     ['qux'    , [10    ], true , []],
                     ['qux'    , [10, 1 ], true , []],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10    ], false, ['quux' => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux' => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be number.",
                         "The 2nd Foobar (10) must be greater than 10.",
@@ -702,13 +702,13 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['nothing', [10    ], true , []],
                     ['null'   , [10    ], true , []],
                     ['foo'    , [10    ], true , []],
-                    ['foo'    , [':baz'], false, ['foo'    => ["The Foo must be at least Baz."]]],
-                    ['bar'    , [10    ], false, ['bar'    => ["The Bar must be at least 10."]]],
+                    ['foo'    , [':baz'], false, ['foo' => ["The Foo must be at least Baz."]]],
+                    ['bar'    , [10    ], false, ['bar' => ["The Bar must be at least 10."]]],
                     ['baz'    , [10    ], true , []],
                     ['qux'    , [10    ], true , []],
                     ['qux'    , [10, 1 ], true , []],
-                    ['quux'   , [10    ], false, ['quux'   => ["The Quux must be number."]]],
-                    ['quux'   , [10, 1 ], false, ['quux'   => ["The Quux must be number."]]],
+                    ['quux'   , [10    ], false, ['quux' => ["The Quux must be number."]]],
+                    ['quux'   , [10, 1 ], false, ['quux' => ["The Quux must be number."]]],
                     ['foobar' , [10    ], false, ['foobar' => [
                         "The 1st Foobar (abc) must be number.",
                         "The 3rd Foobar (2) must be at least 10.",
@@ -774,8 +774,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::IPV4
             // --------------------------------------------
             [[
-                'name'  => 'Ipv4',
-                'data'  => [
+                'name' => 'Ipv4',
+                'data' => [
                     'null'   => null,
                     'foo'    => '192.168.1.1',
                     'bar'    => '192.168.1.0/24',
@@ -962,8 +962,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // --------------------------------------------
             // @todo implements more test cases.
             [[
-                'name'  => 'NgWord',
-                'data'  => [
+                'name' => 'NgWord',
+                'data' => [
                     'null' => null,
                     'aaa'  => 'foo bar',
                     'bbb'  => 'foo bar baz qux',
@@ -1023,11 +1023,11 @@ class BuiltinValidationsTest extends RebetTestCase
                 'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
                 'tests' => [
                     ['nothing', [3], false, ['nothing' => ["The Nothing must have at least 3 items."]]],
-                    ['null'   , [3], false, ['null'    => ["The Null must have at least 3 items."]]],
-                    ['foo'    , [1], false, ['foo'     => ["The Foo must have at least 1 item."]]],
-                    ['bar'    , [3], false, ['bar'     => ["The Bar must have at least 3 items."]]],
+                    ['null'   , [3], false, ['null' => ["The Null must have at least 3 items."]]],
+                    ['foo'    , [1], false, ['foo'  => ["The Foo must have at least 1 item."]]],
+                    ['bar'    , [3], false, ['bar'  => ["The Bar must have at least 3 items."]]],
                     ['bar'    , [1], true , []],
-                    ['baz'    , [4], false, ['baz'     => ["The Baz must have at least 4 items."]]],
+                    ['baz'    , [4], false, ['baz' => ["The Baz must have at least 4 items."]]],
                     ['baz'    , [3], true , []],
                     ['baz'    , [2], true , []],
                 ]
@@ -1060,14 +1060,14 @@ class BuiltinValidationsTest extends RebetTestCase
                 'data'  => ['null' => null, 'foo' => [], 'bar' => '1', 'baz' => ['1', '2', '3']],
                 'tests' => [
                     ['nothing', [3], false, ['nothing' => ["The Nothing must have 3 items."]]],
-                    ['null'   , [3], false, ['null'    => ["The Null must have 3 items."]]],
-                    ['foo'    , [3], false, ['foo'     => ["The Foo must have 3 items."]]],
-                    ['bar'    , [3], false, ['bar'     => ["The Bar must have 3 items."]]],
+                    ['null'   , [3], false, ['null' => ["The Null must have 3 items."]]],
+                    ['foo'    , [3], false, ['foo'  => ["The Foo must have 3 items."]]],
+                    ['bar'    , [3], false, ['bar'  => ["The Bar must have 3 items."]]],
                     ['bar'    , [1], true , []],
-                    ['baz'    , [4], false, ['baz'     => ["The Baz must have 4 items."]]],
+                    ['baz'    , [4], false, ['baz' => ["The Baz must have 4 items."]]],
                     ['baz'    , [3], true , []],
-                    ['baz'    , [2], false, ['baz'     => ["The Baz must have 2 items."]]],
-                    ['baz'    , [1], false, ['baz'     => ["The Baz must have 1 item."]]],
+                    ['baz'    , [2], false, ['baz' => ["The Baz must have 2 items."]]],
+                    ['baz'    , [1], false, ['baz' => ["The Baz must have 1 item."]]],
                 ]
             ]],
 
@@ -1075,8 +1075,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::UNIQUE
             // --------------------------------------------
             [[
-                'name'  => 'Unique',
-                'data'  => [
+                'name' => 'Unique',
+                'data' => [
                     'null' => null, 'foo' => 1, 'bar' => [1, 2, 3, 'a'], 'baz' => [1, 2, 1, 'a'], 'qux' => [1, 2, 1, 'a', 'b', 'a'],
                     'quux' => [
                         ['foo' => 1, 'bar' => 1],
@@ -1090,8 +1090,8 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['null'   , [     ], true , []],
                     ['foo'    , [     ], true , []],
                     ['bar'    , [     ], true , []],
-                    ['baz'    , [     ], false, ['baz'  => ["The Baz must be entered a different value. The value 1 has duplicated."]]],
-                    ['qux'    , [     ], false, ['qux'  => ["The Qux must be entered a different value. The values 1, a have duplicated."]]],
+                    ['baz'    , [     ], false, ['baz' => ["The Baz must be entered a different value. The value 1 has duplicated."]]],
+                    ['qux'    , [     ], false, ['qux' => ["The Qux must be entered a different value. The values 1, a have duplicated."]]],
                     ['quux'   , ['foo'], true , []],
                     ['quux'   , ['bar'], false, ['quux' => ["The Quux Bar must be entered a different value. The value 1 has duplicated."]]],
                 ]
@@ -1176,7 +1176,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['past'   , ['now'], true , []],
                     ['now'    , ['now'], false, ['now'    => ["The Now must be a date past than 2010-01-23 12:34:56."]]],
                     ['future' , ['now'], false, ['future' => ["The Future must be a date past than 2010-01-23 12:34:56."]]],
-                    ['list'   , ['now'], false, ['list'   => [
+                    ['list'   , ['now'], false, ['list' => [
                         "The 2nd List (2010-01-23 12:34:56) must be a date past than 2010-01-23 12:34:56.",
                         "The 3rd List (2010-01-23 12:34:57) must be a date past than 2010-01-23 12:34:56.",
                     ]]],
@@ -1195,7 +1195,7 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['past'   , ['now'], true , []],
                     ['now'    , ['now'], true , []],
                     ['future' , ['now'], false, ['future' => ["The Future must be a date past than or equal 2010-01-23 12:34:56."]]],
-                    ['list'   , ['now'], false, ['list'   => [
+                    ['list'   , ['now'], false, ['list' => [
                         "The 3rd List (2010-01-23 12:34:57) must be a date past than or equal 2010-01-23 12:34:56.",
                     ]]],
                 ]
@@ -1218,10 +1218,10 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['equals' , [10        , ':entry_at' ], false, ['equals' => ["The age must be 10 years or younger as of Entry At."]]],
                     ['equals' , [':max_age', ':entry_at' ], false, ['equals' => ["The age must be Max Age years or younger as of Entry At."]]],
                     ['less'   , [10                      ], true , []],
-                    ['list'   , [10                      ], false, ['list'   => [
+                    ['list'   , [10                      ], false, ['list' => [
                         "The 1st value (1999-01-23) of List must be 10 years or younger.",
                     ]]],
-                    ['list'   , [10        , '2011-01-23'], false, ['list'   => [
+                    ['list'   , [10        , '2011-01-23'], false, ['list' => [
                         "The 1st value (1999-01-23) of List must be 10 years or younger as of 2011-01-23.",
                         "The 2nd value (2000-01-23) of List must be 10 years or younger as of 2011-01-23.",
                     ]]],
@@ -1245,10 +1245,10 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['less'   , [10                      ], false, ['less'   => ["The age must be 10 years or older."]]],
                     ['less'   , [':min_age'              ], false, ['less'   => ["The age must be Min Age years or older."]]],
                     ['less'   , [10        , '2010-01-24'], true , []],
-                    ['list'   , [10                      ], false, ['list'   => [
+                    ['list'   , [10                      ], false, ['list' => [
                         "The 3rd value (2000-01-24) of List must be 10 years or older.",
                     ]]],
-                    ['list'   , [10, '2009-01-23'        ], false, ['list'   => [
+                    ['list'   , [10, '2009-01-23'        ], false, ['list' => [
                         "The 2nd value (2000-01-23) of List must be 10 years or older as of 2009-01-23.",
                         "The 3rd value (2000-01-24) of List must be 10 years or older as of 2009-01-23.",
                     ]]],
@@ -1259,8 +1259,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::SEQUENTIAL_NUMBER
             // --------------------------------------------
             [[
-                'name'  => 'SequentialNumber',
-                'data'  => [
+                'name' => 'SequentialNumber',
+                'data' => [
                     'null' => null,
                     'foo'  => [
                         ['foo' => 1, 'bar' => 1, 'baz' => 3],
@@ -1286,9 +1286,9 @@ class BuiltinValidationsTest extends RebetTestCase
                 'name'  => 'Accepted',
                 'data'  => ['null' => null, 'empty' => '', 'yes' => 'yes', 'on' => 'on', 'one_string' => '1', 'one_int' => 1, 'true_string' => 'true', 'true_bool' => true, 'array_empty' => [], 'array' => [2]],
                 'tests' => [
-                    ['nothing'    , [], false, ['nothing'     => ["The Nothing must be accepted."]]],
-                    ['null'       , [], false, ['null'        => ["The Null must be accepted."]]],
-                    ['empty'      , [], false, ['empty'       => ["The Empty must be accepted."]]],
+                    ['nothing'    , [], false, ['nothing' => ["The Nothing must be accepted."]]],
+                    ['null'       , [], false, ['null'  => ["The Null must be accepted."]]],
+                    ['empty'      , [], false, ['empty' => ["The Empty must be accepted."]]],
                     ['yes'        , [], true , []],
                     ['on'         , [], true , []],
                     ['one_string' , [], true , []],
@@ -1332,8 +1332,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_SIZE
             // --------------------------------------------
             [[
-                'name'  => 'FileSize',
-                'data'  => [
+                'name' => 'FileSize',
+                'data' => [
                     'null'    => null,
                     'banner'  => $image_72x72_png,
                     'banners' => [
@@ -1361,8 +1361,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_NAME_MATCH
             // --------------------------------------------
             [[
-                'name'  => 'FileNameMatch',
-                'data'  => [
+                'name' => 'FileNameMatch',
+                'data' => [
                     'null'    => null,
                     'banner'  => $image_72x72_png,
                     'banners' => [
@@ -1386,8 +1386,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_SUFFIX_MATCH
             // --------------------------------------------
             [[
-                'name'  => 'FileSuffixMatch',
-                'data'  => [
+                'name' => 'FileSuffixMatch',
+                'data' => [
                     'null'    => null,
                     'banner'  => $image_72x72_png,
                     'banners' => [
@@ -1411,8 +1411,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_MIME_TYPE_MATCH
             // --------------------------------------------
             [[
-                'name'  => 'FileMimeTypeMatch',
-                'data'  => [
+                'name' => 'FileMimeTypeMatch',
+                'data' => [
                     'null'    => null,
                     'banner'  => $image_72x72_png,
                     'banners' => [
@@ -1436,18 +1436,18 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_TYPE_IMAGES
             // --------------------------------------------
             [[
-                'name'  => 'FileTypeImages',
-                'data'  => [
-                    'null'    => null,
-                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
-                    'images'  => [
+                'name' => 'FileTypeImages',
+                'data' => [
+                    'null'   => null,
+                    'png'    => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'    => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'    => static::uploadedFileMock('foo.zip', 'application/zip'),
+                    'images' => [
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.bmp', 'image/bmp'),
                         static::uploadedFileMock('bar.JPG', 'image/JPEG'),
                     ],
-                    'mixed'  => [
+                    'mixed' => [
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.bmp', 'image/bmp'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
@@ -1469,18 +1469,18 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_TYPE_WEB_IMAGES
             // --------------------------------------------
             [[
-                'name'  => 'FileTypeWebImages',
-                'data'  => [
-                    'null'    => null,
-                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
-                    'images'  => [
+                'name' => 'FileTypeWebImages',
+                'data' => [
+                    'null'   => null,
+                    'png'    => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'    => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'    => static::uploadedFileMock('foo.zip', 'application/zip'),
+                    'images' => [
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.bmp', 'image/bmp'),
                         static::uploadedFileMock('bar.JPG', 'image/JPEG'),
                     ],
-                    'mixed'  => [
+                    'mixed' => [
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.bmp', 'image/bmp'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
@@ -1505,13 +1505,13 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_TYPE_CSV
             // --------------------------------------------
             [[
-                'name'  => 'FileTypeCsv',
-                'data'  => [
-                    'null'    => null,
-                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
-                    'mixed'   => [
+                'name' => 'FileTypeCsv',
+                'data' => [
+                    'null'  => null,
+                    'png'   => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'   => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'   => static::uploadedFileMock('foo.zip', 'application/zip'),
+                    'mixed' => [
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.csv', 'text/csv'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
@@ -1533,13 +1533,13 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_TYPE_ZIP
             // --------------------------------------------
             [[
-                'name'  => 'FileTypeZip',
-                'data'  => [
-                    'null'    => null,
-                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
-                    'mixed'   => [
+                'name' => 'FileTypeZip',
+                'data' => [
+                    'null'  => null,
+                    'png'   => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'   => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'   => static::uploadedFileMock('foo.zip', 'application/zip'),
+                    'mixed' => [
                         static::uploadedFileMock('foo.png', 'image/png'),
                         static::uploadedFileMock('bar.zip', 'application/zip'),
                         static::uploadedFileMock('baz.xml', 'text/xml'),
@@ -1561,8 +1561,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_MAX_WIDTH
             // --------------------------------------------
             [[
-                'name'  => 'FileImageMaxWidth',
-                'data'  => [
+                'name' => 'FileImageMaxWidth',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1577,8 +1577,8 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['null'  , [ 73], true  , []],
                     ['png'   , [ 73], true  , []],
                     ['png'   , [ 72], true  , []],
-                    ['png'   , [ 71], false , ['png'   => ["The Png may not be greater than 71 width."]]],
-                    ['text'  , [ 71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['png'   , [ 71], false , ['png'  => ["The Png may not be greater than 71 width."]]],
+                    ['text'  , [ 71], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [120], false , ['mixed' => [
                         "The '160x240.png' in Mixed may not be greater than 120 width.",
                         "The 'env.txt' in Mixed must have area (width and height).",
@@ -1590,8 +1590,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_WIDTH
             // --------------------------------------------
             [[
-                'name'  => 'FileImageWidth',
-                'data'  => [
+                'name' => 'FileImageWidth',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1604,10 +1604,10 @@ class BuiltinValidationsTest extends RebetTestCase
                 ],
                 'tests' => [
                     ['null'  , [ 73], true  , []],
-                    ['png'   , [ 73], false , ['png'   => ["The Png must be 73 width."]]],
+                    ['png'   , [ 73], false , ['png' => ["The Png must be 73 width."]]],
                     ['png'   , [ 72], true  , []],
-                    ['png'   , [ 71], false , ['png'   => ["The Png must be 71 width."]]],
-                    ['text'  , [ 71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['png'   , [ 71], false , ['png'  => ["The Png must be 71 width."]]],
+                    ['text'  , [ 71], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [120], false , ['mixed' => [
                         "The '72x72.png' in Mixed must be 120 width.",
                         "The '160x240.png' in Mixed must be 120 width.",
@@ -1620,8 +1620,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_MIN_WIDTH
             // --------------------------------------------
             [[
-                'name'  => 'FileImageMinWidth',
-                'data'  => [
+                'name' => 'FileImageMinWidth',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1634,10 +1634,10 @@ class BuiltinValidationsTest extends RebetTestCase
                 ],
                 'tests' => [
                     ['null'  , [ 73], true  , []],
-                    ['png'   , [ 73], false , ['png'   => ["The Png may not be less than 73 width."]]],
+                    ['png'   , [ 73], false , ['png' => ["The Png may not be less than 73 width."]]],
                     ['png'   , [ 72], true  , []],
                     ['png'   , [ 71], true  , []],
-                    ['text'  , [ 71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['text'  , [ 71], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [120], false , ['mixed' => [
                         "The '72x72.png' in Mixed may not be less than 120 width.",
                         "The 'env.txt' in Mixed must have area (width and height).",
@@ -1649,8 +1649,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_MAX_HEIGHT
             // --------------------------------------------
             [[
-                'name'  => 'FileImageMaxHeight',
-                'data'  => [
+                'name' => 'FileImageMaxHeight',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1665,8 +1665,8 @@ class BuiltinValidationsTest extends RebetTestCase
                     ['null'  , [73], true  , []],
                     ['png'   , [73], true  , []],
                     ['png'   , [72], true  , []],
-                    ['png'   , [71], false , ['png'   => ["The Png may not be greater than 71 height."]]],
-                    ['text'  , [71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['png'   , [71], false , ['png'  => ["The Png may not be greater than 71 height."]]],
+                    ['text'  , [71], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [72], false , ['mixed' => [
                         "The '160x240.png' in Mixed may not be greater than 72 height.",
                         "The 'env.txt' in Mixed must have area (width and height).",
@@ -1678,8 +1678,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_HEIGHT
             // --------------------------------------------
             [[
-                'name'  => 'FileImageHeight',
-                'data'  => [
+                'name' => 'FileImageHeight',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1692,10 +1692,10 @@ class BuiltinValidationsTest extends RebetTestCase
                 ],
                 'tests' => [
                     ['null'  , [73], true  , []],
-                    ['png'   , [73], false , ['png'   => ["The Png must be 73 height."]]],
+                    ['png'   , [73], false , ['png' => ["The Png must be 73 height."]]],
                     ['png'   , [72], true  , []],
-                    ['png'   , [71], false , ['png'   => ["The Png must be 71 height."]]],
-                    ['text'  , [71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['png'   , [71], false , ['png'  => ["The Png must be 71 height."]]],
+                    ['text'  , [71], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [72], false , ['mixed' => [
                         "The '120x60.png' in Mixed must be 72 height.",
                         "The '160x240.png' in Mixed must be 72 height.",
@@ -1708,8 +1708,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_MIN_HEIGHT
             // --------------------------------------------
             [[
-                'name'  => 'FileImageMinHeight',
-                'data'  => [
+                'name' => 'FileImageMinHeight',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1722,10 +1722,10 @@ class BuiltinValidationsTest extends RebetTestCase
                 ],
                 'tests' => [
                     ['null'  , [73], true  , []],
-                    ['png'   , [73], false , ['png'   => ["The Png may not be less than 73 height."]]],
+                    ['png'   , [73], false , ['png' => ["The Png may not be less than 73 height."]]],
                     ['png'   , [72], true  , []],
                     ['png'   , [71], true  , []],
-                    ['text'  , [71], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['text'  , [71], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [72], false , ['mixed' => [
                         "The '120x60.png' in Mixed may not be less than 72 height.",
                         "The 'env.txt' in Mixed must have area (width and height).",
@@ -1737,8 +1737,8 @@ class BuiltinValidationsTest extends RebetTestCase
             // Valid::FILE_IMAGE_ASPECT_RATIO
             // --------------------------------------------
             [[
-                'name'  => 'FileImageAspectRatio',
-                'data'  => [
+                'name' => 'FileImageAspectRatio',
+                'data' => [
                     'null'  => null,
                     'png'   => $image_72x72_png,
                     'text'  => $text_env,
@@ -1751,9 +1751,9 @@ class BuiltinValidationsTest extends RebetTestCase
                 ],
                 'tests' => [
                     ['null'  , [16, 9], true  , []],
-                    ['png'   , [16, 9], false , ['png'   => ["The Png aspect ratio must be '16:9'."]]],
+                    ['png'   , [16, 9], false , ['png' => ["The Png aspect ratio must be '16:9'."]]],
                     ['png'   , [ 1, 1], true  , []],
-                    ['text'  , [ 1, 1], false , ['text'  => ["The Text must have area (width and height)."]]],
+                    ['text'  , [ 1, 1], false , ['text' => ["The Text must have area (width and height)."]]],
                     ['mixed' , [ 2, 1], false , ['mixed' => [
                         "The '72x72.png' in Mixed aspect ratio must be '2:1'.",
                         "The '160x240.png' in Mixed aspect ratio must be '2:1'.",

@@ -167,7 +167,7 @@ class Auth
             return Responder::redirect($backto)
                     ->with($request->input())
                     ->errors(['signin' => [Translator::get('message.signin_failed')]])
-                    ;
+            ;
         }
 
         $guard = static::guard(static::applicableGuard($request));

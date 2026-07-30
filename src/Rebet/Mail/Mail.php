@@ -2,11 +2,10 @@
 namespace Rebet\Mail;
 
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\Extra\SpoofCheckValidation;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Egulias\EmailValidator\Validation\RFCValidation;
-use Egulias\EmailValidator\Validation\Extra\SpoofCheckValidation;
 use Html2Text\Html2Text;
-use Rebet\Mail\Encoder\Base64Encoder;
 use Rebet\Mail\Mime\HeaderEncoder\Base64HeaderEncoder;
 use Rebet\Mail\Mime\HeaderSet;
 use Rebet\Mail\Mime\MimeMessage;
@@ -36,7 +35,7 @@ use Swift_Mime_SimpleMimeEntity;
  * Mail Class
  *
  * @todo Replace SwiftMailer with Symfony Mailer because SwiftMailer is abandoned.
- * 
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2020 github.com/rain-noise
@@ -71,25 +70,25 @@ class Mail
                     'transporter' => [
                         '@factory' => SmtpTransport::class,
                     ],
-                    'plugins'     => [],
+                    'plugins' => [],
                 ],
                 'sendmail' => [
                     'transporter' => [
                         '@factory' => SendmailTransport::class,
                     ],
-                    'plugins'     => [],
+                    'plugins' => [],
                 ],
                 'log' => [
                     'transporter' => [
                         '@factory' => LogTransport::class,
                     ],
-                    'plugins'     => [],
+                    'plugins' => [],
                 ],
                 'test' => [
                     'transporter' => [
                         '@factory' => ArrayTransport::class,
                     ],
-                    'plugins'     => [],
+                    'plugins' => [],
                 ],
             ],
             'alternative_generator' => [
@@ -376,7 +375,7 @@ class Mail
      */
     public static function resolve($addresses) : array
     {
-        $resolves  = [];
+        $resolves = [];
         foreach ((array)$addresses as $address => $name) {
             if (is_string($address)) {
                 $resolves[$address] = $name;
@@ -607,7 +606,7 @@ class Mail
         switch ($encoder) {
             case 'quoted-printable':
                 $this->message->setEncoder(static::container()->lookup('mime.qpcontentencoder'));
-            break;
+                break;
             default:
                 $this->message->setEncoder(static::container()->lookup("mime.{$encoder}contentencoder"));
         }

@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\View\Engine\Twig;
 
-use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
-
 use Rebet\Tests\RebetTestCase;
+
+use Rebet\Tools\Config\Config;
 use Rebet\View\Engine\Twig\Twig;
 
 class TwigTest extends RebetTestCase

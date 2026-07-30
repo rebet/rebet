@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Tools\Testable;
 
-use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Testable\StderrCapture;
-
 use function PHPUnit\Framework\assertEquals;
+use Rebet\Tests\RebetTestCase;
+
+use Rebet\Tools\Testable\StderrCapture;
 
 class StderrCaptureTest extends RebetTestCase
 {
@@ -21,7 +21,7 @@ class StderrCaptureTest extends RebetTestCase
 
     public function test_via()
     {
-        $captured = StderrCapture::via(function(){
+        $captured = StderrCapture::via(function () {
             fputs(STDERR, 'foo');
             $stderr = StderrCapture::append(fopen('php://stderr', 'w'));
             fwrite($stderr, 'bar');

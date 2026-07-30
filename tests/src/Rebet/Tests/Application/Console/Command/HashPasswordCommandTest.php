@@ -20,12 +20,12 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
     {
         return [
             ['foobar'],
-            ['foobar', ['--option' => '{"cost": 8}']],
+            ['foobar', ['--option'    => '{"cost": 8}']],
             ['foobar', ['--algorithm' => PASSWORD_ARGON2I]],
             ['foobar', ['--algorithm' => PASSWORD_ARGON2I, '--option' => '{"time_cost": 3}']],
-       ];
+        ];
     }
-    
+
     #[DataProvider('dataExecutes')]
     public function test_execute(string $password, array $options = [])
     {

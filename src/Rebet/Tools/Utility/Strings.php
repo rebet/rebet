@@ -499,7 +499,7 @@ class Strings
             $describes = '';
             $count     = 0;
             foreach ($value as $k => $v) {
-                $v          = in_array($k, $masks) ? $masked_label : $v ;
+                $v = in_array($k, $masks) ? $masked_label : $v ;
                 $describes .= "\n".static::indent("{$k} => ".static::_stringify($v, true, $masks, $masked_label).",", '    ');
                 $count++;
             }

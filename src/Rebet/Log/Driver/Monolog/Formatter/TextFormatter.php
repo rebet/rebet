@@ -32,8 +32,8 @@ class TextFormatter implements FormatterInterface
                 '{extra}'     => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n------ [   EXTRA   ] ------\n".Strings::indent(Strings::stringify($val, $masks, $masked_label), "-- ") ; },
                 '{exception}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n****** [ EXCEPTION ] ******\n".Strings::indent("{$val}", "** ") ; },
             ],
-            'masks'               => [],
-            'masked_label'        => '********',
+            'masks'        => [],
+            'masked_label' => '********',
         ];
     }
 
@@ -76,9 +76,9 @@ class TextFormatter implements FormatterInterface
      */
     public function format(LogRecord $record)
     {
-        $output    = $this->format;
+        $output       = $this->format;
         $record_array = $record->toArray();
-        $exception = Reflector::remove($record_array, 'context.exception');
+        $exception    = Reflector::remove($record_array, 'context.exception');
 
         foreach (Arrays::sortKeys($record_array['extra'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{extra.'.$var.'}';
@@ -118,7 +118,7 @@ class TextFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function formatBatch(array $records): string
+    public function formatBatch(array $records) : string
     {
         $message = '';
         foreach ($records as $record) {

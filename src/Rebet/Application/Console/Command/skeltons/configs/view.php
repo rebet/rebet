@@ -22,7 +22,7 @@ return [
     Twig::class => [
         'template_dir' => [],
         'options'      => [],
-        'customizers' => [TwigTagCustomizer::class.'::customize'],
+        'customizers'  => [TwigTagCustomizer::class.'::customize'],
         'file_suffix'  => '.twig',
     ],
 ];

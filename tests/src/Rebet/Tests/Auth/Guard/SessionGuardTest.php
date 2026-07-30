@@ -175,7 +175,7 @@ class SessionGuardTest extends RebetTestCase
 
     public function test_authenticate()
     {
-        $mock    = $this->createMock(ArrayProvider::class);
+        $mock = $this->createMock(ArrayProvider::class);
         $mock->method('findByCredentials')->willReturn(new AuthUser(Auth::provider('user')->findById(1)->raw(), [], $mock));
         $mock->method('supportRememberToken')->willReturn(true);
         $mock->method('issuingRememberToken')->willReturn('MOCKED_TOKEN');

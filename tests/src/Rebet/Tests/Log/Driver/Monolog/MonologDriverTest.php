@@ -4,10 +4,9 @@ namespace Rebet\Tests\Log\Driver\Monolog;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\MonologDriver;
-use Rebet\Log\LogLevel;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class MonologDriverTest extends RebetTestCase
 {

@@ -131,12 +131,12 @@ class AttributeBagTest extends RebetTestCase
 
         $bag->remove('name');
         $this->assertSame([
-            'map'  => ['b' => 'B']
+            'map' => ['b' => 'B']
         ], $bag->all());
 
         $bag->remove('nothing');
         $this->assertSame([
-            'map'  => ['b' => 'B']
+            'map' => ['b' => 'B']
         ], $bag->all());
     }
 

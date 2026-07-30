@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Database;
 
+use App\Enum\Gender;
 use App\Model\Article;
 use App\Model\User;
 use App\Model\UserWithAnnot;
-use App\Enum\Gender;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Auth\Password;
@@ -171,7 +171,7 @@ class DatabaseTest extends RebetDatabaseTestCase
                             $es = $query->sql();
                             $ep = $query->params();
                         },
-                        'debug'       => true,
+                        'debug' => true,
                     ]
                 ]
             ]
@@ -209,9 +209,9 @@ class DatabaseTest extends RebetDatabaseTestCase
 
     public function test_exception()
     {
-        $sql      = "bogus SELECT * FROM user WHERE user_id = :user_id";
-        $params   = [':user_id' => 1];
-        $error    = ['HY000', 1, 'near "bogus": syntax error'];
+        $sql    = "bogus SELECT * FROM user WHERE user_id = :user_id";
+        $params = [':user_id' => 1];
+        $error  = ['HY000', 1, 'near "bogus": syntax error'];
 
         $exception = Dao::db('sqlite')->exception($error, $sql, $params);
         $this->assertInstanceOf(DatabaseException::class, $exception);
@@ -373,8 +373,8 @@ class DatabaseTest extends RebetDatabaseTestCase
             [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = 1 ORDER BY birthday DESC"],
             [[7, 28, 17, 10, 23, 4, 2, 30, 3, 5, 29, 9, 19], 'user_id', "SELECT * FROM users WHERE gender = :gender ORDER BY birthday DESC", ['gender' => Gender::MALE()]],
 
-            [[1], 'user_id', "SELECT * FROM users WHERE user_id = :user_id AND user_id = :user_id", ['user_id' => 1]],
-            [[1, 3, 5], 'user_id', "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id' => [1, 3, 5]]],
+            [[1], 'user_id', "SELECT * FROM users WHERE user_id = :user_id AND user_id = :user_id", ['user_id'             => 1]],
+            [[1, 3, 5], 'user_id', "SELECT * FROM users WHERE user_id IN (:user_id)", ['user_id'                           => [1, 3, 5]]],
             [[1, 3, 5], 'user_id', "SELECT * FROM users WHERE user_id IN (:user_id) AND user_id IN (:user_id)", ['user_id' => [1, 3, 5]]],
         ];
     }
@@ -1230,7 +1230,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
             $this->assertNull(Article::find(1));
 
-            $article = new Article();
+            $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'Test';
             $article->body    = 'This is test';
@@ -1246,12 +1246,12 @@ class DatabaseTest extends RebetDatabaseTestCase
 
             // Reset milliseconds to compare with DB data where milliseconds are not stored.
             $article->created_at = $article->created_at->startsOfSecond();
-            $origin = $article->origin();
-            $origin->created_at = $origin->created_at->startsOfSecond();
+            $origin              = $article->origin();
+            $origin->created_at  = $origin->created_at->startsOfSecond();
             $this->assertEquals($article, Article::find(1));
 
 
-            $user = new User();
+            $user           = new User();
             $user->user_id  = 99;
             $user->name     = 'Foo';
             $user->gender   = Gender::FEMALE();
@@ -1270,14 +1270,14 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertSame('user', $user->role);
 
             // Reset milliseconds to compare with DB data where milliseconds are not stored.
-            $user->created_at = $user->created_at->startsOfSecond();
-            $origin = $user->origin();
+            $user->created_at   = $user->created_at->startsOfSecond();
+            $origin             = $user->origin();
             $origin->created_at = $origin->created_at->startsOfSecond();
             $this->assertEquals($user, User::find(99));
 
 
-            $now = DateTime::now()->startsOfSecond();
-            $user = new UserWithAnnot();
+            $now            = DateTime::now()->startsOfSecond();
+            $user           = new UserWithAnnot();
             $user->user_id  = 999;
             $user->password = Password::hash("password-999");
 
@@ -1323,7 +1323,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
 
         self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
-            $article = new Article();
+            $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'Test';
             $article->body    = 'This is test';
@@ -1338,7 +1338,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertFalse($updating_event_called);
             $this->assertFalse($updated_event_called);
 
-            $now = DateTime::now()->startsOfSecond();
+            $now           = DateTime::now()->startsOfSecond();
             $article->body = 'foo';
             $this->assertTrue($db->update($article, $now));
             $this->assertEquals($now, $article->updated_at);
@@ -1347,7 +1347,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertEquals($article, Article::find(1));
 
 
-            $now = DateTime::now()->startsOfSecond();
+            $now  = DateTime::now()->startsOfSecond();
             $user = User::find(1);
             $this->assertNull($user->updated_at);
             $this->assertEquals(Gender::FEMALE(), $user->gender);
@@ -1360,7 +1360,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertEquals($user, User::find(1));
 
 
-            $now = DateTime::now()->startsOfSecond();
+            $now  = DateTime::now()->startsOfSecond();
             $user = UserWithAnnot::find(2);
             $this->assertNull($user->updated_at);
             $this->assertEquals(Gender::MALE(), $user->gender);
@@ -1421,7 +1421,7 @@ class DatabaseTest extends RebetDatabaseTestCase
 
             $created_at = DateTime::now()->startsOfSecond();
 
-            $article = new Article();
+            $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'Test';
             $article->body    = 'This is test';
@@ -1438,7 +1438,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertEquals($article, Article::find(1));
 
 
-            $updated_at = DateTime::now()->startsOfSecond();
+            $updated_at       = DateTime::now()->startsOfSecond();
             $article->subject = 'Test update';
 
             $this->assertFalse($updating_event_called);
@@ -1466,7 +1466,7 @@ class DatabaseTest extends RebetDatabaseTestCase
         });
 
         self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
-            $article = new Article();
+            $article          = new Article();
             $article->user_id = 1;
             $article->subject = 'Test';
             $article->body    = 'This is test';
@@ -1514,8 +1514,8 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertTrue($updating_event_called);
             $this->assertFalse($updated_event_called);
 
-            $now  = DateTime::now();
-            $user = User::find(1);
+            $now                   = DateTime::now();
+            $user                  = User::find(1);
             $updating_event_called = false;
             $updated_event_called  = false;
             $this->assertFalse($updating_event_called);
@@ -1557,7 +1557,7 @@ class DatabaseTest extends RebetDatabaseTestCase
             $this->assertTrue($deleting_event_called);
             $this->assertFalse($deleted_event_called);
 
-            $user = User::find(1);
+            $user                  = User::find(1);
             $deleting_event_called = false;
             $deleted_event_called  = false;
             $this->assertFalse($deleting_event_called);

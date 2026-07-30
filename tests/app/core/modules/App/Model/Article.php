@@ -2,8 +2,8 @@
 namespace App\Model;
 
 use Rebet\Database\DataModel\Entity;
-use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Reflection\Reflector;
 
 class Article extends Entity
 {

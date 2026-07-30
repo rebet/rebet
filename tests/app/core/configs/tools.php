@@ -10,7 +10,7 @@ return [
     DateTime::class => [
         'default_timezone' => Config::refer(App::class, 'timezone', date_default_timezone_get() ? : 'UTC'),
     ],
-    
+
     Namespaces::class => [
         'aliases' => [
             '@app'        => 'App',

@@ -3,7 +3,6 @@ namespace Rebet\Tests\Mail;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
-use Rebet\Log\Log;
 use Rebet\Mail\Mail;
 use Rebet\Mail\Mailer;
 use Rebet\Mail\Mime\HeaderSet;
@@ -137,8 +136,8 @@ class MailTest extends RebetTestCase
             [['one@foo.com' => 'One'], 'One  <one@foo.com>'],
             [['one@foo.com' => 'One'], ' One  <one@foo.com>'],
             [['one@foo.com' => 'O n e'], 'O n e <one@foo.com>'],
-            [['one@foo.com' => 'One'], ['one@foo.com' => 'One']],
-            [['one@foo.com' => 'One', 'two@foo.com' => null], ['one@foo.com' => 'One', 'two@foo.com']],
+            [['one@foo.com' => 'One'], ['one@foo.com'                                                    => 'One']],
+            [['one@foo.com' => 'One', 'two@foo.com' => null], ['one@foo.com'                             => 'One', 'two@foo.com']],
             [['one@foo.com' => 'One', 'two@foo.com' => null, 'three@foo.com' => 'Three'], ['one@foo.com' => 'One', 'two@foo.com', 'Three <three@foo.com>']],
             [['mb@foo.com' => 'マルチ バイト'], 'マルチ バイト <mb@foo.com>'],
         ];

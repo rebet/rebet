@@ -16,7 +16,7 @@ class SqliteDriverTest extends RebetDatabaseTestCase
 
     public function test_toPhpType()
     {
-        $db = Dao::db('sqlite');
+        $db  = Dao::db('sqlite');
         $dml = <<<EOS
             CREATE TABLE IF NOT EXISTS native_types (
                 type_integer INTEGER,

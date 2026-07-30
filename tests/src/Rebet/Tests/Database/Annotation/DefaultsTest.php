@@ -4,8 +4,8 @@ namespace Rebet\Tests\Database\Annotation;
 use App\Stub\AnnotatedStub;
 use Rebet\Annotation\AnnotatedClass;
 use Rebet\Database\Annotation\Defaults;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tests\RebetTestCase;
+use Rebet\Tools\DateTime\DateTime;
 
 class DefaultsTest extends RebetTestCase
 {

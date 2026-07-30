@@ -3,9 +3,9 @@ namespace Rebet\Tests\Auth;
 
 use Rebet\Auth\BasicAuth;
 use Rebet\Auth\Exception\AuthenticateException;
-use Rebet\Tools\Testable\System;
-
 use Rebet\Tests\RebetTestCase;
+
+use Rebet\Tools\Testable\System;
 
 class BasicAuthTest extends RebetTestCase
 {

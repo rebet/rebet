@@ -17,7 +17,7 @@ class LoadApplicationConfigurationTest extends RebetTestCase
         $structure->method('configs')->willReturn(App::structure()->resources('/adhoc/Application/Bootstrap/LoadApplicationConfiguration'));
         $kernel = $this->createMock(Kernel::class);
         $kernel->method('structure')->willReturn($structure);
-        
+
         $this->assertNull(App::config('custom_value', false));
 
         $bootstrapper = new LoadApplicationConfiguration();

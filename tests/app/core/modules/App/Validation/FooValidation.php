@@ -10,7 +10,7 @@ class FooValidation extends Rule
     {
         return [
             'foo' => [
-                'rule'  => [
+                'rule' => [
                     ['C', Valid::REQUIRED]
                 ]
             ],

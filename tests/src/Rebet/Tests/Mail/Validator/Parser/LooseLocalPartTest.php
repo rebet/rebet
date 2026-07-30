@@ -62,7 +62,7 @@ class LooseLocalPartTest extends RebetTestCase
         $lexer->moveNext();
         $parser = new LooseLocalPart($lexer, $ignores);
         $result = $parser->parse($mail_address);
-        if($expect !== null) {
+        if ($expect !== null) {
             $this->assertTrue($result->isInvalid());
             $this->assertEquals($expect, $result->reason());
         } else {

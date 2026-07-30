@@ -2,8 +2,8 @@
 namespace Rebet\Log\Driver;
 
 use InvalidArgumentException;
-use Psr\Log\LoggerInterface as PsrLogger;
 use Psr\Log\AbstractLogger as PsrAbstractLogger;
+use Psr\Log\LoggerInterface as PsrLogger;
 use Rebet\Log\Log;
 
 /**
@@ -59,7 +59,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
             if ($logger === null) {
                 throw new InvalidArgumentException("Invalid channel name `{$channel}` was given, missing log driver.");
             }
-            $driver = $logger->driver();
+            $driver          = $logger->driver();
             $this->drivers[] = $driver instanceof NameableDriver ? $driver->withName($this->name ?? $driver->getName()) : $driver ;
         }
     }
@@ -67,7 +67,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
-    public function setName(string $name): self
+    public function setName(string $name) : self
     {
         $this->name = $name;
         foreach ($this->drivers as $driver) {
@@ -81,7 +81,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
-    public function getName(): string
+    public function getName() : string
     {
         return $this->name;
     }
@@ -89,7 +89,8 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
-    public function withName(string $name): self {
+    public function withName(string $name) : self
+    {
         $new          = clone $this;
         $new->name    = $name;
         $new->drivers = [];

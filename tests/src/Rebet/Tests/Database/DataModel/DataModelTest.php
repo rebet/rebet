@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
+use App\Enum\Gender;
 use App\Model\Article;
 use App\Model\Bank;
 use App\Model\Fortune;
@@ -8,7 +9,6 @@ use App\Model\Group;
 use App\Model\GroupUser;
 use App\Model\User;
 use App\Model\UserWithAnnot;
-use App\Enum\Gender;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\ResultSet;
@@ -289,7 +289,7 @@ class DataModelTest extends RebetDatabaseTestCase
                 $expect_user_ids = [    2,      1,     2,      1,      1];
                 $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
                 foreach ($articles as $i => $article) {
-                    $user = $article->user(true);
+                    $user    = $article->user(true);
                     $fortune = $user->fortune(true);
                     $this->assertEquals($expect_user_ids[$i], $user->user_id);
                     $this->assertEquals($expect_fortunes[$i], $fortune->result);
@@ -304,7 +304,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $expect_user_ids = [    2,      1,     2,      1,      1];
             $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
             foreach ($articles as $i => $article) {
-                $user = $article->user(false, false);
+                $user    = $article->user(false, false);
                 $fortune = $user->fortune();
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
@@ -354,13 +354,13 @@ class DataModelTest extends RebetDatabaseTestCase
             $expect_user_ids = [    2,      1,     2,      1,      1];
             $expect_fortunes = ['bad', 'good', 'bad', 'good', 'good'];
             foreach ($articles as $i => $article) {
-                $user = $article->user();
+                $user    = $article->user();
                 $fortune = $user->fortune();
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
             }
             foreach ($articles as $i => $article) {
-                $user = $article->user();
+                $user    = $article->user();
                 $fortune = $user->fortune();
                 $this->assertEquals($expect_user_ids[$i], $user->user_id);
                 $this->assertEquals($expect_fortunes[$i], $fortune->result);
@@ -372,11 +372,11 @@ class DataModelTest extends RebetDatabaseTestCase
             $this->assertExecutedQueryWildcard($db, "SELECT * FROM ?fortunes? WHERE ((?gender? = '1' AND ?birthday? = '2003-02-16') OR (?gender? = '2' AND ?birthday? = '1990-01-08'))");
 
 
-            $user = User::find(3);
+            $user    = User::find(3);
             $fortune = $user->fortune();
             $this->assertNull($fortune);
 
-            $f = new Fortune();
+            $f           = new Fortune();
             $f->gender   = $user->gender;
             $f->birthday = $user->birthday;
             $f->result   = 'soso';
@@ -405,7 +405,7 @@ class DataModelTest extends RebetDatabaseTestCase
             $bank = $user->bank();
             $this->assertNull($bank);
 
-            $b = new Bank();
+            $b          = new Bank();
             $b->user_id = $user->user_id;
             $b->name    = 'bank 2';
             $b->branch  = 'branch 2';

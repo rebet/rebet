@@ -260,7 +260,7 @@ class EmbedTokenParser extends AbstractTokenParser
         return $allow_arrow
             ? $this->parser->getExpressionParser()->parseExpression($precedence, $allow_arrow)
             : $this->parser->getExpressionParser()->parseExpression($precedence)
-            ;
+        ;
     }
 
     /**

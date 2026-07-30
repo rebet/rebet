@@ -74,9 +74,9 @@ class Twig implements Engine
         $this->file_suffix = static::config('file_suffix') ;
 
         if (static::$twig === null || $clean_rebuild) {
-            $template_dir      = static::config('template_dir') ;
-            $options           = static::config('options', false, []) ;
-            static::$twig      = new Environment(new FilesystemLoader($template_dir), $options);
+            $template_dir = static::config('template_dir') ;
+            $options      = static::config('options', false, []) ;
+            static::$twig = new Environment(new FilesystemLoader($template_dir), $options);
             foreach (static::config('customizers', false, []) as $customizer) {
                 call_user_func($customizer, $this);
             }

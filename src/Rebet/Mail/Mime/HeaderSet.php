@@ -66,9 +66,12 @@ class HeaderSet
         }
 
         switch (true) {
-            case is_array($params):                   $this->headers->addParameterizedHeader($name, $value, $params); break;
-            case $value instanceof DateTimeInterface: $this->headers->addDateHeader($name, $value); break;
-            default:                                  $this->headers->addTextHeader($name, (string)$value); break;
+            case is_array($params):                   $this->headers->addParameterizedHeader($name, $value, $params);
+                break;
+            case $value instanceof DateTimeInterface: $this->headers->addDateHeader($name, $value);
+                break;
+            default:                                  $this->headers->addTextHeader($name, (string)$value);
+                break;
         }
 
         return $this;
