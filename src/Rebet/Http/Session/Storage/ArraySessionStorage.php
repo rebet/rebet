@@ -29,7 +29,7 @@ class ArraySessionStorage extends MockArraySessionStorage
     /**
      * {@inheritdoc}
      */
-    public function regenerate($destroy = false, $lifetime = null)
+    public function regenerate(bool $destroy = false, ?int $lifetime = null) : bool
     {
         if (!$this->started) {
             $this->start();

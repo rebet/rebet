@@ -37,6 +37,9 @@ class Strings
      */
     public static function lbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
+        if ($str === null) {
+            return null;
+        }
         $start = strpos($str, $delimiter);
         if ($start === false) {
             return $str;
@@ -58,6 +61,9 @@ class Strings
      */
     public static function latrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
+        if ($str === null) {
+            return null;
+        }
         $end = strpos($str, $delimiter);
         if ($end === false) {
             return $str;
@@ -79,6 +85,9 @@ class Strings
      */
     public static function rbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
+        if ($str === null) {
+            return null;
+        }
         $start = strrpos($str, $delimiter);
         if ($start === false) {
             return $str;
@@ -100,6 +109,9 @@ class Strings
      */
     public static function ratrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
     {
+        if ($str === null) {
+            return null;
+        }
         $end = strrpos($str, $delimiter);
         if ($end === false) {
             return $str;
@@ -192,6 +204,7 @@ class Strings
      */
     public static function startsWith(?string $haystack, string $needle) : bool
     {
+        $haystack = $haystack ?? '';
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
     }
 
@@ -207,6 +220,7 @@ class Strings
      */
     public static function endsWith(?string $haystack, string $needle) : bool
     {
+        $haystack = $haystack ?? '';
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
     }
 
@@ -224,6 +238,9 @@ class Strings
      */
     public static function checkDependenceChar(?string $text, string $encode = 'sjis-win') : array
     {
+        if ($text === null) {
+            return [];
+        }
         $org  = $text;
         $conv = mb_convert_encoding(mb_convert_encoding($text, $encode, 'UTF-8'), 'UTF-8', $encode);
         if (strlen($org) != strlen($conv)) {
@@ -244,6 +261,9 @@ class Strings
      */
     public static function toCharArray(?string $string) : array
     {
+        if ($string === null) {
+            return [];
+        }
         return preg_split("//u", $string, -1, PREG_SPLIT_NO_EMPTY);
     }
 
@@ -458,7 +478,7 @@ class Strings
         if ($value instanceof \DateTimeInterface) {
             return $value->format(DateTime::config('default_format'));
         }
-        if (method_exists($value, '__toString')) {
+        if (is_object($value) && method_exists($value, '__toString')) {
             $class = get_class($value);
             $value = $value->__toString();
             if (Strings::contains($value, "\n")) {

@@ -3,6 +3,7 @@ namespace Rebet\Routing\Route;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Namespaces;
@@ -77,6 +78,9 @@ class MethodRoute extends DeclarativeRoute
             $this->controller->route   = $this;
         }
         $this->action->setAccessible($this->accessible);
+        if (!$this->accessible && !$this->action->isPublic()) {
+            throw new RouteNotFoundException("{$this} not found. Action [ {$this->action->getDeclaringClass()->getName()}::{$this->action->getName()} ] not accessible.");
+        }
         return new RouteAction($this, $this->action, $this->controller);
     }
 
@@ -89,7 +93,7 @@ class MethodRoute extends DeclarativeRoute
      */
     public function terminate(Request $request, Response $response) : void
     {
-        if (method_exists($this->controller, 'terminate')) {
+        if (is_object($this->controller) && method_exists($this->controller, 'terminate')) {
             $this->controller->terminate($request, $response);
         }
     }

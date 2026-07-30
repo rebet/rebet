@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\View\Engine\Twig\Parser;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Engine\Twig\Parser\RawTokenParser;
@@ -23,9 +24,7 @@ class RawTokenParserTest extends RebetTestCase
         $this->assertSame('endenv', $paser->getTag());
     }
 
-    /**
-     * @dataProvider dataParses
-     */
+    #[DataProvider('dataParses')]
     public function test_parse(TokenParserInterface $token_parser, string $source, string $expect)
     {
         $env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
@@ -38,7 +37,7 @@ class RawTokenParserTest extends RebetTestCase
         $this->assertSame($expect, $src);
     }
 
-    public function dataParses()
+    public static function dataParses()
     {
         return [
             [

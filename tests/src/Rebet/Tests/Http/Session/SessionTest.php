@@ -16,7 +16,7 @@ class SessionTest extends RebetTestCase
         $this->assertInstanceOf(Session::class, new Session());
     }
 
-    public function test_clear()
+    public function test_reset()
     {
         $this->assertSame(null, Session::current());
         $session   = new Session();
@@ -24,9 +24,18 @@ class SessionTest extends RebetTestCase
         $attribute = $session->attribute();
         $this->assertSame($session, Session::current());
         $this->assertSame(['foo' => 'Foo'], $attribute->all());
-        Session::clear();
+        Session::reset();
         $this->assertSame(null, Session::current());
         $this->assertSame([], $attribute->all());
+    }
+
+    public function test_clear()
+    {
+        $session = new Session();
+        $session->set('foo', 'Foo');
+        $this->assertSame(['foo' => 'Foo'], $session->all());
+        $session->clear();
+        $this->assertSame([], $session->all());
     }
 
     public function test_current()
@@ -65,7 +74,7 @@ class SessionTest extends RebetTestCase
         $session = new Session();
 
         $this->assertSame(null, $session->get('foo'));
-        $this->assertInstanceOf(Session::class, $session->set('foo', 'Foo'));
+        $session->set('foo', 'Foo');
         $this->assertSame('Foo', $session->get('foo'));
 
         $this->assertSame(null, $session->get('baz'));
@@ -117,6 +126,40 @@ class SessionTest extends RebetTestCase
     {
         $session = new Session();
         $this->assertInstanceOf(MetadataBag::class, $session->meta());
+        $this->assertSame($session->getMetadataBag(), $session->meta());
+    }
+
+    public function test_all()
+    {
+        $session = new Session();
+        $session->set('foo', 'Foo');
+        $session->set('baz', ['a' => 'A']);
+        $this->assertSame(['foo' => 'Foo', 'baz' => ['a' => 'A']], $session->all());
+    }
+
+    public function test_replace()
+    {
+        $session = new Session();
+        $session->set('foo', 'Foo');
+        $session->replace(['baz' => 'Baz']);
+        $this->assertSame(['baz' => 'Baz'], $session->all());
+    }
+
+    public function test_getNameAndSetName()
+    {
+        $session = new Session();
+        $default = $session->getName();
+        $session->setName('MY_SESSION');
+        $this->assertSame('MY_SESSION', $session->getName());
+        $this->assertNotSame($default, $session->getName());
+    }
+
+    public function test_registerBagAndGetBag()
+    {
+        $session = new Session();
+        $bag     = new AttributeBag('others');
+        $session->registerBag($bag);
+        $this->assertSame($bag, $session->getBag('others'));
     }
 
     public function test_startAndIsStarted()
@@ -173,7 +216,7 @@ class SessionTest extends RebetTestCase
         $mock = $this->getMockBuilder(SessionStorageInterface::class)->getMock();
         $mock->expects($this->once())->method('save');
         $session = new Session($mock);
-        $this->assertInstanceOf(Session::class, $session->save());
+        $session->save();
     }
 
     public function test_id()

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Mail\Mime;
 
+use PHPUnit\Framework\Attributes\CoversMethod;
 use Rebet\Mail\Mail;
 use Rebet\Mail\Mime\HeaderSet;
 use Rebet\Tests\RebetTestCase;
@@ -10,6 +11,8 @@ use Swift_DependencyContainer;
 use Swift_Mime_Header;
 use Swift_Mime_SimpleHeaderSet;
 
+#[CoversMethod(HeaderSet::class, 'toReadableString')]
+#[CoversMethod(HeaderSet::class, 'convertToReadableString')]
 class HeaderSetTest extends RebetTestCase
 {
     /**
@@ -289,10 +292,6 @@ class HeaderSetTest extends RebetTestCase
         $this->assertStringContainsString('X-Foo: bar', (string)$this->headers->add('X-Foo', 'bar'));
     }
 
-    /**
-     * @covers Rebet\Mail\Mime\HeaderSet::toReadableString
-     * @covers Rebet\Mail\Mime\HeaderSet::convertToReadableString
-     */
     public function test_toReadableString()
     {
         $headers = Mail::text()->headers();

@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use BadMethodCallException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
@@ -26,9 +27,6 @@ class RequestTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
         Blade::clear();
         Config::application([
             View::class => [
@@ -36,7 +34,7 @@ class RequestTest extends RebetTestCase
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
     }
@@ -50,13 +48,13 @@ class RequestTest extends RebetTestCase
     {
         $request = new Request();
         $this->assertNotNull(Request::current());
-        Request::clear();
+        Request::reset();
         $this->assertNull(Request::current());
     }
 
     public function test_current()
     {
-        Request::clear();
+        Request::reset();
         $this->assertNull(Request::current());
         $request = new Request();
         $this->assertSame($request, Request::current());
@@ -241,7 +239,7 @@ class RequestTest extends RebetTestCase
         $this->assertSame('token', $request->bearerToken());
     }
 
-    public function dataGetRequestPaths() : array
+    public static function dataGetRequestPaths() : array
     {
         return [
             ['/', '/', '', false],
@@ -258,9 +256,7 @@ class RequestTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataGetRequestPaths
-     */
+    #[DataProvider('dataGetRequestPaths')]
     public function test_getRequestPath($expect, $path, $prefix, bool $withoutPrefix)
     {
         $request = $this->createRequestMock($path, null, 'web', 'web', 'GET', $prefix);

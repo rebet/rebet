@@ -161,7 +161,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_find()
     {
-        $this->eachDb(function (Database $db, string $driver) {
+        self::eachDb(function (Database $db, string $driver) {
             $user = User::find(1);
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
@@ -191,7 +191,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_findBy()
     {
-        $this->eachDb(function (Database $db, string $driver) {
+        self::eachDb(function (Database $db, string $driver) {
             $user = User::findBy(['user_id' => 1]);
             $this->assertEquals(1, $user->user_id);
             $this->assertEquals('Elody Bode III', $user->name);
@@ -221,7 +221,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_select()
     {
-        $this->eachDb(function (Database $db, string $driver) {
+        self::eachDb(function (Database $db, string $driver) {
             $this->assertEquals([3, 2, 1], User::select()->pluk('user_id'));
             $this->assertEquals([3, 2], User::select(['gender' => Gender::MALE()])->pluk('user_id'));
             $this->assertEquals([2, 3], User::select(['gender' => Gender::MALE()], ['user_id' => 'asc'])->pluk('user_id'));
@@ -240,7 +240,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_paginate()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertEquals([3, 2, 1], User::paginate(Pager::resolve())->pluk('user_id'));
             $this->assertEquals([1, 2, 3], User::paginate(Pager::resolve(), [], ['user_id' => 'asc'])->pluk('user_id'));
             $this->assertEquals([3], User::paginate(Pager::resolve()->size(1))->pluk('user_id'));
@@ -257,7 +257,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_belongsTo()
     {
-        $this->eachDb(function (Database $db, string $driver) {
+        self::eachDb(function (Database $db, string $driver) {
             $this->clearExecutedQueries();
 
             $article = Article::find(1);
@@ -390,7 +390,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_hasOne()
     {
-        $this->eachDb(function (Database $db, string $driver) {
+        self::eachDb(function (Database $db, string $driver) {
             $this->clearExecutedQueries();
 
             $user = User::find(1);
@@ -468,7 +468,7 @@ class DataModelTest extends RebetDatabaseTestCase
 
     public function test_hasMany()
     {
-        $this->eachDb(function (Database $db, string $driver) {
+        self::eachDb(function (Database $db, string $driver) {
             $this->clearExecutedQueries();
 
             $user               = User::find(1);

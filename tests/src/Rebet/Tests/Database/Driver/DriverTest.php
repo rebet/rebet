@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Driver;
 
 use App\Enum\Gender;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Database\Database;
 use Rebet\Database\PdoParameter;
@@ -20,9 +21,10 @@ class DriverTest extends RebetDatabaseTestCase
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public function dataToPdoTypes() : array
+    public static function dataToPdoTypes() : array
     {
-        $this->setUp();
+        self::setUpStatic();
+        DateTime::setTestNow('2001-02-03 04:05:06');
         $path = App::structure()->public('/assets/img/72x72.png');
         $file = file_get_contents($path, 'r');
         return [
@@ -45,12 +47,10 @@ class DriverTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataToPdoTypes
-     */
+    #[DataProvider('dataToPdoTypes')]
     public function test_toPdoType(array $target_db, PdoParameter $expect, $value)
     {
-        $this->eachDb(function (Database $db) use ($target_db, $expect, $value) {
+        self::eachDb(function (Database $db) use ($target_db, $expect, $value) {
             if (!in_array($db->name(), $target_db)) {
                 return;
             }
@@ -61,7 +61,7 @@ class DriverTest extends RebetDatabaseTestCase
         });
     }
 
-    public function dataAppendLimitOffers() : array
+    public static function dataAppendLimitOffers() : array
     {
         return [
             ["SELECT * FROM users", "SELECT * FROM users", null, null],
@@ -71,19 +71,17 @@ class DriverTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataAppendLimitOffers
-     */
+    #[DataProvider('dataAppendLimitOffers')]
     public function test_appendLimitOffset(string $expect, string $sql, ?int $limit = null, ?int $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql'])
     {
-        $this->eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
+        self::eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
             $this->assertSame($expect, $db->driver()->appendLimitOffset($sql, $limit, $offset));
         }, ...$dbs);
     }
 
     public function test_sql()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $query = $db->driver()->sql("SELECT * FROM users WHERE gender = :gender", ['gender' => 1]);
             $this->assertInstanceOf(Query::class, $query);
             $this->assertSame("SELECT * FROM users WHERE gender = :gender", $query->sql());

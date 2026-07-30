@@ -186,7 +186,7 @@ class Utils
      * @param int $base
      * @return int|null
      */
-    public static function intval($var, int $base = null) : ?int
+    public static function intval($var, int $base = 10) : ?int
     {
         return $var === null || $var === '' ? null : intval($var, $base);
     }

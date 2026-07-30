@@ -3,6 +3,7 @@ namespace Rebet\Tests\Tools\Utility;
 
 use App\Stub\JsonSerializableStub;
 use App\Stub\ToStringStub;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
@@ -270,9 +271,8 @@ class StringsTest extends RebetTestCase
         $this->assertSame(['1', '-'], Strings::split('1', ',', 2, '-'));
     }
 
-    public function dataStringifis() : array
+    public static function dataStringifis() : array
     {
-        parent::setUp();
         DateTime::setTestNow('2010-10-20 10:20:30.123456');
         return [
             ['null', null],
@@ -310,7 +310,7 @@ EOS
             ['123', 123],
             ['123.456', 123.456],
             ['1', true],
-            ['*stream*', fopen(App::structure()->public('/assets/img/72x72.png'), 'r')],
+            ['*stream*', null],
             ['2010-10-20 10:20:30', DateTime::now()],
             ['2010-10-20 10:20:30', new \DateTime('2010-10-20 10:20:30')],
             ['2010-10-20 10:20:30', new \DateTimeImmutable('2010-10-20 10:20:30')],
@@ -430,11 +430,12 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataStringifis
-     */
+    #[DataProvider('dataStringifis')]
     public function test_stringify($expect, $value, array $masks = [], string $masked_label = '********')
     {
+        if ($expect === '*stream*') {
+            $value = fopen(App::structure()->public('/assets/img/72x72.png'), 'r');
+        }
         $this->assertSame($expect, Strings::stringify($value, $masks, $masked_label));
     }
 

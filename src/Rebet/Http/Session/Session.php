@@ -9,6 +9,8 @@ use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Securities;
 use Rebet\Tools\Utility\Strings;
+use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 /**
@@ -19,7 +21,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class Session
+class Session implements SessionInterface
 {
     use Configurable;
 
@@ -62,9 +64,9 @@ class Session
     }
 
     /**
-     * Clear the session.
+     * Reset the current (latest instantiate) session instance and clear its storage.
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         if (static::$current) {
             static::$current->storage->clear();
@@ -98,7 +100,7 @@ class Session
      * @param mixed $default
      * @return mixed
      */
-    public function get(string $name, $default = null)
+    public function get(string $name, mixed $default = null) : mixed
     {
         return $this->attribute()->get($name, $default);
     }
@@ -108,12 +110,32 @@ class Session
      *
      * @param string $name
      * @param mixed $value
-     * @return self
+     * @return void
      */
-    public function set(string $name, $value) : self
+    public function set(string $name, mixed $value) : void
     {
         $this->attribute()->set($name, $value);
-        return $this;
+    }
+
+    /**
+     * Get the all attributes from attribute session bag.
+     *
+     * @return array
+     */
+    public function all() : array
+    {
+        return $this->attribute()->all();
+    }
+
+    /**
+     * Replace the all attributes of attribute session bag.
+     *
+     * @param array $attributes
+     * @return void
+     */
+    public function replace(array $attributes) : void
+    {
+        $this->attribute()->initialize($attributes);
     }
 
     /**
@@ -122,9 +144,19 @@ class Session
      * @param string $name
      * @return mixed
      */
-    public function remove(string $name)
+    public function remove(string $name) : mixed
     {
         return $this->attribute()->remove($name);
+    }
+
+    /**
+     * Clear all attributes of attribute session bag.
+     *
+     * @return void
+     */
+    public function clear() : void
+    {
+        $this->storage->clear();
     }
 
     /**
@@ -154,7 +186,31 @@ class Session
      */
     public function meta() : MetadataBag
     {
+        return $this->getMetadataBag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMetadataBag() : MetadataBag
+    {
         return $this->storage->getMetadataBag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function registerBag(SessionBagInterface $bag) : void
+    {
+        $this->storage->registerBag($bag);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBag(string $name) : SessionBagInterface
+    {
+        return $this->storage->getBag($name);
     }
 
     /**
@@ -183,14 +239,14 @@ class Session
      * Clears all session attributes and flashes and regenerates the
      * session and deletes the old session from persistence.
      *
-     * @param int $lifetime Sets the cookie lifetime for the session cookie. A null value
+     * @param int|null $lifetime Sets the cookie lifetime for the session cookie. A null value
      *                      will leave the system settings unchanged, 0 sets the cookie
      *                      to expire with browser session. Time is in seconds, and is
      *                      not a Unix timestamp.
      *
      * @return bool True if session invalidated, false if error
      */
-    public function invalidate($lifetime = null)
+    public function invalidate(?int $lifetime = null) : bool
     {
         $this->storage->clear();
         return $this->migrate(true, $lifetime);
@@ -201,14 +257,14 @@ class Session
      * session attributes.
      *
      * @param bool $destroy  Whether to delete the old session or leave it to garbage collection
-     * @param int  $lifetime Sets the cookie lifetime for the session cookie. A null value
+     * @param int|null $lifetime Sets the cookie lifetime for the session cookie. A null value
      *                       will leave the system settings unchanged, 0 sets the cookie
      *                       to expire with browser session. Time is in seconds, and is
      *                       not a Unix timestamp.
      *
      * @return bool True if session migrated, false if error
      */
-    public function migrate($destroy = false, $lifetime = null)
+    public function migrate(bool $destroy = false, ?int $lifetime = null) : bool
     {
         return $this->storage->regenerate($destroy, $lifetime);
     }
@@ -220,12 +276,45 @@ class Session
      * the session will be automatically saved at the end of
      * code execution.
      *
-     * @return self
+     * @return void
      */
-    public function save() : self
+    public function save() : void
     {
         $this->storage->save();
-        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getId() : string
+    {
+        return $this->storage->getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setId(string $id) : void
+    {
+        if ($this->storage->getId() !== $id) {
+            $this->storage->setId($id);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName() : string
+    {
+        return $this->storage->getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setName(string $name) : void
+    {
+        $this->storage->setName($name);
     }
 
     /**
@@ -237,11 +326,9 @@ class Session
     public function id(?string $id = null)
     {
         if ($id === null) {
-            return $this->storage->getId();
+            return $this->getId();
         }
-        if ($this->storage->getId() !== $id) {
-            $this->storage->setId($id);
-        }
+        $this->setId($id);
         return $this;
     }
 

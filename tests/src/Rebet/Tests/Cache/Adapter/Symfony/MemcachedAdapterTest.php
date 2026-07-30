@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rebet\Cache\Adapter\Symfony\MemcachedAdapter;
 use Rebet\Tests\RebetTestCase;
 
@@ -17,9 +18,8 @@ use Rebet\Tests\RebetTestCase;
  *    ```
  *
  * @see https://github.com/lifenglsf/php_memcached_dll
- *
- * @requires extension memcached
  */
+#[RequiresPhpExtension('memcached')]
 class MemcachedAdapterTest extends RebetTestCase
 {
     protected function setUp() : void

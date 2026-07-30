@@ -16,6 +16,7 @@ class SessionCursorStorageTest extends RebetTestCase
 
     protected function setUp() : void
     {
+        parent::setUp();
         $this->strage = new SessionCursorStorage();
     }
 

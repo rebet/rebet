@@ -731,7 +731,7 @@ class Arrays
         if (is_array($items)) {
             return $items;
         }
-        if (method_exists($items, 'toArray')) {
+        if (is_object($items) && method_exists($items, 'toArray')) {
             return $items->toArray();
         }
         if ($items instanceof \JsonSerializable) {

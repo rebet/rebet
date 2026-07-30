@@ -32,14 +32,14 @@ class EnumTest extends RebetTestCase
         $this->assertTrue(isset($reflection->getValue()[Gender::class]));
         $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
 
-        Enum::clear(Gender::class);
+        Enum::reset(Gender::class);
 
         $this->assertFalse(isset($reflection->getValue()[Gender::class]));
         $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
 
         Gender::lists();
 
-        Enum::clear();
+        Enum::reset();
 
         $this->assertFalse(isset($reflection->getValue()[Gender::class]));
         $this->assertFalse(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
@@ -47,7 +47,7 @@ class EnumTest extends RebetTestCase
         Gender::lists();
         EnumTest_AcceptStatus::lists();
 
-        Gender::clear();
+        Gender::reset();
 
         $this->assertFalse(isset($reflection->getValue()[Gender::class]));
         $this->assertTrue(isset($reflection->getValue()[EnumTest_AcceptStatus::class]));
@@ -106,7 +106,7 @@ class EnumTest extends RebetTestCase
         $this->assertSame('男性', "{$this->male}");
 
         App::setLocale('en');
-        Enum::clear();
+        Enum::reset();
 
         $this->assertSame('Male', "{$this->male}");
     }

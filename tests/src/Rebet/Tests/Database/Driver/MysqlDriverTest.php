@@ -19,7 +19,7 @@ class MysqlDriverTest extends RebetDatabaseTestCase
 
     public function test_toPhpType()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $db->execute("DROP TABLE IF EXISTS native_types;");
             $dml = <<<EOS
                 CREATE TABLE IF NOT EXISTS native_types (

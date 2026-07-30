@@ -246,7 +246,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param string|\DateTimezone|null $timezone (default: depend on confiure)
      * @return DateTime|bool
      */
-    public static function createFromFormat($format, $value, $timezone = null)
+    public static function createFromFormat(string $format, $value, $timezone = null) : static|false
     {
         if ($value === null || $value === '') {
             return false;
@@ -281,7 +281,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function __construct($time = 'now', $timezone = null)
     {
-        $adopt_time     = null;
+        $adopt_time     = 'now';
         $adopt_timezone = null;
 
         $adopt_timezone = self::adoptTimezone($timezone);
@@ -340,7 +340,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * {@inheritDoc}
      */
-    public function modify($modify)
+    public function modify(string $modify) : static
     {
         $modified = parent::modify($modify);
         if (!$modified) {
@@ -355,7 +355,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param \DateTimeZone|string|null $timezone (default: depend on confige)
      * @return static
      */
-    public function setTimezone($timezone)
+    public function setTimezone($timezone) : static
     {
         return parent::setTimezone(self::adoptTimezone($timezone));
     }
@@ -429,7 +429,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @param DateInterval|string $interval
      */
-    public function add($interval)
+    public function add($interval) : static
     {
         return parent::add(is_string($interval) ? new \DateInterval($interval) : $interval);
     }
@@ -439,7 +439,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @param DateInterval|string $interval
      */
-    public function sub($interval)
+    public function sub($interval) : static
     {
         return parent::sub(is_string($interval) ? new \DateInterval($interval) : $interval);
     }
@@ -844,7 +844,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param string|null $format (default: null)
      * @return string
      */
-    public function format($format = null)
+    public function format(?string $format = null) : string
     {
         $format = $format ?? $this->default_format ;
 
@@ -862,6 +862,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 $format = preg_replace("/(?<!\\\\){$key}/u", $this->escape($callback($this)), $format);
             }
         }
+
+        // Any 'x'/'X' left unconsumed by the localized/custom formats above is not a valid
+        // directive of this class, so it must be escaped to literal text instead of falling
+        // through to the native DateTime::format() 'x'/'X' directive (expanded year).
+        $format = preg_replace('/(?<!\\\\)[xX]/u', '\\\\$0', $format);
 
         return parent::format($format);
     }

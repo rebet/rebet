@@ -1,10 +1,9 @@
 <?php
 namespace Rebet\Tests\Filesystem;
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Cached\CacheInterface;
+use League\Flysystem\FileAttributes;
 use League\Flysystem\Filesystem as FlysystemFilesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Application\App;
 use Rebet\Filesystem\BuiltinFilesystem;
@@ -24,18 +23,18 @@ class BuiltinFilesystemTest extends RebetTestCase
     {
         parent::setUp();
         $this->root       = App::structure()->storage('/test/Filesystem/BuiltinFilesystem');
-        $this->filesystem = new BuiltinFilesystem(new Local($this->root));
+        $this->filesystem = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root));
     }
 
     protected function tearDown() : void
     {
-        parent::tearDown();
         $this->filesystem->clean();
+        parent::tearDown();
     }
 
     public function test___construct()
     {
-        $filesystem = new BuiltinFilesystem(new Local($this->root));
+        $filesystem = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root));
         $this->assertInstanceOf(BuiltinFilesystem::class, $filesystem);
     }
 
@@ -46,7 +45,7 @@ class BuiltinFilesystemTest extends RebetTestCase
 
     public function test_adapter()
     {
-        $this->assertInstanceOf(Local::class, $this->filesystem->adapter());
+        $this->assertInstanceOf(LocalFilesystemAdapter::class, $this->filesystem->adapter());
     }
 
     public function test_exists()
@@ -531,15 +530,15 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage("/foo/bar.txt is not public.");
 
-        $local = $this->createMock(Local::class);
-        $local->method('getVisibility')->willReturn(['visibility' => 'private']);
+        $local = $this->createMock(LocalFilesystemAdapter::class);
+        $local->method('visibility')->willReturn(new FileAttributes('/foo/bar.txt', null, 'private'));
         $filesystem = new BuiltinFilesystem($local, ['disable_asserts' => true]);
         $filesystem->url('/foo/bar.txt');
     }
 
     public function test_url()
     {
-        $public = new BuiltinFilesystem(new Local($this->root), [
+        $public = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root), [
             'visibility' => 'public',
             'url'        => '/storage/public'
         ]);
@@ -547,7 +546,7 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame('/storage/public/foo/bar.txt', $public->url('foo/bar.txt'));
         $this->assertSame('/storage/public/foo/bar.txt', $public->url('/foo/bar.txt'));
 
-        $public = new BuiltinFilesystem(new Local($this->root), [
+        $public = new BuiltinFilesystem(new LocalFilesystemAdapter($this->root), [
             'visibility' => 'public',
         ]);
         $this->assertSame('/foo/bar.txt', $public->url('foo/bar.txt'));
@@ -740,17 +739,5 @@ class BuiltinFilesystemTest extends RebetTestCase
         $this->assertSame(false, $this->filesystem->exists('dir'));
         $this->assertInstanceOf(BuiltinFilesystem::class, $this->filesystem->mkdir('dir'));
         $this->assertSame(true, $this->filesystem->exists('dir'));
-    }
-
-    public function test_flush()
-    {
-        $cache = $this->createMock(CacheInterface::class);
-        $cache->expects($this->once())->method('flush');
-
-        $adapter = $this->createMock(CachedAdapter::class);
-        $adapter->method('getCache')->willReturn($cache);
-
-        $filesystem = new BuiltinFilesystem($adapter);
-        $filesystem->flush();
     }
 }

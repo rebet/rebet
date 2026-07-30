@@ -1,6 +1,6 @@
 <?php
 
-use League\Flysystem\Adapter\Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Rebet\Application\App;
 use Rebet\Filesystem\BuiltinFilesystem;
 use Rebet\Filesystem\Storage;
@@ -39,7 +39,7 @@ return [
         | Flysystem Driver
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Normally you don't need to change this setting, but you can optionally configure a custom
-        | driver that implements League\Flysystem\FilesystemInterface.
+        | driver that implements League\Flysystem\FilesystemOperator.
         */
         // 'driver' => League\Flysystem\Filesystem::class,
     ],
@@ -84,24 +84,20 @@ return [
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Here you may configure as many filesystem "disks" as you wish, and you may even configure
         | multiple disks of the same driver.
-        | You can use any of filesystem adapter implemented League\Flysystem\AdapterInterface.
+        | You can use any of filesystem adapter implemented League\Flysystem\FilesystemAdapter.
         |
         | Provided Adapters:
         |  - Default Supported
-        |    - League\Flysystem\Adapter\Ftp::class
-        |    - League\Flysystem\Adapter\Ftpd::class
-        |    - League\Flysystem\Adapter\Local::class
-        |    - League\Flysystem\Adapter\NullAdapter::class : for tests
-        |  - For AWS S3 V3 : `composer require league/flysystem-aws-s3-v3:^1.0`
-        |    - League\Flysystem\AwsS3v3\AwsS3Adapter::class
-        |  - For Cached : `composer require league/flysystem-cached-adapter:^1.0`
-        |    - League\Flysystem\Cached\CachedAdapter::class
-        |  - For Memory : `composer require league/flysystem-memory:^1.0`
-        |    - League\Flysystem\Memory\MemoryAdapter::class
-        |  - For SFTP : `composer require league/flysystem-sftp:^1.0`
-        |    - League\Flysystem\Sftp\SftpAdapter::class
+        |    - League\Flysystem\Local\LocalFilesystemAdapter::class
+        |    - League\Flysystem\InMemory\InMemoryFilesystemAdapter::class : for tests
+        |  - For AWS S3 V3 : `composer require league/flysystem-aws-s3-v3:^3.0`
+        |    - League\Flysystem\AwsS3V3\AwsS3V3Adapter::class
+        |  - For Memory : `composer require league/flysystem-memory:^3.0`
+        |    - League\Flysystem\InMemory\InMemoryFilesystemAdapter::class
+        |  - For SFTP : `composer require league/flysystem-sftp-v3:^3.0`
+        |    - League\Flysystem\PhpseclibV3\SftpAdapter::class
         |  - And you can find other Officially/Community Supported Adapters in
-        |    https://github.com/thephpleague/flysystem/tree/1.x
+        |    https://github.com/thephpleague/flysystem/tree/3.x
         */
         'disks' => [
             /*
@@ -112,12 +108,11 @@ return [
             */
             'private' => [
                 'adapter' => [
-                    '@factory' => Local::class,
-                    'root'     => App::structure()->privateStorage(),
+                    '@factory' => LocalFilesystemAdapter::class,
+                    'location' => App::structure()->privateStorage(),
                     // --- You can change only what you need for these default options ---
                     // 'writeFlags'   => LOCK_EX,
-                    // 'linkHandling' => Local::DISALLOW_LINKS,
-                    // 'permissions'  => [],
+                    // 'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
                 ],
                 'config' => null,
             ],
@@ -130,12 +125,11 @@ return [
             */
             'public' => [
                 'adapter' => [
-                    '@factory' => Local::class,
-                    'root'     => App::structure()->publicStorage(),
+                    '@factory' => LocalFilesystemAdapter::class,
+                    'location' => App::structure()->publicStorage(),
                     // --- You can change only what you need for these default options ---
                     // 'writeFlags'   => LOCK_EX,
-                    // 'linkHandling' => Local::DISALLOW_LINKS,
-                    // 'permissions'  => [],
+                    // 'linkHandling' => LocalFilesystemAdapter::DISALLOW_LINKS,
                 ],
                 'config' => [
                     'visibility' => 'public',

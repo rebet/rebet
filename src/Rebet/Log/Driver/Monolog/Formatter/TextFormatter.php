@@ -2,6 +2,7 @@
 namespace Rebet\Log\Driver\Monolog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
+use Monolog\LogRecord;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Arrays;
@@ -55,7 +56,7 @@ class TextFormatter implements FormatterInterface
     public function __construct(?string $format = null, array $stringifiers = [])
     {
         $this->format       = $format ?? static::config('default_format');
-        $this->stringifiers = array_merge(static::config('stringifiers', false, []), $stringifiers);
+        $this->stringifiers = array_merge((array) static::config('stringifiers', false, []), (array) $stringifiers);
     }
 
     /**
@@ -73,28 +74,29 @@ class TextFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function format(array $record)
+    public function format(LogRecord $record)
     {
         $output    = $this->format;
-        $exception = Reflector::remove($record, 'context.exception');
+        $record_array = $record->toArray();
+        $exception = Reflector::remove($record_array, 'context.exception');
 
-        foreach (Arrays::sortKeys($record['extra'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
+        foreach (Arrays::sortKeys($record_array['extra'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{extra.'.$var.'}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
-                unset($record['extra'][$var]);
+                unset($record_array['extra'][$var]);
             }
         }
 
-        foreach (Arrays::sortKeys($record['context'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
+        foreach (Arrays::sortKeys($record_array['context'] ?? [], SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{context.'.$var.'}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
-                unset($record['context'][$var]);
+                unset($record_array['context'][$var]);
             }
         }
 
-        foreach (Arrays::sortKeys($record, SORT_DESC, Callbacks::compareLength()) as $var => $val) {
+        foreach (Arrays::sortKeys($record_array, SORT_DESC, Callbacks::compareLength()) as $var => $val) {
             $key = '{'.$var.'}';
             if (false !== strpos($output, $key)) {
                 $output = str_replace($key, $this->stringify($key, $val), $output);
@@ -116,7 +118,7 @@ class TextFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function formatBatch(array $records)
+    public function formatBatch(array $records): string
     {
         $message = '';
         foreach ($records as $record) {

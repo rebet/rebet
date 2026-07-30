@@ -491,8 +491,8 @@ class Context
         $nested->key          = $key;
         $nested->error_prefix = "{$this->error_prefix}{$this->field}.".(!is_null($key) ? "{$key}." : "");
         $nested->parent       = $this;
-        $nested->filed        = null;
-        $nested->lavel        = null;
+        $nested->field        = null;
+        $nested->label        = null;
         $nested->value        = null;
         $nested->quiet        = false;
         $nested->extra        = [];

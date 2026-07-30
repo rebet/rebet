@@ -169,11 +169,11 @@ class Letterpress implements Renderable, \JsonSerializable
     }
 
     /**
-     * Clear registered tag set configuration.
+     * Reset registered tag set configuration.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$tag_set = [];
         static::init();
@@ -384,11 +384,11 @@ class Letterpress implements Renderable, \JsonSerializable
     }
 
     /**
-     * Reset assigned vars.
+     * Clear assigned vars.
      *
      * @return self
      */
-    public function reset() : self
+    public function clear() : self
     {
         $this->vars = [];
         return $this;
@@ -655,7 +655,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 throw new LogicException("Invalid placeholder format '{{$sanitise_open} ... {$sanitise_close}}' found.");
             }
             $value = static::evaluate(trim($matches['code']), $vars);
-            return $sanitise_open === '!' ? $value : htmlentities($value, ENT_QUOTES, 'UTF-8', false) ;
+            return $sanitise_open === '!' ? $value : htmlentities($value ?? '', ENT_QUOTES, 'UTF-8', false) ;
         }, $template);
     }
 
@@ -695,7 +695,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return Json::serialize($this->vars);
     }

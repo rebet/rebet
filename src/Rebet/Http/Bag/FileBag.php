@@ -2,6 +2,7 @@
 namespace Rebet\Http\Bag;
 
 use Rebet\Http\UploadedFile;
+use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 use Symfony\Component\HttpFoundation\FileBag as SymfonyFileBag;
 
 /**
@@ -19,7 +20,7 @@ class FileBag extends SymfonyFileBag
      *
      * @return UploadFile|UploadFile[]|null
      */
-    protected function convertFileInformation($file)
+    protected function convertFileInformation(array|SymfonyUploadedFile $file) : array|SymfonyUploadedFile|null
     {
         $file = parent::convertFileInformation($file);
         if (is_array($file)) {

@@ -91,12 +91,12 @@ class Storage
     }
 
     /**
-     * Clean data of given name storage
+     * Reset data of given name storage
      *
      * @param string|null $name (default: null for all storages)
      * @return void
      */
-    public static function clean(?string $name = null) : void
+    public static function reset(?string $name = null) : void
     {
         if ($name) {
             $disk = static::$disks[$name] ?? null;

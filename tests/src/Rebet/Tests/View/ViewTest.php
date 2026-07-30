@@ -17,21 +17,18 @@ class ViewTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
         Config::application([
             View::class => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
             Twig::class => [
                 'template_dir' => [App::structure()->views('/twig')],
                 'options'      => [
-                    // 'cache' => 'vfs://root/cache',
+                    // 'cache' => static::makeSubWorkingDir('cache'),
                 ],
             ],
         ]);
@@ -68,14 +65,14 @@ class ViewTest extends RebetTestCase
         $view = View::of('welcome');
         $this->assertSame('Hello, from composer.', $view->render());
 
-        View::clear();
+        View::reset();
 
         View::share('name', 'from share');
         $view = View::of('welcome');
         $this->assertSame('Hello, from share.', $view->render());
         $this->assertSame('from share', View::shared('name'));
 
-        View::clear();
+        View::reset();
 
         $this->assertSame(null, View::shared('name'));
     }

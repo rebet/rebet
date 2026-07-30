@@ -3,6 +3,7 @@ namespace Rebet\Tests\Routing\Route;
 
 use App\Controller\TestController;
 use App\Controller\TopController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -46,7 +47,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertNull($route->terminate($request, Responder::toResponse('test')));
     }
 
-    public function dataRoutings() : array
+    public static function dataRoutings() : array
     {
         return [
             ['Top: index', '/'],
@@ -63,9 +64,7 @@ class ConventionalRouteTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRoutings
-     */
+    #[DataProvider('dataRoutings')]
     public function test_routing($expect, $request_path, $option = [], $channel = 'web', $method = 'GET', $setuper = null)
     {
         $route   = new ConventionalRoute($option);
@@ -180,7 +179,7 @@ class ConventionalRouteTest extends RebetTestCase
         $route->match($request);
     }
 
-    public function dataDefaultViews() : array
+    public static function dataDefaultViews() : array
     {
         return [
             ['/test/public-call', '/test/public-call'],
@@ -189,9 +188,7 @@ class ConventionalRouteTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataDefaultViews
-     */
+    #[DataProvider('dataDefaultViews')]
     public function test_defaultView($expect, $uri, $option = [])
     {
         $route   = new ConventionalRoute($option);
@@ -200,7 +197,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->defaultView());
     }
 
-    public function dataGetControllerNames() : array
+    public static function dataGetControllerNames() : array
     {
         return [
             [TestController::class, '/test/public-call'],
@@ -211,9 +208,7 @@ class ConventionalRouteTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataGetControllerNames
-     */
+    #[DataProvider('dataGetControllerNames')]
     public function test_getControllerName($expect, $uri, $with_namespace = true, $option = [])
     {
         $route   = new ConventionalRoute($option);
@@ -222,7 +217,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->getControllerName($with_namespace));
     }
 
-    public function dataGetActionNames() : array
+    public static function dataGetActionNames() : array
     {
         return [
             ['publicCall', '/test/public-call'],
@@ -232,9 +227,7 @@ class ConventionalRouteTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataGetActionNames
-     */
+    #[DataProvider('dataGetActionNames')]
     public function test_getActionName($expect, $uri, $option = [])
     {
         $route   = new ConventionalRoute($option);
@@ -243,7 +236,7 @@ class ConventionalRouteTest extends RebetTestCase
         $this->assertSame($expect, $route->getActionName());
     }
 
-    public function dataGetAliasNames() : array
+    public static function dataGetAliasNames() : array
     {
         return [
             [null, '/test/public-call'],
@@ -253,9 +246,7 @@ class ConventionalRouteTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataGetAliasNames
-     */
+    #[DataProvider('dataGetAliasNames')]
     public function test_getAliasName($expect, $uri, $option = [])
     {
         $route   = new ConventionalRoute($option);

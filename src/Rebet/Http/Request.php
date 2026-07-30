@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Http;
 
-use PHPUnit\Framework\MockObject\BadMethodCallException;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Response\RedirectResponse;
@@ -59,11 +58,11 @@ class Request extends SymfonyRequest
     }
 
     /**
-     * Clear the current request.
+     * Reset the current request.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$current = null;
     }
@@ -138,7 +137,7 @@ class Request extends SymfonyRequest
     /**
      * {@inheritdoc}
      */
-    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
+    public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null) : void
     {
         parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
         $this->files = new FileBag($this->files->all());
@@ -147,7 +146,7 @@ class Request extends SymfonyRequest
     /**
      * {@inheritdoc}
      */
-    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null)
+    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null) : static
     {
         $duplicate = parent::duplicate($query, $request, $attributes, $cookies, $files, $server);
         if ($files !== null) {
@@ -164,9 +163,9 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws BadMethodCallException when the method was called.
      */
-    public function getSession()
+    public function getSession() : SessionInterface
     {
-        throw new BadMethodCallException("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
+        throw new \BadMethodCallException("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
     }
 
     /**
@@ -177,9 +176,9 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws BadMethodCallException when the method was called.
      */
-    public function setSession(SessionInterface $session)
+    public function setSession(SessionInterface $session) : void
     {
-        throw new BadMethodCallException("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
+        throw new \BadMethodCallException("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
     }
 
     /**
@@ -190,9 +189,9 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws BadMethodCallException when the method was called.
      */
-    public function setSessionFactory(callable $factory)
+    public function setSessionFactory(callable $factory) : void
     {
-        throw new BadMethodCallException("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
+        throw new \BadMethodCallException("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");
     }
 
     /**
@@ -235,7 +234,7 @@ class Request extends SymfonyRequest
      * Get request URI without query.
      *
      * @param bool $withoutPrefix (default: false)
-     * @return void
+     * @return string
      */
     public function getRequestPath(bool $withoutPrefix = false) : string
     {
@@ -261,7 +260,7 @@ class Request extends SymfonyRequest
     /**
      * Get user agent.
      *
-     * @return string|null
+     * @return UserAgent
      */
     public function getUserAgent() : UserAgent
     {

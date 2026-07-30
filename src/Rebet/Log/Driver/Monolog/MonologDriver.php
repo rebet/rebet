@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Log\Driver\Monolog;
 
+use Monolog\JsonSerializableDateTimeImmutable;
+use Monolog\Level;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
 use Rebet\Log\Driver\NameableDriver;
@@ -8,7 +10,6 @@ use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;
 use Rebet\Tools\Reflection\Reflector;
-use Throwable;
 
 /**
  * Monolog Driver Class
@@ -72,57 +73,15 @@ class MonologDriver extends MonologLogger implements NameableDriver
     /**
      * {@inheritDoc}
      *
-     * Override for use Rebet DateTime class to 'datetime' attribute creation.
+     * Override for use Rebet DateTime class (which is testable via DateTime::setTestNow())
+     * as the source of the record 'datetime' attribute creation.
      */
-    public function addRecord(int $level, string $message, array $context = []) : bool
+    public function addRecord(int|Level $level, string $message, array $context = [], ?JsonSerializableDateTimeImmutable $datetime = null) : bool
     {
-        // check if any handler will handle this message so we can return early and save cycles
-        $handlerKey = null;
-        foreach ($this->handlers as $key => $handler) {
-            if ($handler->isHandling(['level' => $level])) {
-                $handlerKey = $key;
-                break;
-            }
+        if ($datetime === null) {
+            $datetime = new JsonSerializableDateTimeImmutable($this->microsecondTimestamps, $this->timezone);
+            $datetime = $datetime->modify(DateTime::now($this->timezone)->format('Y-m-d H:i:s.u'));
         }
-
-        if (null === $handlerKey) {
-            return false;
-        }
-
-        $levelName = static::getLevelName($level);
-
-        $record = [
-            'message'    => $message,
-            'context'    => $context,
-            'level'      => $level,
-            'level_name' => $levelName,
-            'channel'    => $this->name,
-            'datetime'   => DateTime::now($this->timezone)->setDefaultFormat($this->microsecondTimestamps ? 'Y-m-d\TH:i:s.uP' : 'Y-m-d\TH:i:sP'), // Use Rebet DateTime class for create datetime.
-            'extra'      => [],
-        ];
-
-        try {
-            foreach ($this->processors as $processor) {
-                $record = $processor($record);
-            }
-
-            // advance the array pointer to the first handler that will handle this record
-            reset($this->handlers);
-            while ($handlerKey !== key($this->handlers)) {
-                next($this->handlers);
-            }
-
-            while ($handler = current($this->handlers)) {
-                if (true === $handler->handle($record)) {
-                    break;
-                }
-
-                next($this->handlers);
-            }
-        } catch (Throwable $e) {
-            $this->handleException($e, $record);
-        }
-
-        return true;
+        return parent::addRecord($level, $message, $context, $datetime);
     }
 }

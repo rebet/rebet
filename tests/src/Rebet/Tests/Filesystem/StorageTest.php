@@ -11,7 +11,8 @@ class StorageTest extends RebetTestCase
 {
     protected function tearDown() : void
     {
-        Storage::clean();
+        Storage::reset();
+        parent::tearDown();
     }
 
     public function test_disk()
@@ -39,13 +40,13 @@ class StorageTest extends RebetTestCase
         Storage::public()->put('bar.txt', 'bar');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
         $this->assertSame(true, Storage::public()->exists('bar.txt'));
-        Storage::clean('private');
+        Storage::reset('private');
         $this->assertSame(false, Storage::private()->exists('foo.txt'));
         $this->assertSame(true, Storage::public()->exists('bar.txt'));
 
         Storage::private()->put('foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
-        Storage::clean();
+        Storage::reset();
         $this->assertSame(false, Storage::private()->exists('foo.txt'));
         $this->assertSame(false, Storage::public()->exists('bar.txt'));
     }
@@ -68,7 +69,7 @@ class StorageTest extends RebetTestCase
         Storage::copy('private', 'foo.txt', 'public');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
         $this->assertSame(true, Storage::public()->exists('foo.txt'));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
@@ -78,7 +79,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::public()->exists('foo.txt'));
         $this->assertSame(true, Storage::public()->exists('bar.txt'));
         $this->assertSame('foo', Storage::public()->get('bar.txt'));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('dir/foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('dir/foo.txt'));
@@ -86,7 +87,7 @@ class StorageTest extends RebetTestCase
         Storage::copy('private', 'dir/foo.txt', 'public');
         $this->assertSame(true, Storage::private()->exists('dir/foo.txt'));
         $this->assertSame(true, Storage::public()->exists('dir/foo.txt'));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('dir/foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('dir/foo.txt'));
@@ -95,7 +96,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(true, Storage::private()->exists('dir/foo.txt'));
         $this->assertSame(false, Storage::public()->exists('dir/foo.txt'));
         $this->assertSame(true, Storage::public()->exists('dir/foo/bar.txt'));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('dir/foo.txt', 'foo');
         Storage::private()->put('dir/bar.txt', 'bar');
@@ -117,7 +118,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(true, Storage::public()->exists('dir/bar.txt'));
         $this->assertSame(true, Storage::public()->exists('dir/sub'));
         $this->assertSame(true, Storage::public()->exists('dir/sub/baz.txt'));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('dir/foo.txt', 'foo');
         Storage::private()->put('dir/bar.txt', 'bar');
@@ -138,7 +139,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(true, Storage::public()->exists('qux/bar.txt'));
         $this->assertSame(true, Storage::public()->exists('qux/sub'));
         $this->assertSame(true, Storage::public()->exists('qux/sub/baz.txt'));
-        Storage::clean();
+        Storage::reset();
     }
 
     public function test_move()
@@ -160,7 +161,7 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::private()->exists('foo.txt'));
         $this->assertSame(true, Storage::public()->exists('foo.txt'));
         $this->assertSame('foo', Storage::public()->get('foo.txt'));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('foo.txt', 'foo');
         $this->assertSame(true, Storage::private()->exists('foo.txt'));
@@ -170,6 +171,6 @@ class StorageTest extends RebetTestCase
         $this->assertSame(false, Storage::public()->exists('foo.txt'));
         $this->assertSame(true, Storage::public()->exists('dir/bar.txt'));
         $this->assertSame('foo', Storage::public()->get('dir/bar.txt'));
-        Storage::clean();
+        Storage::reset();
     }
 }

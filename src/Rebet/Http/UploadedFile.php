@@ -140,7 +140,7 @@ class UploadedFile extends SymfonyUploadedFile
      * @see MimeTypes
      * @see getMimeType()
      */
-    public function guessExtension()
+    public function guessExtension() : ?string
     {
         $candidate_extensions = MimeTypes::getDefault()->getExtensions($this->getMimeType());
         if (count($candidate_extensions) === 1) {

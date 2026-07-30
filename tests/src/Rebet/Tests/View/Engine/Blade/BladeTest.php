@@ -2,6 +2,7 @@
 namespace Rebet\Tests\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
@@ -18,13 +19,10 @@ class BladeTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
         Config::application([
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
 
@@ -75,7 +73,7 @@ EOS
         );
     }
 
-    public function dataBuiltins() : array
+    public static function dataBuiltins() : array
     {
         return [
             [
@@ -84,7 +82,6 @@ Title:
 Unit Test
 Section:
     - Main Section
-
     - Sub Section
 Content:
     This is content.
@@ -122,9 +119,7 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataBuiltins
-     */
+    #[DataProvider('dataBuiltins')]
     public function test_render_builtin(string $expect, string $name, array $args = [])
     {
         $this->assertSame($expect, EofLineFeed::TRIM()->process($this->blade->render($name, $args)));

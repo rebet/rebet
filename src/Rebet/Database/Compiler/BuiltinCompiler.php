@@ -47,7 +47,7 @@ class BuiltinCompiler implements Compiler
     /**
      * Create Builtin Conpiler of given PDO driver.
      *
-     * @param Database $db
+     * @param Driver $driver
      */
     public function __construct(Driver $driver)
     {
@@ -277,7 +277,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function paging(Statement $stmt, ?OrderBy $order_by = null, Pager $pager, ?Cursor $cursor = null, ?int $total = null, string $class = 'stdClass') : Paginator
+    public function paging(Statement $stmt, ?OrderBy $order_by, Pager $pager, ?Cursor $cursor = null, ?int $total = null, string $class = 'stdClass') : Paginator
     {
         $cursor = $this->verify($pager, $cursor);
 

@@ -3,6 +3,7 @@ namespace App\Stub;
 
 use Rebet\Tools\Reflection\Populatable;
 
+#[\AllowDynamicProperties]
 class Address
 {
     use Populatable;

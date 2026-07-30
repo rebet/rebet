@@ -27,6 +27,7 @@ class TinkerTest extends RebetTestCase
     private $rs;
     private $callable;
     private $destructive;
+    private $safty;
 
     protected function setUp() : void
     {

@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Tests\Log;
 
-use Psr\Log\Test\TestLogger;
+use Psr\Log\NullLogger;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Logger;
@@ -34,7 +34,7 @@ class LoggerTest extends RebetTestCase
         $this->assertInstanceOf(Logger::class, $logger->name('test'));
         $this->assertEquals('test', $logger->name());
 
-        $logger = new Logger(new TestLogger());
+        $logger = new Logger(new NullLogger());
         $this->assertEquals(null, $logger->name());
         $this->assertInstanceOf(Logger::class, $logger->name('test'));
         $this->assertEquals(null, $logger->name());

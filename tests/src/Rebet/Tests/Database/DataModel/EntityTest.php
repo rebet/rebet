@@ -147,7 +147,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_exists()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $user = new User();
             $this->assertSame(false, $user->exists());
             $user->user_id = 1;
@@ -172,7 +172,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_create()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
             $user = new UserWithAnnot();
@@ -207,7 +207,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_update()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
             $user = User::find(1);
@@ -260,7 +260,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_save()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
             $user = new UserWithAnnot();
@@ -304,7 +304,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_delete()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $now = DateTime::now()->startsOfSecond();
 
             $user = new UserWithAnnot();
@@ -335,7 +335,7 @@ class EntityTest extends RebetDatabaseTestCase
             $updated_event_called = true;
         });
 
-        $this->eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
+        self::eachDb(function (Database $db) use (&$updating_event_called, &$updated_event_called) {
             $updating_event_called = false;
             $updated_event_called  = false;
 
@@ -375,7 +375,7 @@ class EntityTest extends RebetDatabaseTestCase
             $deleted_event_called = true;
         });
 
-        $this->eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
+        self::eachDb(function (Database $db) use (&$deleting_event_called, &$deleted_event_called) {
             $deleting_event_called = false;
             $deleted_event_called  = false;
 
@@ -403,7 +403,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_existsBy()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertFalse(User::existsBy(['user_id' => 9999]));
             $this->assertTrue(User::existsBy(['user_id' => 1]));
             $this->assertTrue(User::existsBy(['user_id' => 1, 'gender' => Gender::FEMALE()]));
@@ -414,7 +414,7 @@ class EntityTest extends RebetDatabaseTestCase
 
     public function test_count()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertEquals(0, User::count(['user_id' => 9999]));
             $this->assertEquals(1, User::count(['user_id' => 1]));
             $this->assertEquals(1, User::count(['user_id' => 1, 'gender' => Gender::FEMALE()]));

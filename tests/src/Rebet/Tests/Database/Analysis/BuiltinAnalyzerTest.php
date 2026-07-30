@@ -1,12 +1,13 @@
 <?php
 namespace Rebet\Tests\Database\Analysis;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Analysis\BuiltinAnalyzer;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class BuiltinAnalyzerTest extends RebetDatabaseTestCase
 {
-    public function dataIsUnions() : array
+    public static function dataIsUnions() : array
     {
         return [
             [false, "SELECT * FROM users"],
@@ -16,16 +17,14 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataIsUnions
-     */
+    #[DataProvider('dataIsUnions')]
     public function test_isUnion(bool $expect, string $sql)
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->isUnion());
     }
 
-    public function dataHasWheres() : array
+    public static function dataHasWheres() : array
     {
         return [
             [false , "SELECT * FROM users"],
@@ -37,16 +36,14 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataHasWheres
-     */
+    #[DataProvider('dataHasWheres')]
     public function test_hasWhere(bool $expect, string $sql)
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasWhere());
     }
 
-    public function dataHasHavings() : array
+    public static function dataHasHavings() : array
     {
         return [
             [false , "SELECT * FROM users"],
@@ -58,16 +55,14 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataHasHavings
-     */
+    #[DataProvider('dataHasHavings')]
     public function test_hasHaving(bool $expect, string $sql)
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasHaving());
     }
 
-    public function dataHasGroupBys() : array
+    public static function dataHasGroupBys() : array
     {
         return [
             [false , "SELECT * FROM users"],
@@ -77,16 +72,14 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataHasGroupBys
-     */
+    #[DataProvider('dataHasGroupBys')]
     public function test_hasGroupBy(bool $expect, string $sql)
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasGroupBy());
     }
 
-    public function dataHasOrderBys() : array
+    public static function dataHasOrderBys() : array
     {
         return [
             [false , "SELECT * FROM users"],
@@ -96,16 +89,14 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataHasOrderBys
-     */
+    #[DataProvider('dataHasOrderBys')]
     public function test_hasOrderBy(bool $expect, string $sql)
     {
         $analyser = new BuiltinAnalyzer($sql);
         $this->assertSame($expect, $analyser->hasOrderBy());
     }
 
-    public function dataExtractAliasSelectColumns() : array
+    public static function dataExtractAliasSelectColumns() : array
     {
         return [
             ['user_id', "SELECT * FROM users", 'user_id'],
@@ -130,9 +121,7 @@ class BuiltinAnalyzerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataExtractAliasSelectColumns
-     */
+    #[DataProvider('dataExtractAliasSelectColumns')]
     public function test_extractAliasSelectColumn(string $expect, string $sql, string $alias)
     {
         $analyser = new BuiltinAnalyzer($sql);

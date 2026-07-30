@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Exception\ZipArchiveException;
 use Rebet\Tools\Utility\Files;
@@ -12,6 +13,7 @@ class FilesTest extends RebetTestCase
 
     protected function setUp() : void
     {
+        parent::setUp();
         $this->vfs([
             'public' => [
                 'css' => [
@@ -136,7 +138,7 @@ class FilesTest extends RebetTestCase
         $this->assertSame("baz", file_get_contents("{$this->test_dir}/parent/child/baz.log"));
     }
 
-    public function dataZipErrorChecks() : array
+    public static function dataZipErrorChecks() : array
     {
         return [
             ['ZipArchive error.', false],
@@ -168,9 +170,7 @@ class FilesTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataZipErrorChecks
-     */
+    #[DataProvider('dataZipErrorChecks')]
     public function test_zipErrorCheck($expect, $code)
     {
         try {

@@ -117,11 +117,11 @@ class Translator
     }
 
     /**
-     * Clear the given language group resouces.
+     * Reset the given language group resouces.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$dictionary = null;
     }
@@ -197,7 +197,7 @@ class Translator
 
         $replacement = Tinker::with($replacement, true)->sortKeys(SORT_DESC, Callbacks::compareLength())->return();
         foreach ($replacement as $key => $value) {
-            $sentence = str_replace(':'.$key, Arrays::implode($value, $delimiter) ?? $value, $sentence);
+            $sentence = str_replace(':'.$key, Arrays::implode($value, $delimiter) ?? $value ?? '', $sentence);
         }
 
         return $sentence;

@@ -35,7 +35,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function modify($modify)
+    public function modify(string $modify) : static
     {
         $date = parent::modify($modify);
         return $date->format('H:i:s.u') === '00:00:00.000000' ? $date : $date->startsOfDay() ;
@@ -44,7 +44,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function setTime($hour, $minute, $second = null, $microseconds = null)
+    public function setTime($hour, $minute, $second = 0, $microseconds = 0) : static
     {
         return parent::setTime($hour, $minute, $second, $microseconds)->startsOfDay();
     }
@@ -52,7 +52,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function setTimestamp($unixtimestamp)
+    public function setTimestamp($unixtimestamp) : static
     {
         return parent::setTimestamp($unixtimestamp)->startsOfDay();
     }
@@ -60,7 +60,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function setTimezone($timezone)
+    public function setTimezone($timezone) : static
     {
         return parent::setTimezone($timezone)->startsOfDay();
     }
@@ -68,7 +68,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function add($interval)
+    public function add($interval) : static
     {
         return parent::add($interval)->startsOfDay();
     }
@@ -76,7 +76,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
-    public function sub($interval)
+    public function sub($interval) : static
     {
         return parent::sub($interval)->startsOfDay();
     }

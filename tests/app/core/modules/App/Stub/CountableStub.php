@@ -10,7 +10,7 @@ class CountableStub implements \Countable
         $this->count = $count;
     }
 
-    public function count()
+    public function count() : int
     {
         return $this->count;
     }

@@ -107,7 +107,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
      * @param array $context (default: [])
      * @return void
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, string|\Stringable $message, array $context = []) : void
     {
         static::$call_stack[] = $this;
         foreach ($this->drivers as $driver) {

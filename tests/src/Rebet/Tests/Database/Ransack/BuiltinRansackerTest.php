@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Ransack;
 
 use App\Enum\Gender;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Database;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -10,27 +11,27 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
 {
     public function test___construct()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertInstanceOf(BuiltinRansacker::class, new BuiltinRansacker($db->driver()));
         });
     }
 
     public function test_of()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertInstanceOf(BuiltinRansacker::class, BuiltinRansacker::of($db->driver()));
         });
     }
 
     public function test_resolve()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $driver = $db->driver();
             $this->assertEquals($db->sql($driver->quoteIdentifier('name').' = :name', ['name' => 'foo']), BuiltinRansacker::of($driver)->resolve('name', 'foo'));
         });
     }
 
-    public function dataBuilds() : array
+    public static function dataBuilds() : array
     {
         return [
             [
@@ -67,12 +68,10 @@ class BuiltinRansackerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataBuilds
-     */
+    #[DataProvider('dataBuilds')]
     public function test_build($expect_sql, $expect_params, $ransack, $alias = [], $extention = null, $dbs = [])
     {
-        $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention) {
+        self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack, $alias, $extention) {
             $condition = BuiltinRansacker::of($db->driver())->build($ransack, $alias, $extention);
             $this->assertStringWildcardAll($expect_sql, $condition->sql());
             $this->assertEquals($expect_params, $condition->params());

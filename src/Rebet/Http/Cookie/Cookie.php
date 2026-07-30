@@ -44,11 +44,11 @@ class Cookie extends SymfonyCookie
     protected static $queued = [];
 
     /**
-     * Clear the cookie queue what for next response.
+     * Reset the cookie queue what for next response.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$queued = [];
     }
@@ -66,18 +66,19 @@ class Cookie extends SymfonyCookie
      * @param boolean|null $raw (default: depend on configure)
      * @param string|null $samesite (default: depend on configure)
      */
-    public function __construct(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null)
+    public function __construct(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null, bool $partitioned = false)
     {
         parent::__construct(
             $name,
             $value,
-            $expire ?? static::config('expire'),
+            $expire ?? static::config('expire', false),
             static::convertPath($path),
             $domain ?? static::config('domain', false),
             $secure ?? static::config('secure', false),
             $http_only ?? static::config('http_only'),
             $raw ?? static::config('raw'),
-            $samesite ?? static::config('samesite', false)
+            $samesite ?? static::config('samesite', false),
+            $partitioned
         );
     }
 
@@ -101,9 +102,9 @@ class Cookie extends SymfonyCookie
     /**
      * {@inheritDoc}
      */
-    public static function create(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null) : parent
+    public static function create(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null, bool $partitioned = false) : self
     {
-        return new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite);
+        return new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite, $partitioned);
     }
 
     /**

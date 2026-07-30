@@ -15,6 +15,7 @@ class ArrayProviderTest extends RebetTestCase
     private $provider_for_admin;
     private $provider_by_signin_id;
     private $provider_exclude_resigned;
+    private $provider_with_aliases;
 
     protected function setUp() : void
     {

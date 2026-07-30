@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Http;
 
 use App\Enum\Gender;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Storage;
@@ -18,18 +19,10 @@ use Rebet\View\View;
 
 class ResponderTest extends RebetTestCase
 {
-    protected function setUp() : void
-    {
-        parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
-    }
-
     protected function tearDown() : void
     {
         parent::tearDown();
-        Storage::clean();
+        Storage::reset();
     }
 
     public function test_toResponse()
@@ -59,7 +52,7 @@ class ResponderTest extends RebetTestCase
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
 
@@ -68,7 +61,7 @@ class ResponderTest extends RebetTestCase
         $this->assertSame('Hello, Rebet.', $response->getContent());
     }
 
-    public function dataRedirects() : array
+    public static function dataRedirects() : array
     {
         return [
             ['/redirect/to', '/redirect/to', [], 302, ''],
@@ -85,9 +78,7 @@ class ResponderTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRedirects
-     */
+    #[DataProvider('dataRedirects')]
     public function test_redirect($expect, $path, $query, $status, $prefix)
     {
         $request  = $this->createRequestMock("{$prefix}/", null, 'web', 'web', 'GET', $prefix);
@@ -116,7 +107,7 @@ class ResponderTest extends RebetTestCase
         Storage::private()->put('foo.txt', 'foo');
         $response = Responder::file('foo.txt');
         $this->assertSame('text/plain', $response->getHeader('Content-Type'));
-        $this->assertSame(3, $response->getHeader('Content-Length'));
+        $this->assertSame('3', $response->getHeader('Content-Length'));
         $this->assertSame("inline; filename=".md5('foo.txt').".txt; filename*=utf-8''foo.txt", $response->getHeader('Content-Disposition'));
         $this->assertStdoutEquals('foo', function () use ($response) {
             $response->sendContent();
@@ -128,7 +119,7 @@ class ResponderTest extends RebetTestCase
         Storage::private()->put('foo.csv', '1,2,3');
         $response = Responder::download('foo.csv');
         $this->assertSame('text/csv', $response->getHeader('Content-Type'));
-        $this->assertSame(5, $response->getHeader('Content-Length'));
+        $this->assertSame('5', $response->getHeader('Content-Length'));
         $this->assertSame("attachment; filename=".md5('foo.csv').".csv; filename*=utf-8''foo.csv", $response->getHeader('Content-Disposition'));
         $this->assertStdoutEquals('1,2,3', function () use ($response) {
             $response->sendContent();

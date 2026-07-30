@@ -2,6 +2,8 @@
 namespace Rebet\Tests\Log\Driver\Monolog\Handler;
 
 use Monolog\Logger as MonologLogger;
+use Monolog\LogRecord;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Tests\RebetTestCase;
@@ -19,7 +21,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         $this->assertInstanceOf(SimpleBrowserConsoleHandler::class, new SimpleBrowserConsoleHandler());
     }
 
-    public function dataSends() : array
+    public static function dataSends() : array
     {
         $pid = getmypid();
         return [
@@ -47,9 +49,7 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataSends
-     */
+    #[DataProvider('dataSends')]
     public function test_send($expect, $record)
     {
         $handler = new SimpleBrowserConsoleHandler();
@@ -57,22 +57,30 @@ class SimpleBrowserConsoleHandlerTest extends RebetTestCase
         $this->assertStdoutContainsAll($expect, function () use ($handler) { $handler->send(); });
     }
 
-    protected function record(array $diff = []) : array
+    protected function record(array $diff = []) : LogRecord
     {
-        return array_merge([
-            'message'    => "Log Message.",
-            'context'    => [
-                'test'      => 'Foo Bar',
-                'datetime'  => DateTime::now(),
+        $record = array_merge([
+            'message' => "Log Message.",
+            'context' => [
+                'test'     => 'Foo Bar',
+                'datetime' => DateTime::now(),
             ],
-            'level'      => MonologLogger::DEBUG,
-            'level_name' => MonologLogger::getLevelName($diff['level'] ?? MonologLogger::DEBUG),
-            'channel'    => 'web',
-            'datetime'   => DateTime::now()->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
-            'extra'      => [
+            'level'   => MonologLogger::DEBUG,
+            'channel' => 'web',
+            'datetime' => DateTime::now(), // Use Rebet DateTime class for create datetime.
+            'extra'   => [
                 'process_id' => getmypid()
             ],
         ], $diff);
+
+        return new LogRecord(
+            datetime: $record['datetime'],
+            channel: $record['channel'],
+            level: MonologLogger::toMonologLevel($record['level']),
+            message: $record['message'],
+            context: $record['context'],
+            extra: $record['extra'],
+        );
     }
 
     public function test_close()

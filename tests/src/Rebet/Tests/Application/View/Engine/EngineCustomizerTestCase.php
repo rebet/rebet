@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Application\View\Engine;
 
 use App\Model\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Http\Session\Session;
@@ -20,9 +21,6 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
     {
         parent::setUp();
         $this->signout();
-        $this->vfs([
-            'cache' => [],
-        ]);
 
         $this->engine = $this->createEngine();
     }
@@ -668,7 +666,7 @@ EOS
         );
     }
 
-    public function dataPaginates() : array
+    public static function dataPaginates() : array
     {
         return [
             [
@@ -752,9 +750,7 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataPaginates
-     */
+    #[DataProvider('dataPaginates')]
     public function test_tag_paginate(string $locale, array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
     {
         // @todo

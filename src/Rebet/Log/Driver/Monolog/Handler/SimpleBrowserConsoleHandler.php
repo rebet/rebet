@@ -3,6 +3,7 @@ namespace Rebet\Log\Driver\Monolog\Handler;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\LogRecord;
 use Monolog\Logger as MonologLogger;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
@@ -59,7 +60,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    protected function write(array $record) : void
+    protected function write(LogRecord $record) : void
     {
         // Accumulate records
         static::$records[] = $record;
@@ -104,7 +105,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    public function reset()
+    public function reset(): void
     {
         static::clear();
     }
@@ -155,8 +156,9 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     {
         $script = [];
         foreach (static::$records as $record) {
-            [$headline, $details]         = Strings::split($record['formatted'], "\n", 2);
-            [$method, $h_style, $d_style] = static::OUTPUT_STYLES[$record['level'] ?? MonologDriver::DEBUG];
+            $formatted = $record->formatted ?? $record->message;
+            [$headline, $details]         = Strings::split($formatted, "\n", 2);
+            [$method, $h_style, $d_style] = static::OUTPUT_STYLES[$record->level->value ?? MonologDriver::DEBUG];
 
             if ($details) {
                 $script[] = 'c.groupCollapsed('.static::quote("%c{$headline}").', '.static::quote($h_style).');';

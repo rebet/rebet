@@ -1,6 +1,6 @@
 language: php
 php:
-  - 7.4
+  - 8.3
 
 services:
   - docker
@@ -18,7 +18,7 @@ addons:
 
 env:
   global:
-    - DOCKER_COMPOSE_VERSION=1.27.4
+    - DOCKER_COMPOSE_VERSION=5.1.4
     - MARIADB_HOST=127.0.0.2
 
 before_install:

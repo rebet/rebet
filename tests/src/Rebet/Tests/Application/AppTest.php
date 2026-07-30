@@ -156,7 +156,7 @@ class AppTest extends RebetTestCase
 
     public function test_getTimezone()
     {
-        Config::clear();
+        Config::reset();
         Config::framework([
             App::class => [
                 'timezone' => 'UTC',

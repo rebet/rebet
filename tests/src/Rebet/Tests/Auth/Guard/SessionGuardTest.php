@@ -136,7 +136,7 @@ class SessionGuardTest extends RebetTestCase
         $mock->method('findByCredentials')->willReturn(new AuthUser(Auth::provider('user')->findById(1)->raw(), [], $mock));
         $mock->method('supportRememberToken')->willReturn(true);
         $mock->method('issuingRememberToken')->willReturn('MOCKED_TOKEN');
-        $mock->method('removeRememberToken')->will($this->returnCallback(function ($token) use (&$removed) { $removed = $token; }));
+        $mock->method('removeRememberToken')->willReturnCallback(function ($token) use (&$removed) { $removed = $token; });
         $mock->method('name')->willReturn($mock);
 
         Config::runtime([
@@ -167,7 +167,7 @@ class SessionGuardTest extends RebetTestCase
         $this->assertNull($session->get('auth:member:signin_id'));
         $cookie = Cookie::peek('auth:member:remember_token');
         $this->assertNull($cookie->getValue());
-        $this->assertSame('auth:member:remember_token=deleted; expires='.gmdate('D, d-M-Y H:i:s T', time() - 31536001).'; Max-Age=0; path=/; httponly; samesite=lax', "{$cookie}");
+        $this->assertSame('auth:member:remember_token=deleted; expires='.gmdate('D, d M Y H:i:s T', time() - 31536001).'; Max-Age=0; path=/; httponly; samesite=lax', "{$cookie}");
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('/signouted', $response->getTargetUrl());
         $this->assertSame('MOCKED_TOKEN', $removed);

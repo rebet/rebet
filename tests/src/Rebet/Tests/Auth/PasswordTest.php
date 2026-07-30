@@ -1,21 +1,20 @@
 <?php
 namespace Rebet\Tests\Auth;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Auth\Password;
 use Rebet\Tests\RebetTestCase;
 
 class PasswordTest extends RebetTestCase
 {
-    /**
-     * @dataProvider dataPasswords
-     */
+    #[DataProvider('dataPasswords')]
     public function test_hashAndVerify(?string $password, $algorithm = null, ?array $options = null)
     {
         $hash = Password::hash($password, $algorithm, $options);
         $this->assertTrue(Password::verify($password, $hash));
     }
 
-    public function dataPasswords() : array
+    public static function dataPasswords() : array
     {
         return [
             ['password', null, null],

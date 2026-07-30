@@ -88,14 +88,14 @@ class Config
     protected static $compiled = [];
 
     /**
-     * Clear configration data of given section.
-     * If the null given then clear all data.
+     * Reset configration data of given section.
+     * If the null given then reset all data.
      *
      * @param string|null $section (default: null)
      * @param string ...$layers list of Layer::* (default: all layers)
      * @return void
      */
-    public static function clear(?string $section = null, string ...$layers) : void
+    public static function reset(?string $section = null, string ...$layers) : void
     {
         $layers = empty($layers) ? [Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] : $layers ;
         if ($section === null) {

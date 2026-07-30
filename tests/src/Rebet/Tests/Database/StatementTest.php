@@ -47,10 +47,10 @@ class StatementTest extends RebetDatabaseTestCase
     {
         $pdo_stmt = $this->getMockBuilder(\PDOStatement::class)->getMock();
         $pdo_stmt->method('columnCount')->willReturn(2);
-        $pdo_stmt->method('getColumnMeta')->will($this->returnValueMap([
+        $pdo_stmt->method('getColumnMeta')->willReturnMap([
             [0, ['name' => 'foo', 'native_type' => 'int']],
             [1, ['name' => 'bar', 'native_type' => 'string']]
-        ]));
+        ]);
         $stmt = new Statement(Dao::db(), $pdo_stmt);
         $this->assertEquals([
             'foo' => ['name' => 'foo', 'native_type' => 'int'],    0 => ['name' => 'foo', 'native_type' => 'int'],
@@ -66,7 +66,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_execute()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $stmt     = $stmt->execute();
@@ -118,7 +118,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_all()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->all();
@@ -153,7 +153,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_first()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->first();
@@ -185,7 +185,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_allOf()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->allOf('user_id');
@@ -245,7 +245,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_firstOf()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $rs       = $stmt->execute()->firstOf('user_id');
@@ -309,7 +309,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_affectedRows()
     {
-        $this->eachDb(function (Database $db, $driver) {
+        self::eachDb(function (Database $db, $driver) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $count    = $stmt->execute()->affectedRows();
@@ -333,7 +333,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_each()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $i = 1;
@@ -354,7 +354,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_filter()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $users    = $stmt->execute()->filter(function (User $user) {
@@ -366,7 +366,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_map()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $users    = $stmt->execute()->map(function (User $user) {
@@ -379,7 +379,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_reduce()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $result   = $stmt->execute()->reduce(function (User $user, $carry) {
@@ -391,7 +391,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_getIterator()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $this->assertInstanceOf(\Traversable::class, $stmt->getIterator());
@@ -400,7 +400,7 @@ class StatementTest extends RebetDatabaseTestCase
 
     public function test_close()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $pdo_stmt = $db->pdo()->prepare("SELECT * FROM users");
             $stmt     = new Statement($db, $pdo_stmt);
             $this->assertTrue($stmt->execute()->close());

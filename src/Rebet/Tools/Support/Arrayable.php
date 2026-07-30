@@ -56,7 +56,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function count()
+    public function count() : int
     {
         return count($this->container());
     }
@@ -64,7 +64,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function getIterator()
+    public function getIterator() : \Traversable
     {
         return new \ArrayIterator($this->container());
     }
@@ -72,7 +72,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $container = &$this->container();
         if ($offset === null) {
@@ -85,7 +85,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return isset($this->container()[$offset]);
     }
@@ -93,7 +93,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         unset($this->container()[$offset]);
     }
@@ -101,7 +101,7 @@ trait Arrayable
     /**
      * {@inheritDoc}
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return $this->container()[$offset] ?? null ;
     }
@@ -114,14 +114,14 @@ trait Arrayable
     public function toArray() : array
     {
         return array_map(function ($value) {
-            return method_exists($value, 'toArray') ? $value->toArray() : $value;
+            return is_object($value) && method_exists($value, 'toArray') ? $value->toArray() : $value;
         }, $this->container());
     }
 
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return Json::serialize($this->container());
     }

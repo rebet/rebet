@@ -20,6 +20,7 @@ class ConfigTest extends RebetTestCase
     protected function tearDown() : void
     {
         \putenv('PROMISE_TEST=');
+        parent::tearDown();
     }
 
     public function test_instantiate()
@@ -60,17 +61,17 @@ class ConfigTest extends RebetTestCase
         $this->assertSame('A', Config::get(ConfigTest_MockOption::class, 'map.a'));
         $this->assertSame('BB', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
-        Config::clear(ConfigTest_MockOption::class, Layer::FRAMEWORK);
+        Config::reset(ConfigTest_MockOption::class, Layer::FRAMEWORK);
         $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
         $this->assertSame('BB', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
-        Config::clear(ConfigTest_MockOption::class);
+        Config::reset(ConfigTest_MockOption::class);
         $this->assertSame('sqlite', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
 
-        Config::clear();
+        Config::reset();
         $this->assertSame('mysql', Config::get(ConfigTest_Mock::class, 'driver'));
         $this->assertSame('a', Config::get(ConfigTest_MockOption::class, 'map.a'));
         $this->assertSame('b', Config::get(ConfigTest_MockOption::class, 'map.b'));
@@ -657,7 +658,7 @@ class ConfigTest extends RebetTestCase
 
     public function test_get_all()
     {
-        Config::clear();
+        Config::reset();
 
         $config = Config::all();
         $this->assertSame([], $config);

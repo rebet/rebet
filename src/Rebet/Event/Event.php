@@ -44,13 +44,13 @@ class Event
     }
 
     /**
-     * Clear the compiled listeners.
+     * Reset the compiled listeners.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
-        Config::clear(static::class);
+        Config::reset(static::class);
         static::$listeners = null;
     }
 

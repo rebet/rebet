@@ -21,6 +21,10 @@ class FailoverTransport extends Swift_FailoverTransport
      */
     public function __construct(array $transports)
     {
-        parent::__construct(array_map(function ($transport) { return Mail::mailer($transport)->transport(); }, $transports));
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        @parent::__construct(array_map(function ($transport) { return Mail::mailer($transport)->transport(); }, $transports));
     }
 }

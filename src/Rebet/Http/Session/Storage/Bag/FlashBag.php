@@ -50,7 +50,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -58,7 +58,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function initialize(array &$attributes)
+    public function initialize(array &$attributes) : void
     {
         $this->attributes = &$attributes;
     }
@@ -66,7 +66,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function getStorageKey()
+    public function getStorageKey() : string
     {
         return $this->storage_key;
     }
@@ -74,7 +74,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear() : mixed
     {
         $value            = $this->attributes;
         $this->attributes = [];

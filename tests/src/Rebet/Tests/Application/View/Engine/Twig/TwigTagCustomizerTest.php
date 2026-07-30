@@ -19,7 +19,7 @@ class TwigTagCustomizerTest extends EngineCustomizerTestCase
             Twig::class => [
                 'template_dir' => [App::structure()->views('/twig')],
                 'options'      => [
-                    // 'cache' => 'vfs://root/cache',
+                    // 'cache' => static::makeSubWorkingDir('cache'),
                 ],
             ],
         ]);

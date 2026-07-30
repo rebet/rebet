@@ -13,9 +13,9 @@ class HandleExceptionsTest extends RebetTestCase
         $reported_exception   = null;
         $is_terminated        = false;
         $kernel = $this->createMock(Kernel::class);
-        $kernel->method('fallback')->will($this->returnCallback(function ($e) use (&$fallbacked_exception) { $fallbacked_exception = $e; return 1; }));
-        $kernel->method('report')->will($this->returnCallback(function ($e) use (&$reported_exception) { $reported_exception = $e; }));
-        $kernel->method('terminate')->will($this->returnCallback(function () use (&$is_terminated) { $is_terminated = true; }));
+        $kernel->method('fallback')->willReturnCallback(function ($e) use (&$fallbacked_exception) { $fallbacked_exception = $e; return 1; });
+        $kernel->method('report')->willReturnCallback(function ($e) use (&$reported_exception) { $reported_exception = $e; });
+        $kernel->method('terminate')->willReturnCallback(function () use (&$is_terminated) { $is_terminated = true; });
         
         $bootstrapper = new HandleExceptions();
         $bootstrapper->bootstrap($kernel);
@@ -45,5 +45,16 @@ class HandleExceptionsTest extends RebetTestCase
         $this->assertTrue($is_terminated);
 
         // Can not test register_shutdown_function function.
+
+        // NOTE: RebetTestCase::setUp() already installs one pair of handlers via the app kernel's own
+        //       HandleExceptions bootstrapper. This test installs a second pair via its explicit
+        //       bootstrap() call, then pushes a third (null) pair via set_error_handler(null)/
+        //       set_exception_handler(null) above to peek at the current handler. That is 3 pushes total,
+        //       and RebetTestCase::tearDown() only restores once, so restore twice more here to balance
+        //       the other two pushes.
+        restore_error_handler();
+        restore_error_handler();
+        restore_exception_handler();
+        restore_exception_handler();
     }
 }

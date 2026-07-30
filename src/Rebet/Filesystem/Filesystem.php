@@ -1,9 +1,8 @@
 <?php
 namespace Rebet\Filesystem;
 
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\Config;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\FilesystemOperator;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Http\Response;
@@ -49,24 +48,24 @@ interface Filesystem
     /**
      * Create Filesystem using given adapter and config.
      *
-     * @param AdapterInterface $adapter
-     * @param array|Config|null $config (default: null)
+     * @param FilesystemAdapter $adapter
+     * @param array|null $config (default: null)
      */
-    public function __construct(AdapterInterface $adapter, $config = null);
+    public function __construct(FilesystemAdapter $adapter, $config = null);
 
     /**
      * Get the filesystem driver.
      *
-     * @return FilesystemInterface
+     * @return FilesystemOperator
      */
-    public function driver() : FilesystemInterface;
+    public function driver() : FilesystemOperator;
 
     /**
      * Get the filesystem adapter.
      *
-     * @return AdapterInterface
+     * @return FilesystemAdapter
      */
-    public function adapter() : AdapterInterface;
+    public function adapter() : FilesystemAdapter;
 
     /**
      * Determine if a file exists.
@@ -325,11 +324,4 @@ interface Filesystem
      * @return self
      */
     public function mkdir(string $path, array $config = []) : self;
-
-    /**
-     * Flush the Flysystem cache (if used cache adapter).
-     *
-     * @return self
-     */
-    public function flush() : self ;
 }

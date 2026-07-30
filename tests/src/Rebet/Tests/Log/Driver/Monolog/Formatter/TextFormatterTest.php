@@ -2,6 +2,8 @@
 namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
 use Monolog\Logger as MonologLogger;
+use Monolog\LogRecord;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Tests\RebetTestCase;
@@ -21,7 +23,7 @@ class TextFormatterTest extends RebetTestCase
         $this->assertInstanceOf(TextFormatter::class, new TextFormatter());
     }
 
-    public function dataFormats() : array
+    public static function dataFormats() : array
     {
         return [
             ["2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.\n"],
@@ -29,7 +31,7 @@ class TextFormatterTest extends RebetTestCase
                 "2010-10-20 10:20:30.123456 web/123 [DEBUG] Log Message.\n"
                 , ['extra' => ['process_id' => '123']]
             ],
-            ["2010-10-20 10:20:30.123456 web/ [INFO] Log Message.\n", ['level_name' => 'INFO']],
+            ["2010-10-20 10:20:30.123456 web/ [INFO] Log Message.\n", ['level' => MonologLogger::INFO]],
             [
                 <<<EOS
 2010-10-20 10:20:30.123456 web/ [DEBUG] Log Message.
@@ -85,7 +87,7 @@ EOS
 ****** [ EXCEPTION ] ******
 ** Exception: Test Exception in 
 EOS
-                , ['exception' => new \Exception("Test Exception")]
+                , ['context' => ['exception' => new \Exception("Test Exception")]]
             ],
             [
                 <<<EOS
@@ -102,19 +104,8 @@ EOS
 ** Exception: Test Exception in 
 EOS
                 , [
-                    'context'   => ['foo' => 'FOO'],
-                    'extra'     => ['bar' => 'BAR'],
-                    'exception' => new \Exception("Test Exception")
-                ]
-            ],
-            [
-                <<<EOS
-2010-10-20 10:20:30.123456 web/ [DEBUG] array:1 [
-    foo => FOO
-]
-EOS
-                , [
-                    'message' => ['foo' => 'FOO'],
+                    'context' => ['foo' => 'FOO', 'exception' => new \Exception("Test Exception")],
+                    'extra'   => ['bar' => 'BAR'],
                 ]
             ],
             ["2010年10月20日(水) 10:20:30.123456 web/ [DEBUG] Log Message.\n", [], null, [
@@ -123,46 +114,49 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataFormats
-     */
+    #[DataProvider('dataFormats')]
     public function test_format($expect, array $record = [], ?string $format = null, array $stringifiers = [])
     {
         $record = array_merge([
-            'message'    => 'Log Message.',
-            'context'    => [],
-            'level'      => MonologLogger::DEBUG,
-            'level_name' => MonologLogger::getLevelName($record['level'] ?? MonologLogger::DEBUG),
-            'channel'    => 'web',
-            'datetime'   => DateTime::now()->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
-            'extra'      => [],
+            'message' => 'Log Message.',
+            'context' => [],
+            'level'   => MonologLogger::DEBUG,
+            'channel' => 'web',
+            'datetime' => DateTime::now(), // Use Rebet DateTime class for create datetime.
+            'extra'   => [],
         ], $record);
+        $log_record = new LogRecord(
+            datetime: $record['datetime'],
+            channel: $record['channel'],
+            level: MonologLogger::toMonologLevel($record['level']),
+            message: $record['message'],
+            context: $record['context'],
+            extra: $record['extra'],
+        );
         $formatter = new TextFormatter($format, $stringifiers);
-        $this->assertStringContainsString($expect, $formatter->format($record));
+        $this->assertStringContainsString($expect, $formatter->format($log_record));
     }
 
     public function test_formatBatch()
     {
         $formatter = new TextFormatter();
         $records   = [
-            [
-                'message'    => 'Log Message 1.',
-                'context'    => [],
-                'level'      => MonologLogger::DEBUG,
-                'level_name' => MonologLogger::getLevelName(MonologLogger::DEBUG),
-                'channel'    => 'web',
-                'datetime'   => DateTime::createDateTime('2010-10-20 10:20:30.123456')->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
-                'extra'      => ['process_id' => 123],
-            ],
-            [
-                'message'    => 'Log Message 2.',
-                'context'    => [],
-                'level'      => MonologLogger::INFO,
-                'level_name' => MonologLogger::getLevelName(MonologLogger::INFO),
-                'channel'    => 'web',
-                'datetime'   => DateTime::createDateTime('2010-10-20 10:20:31.987654')->toNativeDateTime(), // Use Rebet DateTime class for create datetime.
-                'extra'      => ['process_id' => 456],
-            ],
+            new LogRecord(
+                datetime: DateTime::createDateTime('2010-10-20 10:20:30.123456'), // Use Rebet DateTime class for create datetime.
+                channel: 'web',
+                level: MonologLogger::toMonologLevel(MonologLogger::DEBUG),
+                message: 'Log Message 1.',
+                context: [],
+                extra: ['process_id' => 123],
+            ),
+            new LogRecord(
+                datetime: DateTime::createDateTime('2010-10-20 10:20:31.987654'), // Use Rebet DateTime class for create datetime.
+                channel: 'web',
+                level: MonologLogger::toMonologLevel(MonologLogger::INFO),
+                message: 'Log Message 2.',
+                context: [],
+                extra: ['process_id' => 456],
+            ),
         ];
         $this->assertSame(
             <<<EOS

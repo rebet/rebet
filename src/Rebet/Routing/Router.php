@@ -111,11 +111,11 @@ class Router
     protected static $prefixes = [];
 
     /**
-     * Clear all routing rules.
+     * Reset all routing rules.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$routing_tree  = [];
         static::$current       = null;

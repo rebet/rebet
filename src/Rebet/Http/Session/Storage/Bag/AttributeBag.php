@@ -50,7 +50,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -58,7 +58,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function initialize(array &$attributes)
+    public function initialize(array &$attributes) : void
     {
         $this->attributes = &$attributes;
     }
@@ -66,7 +66,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function getStorageKey()
+    public function getStorageKey() : string
     {
         return $this->storage_key;
     }
@@ -74,7 +74,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear() : mixed
     {
         $value            = $this->attributes;
         $this->attributes = [];
@@ -143,7 +143,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator() : \Traversable
     {
         return new \ArrayIterator($this->attributes);
     }
@@ -153,7 +153,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return int
      */
-    public function count()
+    public function count() : int
     {
         return \count($this->attributes);
     }

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Routing;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Config\Config;
 use Rebet\Application\App;
@@ -16,9 +17,6 @@ class ViewSelectorTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
         Blade::clear();
         Config::application([
             View::class => [
@@ -26,7 +24,7 @@ class ViewSelectorTest extends RebetTestCase
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade/selector')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
     }
@@ -37,7 +35,7 @@ class ViewSelectorTest extends RebetTestCase
         $this->assertInstanceOf(ViewSelector::class, new ViewSelector());
     }
 
-    public function dataViewDirectoryChangers() : array
+    public static function dataViewDirectoryChangers() : array
     {
         return [
             ["Hello, Bob.\nTest for directory change type view selector.", 'en', '/welcome/Bob'],
@@ -47,9 +45,7 @@ class ViewSelectorTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataViewDirectoryChangers
-     */
+    #[DataProvider('dataViewDirectoryChangers')]
     public function test_view_directoryChanger($expect, $locale, $url)
     {
         Config::application([
@@ -69,7 +65,7 @@ class ViewSelectorTest extends RebetTestCase
         $this->assertSame($expect, $response->getContent());
     }
 
-    public function dataViewFilenameChangers() : array
+    public static function dataViewFilenameChangers() : array
     {
         return [
             ["Hello, Bob for Mobile.\nTest for file name change type view selector.", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1", '/welcome/Bob'],
@@ -77,9 +73,7 @@ class ViewSelectorTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataViewFilenameChangers
-     */
+    #[DataProvider('dataViewFilenameChangers')]
     public function test_view_filenameChanger($expect, $ua, $url)
     {
         Config::application([

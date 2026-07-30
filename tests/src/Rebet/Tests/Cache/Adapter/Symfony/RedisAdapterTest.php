@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rebet\Cache\Adapter\Symfony\RedisAdapter;
 use Rebet\Tests\RebetTestCase;
 
@@ -22,9 +23,8 @@ use Rebet\Tests\RebetTestCase;
  * # Setup Predis
  * 1. Install using composer
  *    composer require --dev predis/predis
- *
- * @requires extension apcu
  */
+#[RequiresPhpExtension('redis')]
 class RedisAdapterTest extends RebetTestCase
 {
     public function test___construct()

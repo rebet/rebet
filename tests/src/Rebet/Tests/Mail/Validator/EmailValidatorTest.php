@@ -13,7 +13,7 @@ class EmailValidatorTest extends RebetTestCase
         $validator = new EmailValidator();
         $this->assertSame(false, $validator->isValid('.invalid..rfc.@foo.com', Mail::container()->lookup('email.validation.rfc')));
         $this->assertSame(false, $validator->isValid('.invalid..rfc.@foo.com', Mail::container()->lookup('email.validation.rfc.loose')));
-        Mail::clear();
+        Mail::reset();
         Config::application([
             Mail::class => [
                 'initialize' => [

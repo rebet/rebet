@@ -79,6 +79,13 @@ class EmbedTokenParser extends AbstractTokenParser
     protected $can_omit_first_arg;
 
     /**
+     * Bound values for embedded templates.
+     *
+     * @var array
+     */
+    protected $binds = [];
+
+    /**
      * Create Code Token Parser.
      *
      * @param string $tag
@@ -156,7 +163,11 @@ class EmbedTokenParser extends AbstractTokenParser
         $i        = 0;
         $variadic = Arrays::remove($separators, static::VARIADIC);
         while (!$stream->test(Token::BLOCK_END_TYPE)) {
-            $precedence = PHP_INT_MAX; // @todo
+            // NOTE: 512 is the precedence Twig core assigns to postfix operators ('.', '[', '(', '|'), so this
+            //       lets an argument value continue through attribute/method access, array access and filters,
+            //       while still stopping before lower precedence operators (ternary '?:', '??', 'or', 'and',
+            //       comparisons, arithmetic, ...) so those stay available as this tag's own separator keywords.
+            $precedence = 512;
 
             if ($this->separators === null) {
                 throw new SyntaxError(
@@ -211,7 +222,7 @@ class EmbedTokenParser extends AbstractTokenParser
             }
 
             $name  = null;
-            $value = $this->parser->getExpressionParser()->parseExpression($precedence, $allow_arrow);
+            $value = $this->parseValueExpression($precedence, $allow_arrow);
             if ($token = $stream->nextIf(Token::OPERATOR_TYPE, '=')) {
                 if (!$value instanceof NameExpression) {
                     throw new SyntaxError(
@@ -221,7 +232,7 @@ class EmbedTokenParser extends AbstractTokenParser
                     );
                 }
                 $name  = $value->getAttribute('name');
-                $value = $this->parser->getExpressionParser()->parseExpression($precedence, $allow_arrow);
+                $value = $this->parseValueExpression($precedence, $allow_arrow);
             }
 
             if (null === $name) {
@@ -233,6 +244,23 @@ class EmbedTokenParser extends AbstractTokenParser
 
         $stream->expect(Token::BLOCK_END_TYPE);
         return $args;
+    }
+
+    /**
+     * Parse a single argument value expression.
+     * NOTE: Passing $allow_arrow to ExpressionParser::parseExpression() is deprecated since twig/twig 3.15,
+     *       so it is only passed when arrow functions are actually requested.
+     *
+     * @param int $precedence
+     * @param bool $allow_arrow
+     * @return \Twig\Node\Expression\AbstractExpression
+     */
+    protected function parseValueExpression(int $precedence, bool $allow_arrow)
+    {
+        return $allow_arrow
+            ? $this->parser->getExpressionParser()->parseExpression($precedence, $allow_arrow)
+            : $this->parser->getExpressionParser()->parseExpression($precedence)
+            ;
     }
 
     /**

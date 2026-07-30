@@ -1,15 +1,14 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tools\DateTime\Month;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Translation\Translator;
 
 class MonthTest extends RebetTestCase
 {
-    /**
-     * @dataProvider dataDefinitions
-     */
+    #[DataProvider('dataDefinitions')]
     public function test_definition(Month $month, $value, $label, $label_short)
     {
         $this->assertSame($value, $month->value);
@@ -17,7 +16,7 @@ class MonthTest extends RebetTestCase
         $this->assertSame($label_short, $month->label_short);
     }
 
-    public function dataDefinitions()
+    public static function dataDefinitions()
     {
         return [
             [Month::JANUARY() ,  1, 'January'  , 'Jan'],
@@ -35,9 +34,7 @@ class MonthTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataTranslations
-     */
+    #[DataProvider('dataTranslations')]
     public function test_translation(Month $month, $locale, $label, $label_short)
     {
         Translator::setLocale($locale);
@@ -45,7 +42,7 @@ class MonthTest extends RebetTestCase
         $this->assertSame($label_short, $month->translate('label_short'));
     }
 
-    public function dataTranslations()
+    public static function dataTranslations()
     {
         return [
             [Month::JANUARY() , 'en', 'January'  , 'Jan'],

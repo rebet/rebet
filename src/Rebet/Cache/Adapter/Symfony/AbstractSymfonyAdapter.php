@@ -63,7 +63,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function getItem($key)
+    public function getItem($key) : CacheItemInterface
     {
         return $this->pool->getItem($key);
     }
@@ -71,7 +71,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function getItems(array $keys = [])
+    public function getItems(array $keys = []) : iterable
     {
         return $this->pool->getItems($keys);
     }
@@ -79,7 +79,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function hasItem($key)
+    public function hasItem($key) : bool
     {
         return $this->pool->hasItem($key);
     }
@@ -87,7 +87,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function clear()
+    public function clear() : bool
     {
         return $this->pool->clear();
     }
@@ -95,7 +95,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function deleteItem($key)
+    public function deleteItem($key) : bool
     {
         return $this->pool->deleteItem($key);
     }
@@ -103,7 +103,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function deleteItems(array $keys)
+    public function deleteItems(array $keys) : bool
     {
         return $this->pool->deleteItems($keys);
     }
@@ -111,7 +111,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function save(CacheItemInterface $item)
+    public function save(CacheItemInterface $item) : bool
     {
         return $this->pool->save($item);
     }
@@ -119,7 +119,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function saveDeferred(CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item) : bool
     {
         return $this->pool->saveDeferred($item);
     }
@@ -127,7 +127,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
-    public function commit()
+    public function commit() : bool
     {
         return $this->pool->commit();
     }

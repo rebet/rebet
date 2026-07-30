@@ -5,6 +5,7 @@ use Egulias\EmailValidator\EmailLexer;
 use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
 use Egulias\EmailValidator\Result\Reason\DotAtEnd;
 use Egulias\EmailValidator\Result\Reason\DotAtStart;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Mail\Validator\Validation\LooseRFCValidation;
 use Rebet\Tests\RebetTestCase;
 
@@ -15,7 +16,7 @@ class LooseRFCValidationTest extends RebetTestCase
         $this->assertInstanceOf(LooseRFCValidation::class, new LooseRFCValidation());
     }
 
-    public function dataIsValids() : array
+    public static function dataIsValids() : array
     {
         return [
             [ true , '.invalid..rfc.mail.@foo.com'      ],
@@ -29,9 +30,7 @@ class LooseRFCValidationTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataIsValids
-     */
+    #[DataProvider('dataIsValids')]
     public function test_isValid($expect, string $mail_address, ?array $ignores = null)
     {
         $validation = new LooseRFCValidation($ignores);

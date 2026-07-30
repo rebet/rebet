@@ -95,11 +95,16 @@ trait DatabaseTestHelper
     {
         Dao::clear();
         static::eachDb(function (Database $db) use ($data, $with_truncate) {
-            $db->begin();
-            foreach (array_keys($data) as $table_name) {
-                if ($with_truncate) {
+            // NOTE: TRUNCATE TABLE causes an implicit COMMIT on MySQL/MariaDB, so it must be executed
+            //       outside of the transaction, otherwise the commit() below fails because the
+            //       transaction was already implicitly closed by the TRUNCATE statement.
+            if ($with_truncate) {
+                foreach (array_keys($data) as $table_name) {
                     $db->truncate($table_name, false);
                 }
+            }
+            $db->begin();
+            foreach (array_keys($data) as $table_name) {
                 $records    = $data[$table_name] ?? [];
                 $columns    = array_shift($records) ?? [];
                 $table_name = $db->driver()->quoteIdentifier($table_name);

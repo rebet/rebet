@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\Math;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Math\Decimal;
@@ -52,7 +53,7 @@ class UnitTest extends RebetTestCase
         ]));
     }
 
-    public function dataExchanges() : array
+    public static function dataExchanges() : array
     {
         return [
             ['0.12y' , UNIT::SI_PREFIX, 0.000000000000000000000000123],
@@ -228,9 +229,7 @@ class UnitTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataExchanges
-     */
+    #[DataProvider('dataExchanges')]
     public function test_exchange($expect, $units, $value, ?string $to = null, ?int $precision = 2, array $options = [])
     {
         $this->assertSame($expect, Unit::of($units)->exchange($value, $to, $precision, $options));
@@ -256,7 +255,7 @@ class UnitTest extends RebetTestCase
         }
     }
 
-    public function dataConverts() : array
+    public static function dataConverts() : array
     {
         return [
             ['0.000000000000000000000000123', Unit::SI_PREFIX, '0.123y', ''],
@@ -274,9 +273,7 @@ class UnitTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataConverts
-     */
+    #[DataProvider('dataConverts')]
     public function test_convert($expect, $units, $value, ?string $to = null, array $options = [])
     {
         $decimal = Unit::of($units)->convert($value, $to, $options);

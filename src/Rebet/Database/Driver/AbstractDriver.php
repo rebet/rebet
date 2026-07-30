@@ -162,6 +162,12 @@ abstract class AbstractDriver implements Driver
     public function begin() : string
     {
         try {
+            // NOTE: Some drivers (e.g. mysql) are connected with autocommit disabled, so a plain query
+            //       executed outside of an explicit transaction already leaves the connection in an
+            //       implicit transaction state. In that case just continue using it instead of failing.
+            if ($this->pdo()->inTransaction()) {
+                return "-- Already in transaction, BEGIN skipped.";
+            }
             if (!$this->pdo()->beginTransaction()) {
                 throw $this->exception($this->pdo()->errorInfo());
             }

@@ -24,6 +24,7 @@ class ConfigPromiseTest extends RebetTestCase
     protected function tearDown() : void
     {
         \putenv('PROMISE_TEST=');
+        parent::tearDown();
     }
 
     public function test_get()

@@ -5,21 +5,20 @@ use App\Enum\Gender;
 use App\Stub\IteratorAggregateStub;
 use App\Stub\JsonSerializableStub;
 use App\Stub\ToArrayStub;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Json;
 
 class JsonTest extends RebetTestCase
 {
-    /**
-     * @dataProvider dataSerializes
-     */
+    #[DataProvider('dataSerializes')]
     public function test_serialize($value, $expect)
     {
         $this->assertSame($expect, Json::serialize($value));
     }
 
-    public function dataSerializes() : array
+    public static function dataSerializes() : array
     {
         return [
             [null, null],

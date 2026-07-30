@@ -105,11 +105,11 @@ class Log
     }
 
     /**
-     * Clear the all channels.
+     * Reset the all channels.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$channels = [];
     }

@@ -60,7 +60,7 @@ class TranslatorTest extends RebetTestCase
     public function test_clear()
     {
         $old = Translator::dictionary();
-        Translator::clear();
+        Translator::reset();
         $new = Translator::dictionary();
         $this->assertNotSame($old, $new);
     }

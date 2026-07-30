@@ -19,13 +19,10 @@ class BladeCompilerTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
         Config::application([
             Blade::class => [
                 'view_path>'  => [App::structure()->views('/blade')],
-                'cache_path'  => 'vfs://root/cache',
+                'cache_path'  => static::makeSubWorkingDir('cache'),
             ],
         ]);
 

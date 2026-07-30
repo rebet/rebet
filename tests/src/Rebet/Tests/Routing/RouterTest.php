@@ -42,7 +42,7 @@ class RouterTest extends RebetTestCase
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
             Log::class => [
                 'channels' => [
@@ -55,11 +55,7 @@ class RouterTest extends RebetTestCase
             ],
         ]);
 
-        $this->vfs([
-            'cache' => [],
-        ]);
-
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::get('/', function () {
                 return 'Content: /';
@@ -200,7 +196,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/'));
         $this->assertSame(200, $response->getStatusCode());
 
-        Router::clear();
+        Router::reset();
 
         $response = Router::handle(Request::create('/'));
     }
@@ -229,7 +225,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /', $response->getContent());
     }
 
@@ -237,12 +233,12 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/get'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /get', $response->getContent());
 
         $response = Router::handle(Request::create('/get', 'HEAD'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('', $response->getContent());
     }
 
@@ -258,7 +254,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/post', 'POST'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /post', $response->getContent());
     }
 
@@ -266,7 +262,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/put', 'PUT'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /put', $response->getContent());
     }
 
@@ -274,7 +270,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/patch', 'PATCH'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /patch', $response->getContent());
     }
 
@@ -282,7 +278,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/delete', 'DELETE'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /delete', $response->getContent());
     }
 
@@ -290,7 +286,7 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/options', 'OPTIONS'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /options', $response->getContent());
     }
 
@@ -298,37 +294,37 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/any'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
 
         $response = Router::handle(Request::create('/any', 'HEAD'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('', $response->getContent());
 
         $response = Router::handle(Request::create('/any', 'POST'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
 
         $response = Router::handle(Request::create('/any', 'PUT'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
 
         $response = Router::handle(Request::create('/any', 'PATCH'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
 
         $response = Router::handle(Request::create('/any', 'DELETE'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
 
         $response = Router::handle(Request::create('/any', 'OPTIONS'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /any', $response->getContent());
     }
 
@@ -336,17 +332,17 @@ class RouterTest extends RebetTestCase
     {
         $response = Router::handle(Request::create('/match/get-head-post'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
 
         $response = Router::handle(Request::create('/match/get-head-post', 'HEAD'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('', $response->getContent());
 
         $response = Router::handle(Request::create('/match/get-head-post', 'POST'));
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('text/html; charset=UTF-8', $response->getHeader('Content-Type'));
+        $this->assertSame('text/html; charset=utf-8', $response->getHeader('Content-Type'));
         $this->assertSame('Content: /match/get-head-post', $response->getContent());
     }
 
@@ -460,7 +456,8 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_methodPrivateCall()
     {
-        $this->expectException(\ReflectionException::class);
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("MethodRoute: [GET|HEAD] /method/private-call not found. Action [ App\Controller\TestController::privateCall ] not accessible.");
 
         $response = Router::handle(Request::create('/method/private-call'));
     }
@@ -473,7 +470,8 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_methodProtectedCall()
     {
-        $this->expectException(\ReflectionException::class);
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage("MethodRoute: [GET|HEAD] /method/protected-call not found. Action [ App\Controller\TestController::protectedCall ] not accessible.");
 
         $response = Router::handle(Request::create('/method/protected-call'));
     }
@@ -771,7 +769,7 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_defaultConventionalRoute()
     {
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);
         });
@@ -821,7 +819,7 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_defaultConventionalRouteWhere()
     {
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]+$/');
         });
@@ -844,7 +842,7 @@ class RouterTest extends RebetTestCase
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Controller [ App\Controller\InvalidController ] can not instantiate.");
 
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);
         });
@@ -857,7 +855,7 @@ class RouterTest extends RebetTestCase
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: App\Controller\TopController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
 
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
         });
@@ -870,7 +868,7 @@ class RouterTest extends RebetTestCase
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route: App\Controller\TestController::withParam not found. Routing parameter 'id' value 'ABC' not match /^[a-z]*$/.");
 
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->where('id', '/^[a-z]*$/');
         });
@@ -880,7 +878,7 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_defaultConventionalRouteAccessible()
     {
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->accessible(true);
         });
@@ -897,7 +895,7 @@ class RouterTest extends RebetTestCase
         $this->expectException(RouteNotFoundException::class);
         $this->expectExceptionMessage("Route not found : Action [ App\Controller\TestController::annotationAliasOnly ] accespt only alias access.");
 
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class);
         });
@@ -907,7 +905,7 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_defaultConventionalRouteAlias()
     {
-        Router::clear();
+        Router::reset();
         Router::rules('web')->routing(function () {
             Router::default(ConventionalRoute::class)->aliases([
                 '/alias'       => '/test/annotation-alias-only',
@@ -949,7 +947,7 @@ class RouterTest extends RebetTestCase
 
     public function test_routing_prefix()
     {
-        Router::clear();
+        Router::reset();
         Router::rules('web')->prefix('/prefix')->routing(function () {
             Router::get('/get', function () { return 'Content: /prefix/get'; });
             Router::get('/method/public-call', 'TestController::publicCall');
@@ -989,7 +987,7 @@ class RouterTest extends RebetTestCase
         $response = Router::handle(Request::create('/prefix/test/public-call'));
         $this->assertSame('Controller: publicCall', $response->getContent());
 
-        Router::clear();
+        Router::reset();
         Config::application([
             Router::class => [
                 'default_fallback_handler' => function (Request $request, \Throwable $e) {
@@ -1004,7 +1002,7 @@ class RouterTest extends RebetTestCase
 
     public function test_terminate()
     {
-        Router::clear();
+        Router::reset();
         $middleware = new RouterTest_TerminatableMiddleware();
         Router::rules('web')->routing(function () use ($middleware) {
             Router::default(ConventionalRoute::class)->middlewares($middleware);

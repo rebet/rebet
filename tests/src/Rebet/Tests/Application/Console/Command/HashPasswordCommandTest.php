@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Application\Console\Command;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\Console\Command\HashPasswordCommand;
 use Rebet\Auth\Password;
 use Rebet\Tests\RebetConsoleTestCase;
@@ -15,7 +16,7 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
     //     $this->execute('hash:password foobar -o \'{"cost": 8}\'');
     // }
 
-    public function dataExecutes() : array
+    public static function dataExecutes() : array
     {
         return [
             ['foobar'],
@@ -25,9 +26,7 @@ class HashPasswordCommandTest extends RebetConsoleTestCase
        ];
     }
     
-    /**
-     * @dataProvider dataExecutes
-     */
+    #[DataProvider('dataExecutes')]
     public function test_execute(string $password, array $options = [])
     {
         $tester = $this->getCommandTester(HashPasswordCommand::NAME);

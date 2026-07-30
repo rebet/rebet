@@ -80,7 +80,7 @@ trait Populatable
      * @param string $prefix
      * @return self
      */
-    protected function _populate($src, $options = [], string $prefix) : self
+    protected function _populate($src, array $options = [], string $prefix = '') : self
     {
         if (empty($src)) {
             return $this;
@@ -137,7 +137,7 @@ trait Populatable
      * @param string $field
      * @param array|object $src
      * @param mixed $origin
-     * @return void
+     * @return mixed
      */
     protected function applyPopulateOption(array $options, string $prefix, string $field, $src, $origin)
     {

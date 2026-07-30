@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Database;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Dao;
 use Rebet\Database\Expression;
 use Rebet\Database\PdoParameter;
@@ -19,7 +20,7 @@ class ExpressionTest extends RebetDatabaseTestCase
         $this->assertInstanceOf(Expression::class, $expression);
     }
 
-    public function dataCompiles() : array
+    public static function dataCompiles() : array
     {
         return [
             ['now()', [], ':foo', Expression::of('now()')],
@@ -43,9 +44,7 @@ class ExpressionTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataCompiles
-     */
+    #[DataProvider('dataCompiles')]
     public function test_compile($expect_sql, $expect_params, $placeholder, Expression $expression)
     {
         $query = $expression->compile(Dao::db('mysql')->driver(), $placeholder);

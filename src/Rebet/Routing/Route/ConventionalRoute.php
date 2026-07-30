@@ -340,7 +340,7 @@ class ConventionalRoute extends Route
      */
     public function terminate(Request $request, Response $response) : void
     {
-        if (method_exists($this->controller, 'terminate')) {
+        if (is_object($this->controller) && method_exists($this->controller, 'terminate')) {
             $this->controller->terminate($request, $response);
         }
     }

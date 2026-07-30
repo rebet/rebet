@@ -1,7 +1,10 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use App\AppStructure;
 use App\Enum\Gender;
+use App\Http\AppWebKernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\RebetTestCase;
@@ -62,9 +65,42 @@ class BuiltinValidationsTest extends RebetTestCase
         $this->assertInstanceOf(BuiltinValidations::class, $validations);
     }
 
-    public function dataValidationMethods() : array
+    /**
+     * Build a marker array that will be resolved to a real UploadedFile mock by resolveMarkers().
+     * NOTE: This indirection is required because PHPUnit 10+ data providers must be static methods
+     *       and therefore can not call $this->createMock() directly.
+     */
+    private static function uploadedFileMock(string $name, string $mime_type) : array
     {
-        $this->setUp();
+        return ['__marker__' => 'uploaded_file_mock', 'name' => $name, 'mime_type' => $mime_type];
+    }
+
+    /**
+     * Recursively resolve uploadedFileMock()/nowMarker() markers into their real runtime values.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    private function resolveMarkers($value)
+    {
+        if (is_array($value) && isset($value['__marker__'])) {
+            switch ($value['__marker__']) {
+                case 'uploaded_file_mock':
+                    return $this->createUploadedFileMock($value['name'], $value['mime_type']);
+            }
+        }
+        if (is_array($value)) {
+            return array_map(function ($v) { return $this->resolveMarkers($v); }, $value);
+        }
+        return $value;
+    }
+
+    public static function dataValidationMethods() : array
+    {
+        App::reset();
+        App::init(new AppWebKernel(new AppStructure(__DIR__.'/../../../../app')));
+        DateTime::setTestNow('2010-01-23 12:34:56');
+
         $ng_word_file      = App::structure()->resources('/validation/ng_word.txt');
         $image_72x72_png   = new UploadedFile(App::structure()->public('/assets/img/72x72.png'), '72x72.png');
         $image_120x60_png  = new UploadedFile(App::structure()->public('/assets/img/120x60.png'), '120x60.png');
@@ -1405,18 +1441,18 @@ EOS
                 'name'  => 'FileTypeImages',
                 'data'  => [
                     'null'    => null,
-                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
                     'images'  => [
-                        $this->createUploadedFileMock('foo.png', 'image/png'),
-                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
-                        $this->createUploadedFileMock('bar.JPG', 'image/JPEG'),
+                        static::uploadedFileMock('foo.png', 'image/png'),
+                        static::uploadedFileMock('bar.bmp', 'image/bmp'),
+                        static::uploadedFileMock('bar.JPG', 'image/JPEG'),
                     ],
                     'mixed'  => [
-                        $this->createUploadedFileMock('foo.png', 'image/png'),
-                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
-                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                        static::uploadedFileMock('foo.png', 'image/png'),
+                        static::uploadedFileMock('bar.bmp', 'image/bmp'),
+                        static::uploadedFileMock('baz.xml', 'text/xml'),
                     ]
                 ],
                 'tests' => [
@@ -1438,18 +1474,18 @@ EOS
                 'name'  => 'FileTypeWebImages',
                 'data'  => [
                     'null'    => null,
-                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
                     'images'  => [
-                        $this->createUploadedFileMock('foo.png', 'image/png'),
-                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
-                        $this->createUploadedFileMock('bar.JPG', 'image/JPEG'),
+                        static::uploadedFileMock('foo.png', 'image/png'),
+                        static::uploadedFileMock('bar.bmp', 'image/bmp'),
+                        static::uploadedFileMock('bar.JPG', 'image/JPEG'),
                     ],
                     'mixed'  => [
-                        $this->createUploadedFileMock('foo.png', 'image/png'),
-                        $this->createUploadedFileMock('bar.bmp', 'image/bmp'),
-                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                        static::uploadedFileMock('foo.png', 'image/png'),
+                        static::uploadedFileMock('bar.bmp', 'image/bmp'),
+                        static::uploadedFileMock('baz.xml', 'text/xml'),
                     ]
                 ],
                 'tests' => [
@@ -1474,13 +1510,13 @@ EOS
                 'name'  => 'FileTypeCsv',
                 'data'  => [
                     'null'    => null,
-                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
                     'mixed'   => [
-                        $this->createUploadedFileMock('foo.png', 'image/png'),
-                        $this->createUploadedFileMock('bar.csv', 'text/csv'),
-                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                        static::uploadedFileMock('foo.png', 'image/png'),
+                        static::uploadedFileMock('bar.csv', 'text/csv'),
+                        static::uploadedFileMock('baz.xml', 'text/xml'),
                     ]
                 ],
                 'tests' => [
@@ -1502,13 +1538,13 @@ EOS
                 'name'  => 'FileTypeZip',
                 'data'  => [
                     'null'    => null,
-                    'png'     => $this->createUploadedFileMock('foo.png', 'image/png'),
-                    'csv'     => $this->createUploadedFileMock('foo.csv', 'text/csv'),
-                    'zip'     => $this->createUploadedFileMock('foo.zip', 'application/zip'),
+                    'png'     => static::uploadedFileMock('foo.png', 'image/png'),
+                    'csv'     => static::uploadedFileMock('foo.csv', 'text/csv'),
+                    'zip'     => static::uploadedFileMock('foo.zip', 'application/zip'),
                     'mixed'   => [
-                        $this->createUploadedFileMock('foo.png', 'image/png'),
-                        $this->createUploadedFileMock('bar.zip', 'application/zip'),
-                        $this->createUploadedFileMock('baz.xml', 'text/xml'),
+                        static::uploadedFileMock('foo.png', 'image/png'),
+                        static::uploadedFileMock('bar.zip', 'application/zip'),
+                        static::uploadedFileMock('baz.xml', 'text/xml'),
                     ]
                 ],
                 'tests' => [
@@ -1730,12 +1766,12 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataValidationMethods
-     */
+    #[DataProvider('dataValidationMethods')]
     public function test_validationMethods(array $record) : void
     {
         extract($record);
+        $data   = $this->resolveMarkers($data);
+        $tests  = $this->resolveMarkers($tests);
         $errors = [];
         foreach ($tests as $i => [$field, $args, $expect_valid, $expect_errors]) {
             $c = new Context('C', $data, $errors, []);

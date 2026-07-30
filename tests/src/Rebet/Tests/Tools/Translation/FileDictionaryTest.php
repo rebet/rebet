@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Tools\Translation;
 
 use App\Enum\Gender;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Translation\FileDictionary;
@@ -114,16 +115,14 @@ class FileDictionaryTest extends RebetTestCase
         $this->assertSame('default', $this->dictionary->grammar('unittest', 'invlid', 'en', 'default'));
     }
 
-    /**
-     * @dataProvider dataSentences
-     */
+    #[DataProvider('dataSentences')]
     public function test_sentence($expect, string $key, array $locales, $selector = null, bool $recursive = true)
     {
         $this->dictionary->addLibraryResource(App::structure()->resources('/adhoc/Tools/Translation/FileDictionary'));
         $this->assertSame($expect, $this->dictionary->sentence('unittest', $key, $locales, $selector, $recursive));
     }
 
-    public function dataSentences() : array
+    public static function dataSentences() : array
     {
         return [
             [null, 'invalid', ['ja', 'en']],

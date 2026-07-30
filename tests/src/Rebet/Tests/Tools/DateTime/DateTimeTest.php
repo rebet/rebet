@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
@@ -1032,18 +1033,15 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010/10/20 10:20:30', DateTime::now()->format('Y/m/d H:i:s'));
     }
 
-    /**
-     * @dataProvider dataFormatExtendeds
-     */
+    #[DataProvider('dataFormatExtendeds')]
     public function test_format_extended($locale, $expect, $datetime, $format)
     {
         Translator::setLocale($locale);
         $this->assertSame($expect, $datetime->format($format));
     }
 
-    public function dataFormatExtendeds()
+    public static function dataFormatExtendeds()
     {
-        $this->setUp();
         DateTime::setTestNow('2010-10-20 13:20:30.123456');
         $now = DateTime::now();
 
@@ -1251,16 +1249,14 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-24 23:59:59.999999', DateTime::now()->endsOfWeek()->format('Y-m-d H:i:s.u'));
     }
 
-    /**
-     * @dataProvider dataXxxxs
-     */
+    #[DataProvider('dataXxxxs')]
     public function test_isXxxx(string $datetime, $xxxx, $expect)
     {
         $method = "is{$xxxx}";
         $this->assertSame($expect, DateTime::createDateTime($datetime)->$method());
     }
 
-    public function dataXxxxs()
+    public static function dataXxxxs()
     {
         return [
             ['2010-10-17', 'Sunday'   , true],

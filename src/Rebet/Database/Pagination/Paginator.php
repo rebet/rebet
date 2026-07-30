@@ -490,7 +490,7 @@ class Paginator extends ResultSet
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         $page_urls = [];
         foreach ($this->focusPages() as $page) {

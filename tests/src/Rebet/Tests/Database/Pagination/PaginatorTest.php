@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Pagination;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Tests\RebetTestCase;
 
@@ -434,7 +435,7 @@ class PaginatorTest extends RebetTestCase
         $this->assertSame(true, $paginator->hasLastPage());
     }
 
-    public function dataFocusPages() : array
+    public static function dataFocusPages() : array
     {
         return [
             [[1]            , 0,  1,    0, null],
@@ -479,9 +480,7 @@ class PaginatorTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFocusPages
-     */
+    #[DataProvider('dataFocusPages')]
     public function test_focusPages(array $expect, int $each_side, int $page, ?int $total, ?int $next_page_count = null)
     {
         $paginator   = new Paginator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $each_side, 10, $page, $total, $next_page_count);

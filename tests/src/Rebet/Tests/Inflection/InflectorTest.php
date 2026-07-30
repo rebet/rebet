@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Inflection;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Inflection\Inflector;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
@@ -164,7 +165,7 @@ class InflectorTest extends RebetTestCase
      *
      * @return string[][]
      */
-    public function dataSampleWords() : array
+    public static function dataSampleWords() : array
     {
         Inflector::reset();
 
@@ -424,17 +425,13 @@ class InflectorTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataSampleWords
-     */
+    #[DataProvider('dataSampleWords')]
     public function testInflectingSingulars(string $singular, string $plural) : void
     {
         $this->assertEquals($singular, Inflector::singularize($plural), "'{$plural}' should be singularized to '{$singular}'");
     }
 
-    /**
-     * @dataProvider dataSampleWords
-     */
+    #[DataProvider('dataSampleWords')]
     public function testInflectingPlurals(string $singular, string $plural) : void
     {
         $this->assertEquals($plural, Inflector::pluralize($singular), "'{$singular}' should be pluralized to '{$plural}'");

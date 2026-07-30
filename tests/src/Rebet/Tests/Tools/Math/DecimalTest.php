@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\Math;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Math\Decimal;
 
@@ -273,7 +274,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame(4, $delegator->invoke('1000'));
     }
 
-    public function dataConstructs() : array
+    public static function dataConstructs() : array
     {
         return [
             ['0'                         , 1  , '0'                        ],
@@ -315,9 +316,7 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataConstructs
-     */
+    #[DataProvider('dataConstructs')]
     public function test___construct($expect, int $expect_sf, $value, string $decimal_point = ".", string $thousands_separator = ",")
     {
         $decimal = new Decimal($value, $decimal_point, $thousands_separator);
@@ -326,7 +325,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame($expect_sf, $decimal->significantFigures(false));
     }
 
-    public function dataOfs() : array
+    public static function dataOfs() : array
     {
         return [
             ['0'                       , 0              ],
@@ -341,9 +340,7 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataOfs
-     */
+    #[DataProvider('dataOfs')]
     public function test_of($expect, $value, string $decimal_point = ".", string $thousands_separator = ",")
     {
         $decimal = Decimal::of($value, $decimal_point, $thousands_separator);
@@ -481,7 +478,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('45', Decimal::of('-123.45')->decimals());
     }
 
-    public function dataFloors() : array
+    public static function dataFloors() : array
     {
         return [
             ['123', '123'],
@@ -517,15 +514,13 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFloors
-     */
+    #[DataProvider('dataFloors')]
     public function test_floor($expect, $value, $precision = 0)
     {
         $this->assertSame($expect, Decimal::of($value)->floor($precision)->value());
     }
 
-    public function dataCeils() : array
+    public static function dataCeils() : array
     {
         return [
             ['123', '123'],
@@ -562,15 +557,13 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataCeils
-     */
+    #[DataProvider('dataCeils')]
     public function test_ceil($expect, $value, $precision = 0)
     {
         $this->assertSame($expect, Decimal::of($value)->ceil($precision)->value());
     }
 
-    public function dataRounds() : array
+    public static function dataRounds() : array
     {
         return [
             ['123', '123'],
@@ -645,15 +638,13 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRounds
-     */
+    #[DataProvider('dataRounds')]
     public function test_round($expect, $value, $precision = 0, $type = Decimal::TYPE_DECIMAL_PLACES)
     {
         $this->assertSame($expect, Decimal::of($value)->round($precision, 0, $type)->value());
     }
 
-    public function dataAdds() : array
+    public static function dataAdds() : array
     {
         return [
             [Decimal::MODE_AUTO_PRECISION_SCALING, '2.53', '2', '0.53'],
@@ -691,16 +682,14 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataAdds
-     */
+    #[DataProvider('dataAdds')]
     public function test_add($mode, $expect, $left, $right, $scale = null)
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->add($right, $scale)->value());
     }
 
-    public function dataSubs() : array
+    public static function dataSubs() : array
     {
         return [
             [Decimal::MODE_AUTO_PRECISION_SCALING, '1.47', '2', '0.53'],
@@ -738,16 +727,14 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataSubs
-     */
+    #[DataProvider('dataSubs')]
     public function test_sub($mode, $expect, $left, $right, $scale = null)
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->sub($right, $scale)->value());
     }
 
-    public function dataMuls() : array
+    public static function dataMuls() : array
     {
         return [
             [Decimal::MODE_AUTO_PRECISION_SCALING, '1.06', '2', '0.53'],
@@ -796,16 +783,14 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataMuls
-     */
+    #[DataProvider('dataMuls')]
     public function test_mul($mode, $expect, $left, $right, $scale = null)
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->mul($right, $scale)->value());
     }
 
-    public function dataDivs() : array
+    public static function dataDivs() : array
     {
         return [
             [Decimal::MODE_AUTO_PRECISION_SCALING, '0.016', '2', '125'],
@@ -871,16 +856,14 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataDivs
-     */
+    #[DataProvider('dataDivs')]
     public function test_div($mode, $expect, $left, $right, $scale = null)
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->div($right, $scale)->value());
     }
 
-    public function dataPows() : array
+    public static function dataPows() : array
     {
         return [
             [Decimal::MODE_AUTO_PRECISION_SCALING, '1391334554.52113004524890426201', '8.21', '10'],
@@ -897,16 +880,14 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataPows
-     */
+    #[DataProvider('dataPows')]
     public function test_pow($mode, $expect, $left, $right, $scale = null)
     {
         Decimal::setMode($mode);
         $this->assertSame($expect, Decimal::of($left)->pow($right, $scale)->value());
     }
 
-    public function dataSqrts() : array
+    public static function dataSqrts() : array
     {
         return [
             [Decimal::MODE_AUTO_PRECISION_SCALING, '3', '9'],
@@ -924,9 +905,7 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataSqrts
-     */
+    #[DataProvider('dataSqrts')]
     public function test_sqrt($mode, $expect, $left, $scale = null)
     {
         Decimal::setMode($mode);
@@ -947,7 +926,7 @@ class DecimalTest extends RebetTestCase
         $this->assertSame('76', Decimal::of('2')->powmod('20', '100')->value());
     }
 
-    public function dataFormats() : array
+    public static function dataFormats() : array
     {
         return [
             ['123', '123'],
@@ -966,9 +945,7 @@ class DecimalTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataFormats
-     */
+    #[DataProvider('dataFormats')]
     public function test_format($expect, $value, $omit_zero = false, $decimal_point = '.', $thousands_separator = ',')
     {
         $this->assertSame($expect, Decimal::of($value)->format($omit_zero, $decimal_point, $thousands_separator));

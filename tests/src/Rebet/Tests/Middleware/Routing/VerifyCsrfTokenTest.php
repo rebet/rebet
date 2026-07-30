@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Middleware\Routing;
 
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Http\Exception\TokenMismatchException;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
@@ -22,7 +23,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         $this->assertInstanceOf(VerifyCsrfToken::class, new VerifyCsrfToken(['/exclude/path/*'], true, '2 hour'));
     }
 
-    public function dataHandles() : array
+    public static function dataHandles() : array
     {
         return [
             [true , '/article/edit/1', 'GET'    , [], true , [], true ],
@@ -57,9 +58,7 @@ class VerifyCsrfTokenTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataHandles
-     */
+    #[DataProvider('dataHandles')]
     public function test_handle(bool $expect, string $path, string $method, array $excludes = [], bool $token_match = true, array $scope = [], bool $scope_match = true)
     {
         $middleware  = new VerifyCsrfToken($excludes);

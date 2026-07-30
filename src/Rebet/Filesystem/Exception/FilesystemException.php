@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Filesystem\Exception;
 
-use League\Flysystem\Exception as FlysystemException;
+use League\Flysystem\FilesystemException as FlysystemException;
 use Rebet\Tools\Exception\RuntimeException;
 
 /**
@@ -20,7 +20,7 @@ class FilesystemException extends RuntimeException
     }
 
     /**
-     * Create exception from League\Flysystem\Exception
+     * Create exception from League\Flysystem\FilesystemException
      *
      * @param FlysystemException $e
      * @return self

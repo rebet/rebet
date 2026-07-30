@@ -25,7 +25,7 @@ class LoadApplicationConfigurationTest extends RebetTestCase
 
         $this->assertSame('foo', App::config('custom_value', false));
 
-        Config::clear(App::class, Layer::APPLICATION);
+        Config::reset(App::class, Layer::APPLICATION);
 
         $this->assertNull(App::config('custom_value', false));
     }

@@ -19,7 +19,7 @@ class BladeTagCustomizerTest extends EngineCustomizerTestCase
             ],
             Blade::class => [
                 'view_path>'  => [App::structure()->views('/blade')],
-                'cache_path'  => 'vfs://root/cache',
+                'cache_path'  => static::makeSubWorkingDir('cache'),
             ],
         ]);
 

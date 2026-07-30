@@ -29,16 +29,13 @@ class ExceptionHandlerTest extends RebetTestCase
     protected function setUp() : void
     {
         parent::setUp();
-        $this->vfs([
-            'cache' => [],
-        ]);
         Config::application([
             View::class => [
                 'engine' => Blade::class,
             ],
             Blade::class => [
                 'view_path'  => [App::structure()->views('/blade')],
-                'cache_path' => 'vfs://root/cache',
+                'cache_path' => static::makeSubWorkingDir('cache'),
             ],
         ]);
 
@@ -145,7 +142,7 @@ class ExceptionHandlerTest extends RebetTestCase
             Twig::class => [
                 'template_dir' => [App::structure()->views('/twig')],
                 'options'      => [
-                    // 'cache' => 'vfs://root/cache',
+                    // 'cache' => static::makeSubWorkingDir('cache'),
                 ],
             ],
         ]);

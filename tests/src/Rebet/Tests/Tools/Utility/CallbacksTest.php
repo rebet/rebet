@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Tools\Utility;
 
 use App\Enum\Gender;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Enum\Enum;
@@ -15,16 +16,14 @@ class CallbacksTest extends RebetTestCase
         parent::setUp();
     }
 
-    /**
-     * @dataProvider dataTests
-     */
+    #[DataProvider('dataTests')]
     public function test_test($item, $key, $operator, $value, bool $result)
     {
         $test = Callbacks::test($key, $operator, $value);
         $this->assertTrue($test($item) === $result);
     }
 
-    public function dataTests() : array
+    public static function dataTests() : array
     {
         $map    = ['age' => 17];
         $object = (object)['age' => 17];
@@ -118,16 +117,14 @@ class CallbacksTest extends RebetTestCase
         $test(10);
     }
 
-    /**
-     * @dataProvider dataCompares
-     */
+    #[DataProvider('dataCompares')]
     public function test_compare($a, $b, $key, $invert, int $result)
     {
         $comparator = Callbacks::compare($key, $invert);
         $this->assertSame($result, $comparator($a, $b));
     }
 
-    public function dataCompares() : array
+    public static function dataCompares() : array
     {
         return [
             [null, null, null, false, 0],
@@ -167,16 +164,14 @@ class CallbacksTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRetrievers
-     */
+    #[DataProvider('dataRetrievers')]
     public function test_retriever($value, $retriever, $except)
     {
         $retriever = Callbacks::retriever($retriever);
         $this->assertEquals($except, $retriever($value));
     }
 
-    public function dataRetrievers() : array
+    public static function dataRetrievers() : array
     {
         return [
             [null, null, null],
@@ -208,19 +203,17 @@ class CallbacksTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataStringifis
-     */
+    #[DataProvider('dataStringifis')]
     public function test_stringify($expect, $callable, $verbose)
     {
         $this->assertSame($expect, Callbacks::stringify($callable, $verbose));
     }
 
-    public function dataStringifis() : array
+    public static function dataStringifis() : array
     {
         return [
-            ['mb_strlen($str, $encoding)', 'mb_strlen', true ],
-            ['mb_strlen($str, $encoding)', 'mb_strlen', false],
+            ['mb_strlen(string $string, ?string $encoding = null) : int', 'mb_strlen', true ],
+            ['mb_strlen($string, $encoding)', 'mb_strlen', false],
 
             ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', Callbacks::class.'::test', true ],
             ['Rebet\Tools\Utility\Callbacks::test($key, string $operator, $value) : Closure', [Callbacks::class, 'test'], true ],

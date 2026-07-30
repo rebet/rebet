@@ -104,11 +104,11 @@ class Auth
     }
 
     /**
-     * Crear all of guards and providers instance.
+     * Reset all of guards and providers instance.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$providers = [];
         static::$guards    = [];

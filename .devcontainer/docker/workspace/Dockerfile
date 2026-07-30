@@ -1,4 +1,4 @@
-FROM php:7.4-cli
+FROM php:8.3-cli
 
 # Use bash
 SHELL ["/bin/bash", "-c"]
@@ -11,7 +11,7 @@ ARG USER_GID=${USER_UID}
 # Install DevContainer/Development tools and depends
 RUN apt-get update \
     && apt-get install -y --no-install-recommends sudo git openssh-client vim unzip \
-    && pecl install xdebug-3.1.6 \
+    && pecl install xdebug \
     && docker-php-ext-enable xdebug
 
 # Create User
@@ -44,6 +44,11 @@ RUN pecl install             redis \
 # Install Apcu extensions and depends
 RUN pecl install             apcu \
     && docker-php-ext-enable apcu
+
+# Install MongoDB extensions and depends
+RUN apt-get install -y --no-install-recommends libssl-dev libsasl2-dev \
+    && pecl install             mongodb \
+    && docker-php-ext-enable    mongodb
 
 # Install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer

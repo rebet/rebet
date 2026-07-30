@@ -33,5 +33,6 @@ alias psysh-app="psysh /workspace/vendor/autoload.php"
 # phpunit
 # ---------------------------------------------------------
 alias phpunit="php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit"
-alias phpunit-sof="php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit --stop-on-failure"
+alias phpunit-sod="php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit --stop-on-defect"
 alias phpunit-xd="php -d memory_limit=256M /workspace/vendor/bin/phpunit"
+alias phpunit-t="php -d memory_limit=256M /workspace/vendor/bin/phpunit --display-phpunit-deprecations --display-deprecations --stop-on-defect"

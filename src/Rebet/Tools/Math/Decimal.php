@@ -324,7 +324,7 @@ class Decimal
                     case '^': return $result->roundByDecimalPlaces($max_scale)->compact();
                     case '√': return $result->roundByDecimalPlaces($max_scale)->compact();
                 }
-                throw new LogicException("Invalid formula [${$formula}] was given.");
+                throw new LogicException("Invalid formula [{$formula}] was given.");
 
             case static::MODE_SIGNIFICANCE_ARITHMETIC:
                 switch ($formula) {
@@ -335,7 +335,7 @@ class Decimal
                     case '^': return $result->roundBySignificantFigures($left->significant_figures, $guard_digits);
                     case '√': return $result->roundBySignificantFigures($left->significant_figures, $guard_digits);
                 }
-                throw new LogicException("Invalid formula [${$formula}] was given.");
+                throw new LogicException("Invalid formula [{$formula}] was given.");
 
             case static::MODE_FIXED_DECIMAL_PLACES:
                 $fixed_scale = static::config('options.fixed_scale');
@@ -347,10 +347,10 @@ class Decimal
                     case '^': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
                     case '√': return $result->roundByDecimalPlaces($fixed_scale, $guard_digits);
                 }
-                throw new LogicException("Invalid formula [${$formula}] was given.");
+                throw new LogicException("Invalid formula [{$formula}] was given.");
        }
 
-        throw new LogicException("Invalid mode [${$mode}] was given.");
+        throw new LogicException("Invalid mode [{$mode}] was given.");
     }
 
     /**
@@ -589,7 +589,7 @@ class Decimal
      */
     public function shift(int $scale) : self
     {
-        return static::of(bcmul($this->value, bcpow('10', $scale, abs(min($scale, 0))), $this->scale - $scale))->inheritDirtyFrom($this);
+        return static::of(bcmul($this->value, bcpow('10', $scale, abs(min($scale, 0))), max($this->scale - $scale, 0)))->inheritDirtyFrom($this);
     }
 
     /**

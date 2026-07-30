@@ -97,7 +97,7 @@ class AuthTest extends RebetTestCase
         $user = Auth::attempt($request, 'user.resigned@rebet.local', 'user.resigned');
         $this->assertTrue($user->isGuest());
 
-        Auth::clear();
+        Auth::reset();
         Config::runtime([
             Auth::class => [
                 'providers' => [

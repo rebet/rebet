@@ -319,7 +319,7 @@ class AuthUser implements \JsonSerializable
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return Json::serialize($this->user);
     }

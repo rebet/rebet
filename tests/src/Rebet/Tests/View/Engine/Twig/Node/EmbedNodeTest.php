@@ -27,13 +27,13 @@ class EmbedNodeTest extends RebetTestCase
 
     public function test_addCallbackAndExecuteAndClear()
     {
-        EmbedNode::clear();
+        EmbedNode::reset();
         $this->assertNull(EmbedNode::execute('hello'));
         EmbedNode::addCode('hello', new CallbackProcessor(function ($name = 'everyone', $call = 'Hello') { return "{$call} {$name}."; }));
         $this->assertSame('Hello everyone.', EmbedNode::execute('hello'));
         $this->assertSame('Hello rebet.', EmbedNode::execute('hello', ['rebet']));
         $this->assertSame('Good by everyone.', EmbedNode::execute('hello', ['call' => 'Good by']));
-        EmbedNode::clear();
+        EmbedNode::reset();
         $this->assertNull(EmbedNode::execute('hello'));
     }
 
@@ -50,11 +50,11 @@ class EmbedNodeTest extends RebetTestCase
 
         $node = new EmbedNode('echo', 'hello', [], ';', ['name']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => ($context["name"] ?? null)]) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [($context["name"] ?? null)]) ;', $src);
 
         $node = new EmbedNode('echo', 'hello', [], ';', ['name', 'foo']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => ($context["name"] ?? null), 1 => ($context["foo"] ?? null)]) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [($context["name"] ?? null), ($context["foo"] ?? null)]) ;', $src);
 
         $args = [
             new ConstantExpression('world', 0),
@@ -62,11 +62,11 @@ class EmbedNodeTest extends RebetTestCase
         ];
         $node = new EmbedNode('echo', 'hello', $args, ';');
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "world", 1 => ($context["name"] ?? null)]) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world", ($context["name"] ?? null)]) ;', $src);
 
         $node = new EmbedNode('echo', 'hello', $args, ';', ['name', 'foo']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => ($context["name"] ?? null), 1 => ($context["foo"] ?? null), 2 => "world", 3 => ($context["name"] ?? null)]) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [($context["name"] ?? null), ($context["foo"] ?? null), "world", ($context["name"] ?? null)]) ;', $src);
 
         $args = [
             'foo' => new ConstantExpression('world', 0),
@@ -78,17 +78,17 @@ class EmbedNodeTest extends RebetTestCase
 
         $node = new EmbedNode('echo', 'hello', $args, ';', ['name', 'foo']);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => ($context["name"] ?? null), 1 => ($context["foo"] ?? null), "foo" => "world", "bar" => ($context["name"] ?? null)]) ;', $src);
+        $this->assertSame('echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [($context["name"] ?? null), ($context["foo"] ?? null), "foo" => "world", "bar" => ($context["name"] ?? null)]) ;', $src);
 
         $args = [
             new NameExpression('status', 0)
         ];
         $node = new EmbedNode('if(', 'is_active', $args, '):');
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("is_active", [0 => ($context["status"] ?? null)]) ):', $src);
+        $this->assertSame('if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("is_active", [($context["status"] ?? null)]) ):', $src);
 
         $node = new EmbedNode('if(', 'is_active', $args, '):', [], true);
         $src  = $this->compiler->compile($node)->getSource();
-        $this->assertSame('if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("is_active", [0 => ($context["status"] ?? null)]) )):', $src);
+        $this->assertSame('if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("is_active", [($context["status"] ?? null)]) )):', $src);
     }
 }

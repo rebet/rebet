@@ -31,18 +31,26 @@ abstract class RebetTestCase extends TestCase
         static::setUpWorkingDir((new AppStructure(__DIR__.'/../../../'))->path('/work'));
     }
 
-    protected function setUp() : void
+    protected static function setUpStatic() : void
     {
-        App::clear();
+        App::reset();
         System::testing(true);
         App::init(new AppWebKernel(new AppStructure(__DIR__.'/../../../app')));
+    }
+
+    protected function setUp() : void
+    {
+        self::setUpStatic();
     }
 
     // protected function assertPreConditions() {}
 
     // protected function assertPostConditions() {}
 
-    // protected function tearDown() : void {}
+    protected function tearDown() : void {
+        restore_error_handler();     // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
+        restore_exception_handler(); // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
+    }
 
     // protected function onNotSuccessfulTest(Throwable $t) {}
 
@@ -67,7 +75,7 @@ abstract class RebetTestCase extends TestCase
 
     protected function createRequestMock($path, $roles = null, $channel = 'web', $guard = 'web', $method = 'GET', $prefix = '', $route = null) : Request
     {
-        Auth::clear();
+        Auth::reset();
         Router::setCurrentChannel($channel);
         Router::activatePrefix($prefix);
         $session = Session::current() ?? new Session();
@@ -85,7 +93,7 @@ abstract class RebetTestCase extends TestCase
 
     protected function createJsonRequestMock($path, $roles = null, $channel = 'api', $method = 'GET', $prefix = '') : Request
     {
-        Auth::clear();
+        Auth::reset();
         Router::setCurrentChannel($channel);
         $session = Session::current() ?? new Session();
         $session->start();

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\View\Engine\Twig\Parser;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Engine\Twig\Parser\EmbedTokenParser;
@@ -25,7 +26,7 @@ class EmbedTokenParserTest extends RebetTestCase
         $this->assertSame('hello', $paser->getTag());
     }
 
-    public function dataParses()
+    public static function dataParses()
     {
         return [
             [
@@ -41,7 +42,7 @@ EOS
                 '{% hello "a" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "a"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a"]) ;
 EOS
             ],
             [
@@ -49,7 +50,7 @@ EOS
                 '{% hello "a", "b" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "a", 1 => "b"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a", "b"]) ;
 EOS
             ],
             [
@@ -57,7 +58,7 @@ EOS
                 '{% hello "a" "b" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "a", 1 => "b"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["a", "b"]) ;
 EOS
             ],
             [
@@ -65,7 +66,7 @@ EOS
                 '{% hello "world" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "world"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world"]) ;
 EOS
             ],
             [
@@ -73,7 +74,7 @@ EOS
                 '{% hello name %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["name"] ?? null)]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null)]) ;
 EOS
             ],
             [
@@ -81,7 +82,7 @@ EOS
                 '{% hello name, "!" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["name"] ?? null), 1 => "!"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null), "!"]) ;
 EOS
             ],
             [
@@ -89,7 +90,7 @@ EOS
                 '{% hello you, he and name %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["you"] ?? null), 1 => (\$context["he"] ?? null), 2 => (\$context["name"] ?? null)]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["you"] ?? null), (\$context["he"] ?? null), (\$context["name"] ?? null)]) ;
 EOS
             ],
             [
@@ -97,7 +98,7 @@ EOS
                 '{% hello [you, he, name], "!" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => [0 => (\$context["you"] ?? null), 1 => (\$context["he"] ?? null), 2 => (\$context["name"] ?? null)], 1 => "!"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [[(\$context["you"] ?? null), (\$context["he"] ?? null), (\$context["name"] ?? null)], "!"]) ;
 EOS
             ],
             [
@@ -105,7 +106,7 @@ EOS
                 '{% hello %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["foo"] ?? null)]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null)]) ;
 EOS
             ],
             [
@@ -113,7 +114,7 @@ EOS
                 '{% hello "world" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["foo"] ?? null), 1 => "world"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null), "world"]) ;
 EOS
             ],
             [
@@ -121,7 +122,7 @@ EOS
                 '{% hello "world", bar %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["foo"] ?? null), 1 => "world", 2 => (\$context["bar"] ?? null)]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["foo"] ?? null), "world", (\$context["bar"] ?? null)]) ;
 EOS
             ],
             [
@@ -129,7 +130,7 @@ EOS
                 '{% role is "admin" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin"]) ) {
 
 EOS
             ],
@@ -138,7 +139,7 @@ EOS
                 '{% role is "admin", "user"%}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin", 1 => "user"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
 EOS
             ],
@@ -147,7 +148,7 @@ EOS
                 '{% role is "admin", "user"%}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin", 1 => "user"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
 EOS
             ],
@@ -156,7 +157,7 @@ EOS
                 '{% role is "admin" or "user"%}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin", 1 => "user"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
 EOS
             ],
@@ -165,7 +166,7 @@ EOS
                 '{% role is not "admin" %}',
                 <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin"]) )) {
+if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin"]) )) {
 
 EOS
             ],
@@ -174,7 +175,7 @@ EOS
                 '{% role in "admin", "user" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin", 1 => "user"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) ) {
 
 EOS
             ],
@@ -183,7 +184,7 @@ EOS
                 '{% role not in "admin", "user" %}',
                 <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "admin", 1 => "user"]) )) {
+if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["admin", "user"]) )) {
 
 EOS
             ],
@@ -192,7 +193,7 @@ EOS
                 '{% role is "a", "b", "c", "d" or "e" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "a", 1 => "b", 2 => "c", 3 => "d", 4 => "e"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
 EOS
             ],
@@ -201,7 +202,7 @@ EOS
                 '{% role is "a", "b", "c", ("d" or "e") %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "a", 1 => "b", 2 => "c", 3 => ("d" || "e")]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", ("d" || "e")]) ) {
 
 EOS
             ],
@@ -210,7 +211,7 @@ EOS
                 '{% role is "a" or "b" : "c", "d", "e" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "a", 1 => "b", 2 => "c", 3 => "d", 4 => "e"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
 EOS
             ],
@@ -219,7 +220,7 @@ EOS
                 '{% role is "a" with "b", "c", "d" and "e" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "a", 1 => "b", 2 => "c", 3 => "d", 4 => "e"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
 EOS
             ],
@@ -228,7 +229,7 @@ EOS
                 '{% role is "a" with "b", "c", "d", "e" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", [0 => "a", 1 => "b", 2 => "c", 3 => "d", 4 => "e"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("role", ["a", "b", "c", "d", "e"]) ) {
 
 EOS
             ],
@@ -237,7 +238,7 @@ EOS
                 '{% can "update" %}',
                 <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", [0 => "update"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) ) {
 
 EOS
             ],
@@ -246,7 +247,7 @@ EOS
                 '{% can not "update" %}',
                 <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", [0 => "update"]) )) {
+if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) )) {
 
 EOS
             ],
@@ -255,7 +256,7 @@ EOS
                 '{% can not "update" %}',
                 <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", [0 => "update"]) )) {
+if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("can", ["update"]) )) {
 
 EOS
             ],
@@ -264,7 +265,7 @@ EOS
                 '{% hello "world" ?? "default" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "world", 1 => "default"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world", "default"]) ;
 EOS
             ],
             [
@@ -272,15 +273,13 @@ EOS
                 '{% hello ?? "default" %}',
                 <<<EOS
 // line 1
-echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "default"]) ;
+echo Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["default"]) ;
 EOS
             ],
         ];
     }
 
-    /**
-     * @dataProvider dataParses
-     */
+    #[DataProvider('dataParses')]
     public function test_parse(TokenParserInterface $parser, string $source, string $expect)
     {
         $this->assertSame($expect, $this->renderPhpCode($parser, $source));

@@ -1,25 +1,21 @@
 <?php
 namespace Rebet\Filesystem;
 
-use League\Flysystem\Adapter\AbstractFtpAdapter;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\FileNotFoundException as FlysystemFileNotFoundException;
 use League\Flysystem\Filesystem as FlysystemFilesystem;
-use League\Flysystem\FilesystemInterface;
-use League\Flysystem\Util\MimeType;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\UrlGeneration\PublicUrlGenerator;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
+use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Tools\Utility\Utils;
-use Symfony\Component\Mime\MimeTypes;
 
 /**
  * Builtin Filesystem Class
@@ -52,29 +48,36 @@ class BuiltinFilesystem implements Filesystem
     }
 
     /**
-     * @var FilesystemInterface
+     * @var FilesystemOperator
      */
     protected $driver;
 
     /**
-     * @var AdapterInterface
+     * @var FilesystemAdapter
      */
     protected $adapter;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * {@inheritDoc}
      */
-    public function __construct(AdapterInterface $adapter, $config = null)
+    public function __construct(FilesystemAdapter $adapter, $config = null)
     {
         $driver        = static::config('driver');
+        $config        = (array) ($config ?? []);
         $this->driver  = new $driver($adapter, $config);
         $this->adapter = $adapter;
+        $this->config  = $config;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function driver() : FilesystemInterface
+    public function driver() : FilesystemOperator
     {
         return $this->driver;
     }
@@ -82,7 +85,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function adapter() : AdapterInterface
+    public function adapter() : FilesystemAdapter
     {
         return $this->adapter;
     }
@@ -98,9 +101,29 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    public function isFile(string $path) : bool
+    {
+        return $this->driver->fileExists($path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isDirectory(string $path) : bool
+    {
+        return $this->driver->directoryExists($path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function path(string $path = '/') : string
     {
-        return Path::normalize($this->driver->getAdapter()->getPathPrefix().$path);
+        $prefixer = Reflector::get($this->adapter, 'prefixer', null, true);
+        if ($prefixer === null) {
+            throw new FilesystemException('This adapter does not support path resolution.');
+        }
+        return Path::normalize($prefixer->prefixPath($path));
     }
 
     /**
@@ -111,11 +134,21 @@ class BuiltinFilesystem implements Filesystem
      */
     protected function convertException(\Exception $e) : FilesystemException
     {
-        switch (true) {
-            case $e instanceof FilesystemException:            return $e;
-            case $e instanceof FlysystemFileNotFoundException: return FileNotFoundException::from($e);
+        return $e instanceof FilesystemException ? $e : new FilesystemException($e->getMessage(), $e) ;
+    }
+
+    /**
+     * Assert the given path (file or directory) exists, otherwise throw FileNotFoundException.
+     *
+     * @param string $path
+     * @return void
+     * @throws FileNotFoundException
+     */
+    protected function assertExists(string $path) : void
+    {
+        if (!$this->exists($path)) {
+            throw new FileNotFoundException("File not found at path: {$path}");
         }
-        return new FilesystemException($e->getMessage(), $e);
     }
 
     /**
@@ -123,6 +156,9 @@ class BuiltinFilesystem implements Filesystem
      */
     public function get(string $path) : string
     {
+        if (!$this->driver->fileExists($path)) {
+            throw new FileNotFoundException("File not found at path: {$path}");
+        }
         try {
             return $this->driver->read($path);
         } catch (\Exception $e) {
@@ -149,11 +185,16 @@ class BuiltinFilesystem implements Filesystem
             default:
                 $stream = $contents;
         }
-        $ext        = $options['.ext'] ?? $ext ?? null ;
-        $path       = str_replace('{.ext}', Utils::isBlank($ext) ? '' : ".{$ext}", $path);
-        $put_method = is_resource($stream) ? 'putStream' : 'put' ;
-        if (!$this->driver->{$put_method}($path, $stream, $options)) {
-            throw new FilesystemException("Can not save contents to `{$path}`.");
+        $ext  = $options['.ext'] ?? $ext ?? null ;
+        $path = str_replace('{.ext}', Utils::isBlank($ext) ? '' : ".{$ext}", $path);
+        try {
+            if (is_resource($stream)) {
+                $this->driver->writeStream($path, $stream, $options);
+            } else {
+                $this->driver->write($path, $stream, $options);
+            }
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
         return $path;
     }
@@ -171,13 +212,11 @@ class BuiltinFilesystem implements Filesystem
      */
     public function getVisibility(string $path) : string
     {
-        if ($visibility = $this->driver->getVisibility($path)) {
-            if (preg_match("/[0-9]{4}/", $visibility)) {
-                return preg_match("/0[1-7]00/", $visibility) ? Filesystem::VISIBILITY_PRIVATE : Filesystem::VISIBILITY_PUBLIC ;
-            }
-            return $visibility;
+        try {
+            return $this->driver->visibility($path);
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
-        throw new FilesystemException("Can not get visibility of `{$path}`.");
     }
 
     /**
@@ -185,10 +224,9 @@ class BuiltinFilesystem implements Filesystem
      */
     public function setVisibility(string $path, string $visibility) : Filesystem
     {
+        $this->assertExists($path);
         try {
-            if (!$this->driver->setVisibility($path, $visibility)) {
-                throw new FilesystemException("Can not set `{$visibility}` visibility to `{$path}`.");
-            }
+            $this->driver->setVisibility($path, $visibility);
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -220,14 +258,13 @@ class BuiltinFilesystem implements Filesystem
     {
         foreach ($paths as $path) {
             try {
-                $deleter = $this->isDirectory($path) ? 'deleteDir' : 'delete' ;
-                if (!$this->driver->$deleter($path)) {
-                    throw new FilesystemException("Can not delete `{$path}`.");
+                if ($this->isDirectory($path)) {
+                    $this->driver->deleteDirectory($path);
+                } else {
+                    $this->driver->delete($path);
                 }
-            } catch (FileNotFoundException $e) {
-                // Do not rethrow (File not found means already deleted)
-            } catch (FlysystemFileNotFoundException $e) {
-                // Do not rethrow (File not found means already deleted)
+            } catch (\Exception $e) {
+                throw $this->convertException($e);
             }
         }
         return $this;
@@ -246,6 +283,7 @@ class BuiltinFilesystem implements Filesystem
      */
     public function copy(string $from, string $to, bool $replace = false) : Filesystem
     {
+        $this->assertExists($from);
         try {
             if ($replace) {
                 $this->delete($to);
@@ -259,15 +297,14 @@ class BuiltinFilesystem implements Filesystem
                     if ($this->isDirectory($content)) {
                         $this->mkdir($path);
                     } else {
-                        if (!$this->driver->copy($content, $path)) {
-                            throw new FilesystemException("Can not copy from `{$content}` to `{$path}`.");
-                        }
+                        $this->driver->copy($content, $path);
                     }
                 }
             } else {
-                if (!$this->driver->copy($from, $to)) {
-                    throw new FilesystemException("Can not copy from `{$from}` to `{$to}`.");
+                if (!$replace && $this->exists($to)) {
+                    throw new FilesystemException("File already exists at path: {$to}");
                 }
+                $this->driver->copy($from, $to);
             }
         } catch (\Exception $e) {
             throw $this->convertException($e);
@@ -280,13 +317,14 @@ class BuiltinFilesystem implements Filesystem
      */
     public function move(string $from, string $to, bool $replace = false) : Filesystem
     {
+        $this->assertExists($from);
         try {
             if ($replace) {
                 $this->delete($to);
+            } elseif ($this->exists($to)) {
+                throw new FilesystemException("File already exists at path: {$to}");
             }
-            if (!$this->driver->rename($from, $to)) {
-                throw new FilesystemException("Can not move from `{$from}` to `{$to}`.");
-            }
+            $this->driver->move($from, $to);
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -296,30 +334,11 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function isFile(string $path) : bool
-    {
-        return $this->metadata($path)['type'] === 'file';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isDirectory(string $path) : bool
-    {
-        return $this->metadata($path)['type'] === 'dir';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function size(string $path) : int
     {
+        $this->assertExists($path);
         try {
-            $size = $this->driver->getSize($path);
-            if ($size === false) {
-                throw new FilesystemException("Can not get size from `{$path}`.");
-            }
-            return $size;
+            return $this->driver->fileSize($path);
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -330,15 +349,18 @@ class BuiltinFilesystem implements Filesystem
      */
     public function metadata(string $path) : array
     {
+        $this->assertExists($path);
         try {
-            if ($meta_data = $this->driver->getMetadata($path)) {
-                return $meta_data;
-            }
+            $is_dir = $this->isDirectory($path);
+            return [
+                'type'      => $is_dir ? 'dir' : 'file',
+                'path'      => $path,
+                'size'      => $is_dir ? null : $this->driver->fileSize($path),
+                'timestamp' => $this->driver->lastModified($path),
+            ];
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
-
-        throw new FilesystemException("Can not get meta data of `{$path}`.");
     }
 
     /**
@@ -346,11 +368,12 @@ class BuiltinFilesystem implements Filesystem
      */
     public function mimeType(string $path) : ?string
     {
+        $this->assertExists($path);
         try {
-            MimeTypes::class;
-            $mime_type = $this->driver->getMimetype($path);
-            $mime_type = $mime_type === 'text/plain' ? MimeType::detectByFilename($path) : $mime_type ;
-            return $mime_type === false ? null : $mime_type ;
+            if ($this->isDirectory($path)) {
+                return 'directory';
+            }
+            return $this->driver->mimeType($path);
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -361,12 +384,9 @@ class BuiltinFilesystem implements Filesystem
      */
     public function lastModified(string $path) : DateTime
     {
+        $this->assertExists($path);
         try {
-            $time = $this->driver->getTimestamp($path);
-            if ($time === false) {
-                throw new FilesystemException("Can not get last modified `{$path}`.");
-            }
-            return new DateTime((int)$time);
+            return new DateTime($this->driver->lastModified($path));
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -381,19 +401,17 @@ class BuiltinFilesystem implements Filesystem
             throw new FileNotFoundException("{$path} is not public.");
         }
 
-        $adapter = $this->adapter instanceof CachedAdapter ? $this->adapter->getAdapter() : $this->adapter ;
+        $adapter = $this->adapter;
         if (method_exists($adapter, 'getUrl')) {
             return $adapter->getUrl($path);
         }
-        if ($adapter instanceof AwsS3Adapter) {
-            if (! is_null($url = $this->driver->getConfig()->get('url'))) {
-                return Path::normalize($url.'/'.$adapter->getPathPrefix().$path);
-            }
-            return $adapter->getClient()->getObjectUrl($adapter->getBucket(), $adapter->getPathPrefix().$path);
+        if ($adapter instanceof PublicUrlGenerator) {
+            $url = $this->config['url'] ?? null;
+            return $url ? Path::normalize($url.'/'.$path) : $this->driver->publicUrl($path);
         }
-        if ($adapter instanceof AbstractFtpAdapter || $adapter instanceof Local) {
-            $url = $this->driver->getConfig()->get('url');
-            return Path::normalize($url ? "{$url}/{$path}" : "/{$path}") ;
+        if ($adapter instanceof LocalFilesystemAdapter) {
+            $url = $this->config['url'] ?? null;
+            return Path::normalize($url ? "{$url}/{$path}" : "/{$path}");
         }
         throw new FilesystemException('This adapter does not support retrieving URLs.');
     }
@@ -403,8 +421,9 @@ class BuiltinFilesystem implements Filesystem
      */
     public function readStream(string $path)
     {
+        $this->assertExists($path);
         try {
-            return $this->driver->readStream($path) ?: null;
+            return $this->driver->readStream($path);
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -416,7 +435,12 @@ class BuiltinFilesystem implements Filesystem
     public function ls(?string $directory = null, $pattern = '*', ?string $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {
         try {
-            return $this->filter($this->driver->listContents($directory, $recursive), $type, $pattern, $matching_mode);
+            $contents = [];
+            foreach ($this->driver->listContents($directory ?? '/', $recursive) as $item) {
+                $contents[] = ['type' => $item->type(), 'path' => $item->path()];
+            }
+            usort($contents, function ($a, $b) { return $a['path'] <=> $b['path']; });
+            return $this->filter($contents, $type, $pattern, $matching_mode);
         } catch (\Exception $e) {
             throw $this->convertException($e);
         }
@@ -465,19 +489,10 @@ class BuiltinFilesystem implements Filesystem
      */
     public function mkdir(string $path, array $config = []) : Filesystem
     {
-        if (!$this->driver->createDir($path, $config)) {
-            throw new FilesystemException("Can not create new directory to {$path}.");
-        }
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function flush() : Filesystem
-    {
-        if ($this->adapter instanceof CachedAdapter) {
-            $this->adapter->getCache()->flush();
+        try {
+            $this->driver->createDirectory($path, $config);
+        } catch (\Exception $e) {
+            throw $this->convertException($e);
         }
         return $this;
     }

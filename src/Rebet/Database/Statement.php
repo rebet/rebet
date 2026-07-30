@@ -88,17 +88,30 @@ class Statement implements \IteratorAggregate
         try {
             foreach ($params as $key => $param) {
                 $param = $param instanceof PdoParameter ? $param : PdoParameter::str($param) ;
-                $this->stmt->bindParam($key, $param->value, $param->type, null, $param->option);
+                $this->stmt->bindParam($key, $param->value, $param->type, 0, $param->option);
             }
 
             if (! $this->stmt->execute()) {
-                throw $this->db->exception($this->stmt->errorInfo(), $this->stmt->queryString, $params);
+                throw $this->db->exception($this->stmt->errorInfo(), $this->queryString(), $params);
             }
         } catch (\PDOException $e) {
-            throw $this->db->exception($e, $this->stmt->queryString, $params);
+            throw $this->db->exception($e, $this->queryString(), $params);
         }
-        $this->db->log($this->stmt->queryString, $params);
+        $this->db->log($this->queryString() ?? '', $params);
         return $this;
+    }
+
+    /**
+     * Get the query string of this statement.
+     * NOTE: `PDOStatement::$queryString` is a typed property that is only initialized once the
+     *       statement has actually been prepared by the PDO driver, so accessing it on a bare
+     *       (e.g. mocked) PDOStatement without going through `isset()` first would throw an Error.
+     *
+     * @return string|null
+     */
+    protected function queryString() : ?string
+    {
+        return isset($this->stmt->queryString) ? $this->stmt->queryString : null;
     }
 
     /**
@@ -289,7 +302,7 @@ class Statement implements \IteratorAggregate
     /**
      * {@inheritDoc}
      */
-    public function getIterator()
+    public function getIterator() : \Traversable
     {
         return $this->stmt;
     }

@@ -39,7 +39,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_findById()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = new DatabaseProvider(User::class);
             $this->assertNull($provider->findById(null));
             $this->assertNull($provider->findById(0));
@@ -49,7 +49,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_findByToken()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = new DatabaseProvider(User::class);
 
             $user = $provider->findByToken(null);
@@ -67,7 +67,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_findByCredentials()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = new DatabaseProvider(User::class);
 
             $this->assertNull($provider->findByCredentials(null, null));
@@ -84,7 +84,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_rehashPassword()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider     = new DatabaseProvider(User::class);
             $user         = $provider->findById(1);
             $old_password = $user->password;
@@ -106,7 +106,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_findByRememberToken()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = (new DatabaseProvider(User::class))->name('web');
 
             $this->assertNull($provider->findByRememberToken(null));
@@ -129,7 +129,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
     public function test_issuingRememberToken()
     {
         DateTime::setTestNow('2020-01-10 00:00:00');
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = (new DatabaseProvider(User::class))->name('web');
 
             foreach (User::select() as $user) {
@@ -143,7 +143,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_removeRememberToken()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = (new DatabaseProvider(User::class))->name('web');
 
             $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));
@@ -154,7 +154,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
     public function test_removeRememberToken_withExpired()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $provider = (new DatabaseProvider(User::class, 'email', 'password', 'api_token', 1))->name('web');
 
             $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));

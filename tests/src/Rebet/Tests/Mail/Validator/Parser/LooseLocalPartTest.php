@@ -6,6 +6,7 @@ use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
 use Egulias\EmailValidator\Result\Reason\DotAtEnd;
 use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Egulias\EmailValidator\Warning\QuotedString;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Mail\Validator\Parser\LooseLocalPart;
 use Rebet\Mail\Validator\Warning\ConsecutiveDotWarning;
 use Rebet\Mail\Validator\Warning\DotAtEndWarning;
@@ -25,7 +26,7 @@ class LooseLocalPartTest extends RebetTestCase
         $this->assertSame([DotAtEnd::class, DotAtStart::class], (new LooseLocalPart(new EmailLexer(), [DotAtEnd::class, DotAtStart::class]))->ignores());
     }
 
-    public function dataParses() : array
+    public static function dataParses() : array
     {
         return [
             [
@@ -52,9 +53,7 @@ class LooseLocalPartTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataParses
-     */
+    #[DataProvider('dataParses')]
     public function test_parse($expect, ?string $mail_address, array $ignores, ?array $warnings = null)
     {
         $lexer = new EmailLexer();

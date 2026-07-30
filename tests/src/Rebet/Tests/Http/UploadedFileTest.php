@@ -52,21 +52,21 @@ class UploadedFileTest extends RebetTestCase
         $path        = $upload_file->store('bar.txt');
         $this->assertSame('bar.txt', $path);
         $this->assertSame('1,2,3', Storage::private()->get($path));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('/unittest/foo.csv', '1,2,3');
         $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.csv'), 'foo.csv');
         $path        = $upload_file->store('test/bar{.ext}');
         $this->assertSame('test/bar.csv', $path);
         $this->assertSame('1,2,3', Storage::private()->get($path));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->put('/unittest/foo.csv', '1,2,3');
         $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.csv'), 'foo.csv', 'text/plain');
         $path        = $upload_file->store('test/bar{.ext}');
         $this->assertSame('test/bar.csv', $path);
         $this->assertSame('1,2,3', Storage::private()->get($path));
-        Storage::clean();
+        Storage::reset();
 
         // Do not use client mime type
         Storage::private()->put('/unittest/foo', '1,2,3');
@@ -74,18 +74,18 @@ class UploadedFileTest extends RebetTestCase
         $path        = $upload_file->store('test/bar{.ext}');
         $this->assertSame('test/bar', $path);
         $this->assertSame('1,2,3', Storage::private()->get($path));
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->putFile('/unittest/foo', App::structure()->public('/assets/img/72x72.png'));
         $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo'), 'foo');
         $path        = $upload_file->store('test/bar{.ext}');
         $this->assertSame('test/bar.png', $path);
-        Storage::clean();
+        Storage::reset();
 
         Storage::private()->putFile('/unittest/foo.jpg', App::structure()->public('/assets/img/72x72.png'));
         $upload_file = new UploadedFile(Storage::private()->path('/unittest/foo.jpg'), 'foo.jpg', 'image/jpg');
         $path        = $upload_file->store('test/bar{.ext}');
         $this->assertSame('test/bar.png', $path);
-        Storage::clean();
+        Storage::reset();
     }
 }

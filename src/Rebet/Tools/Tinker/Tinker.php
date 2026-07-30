@@ -514,7 +514,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $origin = &$this->origin();
         if (is_array($origin) || is_object($origin)) {
@@ -525,7 +525,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return Reflector::has($this->origin(), $offset);
     }
@@ -533,7 +533,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         $origin = $this->origin();
         if (is_array($origin) || is_object($origin)) {
@@ -544,7 +544,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return $this->__get($offset);
     }
@@ -552,7 +552,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function count()
+    public function count() : int
     {
         return Arrays::count($this->origin());
     }
@@ -560,7 +560,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function getIterator()
+    public function getIterator() : \Traversable
     {
         $origin = $this->origin();
         return new \ArrayIterator(array_map(
@@ -582,7 +582,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return Json::serialize($this->origin());
     }

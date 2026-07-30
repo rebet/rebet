@@ -1,6 +1,6 @@
 <?php
 
-use League\Flysystem\Adapter\Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Rebet\Application\App;
 use Rebet\Filesystem\Storage;
 
@@ -11,15 +11,15 @@ return [
         'disks'        => [
             'private'  => [
                 'adapter'    => [
-                    '@factory' => Local::class,
-                    'root'     => App::structure()->privateStorage(),
+                    '@factory' => LocalFilesystemAdapter::class,
+                    'location' => App::structure()->privateStorage(),
                 ],
                 'config' => null,
             ],
             'public' => [
                 'adapter'    => [
-                    '@factory' => Local::class,
-                    'root'     => App::structure()->publicStorage(),
+                    '@factory' => LocalFilesystemAdapter::class,
+                    'location' => App::structure()->publicStorage(),
                 ],
                 'config' => [
                     'visibility' => 'public',

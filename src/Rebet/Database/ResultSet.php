@@ -50,7 +50,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * {@inheritDoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if ($value instanceof DataModel) {
             $value->belongsResultSet($this);

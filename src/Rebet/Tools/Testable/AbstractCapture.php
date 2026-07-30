@@ -71,7 +71,7 @@ abstract class AbstractCapture extends \php_user_filter
      * @param mixed $closing
      * @return int
      */
-    public function filter($in, $out, &$consumed, $closing)
+    public function filter($in, $out, &$consumed, bool $closing) : int
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
             if (self::$is_capture) {

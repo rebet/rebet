@@ -87,7 +87,7 @@ class Reflector
             return $default;
         }
         $rp->setAccessible($accessible);
-        $value = $rp->getValue($object);
+        $value = static::getPropertyValue($rp, $object);
         return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
     }
 
@@ -101,6 +101,35 @@ class Reflector
     protected static function canPropertyAccess($target, string $property) : bool
     {
         return ((\is_string($target) && \class_exists($target)) || \is_object($target)) && \property_exists($target, $property) ;
+    }
+
+    /**
+     * Get the property value of given object/class, supporting static properties where $object may be a class name string.
+     *
+     * @param \ReflectionProperty $rp
+     * @param object|string $object
+     * @return mixed
+     */
+    protected static function getPropertyValue(\ReflectionProperty $rp, $object)
+    {
+        return $rp->isStatic() ? $rp->getValue() : $rp->getValue($object) ;
+    }
+
+    /**
+     * Set the property value of given object/class, supporting static properties where $object may be a class name string.
+     *
+     * @param \ReflectionProperty $rp
+     * @param object|string $object
+     * @param mixed $value
+     * @return void
+     */
+    protected static function setPropertyValue(\ReflectionProperty $rp, $object, $value) : void
+    {
+        if ($rp->isStatic()) {
+            $rp->setValue(null, $value);
+        } else {
+            $rp->setValue($object, $value);
+        }
     }
 
     /**
@@ -184,13 +213,13 @@ class Reflector
         if ($current != $key) {
             $rp = new \ReflectionProperty($object, $current);
             $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
-            $target = $rp->getValue($object);
+            $target = static::getPropertyValue($rp, $object);
             static::set($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
-            $rp->setValue($object, $target);
+            static::setPropertyValue($rp, $object, $target);
         } else {
             $rp = new \ReflectionProperty($object, $current);
             $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
-            $rp->setValue($object, $value);
+            static::setPropertyValue($rp, $object, $value);
         }
         return;
     }
@@ -235,7 +264,7 @@ class Reflector
                 return false;
             }
             $rp->setAccessible($accessible);
-            $nest_obj = $rp->getValue($object);
+            $nest_obj = static::getPropertyValue($rp, $object);
             // $nest_obj = $object->{$current};
         }
         while ($nest_obj instanceof DotAccessDelegator) {
@@ -290,9 +319,9 @@ class Reflector
         if ($current != $key) {
             $rp = new \ReflectionProperty($object, $current);
             $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
-            $target = $rp->getValue($object);
+            $target = static::getPropertyValue($rp, $object);
             $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
-            $rp->setValue($object, $target);
+            static::setPropertyValue($rp, $object, $target);
             return static::resolveDotAccessDelegator($ret);
         }
         $rp = new \ReflectionProperty($object, $current);
@@ -390,7 +419,7 @@ class Reflector
                     if (is_scalar($value)) {
                         return (string)$value;
                     }
-                    if (method_exists($value, '__toString')) {
+                    if (is_object($value) && method_exists($value, '__toString')) {
                         return $value->__toString();
                     }
                     if (Arrays::accessible($value)) {
@@ -506,7 +535,7 @@ class Reflector
     protected static function tryConvertByMember($value, string $method, string $type)
     {
         try {
-            if (method_exists($value, $method)) {
+            if (is_object($value) && method_exists($value, $method)) {
                 $rm        = new \ReflectionMethod($value, $method);
                 $converted = $rm->getNumberOfParameters() === 0 ? $value->$method() : $value->$method($type);
                 if (static::typeOf($converted, $type)) {
@@ -530,7 +559,7 @@ class Reflector
      */
     public static function typeOf($value, ?string $type) : bool
     {
-        if ($type === null) {
+        if ($type === null || $type === 'mixed') {
             return true;
         }
         if ($value === null) {

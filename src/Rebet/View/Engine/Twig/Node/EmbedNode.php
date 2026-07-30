@@ -24,11 +24,11 @@ class EmbedNode extends Node
     protected static $processors = [];
 
     /**
-     * Clear registered codes.
+     * Reset registered codes.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$processors = [];
     }

@@ -1,15 +1,14 @@
 <?php
 namespace Rebet\Tests\Tools\DateTime;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tools\DateTime\DayOfWeek;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Translation\Translator;
 
 class DayOfWeekTest extends RebetTestCase
 {
-    /**
-     * @dataProvider dataDefinitions
-     */
+    #[DataProvider('dataDefinitions')]
     public function test_definition(DayOfWeek $dayOfWeek, $value, $label, $label_short, $label_min)
     {
         $this->assertSame($value, $dayOfWeek->value);
@@ -18,7 +17,7 @@ class DayOfWeekTest extends RebetTestCase
         $this->assertSame($label_min, $dayOfWeek->label_min);
     }
 
-    public function dataDefinitions()
+    public static function dataDefinitions()
     {
         return [
             [DayOfWeek::SUNDAY()   , 0, 'Sunday'   , 'Sun', 'Su'],
@@ -31,9 +30,7 @@ class DayOfWeekTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataTranslations
-     */
+    #[DataProvider('dataTranslations')]
     public function test_translation(DayOfWeek $dayOfWeek, $locale, $label, $label_short, $label_min)
     {
         Translator::setLocale($locale);
@@ -42,7 +39,7 @@ class DayOfWeekTest extends RebetTestCase
         $this->assertSame($label_min, $dayOfWeek->translate('label_min'));
     }
 
-    public function dataTranslations()
+    public static function dataTranslations()
     {
         return [
             [DayOfWeek::SUNDAY()   , 'en', 'Sunday'   , 'Sun', 'Su'],
@@ -63,16 +60,14 @@ class DayOfWeekTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataXxxxs
-     */
+    #[DataProvider('dataXxxxs')]
     public function test_isXxxx(DayOfWeek $dayOfWeek, $xxxx, $expect)
     {
         $method = "is{$xxxx}";
         $this->assertSame($expect, $dayOfWeek->$method());
     }
 
-    public function dataXxxxs()
+    public static function dataXxxxs()
     {
         return [
             [DayOfWeek::SUNDAY()   , 'Sunday'   , true],

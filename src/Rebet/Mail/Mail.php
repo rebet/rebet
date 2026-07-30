@@ -35,6 +35,8 @@ use Swift_Mime_SimpleMimeEntity;
 /**
  * Mail Class
  *
+ * @todo Replace SwiftMailer with Symfony Mailer because SwiftMailer is abandoned.
+ * 
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2020 github.com/rain-noise
@@ -128,11 +130,11 @@ class Mail
     protected $headers;
 
     /**
-     * Clear the Mail context
+     * Reset the Mail context
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$initialized = false;
         static::$mailers     = [];
@@ -621,7 +623,10 @@ class Mail
     public function priority(?int $level = null)
     {
         if ($level === null) {
-            return intval($this->message->getPriority());
+            // Swiftmailer is abandoned and internally passes a possibly-null header value to
+            // sscanf(), which is deprecated since PHP 8.1. The call itself still works correctly,
+            // so the deprecation notice is suppressed here rather than patching the vendor library.
+            return intval(@$this->message->getPriority());
         }
         $this->message->setPriority($level);
         return $this;
@@ -637,7 +642,11 @@ class Mail
      */
     public function attach(string $file, ?string $filename = null, ?string $content_type = null) : self
     {
-        $attachment = Swift_Attachment::fromPath($file, $content_type);
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        $attachment = @Swift_Attachment::fromPath($file, $content_type);
         $this->message->attach($filename ? $attachment->setFilename($filename) : $attachment);
         return $this;
     }
@@ -652,7 +661,11 @@ class Mail
      */
     public function attachData(string $data, ?string $filename = null, ?string $content_type = null) : self
     {
-        $attachment = new Swift_Attachment($data, $filename, $content_type);
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        $attachment = @new Swift_Attachment($data, $filename, $content_type);
         $this->message->attach($attachment);
         return $this;
     }
@@ -666,7 +679,11 @@ class Mail
      */
     public function embed(string $file, ?string $filename = null) : string
     {
-        return $this->embedded_cids[$filename ?? basename($file)] = $this->message->embed($filename ? Swift_EmbeddedFile::fromPath($file)->setFilename($filename) : Swift_EmbeddedFile::fromPath($file));
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        return $this->embedded_cids[$filename ?? basename($file)] = $this->message->embed($filename ? (@Swift_EmbeddedFile::fromPath($file))->setFilename($filename) : @Swift_EmbeddedFile::fromPath($file));
     }
 
     /**
@@ -679,7 +696,11 @@ class Mail
      */
     public function embedData(string $data, string $filename, ?string $content_type = null)
     {
-        return $this->embedded_cids[$filename] = $this->message->embed(new Swift_EmbeddedFile($data, $filename, $content_type));
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        return $this->embedded_cids[$filename] = $this->message->embed(@new Swift_EmbeddedFile($data, $filename, $content_type));
     }
 
     /**

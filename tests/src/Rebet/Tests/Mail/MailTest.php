@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Mail;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Log\Log;
 use Rebet\Mail\Mail;
@@ -29,7 +30,7 @@ class MailTest extends RebetTestCase
         $mailer = Mail::mailer('test');
         $this->assertSame(true, $this->inspect(Mail::class, 'initialized'));
         $this->assertSame(['test' => $mailer], $this->inspect(Mail::class, 'mailers'));
-        Mail::clear();
+        Mail::reset();
         $this->assertSame(false, $this->inspect(Mail::class, 'initialized'));
         $this->assertSame([], $this->inspect(Mail::class, 'mailers'));
     }
@@ -125,7 +126,7 @@ class MailTest extends RebetTestCase
         $this->assertSame(true, $this->inspect(Mail::class, 'initialized'));
     }
 
-    public function dataResolves() : array
+    public static function dataResolves() : array
     {
         return [
             [[], null],
@@ -143,9 +144,7 @@ class MailTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataResolves
-     */
+    #[DataProvider('dataResolves')]
     public function test_resolve($expect, $value)
     {
         $this->assertSame($expect, Mail::resolve($value));
@@ -403,7 +402,7 @@ class MailTest extends RebetTestCase
         $this->assertNotEquals($old, 'newid@domain.of.yours');
         $this->assertSame("Message-ID: <newid@domain.of.yours>\r\n", $mail->headers()->get('Message-ID')->toString());
 
-        Mail::clear();
+        Mail::reset();
         Config::application([
             Mail::class => [
                 'initialize' => [

@@ -2,6 +2,7 @@
 namespace Rebet\Tests\Database\Compiler;
 
 use App\Enum\Gender;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Database\OrderBy;
@@ -19,9 +20,10 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         DateTime::setTestNow('2001-02-03 04:05:06');
     }
 
-    public function dataCompiles() : array
+    public static function dataCompiles() : array
     {
-        $this->setUp();
+        self::setUpStatic();
+        DateTime::setTestNow('2001-02-03 04:05:06');
         return [
             [
                 ['sqlite', 'mysql', 'mariadb', 'pgsql'],
@@ -414,12 +416,10 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataCompiles
-     */
+    #[DataProvider('dataCompiles')]
     public function test_compile(array $target_db_kinds, string $expect_sql, array $expect_params, string $sql, ?array $order_by = null, ?array $params = null, ?Pager $pager = null, ?Cursor $cursor = null)
     {
-        $this->eachDb(function (Database $db) use ($target_db_kinds, $expect_sql, $expect_params, $sql, $order_by, $params, $pager, $cursor) {
+        self::eachDb(function (Database $db) use ($target_db_kinds, $expect_sql, $expect_params, $sql, $order_by, $params, $pager, $cursor) {
             if (!in_array($db->name(), $target_db_kinds)) {
                 return;
             }
@@ -435,7 +435,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         $this->assertTrue(true);
     }
 
-    public function dataConvertParams() : array
+    public static function dataConvertParams() : array
     {
         return [
             [':key', [':key' => PdoParameter::int(1)], 'key', 1],
@@ -458,12 +458,10 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataConvertParams
-     */
+    #[DataProvider('dataConvertParams')]
     public function test_convertParam(string $expect_sql, array $expect_params, string $key, $value)
     {
-        $this->eachDb(function (Database $db) use ($expect_sql, $expect_params, $key, $value) {
+        self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $key, $value) {
             $param = $db->compiler()->convertParam($key, $value);
             $this->assertEquals($expect_sql, $param->sql());
             $this->assertEquals($expect_params, $param->params());

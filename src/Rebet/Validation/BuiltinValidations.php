@@ -791,7 +791,7 @@ class BuiltinValidations implements Validations
      * @param array $replacement (default: [])
      * @return boolean
      */
-    protected function handleNumber(Context $c, $number, ?int $precision = null, callable $test, string $messsage_key, array $replacement = []) : bool
+    protected function handleNumber(Context $c, $number, ?int $precision, callable $test, string $messsage_key, array $replacement = []) : bool
     {
         [$number, $number_label]  = $c->resolve($number);
         $replacement['number']    = $number_label instanceof Decimal ? $number_label->format(true) : $number_label ;
@@ -1284,7 +1284,7 @@ class BuiltinValidations implements Validations
      * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
-    protected function handleDatetime(Context $c, $at_time, $format = [], callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
+    protected function handleDatetime(Context $c, $at_time, $format, callable $test, string $messsage_key, array $replacement = [], callable $selector = null) : bool
     {
         if ($c->blank()) {
             return true;

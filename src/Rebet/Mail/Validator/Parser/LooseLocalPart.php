@@ -26,6 +26,14 @@ use Rebet\Tools\Reflection\Reflector;
 class LooseLocalPart extends LocalPart
 {
     /**
+     * Note: The parent LocalPart class declares its own $localPart as private, so it is not
+     * inherited here. This property is a separate slot used only within this overridden parse().
+     *
+     * @var string
+     */
+    protected $localPart = '';
+
+    /**
      * @var string[] errors you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
      */
     protected $ignores;

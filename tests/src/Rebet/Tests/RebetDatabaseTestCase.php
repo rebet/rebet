@@ -21,9 +21,9 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         parent::tearDownAfterClass();
     }
 
-    protected function setUp() : void
+    protected static function setUpStatic() : void
     {
-        parent::setUp();
+        parent::setUpStatic();
         Config::application([
             Dao::class => [
                 'default_db' => 'sqlite',
@@ -62,5 +62,10 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
 
         Cursor::clear();
         static::setUpDatabase();
+    }
+
+    protected function setUp() : void
+    {
+        self::setUpStatic();
     }
 }

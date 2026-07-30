@@ -1,11 +1,14 @@
 <?php
 namespace Rebet\Tests\Mail\Mime;
 
+use PHPUnit\Framework\Attributes\CoversMethod;
 use Rebet\Mail\Mime\MimeMessage;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Template\Letterpress;
 use Swift_ByteStream_ArrayByteStream;
 
+#[CoversMethod(MimeMessage::class, 'toReadableString')]
+#[CoversMethod(MimeMessage::class, 'convertToReadableString')]
 class MimeMessageTest extends RebetTestCase
 {
     public function test_getBody()
@@ -71,10 +74,6 @@ class MimeMessageTest extends RebetTestCase
         $this->assertSame(null, $message->getPart(9));
     }
 
-    /**
-     * @covers Rebet\Mail\Mime\MimeMessage::toReadableString
-     * @covers Rebet\Mail\Mime\MimeMessage::convertToReadableString
-     */
     public function test_toReadableString()
     {
         $message = new MimeMessage();

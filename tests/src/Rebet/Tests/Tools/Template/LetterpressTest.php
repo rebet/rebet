@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Tools\Template;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
 use Rebet\Tests\RebetTestCase;
@@ -18,7 +19,7 @@ class LetterpressTest extends RebetTestCase
         parent::setUp();
     }
 
-    public function dataCompiles() : array
+    public static function dataCompiles() : array
     {
         return [
             [
@@ -286,9 +287,7 @@ class LetterpressTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataCompiles
-     */
+    #[DataProvider('dataCompiles')]
     public function test_compile(?string $template, $expect)
     {
         if ($expect instanceof \Exception) {
@@ -298,7 +297,7 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame($expect, $this->inspect(new Letterpress($template), 'syntax'));
     }
 
-    public function dataEvaluates() : array
+    public static function dataEvaluates() : array
     {
         return [
             ['$a', [
@@ -325,9 +324,7 @@ class LetterpressTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataEvaluates
-     */
+    #[DataProvider('dataEvaluates')]
     public function test_evaluate(string $code, array $tests)
     {
         foreach ($tests as $i => [$vars, $expect]) {
@@ -382,7 +379,7 @@ EOS
         );
     }
 
-    public function dataExpandVars() : array
+    public static function dataExpandVars() : array
     {
         return [
             ['', '', []],
@@ -426,9 +423,7 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataExpandVars
-     */
+    #[DataProvider('dataExpandVars')]
     public function test_expandVars($expect, $template, array $vars = [])
     {
         if ($expect instanceof \Exception) {
@@ -438,7 +433,7 @@ EOS
         $this->assertSame($expect, Letterpress::expandVars($template, $vars));
     }
 
-    public function dataRenders() : array
+    public static function dataRenders() : array
     {
         return [
             [
@@ -839,9 +834,7 @@ EOS
         ];
     }
 
-    /**
-     * @dataProvider dataRenders
-     */
+    #[DataProvider('dataRenders')]
     public function test_render(?string $text, array $vars, $expect)
     {
         if ($expect instanceof \Exception) {
@@ -894,7 +887,7 @@ EOS
         $this->assertSame('foo bAr baz', Letterpress::of('foo {% replace "/a/", "A" %}bar{% endreplace %} baz')->render());
     }
 
-    public function test_clear()
+    public function test_reset()
     {
         $this->assertTrue(Letterpress::defined('if'));
         $this->assertTrue(Letterpress::defined('for'));
@@ -908,11 +901,20 @@ EOS
         $this->assertTrue(Letterpress::defined('for'));
         $this->assertTrue(Letterpress::defined('upper'));
 
-        Letterpress::clear();
+        Letterpress::reset();
 
         $this->assertTrue(Letterpress::defined('if'));
         $this->assertTrue(Letterpress::defined('for'));
         $this->assertFalse(Letterpress::defined('upper'));
+    }
+
+    public function test_clear()
+    {
+        $letterpress = Letterpress::of('{{ $name }}')->with(['name' => 'Rebet']);
+        $this->assertSame('Rebet', $letterpress->render());
+
+        $this->assertSame($letterpress, $letterpress->clear());
+        $this->assertSame('', $letterpress->render());
     }
 
     public function test_block_duplicatedTag()
@@ -984,7 +986,7 @@ EOS
 
     public function test_if()
     {
-        Letterpress::clear();
+        Letterpress::reset();
         $this->assertFalse(Letterpress::defined('env'));
 
         Letterpress::if('env', function (string ...$env) {

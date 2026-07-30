@@ -31,7 +31,7 @@ trait CacheTestHelper
      */
     public static function eachStore(\Closure $test, bool $taggable = false, string ...$stores)
     {
-        Config::clear(Cache::class, Layer::RUNTIME);
+        Config::reset(Cache::class, Layer::RUNTIME);
         Cache::clear();
         $stores = empty($stores) ? array_keys(Cache::config('stores')) : $stores ;
         foreach ($stores as $name) {

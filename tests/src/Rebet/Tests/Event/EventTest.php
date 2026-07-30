@@ -41,7 +41,7 @@ class EventTest extends RebetTestCase
         $this->assertStdoutEquals('6-a', function () { Event::dispatch('a'); });
         $this->assertStdoutEquals('1', function () { Event::dispatch(1); });
 
-        Event::clear();
+        Event::reset();
         $this->assertStdoutEquals('', function () { Event::dispatch('a'); });
         $this->assertStdoutEquals('', function () { Event::dispatch(1); });
     }

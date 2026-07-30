@@ -15,15 +15,11 @@ class EnvironmentTest extends RebetTestCase
      * @var Environment
      */
     protected $env;
-    protected $parser;
-    protected $compiler;
 
     protected function setUp() : void
     {
         parent::setUp();
-        $this->env      = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
-        $this->parser   = new Parser($this->env);
-        $this->compiler = new Compiler($this->env);
+        $this->env = new Environment($this->getMockBuilder(LoaderInterface::class)->getMock());
     }
 
     public function test_raw()
@@ -34,15 +30,19 @@ class EnvironmentTest extends RebetTestCase
 echo('Hello');
 EOS
         ;
-        $stream   = $this->env->tokenize(new Source($source, ''));
-        $src      = $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
-        $this->assertSame($expect, $src);
+        $this->assertSame($expect, $this->renderPhpCode($source));
     }
 
     protected function renderPhpCode(string $source) : string
     {
-        $stream = $this->env->tokenize(new Source($source, ''));
-        return $this->compiler->compile($this->parser->parse($stream)->getNode('body')->getNode(0))->getSource();
+        // NOTE: Parser::__construct() eagerly calls Environment::getExpressionParsers(), which finalizes
+        //       (initializes) the environment's extensions. So the parser/compiler must be created here,
+        //       after each test has registered its own tags via $this->env->raw()/embed()/case(), rather
+        //       than upfront in setUp() which would lock out any further tag registration.
+        $parser   = new Parser($this->env);
+        $compiler = new Compiler($this->env);
+        $stream   = $this->env->tokenize(new Source($source, ''));
+        return $compiler->compile($parser->parse($stream)->getNode('body')->getNode(0))->getSource();
     }
 
     public function test_embed()
@@ -61,7 +61,7 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => "world"]) );
+echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", ["world"]) );
 EOS
             ,
             $this->renderPhpCode('{% hello "world" %}')
@@ -70,7 +70,7 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [0 => (\$context["name"] ?? null)]) );
+echo( Rebet\View\Engine\Twig\Node\EmbedNode::execute("hello", [(\$context["name"] ?? null)]) );
 EOS
             ,
             $this->renderPhpCode('{% hello name %}')
@@ -93,14 +93,14 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", [0 => "local"]) ) {
+if( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", ["local"]) ) {
 // line 2
-echo "    LOCAL
+yield "    LOCAL
 ";
 // line 3
-} elseif( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", [0 => "testing"]) ) {
+} elseif( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", ["testing"]) ) {
 // line 4
-echo "    TESTING
+yield "    TESTING
 ";
 }
 
@@ -120,18 +120,18 @@ EOS
         $this->assertSame(
             <<<EOS
 // line 1
-if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", [0 => "local"]) )) {
+if(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("env", ["local"]) )) {
 // line 2
-echo "    LOCAL
+yield "    LOCAL
 ";
 // line 3
-} elseif(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", [0 => "testing"]) )) {
+} elseif(!( Rebet\View\Engine\Twig\Node\EmbedNode::execute("elseenv", ["testing"]) )) {
 // line 4
-echo "    TESTING
+yield "    TESTING
 ";
 } else {
 // line 6
-echo "    OTHER
+yield "    OTHER
 ";
 }
 

@@ -36,7 +36,7 @@ class RememberTokenTest extends RebetDatabaseTestCase
 
     public function test_deleteExpired()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertSame(3, RememberToken::count());
             $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-b')]));
             $this->assertSame(1, RememberToken::deleteExpired());
@@ -47,7 +47,7 @@ class RememberTokenTest extends RebetDatabaseTestCase
 
     public function test_deleteByUser()
     {
-        $this->eachDb(function (Database $db) {
+        self::eachDb(function (Database $db) {
             $this->assertSame(3, RememberToken::count());
             $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));
             $this->assertSame(2, RememberToken::deleteByUser('web', '1'));

@@ -17,6 +17,18 @@ class MimePart extends Swift_MimePart
     /**
      * {@inheritDoc}
      */
+    public function __construct($body = null, $contentType = null, $charset = null)
+    {
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        @parent::__construct($body, $contentType, $charset);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getBody()
     {
         $body = parent::getBody();

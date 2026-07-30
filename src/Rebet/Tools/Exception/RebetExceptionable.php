@@ -25,7 +25,6 @@ trait RebetExceptionable
     {
         $rc = new \ReflectionClass(\Exception::class);
         $rp = $rc->getProperty('previous');
-        $rp->setAccessible(true);
         $rp->setValue($this, $previous);
         return $this;
     }
@@ -37,7 +36,6 @@ trait RebetExceptionable
     {
         $rc = new \ReflectionClass(\Exception::class);
         $rp = $rc->getProperty('previous');
-        $rp->setAccessible(true);
         return $rp->getValue($this);
     }
 

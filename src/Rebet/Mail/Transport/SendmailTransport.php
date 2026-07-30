@@ -39,7 +39,11 @@ class SendmailTransport extends Swift_SendmailTransport
      */
     public function __construct(string $command = null, array $options = [])
     {
-        parent::__construct($command ?? ini_get('sendmail_path') ?? '/usr/sbin/sendmail -bs');
+        // Swiftmailer is abandoned and its constructor chain internally uses the
+        // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
+        // is deprecated since PHP 8.2. The call itself still works correctly, so the
+        // deprecation notice is suppressed here rather than patching the vendor library.
+        @parent::__construct($command ?? ini_get('sendmail_path') ?? '/usr/sbin/sendmail -bs');
         foreach ($options as $option => $value) {
             if ($this->apply($option, $value)) {
                 continue;

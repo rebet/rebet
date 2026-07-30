@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Tests\RebetTestCase;
 
@@ -19,9 +20,8 @@ use Rebet\Tests\RebetTestCase;
  *    apc.enable_cli=1
  *    apc.serializer=php
  *    ```
- *
- * @requires extension apcu
  */
+#[RequiresPhpExtension('apcu')]
 class ApcuAdapterTest extends RebetTestCase
 {
     protected function setUp() : void

@@ -92,7 +92,7 @@ trait Configurable
      */
     public static function defaultConfigOverrideOptions() : array
     {
-        return ($parent = get_parent_class()) && method_exists($parent, 'defaultConfigOverrideOptions') ? parent::defaultConfigOverrideOptions() : [] ;
+        return ($parent = get_parent_class(static::class)) && method_exists($parent, 'defaultConfigOverrideOptions') ? $parent::defaultConfigOverrideOptions() : [] ;
     }
 
     /**
@@ -185,6 +185,6 @@ trait Configurable
      */
     protected static function clearConfig(string ...$layers) : void
     {
-        Config::clear(static::class, ...$layers);
+        Config::reset(static::class, ...$layers);
     }
 }

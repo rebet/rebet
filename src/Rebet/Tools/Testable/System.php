@@ -148,11 +148,11 @@ class System
     }
 
     /**
-     * Clear memory data needed for php function emurating.
+     * Reset memory data needed for php function emurating.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
         static::$memory = [];
     }

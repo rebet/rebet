@@ -15,6 +15,7 @@ class ArraysTest extends RebetTestCase
 {
     protected function setUp() : void
     {
+        parent::setUp();
         $this->vfs([
             'dummy.txt' => 'dummy'
         ]);

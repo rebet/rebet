@@ -1,9 +1,12 @@
 <?php
 namespace Rebet\Tests\Validation;
 
+use App\AppStructure;
 use App\Enum\Gender;
+use App\Http\AppWebKernel;
 use App\Validation\BarValidation;
 use App\Validation\FooValidation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
 use Rebet\Tests\RebetTestCase;
@@ -45,10 +48,38 @@ class ValidatorTest extends RebetTestCase
         $this->assertInstanceOf(Validator::class, new Validator([]));
     }
 
-    public function dataValidationInvoke() : array
+    public static function dataValidationInvoke() : array
     {
-        $this->setUp();
+        self::setUpStatic();
+
         $image_72x72_png = new UploadedFile(App::structure()->public('/assets/img/72x72.png'), '72x72.png');
+
+        // NOTE: UploadedFile::getMimeType() detects the mime type from the real file contents (not from
+        //       the client declared name/mime type), so FileType* validation fixtures must point to real
+        //       files whose actual contents match the type under test.
+        $fixture_dir = sys_get_temp_dir().'/rebet_ValidatorTest_'.getmypid();
+        if (!file_exists($fixture_dir)) {
+            mkdir($fixture_dir, 0777, true);
+        }
+        $csv_path = $fixture_dir.'/foo.csv';
+        file_put_contents($csv_path, "id,name,email,age,city\n1,John Smith,john@example.com,32,New York\n2,Jane Doe,jane@example.com,28,Boston\n3,Bob Johnson,bob@example.com,45,Chicago\n");
+        $xml_path = $fixture_dir.'/foo.xml';
+        file_put_contents($xml_path, '<?xml version="1.0"?><root><a>1</a></root>');
+        $bmp_path = $fixture_dir.'/foo.bmp';
+        $bmp_im   = imagecreatetruecolor(2, 2);
+        imagebmp($bmp_im, $bmp_path);
+        imagedestroy($bmp_im);
+        $zip_path = $fixture_dir.'/foo.zip';
+        $zip_archive = new \ZipArchive();
+        $zip_archive->open($zip_path, \ZipArchive::CREATE);
+        $zip_archive->addFromString('a.txt', 'hello');
+        $zip_archive->close();
+
+        $csv_file = new UploadedFile($csv_path, 'foo.csv');
+        $xml_file = new UploadedFile($xml_path, 'foo.xml');
+        $bmp_file = new UploadedFile($bmp_path, 'foo.bmp');
+        $zip_file = new UploadedFile($zip_path, 'foo.zip');
+
         return [
             // Valid::IF
             [['target' => 1], ['C', Valid::IF, 'target', 1, 'then' => [['C', 'Ok']], 'else' => [['C', 'Ng']]], true ],
@@ -245,17 +276,17 @@ class ValidatorTest extends RebetTestCase
             [['target' => $image_72x72_png], ['C', Valid::FILE_MIME_TYPE_MATCH, '/^image\/.*$/'], true ],
             [['target' => $image_72x72_png], ['C', Valid::FILE_MIME_TYPE_MATCH, '/^text\/.*$/'], false],
             // Valid::FILE_TYPE_IMAGES
-            [['target' => $this->createUploadedFileMock('foo.png', 'image/png')], ['C', Valid::FILE_TYPE_IMAGES], true ],
-            [['target' => $this->createUploadedFileMock('foo.csv', 'text/csv') ], ['C', Valid::FILE_TYPE_IMAGES], false],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_TYPE_IMAGES], true ],
+            [['target' => $csv_file       ], ['C', Valid::FILE_TYPE_IMAGES], false],
             // Valid::FILE_TYPE_WEB_IMAGES
-            [['target' => $this->createUploadedFileMock('foo.png', 'image/png')], ['C', Valid::FILE_TYPE_WEB_IMAGES], true ],
-            [['target' => $this->createUploadedFileMock('foo.bmp', 'image/bmp')], ['C', Valid::FILE_TYPE_WEB_IMAGES], false],
+            [['target' => $image_72x72_png], ['C', Valid::FILE_TYPE_WEB_IMAGES], true ],
+            [['target' => $bmp_file       ], ['C', Valid::FILE_TYPE_WEB_IMAGES], false],
             // Valid::FILE_TYPE_CSV
-            [['target' => $this->createUploadedFileMock('foo.csv', 'text/csv')], ['C', Valid::FILE_TYPE_CSV], true ],
-            [['target' => $this->createUploadedFileMock('foo.xml', 'text/xml')], ['C', Valid::FILE_TYPE_CSV], false],
+            [['target' => $csv_file], ['C', Valid::FILE_TYPE_CSV], true ],
+            [['target' => $xml_file], ['C', Valid::FILE_TYPE_CSV], false],
             // Valid::FILE_TYPE_ZIP
-            [['target' => $this->createUploadedFileMock('foo.zip', 'application/zip')], ['C', Valid::FILE_TYPE_ZIP], true ],
-            [['target' => $this->createUploadedFileMock('foo.xml', 'application/xml')], ['C', Valid::FILE_TYPE_ZIP], false],
+            [['target' => $zip_file], ['C', Valid::FILE_TYPE_ZIP], true ],
+            [['target' => $xml_file], ['C', Valid::FILE_TYPE_ZIP], false],
             // Valid::FILE_IMAGE_MAX_WIDTH
             [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MAX_WIDTH, 73], true ],
             [['target' => $image_72x72_png], ['C', Valid::FILE_IMAGE_MAX_WIDTH, 71], false],
@@ -282,9 +313,7 @@ class ValidatorTest extends RebetTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataValidationInvoke
-     */
+    #[DataProvider('dataValidationInvoke')]
     public function test_validateInvoke(array $data, array $rule, bool $expect_valid)
     {
         $validator  = new Validator($data);

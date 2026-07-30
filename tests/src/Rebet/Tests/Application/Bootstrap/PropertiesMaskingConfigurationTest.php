@@ -12,7 +12,7 @@ class PropertiesMaskingConfigurationTest extends RebetTestCase
 {
     public function test_bootstrap()
     {
-        Config::clear(TextFormatter::class, Layer::FRAMEWORK);
+        Config::reset(TextFormatter::class, Layer::FRAMEWORK);
         $this->assertSame([], TextFormatter::config('masks', false));
 
         $bootstrapper = new PropertiesMaskingConfiguration(['password', 'password_confirm']);

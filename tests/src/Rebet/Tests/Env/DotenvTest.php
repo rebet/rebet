@@ -2,6 +2,8 @@
 namespace Rebet\Tests\Env;
 
 use Dotenv\Exception\InvalidPathException;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rebet\Application\App;
 use Rebet\Env\Dotenv;
 use Rebet\Tests\RebetTestCase;
@@ -13,10 +15,8 @@ class DotenvTest extends RebetTestCase
         parent::setUp();
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function test_init_notfound()
     {
         $this->expectException(InvalidPathException::class);
@@ -25,10 +25,8 @@ class DotenvTest extends RebetTestCase
         Dotenv::load(__DIR__);
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
     public function test_init()
     {
         Dotenv::load(App::structure()->env(), '.env');

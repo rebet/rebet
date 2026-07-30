@@ -2,15 +2,14 @@
 namespace Rebet\Tests\Tools\Utility;
 
 use Exception;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Dsn;
 
 class DsnTest extends RebetTestCase
 {
-    /**
-     * @dataProvider dataParses
-     */
+    #[DataProvider('dataParses')]
     public function test_parse($dsn, $expect)
     {
         try {
@@ -25,7 +24,7 @@ class DsnTest extends RebetTestCase
         }
     }
 
-    public function dataParses() : array
+    public static function dataParses() : array
     {
         return [
             [null, []],

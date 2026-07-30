@@ -20,30 +20,31 @@
         "docs": "https://github.com/rebet/rebet/blob/master/README.md"
     },
     "require": {
-        "php": "^7.4",
-        "doctrine/annotations": "^1.11",
-        "greenlion/php-sql-parser": "^4.3",
+        "php": ">=8.3",
+        "doctrine/annotations": "^2.0",
+        "greenlion/php-sql-parser": "^4.7",
         "html2text/html2text": "^4.3",
-        "league/flysystem": "^1.1",
-        "matomo/device-detector": "^4.1",
-        "monolog/monolog": "^2.2",
-        "swiftmailer/swiftmailer": "^6.2",
-        "symfony/cache": "^5.2",
-        "symfony/console": "^5.2",
-        "symfony/http-foundation": "^5.2",
-        "symfony/mime": "^5.2",
-        "vlucas/phpdotenv": "^5.3"
+        "league/flysystem": "^3.35",
+        "matomo/device-detector": "^6.5",
+        "monolog/monolog": "^3.9",
+        "swiftmailer/swiftmailer": "^6.3",
+        "symfony/cache": "^7.4",
+        "symfony/console": "^7.4",
+        "symfony/http-foundation": "^7.4",
+        "symfony/mime": "^7.4",
+        "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
-        "illuminate/view": "^8.24",
-        "league/flysystem-cached-adapter": "^1.0",
-        "league/flysystem-aws-s3-v3": "^1.0",
-        "league/flysystem-memory": "^1.0",
-        "league/flysystem-sftp": "^1.0",
+        "illuminate/view": "^13.21",
+        "league/flysystem": "^3.35",
+        "league/flysystem-aws-s3-v3": "^3.29",
+        "league/flysystem-memory": "^3.29",
+        "league/flysystem-sftp-v3": "^3.0",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.5",
-        "predis/predis": "^1.1",
-        "twig/twig": "^3.2"
+        "mongodb/mongodb": "^2.3",
+        "phpunit/phpunit": "^11.5",
+        "predis/predis": "^2.3",
+        "twig/twig": "^3.21"
     },
     "autoload": {
         "psr-4": {
@@ -57,11 +58,14 @@
         }
     },
     "suggest": {
-        "illuminate/view": "Required to use the 'Blade' view template engine (^8.24).",
-        "twig/twig": "Required to use the 'Twig' view template engine (^3.2).",
-        "league/flysystem-*": "Required to use the any other Flysystem driver like Cached[cached-adapter], AWS S3[aws-s3-v3], InMemory[memory], SFTP[sftp], and others (^1.0)."
+        "illuminate/view": "Required to use the 'Blade' view template engine (^10.0).",
+        "twig/twig": "Required to use the 'Twig' view template engine (^3.8).",
+        "league/flysystem-*": "Required to use the any other Flysystem driver like Cached[cached-adapter], AWS S3[aws-s3-v3], InMemory[memory], SFTP[sftp], and others (^3.0)."
     },
     "config": {
+        "platform": {
+            "php": "8.3"
+        },
         "sort-packages": true
     }
 }

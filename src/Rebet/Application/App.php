@@ -266,27 +266,27 @@ class App
     }
 
     /**
-     * Clear the application state.
+     * Reset the application state.
      *
      * @return void
      */
-    public static function clear() : void
+    public static function reset() : void
     {
-        Config::clear();
-        System::clear();
-        Enum::clear();
-        Event::clear();
-        Cookie::clear();
-        Request::clear();
-        Session::clear();
-        Router::clear();
-        Translator::clear();
-        EmbedNode::clear();
-        View::clear();
-        Storage::clean();
-        Letterpress::clear();
-        Log::clear();
-        Mail::clear();
-        Auth::clear();
+        Config::reset();
+        System::reset();
+        Enum::reset();
+        Event::reset();
+        Cookie::reset();
+        Request::reset();
+        Session::reset();
+        Router::reset();
+        Translator::reset();
+        EmbedNode::reset();
+        View::reset();
+        Storage::reset();
+        Letterpress::reset();
+        Log::reset();
+        Mail::reset();
+        Auth::reset();
     }
 }

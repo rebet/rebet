@@ -16,7 +16,7 @@ use Symfony\Component\Cache\CacheItem;
 class ArrayPool implements AdapterInterface
 {
     /**
-     * @var array of [key => [value, expiry], ...]
+     * @var array of [key => [value, expiry, tags], ...]
      */
     protected $pool = [];
 
@@ -26,7 +26,7 @@ class ArrayPool implements AdapterInterface
     protected $deferred = [];
 
     /**
-     * @var \Closure of function($key, $value, $isHit) : CacheItem {};
+     * @var \Closure of function($key, $value, $isHit, $tags) : CacheItem {};
      */
     protected $item_creator;
 
@@ -36,11 +36,14 @@ class ArrayPool implements AdapterInterface
     public function __construct()
     {
         $this->item_creator = \Closure::bind(
-            static function ($key, $value, $isHit) {
+            static function ($key, $value, $isHit, $tags) {
                 $item = new CacheItem();
                 $item->key = $key;
                 $item->value = $value;
                 $item->isHit = $isHit;
+                if (null !== $tags) {
+                    $item->metadata[CacheItem::METADATA_TAGS] = $tags;
+                }
                 return $item;
             },
             null,
@@ -51,16 +54,18 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function getItem($key)
+    public function getItem($key) : CacheItem
     {
-        $value = ($isHit = $this->hasItem($key)) ? $this->pool[$key][0] : null ;
-        return call_user_func($this->item_creator, $key, $value, $isHit);
+        $isHit = $this->hasItem($key);
+        $value = $isHit ? $this->pool[$key][0] : null ;
+        $tags  = $isHit ? ($this->pool[$key][2] ?? null) : null ;
+        return call_user_func($this->item_creator, $key, $value, $isHit, $tags);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getItems(array $keys = [])
+    public function getItems(array $keys = []) : iterable
     {
         $items = [];
         foreach ($keys as $key) {
@@ -72,7 +77,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function hasItem($key)
+    public function hasItem($key) : bool
     {
         if (\is_string($key) && isset($this->pool[$key]) && $this->pool[$key][1] > microtime(true)) {
             return true;
@@ -84,7 +89,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function clear(string $prefix = '')
+    public function clear(string $prefix = '') : bool
     {
         $prefix = 0 < \func_num_args() ? (string) func_get_arg(0) : '';
         if ('' !== $prefix) {
@@ -103,7 +108,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function deleteItem($key)
+    public function deleteItem($key) : bool
     {
         CacheItem::validateKey($key);
         unset($this->pool[$key]);
@@ -113,7 +118,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
     */
-    public function deleteItems(array $keys)
+    public function deleteItems(array $keys) : bool
     {
         foreach ($keys as $key) {
             $this->deleteItem($key);
@@ -124,7 +129,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function save(CacheItemInterface $item)
+    public function save(CacheItemInterface $item) : bool
     {
         if (!$item instanceof CacheItem) {
             return false;
@@ -133,20 +138,21 @@ class ArrayPool implements AdapterInterface
         $key    = $item["\0*\0key"];
         $value  = $item["\0*\0value"];
         $expiry = $item["\0*\0expiry"];
+        $tags   = $item["\0*\0newMetadata"][CacheItem::METADATA_TAGS] ?? null;
 
         if (!empty($expiry) && $expiry <= microtime(true)) {
             $this->deleteItem($key);
             return true;
         }
 
-        $this->pool[$key] = [$value, !empty($expiry) ? $expiry : PHP_INT_MAX];
+        $this->pool[$key] = [$value, !empty($expiry) ? $expiry : PHP_INT_MAX, $tags];
         return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function saveDeferred(CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item) : bool
     {
         if (!$item instanceof CacheItem) {
             return false;
@@ -158,7 +164,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function commit()
+    public function commit() : bool
     {
         foreach ($this->deferred as $item) {
             $this->save($item);

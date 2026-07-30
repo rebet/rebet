@@ -162,12 +162,12 @@ abstract class Enum implements \JsonSerializable, Convertible
     public $name = null;
 
     /**
-     * Clear the cache of given class or all enums.
+     * Reset the cache of given class or all enums.
      *
      * @param string|null $class
      * @return void
      */
-    public static function clear(?string $class = null) : void
+    public static function reset(?string $class = null) : void
     {
         $class = $class ?? get_called_class() ;
         if ($class === Enum::class) {
@@ -270,7 +270,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Get JSON Serialize objects.
      */
-    public function jsonSerialize()
+    public function jsonSerialize() : mixed
     {
         return $this->value;
     }

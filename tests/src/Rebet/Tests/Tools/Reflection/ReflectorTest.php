@@ -1255,6 +1255,7 @@ class ReflectorTest_Invoke
         return 123;
     }
 }
+#[\AllowDynamicProperties]
 class ReflectorTest_Accessible
 {
     private static $static_private     = 'static_private';

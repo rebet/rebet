@@ -76,7 +76,7 @@ interface Response
      * @return string The Response as an HTTP string
      * @see prepare()
      */
-    public function __toString();
+    public function __toString() : string;
 
     /**
      * Clones the current Response instance.
@@ -90,30 +90,30 @@ interface Response
      * compliant with RFC 2616. Most of the changes are based on
      * the Request that is "associated" with this Response.
      *
-     * @return self
+     * @return static
      */
     public function prepare(Request $request);
 
     /**
      * Sends HTTP headers.
      *
-     * @return self
+     * @return static
      */
-    public function sendHeaders();
+    public function sendHeaders(?int $statusCode = null);
 
     /**
      * Sends content for the current web response.
      *
-     * @return self
+     * @return static
      */
     public function sendContent();
 
     /**
      * Sends HTTP headers and content.
      *
-     * @return self
+     * @return static
      */
-    public function send();
+    public function send(bool $flush = true);
 
     /**
      * Sets the response content.
@@ -121,7 +121,7 @@ interface Response
      * Valid types are strings, numbers, null, and objects that implement a __toString() method.
      *
      * @param string|null $content Content that can be cast to string
-     * @return self
+     * @return static
      * @throws \UnexpectedValueException
      */
     public function setContent(?string $content);
@@ -129,14 +129,14 @@ interface Response
     /**
       * Gets the current response content.
       *
-      * @return string Content
+      * @return string|false Content
       */
     public function getContent();
 
     /**
      * Sets the HTTP protocol version (1.0 or 1.1).
      *
-     * @return self
+     * @return static
      * @final
      */
     public function setProtocolVersion(string $version);
@@ -313,7 +313,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setExpires(\DateTimeInterface $date = null);
+    public function setExpires(?\DateTimeInterface $date);
 
     /**
      * Returns the number of seconds after the time specified in the response's Date
@@ -394,7 +394,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setLastModified(\DateTimeInterface $date = null);
+    public function setLastModified(?\DateTimeInterface $date);
 
     /**
      * Returns the literal value of the ETag HTTP header.
@@ -411,7 +411,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setEtag(string $etag = null, bool $weak = false);
+    public function setEtag(?string $etag, bool $weak = false);
 
     /**
      * Sets the response's cache headers (validation and/or expiration).
@@ -458,7 +458,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setVary($headers, bool $replace = true);
+    public function setVary(string|array $headers, bool $replace = true);
 
     /**
      * Determines if the Response validators (ETag, Last-Modified) match
