@@ -89,7 +89,7 @@ trait Describable
      * @param string $field
      * @param array|object $src
      * @param mixed $origin
-     * @return void
+     * @return mixed
      */
     protected function applyDescribeOption(array $option, $src, string $field, $origin)
     {

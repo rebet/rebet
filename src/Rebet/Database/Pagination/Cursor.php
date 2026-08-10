@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Database\Pagination;
 
+use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
@@ -13,6 +14,8 @@ use Rebet\Tools\Utility\Utils;
  * Cursor Class
  *
  * The cursor always points first item of given page.
+ *
+ * @phpstan-consistent-constructor
  *
  * @package   Rebet
  * @author    github.com/rain-noise

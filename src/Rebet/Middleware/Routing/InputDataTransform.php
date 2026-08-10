@@ -73,7 +73,7 @@ abstract class InputDataTransform
      *
      * @param string $key
      * @param mixed $value
-     * @return void
+     * @return mixed
      */
     protected function transformValue($key, $value)
     {
@@ -88,7 +88,7 @@ abstract class InputDataTransform
      *
      * @param string $key
      * @param mixed $value
-     * @return void
+     * @return mixed
      */
     abstract protected function transform($key, $value);
 }

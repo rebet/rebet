@@ -94,11 +94,11 @@ class Blade implements Engine
             $resolver->register('blade', function () use ($app) {
                 return new CompilerEngine($app['blade.compiler']);
             });
-            $resolver->register('php', function () {
-                return new PhpEngine();
+            $resolver->register('php', function () use ($app) {
+                return new PhpEngine($app['files']);
             });
-            $resolver->register('file', function () {
-                return new FileEngine();
+            $resolver->register('file', function () use ($app) {
+                return new FileEngine($app['files']);
             });
             return $resolver;
         });

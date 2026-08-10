@@ -11,6 +11,8 @@ use Rebet\Database\Query;
  * This class support `Ransack Search` influenced by activerecord-hackery/ransack for Ruby.
  * Rebet's `Ransack Search` concept is much similar to that of Ruby, but there are differences in predicate keywords and features provided.
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

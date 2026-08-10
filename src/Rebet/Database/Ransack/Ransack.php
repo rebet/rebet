@@ -86,6 +86,8 @@ use Rebet\Tools\Utility\Utils;
  *
  * @see https://github.com/activerecord-hackery/ransack
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

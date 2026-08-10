@@ -23,6 +23,8 @@ use Rebet\Tools\Utility\Utils;
 /**
  * Router Class
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -99,7 +101,7 @@ class Router
     /**
      * Route middleware pipeline
      *
-     * @var Rebet\Pipeline\Pipeline
+     * @var Pipeline
      */
     protected static $pipeline = null;
 
@@ -350,7 +352,7 @@ class Router
      * Set the default route.
      *
      * @param mixed $route Route object or instantiatable setting that can generate route
-     * @return void
+     * @return Route
      */
     public static function default($route) : Route
     {
@@ -439,7 +441,6 @@ class Router
      * Handle default fallback.
      *
      * @param Request $request
-     * @param Route|null $route
      * @param \Throwable $e
      * @return Response
      */
@@ -622,9 +623,9 @@ class Router
      * Set new routing rules for given channel.
      *
      * @param string $channel
-     * @return void
+     * @return static
      */
-    public static function rules(string $channel) : self
+    public static function rules(string $channel) : static
     {
         return new static($channel);
     }
@@ -700,14 +701,15 @@ class Router
      * The registered action is called when an exception occurs.
      * Normally, it is assumed to be used in log output or error page display.
      *
-     * @param callabel $action function(Request $request, ?Route $route, \Throwable $e) { ... }
-     * @return void
+     * @param callable $action function(Request $request, ?Route $route, \Throwable $e) { ... }
+     * @return self
      */
-    public function fallback(callable $action)
+    public function fallback(callable $action) : self
     {
         if ($this->skip()) {
             return $this;
         }
         static::$fallback[$this->prefix] = $action;
+        return $this;
     }
 }

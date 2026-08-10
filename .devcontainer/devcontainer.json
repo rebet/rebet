@@ -12,6 +12,9 @@
                 "php.suggest.basic": false,
                 "php-cs-fixer.onsave": true,
                 "php-cs-fixer.executablePath": "~/.composer/vendor/bin/php-cs-fixer",
+                "phpstan.binCommand": ["~/.composer/vendor/bin/phpstan"],
+                "phpstan.memoryLimit": "512M",
+                "phpstan.timeout": 30000,
                 "[php]": {
                     "editor.formatOnSave": true,
                     "editor.defaultFormatter": "junstyle.php-cs-fixer"
@@ -29,6 +32,7 @@
                 "mhutchie.git-graph",
                 "neilbrayfield.php-docblocker",
                 "oderwat.indent-rainbow",
+                "sanderronde.phpstan-vscode",
                 "xdebug.php-debug",
                 "xyz.local-history",
                 "usernamehw.errorlens"

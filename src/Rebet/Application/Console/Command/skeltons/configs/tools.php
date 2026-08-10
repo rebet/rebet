@@ -209,7 +209,6 @@ return [
                 'gr'  => ['64.79891e-6'       , false], // grain
                 'mg'  => ['1e-6'              , true ], // milligram
                 'ct'  => ['200e-6'            , false], // carat (metric) [≡ 200mg]
-                'kt'  => ['205.1965483e-6'    , false], // carat [≡ ​3 1/6gr]
                 'μg'  => ['1e-9'              , true ], // microgram
                 'γ'   => ['1e-9'              , false], // gamma [≡ 1μg]
                 'ng'  => ['1e-12'             , true ], // nanogram
@@ -399,7 +398,6 @@ return [
                                 case DNS_SRV & $type && $vt === 'SRV': return true;
                                 case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
                                 case DNS_A6 & $type && $vt === 'A6': return true;
-                                case DNS_NAPTR & $type && $vt === 'NAPTR': return true;
                             }
                             return false;
                         })->return());
@@ -482,7 +480,7 @@ return [
                 'nbvl'      => function ($value, $then, $else = null) { return !Utils::isBlank($value) ? $then : $else; },
                 'nevl'      => function ($value, $then, $else = null) { return !Utils::isEmpty($value) ? $then : $else; },
                 'when'      => function ($value, $test, $then, $else = null) {
-                    $test = static::peel($test);
+                    $test = Tinker::peel($test);
                     $test = is_callable($test) ? call_user_func($test, $value) : $test ;
                     return  (is_bool($test) ? $test : $value === $test) ? $then : ($else ?? $value) ;
                 },

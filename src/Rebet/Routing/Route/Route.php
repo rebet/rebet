@@ -178,7 +178,7 @@ abstract class Route
      * Gets the annotation associated with this route.
      *
      * @param string $annotation
-     * @return void
+     * @return mixed
      */
     public function annotation(string $annotation)
     {

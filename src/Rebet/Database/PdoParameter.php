@@ -4,6 +4,8 @@ namespace Rebet\Database;
 /**
  * PDO Parameter Class
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -55,7 +57,7 @@ class PdoParameter
      * Convert type code to human readable label.
      *
      * @param integer $type
-     * @return void
+     * @return string
      */
     protected static function typeToLabel(int $type)
     {

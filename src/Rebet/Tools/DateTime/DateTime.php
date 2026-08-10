@@ -22,6 +22,8 @@ use Rebet\Tools\Utility\Strings;
  * @todo implements DateInterval extended class
  * @todo create i18n translation files
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

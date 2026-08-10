@@ -100,6 +100,8 @@ use Rebet\Tools\Utility\Strings;
  * Letterpress::embed('hello', function (array $node, array $vars) { return trim("Hello ".Letterpress::evaluate($node['code'], $vars))."!"; });
  * => {% hello $name %} become 'Hello Rebet!' when $name is 'Rebet'.
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

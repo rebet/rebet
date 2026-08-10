@@ -9,6 +9,8 @@ use Rebet\Tools\Utility\Strings;
 /**
  * Database Exception Class
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -67,7 +69,7 @@ class DatabaseException extends RuntimeException
       * @param string $name of database or PDO driver
       * @param array|\PDOException $error
       * @param string|null $sql (default: null)
-      * @param array $param (default: [])
+      * @param array $params (default: [])
       * @return self
       */
     public static function from(string $name, $error, ?string $sql = null, array $params = []) : self

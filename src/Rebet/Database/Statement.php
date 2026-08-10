@@ -120,7 +120,7 @@ class Statement implements \IteratorAggregate
      * @param mixed $row
      * @param string $class
      * @param array|null $meta info of this statement for performance in loop (default: null)
-     * @return void
+     * @return mixed
      */
     protected function convert($row, string $class, ?array $meta = null)
     {

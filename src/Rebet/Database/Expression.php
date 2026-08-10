@@ -7,6 +7,8 @@ use Rebet\Tools\Utility\Strings;
 /**
  * Expression Class
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -43,9 +45,9 @@ class Expression
      * @param mixed[] ...$values
      * @return self
      */
-    public static function of(string $expression, ...$value) : self
+    public static function of(string $expression, ...$values) : self
     {
-        return new static($expression, ...$value);
+        return new static($expression, ...$values);
     }
 
     /**

@@ -63,8 +63,8 @@ class Env
     /**
      * Convert string boolean and null value to bool/null type.
      *
-     * @param [type] $value
-     * @return void
+     * @param mixed $value
+     * @return mixed
      */
     protected static function convert($value)
     {

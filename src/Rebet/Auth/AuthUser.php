@@ -12,6 +12,8 @@ use Rebet\Tools\Utility\Strings;
 /**
  * Auth User Class
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

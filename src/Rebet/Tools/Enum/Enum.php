@@ -318,7 +318,7 @@ abstract class Enum implements \JsonSerializable, Convertible
         }
 
         $args       = $rc->getConstant($name);
-        $enum       = new static(...$args);
+        $enum       = new static(...$args);    // @phpstan-ignore new.static
         $enum->name = $name;
 
         self::$enum_data_cache[$class][$name] = $enum;

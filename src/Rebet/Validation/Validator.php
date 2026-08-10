@@ -59,16 +59,6 @@ class Validator
         static::setConfig(['nested_attribute_auto_format' => $nested_attribute_auto_format]);
     }
 
-    public static function validateValue($value, array $rule) : array
-    {
-
-    }
-
-    public static function validateValueBy($value, $rules, string $field, string $crud) : array
-    {
-
-    }
-
     /**
      * Create a new Validator instance.
      *

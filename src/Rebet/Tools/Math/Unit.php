@@ -11,6 +11,8 @@ use Rebet\Tools\Utility\Callbacks;
  *
  * @todo Define units borrowed from https://en.wikipedia.org/wiki/Conversion_of_units
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -36,7 +38,7 @@ class Unit
             // @see https://en.wikipedia.org/wiki/Conversion_of_units
             'factors' => [
                 // The International System of Units Prefix (Metric prefix) Symbol factors.
-                UNIT::SI_PREFIX => [
+                Unit::SI_PREFIX => [
                     'Y'  => ['1e24' , true ], // yotta
                     'Z'  => ['1e21' , true ], // zetta
                     'E'  => ['1e18' , true ], // exa
@@ -61,7 +63,7 @@ class Unit
                 ],
 
                 // The Binary Prefix defined in IEEE 1541-2002 Symbol factors.
-                UNIT::BINARY_PREFIX => [
+                Unit::BINARY_PREFIX => [
                     'Yi' => [bcpow(2, 80), true], // yobi
                     'Zi' => [bcpow(2, 70), true], // zebi
                     'Ei' => [bcpow(2, 60), true], // exbi
@@ -74,7 +76,7 @@ class Unit
                 ],
 
                 // Custom Binary Prefixes factors that omitted 'i' from symbols.
-                UNIT::STORAGE_PREFIX => [
+                Unit::STORAGE_PREFIX => [
                     'Y' => [bcpow(2, 80), true], // yotta
                     'Z' => [bcpow(2, 70), true], // zetta
                     'E' => [bcpow(2, 60), true], // exa
@@ -88,7 +90,7 @@ class Unit
 
                 // Time Units include Non-SI units accepted for use with SI and useful units.
                 // @see https://en.wikipedia.org/wiki/Conversion_of_units#Time
-                UNIT::TIME => [
+                Unit::TIME => [
                     'c'   => ['3153600000'       , false], // Century       [≡100y]
                     'dec' => ['315360000'        , false], // Decade        [≡10y]
                     'y'   => ['31536000'         , false], // Year (common) [≡365d]
@@ -109,7 +111,7 @@ class Unit
 
                 // Length Units include Non-SI units accepted for use with SI and useful units.
                 // @see https://en.wikipedia.org/wiki/Conversion_of_units#Length
-                UNIT::LENGTH => [
+                Unit::LENGTH => [
                     'pc'   => ['30856775814913700' , false], // parsec
                     'ly'   => ['9.4607304725808e15', false], // light-year
                     'AU'   => ['149597870700'      , true ], // astronomical unit
@@ -151,7 +153,7 @@ class Unit
 
                 // Mass Units include Non-SI units accepted for use with SI and useful units.
                 // @see https://en.wikipedia.org/wiki/Conversion_of_units#Mass
-                UNIT::MASS => [
+                Unit::MASS => [
                     'Yg'  => ['1e21'              , false], // yottagram
                     'Pt'  => ['1e18'              , true ], // petatonne
                     'Zg'  => ['1e18'              , false], // zettagram
@@ -175,7 +177,6 @@ class Unit
                     'gr'  => ['64.79891e-6'       , false], // grain
                     'mg'  => ['1e-6'              , true ], // milligram
                     'ct'  => ['200e-6'            , false], // carat (metric) [≡ 200mg]
-                    'kt'  => ['205.1965483e-6'    , false], // carat [≡ ​3 1/6gr]
                     'μg'  => ['1e-9'              , true ], // microgram
                     'γ'   => ['1e-9'              , false], // gamma [≡ 1μg]
                     'ng'  => ['1e-12'             , true ], // nanogram
@@ -191,7 +192,7 @@ class Unit
 
                 // Electric Current Units include Non-SI units accepted for use with SI and useful units.
                 // @see https://en.wikipedia.org/wiki/Conversion_of_units#Electric_current
-                UNIT::ELECTRIC_CURRENT => [
+                Unit::ELECTRIC_CURRENT => [
                     'YA'    => ['1e24'         , true ], // yottaampere
                     'ZA'    => ['1e21'         , true ], // zettaampere
                     'EA'    => ['1e18'         , true ], // exaampere
@@ -215,7 +216,7 @@ class Unit
 
                 // Temperature Units include Non-SI units accepted for use with SI and useful units.
                 // @see https://en.wikipedia.org/wiki/Conversion_of_units#Temperature
-                UNIT::TEMPERATURE => [
+                Unit::TEMPERATURE => [
                     'YK' => ['1e24' , true ], // yottakelvin
                     'ZK' => ['1e21' , true ], // zettakelvin
                     'EK' => ['1e18' , true ], // exakelvin

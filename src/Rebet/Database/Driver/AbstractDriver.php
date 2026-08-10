@@ -15,6 +15,8 @@ use Rebet\Tools\Utility\Arrays;
 /**
  * Driver Interface
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -128,7 +130,7 @@ abstract class AbstractDriver implements Driver
      *
      * @param array|\PDOException $error
      * @param string|null $sql (default: null)
-     * @param array $param (default: [])
+     * @param array $params (default: [])
      * @return DatabaseException
      */
     protected function exception($error, ?string $sql = null, array $params = []) : DatabaseException

@@ -29,6 +29,8 @@ use Rebet\Tools\Utility\Strings;
  * And this compiler also support `Letterpress` template format.
  * So, you can use all `Letterpress` tags like 'if' and 'for' (and extended tags) with given params in your SQL.
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise

@@ -25,6 +25,11 @@ export PATH=$PATH:~/.composer/vendor/bin
 alias php-cs-fixer-f="php-cs-fixer fix --config=/workspace/.php-cs-fixer.dist.php"
 
 # ---------------------------------------------------------
+# phpstan
+# ---------------------------------------------------------
+alias phpstan-a="phpstan analyze --memory-limit=512M -c /workspace/phpstan.neon"
+
+# ---------------------------------------------------------
 # psysh
 # ---------------------------------------------------------
 alias psysh-app="psysh /workspace/vendor/autoload.php"
@@ -32,7 +37,7 @@ alias psysh-app="psysh /workspace/vendor/autoload.php"
 # ---------------------------------------------------------
 # phpunit
 # ---------------------------------------------------------
-alias phpunit="php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit"
-alias phpunit-sod="php -d memory_limit=256M -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit --stop-on-defect"
-alias phpunit-xd="php -d memory_limit=256M /workspace/vendor/bin/phpunit"
-alias phpunit-t="php -d memory_limit=256M /workspace/vendor/bin/phpunit --display-phpunit-deprecations --display-deprecations --stop-on-defect"
+alias phpunit="php -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit"
+alias phpunit-sod="php -d xdebug.start_with_request=no /workspace/vendor/bin/phpunit --stop-on-defect"
+alias phpunit-xd="php /workspace/vendor/bin/phpunit"
+alias phpunit-t="php /workspace/vendor/bin/phpunit --display-phpunit-deprecations --display-deprecations --stop-on-defect"

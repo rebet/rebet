@@ -1,12 +1,15 @@
 <?php
 namespace Rebet\Tools\Math;
 
+use InvalidArgumentException;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Strings;
 
 /**
  * Decimal Class
+ *
+ * @phpstan-consistent-constructor
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -265,7 +268,7 @@ class Decimal
             }
             $significant_figures = $sf ? intval($sf) : static::significantFiguresOf("{$integer}.{$decimal}") ;
         } else {
-            throw new \InvalidArgumentException("Invalid value format, the value '{$value}' can not analyze.");
+            throw new InvalidArgumentException("Invalid value format, the value '{$value}' can not analyze.");
         }
         return [$value, static::scaleOf($value), $significant_figures ?? static::significantFiguresOf($value)];
     }
@@ -486,7 +489,6 @@ class Decimal
     /**
      * Perform arbitrary precision absolute value.
      *
-     * @param string $value
      * @return self
      */
     public function abs() : self

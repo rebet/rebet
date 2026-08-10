@@ -9,6 +9,10 @@
     cacheDirectory=".phpunit.cache" 
     backupStaticProperties="false"
   >
+  <php>
+    <!-- processIsolation is disabled, so memory accumulates across all ~4000 tests in one process. -->
+    <ini name="memory_limit" value="512M"/>
+  </php>
   <testsuites>
     <testsuite name="Rebet Test Suite">
       <directory suffix="Test.php">./tests/src</directory>

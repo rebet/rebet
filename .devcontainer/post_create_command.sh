@@ -9,6 +9,13 @@ echo ">> Done."
 
 echo ""
 echo "------------------------------------------------------------"
+echo " Install Phpstan"
+echo "------------------------------------------------------------"
+composer global require phpstan/phpstan --dev
+echo "> Done."
+
+echo ""
+echo "------------------------------------------------------------"
 echo " Install Psysh"
 echo "------------------------------------------------------------"
 composer global require psy/psysh --dev

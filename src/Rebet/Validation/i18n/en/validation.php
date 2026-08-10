@@ -171,8 +171,6 @@ return [
     "PastThan@List"          => "The :nth :attribute (:value) must be a date past than :at_time.",
     "PastThanOrEqual"        => "The :attribute must be a date past than or equal :at_time.",
     "PastThanOrEqual@List"   => "The :nth :attribute (:value) must be a date past than or equal :at_time.",
-    "MaxAge"                 => "The :attribute must be a date past than or equal :at_time.",
-    "MaxAge@List"            => "The :nth :attribute (:value) must be a date past than or equal :at_time.",
     "MaxAge"                 => [
         "{today,now} The age must be :max years or younger.",
         "{*}         The age must be :max years or younger as of :at_time.",

@@ -115,6 +115,8 @@ use Rebet\Tools\Utility\Utils;
  *
  * And you can call any PHP function xxx_yyy($value [, $arg, ...]) as xxxYyy([$arg, ...]).
  *
+ * @phpstan-consistent-constructor
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
