@@ -3,6 +3,7 @@ namespace Rebet\Routing\Route;
 
 use Rebet\Http\Request;
 use Rebet\Inflection\Inflector;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -39,7 +40,7 @@ class ControllerRoute extends ConventionalRoute
      *
      * @param string $uri
      * @param string $controller
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function __construct(string $uri, string $controller)
     {

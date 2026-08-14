@@ -36,7 +36,7 @@ class BatchUpdating implements Saving
     /**
      * Ransack conditions for updating.
      *
-     * @var mixed $ransacks conditions that arrayable
+     * @var mixed $ransack conditions that arrayable
      */
     public $ransack;
 
@@ -53,7 +53,7 @@ class BatchUpdating implements Saving
      * @param Database $db
      * @param string $entity class name
      * @param array $sets
-     * @param mixed $ransacks conditions that arrayable
+     * @param mixed $ransack conditions that arrayable
      * @param DateTime|null $now
      */
     public function __construct(Database $db, string $entity, array $sets, $ransack, ?DateTime $now)

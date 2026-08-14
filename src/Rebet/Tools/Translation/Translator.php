@@ -96,7 +96,7 @@ class Translator
      *
      * @param string $locale (default: null)
      * @param string|null $fallback_locale if null given then do nothing (default: null)
-     * @return string|null
+     * @return void
      */
     public static function setLocale(string $locale, ?string $fallback_locale = null) : void
     {

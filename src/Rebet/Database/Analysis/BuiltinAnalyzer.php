@@ -33,7 +33,6 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * Create SQL Analyze instance
      *
-     * @param Database $db
      * @param string $sql
      */
     public function __construct(string $sql)

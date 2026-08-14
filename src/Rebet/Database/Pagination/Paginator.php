@@ -18,7 +18,7 @@ class Paginator extends ResultSet
     /**
      * Total page count
      *
-     * @var long|null
+     * @var int|null
      */
     protected $total;
 
@@ -406,7 +406,7 @@ class Paginator extends ResultSet
     /**
      * Get the each_side count settings.
      *
-     * @return integer|null
+     * @return int
      */
     public function eachSide() : int
     {

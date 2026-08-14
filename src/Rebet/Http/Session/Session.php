@@ -60,7 +60,7 @@ class Session implements SessionInterface
         $this->storage = $storage ?? static::configInstantiate('storage');
         $this->storage->registerBag(new AttributeBag('attributes'));
         $this->storage->registerBag(new FlashBag('flashes'));
-        static::$current = $this;
+        self::$current = $this;
     }
 
     /**
@@ -68,9 +68,9 @@ class Session implements SessionInterface
      */
     public static function reset() : void
     {
-        if (static::$current) {
-            static::$current->storage->clear();
-            static::$current = null;
+        if (self::$current) {
+            self::$current->storage->clear();
+            self::$current = null;
         }
     }
 
@@ -79,7 +79,7 @@ class Session implements SessionInterface
      */
     public static function current() : ?self
     {
-        return static::$current;
+        return self::$current;
     }
 
     /**

@@ -6,6 +6,7 @@ use Rebet\Annotation\AnnotatedClass;
 use Rebet\Database\Annotation\PrimaryKey;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
+use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Paginator;
 use Rebet\Database\Query;
@@ -369,9 +370,9 @@ abstract class DataModel
      * @param mixed $ransacks conditions that uniquely determines data model.
      * @param bool $for_update (default: false)
      * @param Database|string|null $db (default: null)
-     * @return self|null
+     * @return static|null
      */
-    public static function findBy($ransacks, bool $for_update = false, $db = null) : ?self
+    public static function findBy($ransacks, bool $for_update = false, $db = null) : ?static
     {
         $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->find($query->sql(), null, $query->params(), $for_update, get_called_class());

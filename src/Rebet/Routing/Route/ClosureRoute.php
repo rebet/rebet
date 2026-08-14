@@ -3,6 +3,7 @@ namespace Rebet\Routing\Route;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
 
 /**

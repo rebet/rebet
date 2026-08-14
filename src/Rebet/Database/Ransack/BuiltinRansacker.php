@@ -30,7 +30,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * Create ransacker of given PDO driver.
      *
-     * @param Database $db
+     * @param Driver $driver
      */
     public function __construct(Driver $driver)
     {

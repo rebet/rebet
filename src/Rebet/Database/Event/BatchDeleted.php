@@ -28,7 +28,7 @@ class BatchDeleted implements Saving
     /**
      * Ransack conditions for deleted.
      *
-     * @var mixed $ransacks conditions that arrayable
+     * @var mixed $ransack conditions that arrayable
      */
     public $ransack;
 
@@ -44,7 +44,7 @@ class BatchDeleted implements Saving
      *
      * @param Database $db
      * @param string $entity class name
-     * @param mixed $ransacks conditions that arrayable
+     * @param mixed $ransack conditions that arrayable
      */
     public function __construct(Database $db, string $entity, $ransack, int $affected_rows)
     {

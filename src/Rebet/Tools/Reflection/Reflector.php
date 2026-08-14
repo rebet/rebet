@@ -55,11 +55,11 @@ class Reflector
             return $default;
         }
         if (Utils::isBlank($key)) {
-            return $object === null ? $default : static::resolveDotAccessDelegator($object) ;
+            return $object === null ? $default : self::resolveDotAccessDelegator($object) ;
         }
 
         if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
-            return static::resolveDotAccessDelegator($object[$key]) ?? $default ;
+            return self::resolveDotAccessDelegator($object[$key]) ?? $default ;
         }
 
         $current = Strings::latrim($key, '.');
@@ -76,7 +76,7 @@ class Reflector
                 return $default;
             }
             $value = $object[$current];
-            return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
+            return $value === null ? $default : self::resolveDotAccessDelegator($value) ;
         }
 
         if (!static::canPropertyAccess($object, $current)) {
@@ -88,7 +88,7 @@ class Reflector
         }
         $rp->setAccessible($accessible);
         $value = static::getPropertyValue($rp, $object);
-        return $value === null ? $default : static::resolveDotAccessDelegator($value) ;
+        return $value === null ? $default : self::resolveDotAccessDelegator($value) ;
     }
 
     /**
@@ -155,7 +155,7 @@ class Reflector
         }
 
         foreach ($object as $key => $value) {
-            static::set($object, $key, static::resolveDotAccessDelegator($value), true);
+            static::set($object, $key, self::resolveDotAccessDelegator($value), true);
         }
 
         return $object;
@@ -178,7 +178,7 @@ class Reflector
      * @param  int|string $key You can use dot notation
      * @param  mixed $value
      * @param  bool $accessible (default: false) ... Valid only for objects
-     * @return mixed
+     * @return void
      * @throws \OutOfBoundsException
      */
     public static function set(&$object, $key, $value, bool $accessible = false) : void
@@ -298,7 +298,7 @@ class Reflector
         if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
             $ret = $object[$key];
             unset($object[$key]);
-            return static::resolveDotAccessDelegator($ret);
+            return self::resolveDotAccessDelegator($ret);
         }
         $current = Strings::latrim($key, '.');
         if (Arrays::accessible($object)) {
@@ -310,7 +310,7 @@ class Reflector
             }
             $ret = $object[$current] ?? null;
             unset($object[$current]);
-            return static::resolveDotAccessDelegator($ret);
+            return self::resolveDotAccessDelegator($ret);
         }
 
         if (!\property_exists($object, $current)) {
@@ -322,13 +322,13 @@ class Reflector
             $target = static::getPropertyValue($rp, $object);
             $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
             static::setPropertyValue($rp, $object, $target);
-            return static::resolveDotAccessDelegator($ret);
+            return self::resolveDotAccessDelegator($ret);
         }
         $rp = new \ReflectionProperty($object, $current);
         if ($rp->isPublic() || $rp->getModifiers() === 4096) {
             $ret = $object->$current;
             unset($object->$current);
-            return static::resolveDotAccessDelegator($ret);
+            return self::resolveDotAccessDelegator($ret);
         }
         throw new \OutOfBoundsException("Nested key '{$current}' can not access.");
     }
@@ -612,7 +612,7 @@ class Reflector
             return null;
         }
         $type = $target->getType();
-        if (!empty($type)) {
+        if ($type instanceof \ReflectionNamedType) {
             return $type->getName();
         }
 
@@ -889,7 +889,7 @@ class Reflector
     /**
      * It checks the class or object uses given trait.
      *
-     * @param object|string $class
+     * @param object|string $target
      * @param string $trait
      * @return boolean
      */

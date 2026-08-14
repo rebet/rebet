@@ -11,7 +11,6 @@ use Rebet\Tools\Translation\FileDictionary;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Path;
-use Rebet\View\Code\Code;
 use Rebet\View\Tag\CallbackProcessor;
 use Rebet\View\Tag\Processor;
 use Rebet\View\Tag\SelectiveProcessor;
@@ -45,7 +44,7 @@ class BuiltinTagProcessors
     /**
      * Check current environment
      *
-     * @return Code
+     * @return Processor
      */
     public static function env() : Processor
     {
@@ -59,7 +58,7 @@ class BuiltinTagProcessors
     /**
      * Output route prefix
      *
-     * @return Code
+     * @return Processor
      */
     public static function prefix() : Processor
     {
@@ -73,7 +72,7 @@ class BuiltinTagProcessors
     /**
      * Check current users role (Authorization)
      *
-     * @return Code
+     * @return Processor
      */
     public static function role() : Processor
     {
@@ -87,7 +86,7 @@ class BuiltinTagProcessors
     /**
      * Check policy for target to current user (Authorization)
      *
-     * @return Code
+     * @return Processor
      */
     public static function can() : Processor
     {
@@ -101,7 +100,7 @@ class BuiltinTagProcessors
     /**
      * Bind field attribute name
      *
-     * @return Code
+     * @return Processor
      */
     public static function field() : Processor
     {
@@ -119,7 +118,7 @@ class BuiltinTagProcessors
     /**
      * Unbind field attribute name
      *
-     * @return Code
+     * @return Processor
      */
     public static function endfield() : Processor
     {
@@ -133,7 +132,7 @@ class BuiltinTagProcessors
     /**
      * Output error message of given attributes
      *
-     * @return Code
+     * @return Processor
      */
     public static function error() : Processor
     {
@@ -174,7 +173,7 @@ class BuiltinTagProcessors
     /**
      * Undocumented function
      *
-     * @return Code
+     * @return Processor
      */
     public static function errors() : Processor
     {
@@ -190,7 +189,7 @@ class BuiltinTagProcessors
     /**
      * Output given value if error
      *
-     * @return Code
+     * @return Processor
      */
     public static function iferror() : Processor
     {
@@ -215,7 +214,7 @@ class BuiltinTagProcessors
     /**
      * Output error grammers if error
      *
-     * @return Code
+     * @return Processor
      */
     public static function e() : Processor
     {
@@ -241,7 +240,7 @@ class BuiltinTagProcessors
     /**
      * Output input data
      *
-     * @return Code
+     * @return Processor
      */
     public static function input() : Processor
     {
@@ -266,7 +265,7 @@ class BuiltinTagProcessors
     /**
      * Output csrf token value
      *
-     * @return Code
+     * @return Processor
      */
     public static function csrfToken() : Processor
     {
@@ -281,7 +280,7 @@ class BuiltinTagProcessors
     /**
      * Output csrf token hidden field tag
      *
-     * @return Code
+     * @return Processor
      */
     public static function csrf() : Processor
     {
@@ -298,7 +297,7 @@ class BuiltinTagProcessors
     /**
      * Translate given message to current locale
      *
-     * @return Code
+     * @return Processor
      */
     public static function lang() : Processor
     {
@@ -314,7 +313,7 @@ class BuiltinTagProcessors
      * Pagination link output tag
      * Note: Default paginate template can be changed by Rebet\Application\App.paginate.default_template configure.
      *
-     * @return Code
+     * @return Processor
      */
     public static function paginate() : Processor
     {

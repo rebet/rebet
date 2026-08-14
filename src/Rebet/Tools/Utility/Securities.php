@@ -70,7 +70,7 @@ class Securities
      * @param string $salt (default: depend on configure)
      * @param string $pepper (default: depend on configure)
      * @param string $algorithm (default: depend on configure)
-     * @param string $stretching (default: depend on configure)
+     * @param int|null $stretching (default: depend on configure)
      * @return string
      */
     public static function hash(string $text, string $salt = null, string $pepper = null, string $algorithm = null, ?int $stretching = null) : string
@@ -129,7 +129,7 @@ class Securities
      * ex)
      * $decrypted = Securities::decrypt(Nets::decodeBase64Url($text), 'secret_key');
      *
-     * @param string encrypted
+     * @param string $encrypted
      * @param string $secret_key (default: depend on configure)
      * @param string $cipher (default: depend on configure)
      * @return string

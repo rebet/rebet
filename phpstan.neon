@@ -1,5 +1,5 @@
 parameters:
-    level: 1
+    level: 2
     bootstrapFiles:
         - ./vendor/autoload.php
     paths:
@@ -7,4 +7,4 @@ parameters:
     excludePaths:
         # Letterpress template with `{%-- if/else --%}` pseudo-conditional comments that
         # references the App\ namespace of the (not yet existing) generated application.
-        - ./src/Rebet/Application/Console/Command/skeltons/configs/auth.letterpress.php
+        - ./src/Rebet/Application/Console/Command/skeltons/configs/*.letterpress.php

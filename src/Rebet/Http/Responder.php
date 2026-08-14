@@ -33,7 +33,7 @@ class Responder
      * @param mixed $data
      * @param int $status code of HTTP (default: 200)
      * @param array $headers (default: [])
-     * @param Request|null (default: null for Request::current())
+     * @param Request|null $request (default: null for Request::current())
      * @return Response
      */
     public static function toResponse($data, int $status = 200, array $headers = [], ?Request $request = null) : Response
@@ -60,7 +60,6 @@ class Responder
      * @param mixed $data
      * @param int $status code of HTTP (default: 200)
      * @param array $headers (default: [])
-     * @param Request $request
      * @return Response
      */
     protected static function createResponseByTypeOf($data, int $status = 200, array $headers = []) : Response
@@ -92,7 +91,7 @@ class Responder
      * @param array $query (default: [])
      * @param int $status (default: 302)
      * @param array $headers (default: [])
-     * @param Request|null (default: null for Request::current())
+     * @param Request|null $request (default: null for Request::current())
      * @return RedirectResponse
      */
     public static function redirect(string $url, array $query = [], int $status = 302, array $headers = [], ?Request $request = null) : RedirectResponse

@@ -22,7 +22,7 @@ class Dotenv
      * @param string|string[] $paths of .env file
      * @param string|string[] $names of .env file (default: '.env')
      * @param bool $overload (default: true)
-     * @return array
+     * @return void
      */
     public static function load($paths, $names = '.env', bool $overload = true) : void
     {

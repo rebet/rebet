@@ -12,11 +12,9 @@ namespace Rebet\Validation;
 abstract class Rule
 {
     /**
-     * Get the string contents of the view.
+     * Get the validation rules.
      *
-     * @param string $name Template name without base template dir and template file suffix
-     * @param array $data
-     * @return string
+     * @return array
      */
     abstract public function rules() : array;
 

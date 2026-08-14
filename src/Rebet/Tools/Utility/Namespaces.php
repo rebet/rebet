@@ -53,7 +53,7 @@ class Namespaces
         if ($class === null) {
             return null;
         }
-        return is_string($class) ? static::_resolve($class) : $class ;
+        return is_string($class) ? self::_resolve($class) : $class ;
     }
 
     /**
@@ -69,6 +69,6 @@ class Namespaces
         }
         $alias  = Strings::latrim($class, '\\');
         $actual = static::config("aliases.{$alias}");
-        return static::_resolve(str_replace($alias, $actual, $class));
+        return self::_resolve(str_replace($alias, $actual, $class));
     }
 }

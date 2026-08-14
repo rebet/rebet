@@ -199,7 +199,6 @@ class Database
     /**
      * Get Ransacker of this database.
      *
-     * @param string $sql
      * @return Ransacker
      */
     public function ransacker() : Ransacker
@@ -248,7 +247,7 @@ class Database
      *
      * @param array|\PDOException $error
      * @param string|null $sql (default: null)
-     * @param array $param (default: [])
+     * @param array $params (default: [])
      * @return DatabaseException
      */
     public function exception($error, ?string $sql = null, array $params = []) : DatabaseException

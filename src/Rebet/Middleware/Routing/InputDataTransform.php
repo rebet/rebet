@@ -33,7 +33,7 @@ abstract class InputDataTransform
      *
      * @param Request $request
      * @param \Closure $next
-     * @return void
+     * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response
     {
@@ -56,9 +56,9 @@ abstract class InputDataTransform
     /**
      * Transform the value of given value.
      *
-     * @param string $key
-     * @param mixed $value
-     * @return void
+     * @param array $array
+     * @param string $prefix (default: '')
+     * @return array
      */
     protected function transformArray(array $array, string $prefix = '') : array
     {

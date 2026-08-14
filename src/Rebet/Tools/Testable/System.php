@@ -15,7 +15,7 @@ use Rebet\Tools\Utility\Arrays;
  *
  * @method static void  header(string $header, bool $replace = true, int $http_response_code = null)
  * @method static array headers_list()
- * @method static array dns_get_record(string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false)
+ * @method static array dns_get_record(string $hostname, int $type = 268435456, ?array &$authns = null, ?array &$addtl = null, bool $raw = false)
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -208,7 +208,7 @@ class System
     /**
      * It checks given php function name can be emulatable or not.
      *
-     * @param [type] $function_name
+     * @param string $function_name
      * @return bool
      */
     public static function emulatable($function_name) : bool

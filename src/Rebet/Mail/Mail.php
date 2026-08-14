@@ -750,7 +750,7 @@ class Mail
      *
      * @param string|null $content_type (default: 'text/plain')
      * @param string|null $charset (default: null)
-     * @param array $charset (options: [])
+     * @param array $options (default: [])
      * @return self
      */
     public function generateAlternativePart(?string $content_type = 'text/plain', ?string $charset = null, array $options = []) : self

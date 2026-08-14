@@ -94,7 +94,7 @@ class Resource
      * Register the resource loader.
      *
      * @param string $suffix
-     * @param \Closure
+     * @param \Closure $loader
      * @return mixed
      */
     public static function setLoader(string $suffix, \Closure $loader)

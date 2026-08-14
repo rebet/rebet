@@ -959,10 +959,10 @@ class BuiltinValidations implements Validations
      * IPv4 Validation
      *
      * @param Context $c
-     * @param bool $delimiter (default: null)
+     * @param string|null $delimiter (default: null)
      * @return boolean
      */
-    public function validationIpv4(Context $c, string $delimiter = null) : bool
+    public function validationIpv4(Context $c, ?string $delimiter = null) : bool
     {
         if (!is_null($delimiter) && is_string($c->value)) {
             $splited = [];
@@ -1141,7 +1141,7 @@ class BuiltinValidations implements Validations
      * Create a regex matcher from given ng word.
      *
      * @param string $ng_word
-     * @param string|null $word_split_pattern
+     * @param string $word_split_pattern
      * @param string $delimiter_pattern
      * @param string $omission_pattern
      * @param array $ambiguous_patterns
@@ -1482,7 +1482,7 @@ class BuiltinValidations implements Validations
      *  File Size Validation
      *
      * @param Context $c
-     * @param string|int| $max
+     * @param string|int $max
      * @param integer $precision
      * @return boolean
      */
@@ -1775,8 +1775,8 @@ class BuiltinValidations implements Validations
      * File Image Aspect Ratio Validation
      *
      * @param Context $c
-     * @param int $width
-     * @param int $height
+     * @param int $width_ratio
+     * @param int $height_ratio
      * @param int $precision (default: 2)
      * @return boolean
      */

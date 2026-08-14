@@ -315,7 +315,7 @@ class Router
             throw new LogicException("Routing rules are defined without Router::rules(). You should wrap rules by Router::rules().");
         }
         static::applyRulesTo($route);
-        static::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
+        self::digging(static::$routing_tree, explode('/', Strings::latrim($route->prefix.$route->uri, '{')), $route);
         return $route;
     }
 
@@ -338,13 +338,13 @@ class Router
         }
         $nest = array_shift($nests);
         if (empty($nest)) {
-            static::digging($tree, $nests, $route);
+            self::digging($tree, $nests, $route);
             return;
         }
         if (!isset($tree[$nest])) {
             $tree[$nest] = [];
         }
-        static::digging($tree[$nest], $nests, $route);
+        self::digging($tree[$nest], $nests, $route);
         return;
     }
 
@@ -514,7 +514,10 @@ class Router
     {
         if (static::$pipeline !== null) {
             static::$pipeline->invoke('terminate', $request, $response);
-            static::$pipeline->getDestination()->terminate($request, $response);
+            $destination = static::$pipeline->getDestination();
+            if ($destination instanceof Route) {
+                $destination->terminate($request, $response);
+            }
         }
     }
 
@@ -531,7 +534,7 @@ class Router
     /**
      * Get the prefix from given request_path.
      *
-     * @param string|null $request_path
+     * @param string $request_path
      * @return string|null
      */
     public static function getPrefixFrom(string $request_path) : ?string

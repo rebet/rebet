@@ -246,7 +246,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param string $format
      * @param string|\DateTimeInterface|null $value
      * @param string|\DateTimezone|null $timezone (default: depend on confiure)
-     * @return DateTime|bool
+     * @return static|false
      */
     public static function createFromFormat(string $format, $value, $timezone = null) : static|false
     {
@@ -291,7 +291,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if ($time instanceof \DateTimeInterface) {
             if ($timezone === null) {
                 $adopt_timezone = new DateTimeZone($time->getTimezone());
-            } else {
+            } elseif ($time instanceof \DateTime || $time instanceof \DateTimeImmutable) {
                 $time = $time->setTimezone($adopt_timezone);
             }
             $adopt_time = $time->format('Y-m-d H:i:s.u');
@@ -385,7 +385,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of now.
      *
-     * @param string|\DateTimeZone|null (default: depend on configure)
+     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
      * @return static
      */
     public static function now($timezone = null) : DateTime
@@ -396,7 +396,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of today.
      *
-     * @param string|\DateTimeZone|null (default: depend on configure)
+     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
      * @return static
      */
     public static function today($timezone = null) : DateTime
@@ -407,7 +407,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of yesterday.
      *
-     * @param string|\DateTimeZone|null (default: depend on configure)
+     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
      * @return static
      */
     public static function yesterday($timezone = null) : DateTime
@@ -418,7 +418,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of tomorrow.
      *
-     * @param string|\DateTimeZone|null (default: depend on configure)
+     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
      * @return static
      */
     public static function tomorrow($timezone = null) : DateTime
@@ -690,7 +690,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Add millisecond
      *
-     * @param int $millis
+     * @param int $milli
      * @return static
      */
     public function addMilli(int $milli) : DateTime
@@ -902,7 +902,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to Date class
      *
-     * @return DateTime
+     * @return Date
      */
     public function toDate() : Date
     {

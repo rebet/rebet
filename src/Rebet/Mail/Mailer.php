@@ -32,7 +32,7 @@ class Mailer
     /**
      * Send the given Message like it would be sent in a mail client.
      *
-     * @param Mail|Swift_Mime_SimpleMessage $message
+     * @param Mail|Swift_Mime_SimpleMessage $mail
      * @return array of failed recipients
      */
     public function send($mail) : array

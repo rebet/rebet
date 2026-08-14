@@ -98,7 +98,8 @@ class Twig implements Engine
      */
     public function getPaths() : array
     {
-        return static::$twig->getLoader()->getPaths();
+        $loader = static::$twig->getLoader();
+        return $loader instanceof FilesystemLoader ? $loader->getPaths() : [] ;
     }
 
     /**
@@ -106,9 +107,10 @@ class Twig implements Engine
      */
     public function prependPath(string $path) : Engine
     {
-        $path = Path::normalize($path);
-        if (!in_array($path, $this->getPaths())) {
-            static::$twig->getLoader()->prependPath($path);
+        $path   = Path::normalize($path);
+        $loader = static::$twig->getLoader();
+        if ($loader instanceof FilesystemLoader && !in_array($path, $this->getPaths())) {
+            $loader->prependPath($path);
         }
         return $this;
     }
@@ -118,9 +120,10 @@ class Twig implements Engine
      */
     public function appendPath(string $path) : Engine
     {
-        $path = Path::normalize($path);
-        if (!in_array($path, $this->getPaths())) {
-            static::$twig->getLoader()->addPath($path);
+        $path   = Path::normalize($path);
+        $loader = static::$twig->getLoader();
+        if ($loader instanceof FilesystemLoader && !in_array($path, $this->getPaths())) {
+            $loader->addPath($path);
         }
         return $this;
     }

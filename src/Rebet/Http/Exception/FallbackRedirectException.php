@@ -65,7 +65,8 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set input.
      *
-     * @return array
+     * @param array $input
+     * @return self
      */
     public function with(array $input) : self
     {
@@ -76,7 +77,8 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set errors.
      *
-     * @return array
+     * @param array $errors
+     * @return self
      */
     public function errors(array $errors) : self
     {

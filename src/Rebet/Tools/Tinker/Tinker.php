@@ -34,17 +34,17 @@ use Rebet\Tools\Utility\Utils;
  * @method bool        wildmatch(string|string[] $patterns)                                                                                                  Call Strings::wildmatch($value, ...)
  * @method Tinker      split(string $delimiter, int $size, $padding = null)                                                                                  Call Strings::split($value, ...)
  * @method Tinker      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                              Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value) {...}`
- * @method Tinker      override($diff, array|string $option = [], string $default_array_override_option = OverrideOption::APPEND, ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Tinker      override($diff, array|string $option = [], string $default_array_override_option = '>', ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
  * @method Tinker      duplicate()                                                                                                                           Call Arrays::duplicate($value)
  * @method Tinker      crossJoin(iterable ...$arrays)                                                                                                        Call Arrays::crossJoin($value, ...)
  * @method Tinker      only(array|string $keys)                                                                                                              Call Arrays::only($value, ...)
  * @method Tinker      except(array|string $keys)                                                                                                            Call Arrays::except($value, ...)
  * @method Tinker      where(?callable $callback)                                                                                                            Call Arrays::where($value, ...) - $callback : `function($value[, $key]) : bool {...}`
  * @method Tinker      compact()                                                                                                                             Call Arrays::compact($value)
- * @method Tinker      unique(int $sort_flag = SORT_REGULAR)                                                                                                 Call Arrays::unique($value, ...)
+ * @method Tinker      unique(int $sort_flag = 0)                                                                                                 Call Arrays::unique($value, ...)
  * @method Tinker|bool first(?callable $callback = null, $default = null)                                                                                    Call Arrays::first($value, ...) - $callback : `function($value[, $key]) : bool {...}`
  * @method Tinker|bool last(?callable $callback = null, $default = null)                                                                                     Call Arrays::last($value, ...) - $callback : `function($value[, $key]) : bool {...}`
- * @method Tinker      flatten(int $depth = INF)                                                                                                             Call Arrays::flatten($value, ...)
+ * @method Tinker      flatten(int|float $depth)                                                                                                                    Call Arrays::flatten($value, ...) - $depth (default: INF)
  * @method Tinker      prepend($value, $key = null)                                                                                                          Call Arrays::prepend($value, ...)
  * @method Tinker      shuffle(?int $seed = null)                                                                                                            Call Arrays::shuffle($value, ...)
  * @method Tinker      map(callable $callback)                                                                                                               Call Arrays::map($value, ...) - $callback : `function($value[, $key]) {...}`
@@ -56,9 +56,9 @@ use Rebet\Tools\Utility\Utils;
  * @method Tinker      union($other)                                                                                                                         Call Arrays::union($value, ...)
  * @method Tinker|bool min(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::min($value, ...) - $retriever : `function($value) {...}`
  * @method Tinker|bool max(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::max($value, ...) - $retriever : `function($value) {...}`
- * @method Tinker      sort(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                                  Call Arrays::sort($value, ...) - $comparator : `function($a, $b) : int`
- * @method Tinker      sortBy(callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                    Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
- * @method Tinker      sortKeys(int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR)                                                              Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b) : int`
+ * @method Tinker      sort(int $order = 4, callable|int $comparator = 0)                                                                  Call Arrays::sort($value, ...) - $comparator : `function($a, $b) : int`
+ * @method Tinker      sortBy(callable|string $retriever, int $order = 4, callable|int $comparator = 0)                                    Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
+ * @method Tinker      sortKeys(int $order = 4, callable|int $comparator = 0)                                                              Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b) : int`
  * @method Tinker      sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                                Call Arrays::sum($value, ...) - $retriever : `function($value) {...}`
  * @method Tinker      avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                                Call Arrays::avg($value, ...) - $retriever : `function($value) {...}`
  * @method Tinker      median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                             Call Arrays::median($value, ...) - $retriever : `function($value) {...}`
@@ -71,7 +71,7 @@ use Rebet\Tools\Utility\Utils;
  * @method Tinker      datetimef(string $format)                                                                                                             Call Tinker.filter.customs.datetimef($value, ...) configured closure - Format the wrapped value using DateTime::format().
  * @method Tinker      numberf(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')                  Call Tinker.filter.customs.numberf($value, ...) configured closure - Format the wrapped value using Decimal::round($precision)->format($omit_zero, $decimal_point, $thousands_separator).
  * @method Tinker      stringf(string $format)                                                                                                               Call Tinker.filter.customs.stringf($value, ...) configured closure - Format the wrapped value using sprintf format.
- * @method Tinker      explode(string $delimiter, int $limit = PHP_INT_MAX)                                                                                  Call Tinker.filter.customs.explode($value, ...) configured closure - Split the wrapped value string using given delimiter.
+ * @method Tinker      explode(string $delimiter, int $limit = 9223372036854775807)                                                                                  Call Tinker.filter.customs.explode($value, ...) configured closure - Split the wrapped value string using given delimiter.
  * @method Tinker      replace($pattern, $replacement, int $limit = -1)                                                                                      Call Tinker.filter.customs.replace($value, ...) configured closure - Replace the string using given regex pattern from the wrapped value.
  * @method Tinker      lower()                                                                                                                               Call Tinker.filter.customs.lower($value) configured closure - Change to lower case string from the wrapped value.
  * @method Tinker      upper()                                                                                                                               Call Tinker.filter.customs.upper($value) configured closure - Change to upper case string from the wrapped value.
@@ -287,9 +287,9 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         $this->promise = $promise;
         $this->safety  = $safety;
 
-        if (static::$null === null) {
-            static::$null = 'not null';
-            static::$null = new static(null);
+        if (self::$null === null) {
+            self::$null = 'not null';
+            self::$null = new static(null);
         }
 
         static::initDelegateFilters();
@@ -415,7 +415,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     {
         $origin = $this->origin();
         if ($origin === null) {
-            return static::$null;
+            return self::$null;
         }
         $result = Reflector::get($origin, $key);
         return is_bool($result) ? $result : new static($result) ;
@@ -428,7 +428,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      *   $value->_('escape')->_('nl2br') or $value->escape()->nl2br()
      *
-     * @param string $filter
+     * @param string $name
      * @param mixed ...$args
      * @return self|bool
      */
@@ -447,7 +447,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Apply the filter
      *
-     * @param Closure|null $filter
+     * @param \Closure|null $filter
      * @param self ...$args
      * @return self|bool
      */
@@ -465,7 +465,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
             return is_bool($result) ? $result : new static($result);
         } catch (\Throwable $e) {
             if ($origin === null) {
-                return static::$null;
+                return self::$null;
             }
             if ($converted === null) {
                 throw (new LogicException("Apply {$name} filter failed. The origin type '".Reflector::getType($origin)."' can not convert to {$type}."))->caused($e);
@@ -492,7 +492,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
         if (is_object($origin) && method_exists($origin, $name)) {
             $method      = new \ReflectionMethod($origin, $name);
             $type        = $method->getReturnType();
-            $type        = $type ? $type->getName() : $type ;
+            $type        = $type instanceof \ReflectionNamedType ? $type->getName() : null ;
             $fingerprint = $type === null || $type == 'bool' || $type == 'boolean' ? md5(serialize($origin)) : null ;
             $args        = array_map(function ($value) { return static::peel($value); }, $args);
             $result      = $method->invoke($origin, ...$args);

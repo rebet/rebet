@@ -29,14 +29,14 @@ abstract class Command extends SymfonyCommand
     /**
      * The name of command.
      * Must be overloaded in subclass.
-     * @var string
+     * @var string|null
      */
     const NAME = null;
 
     /**
      * The description of command.
      * Must be overloaded in subclass.
-     * @var string
+     * @var string|null
      */
     const DESCRIPTION = null;
 

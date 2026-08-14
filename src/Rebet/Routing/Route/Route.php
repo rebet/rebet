@@ -6,6 +6,7 @@ use Rebet\Auth\Annotation\Guard;
 use Rebet\Auth\Annotation\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
 
 /**
@@ -16,7 +17,7 @@ use Rebet\Routing\RouteAction;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class Route
+abstract class Route implements \Stringable
 {
     /**
      * Regex patterns for routing parameters.
@@ -38,6 +39,13 @@ abstract class Route
      * @var string
      */
     public $prefix = '';
+
+    /**
+     * Routing target URI.
+     *
+     * @var string|null
+     */
+    public $uri = null;
 
     /**
      * Middlewares for this route.
@@ -157,7 +165,7 @@ abstract class Route
      * Allow the Pipeline to process the route object.
      *
      * @param Request $request
-     * @param Response
+     * @return Response
      */
     public function __invoke(Request $request)
     {
@@ -219,7 +227,7 @@ abstract class Route
     /**
      *  Get or set the guard name attached to the route.
      *
-     * @param mixed $guard
+     * @param string|null $name
      * @return self|array
      */
     public function guard(?string $name = null)

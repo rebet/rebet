@@ -319,7 +319,7 @@ class Strings
      * It checks whether the specified character string is included in the target character string.
      *
      * @param string|null $string
-     * @param string $searches
+     * @param string $search
      * @return bool
      */
     protected static function _contains(?string $string, string $search) : bool
@@ -550,7 +550,7 @@ class Strings
      * Convert string to resource using 'php://temp/maxmemory:{$max_memory_size}'
      *
      * @param string $data
-     * @param string $max_memory_size (default: 2M)
+     * @param int $max_memory_size (default: 2M = 2 * 1024 * 1024)
      * @return resource
      */
     public static function toResource(string $data, int $max_memory_size = 2 * 1024 * 1024)

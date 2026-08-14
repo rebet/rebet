@@ -30,7 +30,7 @@ abstract class AbstractDriver implements Driver
      * PDO driver name that this driver will be support.
      * NOTE: Please override this property in the sub class.
      *
-     * @var string
+     * @var string|null
      */
     protected const SUPPORTED_PDO_DRIVER = null;
 

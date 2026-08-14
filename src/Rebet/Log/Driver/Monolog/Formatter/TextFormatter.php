@@ -51,7 +51,7 @@ class TextFormatter implements FormatterInterface
      * Create Text formatter.
      *
      * @param string $format (default: depend on configure)
-     * @param string $stringifiers (default: depend on configure)
+     * @param array $stringifiers (default: depend on configure)
      */
     public function __construct(?string $format = null, array $stringifiers = [])
     {

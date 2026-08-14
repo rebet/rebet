@@ -3,6 +3,7 @@ namespace Rebet\Cache;
 
 use DateTimeInterface;
 use Rebet\Cache\Adapter\Adapter;
+use Rebet\Cache\Exception\CacheException;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utility\Arrays;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -203,7 +204,7 @@ class Store
      *
      * @param string ...$tags
      * @return TagSet
-     * @throws UnsupportedTaggingException when the adapter does not support tagging.
+     * @throws CacheException when the adapter does not support tagging.
      */
     public function tags(string ...$tags) : TagSet
     {

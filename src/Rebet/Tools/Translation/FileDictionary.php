@@ -84,7 +84,7 @@ class FileDictionary implements Dictionary
      * Add the given group resouces to Library layer resouces.
      *
      * @param string $resource files directory path
-     * @param string ...$group
+     * @param string ...$groups
      * @return self
      */
     public function addLibraryResource(string $resource, string ...$groups) : self
@@ -223,7 +223,7 @@ class FileDictionary implements Dictionary
      * Get the translation string if the condition matches.
      *
      * @param string $part
-     * @param int|string $number
+     * @param int|string $selector
      * @return string|null
      */
     protected function extract(string $part, $selector) : ?string

@@ -18,9 +18,9 @@ class SessionCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function save(string $name, Cursor $curosr) : void
+    public function save(string $name, Cursor $cursor) : void
     {
-        Session::current()->set($name, $curosr);
+        Session::current()->set($name, $cursor);
     }
 
     /**

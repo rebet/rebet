@@ -1,6 +1,8 @@
 <?php
 namespace Rebet\Cache;
 
+use DateTimeInterface;
+use Rebet\Cache\Adapter\Adapter;
 use Rebet\Tools\Config\Configurable;
 
 /**

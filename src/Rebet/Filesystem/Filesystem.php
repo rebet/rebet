@@ -3,6 +3,7 @@ namespace Rebet\Filesystem;
 
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemOperator;
+use Psr\Http\Message\StreamInterface;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Http\Response;

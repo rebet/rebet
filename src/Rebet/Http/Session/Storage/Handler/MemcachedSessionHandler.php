@@ -32,7 +32,7 @@ class MemcachedSessionHandler extends SymfonyMemcachedSessionHandler
      * {@inheritDoc}
      *
      * @param \Memcached $memcached
-     * @param array|null $options (default: depenf on configure)
+     * @param array $options (default: depend on configure)
      */
     public function __construct(\Memcached $memcached, array $options = [])
     {

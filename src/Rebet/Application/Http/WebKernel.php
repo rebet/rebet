@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application\Http;
 
+use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;

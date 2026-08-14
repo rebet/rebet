@@ -68,7 +68,7 @@ abstract class AbstractCapture extends \php_user_filter
      * @param resource $in
      * @param resource $out
      * @param mixed $consumed
-     * @param mixed $closing
+     * @param bool $closing
      * @return int
      */
     public function filter($in, $out, &$consumed, bool $closing) : int

@@ -10,6 +10,7 @@ use Rebet\Routing\Annotation\Channel;
 use Rebet\Routing\Annotation\Method;
 use Rebet\Routing\Annotation\NotRouting;
 use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Controller;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
 use Rebet\Routing\Router;

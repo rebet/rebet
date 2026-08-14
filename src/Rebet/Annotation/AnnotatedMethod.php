@@ -64,7 +64,7 @@ class AnnotatedMethod
     /**
      * Get method annotations
      *
-     * @return mixed Annotation
+     * @return array Annotation
      */
     public function annotations() : array
     {

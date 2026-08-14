@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application\Console;
 
+use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
@@ -10,7 +11,9 @@ use Rebet\Application\Kernel as ApplicationKernel;
 use Rebet\Application\Structure;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * CLI (Command Line Interface) Kernel Class

@@ -18,7 +18,7 @@ class FileBag extends SymfonyFileBag
     /**
      * {@inheritDoc}
      *
-     * @return UploadFile|UploadFile[]|null
+     * @return UploadedFile|UploadedFile[]|null
      */
     protected function convertFileInformation(array|SymfonyUploadedFile $file) : array|SymfonyUploadedFile|null
     {

@@ -3,6 +3,7 @@ namespace Rebet\Routing\Route;
 
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Routing\Controller;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
 use Rebet\Tools\Config\Configurable;
@@ -50,7 +51,7 @@ class MethodRoute extends DeclarativeRoute
      * @param array $methods
      * @param string $uri
      * @param string $action 'Namespace\\Controller::method'. The namespace can be use @ namespace alias. (default namespace: depend on configure)
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function __construct(array $methods, string $uri, string $action)
     {

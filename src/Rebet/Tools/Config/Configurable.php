@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Tools\Config;
 
+use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\OverrideOption;

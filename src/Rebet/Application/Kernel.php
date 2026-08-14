@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application;
 
+use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Console\Assistant;
 use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Http\Request;

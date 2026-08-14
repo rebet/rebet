@@ -12,6 +12,7 @@ use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Rebet\Tools\Config\Configurable;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\OverrideOption;
 use Rebet\Tools\Utility\Path;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
@@ -190,6 +191,10 @@ class Blade implements Engine
      */
     public function compiler() : BladeCompiler
     {
-        return $this->core()->getEngineResolver()->resolve('blade')->getCompiler();
+        $engine = $this->core()->getEngineResolver()->resolve('blade');
+        if (!$engine instanceof CompilerEngine) {
+            throw new LogicException('The resolved "blade" engine is not a CompilerEngine.');
+        }
+        return $engine->getCompiler();
     }
 }

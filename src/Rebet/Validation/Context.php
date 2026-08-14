@@ -503,7 +503,7 @@ class Context
      * Set the extra information for validation by given key
      *
      * @param string $key
-     * @param [type] $value
+     * @param mixed $value
      * @return self
      */
     public function setExtra(string $key, $value) : self
@@ -516,7 +516,7 @@ class Context
      * Get the extra information for validation by given key
      *
      * @param string $key
-     * @return void
+     * @return mixed
      */
     public function extra(string $key)
     {

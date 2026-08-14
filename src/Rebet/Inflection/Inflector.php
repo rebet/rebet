@@ -288,11 +288,11 @@ class Inflector
     public static function reset() : void
     {
         static::clearConfig();
-        static::$cache = [
+        self::$cache = [
             'pluralize'   => [],
             'singularize' => [],
         ];
-        static::$compiled = [
+        self::$compiled = [
             'pluralize'   => [],
             'singularize' => [],
         ];
@@ -318,7 +318,7 @@ class Inflector
      * Converts 'ClassName' to 'class_name' and ['tables', 'others'] to 'other_table'.
      * NOTE: When the array words given then the words count must be two otherwise return null.
      *
-     * @param string|array|null $words
+     * @param string|array|null $word
      * @param string $replacement (default: '_')
      * @param string $delimiters (default: ' _-')
      * @return string|null
@@ -471,8 +471,8 @@ class Inflector
      */
     public static function pluralize(?string $word) : ?string
     {
-        $cache    = static::$cache['pluralize'];
-        $compiled = static::$compiled['pluralize'];
+        $cache    = self::$cache['pluralize'];
+        $compiled = self::$compiled['pluralize'];
 
         if ($word === null) {
             return null;
@@ -516,8 +516,8 @@ class Inflector
      */
     public static function singularize(?string $word) : ?string
     {
-        $cache    = static::$cache['singularize'];
-        $compiled = static::$compiled['singularize'];
+        $cache    = self::$cache['singularize'];
+        $compiled = self::$compiled['singularize'];
 
         if ($word === null) {
             return null;

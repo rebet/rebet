@@ -121,7 +121,6 @@ class FlashBag implements SessionBagInterface
      *
      * @param string $name You can use dot notation.
      * @param mixed $value
-     * @param mixed $default (default: null)
      * @return void
      */
     public function set(string $name, $value) : void

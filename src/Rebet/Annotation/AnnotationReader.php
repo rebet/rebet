@@ -27,10 +27,10 @@ class AnnotationReader extends DoctrineAnnotationReader
      */
     public static function getShared() : self
     {
-        if (static::$shared === null) {
-            static::$shared = new AnnotationReader();
+        if (self::$shared === null) {
+            self::$shared = new AnnotationReader();
         }
 
-        return static::$shared;
+        return self::$shared;
     }
 }

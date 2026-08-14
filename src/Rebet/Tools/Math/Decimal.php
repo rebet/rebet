@@ -50,7 +50,7 @@ class Decimal
     /**
      * Set the fixed scale option for Decimal::MODE_FIXED_DECIMAL_PLACES.
      *
-     * @param integer $scale
+     * @param integer $fixed_scale
      * @return void
      */
     public static function setFixedScale(int $fixed_scale) : void

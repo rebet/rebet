@@ -161,7 +161,7 @@ class EmbedTokenParser extends AbstractTokenParser
         $args     = [];
         $stream   = $this->parser->getStream();
         $i        = 0;
-        $variadic = Arrays::remove($separators, static::VARIADIC);
+        $variadic = Arrays::remove($separators, self::VARIADIC);
         while (!$stream->test(Token::BLOCK_END_TYPE)) {
             // NOTE: 512 is the precedence Twig core assigns to postfix operators ('.', '[', '(', '|'), so this
             //       lets an argument value continue through attribute/method access, array access and filters,

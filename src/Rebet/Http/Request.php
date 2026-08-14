@@ -7,9 +7,11 @@ use Rebet\Http\Response\RedirectResponse;
 use Rebet\Http\Session\Session;
 use Rebet\Routing\Route\Route;
 use Rebet\Routing\Router;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Strings;
+use Rebet\Validation\Rule;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
 use Rebet\View\View;
@@ -161,7 +163,7 @@ class Request extends SymfonyRequest
      *
      * @see Request::session()
      * @deprecated Not unspported in Rebet.
-     * @throws BadMethodCallException when the method was called.
+     * @throws \BadMethodCallException when the method was called.
      */
     public function getSession() : SessionInterface
     {
@@ -174,7 +176,7 @@ class Request extends SymfonyRequest
      *
      * @see Request::session()
      * @deprecated Not unspported in Rebet.
-     * @throws BadMethodCallException when the method was called.
+     * @throws \BadMethodCallException when the method was called.
      */
     public function setSession(SessionInterface $session) : void
     {
@@ -187,7 +189,7 @@ class Request extends SymfonyRequest
      *
      * @see Request::session()
      * @deprecated Not unspported in Rebet.
-     * @throws BadMethodCallException when the method was called.
+     * @throws \BadMethodCallException when the method was called.
      */
     public function setSessionFactory(callable $factory) : void
     {
@@ -199,7 +201,7 @@ class Request extends SymfonyRequest
      *
      * @param Session|callable|null $session (default: null)
      * @return Session|self
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      */
     public function session($session = null)
     {
@@ -228,6 +230,7 @@ class Request extends SymfonyRequest
         if (Strings::startsWith($header, 'Bearer ')) {
             return \mb_substr($header, 7);
         }
+        return null;
     }
 
     /**

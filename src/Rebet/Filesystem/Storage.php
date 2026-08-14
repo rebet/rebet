@@ -54,7 +54,7 @@ class Storage
      * Get the given name disk storage.
      *
      * @param string $name
-     * @return self
+     * @return Filesystem
      */
     public static function disk(string $name) : Filesystem
     {

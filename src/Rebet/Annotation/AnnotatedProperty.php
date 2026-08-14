@@ -64,7 +64,7 @@ class AnnotatedProperty
     /**
      * Get property annotations
      *
-     * @return mixed Annotation
+     * @return array Annotation
      */
     public function annotations() : array
     {

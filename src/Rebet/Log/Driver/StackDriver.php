@@ -104,7 +104,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
      * Output logs to stacked channels.
      *
      * @param string $level
-     * @param string|object $message
+     * @param string|\Stringable $message
      * @param array $context (default: [])
      * @return void
      */

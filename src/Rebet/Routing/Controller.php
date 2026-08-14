@@ -4,6 +4,8 @@ namespace Rebet\Routing;
 use Rebet\Auth\Auth;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
+use Rebet\Routing\Route\Route;
+use Rebet\Validation\Rule;
 use Rebet\Validation\ValidData;
 use Rebet\View\View;
 

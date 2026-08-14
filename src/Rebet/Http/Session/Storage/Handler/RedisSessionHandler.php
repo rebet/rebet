@@ -2,6 +2,7 @@
 namespace Rebet\Http\Session\Storage\Handler;
 
 use Rebet\Tools\Config\Configurable;
+use Symfony\Component\Cache\Traits\RedisProxy;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler as SymfonyRedisSessionHandler;
 
 /**

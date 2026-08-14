@@ -255,7 +255,7 @@ class Arrays
         $is_diff_sequential = static::isSequential($diff);
         $apply_option       = \is_string($option) ? $option : $default_array_override_option ;
         if ($is_base_sequential && $is_diff_sequential && $apply_option !== OverrideOption::MERGE) {
-            return static::arrayMerge($base, $diff, $apply_option);
+            return self::arrayMerge($base, $diff, $apply_option);
         }
 
         if ($is_base_sequential !== $is_diff_sequential && $apply_option !== OverrideOption::MERGE) {
@@ -437,7 +437,7 @@ class Arrays
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *
-     * @param  array|unll  $array
+     * @param  array|null  $array
      * @param  array|string  $keys
      * @return void
      */
@@ -526,14 +526,14 @@ class Arrays
     public static function find($array, callable $callback, $default = null)
     {
         if ($array === null) {
-            return static::value($default);
+            return self::value($default);
         }
         foreach ($array as $key => $value) {
             if (call_user_func($callback, $value, $key)) {
                 return $key;
             }
         }
-        return static::value($default);
+        return self::value($default);
     }
 
     /**
@@ -547,11 +547,11 @@ class Arrays
     public static function first($array, ?callable $callback = null, $default = null)
     {
         if ($array === null) {
-            return static::value($default);
+            return self::value($default);
         }
         if (is_null($callback)) {
             if (empty($array)) {
-                return static::value($default);
+                return self::value($default);
             }
             foreach ($array as $item) {
                 return $item;
@@ -562,7 +562,7 @@ class Arrays
                 return $value;
             }
         }
-        return static::value($default);
+        return self::value($default);
     }
 
     /**
@@ -580,7 +580,7 @@ class Arrays
      * Flatten a multi-dimensional array into a single level.
      *
      * @param  array|null  $array
-     * @param  int  $depth (default: INF)
+     * @param  int|float  $depth (default: INF)
      * @return array
      */
     public static function flatten(?array $array, $depth = INF) : ?array
@@ -616,7 +616,7 @@ class Arrays
             return null;
         }
         if (is_null($callback)) {
-            return empty($array) ? static::value($default) : end($array);
+            return empty($array) ? self::value($default) : end($array);
         }
         return static::first(array_reverse($array, true), $callback, $default);
     }
@@ -624,7 +624,7 @@ class Arrays
     /**
      * Get a subset of the items from the given array.
      *
-     * @param  array|ull  $array
+     * @param  array|null  $array
      * @param  array|string  $keys
      * @return array
      */

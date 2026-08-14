@@ -167,7 +167,7 @@ class BuiltinCompiler implements Compiler
     /**
      * Get offset count from given cursor (or first page) to given pager.
      *
-     * @param Pager $page
+     * @param Pager $pager
      * @param Cursor|null $cursor
      * @param bool $forward_feed
      * @param bool $near_by_first

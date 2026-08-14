@@ -35,7 +35,6 @@ class SendmailTransport extends Swift_SendmailTransport
      *   - array        'throttle'          : Use Swift_Plugins_ThrottlerPlugin ['rate' => ?, 'mode' = Swift_Plugins_ThrottlerPlugin::BYTES_PER_MINUTE]
      *   - bool|string  'logging'           : Use LoggingPlugin [when value is true then use default channel, otherwise give channel name of Log.channels]
      *   - string|array 'always_bcc'        : Use AlwaysBccPlugin [?]
-     * @param string|null $encryption null, 'tls' or 'ssl' (default: null for choose default by port number)
      */
     public function __construct(string $command = null, array $options = [])
     {

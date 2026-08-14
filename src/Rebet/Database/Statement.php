@@ -2,6 +2,7 @@
 namespace Rebet\Database;
 
 use PDOException;
+use PDOStatement;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Tools\Reflection\Reflector;
@@ -28,7 +29,7 @@ class Statement implements \IteratorAggregate
     /**
      * PDO statement instance.
      *
-     * @var \PDOStatement
+     * @var PDOStatement
      */
     protected $stmt;
 
@@ -38,7 +39,7 @@ class Statement implements \IteratorAggregate
      * @param Database $db
      * @param PDOStatement $stmt
      */
-    public function __construct(Database $db, \PDOStatement $stmt)
+    public function __construct(Database $db, PDOStatement $stmt)
     {
         $this->db   = $db;
         $this->stmt = $stmt;
@@ -47,9 +48,9 @@ class Statement implements \IteratorAggregate
     /**
      * Get original PDO statement instance.
      *
-     * @return \PDOStatement
+     * @return PDOStatement
      */
-    public function raw() : \PDOStatement
+    public function raw() : PDOStatement
     {
         return $this->stmt;
     }
@@ -69,7 +70,7 @@ class Statement implements \IteratorAggregate
                 $meta[$column['name']] = $column;
                 $meta[$i]              = $column;
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             return [];
         }
 
@@ -81,7 +82,7 @@ class Statement implements \IteratorAggregate
      *
      * @param array|PdoParameter[] $params (default: [])
      * @return self
-     * @throws DatabaseException|\PDOException
+     * @throws DatabaseException|PDOException
      */
     public function execute(array $params = []) : self
     {
@@ -94,7 +95,7 @@ class Statement implements \IteratorAggregate
             if (! $this->stmt->execute()) {
                 throw $this->db->exception($this->stmt->errorInfo(), $this->queryString(), $params);
             }
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             throw $this->db->exception($e, $this->queryString(), $params);
         }
         $this->db->log($this->queryString() ?? '', $params);

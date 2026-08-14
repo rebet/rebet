@@ -23,9 +23,9 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function save(string $name, Cursor $curosr) : void
+    public function save(string $name, Cursor $cursor) : void
     {
-        static::$strage[$name] = $curosr;
+        self::$strage[$name] = $cursor;
     }
 
     /**
@@ -33,7 +33,7 @@ class ArrayCursorStorage implements CursorStorage
      */
     public function load(string $name) : ?Cursor
     {
-        return static::$strage[$name] ?? null ;
+        return self::$strage[$name] ?? null ;
     }
 
     /**
@@ -41,7 +41,7 @@ class ArrayCursorStorage implements CursorStorage
      */
     public function remove(string $name) : void
     {
-        unset(static::$strage[$name]);
+        unset(self::$strage[$name]);
     }
 
     /**
@@ -49,6 +49,6 @@ class ArrayCursorStorage implements CursorStorage
      */
     public function clear() : void
     {
-        static::$strage = [];
+        self::$strage = [];
     }
 }

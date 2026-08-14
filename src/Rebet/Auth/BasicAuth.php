@@ -6,9 +6,9 @@ use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Testable\System;
 
 /**
- * 認証関連 ユーティリティ クラス
+ * Authentication Related Utility Class
  *
- * 認証関連の簡便なユーティリティメソッドを集めたクラスです。
+ * A class that gathers simple utility methods related to authentication.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -25,13 +25,13 @@ class BasicAuth
     }
 
     /**
-     * 簡易的な BASIC認証 を提供します。
+     * Provides simple BASIC authentication.
      *
-     * @param array $auth_list 認証リスト
-     * @param ?\Closure $to_hash 認証リストのパスワードハッシュ化ロジック（デフォルト：null）
-     * @param string $realm 領域テキスト
-     * @param string $failed_text 認証失敗時メッセージ
-     * @param string $charset 文字コード（デフォルト：UTF-8）
+     * @param array $auth_list Authentication list
+     * @param ?\Closure $to_hash Password hashing logic for the authentication list (default: null)
+     * @param string $realm Realm text
+     * @param string $failed_text Message on authentication failure
+     * @param string $charset Character encoding (default: UTF-8)
      * @return string
      */
     public static function authenticate(array $auth_list, ?\Closure $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8') : string

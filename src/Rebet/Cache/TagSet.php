@@ -30,7 +30,7 @@ class TagSet
      *
      * @param Adapter $adapter
      * @param string[] $tags
-     * @throws UnsupportedTaggingException when the adapter does not support tagging.
+     * @throws CacheException when the adapter does not support tagging.
      */
     public function __construct(Adapter $adapter, array $tags)
     {

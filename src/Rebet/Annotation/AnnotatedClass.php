@@ -83,7 +83,7 @@ class AnnotatedClass
     /**
      * Get property annotation
      *
-     * @param string $method
+     * @param string $property
      * @return AnnotatedProperty|null
      */
     public function property(string $property) : ?AnnotatedProperty

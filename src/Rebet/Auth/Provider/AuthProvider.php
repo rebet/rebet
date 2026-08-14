@@ -68,7 +68,7 @@ abstract class AuthProvider
      * Find user by signin_id.
      * The signin_id may be named 'login_id', 'email', etc.
      *
-     * @param mixed $value
+     * @param mixed $signin_id
      * @return AuthUser|null
      */
     abstract protected function findBySigninId($signin_id) : ?AuthUser ;

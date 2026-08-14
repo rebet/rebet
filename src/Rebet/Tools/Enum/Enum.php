@@ -530,7 +530,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get the next enumeration list that can transition from an enumerated value(current) according to the given situation(context).
      * Override with subclass if necessary.
      *
-     * @param type $current
+     * @param mixed $current
      * @param array|null $context (default: null)
      * @return array
      */

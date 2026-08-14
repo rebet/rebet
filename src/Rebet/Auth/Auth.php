@@ -192,7 +192,7 @@ class Auth
     public static function signout(Request $request, string $goto = '/') : Response
     {
         $guard = static::guard(static::applicableGuard($request));
-        if (!$guard || $guard->user()->isGuest()) {
+        if (!$guard instanceof StatefulGuard || $guard->user()->isGuest()) {
             return Responder::redirect($goto);
         }
 
@@ -282,7 +282,7 @@ class Auth
     /**
      * [Authorization] Check the policy.
      *
-     * @param mixed $user
+     * @param AuthUser $user
      * @param string $action
      * @param string|object $target
      * @param array $extras (default: [])
@@ -306,7 +306,7 @@ class Auth
      *
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
-     * @param mixed $user
+     * @param AuthUser $user
      * @param string ...$names
      * @return boolean
      */
@@ -328,7 +328,7 @@ class Auth
      *
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
-     * @param mixed $user
+     * @param AuthUser $user
      * @param string $name
      * @return boolean
      */

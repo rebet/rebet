@@ -198,7 +198,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Get unavailable siblings tags.
      *
      * @param array $siblings
-     * @return bool
+     * @return array
      */
     protected static function unavailableSiblings(array $siblings) : array
     {
@@ -399,8 +399,6 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Render the template to string.
      *
-     * @param string|null $template
-     * @param array $vars (default: [])
      * @return string
      */
     public function render() : string

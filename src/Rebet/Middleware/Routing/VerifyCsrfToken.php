@@ -58,7 +58,7 @@ class VerifyCsrfToken
      *
      * @param Request $request
      * @param \Closure $next
-     * @return void
+     * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response
     {

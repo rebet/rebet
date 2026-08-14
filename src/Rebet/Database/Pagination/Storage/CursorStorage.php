@@ -17,10 +17,10 @@ interface CursorStorage
      * Save the cursor as given name to strage.
      *
      * @param string $name
-     * @param Cursor $curosor
-     * @return string name of cursor
+     * @param Cursor $cursor
+     * @return void
      */
-    public function save(string $name, Cursor $curosr) : void;
+    public function save(string $name, Cursor $cursor) : void;
 
     /**
      * Load the cursor as given name from strage.

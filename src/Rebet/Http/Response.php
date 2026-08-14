@@ -29,7 +29,6 @@ interface Response
      * Get a header from the Response.
      *
      * @param string $key
-     * @param bool $first (default: false)
      * @return string|string[]|null
      */
     public function getHeader(string $key);

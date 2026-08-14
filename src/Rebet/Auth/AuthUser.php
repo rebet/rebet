@@ -15,6 +15,7 @@ use Rebet\Tools\Utility\Strings;
  * @phpstan-consistent-constructor
  *
  * @property-read mixed $id Identifier that uniquely identifies the user source, resolved via the alias map.
+ * @property-read mixed $password Password of the user source, resolved via the alias map.
  *
  * @package   Rebet
  * @author    github.com/rain-noise

@@ -133,6 +133,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
 
     /**
      * {@inheritDoc}
+     * @phpstan-assert-if-true TagAwareAdapterInterface $this->pool
      */
     public function taggable() : bool
     {

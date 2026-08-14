@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Cache\Adapter\Symfony;
 
+use Psr\Cache\CacheItemPoolInterface;
 use Rebet\Tools\Math\Unit;
 use Symfony\Component\Cache\Adapter\RedisAdapter as SymfonyRedisAdapter;
 use Symfony\Component\Cache\Marshaller\MarshallerInterface;

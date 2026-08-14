@@ -58,7 +58,7 @@ class Callbacks
     /**
      * Get the compare callback closure.
      *
-     * @param string|callabel|null $key of string or function($value):mixed (default: null)
+     * @param string|callable|null $key of string or function($value):mixed (default: null)
      * @param bool $invert (default: false)
      * @return \Closure of function($a, $b) : int { ... }
      */
@@ -134,7 +134,7 @@ class Callbacks
         $string .= ')';
 
         if ($verbose) {
-            if ($return_type = $reflector->getReturnType()) {
+            if (($return_type = $reflector->getReturnType()) instanceof \ReflectionNamedType) {
                 $type_name = $return_type->getName() ;
                 $type_name = $return_type->allowsNull() ? "?{$type_name}" : $type_name ;
                 $string    = "{$string} : {$type_name}";
