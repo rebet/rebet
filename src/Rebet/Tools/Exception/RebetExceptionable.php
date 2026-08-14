@@ -21,7 +21,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function caused(\Throwable $previous) : RebetException
+    public function caused(\Throwable $previous) : static
     {
         $rc = new \ReflectionClass(\Exception::class);
         $rp = $rc->getProperty('previous');
@@ -42,7 +42,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function code($code) : RebetException
+    public function code($code) : static
     {
         $this->code = $code;
         return $this;
@@ -51,7 +51,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function appendix($appendix) : RebetException
+    public function appendix($appendix) : static
     {
         $this->appendix = $appendix;
         return $this;

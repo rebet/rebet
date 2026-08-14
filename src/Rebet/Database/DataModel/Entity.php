@@ -44,7 +44,7 @@ abstract class Entity extends DataModel
     /**
      * Original data when fetched.
      *
-     * @var static
+     * @var static|null
      */
     protected $_origin = null;
 
@@ -180,7 +180,7 @@ abstract class Entity extends DataModel
     {
         $changes = [];
         $unmaps  = static::unmaps();
-        foreach ($this as $property => $value) {
+        foreach (get_object_vars($this) as $property => $value) {
             if (in_array($property, $unmaps) || $this->isDynamicProperty($property) || ($this->_origin === null && $value === null)) {
                 continue;
             }
@@ -200,7 +200,7 @@ abstract class Entity extends DataModel
     public function isDirty() : bool
     {
         $unmaps = static::unmaps();
-        foreach ($this as $property => $value) {
+        foreach (get_object_vars($this) as $property => $value) {
             if (in_array($property, $unmaps) || $this->isDynamicProperty($property) || ($this->_origin === null && $value === null)) {
                 continue;
             }

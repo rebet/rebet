@@ -279,7 +279,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Convert type to given type.
      *
      * @param string $type
-     * @return void
+     * @return mixed
      */
     public function convertTo(string $type)
     {
@@ -330,7 +330,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @param string $name
      * @param array $args
-     * @return void
+     * @return self|null
      */
     public static function __callStatic(string $name, array $args)
     {

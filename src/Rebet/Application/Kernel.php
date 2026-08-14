@@ -86,7 +86,7 @@ abstract class Kernel
     /**
      * Get core bootstrappers for this kernel.
      *
-     * @return Bootstrapper[]
+     * @return array<Bootstrapper|class-string<Bootstrapper>|array> class name of Bootstrapper, or [class name, ...args] for Reflector::instantiate()
      */
     abstract protected function bootstrappers() : array;
 

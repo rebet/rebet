@@ -4,7 +4,6 @@ namespace Rebet\Tools\Utility;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\Resource\Resource;
 
 /**
  * Strings Utility Class

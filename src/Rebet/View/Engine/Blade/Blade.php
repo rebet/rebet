@@ -181,7 +181,11 @@ class Blade implements Engine
      */
     public function finder() : FileViewFinder
     {
-        return $this->core()->getFinder();
+        $finder = $this->core()->getFinder();
+        if (!$finder instanceof FileViewFinder) {
+            throw new LogicException('The resolved view finder is not a FileViewFinder.');
+        }
+        return $finder;
     }
 
     /**
@@ -195,6 +199,10 @@ class Blade implements Engine
         if (!$engine instanceof CompilerEngine) {
             throw new LogicException('The resolved "blade" engine is not a CompilerEngine.');
         }
-        return $engine->getCompiler();
+        $compiler = $engine->getCompiler();
+        if (!$compiler instanceof BladeCompiler) {
+            throw new LogicException('The resolved compiler is not a BladeCompiler.');
+        }
+        return $compiler;
     }
 }

@@ -114,7 +114,7 @@ class Dao
     /**
      * Current selected database.
      *
-     * @var Database
+     * @var Database|null
      */
     protected static $current = null;
 

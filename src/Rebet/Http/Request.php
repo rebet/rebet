@@ -31,7 +31,7 @@ class Request extends SymfonyRequest
     /**
      * Current request is the latest instantiated Request object.
      *
-     * @var Request
+     * @var Request|null
      */
     protected static $current = null;
 
@@ -208,7 +208,7 @@ class Request extends SymfonyRequest
         if ($session === null) {
             $this->session = is_callable($this->session) ? call_user_func($this->session) : $this->session ;
 
-            if (null === $this->session) {
+            if (!$this->session instanceof Session) {
                 throw new \BadMethodCallException('Session has not been set');
             }
 

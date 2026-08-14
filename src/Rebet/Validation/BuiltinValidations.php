@@ -797,8 +797,8 @@ class BuiltinValidations implements Validations
         $replacement['number']    = $number_label instanceof Decimal ? $number_label->format(true) : $number_label ;
         $replacement['precision'] = $precision;
 
-        $valid = $this->validationNumber($c);
-        $valid &= $this->handleListableValue(
+        $valid  = $this->validationNumber($c);
+        $listed = $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
             function ($value) use ($number, $precision, $test) {
@@ -808,7 +808,7 @@ class BuiltinValidations implements Validations
             $replacement,
             function ($value) use ($precision) { return $precision ?? 'auto' ; }
         );
-        return $valid;
+        return $valid && $listed;
     }
 
     /**
@@ -935,7 +935,7 @@ class BuiltinValidations implements Validations
         $valid = $this->handleRegex($c, Kind::TYPE_CONSISTENCY_CHECK(), $pattern, 'Url');
         if ($dns_check) {
             $host_state = [];
-            $valid &= $this->handleListableValue(
+            $listed     = $this->handleListableValue(
                 $c,
                 Kind::TYPE_DEPENDENT_CHECK(),
                 function ($value) use (&$host_state) {
@@ -951,6 +951,7 @@ class BuiltinValidations implements Validations
                 [],
                 function ($value) { return 'nonactive'; }
             );
+            $valid = $valid && $listed;
         }
         return $valid;
     }
@@ -1303,8 +1304,8 @@ class BuiltinValidations implements Validations
         }
         $replacement['at_time'] = $replacement['at_time'] ?? ($apply_format ? $at_time->format($apply_format) : $at_time->format());
 
-        $valid = $this->validationDatetime($c, $format);
-        $valid &= $this->handleListableValue(
+        $valid  = $this->validationDatetime($c, $format);
+        $listed = $this->handleListableValue(
             $c,
             Kind::TYPE_DEPENDENT_CHECK(),
             function ($value) use ($at_time, $format, $test) {
@@ -1314,7 +1315,7 @@ class BuiltinValidations implements Validations
             $replacement,
             $selector
         );
-        return $valid;
+        return $valid && $listed;
     }
 
     /**

@@ -44,9 +44,10 @@ class Responder
     /**
      * Prepare the Response.
      *
-     * @param Response $response
+     * @template T of Response
+     * @param T $response
      * @param Request|null $request
-     * @return Response
+     * @return T
      */
     protected static function prepare(Response $response, ?Request $request = null) : Response
     {

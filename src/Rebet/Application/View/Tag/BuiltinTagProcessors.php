@@ -27,7 +27,7 @@ use Rebet\View\View;
 class BuiltinTagProcessors
 {
     /**
-     * @var string of field name
+     * @var string|null of field name
      */
     protected static $field = null;
 

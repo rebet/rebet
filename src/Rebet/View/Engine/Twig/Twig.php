@@ -43,7 +43,7 @@ class Twig implements Engine
     /**
      * Real twig template object.
      *
-     * @var Environment
+     * @var Environment|null
      */
     protected static $twig = null;
 

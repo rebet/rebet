@@ -11,7 +11,7 @@ namespace Rebet\Tools\Exception;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-interface RebetException
+interface RebetException extends \Throwable
 {
     /**
      * Set the given previous exception.

@@ -506,7 +506,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function getLocalizedMonth() : Month
     {
-        return Month::valueOf($this->getMonth());
+        $month = Month::valueOf($this->getMonth());
+        if (!$month instanceof Month) {
+            throw new LogicException("Invalid month value '{$this->getMonth()}' given.");
+        }
+        return $month;
     }
 
     /**
@@ -769,7 +773,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      */
     public function getDayOfWeek() : DayOfWeek
     {
-        return DayOfWeek::valueOf($this->format('w'));
+        $day_of_week = DayOfWeek::valueOf($this->format('w'));
+        if (!$day_of_week instanceof DayOfWeek) {
+            throw new LogicException("Invalid day of week value '{$this->format('w')}' given.");
+        }
+        return $day_of_week;
     }
 
     /**
@@ -896,7 +904,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if ($at_time === null) {
             throw new LogicException("Invalid datetime format of given at time '{$at_time}'.");
         }
-        return floor(($at_time->format('Ymd') - $this->format('Ymd')) / 10000);
+        return (int)floor(($at_time->format('Ymd') - $this->format('Ymd')) / 10000);
     }
 
     /**
@@ -972,9 +980,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of day (y-m-d 00:00:00.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfDay() : DateTime
+    public function startsOfDay() : static
     {
         return $this->modify('00:00:00.000000');
     }

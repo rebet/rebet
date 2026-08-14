@@ -166,7 +166,11 @@ class Session implements SessionInterface
      */
     public function attribute() : AttributeBag
     {
-        return $this->storage->getBag('attributes');
+        $bag = $this->storage->getBag('attributes');
+        if (!$bag instanceof AttributeBag) {
+            throw new LogicException('The "attributes" bag is not an AttributeBag.');
+        }
+        return $bag;
     }
 
     /**
@@ -176,7 +180,11 @@ class Session implements SessionInterface
      */
     public function flash() : FlashBag
     {
-        return $this->storage->getBag('flashes');
+        $bag = $this->storage->getBag('flashes');
+        if (!$bag instanceof FlashBag) {
+            throw new LogicException('The "flashes" bag is not a FlashBag.');
+        }
+        return $bag;
     }
 
     /**
@@ -194,7 +202,11 @@ class Session implements SessionInterface
      */
     public function getMetadataBag() : MetadataBag
     {
-        return $this->storage->getMetadataBag();
+        $bag = $this->storage->getMetadataBag();
+        if (!$bag instanceof MetadataBag) {
+            throw new LogicException('The metadata bag is not a Rebet MetadataBag.');
+        }
+        return $bag;
     }
 
     /**

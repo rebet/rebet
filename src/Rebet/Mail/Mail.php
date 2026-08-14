@@ -410,7 +410,7 @@ class Mail
      * Get/Set the "Sender" address from/to the message.
      *
      * @param null|string|array $address is an address, a name combined address like 'Name <foo@bar.com>' or a singlemap of address and name like [address => name]. (default: null for get sender)
-     * @return null|array|self
+     * @return null|string|array|self
      */
     public function sender($address = null)
     {
@@ -485,7 +485,7 @@ class Mail
      * Get/Set "Reply-To" addresses from/to the message.
      *
      * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get Reply-To recipients)
-     * @return null|array|self
+     * @return null|string|array|self
      */
     public function replyTo($addresses = null)
     {
@@ -500,7 +500,7 @@ class Mail
      * Get/Set "Disposition-Notification-To" addresses from/to the message.
      *
      * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].(default: null for get Disposition-Notification-To recipients)
-     * @return null|array|self
+     * @return null|string|array|self
      */
     public function dispositionNotificationTo($addresses = null)
     {

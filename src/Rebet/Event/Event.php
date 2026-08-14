@@ -32,7 +32,7 @@ class Event
     /**
      * The compiled listeners.
      *
-     * @var array [event => [listener, ...]]
+     * @var array|null [event => [listener, ...]]
      */
     protected static $listeners = null;
 

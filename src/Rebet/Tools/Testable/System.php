@@ -221,7 +221,7 @@ class System
      *
      * @param string $name
      * @param array $args
-     * @return void
+     * @return mixed
      */
     public static function __callStatic($name, array $args)
     {

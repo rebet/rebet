@@ -24,7 +24,9 @@ class FileBag extends SymfonyFileBag
     {
         $file = parent::convertFileInformation($file);
         if (is_array($file)) {
-            return $file;
+            return array_map(function ($f) {
+                return $f instanceof UploadedFile ? $f : UploadedFile::valueOf($f);
+            }, $file);
         }
         if ($file instanceof UploadedFile) {
             return $file;

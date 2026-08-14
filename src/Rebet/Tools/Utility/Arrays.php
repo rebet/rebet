@@ -478,7 +478,7 @@ class Arrays
      *
      * @param  array|null  $array
      * @param  callable|null $callback of function($value [, $key]):bool or null that return given array as it is.
-     * @return array
+     * @return array|null
      */
     public static function where(?array $array, ?callable $callback)
     {
@@ -660,7 +660,7 @@ class Arrays
     /**
      * Get a value from the array, and remove it.
      *
-     * @param  array   $array
+     * @param  array|null $array
      * @param  string  $key
      * @param  mixed   $default
      * @return mixed

@@ -39,7 +39,7 @@ class Translator
     /**
      * Dictionary
      *
-     * @var Dictionary
+     * @var Dictionary|null
      */
     protected static $dictionary = null;
 

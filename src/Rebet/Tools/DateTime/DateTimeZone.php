@@ -55,7 +55,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      * @see Convertible
      *
      * @param string $type
-     * @return void
+     * @return mixed
      */
     public function convertTo(string $type)
     {

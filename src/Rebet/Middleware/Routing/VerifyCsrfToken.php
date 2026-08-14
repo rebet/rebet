@@ -106,7 +106,7 @@ class VerifyCsrfToken
      * Get CSRF token from given request.
      *
      * @param Request $request
-     * @return string[] [key, value]
+     * @return array{0: string, 1: string|null} [key, value]
      */
     protected function getTokenFrom(Request $request) : array
     {

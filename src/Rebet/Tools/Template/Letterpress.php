@@ -533,7 +533,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Get next tag
      *
      * @param string $leftovers
-     * @return string[] [content, tag, code, leftovers]
+     * @return array{0: string, 1: string|null, 2: string|null, 3: string|null} [content, tag, code, leftovers]
      */
     protected function next(string $leftovers) : array
     {

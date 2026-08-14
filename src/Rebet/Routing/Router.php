@@ -78,30 +78,30 @@ class Router
     protected static $default_route = [];
 
     /**
-     * Fallback action
+     * Fallback actions
      *
-     * @var \Closure
+     * @var array|null [prefix => \Closure]
      */
     protected static $fallback = null;
 
     /**
      * Current route
      *
-     * @var Route
+     * @var Route|null
      */
     protected static $current = null;
 
     /**
      * Current routing rule builder.
      *
-     * @var Router
+     * @var Router|null
      */
     protected static $rules = null;
 
     /**
      * Route middleware pipeline
      *
-     * @var Pipeline
+     * @var Pipeline|null
      */
     protected static $pipeline = null;
 

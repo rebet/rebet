@@ -60,7 +60,7 @@ abstract class AbstractDriver implements Driver
 
 
     /**
-     * @var \PDO driver
+     * @var \PDO|null driver
      */
     protected $pdo;
 

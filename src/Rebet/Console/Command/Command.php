@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Console\Command;
 
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Strings;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -122,9 +123,13 @@ abstract class Command extends SymfonyCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output) : int
     {
-        $this->input       = $input;
-        $this->output      = $output;
-        $this->questionner = $this->getHelper('question');
+        $this->input  = $input;
+        $this->output = $output;
+        $questionner  = $this->getHelper('question');
+        if (!$questionner instanceof QuestionHelper) {
+            throw new LogicException('The "question" helper is not a QuestionHelper.');
+        }
+        $this->questionner = $questionner;
         return $this->handle() ?? 0 ;
     }
 

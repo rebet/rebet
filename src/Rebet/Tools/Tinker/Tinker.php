@@ -213,7 +213,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Null value
      *
-     * @var self
+     * @var self|string|null 'not null' is used as a temporary recursion guard while constructing the singleton instance.
      */
     private static $null = null;
 
@@ -227,7 +227,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Promise of original value for lazy evaluation
      *
-     * @var \Closure
+     * @var \Closure|null
      */
     protected $promise = null;
 

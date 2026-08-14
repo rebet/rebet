@@ -43,14 +43,14 @@ class Context
     /**
      * Validation target field name.
      *
-     * @var string
+     * @var string|null
      */
     public $field = null;
 
     /**
      * Label of validation target field.
      *
-     * @var string
+     * @var string|null
      */
     public $label = null;
 

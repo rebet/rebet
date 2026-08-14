@@ -86,7 +86,7 @@ trait Populatable
             return $this;
         }
 
-        foreach ($this as $field => $origin) {
+        foreach (get_object_vars($this) as $field => $origin) {
             $this->$field = $this->applyPopulateOption($options, $prefix, $field, $src, $origin);
         }
 

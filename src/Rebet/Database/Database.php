@@ -600,7 +600,7 @@ class Database
             $unmaps   = $entity::unmaps();
             $columns  = [];
             $values   = [];
-            foreach ($entity as $column => $value) {
+            foreach (get_object_vars($entity) as $column => $value) {
                 if (in_array($column, $unmaps) || $entity->isDynamicProperty($column)) {
                     continue;
                 }
