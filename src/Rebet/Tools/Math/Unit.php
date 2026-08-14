@@ -395,18 +395,25 @@ class Unit
      */
     public function exchange($value, ?string $to = null, ?int $precision = 2, array $options = []) : string
     {
-        extract($options = array_merge($this->options, $options));
-        $units       = Arrays::sortKeys($this->units, SORT_DESC, Callbacks::compareLength());
-        $value       = is_string($value) ? $value : Decimal::of($value)->value() ;
-        $from_factor = '1';
+        $options             = array_merge($this->options, $options);
+        $omit_zero           = $options['omit_zero'];
+        $without_prefix      = $options['without_prefix'];
+        $before_prefix       = $options['before_prefix'];
+        $after_prefix        = $options['after_prefix'];
+        $decimal_point       = $options['decimal_point'];
+        $thousands_separator = $options['thousands_separator'];
+        $units               = Arrays::sortKeys($this->units, SORT_DESC, Callbacks::compareLength());
+        $value               = is_string($value) ? $value : Decimal::of($value)->value() ;
+        $from_factor         = '1';
         foreach ($units as $prefix => [$factor, /*auto_scaleable*/]) {
             if (preg_match('/'.preg_quote($before_prefix.$prefix.$after_prefix, '/').'$/', $value)) {
                 $from_factor = is_array($factor) ? $factor['to_base'] : $factor ;
                 break;
             }
         }
-        $number = Decimal::of(str_replace([$before_prefix, $after_prefix], '', str_replace(array_keys($units), '', $value)), $decimal_point, $thousands_separator);
-        $number = is_callable($from_factor) ? call_user_func($from_factor, $number) : $number->mul($from_factor) ;
+        $number    = Decimal::of(str_replace([$before_prefix, $after_prefix], '', str_replace(array_keys($units), '', $value)), $decimal_point, $thousands_separator);
+        $number    = is_callable($from_factor) ? call_user_func($from_factor, $number) : $number->mul($from_factor) ;
+        $to_factor = null;
         if ($to !== null) {
             $to_factor = $units[$to][0] ?? 1;
             $to_factor = is_array($to_factor) ? $to_factor['from_base'] : $to_factor ;

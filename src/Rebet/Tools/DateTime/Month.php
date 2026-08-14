@@ -13,6 +13,19 @@ use Rebet\Tools\Utility\Path;
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
+ *
+ * @method static self JANUARY()
+ * @method static self FEBRUARY()
+ * @method static self MARCH()
+ * @method static self APRIL()
+ * @method static self MAY()
+ * @method static self JUNE()
+ * @method static self JULY()
+ * @method static self AUGUST()
+ * @method static self SEPTEMBER()
+ * @method static self OCTOBER()
+ * @method static self NOVEMBER()
+ * @method static self DECEMBER()
  */
 class Month extends Enum
 {

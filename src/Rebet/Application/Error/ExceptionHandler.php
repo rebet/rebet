@@ -110,8 +110,8 @@ class ExceptionHandler extends FallbackHandler
     /**
      * Handle an exception
      *
-     * @param Request|InputInterface $input
-     * @param null|OutputInterface $output
+     * @param Request|InputInterface|null $input
+     * @param OutputInterface|null $output
      * @param \Throwable $e
      * @return Response|int
      */

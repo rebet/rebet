@@ -48,7 +48,7 @@ class LocaleResource
                     break;
                 }
             }
-            $resource = Arrays::override($resource, Resource::load($suffix, $resource_path, $option ?? []) ?? [], [], OverrideOption::PREPEND);
+            $resource = Arrays::override($resource, Resource::load($suffix, $resource_path, $option) ?? [], [], OverrideOption::PREPEND);
         }
 
         return $resource;

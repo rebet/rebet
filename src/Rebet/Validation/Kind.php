@@ -10,6 +10,10 @@ use Rebet\Tools\Enum\Enum;
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
+ *
+ * @method static self TYPE_CONSISTENCY_CHECK() This is a type that represents type consistency check.
+ * @method static self TYPE_DEPENDENT_CHECK()   This is a type that represents type dependent check.
+ * @method static self INDEPENDENTLY()          This is a type that represents independently check.
  */
 class Kind extends Enum
 {

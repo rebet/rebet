@@ -10,6 +10,10 @@ use Rebet\Tools\Enum\Enum;
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
+ *
+ * @method static self KEEP() EOF line feed processing : Keep (Do nothing)
+ * @method static self TRIM() EOF line feed processing : Trim CR/LF
+ * @method static self ONE() EOF line feed processing : Trim CR/LF then append one LF
  */
 class EofLineFeed extends Enum
 {

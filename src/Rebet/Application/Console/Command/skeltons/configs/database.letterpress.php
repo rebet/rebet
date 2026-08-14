@@ -192,8 +192,8 @@ return [
             //{%-- commentif !$use_db, '// ', '--- Please uncomment if you want to use database ---' -%}
             'pgsql' => [
                 'dsn' => App::when([
-                    'local'      => "pgsql:host=pgsql;dbname={! $db_name !};options='--client_encoding=UTF8'",
-                    'production' => "pgsql:host=localhost;dbname={! $db_name !};options='--client_encoding=UTF8'",
+                    'local'      => 'pgsql:host=pgsql;dbname={! $db_name !};options=\'--client_encoding=UTF8\'',
+                    'production' => 'pgsql:host=localhost;dbname={! $db_name !};options=\'--client_encoding=UTF8\'',
                 ]),
                 'user'     => Env::promise('DB_USERNAME'),
                 'password' => Env::promise('DB_PASSWORD'),

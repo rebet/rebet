@@ -13,6 +13,14 @@ use Rebet\Tools\Utility\Path;
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
+ *
+ * @method static self SUNDAY()
+ * @method static self MONDAY()
+ * @method static self TUESDAY()
+ * @method static self WEDNESDAY()
+ * @method static self THURSDAY()
+ * @method static self FRIDAY()
+ * @method static self SATURDAY()
  */
 class DayOfWeek extends Enum
 {

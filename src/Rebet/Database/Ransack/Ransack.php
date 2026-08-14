@@ -326,6 +326,9 @@ class Ransack
         $predicates       = Arrays::sortKeys(array_merge(static::config("predicates", false, []), $driver->ransackPredicates()), SORT_DESC, Callbacks::compareLength());
         $value_converters = array_merge(static::config("value_converters"), $driver->ransackValueConverters());
         $predicate        = null;
+        $template         = null;
+        $conjunction      = null;
+        $value_converter  = null;
         foreach ($predicates as $p => [$t, $vc, $c]) {
             if (Strings::endsWith($ransack_predicate, "_{$p}")) {
                 $ransack_predicate = Strings::rtrim($ransack_predicate, "_{$p}");
@@ -418,7 +421,7 @@ class Ransack
 
         $value_converter = $value_converter ?? $this->value_converter ;
         if ($value_converter) {
-            return $this->compound ? array_map(function ($v) use ($value_converter, $value) { return $value_converter($v); }, $value) : $value_converter($value) ;
+            return $this->compound ? array_map(function ($v) use ($value_converter) { return $value_converter($v); }, $value) : $value_converter($value) ;
         }
         return $this->value ;
     }

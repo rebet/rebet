@@ -270,7 +270,7 @@ class Decimal
         } else {
             throw new InvalidArgumentException("Invalid value format, the value '{$value}' can not analyze.");
         }
-        return [$value, static::scaleOf($value), $significant_figures ?? static::significantFiguresOf($value)];
+        return [$value, static::scaleOf($value), $significant_figures];
     }
 
     /**

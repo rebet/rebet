@@ -40,9 +40,9 @@ use Rebet\Tools\Translation\Translator;
  *
  * // Field extension
  * class AcceptStatus extends Enum {
- *     const WAITING  = [1, '待機中', 'orange', 'far fa-clock'];
- *     const ACCEPTED = [2, '受理'  , 'green' , 'fas fa-check-circle'];
- *     const REJECTED = [3, '却下'  , 'red'   , 'fas fa-times-circle'];
+ *     const WAITING  = [1, 'Waiting' , 'orange', 'far fa-clock'];
+ *     const ACCEPTED = [2, 'Accepted', 'green' , 'fas fa-check-circle'];
+ *     const REJECTED = [3, 'Rejected', 'red'   , 'fas fa-times-circle'];
  *
  *     public $color;
  *     public $icon;
