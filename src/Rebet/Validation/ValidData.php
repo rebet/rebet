@@ -14,6 +14,7 @@ use Rebet\Tools\Utility\Arrays;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
+#[\AllowDynamicProperties]
 class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
     use Arrayable, Describable;

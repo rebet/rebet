@@ -122,6 +122,7 @@ use Rebet\Tools\Utility\Utils;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
+#[\AllowDynamicProperties]
 class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
     use Configurable;
