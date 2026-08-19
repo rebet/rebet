@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Log\Driver;
 
-use InvalidArgumentException;
 use Psr\Log\AbstractLogger as PsrAbstractLogger;
 use Psr\Log\LoggerInterface as PsrLogger;
 use Rebet\Log\Log;
@@ -55,10 +54,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     {
         $this->channels = $channels;
         foreach ($this->channels as $channel) {
-            $logger = Log::channel($channel);
-            if ($logger === null) {
-                throw new InvalidArgumentException("Invalid channel name `{$channel}` was given, missing log driver.");
-            }
+            $logger          = Log::channel($channel);
             $driver          = $logger->driver();
             $this->drivers[] = $driver instanceof NameableDriver ? $driver->withName($this->name ?? $driver->getName()) : $driver ;
         }

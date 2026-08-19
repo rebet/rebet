@@ -21,7 +21,7 @@ class RawNode extends Node
      * @param int $lineno (default: 0)
      * @param string|null $tag (default: null)
      */
-    public function __construct(string $code, int $lineno = 0, ?string $tag = null)
+    public function __construct(string $code, int $lineno = 0, string|null $tag = null)
     {
         parent::__construct([], ['code' => $code ], $lineno, $tag);
     }

@@ -34,7 +34,7 @@ class Strings
      * @param bool $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function lbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
+    public static function lbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
     {
         if ($str === null) {
             return null;
@@ -58,7 +58,7 @@ class Strings
      * @param bool $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function latrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
+    public static function latrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
     {
         if ($str === null) {
             return null;
@@ -82,7 +82,7 @@ class Strings
      * @param bool $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function rbtrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
+    public static function rbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
     {
         if ($str === null) {
             return null;
@@ -106,7 +106,7 @@ class Strings
      * @param bool $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
-    public static function ratrim(?string $str, string $delimiter, bool $remove_delimiter = true) : ?string
+    public static function ratrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
     {
         if ($str === null) {
             return null;
@@ -133,7 +133,7 @@ class Strings
      * @param int|null $max (default: null)
      * @return string|null
      */
-    public static function ltrim(?string $str, string $prefix = ' ', ?int $max = null) : ?string
+    public static function ltrim(string|null $str, string $prefix = ' ', int|null $max = null) : string|null
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
         return $str === null ? null : preg_replace("/\A(".preg_quote($prefix, '/')."){$repeat}/u", '', $str);
@@ -154,7 +154,7 @@ class Strings
      * @param int|null $max (default: null)
      * @return string|null
      */
-    public static function rtrim(?string $str, string $suffix = ' ', ?int $max = null) : ?string
+    public static function rtrim(string|null $str, string $suffix = ' ', int|null $max = null) : string|null
     {
         $repeat = $max === null ? "*" : "{0,{$max}}" ;
         return $str === null ? null : preg_replace("/(".preg_quote($suffix, '/')."){$repeat}\z/u", '', $str);
@@ -175,7 +175,7 @@ class Strings
      * @param int|null $max (default: null)
      * @return string|null
      */
-    public static function trim(?string $str, string $deletion = ' ', ?int $max = null) : ?string
+    public static function trim(string|null $str, string $deletion = ' ', int|null $max = null) : string|null
     {
         return static::ltrim(static::rtrim($str, $deletion, $max), $deletion, $max);
     }
@@ -186,7 +186,7 @@ class Strings
      * @param string|null $str
      * @return string|null
      */
-    public static function mbtrim(?string $str) : ?string
+    public static function mbtrim(string|null $str) : string|null
     {
         return $str === null ? null : preg_replace('/\A[\p{C}\p{Z}]++|[\p{C}\p{Z}]++\z/u', '', $str);
     }
@@ -201,7 +201,7 @@ class Strings
      * @param string $needle
      * @return bool
      */
-    public static function startsWith(?string $haystack, string $needle) : bool
+    public static function startsWith(string|null $haystack, string $needle) : bool
     {
         $haystack = $haystack ?? '';
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== false;
@@ -217,7 +217,7 @@ class Strings
      * @param string $needle
      * @return bool
      */
-    public static function endsWith(?string $haystack, string $needle) : bool
+    public static function endsWith(string|null $haystack, string $needle) : bool
     {
         $haystack = $haystack ?? '';
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== false);
@@ -235,7 +235,7 @@ class Strings
      * @param string $encode (default: 'sjis-win')
      * @return array of dependence chars
      */
-    public static function checkDependenceChar(?string $text, string $encode = 'sjis-win') : array
+    public static function checkDependenceChar(string|null $text, string $encode = 'sjis-win') : array
     {
         if ($text === null) {
             return [];
@@ -258,7 +258,7 @@ class Strings
      * @param string|null $string
      * @return array
      */
-    public static function toCharArray(?string $string) : array
+    public static function toCharArray(string|null $string) : array
     {
         if ($string === null) {
             return [];
@@ -274,7 +274,7 @@ class Strings
      * @param string $char for indent (default: '\t')
      * @param int $depth (default: 1)
      */
-    public static function indent(?string $string, string $char = "\t", int $depth = 1) : ?string
+    public static function indent(string|null $string, string $char = "\t", int $depth = 1) : string|null
     {
         if ($string === null) {
             return null;
@@ -292,7 +292,7 @@ class Strings
      * @param int $at_least (default: null)
      * @return bool
      */
-    public static function contains(?string $string, $searches, ?int $at_least = null) : bool
+    public static function contains(string|null $string, $searches, int|null $at_least = null) : bool
     {
         $searches = (array)$searches;
         if ($string === null || $searches === []) {
@@ -321,7 +321,7 @@ class Strings
      * @param string $search
      * @return bool
      */
-    protected static function _contains(?string $string, string $search) : bool
+    protected static function _contains(string|null $string, string $search) : bool
     {
         return $search === '' ? true : strpos($string, $search) !== false ;
     }
@@ -334,7 +334,7 @@ class Strings
      * @param string $encoding (default: 'UTF-8')
      * @return string|null
      */
-    public static function lcut(?string $string, int $length, string $encoding = 'UTF-8') : ?string
+    public static function lcut(string|null $string, int $length, string $encoding = 'UTF-8') : string|null
     {
         if ($string === null) {
             return null;
@@ -356,7 +356,7 @@ class Strings
      * @param string $encoding (default: 'UTF-8')
      * @return string|null
      */
-    public static function rcut(?string $string, int $length, string $encoding = 'UTF-8') : ?string
+    public static function rcut(string|null $string, int $length, string $encoding = 'UTF-8') : string|null
     {
         if ($string === null) {
             return null;
@@ -378,7 +378,7 @@ class Strings
      * @param string $ellipsis (default: '...')
      * @return string|null
      */
-    public static function clip(?string $string, int $length, string $ellipsis = '...') : ?string
+    public static function clip(string|null $string, int $length, string $ellipsis = '...') : string|null
     {
         if ($string === null) {
             return null;
@@ -400,7 +400,7 @@ class Strings
      * @param string|string[] $patterns
      * @return boolean
      */
-    public static function match(?string $string, $patterns) : bool
+    public static function match(string|null $string, $patterns) : bool
     {
         if ($string === null) {
             return false;
@@ -421,7 +421,7 @@ class Strings
      * @param string|string[] $patterns
      * @return boolean
      */
-    public static function wildmatch(?string $string, $patterns) : bool
+    public static function wildmatch(string|null $string, $patterns) : bool
     {
         if ($string === null) {
             return false;
@@ -540,7 +540,7 @@ class Strings
      * @param mixed $padding (default: null)
      * @return array
      */
-    public static function split(?string $string, string $delimiter, int $size, $padding = null) : array
+    public static function split(string|null $string, string $delimiter, int $size, $padding = null) : array
     {
         return array_pad($string === null ? [] : explode($delimiter, $string, $size), $size, $padding);
     }

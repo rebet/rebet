@@ -123,7 +123,7 @@ class Arrays
      * @return array
      * @see Reflector::get()
      */
-    public static function pluck(?array $list, $value_field, $key_field = null) : array
+    public static function pluck(array|null $list, $value_field, $key_field = null) : array
     {
         if (Utils::isEmpty($list)) {
             return [];
@@ -239,7 +239,7 @@ class Arrays
      * @param \Closure $handler of special override logic(if return null then do nothing). function($base, $diff, $option, $default_array_override_option):mixed (default: null)
      * @return mixed
      */
-    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APPEND, ?\Closure $handler = null)
+    public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APPEND, \Closure|null $handler = null)
     {
         if ($handler) {
             if ($value = $handler($base, $diff, $option, $default_array_override_option)) {
@@ -315,7 +315,7 @@ class Arrays
      * @param array|null $array
      * @return array|null
      */
-    public static function duplicate(?array $array) : ?array
+    public static function duplicate(array|null $array) : array|null
     {
         if ($array === null) {
             return null;
@@ -336,7 +336,7 @@ class Arrays
      * @param  array|null  $array
      * @return array|null
      */
-    public static function collapse($array) : ?array
+    public static function collapse($array) : array|null
     {
         if ($array === null) {
             return null;
@@ -410,7 +410,7 @@ class Arrays
      * @param  array|string  $keys
      * @return array|null
      */
-    public static function except(?array $array, $keys)
+    public static function except(array|null $array, $keys)
     {
         if ($array === null) {
             return null;
@@ -427,7 +427,7 @@ class Arrays
      * @param mixed $default (default: null)
      * @return mixed
      */
-    public static function remove(?array &$array, $key, $default = null)
+    public static function remove(array|null &$array, $key, $default = null)
     {
         $value = $array[$key] ?? $default;
         unset($array[$key]);
@@ -441,7 +441,7 @@ class Arrays
      * @param  array|string  $keys
      * @return void
      */
-    public static function forget(?array &$array, $keys)
+    public static function forget(array|null &$array, $keys)
     {
         if ($array === null) {
             return;
@@ -480,7 +480,7 @@ class Arrays
      * @param  callable|null $callback of function($value [, $key]):bool or null that return given array as it is.
      * @return array|null
      */
-    public static function where(?array $array, ?callable $callback)
+    public static function where(array|null $array, callable|null $callback)
     {
         if ($array === null) {
             return null;
@@ -495,7 +495,7 @@ class Arrays
      * @param array|null $array
      * @return array|null
      */
-    public static function compact(?array $array) : ?array
+    public static function compact(array|null $array) : array|null
     {
         if ($array === null) {
             return null;
@@ -510,7 +510,7 @@ class Arrays
      * @param int $sort_flags (default: SORT_REGULAR)
      * @return array|null
      */
-    public static function unique(?array $array, int $sort_flags = SORT_REGULAR) : ?array
+    public static function unique(array|null $array, int $sort_flags = SORT_REGULAR) : array|null
     {
         return $array === null ? null : array_unique($array, $sort_flags) ;
     }
@@ -544,7 +544,7 @@ class Arrays
      * @param  mixed  $default (default: null)
      * @return mixed
      */
-    public static function first($array, ?callable $callback = null, $default = null)
+    public static function first($array, callable|null $callback = null, $default = null)
     {
         if ($array === null) {
             return self::value($default);
@@ -583,7 +583,7 @@ class Arrays
      * @param  int|float  $depth (default: INF)
      * @return array
      */
-    public static function flatten(?array $array, $depth = INF) : ?array
+    public static function flatten(array|null $array, $depth = INF) : array|null
     {
         if ($array === null) {
             return null;
@@ -610,7 +610,7 @@ class Arrays
      * @param  mixed  $default
      * @return mixed
      */
-    public static function last(?array $array, ?callable $callback = null, $default = null)
+    public static function last(array|null $array, callable|null $callback = null, $default = null)
     {
         if ($array === null) {
             return null;
@@ -628,7 +628,7 @@ class Arrays
      * @param  array|string  $keys
      * @return array
      */
-    public static function only(?array $array, $keys) : ?array
+    public static function only(array|null $array, $keys) : array|null
     {
         if ($array === null) {
             return null;
@@ -644,7 +644,7 @@ class Arrays
      * @param  mixed  $key
      * @return array
      */
-    public static function prepend(?array $array, $value, $key = null) : array
+    public static function prepend(array|null $array, $value, $key = null) : array
     {
         if ($array === null) {
             return is_null($key) ? [$value] : [$key => $value] ;
@@ -679,7 +679,7 @@ class Arrays
      * @param  int|null  $seed
      * @return array
      */
-    public static function shuffle(?array $array, ?int $seed = null) : ?array
+    public static function shuffle(array|null $array, int|null $seed = null) : array|null
     {
         if ($array === null) {
             return null;
@@ -702,7 +702,7 @@ class Arrays
      * @param callable|null $test of counting target function($value, $key):bool
      * @return int
      */
-    public static function count($value, ?callable $test = null) : int
+    public static function count($value, callable|null $test = null) : int
     {
         if ($test === null && (is_array($value) || $value instanceof \Countable)) {
             return count($value);
@@ -723,7 +723,7 @@ class Arrays
      * @param  mixed  $items
      * @return array|null
      */
-    public static function toArray($items) : ?array
+    public static function toArray($items) : array|null
     {
         if ($items === null) {
             return null;
@@ -758,7 +758,7 @@ class Arrays
      * @param  callable  $callback function($value, $key) { ... }
      * @return array|null
      */
-    public static function map(?array $array, callable $callback) : ?array
+    public static function map(array|null $array, callable $callback) : array|null
     {
         if ($array === null) {
             return null;
@@ -775,7 +775,7 @@ class Arrays
      * @param mixed $initial (defualt: null)
      * @return mixed
      */
-    public static function reduce(?array $array, callable $reducer, $initial = null)
+    public static function reduce(array|null $array, callable $reducer, $initial = null)
     {
         return $array === null ? null : array_reduce($array, $reducer, $initial) ;
     }
@@ -788,7 +788,7 @@ class Arrays
      * @param  callable|null $comparator function(mixed $a, mixed $b) : int (default: null)
      * @return array|null
      */
-    public static function diff(?array $array, $items, ?callable $comparator = null) : ?array
+    public static function diff(array|null $array, $items, callable|null $comparator = null) : array|null
     {
         if ($array === null) {
             return null;
@@ -807,7 +807,7 @@ class Arrays
      * @param callable|null $comparator function(mixed $a, mixed $b):int (default: null)
      * @return array|null
      */
-    public static function intersect(?array $array, $items, ?callable $comparator = null) : ?array
+    public static function intersect(array|null $array, $items, callable|null $comparator = null) : array|null
     {
         if ($array === null) {
             return null;
@@ -825,7 +825,7 @@ class Arrays
      * @param callable $test of function($v, $k):bool
      * @return bool
      */
-    public static function every(?array $array, callable $test) : bool
+    public static function every(array|null $array, callable $test) : bool
     {
         if ($array === null) {
             return true;
@@ -846,7 +846,7 @@ class Arrays
      * @param  bool  $preserve_keys (default: false)
      * @return array
      */
-    public static function groupBy(?array $array, $group_by = null, bool $preserve_keys = false) : ?array
+    public static function groupBy(array|null $array, $group_by = null, bool $preserve_keys = false) : array|null
     {
         if ($array === null) {
             return null;
@@ -887,7 +887,7 @@ class Arrays
      * @param mixed $other
      * @return array
      */
-    public static function union(?array $array, $other) : ?array
+    public static function union(array|null $array, mixed $other) : array|null
     {
         return $array === null ? null : $array + (static::toArray($other) ?? []);
     }
@@ -901,7 +901,7 @@ class Arrays
      * @param mixed $initial (default: null)
      * @return mixed
      */
-    public static function min(?array $array, $retriever = null, $initial = null)
+    public static function min(array|null $array, callable|string|null $retriever = null, mixed $initial = null)
     {
         $retriever = Callbacks::retriever($retriever);
         $reducer   = function ($carry, $value) use ($retriever) {
@@ -919,7 +919,7 @@ class Arrays
      * @param mixed $initial (default: null)
      * @return mixed
      */
-    public static function max(?array $array, $retriever = null, $initial = null)
+    public static function max(array|null $array, callable|string|null $retriever = null, mixed $initial = null)
     {
         $retriever = Callbacks::retriever($retriever);
         $reducer   = function ($carry, $value) use ($retriever) {
@@ -936,7 +936,7 @@ class Arrays
      * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array|null
      */
-    public static function sort(?array $array, int $order = SORT_ASC, $comparator = SORT_REGULAR) : ?array
+    public static function sort(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
     {
         if ($array === null) {
             return null;
@@ -947,12 +947,8 @@ class Arrays
             return $array;
         }
 
-        if (is_callable($comparator)) {
-            $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
-            uasort($array, $sorter);
-            return $array;
-        }
-
+        $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
+        uasort($array, $sorter);
         return $array;
     }
 
@@ -965,7 +961,7 @@ class Arrays
      * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array
      */
-    public static function sortBy(?array $array, $retriever, int $order = SORT_ASC, $comparator = SORT_REGULAR) : ?array
+    public static function sortBy(array|null $array, callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
     {
         if ($array === null) {
             return null;
@@ -993,7 +989,7 @@ class Arrays
      * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array|null
      */
-    public static function sortKeys(?array $array, int $order = SORT_ASC, $comparator = SORT_REGULAR) : ?array
+    public static function sortKeys(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
     {
         if ($array === null) {
             return null;
@@ -1004,12 +1000,8 @@ class Arrays
             return $array;
         }
 
-        if (is_callable($comparator)) {
-            $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
-            uksort($array, $sorter);
-            return $array;
-        }
-
+        $sorter = $order === SORT_ASC ? $comparator : function ($a, $b) use ($comparator) { return call_user_func($comparator, $a, $b) * -1; };
+        uksort($array, $sorter);
         return $array;
     }
 
@@ -1022,7 +1014,7 @@ class Arrays
      * @param int|null $precision for arbitrary precision (default: null)
      * @return Decimal|null
      */
-    public static function sum(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?Decimal
+    public static function sum(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
     {
         if ($array === null) {
             return null;
@@ -1048,7 +1040,7 @@ class Arrays
      * @param int|null $precision for arbitrary precision (default: null)
      * @return Decimal|null
      */
-    public static function avg(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?Decimal
+    public static function avg(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
     {
         if (empty($array)) {
             return null;
@@ -1069,7 +1061,7 @@ class Arrays
      * @param int|null $precision for arbitrary precision (default: null)
      * @return Decimal|null
      */
-    public static function median(?array $array, $retriever = null, bool $arbitrary_precision = false, ?int $precision = null) : ?Decimal
+    public static function median(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
     {
         if (empty($array)) {
             return null;
@@ -1094,7 +1086,7 @@ class Arrays
      * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @return array|null
      */
-    public static function mode(?array $array, $retriever = null) : ?array
+    public static function mode(array|null $array, callable|string|null $retriever = null) : array|null
     {
         if (empty($array)) {
             return null;
@@ -1137,7 +1129,7 @@ class Arrays
      * @param string|null $kvs key and value separator (default: null for omit key)
      * @return string|null return null when other than iterable given as $iterable.
      */
-    public static function implode($iterable, string $delimiter = ', ', ?string $kvs = null) : ?string
+    public static function implode($iterable, string $delimiter = ', ', string|null $kvs = null) : string|null
     {
         if (!is_iterable($iterable)) {
             return null;
@@ -1174,11 +1166,11 @@ class Arrays
     /**
      * Generate URL-encoded query string.
      *
-     * @param array|\Traversable $value
-     * @param integer $encoding of PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param array|\Traversable|null $value
+     * @param int $encoding of PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
-    public static function toQuery($value, int $encoding = PHP_QUERY_RFC1738) : ?string
+    public static function toQuery(array|\Traversable|null $value, int $encoding = PHP_QUERY_RFC1738) : string|null
     {
         return $value === null ? null : http_build_query($value, '', '&', $encoding) ;
     }

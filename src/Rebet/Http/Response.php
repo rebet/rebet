@@ -51,7 +51,7 @@ interface Response
      * @param string|null $domain filter can contains shell's wildcard (default: '*')
      * @return Cookie|array|null
      */
-    public function getCookie(string $name, ?string $path = '*', ?string $domain = '*');
+    public function getCookie(string $name, string|null $path = '*', string|null $domain = '*');
 
     /**
      * Set the cookie.
@@ -98,7 +98,7 @@ interface Response
      *
      * @return static
      */
-    public function sendHeaders(?int $statusCode = null);
+    public function sendHeaders(int|null $statusCode = null);
 
     /**
      * Sends content for the current web response.
@@ -123,7 +123,7 @@ interface Response
      * @return static
      * @throws \UnexpectedValueException
      */
-    public function setContent(?string $content);
+    public function setContent(string|null $content);
 
     /**
       * Gets the current response content.
@@ -179,7 +179,7 @@ interface Response
      *
      * @final
      */
-    public function getCharset() : ?string;
+    public function getCharset() : string|null;
 
     /**
      * Returns true if the response may safely be kept in a shared (surrogate) cache.
@@ -273,7 +273,7 @@ interface Response
      *
      * @final
      */
-    public function getDate() : ?\DateTimeInterface;
+    public function getDate() : \DateTimeInterface|null;
 
     /**
      * Sets the Date header.
@@ -302,7 +302,7 @@ interface Response
      *
      * @final
      */
-    public function getExpires() : ?\DateTimeInterface;
+    public function getExpires() : \DateTimeInterface|null;
 
     /**
      * Sets the Expires HTTP header with a DateTime instance.
@@ -312,7 +312,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setExpires(?\DateTimeInterface $date);
+    public function setExpires(\DateTimeInterface|null $date);
 
     /**
      * Returns the number of seconds after the time specified in the response's Date
@@ -323,7 +323,7 @@ interface Response
      *
      * @final
      */
-    public function getMaxAge() : ?int;
+    public function getMaxAge() : int|null;
 
     /**
      * Sets the number of seconds after which the response should no longer be considered fresh.
@@ -355,7 +355,7 @@ interface Response
      *
      * @final
      */
-    public function getTtl() : ?int;
+    public function getTtl() : int|null;
 
     /**
      * Sets the response's time-to-live for shared caches in seconds.
@@ -383,7 +383,7 @@ interface Response
      * @throws \RuntimeException When the HTTP header is not parseable
      * @final
      */
-    public function getLastModified() : ?\DateTimeInterface;
+    public function getLastModified() : \DateTimeInterface|null;
 
     /**
      * Sets the Last-Modified HTTP header with a DateTime instance.
@@ -393,14 +393,14 @@ interface Response
      * @return self
      * @final
      */
-    public function setLastModified(?\DateTimeInterface $date);
+    public function setLastModified(\DateTimeInterface|null $date);
 
     /**
      * Returns the literal value of the ETag HTTP header.
      *
      * @final
      */
-    public function getEtag() : ?string;
+    public function getEtag() : string|null;
 
     /**
      * Sets the ETag value.
@@ -410,7 +410,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setEtag(?string $etag, bool $weak = false);
+    public function setEtag(string|null $etag, bool $weak = false);
 
     /**
      * Sets the response's cache headers (validation and/or expiration).
@@ -457,7 +457,7 @@ interface Response
      * @return self
      * @final
      */
-    public function setVary(string|array $headers, bool $replace = true);
+    public function setVary(array|string $headers, bool $replace = true);
 
     /**
      * Determines if the Response validators (ETag, Last-Modified) match

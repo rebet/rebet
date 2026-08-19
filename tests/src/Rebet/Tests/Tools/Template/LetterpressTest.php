@@ -288,7 +288,7 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataCompiles')]
-    public function test_compile(?string $template, $expect)
+    public function test_compile(string|null $template, $expect)
     {
         if ($expect instanceof \Exception) {
             $this->expectException(get_class($expect));
@@ -424,7 +424,7 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataExpandVars')]
-    public function test_expandVars($expect, $template, array $vars = [])
+    public function test_expandVars(LogicException|string $expect, string $template, array $vars = [])
     {
         if ($expect instanceof \Exception) {
             $this->expectException(get_class($expect));
@@ -835,7 +835,7 @@ class LetterpressTest extends RebetTestCase
     }
 
     #[DataProvider('dataRenders')]
-    public function test_render(?string $text, array $vars, $expect)
+    public function test_render(string|null $text, array $vars, string $expect)
     {
         if ($expect instanceof \Exception) {
             $this->expectException(get_class($expect));

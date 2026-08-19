@@ -8,7 +8,6 @@ use PHPSQLParser\builders\ReservedBuilder;
 use PHPSQLParser\builders\SelectBracketExpressionBuilder;
 use PHPSQLParser\builders\SelectExpressionBuilder;
 use PHPSQLParser\PHPSQLParser;
-use Rebet\Database\Database;
 
 /**
  * Builtin SQL Analyzer Class

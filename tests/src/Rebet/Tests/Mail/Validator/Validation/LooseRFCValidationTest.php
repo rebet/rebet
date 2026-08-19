@@ -31,7 +31,7 @@ class LooseRFCValidationTest extends RebetTestCase
     }
 
     #[DataProvider('dataIsValids')]
-    public function test_isValid($expect, string $mail_address, ?array $ignores = null)
+    public function test_isValid(bool $expect, string $mail_address, array|null $ignores = null)
     {
         $validation = new LooseRFCValidation($ignores);
         $lexer      = new EmailLexer();

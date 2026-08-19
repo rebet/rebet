@@ -38,7 +38,7 @@ class DatabaseException extends RuntimeException
      * @param string $message
      * @param \Throwable|null $previous
      */
-    public function __construct(string $message, ?\Throwable $previous = null)
+    public function __construct(string $message, \Throwable|null $previous = null)
     {
         parent::__construct($message, $previous);
     }
@@ -48,7 +48,7 @@ class DatabaseException extends RuntimeException
      *
      * @return DatabaseException|string|null
      */
-    public function sqlState(?string $sql_state = null)
+    public function sqlState(string|null $sql_state = null)
     {
         return $this->getset('sql_state', $sql_state);
     }
@@ -72,7 +72,7 @@ class DatabaseException extends RuntimeException
       * @param array $params (default: [])
       * @return self
       */
-    public static function from(string $name, $error, ?string $sql = null, array $params = []) : self
+    public static function from(string $name, $error, string|null $sql = null, array $params = []) : self
     {
         $error_info = is_array($error) ? $error : $error->errorInfo ;
         $sql_state  = $error_info[0] ?? '-----' ;

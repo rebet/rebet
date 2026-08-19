@@ -246,7 +246,7 @@ class BuiltinValidations implements Validations
      * @param int|null $at_least
      * @return boolean
      */
-    public function validationWith(Context $c, $other, ?int $at_least = null) : bool
+    public function validationWith(Context $c, $other, int|null $at_least = null) : bool
     {
         return !$this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             return false;
@@ -261,7 +261,7 @@ class BuiltinValidations implements Validations
      * @param int|null $at_least
      * @return boolean
      */
-    public function validationWithout(Context $c, $other, ?int $at_least = null) : bool
+    public function validationWithout(Context $c, $other, int|null $at_least = null) : bool
     {
         return !$this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             return false;
@@ -275,7 +275,7 @@ class BuiltinValidations implements Validations
      * @param string|null $field
      * @return boolean
      */
-    public function validationIfNoError(Context $c, ?string $field = null) : bool
+    public function validationIfNoError(Context $c, string|null $field = null) : bool
     {
         return !$c->hasError($field);
     }
@@ -287,7 +287,7 @@ class BuiltinValidations implements Validations
      * @param string|null $field
      * @return boolean
      */
-    public function validationIfAnError(Context $c, ?string $field = null) : bool
+    public function validationIfAnError(Context $c, string|null $field = null) : bool
     {
         return $c->hasError($field);
     }
@@ -393,7 +393,7 @@ class BuiltinValidations implements Validations
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    public function validationRequiredWith(Context $c, $other, ?int $at_least = null) : bool
+    public function validationRequiredWith(Context $c, $other, int|null $at_least = null) : bool
     {
         return !$c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             return $c->appendError(
@@ -412,7 +412,7 @@ class BuiltinValidations implements Validations
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    public function validationRequiredWithout(Context $c, $other, ?int $at_least = null) : bool
+    public function validationRequiredWithout(Context $c, $other, int|null $at_least = null) : bool
     {
         return !$c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             return $c->appendError(
@@ -432,7 +432,7 @@ class BuiltinValidations implements Validations
      * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $inputed):bool
      * @return boolean
      */
-    protected function handleWith(Context $c, $other, ?int $at_least, callable $callback) : bool
+    protected function handleWith(Context $c, $other, int|null $at_least, callable $callback) : bool
     {
         $other    = (array)$other;
         $max      = count($other);
@@ -456,7 +456,7 @@ class BuiltinValidations implements Validations
      * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $not_inputed):bool
      * @return boolean
      */
-    protected function handleWithout(Context $c, $other, ?int $at_least, callable $callback) : bool
+    protected function handleWithout(Context $c, $other, int|null $at_least, callable $callback) : bool
     {
         $other       = (array)$other;
         $max         = count($other);
@@ -509,7 +509,7 @@ class BuiltinValidations implements Validations
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    public function validationBlankWith(Context $c, $other, ?int $at_least = null) : bool
+    public function validationBlankWith(Context $c, $other, int|null $at_least = null) : bool
     {
         return $c->blank() ? true : $this->handleWith($c, $other, $at_least, function ($c, $other, $at_least, $max, $inputed) {
             return $c->appendError(
@@ -528,7 +528,7 @@ class BuiltinValidations implements Validations
      * @param int|null $at_least (default: null)
      * @return boolean
      */
-    public function validationBlankWithout(Context $c, $other, ?int $at_least = null) : bool
+    public function validationBlankWithout(Context $c, $other, int|null $at_least = null) : bool
     {
         return $c->blank() ? true : $this->handleWithout($c, $other, $at_least, function ($c, $other, $at_least, $max, $not_inputed) {
             return $c->appendError(
@@ -791,7 +791,7 @@ class BuiltinValidations implements Validations
      * @param array $replacement (default: [])
      * @return boolean
      */
-    protected function handleNumber(Context $c, $number, ?int $precision, callable $test, string $messsage_key, array $replacement = []) : bool
+    protected function handleNumber(Context $c, $number, int|null $precision, callable $test, string $messsage_key, array $replacement = []) : bool
     {
         [$number, $number_label]  = $c->resolve($number);
         $replacement['number']    = $number_label instanceof Decimal ? $number_label->format(true) : $number_label ;
@@ -819,9 +819,9 @@ class BuiltinValidations implements Validations
      * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberLessThan(Context $c, $number, ?int $precision = null) : bool
+    public function validationNumberLessThan(Context $c, $number, int|null $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lt($number, $precision); }, 'NumberLessThan');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->lt($number, $precision); }, 'NumberLessThan');
     }
 
     /**
@@ -832,9 +832,9 @@ class BuiltinValidations implements Validations
      * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberLessThanOrEqual(Context $c, $number, ?int $precision = null) : bool
+    public function validationNumberLessThanOrEqual(Context $c, $number, int|null $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->lte($number, $precision); }, 'NumberLessThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->lte($number, $precision); }, 'NumberLessThanOrEqual');
     }
 
     /**
@@ -845,9 +845,9 @@ class BuiltinValidations implements Validations
      * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberEqual(Context $c, $number, ?int $precision = null) : bool
+    public function validationNumberEqual(Context $c, $number, int|null $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->eq($number, $precision); }, 'NumberEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->eq($number, $precision); }, 'NumberEqual');
     }
 
     /**
@@ -858,9 +858,9 @@ class BuiltinValidations implements Validations
      * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberGreaterThan(Context $c, $number, ?int $precision = null) : bool
+    public function validationNumberGreaterThan(Context $c, $number, int|null $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->gt($number, $precision); }, 'NumberGreaterThan');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->gt($number, $precision); }, 'NumberGreaterThan');
     }
 
     /**
@@ -871,9 +871,9 @@ class BuiltinValidations implements Validations
      * @param int|null $precision (default: null)
      * @return boolean
      */
-    public function validationNumberGreaterThanOrEqual(Context $c, $number, ?int $precision = null) : bool
+    public function validationNumberGreaterThanOrEqual(Context $c, $number, int|null $precision = null) : bool
     {
-        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, ?int $precision) { return $value->gte($number, $precision); }, 'NumberGreaterThanOrEqual');
+        return $this->handleNumber($c, $number, $precision, function (Decimal $value, Decimal $number, int|null $precision) { return $value->gte($number, $precision); }, 'NumberGreaterThanOrEqual');
     }
 
     /**
@@ -963,7 +963,7 @@ class BuiltinValidations implements Validations
      * @param string|null $delimiter (default: null)
      * @return boolean
      */
-    public function validationIpv4(Context $c, ?string $delimiter = null) : bool
+    public function validationIpv4(Context $c, string|null $delimiter = null) : bool
     {
         if (!is_null($delimiter) && is_string($c->value)) {
             $splited = [];
@@ -1088,7 +1088,7 @@ class BuiltinValidations implements Validations
      * @param float|null $omission_ratio (default: depend on configure)
      * @return boolean
      */
-    public function validationNgWord(Context $c, $ng_words, ?string $word_split_pattern = null, ?string $delimiter_pattern = null, ?string $omission_pattern = null, ?int $omission_length = null, ?float $omission_ratio = null) : bool
+    public function validationNgWord(Context $c, $ng_words, string|null $word_split_pattern = null, string|null $delimiter_pattern = null, string|null $omission_pattern = null, int|null $omission_length = null, float|null $omission_ratio = null) : bool
     {
         $word_split_pattern = $word_split_pattern ?? static::config('default.NgWord.word_split_pattern') ;
         $delimiter_pattern  = $delimiter_pattern ?? static::config('default.NgWord.delimiter_pattern') ;
@@ -1237,7 +1237,7 @@ class BuiltinValidations implements Validations
      * @param string|null $nested_field (default: null)
      * @return boolean
      */
-    public function validationUnique(Context $c, ?string $nested_field = null) : bool
+    public function validationUnique(Context $c, string|null $nested_field = null) : bool
     {
         if ($c->blank()) {
             return true;

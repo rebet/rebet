@@ -77,7 +77,7 @@ class Session implements SessionInterface
     /**
      * Get the current (latest instantiate) session instance.
      */
-    public static function current() : ?self
+    public static function current() : self|null
     {
         return self::$current;
     }
@@ -258,7 +258,7 @@ class Session implements SessionInterface
      *
      * @return bool True if session invalidated, false if error
      */
-    public function invalidate(?int $lifetime = null) : bool
+    public function invalidate(int|null $lifetime = null) : bool
     {
         $this->storage->clear();
         return $this->migrate(true, $lifetime);
@@ -276,7 +276,7 @@ class Session implements SessionInterface
      *
      * @return bool True if session migrated, false if error
      */
-    public function migrate(bool $destroy = false, ?int $lifetime = null) : bool
+    public function migrate(bool $destroy = false, int|null $lifetime = null) : bool
     {
         return $this->storage->regenerate($destroy, $lifetime);
     }
@@ -335,7 +335,7 @@ class Session implements SessionInterface
      * @param string|null $id (default: null)
      * @return string|self
      */
-    public function id(?string $id = null)
+    public function id(string|null $id = null)
     {
         if ($id === null) {
             return $this->getId();
@@ -351,7 +351,7 @@ class Session implements SessionInterface
      * @param mixed ...$scopes
      * @return string|null
      */
-    public function token(...$scopes) : ?string
+    public function token(...$scopes) : string|null
     {
         $key = static::createTokenKey(...$scopes);
         return empty($scopes) ? $this->attribute()->get($key) : $this->flash()->peek($key);
@@ -395,7 +395,7 @@ class Session implements SessionInterface
      * @param mixed ...$scopes
      * @return bool
      */
-    public function verifyToken(?string $token, ...$scopes) : bool
+    public function verifyToken(string|null $token, ...$scopes) : bool
     {
         $key    = static::createTokenKey(...$scopes);
         $expect = empty($scopes) ? $this->attribute()->get($key) : $this->flash()->get($key);

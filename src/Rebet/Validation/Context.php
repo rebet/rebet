@@ -92,7 +92,7 @@ class Context
     /**
      * The parent context if this is nested context.
      *
-     * @var Context
+     * @var Context|null
      */
     private $parent = null;
 
@@ -142,7 +142,7 @@ class Context
      * @param string|null $field (default: current focused field)
      * @return boolean
      */
-    public function hasError(?string $field = null) : bool
+    public function hasError(string|null $field = null) : bool
     {
         $field = $field ?? "{$this->prefix}{$this->field}" ;
         return $field === '*' ? !empty($this->errors) : isset($this->errors[$field]) ;
@@ -261,7 +261,7 @@ class Context
      * @param string|null $field
      * @return mixed
      */
-    public function value(?string $field)
+    public function value(string|null $field)
     {
         return $field ? Reflector::get($this->data, $field) : $this->value ;
     }
@@ -312,7 +312,7 @@ class Context
      * @param string $key
      * @return string|null
      */
-    protected function message(string $key) : ?string
+    protected function message(string $key) : string|null
     {
         $rule = $this->rules;
         if ($this->prefix) {
@@ -338,7 +338,7 @@ class Context
      * @param string $field
      * @return string|null
      */
-    protected function labelTranslate(string $field) : ?string
+    protected function labelTranslate(string $field) : string|null
     {
         $label = Translator::get("attribute.{$field}", [], null, false);
         if ($label !== null) {
@@ -361,7 +361,7 @@ class Context
      * @param string|null $delimiter (default: depend on configure)
      * @return string
      */
-    public function labels(array $fields, ?string $delimiter = null) : string
+    public function labels(array $fields, string|null $delimiter = null) : string
     {
         $delimiter = $delimiter ?? $this->grammar('delimiter', ', ');
         return implode($delimiter, array_map(function ($field) {
@@ -393,7 +393,7 @@ class Context
      * @param string|null $nested_field
      * @return array [$list, $label]
      */
-    public function pluckNested(?string $nested_field) : array
+    public function pluckNested(string|null $nested_field) : array
     {
         if ($nested_field) {
             $label = $this->formatNestedAttributeLabel($this->label("{$this->field}.{$nested_field}"), $this->label);
@@ -462,7 +462,7 @@ class Context
      *
      * @return self|null
      */
-    public function parent() : ?self
+    public function parent() : self|null
     {
         return $this->parent;
     }

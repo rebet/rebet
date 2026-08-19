@@ -10,7 +10,6 @@ use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Routing\RouteAction;
 use Rebet\Tests\RebetTestCase;
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
 
 class RouteActionTest extends RebetTestCase
@@ -18,16 +17,6 @@ class RouteActionTest extends RebetTestCase
     public function test___construct()
     {
         $this->assertInstanceOf(RouteAction::class, $this->createRouteActionBasedClosureMock(function () { return 'Hello'; }));
-    }
-
-    public function test___construct_error()
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Invalid type of reflector.");
-
-        $action = function () { return 'Hello'; };
-        $route  = new ClosureRoute([], '/', $action);
-        $this->assertInstanceOf(RouteAction::class, new RouteAction($route, $action));
     }
 
     protected function createRouteActionBasedClosureMock(callable $action) : RouteAction

@@ -124,7 +124,7 @@ class Pipeline
      *
      * @return callable|null
      */
-    public function getDestination() : ?callable
+    public function getDestination() : callable|null
     {
         return $this->destination;
     }

@@ -25,7 +25,7 @@ interface Driver
      * @param array $options  (default: [])
      * @return Driver
      */
-    public static function create(string $dsn, ?string $user = null, ?string $password = null, array $options = []) : Driver;
+    public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver;
 
     /**
      * Get PDO instance of this driver.
@@ -108,7 +108,7 @@ interface Driver
      * @return string executed SQL
      * @throws DatabaseException
      */
-    public function rollback(?string $savepoint = null, bool $quiet = true) : ?string;
+    public function rollback(string|null $savepoint = null, bool $quiet = true) : string|null;
 
     /**
      * Execute an SQL statement and return the number of affected rows
@@ -134,7 +134,7 @@ interface Driver
      * @param string|null $name (default: null)
      * @return string
      */
-    public function lastInsertId(?string $name = null) : string;
+    public function lastInsertId(string|null $name = null) : string;
 
     /**
      * Truncate given table data.
@@ -144,7 +144,7 @@ interface Driver
      * @param bool $with_vacuum if needed for sqlite (default: true)
      * @return string executed SQL
      */
-    public function truncate(string $table_name, ?bool $with_vacuum = true) : string;
+    public function truncate(string $table_name, bool|null $with_vacuum = true) : string;
 
     /**
      * Close database connection.
@@ -177,7 +177,7 @@ interface Driver
      * @param int|null $offset (default: null)
      * @return string
      */
-    public function appendLimitOffset(string $sql, ?int $limit, ?int $offset = null) : string;
+    public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null) : string;
 
     /**
      * Append for update partial SQL to given SQL.
@@ -204,7 +204,7 @@ interface Driver
      * @param string|null $type that defined in property annotation. (default: null)
      * @return mixed
      */
-    public function toPhpType($value, array $meta = [], ?string $type = null);
+    public function toPhpType($value, array $meta = [], string|null $type = null);
 
     /**
      * Get SQL analyzer of this database.

@@ -99,7 +99,7 @@ class Pager
      * @param bool $limit_exceedable for max page size (default: false)
      * @return Pager|int
      */
-    public function size(?int $size = null, bool $limit_exceedable = false)
+    public function size(int|null $size = null, bool $limit_exceedable = false)
     {
         return $this->getset('size', $size === null ? null : min(max(1, $size), $limit_exceedable ? PHP_INT_MAX : static::config('max_page_size')));
     }
@@ -110,7 +110,7 @@ class Pager
      * @param int|null $page number (null for get current page number)
      * @return Pager|int
      */
-    public function page(?int $page = null)
+    public function page(int|null $page = null)
     {
         return $this->getset('page', $page === null ? null : max(1, $page));
     }
@@ -121,7 +121,7 @@ class Pager
      * @param int|null $each_side page count (null for get each side page count)
      * @return Pager|int
      */
-    public function eachSide(?int $each_side = null)
+    public function eachSide(int|null $each_side = null)
     {
         return $this->getset('each_side', $each_side === null ? null : max(0, $each_side));
     }
@@ -132,7 +132,7 @@ class Pager
      * @param bool|null $need_total or not (null for get need total)
      * @return Pager|bool
      */
-    public function needTotal(?bool $need_total = null)
+    public function needTotal(bool|null $need_total = null)
     {
         return $this->getset('need_total', $need_total);
     }
@@ -143,7 +143,7 @@ class Pager
      * @param string|null $name of cursor (null for get cursor name)
      * @return Pager|string|null
      */
-    public function cursor(?string $name = null)
+    public function cursor(string|null $name = null)
     {
         return $this->getset('cursor', $name);
     }
@@ -188,7 +188,7 @@ class Pager
      * @param Pager|null $pager
      * @return boolean
      */
-    public function verify(?Pager $pager) : bool
+    public function verify(Pager|null $pager) : bool
     {
         return
                $pager !== null

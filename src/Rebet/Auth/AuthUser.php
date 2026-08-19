@@ -44,35 +44,35 @@ class AuthUser implements \JsonSerializable
      *
      * @var mixed
      */
-    protected $user = null;
+    protected mixed $user = null;
 
     /**
      * The alias map to connect from the authenticated to user.
      *
      * @var array
      */
-    protected $aliases = [];
+    protected array $aliases = [];
 
     /**
      * Sign-in ID when sign-in failed.
      *
      * @var mixed
      */
-    protected $charenged_signin_id = null;
+    protected mixed $charenged_signin_id = null;
 
     /**
      * The authenticated provider of this user.
      *
-     * @var AuthProvider
+     * @var AuthProvider|null
      */
-    protected $provider = null;
+    protected AuthProvider|null $provider = null;
 
     /**
      * The authenticator name of this user.
      *
      * @var string
      */
-    public $authenticator;
+    public string $authenticator;
 
     /**
      * Create a authenticated user instance.
@@ -107,7 +107,7 @@ class AuthUser implements \JsonSerializable
      * @param array $aliases (default: [])
      * @param AuthProvider|null $provider of the given user (default: null)
      */
-    public function __construct($user, array $aliases = [], ?AuthProvider $provider = null)
+    public function __construct(mixed $user, array $aliases = [], AuthProvider|null $provider = null)
     {
         $this->user    = $user;
         $this->aliases = $aliases;
@@ -124,7 +124,7 @@ class AuthUser implements \JsonSerializable
      * @param array $aliases (default: depend on configure)
      * @return self
      */
-    public static function guest($charenged_signin_id = null, ?array $aliases = []) : self
+    public static function guest(mixed $charenged_signin_id = null, array $aliases = []) : self
     {
         $guest = new static(null, array_merge(static::config('guest_aliases', false, []), $aliases));
 
@@ -137,7 +137,7 @@ class AuthUser implements \JsonSerializable
      *
      * @return AuthProvider|null
      */
-    public function provider() : ?AuthProvider
+    public function provider() : AuthProvider|null
     {
         return $this->provider;
     }

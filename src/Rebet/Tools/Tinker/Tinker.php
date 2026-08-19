@@ -166,18 +166,18 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
                     'upper'     => function (string $value) { return strtoupper($value); },
                     'decimal'   => function ($value) { return $value === null ? null : Decimal::of($value); },
                     'abs'       => function ($value) { return $value === null ? null : Decimal::of($value)->abs(); },
-                    'eq'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision); },
-                    'gt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision); },
-                    'gte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
-                    'lt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
-                    'lte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
-                    'not'       => function (?bool $value) { return !$value; },
-                    'add'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
-                    'sub'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
-                    'mul'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
-                    'div'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode); },
-                    'pow'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode); },
-                    'sqrt'      => function ($value, ?int $precision = null, ?int $mode = null) { return $value === null ? null : Decimal::of($value)->sqrt($precision, $mode); },
+                    'eq'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision); },
+                    'gt'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision); },
+                    'gte'       => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
+                    'lt'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
+                    'lte'       => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
+                    'not'       => function (bool|null $value) { return !$value; },
+                    'add'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
+                    'sub'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
+                    'mul'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
+                    'div'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode); },
+                    'pow'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode); },
+                    'sqrt'      => function ($value, int|null $precision = null, int|null $mode = null) { return $value === null ? null : Decimal::of($value)->sqrt($precision, $mode); },
                     'mod'       => function ($value, $modulus) { return $value === null || $modulus === null ? null : Decimal::of($value)->mod($modulus); },
                     'powmod'    => function ($value, $exponent, $modulus) { return $value === null || $exponent === null || $modulus === null ? null : Decimal::of($value)->powmod($exponent, $modulus); },
                     'floor'     => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->floor($precision); },
@@ -282,7 +282,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param callable|null $promise function():mixed
      * @param boolean $safety (default: false)
      */
-    protected function __construct($origin, ?callable $promise = null, bool $safety = false)
+    protected function __construct($origin, callable|null $promise = null, bool $safety = false)
     {
         $this->origin  = static::peel($origin) ;
         $this->promise = $promise;
@@ -381,7 +381,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param mixed $default (default: null)
      * @return mixed
      */
-    public function return(?\Closure $returner = null, $default = null)
+    public function return(\Closure|null $returner = null, $default = null)
     {
         $origin = $this->origin();
         if ($origin === null) {
@@ -452,7 +452,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param self ...$args
      * @return self|bool
      */
-    protected function _filter(string $name, ?\Closure $filter, ...$args)
+    protected function _filter(string $name, \Closure|null $filter, ...$args)
     {
         if ($filter === null) {
             return $this;

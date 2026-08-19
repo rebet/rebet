@@ -54,7 +54,7 @@ class LooseLocalPartTest extends RebetTestCase
     }
 
     #[DataProvider('dataParses')]
-    public function test_parse($expect, ?string $mail_address, array $ignores, ?array $warnings = null)
+    public function test_parse($expect, string|null $mail_address, array $ignores, array|null $warnings = null)
     {
         $lexer = new EmailLexer();
         $lexer->setInput($mail_address);

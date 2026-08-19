@@ -14,6 +14,7 @@ use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigPromise;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Enum\Enum;
+use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Translation\Translator;
@@ -38,9 +39,9 @@ class App
     /**
      * The kernel of this application
      *
-     * @var Kernel
+     * @var Kernel|null
      */
-    protected static $kernel;
+    protected static Kernel|null $kernel;
 
     /**
      * {@inheritDoc}
@@ -67,6 +68,9 @@ class App
      */
     public static function kernel() : Kernel
     {
+        if (static::$kernel === null) {
+            throw new LogicException('Kernel has not been initialized yet. You should call App::init() first.');
+        }
         return static::$kernel;
     }
 
@@ -83,8 +87,9 @@ class App
     /**
      * Initialize App and set configure.
      *
-     * @param Kernel $kernel
-     * @return Kernel
+     * @template T of Kernel
+     * @param T $kernel
+     * @return T
      */
     public static function init(Kernel $kernel) : Kernel
     {
@@ -140,7 +145,7 @@ class App
      * @param string $locale
      * @param string|null $fallback_locale if null given then do nothing (default: null)
      */
-    public static function setLocale(string $locale, ?string $fallback_locale = null) : void
+    public static function setLocale(string $locale, string|null $fallback_locale = null) : void
     {
         self::setConfig(['locale' => $locale]);
         if ($fallback_locale !== null) {
@@ -204,7 +209,7 @@ class App
      *
      * @return string|null
      */
-    public static function channel() : ?string
+    public static function channel() : string|null
     {
         return static::$kernel ? static::$kernel->channel() : null ;
     }

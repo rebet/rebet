@@ -38,7 +38,7 @@ class EofLineFeed extends Enum
      * @param string|null $contents
      * @return string|null
      */
-    public function process(?string $contents) : ?string
+    public function process(string|null $contents) : string|null
     {
         if ($contents === null) {
             return null;

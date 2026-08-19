@@ -8,6 +8,6 @@ class Group extends Entity
 {
     public $group_id;
     public $name;
-    public ?DateTime $created_at = null;
-    public ?DateTime $updated_at = null;
+    public DateTime|null $created_at = null;
+    public DateTime|null $updated_at = null;
 }

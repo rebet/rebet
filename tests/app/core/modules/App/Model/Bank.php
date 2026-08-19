@@ -15,10 +15,10 @@ class Bank extends Entity
     public $branch;
     public $number;
     public $holder;
-    public ?DateTime $created_at = null;
-    public ?DateTime $updated_at = null;
+    public DateTime|null $created_at = null;
+    public DateTime|null $updated_at = null;
 
-    public function user(bool $for_update = false, bool $eager_load = true) : ?User
+    public function user(bool $for_update = false, bool $eager_load = true) : User|null
     {
         return parent::belongsTo(User::class, [], $for_update, $eager_load);
     }

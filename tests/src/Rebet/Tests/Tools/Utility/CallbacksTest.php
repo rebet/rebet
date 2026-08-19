@@ -222,11 +222,11 @@ class CallbacksTest extends RebetTestCase
             ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}()', function () {}, true ],
             ['CallbacksTest::{closure}()'                          , function () {}, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (?int $i = null, string ...$s) : ?int { return $i; }, true ],
-            ['CallbacksTest::{closure}($i, ...$s)'                                                    , function (?int $i = null, string ...$s) : ?int { return $i; }, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, string ...$s) : ?int', function (int|null $i = null, string ...$s) : int|null { return $i; }, true ],
+            ['CallbacksTest::{closure}($i, ...$s)'                                                    , function (int|null $i = null, string ...$s) : int|null { return $i; }, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
-            ['CallbacksTest::{closure}($i, $j, $k, $l)'                                                                                                    , function (?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(?int $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void', function (int|null $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, true ],
+            ['CallbacksTest::{closure}($i, $j, $k, $l)'                                                                                                    , function (int|null $i = null, int $j = 12, int $k = PHP_INT_MAX, string $l = Layer::APPLICATION) : void {}, false],
 
             ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
             ['CallbacksTest::{closure}(&$a, &...$s)'                                       , function (array &$a, string &...$s) { }, false],

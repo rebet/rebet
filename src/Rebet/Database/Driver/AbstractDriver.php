@@ -67,7 +67,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public static function create(string $dsn, ?string $user = null, ?string $password = null, array $options = []) : Driver
+    public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver
     {
         return new static(new \PDO($dsn, $user, $password), $options);
     }
@@ -133,7 +133,7 @@ abstract class AbstractDriver implements Driver
      * @param array $params (default: [])
      * @return DatabaseException
      */
-    protected function exception($error, ?string $sql = null, array $params = []) : DatabaseException
+    protected function exception($error, string|null $sql = null, array $params = []) : DatabaseException
     {
         return DatabaseException::from('pdo:'.static::SUPPORTED_PDO_DRIVER, $error, $sql, $params);
     }
@@ -217,7 +217,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function rollback(?string $savepoint = null, bool $quiet = true) : ?string
+    public function rollback(string|null $savepoint = null, bool $quiet = true) : string|null
     {
         try {
             if ($savepoint) {
@@ -279,7 +279,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function lastInsertId(?string $name = null) : string
+    public function lastInsertId(string|null $name = null) : string
     {
         return $this->pdo()->lastInsertId($name);
     }
@@ -287,7 +287,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function truncate(string $table_name, ?bool $with_vacuum = true) : string
+    public function truncate(string $table_name, bool|null $with_vacuum = true) : string
     {
         $quoted_table_name = $this->quoteIdentifier($table_name);
         $this->exec($sql = "TRUNCATE TABLE {$quoted_table_name}");
@@ -332,7 +332,7 @@ abstract class AbstractDriver implements Driver
     /**
      * {@inheritDoc}
      */
-    public function appendLimitOffset(string $sql, ?int $limit, ?int $offset = null) : string
+    public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null) : string
     {
         $limit  = $limit  ? " LIMIT {$limit}"   : "" ;
         $offset = $offset ? " OFFSET {$offset}" : "" ;

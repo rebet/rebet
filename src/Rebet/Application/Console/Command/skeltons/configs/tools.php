@@ -2,10 +2,10 @@
 
 use Rebet\Application\App;
 use Rebet\Tools\Config\Config;
+use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Reflection\Reflector;
-use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Resource\Resource;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Tinker\Tinker;
@@ -377,7 +377,7 @@ return [
                 },
             ],
             'dns_get_record' => [
-                'emulator' => function (string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false) : array {
+                'emulator' => function (string $hostname, int $type = DNS_ANY, array|null &$authns = null, array|null &$addtl = null, bool $raw = false) : array {
                     $emulated_dns = System::datasets('dns_get_record', 'emulated_dns');
                     if (isset($emulated_dns[$hostname])) {
                         $c = Tinker::with($emulated_dns[$hostname], true);
@@ -457,17 +457,17 @@ return [
                 'upper'     => function (string $value) { return strtoupper($value); },
                 'decimal'   => function ($value) { return $value === null ? null : Decimal::of($value); },
                 'abs'       => function ($value) { return $value === null ? null : Decimal::of($value)->abs(); },
-                'eq'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision); },
-                'gt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision); },
-                'gte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
-                'lt'        => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
-                'lte'       => function ($value, $other, ?int $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
-                'add'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
-                'sub'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
-                'mul'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
-                'div'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode); },
-                'pow'       => function ($value, $other, ?int $precision = null, ?int $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode); },
-                'sqrt'      => function ($value, ?int $precision = null, ?int $mode = null) { return $value === null ? null : Decimal::of($value)->sqrt($precision, $mode); },
+                'eq'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->eq($other, $precision); },
+                'gt'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gt($other, $precision); },
+                'gte'       => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->gte($other, $precision); },
+                'lt'        => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lt($other, $precision); },
+                'lte'       => function ($value, $other, int|null $precision = null) { return $value === null || $other === null ? false : Decimal::of($value)->lte($other, $precision); },
+                'add'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->add($other, $precision, $mode); },
+                'sub'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->sub($other, $precision, $mode); },
+                'mul'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->mul($other, $precision, $mode); },
+                'div'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->div($other, $precision, $mode); },
+                'pow'       => function ($value, $other, int|null $precision = null, int|null $mode = null) { return $value === null || $other === null ? null : Decimal::of($value)->pow($other, $precision, $mode); },
+                'sqrt'      => function ($value, int|null $precision = null, int|null $mode = null) { return $value === null ? null : Decimal::of($value)->sqrt($precision, $mode); },
                 'mod'       => function ($value, $modulus) { return $value === null || $modulus === null ? null : Decimal::of($value)->mod($modulus); },
                 'powmod'    => function ($value, $exponent, $modulus) { return $value === null || $exponent === null || $modulus === null ? null : Decimal::of($value)->powmod($exponent, $modulus); },
                 'floor'     => function ($value, int $precision = 0) { return $value === null ? null : Decimal::of($value)->floor($precision); },

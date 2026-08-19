@@ -153,7 +153,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param string|null $template
      * @throws LogicException when given template has syntax error
      */
-    public function __construct(?string $template)
+    public function __construct(string|null $template)
     {
         $this->syntax = $template ? $this->compile($template) : [] ;
     }
@@ -165,7 +165,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @throws LogicException when given template has syntax error
      * @return static
      */
-    public static function of(?string $template) : self
+    public static function of(string|null $template) : self
     {
         return new static($template);
     }
@@ -213,7 +213,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * @param \Closure $handler for tag processing `function(array $nodes, array $vars) : string { ... }`, The nodes is passed a chunk block of consecutive tags defined in siblings.
      * @return void
      */
-    public static function block(string $tag, ?array $siblings, \Closure $handler) : void
+    public static function block(string $tag, array|null $siblings, \Closure $handler) : void
     {
         if (static::defined($tag)) {
             throw new LogicException("Tag '{$tag}' is already defined.");
@@ -538,7 +538,7 @@ class Letterpress implements Renderable, \JsonSerializable
     protected function next(string $leftovers) : array
     {
         if (preg_match('/^(?<content>[\s\S]*)([ \f\r\t]*?\S*?{%--|([ \f\r\t]*?|\S+?){%-|{%)[\s]*(?<tag>[^\s\-}]+?)(?<code>[\s\S]*)(%}|-%}(\S+?|([ \f\r\t]*\n|[ \f\r\t]*?))|--%}\S*?([ \f\r\t]*\n|[ \f\r\t]*?))(?<leftovers>[\s\S]*)$/Uu', $leftovers, $matches)) {
-            return [$matches['content'], $matches['tag'], trim($matches['code'] ?? ''), $matches['leftovers']];
+            return [$matches['content'], $matches['tag'], trim($matches['code']), $matches['leftovers']];
         }
         return [$leftovers, null, null, null];
     }

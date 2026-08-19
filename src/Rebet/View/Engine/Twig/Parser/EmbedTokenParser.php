@@ -97,7 +97,7 @@ class EmbedTokenParser extends AbstractTokenParser
      * @param array $binds (default: [])
      * @param bool $can_omit_first_arg (default: false)
      */
-    public function __construct(string $tag, ?string $verbs, ?array $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false)
+    public function __construct(string $tag, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false)
     {
         $this->tag                = $tag;
         $this->verbs              = $verbs;
@@ -156,7 +156,7 @@ class EmbedTokenParser extends AbstractTokenParser
      * @return array
      * @throws SyntaxError
      */
-    public function parseArguments(?array $separators, bool $allow_arrow = false) : array
+    public function parseArguments(array|null $separators, bool $allow_arrow = false) : array
     {
         $args     = [];
         $stream   = $this->parser->getStream();

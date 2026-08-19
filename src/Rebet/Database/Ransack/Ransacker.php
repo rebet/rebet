@@ -31,7 +31,7 @@ interface Ransacker
      * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query|null condition or null when ignored
      */
-    public function resolve($predicate, $value, array $alias = [], ?\Closure $extention = null) : ?Query;
+    public function resolve($predicate, $value, array $alias = [], \Closure|null $extention = null) : Query|null;
 
     /**
      * Build 'WHERE' condition expression from given ransack conditions.
@@ -41,5 +41,5 @@ interface Ransacker
      * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query
      */
-    public function build($ransack, array $alias = [], ?\Closure $extention = null) : Query;
+    public function build($ransack, array $alias = [], \Closure|null $extention = null) : Query;
 }

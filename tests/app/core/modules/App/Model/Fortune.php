@@ -13,19 +13,19 @@ class Fortune extends Entity
     /**
      * @PrimaryKey
      */
-    public ?Gender $gender = null;
+    public Gender|null $gender = null;
 
     /**
      * @PrimaryKey
      */
-    public ?Date $birthday = null;
+    public Date|null $birthday = null;
 
     public $result;
 
-    public ?DateTime $created_at = null;
-    public ?DateTime $updated_at = null;
+    public DateTime|null $created_at = null;
+    public DateTime|null $updated_at = null;
 
-    public function users($ransack = [], ?int $limit = null, bool $for_update = false, bool $eager_load = true) : array
+    public function users($ransack = [], int|null $limit = null, bool $for_update = false, bool $eager_load = true) : array
     {
         return parent::hasMany(User::class, [], $ransack, null, $limit, $for_update, $eager_load);
     }
@@ -33,7 +33,7 @@ class Fortune extends Entity
     /**
      * Method for unit test
      */
-    public function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
+    public function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
         return parent::hasOne($class, $alias, $for_update, $eager_load, $name ?? Reflector::caller());
     }
@@ -41,7 +41,7 @@ class Fortune extends Entity
     /**
      * Method for unit test
      */
-    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, bool $eager_load = true, ?string $name = null) : array
+    public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array
     {
         return parent::hasMany($class, $alias, $ransacks, $order_by, $limit, $for_update, $eager_load, $name ?? Reflector::caller());
     }

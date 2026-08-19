@@ -95,7 +95,7 @@ class Config
      * @param string ...$layers list of Layer::* (default: all layers)
      * @return void
      */
-    public static function reset(?string $section = null, string ...$layers) : void
+    public static function reset(string|null $section = null, string ...$layers) : void
     {
         $layers = empty($layers) ? [Layer::LIBRARY, Layer::FRAMEWORK, Layer::APPLICATION, Layer::RUNTIME] : $layers ;
         if ($section === null) {
@@ -284,7 +284,7 @@ class Config
      * @return bool
      * @throws LogicException
      */
-    protected static function isDefine(array $config, string $section, ?string $key) : bool
+    protected static function isDefine(array $config, string $section, string|null $key) : bool
     {
         if (Utils::isBlank($key)) {
             return isset($config[$section]);
@@ -299,7 +299,7 @@ class Config
      * @return void
      * @throws LogicException
      */
-    protected static function validateKey(?string $key) : void
+    protected static function validateKey(string|null $key) : void
     {
         if (Utils::isBlank($key)) {
             return;
@@ -327,7 +327,7 @@ class Config
      * @throws ConfigNotDefineException
      * @throws LogicException
      */
-    public static function get(string $section, ?string $key = null, bool $required = true, $default = null)
+    public static function get(string $section, string|null $key = null, bool $required = true, $default = null)
     {
         static::validateKey($key);
         static::setup($section);
@@ -450,7 +450,7 @@ class Config
      * @param mixed $default when the referral configuration value is blank (default: null)
      * @return ConfigReferrer
      */
-    public static function refer(string $section, ?string $key = null, $default = null) : ConfigReferrer
+    public static function refer(string $section, string|null $key = null, $default = null) : ConfigReferrer
     {
         static::validateKey($key);
         return new ConfigReferrer($section, $key, $default);

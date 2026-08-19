@@ -145,7 +145,7 @@ trait Configurable
      * @return mixed
      * @throws ConfigNotDefineException
      */
-    public static function config(?string $key = null, bool $required = true, $default = null)
+    public static function config(string|null $key = null, bool $required = true, $default = null)
     {
         return Config::get(static::class, $key, $required, $default);
     }

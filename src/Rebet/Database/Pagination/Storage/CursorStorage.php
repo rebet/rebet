@@ -28,7 +28,7 @@ interface CursorStorage
      * @param string $name
      * @return Cursor|null
      */
-    public function load(string $name) : ?Cursor;
+    public function load(string $name) : Cursor|null;
 
     /**
      * Remove the cursor as given name from strage.

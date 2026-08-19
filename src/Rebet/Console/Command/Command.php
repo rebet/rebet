@@ -157,7 +157,7 @@ abstract class Command extends SymfonyCommand
      * @param string $key
      * @return string|null
      */
-    public function argument(string $key) : ?string
+    public function argument(string $key) : string|null
     {
         return $this->input->getArgument($key) ;
     }
@@ -238,7 +238,7 @@ abstract class Command extends SymfonyCommand
      * @param string $retry_message (default: '-> This question is required, try again.')
      * @return mixed
      */
-    protected function ask(string $question, ?string $via_option = null, bool $required = true, ?string $default = null, $choices = null, string $retry_message = 'This question is required, try again.')
+    protected function ask(string $question, string|null $via_option = null, bool $required = true, string|null $default = null, $choices = null, string $retry_message = 'This question is required, try again.')
     {
         if ($answer = $this->viaOption($question, $via_option)) {
             return $answer;
@@ -265,7 +265,7 @@ abstract class Command extends SymfonyCommand
      * @param array $availables (default: [])
      * @return string|null
      */
-    protected function viaOption(string $question, ?string $via_option = null, array $availables = []) : ?string
+    protected function viaOption(string $question, string|null $via_option = null, array $availables = []) : string|null
     {
         if ($via_option) {
             if ($answer = trim(Strings::startsWith($via_option, '@') ? Strings::ltrim($via_option, '@') : $this->option($via_option))) {
@@ -329,7 +329,7 @@ abstract class Command extends SymfonyCommand
      * @param bool $multiple (default: false)
      * @return string|array
      */
-    protected function choice(string $question, array $choices, ?string $via_option = null, $default = null, ?int $attempts = null, $multiple = false)
+    protected function choice(string $question, array $choices, string|null $via_option = null, $default = null, int|null $attempts = null, $multiple = false)
     {
         if ($answer = $this->viaOption($question, $via_option, $choices)) {
             return $answer;

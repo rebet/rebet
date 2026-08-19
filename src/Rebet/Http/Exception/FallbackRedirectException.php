@@ -45,7 +45,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
      * @param string $message
      * @param \Throwable $previous (default: null)
      */
-    public function __construct(string $message, ?\Throwable $previous = null)
+    public function __construct(string $message, \Throwable|null $previous = null)
     {
         parent::__construct($message, $previous);
     }

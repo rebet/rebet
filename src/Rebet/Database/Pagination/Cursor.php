@@ -73,7 +73,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param array $cursor of [col => $value, ... ]
      * @param int|null $next_page_count that confirmed to be exists
      */
-    public function __construct(Pager $pager, array $cursor, ?int $next_page_count = null)
+    public function __construct(Pager $pager, array $cursor, int|null $next_page_count = null)
     {
         $this->pager           = $pager;
         $this->cursor          = $cursor;
@@ -98,7 +98,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param int $next_page_count that confirmed to be exists
      * @return self
      */
-    public static function create($order_by, Pager $pager, $data, ?int $next_page_count) : self
+    public static function create($order_by, Pager $pager, $data, int|null $next_page_count) : self
     {
         $cursor = [];
         foreach ($order_by as $col => $order) {
@@ -136,7 +136,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return int|null
      */
-    public function nextPageCount() : ?int
+    public function nextPageCount() : int|null
     {
         return $this->next_page_count;
     }
@@ -149,7 +149,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param CursorStorage|null $strage (default: depend on configured)
      * @return self
      */
-    public function save(?CursorStorage $strage = null) : self
+    public function save(CursorStorage|null $strage = null) : self
     {
         if (!$this->pager->useCursor()) {
             return $this;
@@ -166,7 +166,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param CursorStorage|null $strage (default: depend on configured)
      * @return self|null
      */
-    public static function load(string $name, ?CursorStorage $strage = null) : ?self
+    public static function load(string $name, CursorStorage|null $strage = null) : self|null
     {
         $strage = $strage ?? static::configInstantiate('storage') ;
         $cursor = $strage->load($name);
@@ -179,7 +179,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param string $name of cursor
      * @param CursorStorage|null $strage (default: depend on configured)
      */
-    public static function remove(string $name, ?CursorStorage $strage = null) : void
+    public static function remove(string $name, CursorStorage|null $strage = null) : void
     {
         $strage = $strage ?? static::configInstantiate('storage') ;
         $strage->remove($name);
@@ -190,7 +190,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @param CursorStorage|null $strage (default: depend on configured)
      */
-    public static function clear(?CursorStorage $strage = null) : void
+    public static function clear(CursorStorage|null $strage = null) : void
     {
         $strage = $strage ?? static::configInstantiate('storage') ;
         $strage->clear();
@@ -203,7 +203,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * @param Cursor|null $cursor
      * @return boolean
      */
-    public function equals(?Cursor $cursor) : bool
+    public function equals(Cursor|null $cursor) : bool
     {
         return $cursor !== null
             && Utils::equivalent($this->cursor, $cursor->cursor)

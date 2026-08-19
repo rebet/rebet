@@ -8,7 +8,7 @@ use Rebet\Tests\RebetTestCase;
 class PasswordTest extends RebetTestCase
 {
     #[DataProvider('dataPasswords')]
-    public function test_hashAndVerify(?string $password, $algorithm = null, ?array $options = null)
+    public function test_hashAndVerify(string|null $password, $algorithm = null, array|null $options = null)
     {
         $hash = Password::hash($password, $algorithm, $options);
         $this->assertTrue(Password::verify($password, $hash));

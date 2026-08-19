@@ -36,7 +36,7 @@ class Responder
      * @param Request|null $request (default: null for Request::current())
      * @return Response
      */
-    public static function toResponse($data, int $status = 200, array $headers = [], ?Request $request = null) : Response
+    public static function toResponse($data, int $status = 200, array $headers = [], Request|null $request = null) : Response
     {
         return static::prepare(static::createResponseByTypeOf($data, $status, $headers), $request);
     }
@@ -49,7 +49,7 @@ class Responder
      * @param Request|null $request
      * @return T
      */
-    protected static function prepare(Response $response, ?Request $request = null) : Response
+    protected static function prepare(Response $response, Request|null $request = null) : Response
     {
         $request = $request ?? Request::current();
         return $request ? $response->prepare($request) : $response ;
@@ -95,7 +95,7 @@ class Responder
      * @param Request|null $request (default: null for Request::current())
      * @return RedirectResponse
      */
-    public static function redirect(string $url, array $query = [], int $status = 302, array $headers = [], ?Request $request = null) : RedirectResponse
+    public static function redirect(string $url, array $query = [], int $status = 302, array $headers = [], Request|null $request = null) : RedirectResponse
     {
         $request = $request ?? Request::current() ;
         $url     = empty($query) ? $url : $url.(Strings::contains($url, '?') ? '&' : '?').http_build_query($query) ;
@@ -121,7 +121,7 @@ class Responder
      * @param int $encoding_options of JSON encode (default: 0)
      * @return ProblemResponse
      */
-    public static function problem(int $status, ?string $title = null, ?string $type = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
+    public static function problem(int $status, string|null $title = null, string|null $type = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
     {
         return new ProblemResponse($status, $title, $type, $headers, $encoding_options);
     }
@@ -137,7 +137,7 @@ class Responder
      * @param string $disk of filesystem (default: null for use private disk)
      * @return StreamedResponse
      */
-    public static function file(string $path, ?string $filename = null, array $headers = [], string $disposition = 'inline', string $disk = null) : StreamedResponse
+    public static function file(string $path, string|null $filename = null, array $headers = [], string $disposition = 'inline', string $disk = null) : StreamedResponse
     {
         $filesystem  = $disk ? Storage::disk($disk) : Storage::private() ;
         $response    = new StreamedResponse();
@@ -173,7 +173,7 @@ class Responder
      * @param string $disk of filesystem (default: null)
      * @return StreamedResponse
      */
-    public static function download(string $path, ?string $filename = null, array $headers = [], string $disk = null) : StreamedResponse
+    public static function download(string $path, string|null $filename = null, array $headers = [], string $disk = null) : StreamedResponse
     {
         return static::file($path, $filename, $headers, 'attachment', $disk);
     }

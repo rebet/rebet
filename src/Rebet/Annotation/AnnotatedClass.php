@@ -42,7 +42,7 @@ class AnnotatedClass
      * @param string|object|\ReflectionClass $class
      * @param AnnotationReader|null $reader
      */
-    public function __construct($class, ?AnnotationReader $reader = null)
+    public function __construct($class, AnnotationReader|null $reader = null)
     {
         $this->class  = $class instanceof \ReflectionClass ? $class : new \ReflectionClass($class) ;
         $this->reader = $reader ?? AnnotationReader::getShared();
@@ -75,7 +75,7 @@ class AnnotatedClass
      * @param string $method
      * @return AnnotatedMethod|null
      */
-    public function method(string $method) : ?AnnotatedMethod
+    public function method(string $method) : AnnotatedMethod|null
     {
         return $this->class->hasMethod($method) ? new AnnotatedMethod($this->class->getMethod($method), $this, $this->reader) : null ;
     }
@@ -86,7 +86,7 @@ class AnnotatedClass
      * @param string $property
      * @return AnnotatedProperty|null
      */
-    public function property(string $property) : ?AnnotatedProperty
+    public function property(string $property) : AnnotatedProperty|null
     {
         return $this->class->hasProperty($property) ? new AnnotatedProperty($this->class->getProperty($property), $this, $this->reader) : null ;
     }

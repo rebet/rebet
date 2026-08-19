@@ -13,7 +13,7 @@ use Rebet\Tools\Exception\RuntimeException;
  */
 class ZipArchiveException extends RuntimeException
 {
-    public function __construct(string $message, ?\Throwable $previous = null)
+    public function __construct(string $message, \Throwable|null $previous = null)
     {
         parent::__construct($message, $previous);
     }

@@ -66,7 +66,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function compile(string $sql, ?OrderBy $order_by = null, $params = [], ?Pager $pager = null, ?Cursor $cursor = null) : Query
+    public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null) : Query
     {
         // ---------------------------------------------------------------------
         // Resolve embedded `Letterpress` tags
@@ -159,7 +159,7 @@ class BuiltinCompiler implements Compiler
      * @param Cursor|null $cursor
      * @return Cursor|null
      */
-    protected function verify(?Pager $pager, ?Cursor $cursor) : ?Cursor
+    protected function verify(Pager|null $pager, Cursor|null $cursor) : Cursor|null
     {
         return $cursor && !$cursor->expired() && $cursor->pager()->verify($pager) ? $cursor : null ;
     }
@@ -173,7 +173,7 @@ class BuiltinCompiler implements Compiler
      * @param bool $near_by_first
      * @return int
      */
-    protected function offset(Pager $pager, ?Cursor $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
+    protected function offset(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
     {
         $page = $pager->page();
         $size = $pager->size();
@@ -194,7 +194,7 @@ class BuiltinCompiler implements Compiler
      * @param bool $near_by_first
      * @return int
      */
-    protected function limit(Pager $pager, ?Cursor $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
+    protected function limit(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
     {
         $page            = $pager->page();
         $size            = $pager->size();
@@ -278,7 +278,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
-    public function paging(Statement $stmt, ?OrderBy $order_by, Pager $pager, ?Cursor $cursor = null, ?int $total = null, string $class = 'stdClass') : Paginator
+    public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass') : Paginator
     {
         $cursor = $this->verify($pager, $cursor);
 

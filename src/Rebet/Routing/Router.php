@@ -526,7 +526,7 @@ class Router
      *
      * @return Route|null
      */
-    public static function current() : ?Route
+    public static function current() : Route|null
     {
         return static::$current;
     }
@@ -537,7 +537,7 @@ class Router
      * @param string $request_path
      * @return string|null
      */
-    public static function getPrefixFrom(string $request_path) : ?string
+    public static function getPrefixFrom(string $request_path) : string|null
     {
         foreach (static::$prefixes as $prefix) {
             if (Strings::startsWith($request_path, "{$prefix}/") || $request_path === $prefix) {

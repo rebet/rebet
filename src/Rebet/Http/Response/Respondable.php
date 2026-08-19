@@ -50,14 +50,14 @@ trait Respondable
      * @param string|null $domain can contains shell's wildcard (default: '*')
      * @return Cookie|array|null
      */
-    public function getCookie(string $name, ?string $path = '*', ?string $domain = '*')
+    public function getCookie(string $name, string|null $path = '*', string|null $domain = '*')
     {
         $path    = Cookie::convertPath($path);
         $cookies = [];
         foreach ($this->headers->getCookies() as $cookie) {
             if (
                 $cookie->getName() === $name
-                && ($cookie->getPath() === $path || Strings::wildmatch($cookie->getPath() ?? '', $path))
+                && ($cookie->getPath() === $path || Strings::wildmatch($cookie->getPath(), $path))
                 && ($cookie->getDomain() === $domain || Strings::wildmatch($cookie->getDomain() ?? '', $domain))
             ) {
                 $cookies[] = $cookie;

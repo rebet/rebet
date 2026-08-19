@@ -28,7 +28,7 @@ abstract class AuthProvider
      * @param mixed $id
      * @return AuthUser|null
      */
-    abstract public function findById($id) : ?AuthUser ;
+    abstract public function findById($id) : AuthUser|null ;
 
     /**
      * Find user by token.
@@ -36,7 +36,7 @@ abstract class AuthProvider
      * @param string|null $token
      * @return AuthUser|null
      */
-    abstract public function findByToken(?string $token) : ?AuthUser ;
+    abstract public function findByToken(string|null $token) : AuthUser|null ;
 
     /**
      * Find user by signin_id and password.
@@ -46,7 +46,7 @@ abstract class AuthProvider
      * @param string|null $password
      * @return AuthUser|null
      */
-    public function findByCredentials($signin_id, ?string $password) : ?AuthUser
+    public function findByCredentials($signin_id, string|null $password) : AuthUser|null
     {
         $user = $this->findBySigninId($signin_id);
         if ($user === null) {
@@ -71,7 +71,7 @@ abstract class AuthProvider
      * @param mixed $signin_id
      * @return AuthUser|null
      */
-    abstract protected function findBySigninId($signin_id) : ?AuthUser ;
+    abstract protected function findBySigninId($signin_id) : AuthUser|null ;
 
     /**
      * Save rehash password.
@@ -101,7 +101,7 @@ abstract class AuthProvider
      * @param string|null $token
      * @return AuthUser|null
      */
-    public function findByRememberToken(?string $token) : ?AuthUser
+    public function findByRememberToken(string|null $token) : AuthUser|null
     {
         return null;
     }
@@ -114,7 +114,7 @@ abstract class AuthProvider
      * @param integer $remember_days
      * @return string|null token
      */
-    public function issuingRememberToken($id, int $remember_days) : ?string
+    public function issuingRememberToken($id, int $remember_days) : string|null
     {
         return null;
     }
@@ -126,7 +126,7 @@ abstract class AuthProvider
      * @param string|null $token
      * @return void
      */
-    public function removeRememberToken(?string $token) : void
+    public function removeRememberToken(string|null $token) : void
     {
         // Do nothing.
     }
@@ -137,7 +137,7 @@ abstract class AuthProvider
      * @param string|null $name
      * @return self|string|null
      */
-    public function name(?string $name = null)
+    public function name(string|null $name = null)
     {
         if ($name === null) {
             return $this->name;
@@ -163,7 +163,7 @@ abstract class AuthProvider
      * @param string $token
      * @return string|null
      */
-    protected function hashToken(?string $token) : ?string
+    protected function hashToken(string|null $token) : string|null
     {
         return $token ? Securities::hash($token) : null ;
     }

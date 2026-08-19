@@ -29,11 +29,16 @@ return (new PhpCsFixer\Config())
         'return_type_declaration' => [
             'space_before' => 'one'
         ],
-        'whitespace_after_comma_in_array'   => true,
-        'no_superfluous_elseif'             => true,
-        'no_useless_else'                   => true,
-        'no_whitespace_in_blank_line'       => true,
-        'compact_nullable_type_declaration' => true,
+        'whitespace_after_comma_in_array' => true,
+        'no_superfluous_elseif'           => true,
+        'no_useless_else'                 => true,
+        'no_whitespace_in_blank_line'     => true,
+        'nullable_type_declaration'       => [
+            'syntax' => 'union'
+        ],
+        'ordered_types' => [
+            'null_adjustment' => 'always_last',
+        ],
     ])
     ->setLineEnding("\n")
     ->setFinder(

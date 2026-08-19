@@ -548,7 +548,7 @@ class EnumTest_AcceptStatus extends Enum
         $this->icon  = $icon;
     }
 
-    public static function nexts($current, ?array $context = null) : array
+    public static function nexts($current, array|null $context = null) : array
     {
         switch ($context['role']) {
             case 'operator':

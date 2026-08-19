@@ -28,7 +28,7 @@ class LoggingPlugin implements Swift_Events_SendListener
      *
      * @param string|null $channel (default: null for use default channel)
      */
-    public function __construct(?string $channel = null)
+    public function __construct(string|null $channel = null)
     {
         $this->channel = $channel;
     }

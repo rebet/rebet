@@ -48,7 +48,7 @@ class Logger
      * @param string|null $name (default: null for get name)
      * @return null|string|self
      */
-    public function name(?string $name = null)
+    public function name(string|null $name = null)
     {
         if ($name == null) {
             return $this->driver instanceof NameableDriver ? $this->driver->getName() : null ;

@@ -20,7 +20,7 @@ use Rebet\Tools\Config\Layer;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-trait CacheTestHelper
+trait CacheTestHelper // @phpstan-ignore trait.unused
 {
     /**
      * Apply tests to all or given defined cache store.

@@ -31,7 +31,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function load(string $name) : ?Cursor
+    public function load(string $name) : Cursor|null
     {
         return self::$strage[$name] ?? null ;
     }

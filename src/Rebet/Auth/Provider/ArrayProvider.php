@@ -68,7 +68,7 @@ class ArrayProvider extends AuthProvider
      * @param callable|null $precondition function($user):bool {...} (default: `function ($user) { return true; }`)
      * @param array $aliases for AuthUser who provided by this provider. (default: [])
      */
-    public function __construct(array $users, ?string $signin_id_name = 'email', string $token_name = 'api_token', ?callable $precondition = null, array $aliases = [])
+    public function __construct(array $users, string|null $signin_id_name = 'email', string $token_name = 'api_token', callable|null $precondition = null, array $aliases = [])
     {
         $this->users          = Tinker::with($users, true);
         $this->signin_id_name = $signin_id_name;
@@ -80,7 +80,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findById($id) : ?AuthUser
+    public function findById($id) : AuthUser|null
     {
         return $this->users
             ->first(function ($user) use ($id) { return $user['user_id'] == $id; })
@@ -90,7 +90,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findByToken(?string $token) : ?AuthUser
+    public function findByToken(string|null $token) : AuthUser|null
     {
         return $this->users
             ->where(function ($user) use ($token) { return $user[$this->token_name] == $this->hashToken($token); })
@@ -102,7 +102,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    protected function findBySigninId($signin_id) : ?AuthUser
+    protected function findBySigninId($signin_id) : AuthUser|null
     {
         return $this->users
             ->where(function ($user) use ($signin_id) { return $user[$this->signin_id_name] == $signin_id; })

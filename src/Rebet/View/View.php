@@ -46,21 +46,21 @@ class View implements Renderable
     /**
      * View name
      *
-     * @var string
+     * @var string|null
      */
     public $name = null;
 
     /**
      * View changer
      *
-     * @var \Closure
+     * @var \Closure|null
      */
     protected $changer = null;
 
     /**
      * View template engine
      *
-     * @var Engine
+     * @var Engine|null
      */
     protected $engine = null;
 
@@ -74,7 +74,7 @@ class View implements Renderable
     /**
      * EOF line feed processing.
      *
-     * @var EofLineFeed
+     * @var EofLineFeed|null
      */
     protected $eof = null;
 
@@ -95,7 +95,7 @@ class View implements Renderable
      * @param callable|null $changer function($view_name):string to return cahnged name.
      * @return self
      */
-    public static function of(string $name, ?callable $changer = null) : self
+    public static function of(string $name, callable|null $changer = null) : self
     {
         return new static($name, $changer);
     }
@@ -118,7 +118,7 @@ class View implements Renderable
      * @param callable|null $changer function($view_name):string to return cahnged view name.
      * @param Engine|null $engine (default: null for use configure setting)
      */
-    public function __construct(string $name, ?callable $changer = null, ?Engine $engine = null)
+    public function __construct(string $name, callable|null $changer = null, Engine|null $engine = null)
     {
         $this->name    = $name;
         $this->changer = $changer;

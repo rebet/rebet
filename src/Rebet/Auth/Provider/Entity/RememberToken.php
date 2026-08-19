@@ -20,27 +20,27 @@ class RememberToken extends Entity
      *
      * @PrimaryKey
      */
-    public ?string $provider = null;
+    public string|null $provider = null;
 
     /**
      * Remember token value.
      *
      * @PrimaryKey
      */
-    public ?string $remember_token = null;
+    public string|null $remember_token = null;
 
     /**
      * ID that remembered by this remember token's provider.
      */
-    public ?string $remember_id = null;
+    public string|null $remember_id = null;
 
     /**
      * Token expired date time.
      */
-    public ?DateTime $expires_at = null;
+    public DateTime|null $expires_at = null;
 
-    public ?DateTime $created_at = null;
-    public ?DateTime $updated_at = null;
+    public DateTime|null $created_at = null;
+    public DateTime|null $updated_at = null;
 
     /**
      * Delete all expoired remember tokens.

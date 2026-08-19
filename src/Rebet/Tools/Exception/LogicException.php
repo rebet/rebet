@@ -19,7 +19,7 @@ class LogicException extends \LogicException implements RebetException
      * @param string $message
      * @param \Throwable|null $previous (default: null)
      */
-    public function __construct(string $message, ?\Throwable $previous = null, int $code = 0)
+    public function __construct(string $message, \Throwable|null $previous = null, int $code = 0)
     {
         parent::__construct($message, $code, $previous);
     }

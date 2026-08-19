@@ -81,7 +81,7 @@ class ControllerRoute extends ConventionalRoute
      * @return array|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request) : ?array
+    protected function analyze(Request $request) : array|null
     {
         $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
         $uri         = rtrim($this->uri, '/');

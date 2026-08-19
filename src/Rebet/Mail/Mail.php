@@ -145,7 +145,7 @@ class Mail
      * @param bool|null $is_development (default: null for get development mode or not)
      * @return bool
      */
-    public static function development(?bool $is_development = null) : bool
+    public static function development(bool|null $is_development = null) : bool
     {
         if ($is_development === null) {
             return static::config('development');
@@ -160,7 +160,7 @@ class Mail
      * @param bool|null $is_unittest (default: null for get unittest mode or not)
      * @return bool
      */
-    public static function unittest(?bool $is_unittest = null) : bool
+    public static function unittest(bool|null $is_unittest = null) : bool
     {
         if ($is_unittest === null) {
             return static::config('unittest');
@@ -175,7 +175,7 @@ class Mail
      * @param string|null $transport name that configured in 'Mail.transports'. (default: null for depend on configuration 'default_transport')
      * @return string
      */
-    protected static function adoptTransport(?string $transport = null) : string
+    protected static function adoptTransport(string|null $transport = null) : string
     {
         switch (true) {
             case static::unittest():    return static::config('unittest_transport');
@@ -190,7 +190,7 @@ class Mail
      * @param string|null $transport name that configured in 'Mail.transports'. (default: null for depend on configuration 'default_transport')
      * @return Mailer
      */
-    public static function mailer(?string $transport = null) : Mailer
+    public static function mailer(string|null $transport = null) : Mailer
     {
         static::init();
 
@@ -517,7 +517,7 @@ class Mail
      * @param string|null $subject (default: null for get subject)
      * @return null|string|self
      */
-    public function subject(?string $subject = null)
+    public function subject(string|null $subject = null)
     {
         if ($subject === null) {
             return $this->message->getSubject();
@@ -532,7 +532,7 @@ class Mail
      * @param string|null $content_type
      * @return string|self
      */
-    public function contentType(?string $content_type = null)
+    public function contentType(string|null $content_type = null)
     {
         if ($content_type === null) {
             return $this->message->getContentType();
@@ -547,7 +547,7 @@ class Mail
      * @param string|null $charset
      * @return string|self
      */
-    public function charset(?string $charset = null)
+    public function charset(string|null $charset = null)
     {
         if ($charset === null) {
             return $this->message->getCharset();
@@ -562,7 +562,7 @@ class Mail
      * @param string|null $format 'flowed' or 'fixed' (default: null for get format)
      * @return null|string|self
      */
-    public function format(?string $format = null)
+    public function format(string|null $format = null)
     {
         if ($format === null) {
             return $this->message->getFormat();
@@ -577,7 +577,7 @@ class Mail
      * @param bool|null $delsp (default: null for get delsp)
      * @return bool|self
      */
-    public function delsp(?bool $delsp = null)
+    public function delsp(bool|null $delsp = null)
     {
         if ($delsp === null) {
             return $this->message->getDelSp();
@@ -619,7 +619,7 @@ class Mail
      * @param int $level
      * @return self|int
      */
-    public function priority(?int $level = null)
+    public function priority(int|null $level = null)
     {
         if ($level === null) {
             // Swiftmailer is abandoned and internally passes a possibly-null header value to
@@ -639,7 +639,7 @@ class Mail
      * @param string|null $content_type (default: null)
      * @return self
      */
-    public function attach(string $file, ?string $filename = null, ?string $content_type = null) : self
+    public function attach(string $file, string|null $filename = null, string|null $content_type = null) : self
     {
         // Swiftmailer is abandoned and its constructor chain internally uses the
         // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
@@ -658,7 +658,7 @@ class Mail
      * @param string|null $content_type (default: null)
      * @return self
      */
-    public function attachData(string $data, ?string $filename = null, ?string $content_type = null) : self
+    public function attachData(string $data, string|null $filename = null, string|null $content_type = null) : self
     {
         // Swiftmailer is abandoned and its constructor chain internally uses the
         // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
@@ -676,7 +676,7 @@ class Mail
      * @param string|null $filename (default: null for basename of $file)
      * @return string CID
      */
-    public function embed(string $file, ?string $filename = null) : string
+    public function embed(string $file, string|null $filename = null) : string
     {
         // Swiftmailer is abandoned and its constructor chain internally uses the
         // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
@@ -693,7 +693,7 @@ class Mail
      * @param string|null $content_type (default: null)
      * @return string CID
      */
-    public function embedData(string $data, string $filename, ?string $content_type = null)
+    public function embedData(string $data, string $filename, string|null $content_type = null)
     {
         // Swiftmailer is abandoned and its constructor chain internally uses the
         // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
@@ -708,7 +708,7 @@ class Mail
      * @param string $filename
      * @return string|null
      */
-    public function cid(string $filename) : ?string
+    public function cid(string $filename) : string|null
     {
         return $this->embedded_cids[$filename] ?? null ;
     }
@@ -719,7 +719,7 @@ class Mail
      * @param \DateTimeInterface $date_time (default: null for get date)
      * @return DateTime|self
      */
-    public function date(?\DateTimeInterface $date_time = null)
+    public function date(\DateTimeInterface|null $date_time = null)
     {
         if ($date_time === null) {
             return DateTime::valueOf($this->message->getDate());
@@ -736,7 +736,7 @@ class Mail
      * @param string|null $charset (default: null)
      * @return string|self
      */
-    public function body($body = null, ?string $content_type = null, ?string $charset = null)
+    public function body($body = null, string|null $content_type = null, string|null $charset = null)
     {
         if ($body === null) {
             return $this->message->getBody();
@@ -753,7 +753,7 @@ class Mail
      * @param array $options (default: [])
      * @return self
      */
-    public function generateAlternativePart(?string $content_type = 'text/plain', ?string $charset = null, array $options = []) : self
+    public function generateAlternativePart(string|null $content_type = 'text/plain', string|null $charset = null, array $options = []) : self
     {
         return $this->part(
             Reflector::evaluate(static::config("alternative_generator.{$this->contentType()}.{$content_type}"), [$this->body(), $options]),
@@ -770,7 +770,7 @@ class Mail
      * @param string|null $charset
      * @return null|Swift_Mime_SimpleMimeEntity|self
      */
-    public function part($body = 0, ?string $content_type = null, ?string $charset = null)
+    public function part($body = 0, string|null $content_type = null, string|null $charset = null)
     {
         if (is_int($body)) {
             return $this->message->getPart($body);
@@ -785,7 +785,7 @@ class Mail
      * @param string|null $id (default: null for get ID)
      * @return string|self
      */
-    public function id(?string $id = null)
+    public function id(string|null $id = null)
     {
         if ($id === null) {
             return $this->message->getId();
@@ -848,7 +848,7 @@ class Mail
      * @param string|null $transport name (default: null for use default transport)
      * @return array of failed recipients
      */
-    public function send(?string $transport = null) : array
+    public function send(string|null $transport = null) : array
     {
         return static::mailer($transport)->send($this);
     }

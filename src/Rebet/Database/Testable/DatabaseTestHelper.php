@@ -22,7 +22,7 @@ use Rebet\Tools\Utility\Strings;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-trait DatabaseTestHelper
+trait DatabaseTestHelper // @phpstan-ignore trait.unused
 {
     /**
      * @var Query[] executed SQL queries
@@ -148,7 +148,7 @@ trait DatabaseTestHelper
      *
      * @return Query|null
      */
-    public static function dequeueExecutedQuery() : ?Query
+    public static function dequeueExecutedQuery() : Query|null
     {
         return array_shift(static::$executed_queries);
     }

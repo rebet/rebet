@@ -58,7 +58,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      * @param mixed $order_by
      * @return self|null
      */
-    public static function valueOf($order_by) : ?self
+    public static function valueOf($order_by) : self|null
     {
         switch (true) {
             case empty($order_by):            return null;

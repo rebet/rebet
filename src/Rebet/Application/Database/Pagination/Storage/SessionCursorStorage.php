@@ -26,7 +26,7 @@ class SessionCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
-    public function load(string $name) : ?Cursor
+    public function load(string $name) : Cursor|null
     {
         return Session::current()->get($name);
     }

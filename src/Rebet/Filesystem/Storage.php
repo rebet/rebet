@@ -96,7 +96,7 @@ class Storage
      * @param string|null $name (default: null for all storages)
      * @return void
      */
-    public static function reset(?string $name = null) : void
+    public static function reset(string|null $name = null) : void
     {
         if ($name) {
             $disk = static::$disks[$name] ?? null;
@@ -125,7 +125,7 @@ class Storage
      * @param bool $replace (default: false)
      * @return void
      */
-    public static function copy(string $from_disk, string $from_path, string $to_disk, ?string $to_path = null, $options = [], bool $replace = false) : void
+    public static function copy(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false) : void
     {
         $from    = static::disk($from_disk);
         $to      = static::disk($to_disk);
@@ -168,7 +168,7 @@ class Storage
      * @param bool $replace (default: false)
      * @return void
      */
-    public static function move(string $from_disk, string $from_path, string $to_disk, ?string $to_path = null, $options = [], bool $replace = false) : void
+    public static function move(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false) : void
     {
         static::copy($from_disk, $from_path, $to_disk, $to_path, $options, $replace);
         static::disk($from_disk)->delete($from_path);
@@ -181,7 +181,7 @@ class Storage
      * @param string|null $to contents path (default: null for use $from contents path, as it is)
      * @return void
      */
-    public static function publish(string $from, ?string $to = null) : void
+    public static function publish(string $from, string|null $to = null) : void
     {
         static::move(static::config('private_disk'), $from, static::config('public_disk'), $to, Filesystem::VISIBILITY_PUBLIC, true);
     }

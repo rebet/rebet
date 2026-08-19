@@ -76,7 +76,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
      * Override for use Rebet DateTime class (which is testable via DateTime::setTestNow())
      * as the source of the record 'datetime' attribute creation.
      */
-    public function addRecord(int|Level $level, string $message, array $context = [], ?JsonSerializableDateTimeImmutable $datetime = null) : bool
+    public function addRecord(int|Level $level, string $message, array $context = [], JsonSerializableDateTimeImmutable|null $datetime = null) : bool
     {
         if ($datetime === null) {
             $datetime = new JsonSerializableDateTimeImmutable($this->microsecondTimestamps, $this->timezone);

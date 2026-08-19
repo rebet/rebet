@@ -94,7 +94,7 @@ class PgsqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
-    public function truncate(string $table_name, ?bool $with_vacuum = true) : string
+    public function truncate(string $table_name, bool|null $with_vacuum = true) : string
     {
         $quoted_table_name = $this->quoteIdentifier($table_name);
         $this->exec($sql = "TRUNCATE TABLE {$quoted_table_name} RESTART IDENTITY");
@@ -106,7 +106,7 @@ class PgsqlDriver extends AbstractDriver
      *
      * @see 'pgsql'  native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_pgsql/pgsql_statement.c.gcov.php and `SELECT TYPNAME FROM PG_TYPE` results.
      */
-    public function toPhpType($value, array $meta = [], ?string $type = null)
+    public function toPhpType($value, array $meta = [], string|null $type = null)
     {
         if ($value === null) {
             return null;

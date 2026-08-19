@@ -102,7 +102,7 @@ class Database
      * @param bool $debug (default: false)
      * @param callable|null $log_handler function(Database $db, Query $query) (default: depend on configure)
      */
-    public function __construct(string $name, Driver $driver, bool $debug = false, ?callable $log_handler = null)
+    public function __construct(string $name, Driver $driver, bool $debug = false, callable|null $log_handler = null)
     {
         $this->name        = $name;
         $this->driver      = $driver;
@@ -250,7 +250,7 @@ class Database
      * @param array $params (default: [])
      * @return DatabaseException
      */
-    public function exception($error, ?string $sql = null, array $params = []) : DatabaseException
+    public function exception($error, string|null $sql = null, array $params = []) : DatabaseException
     {
         return DatabaseException::from('db:'.$this->name(), $error, $sql, $params)->db($this);
     }
@@ -288,7 +288,7 @@ class Database
      * @return self
      * @throws DatabaseException|\PDOException
      */
-    public function rollback(?string $savepoint = null, bool $quiet = true) : self
+    public function rollback(string|null $savepoint = null, bool $quiet = true) : self
     {
         $this->log($this->driver->rollback($savepoint, $quiet) ?? "-- Rollback failed, but continue processing by quiet mode.");
         return $this;
@@ -336,7 +336,7 @@ class Database
      * @param bool $with_vacuum if needed for sqlite (default: true)
      * @return void
      */
-    public function truncate(string $table_name, ?bool $with_vacuum = true) : void
+    public function truncate(string $table_name, bool $with_vacuum = true) : void
     {
         $this->log($this->driver->truncate($table_name, $with_vacuum));
     }
@@ -347,7 +347,7 @@ class Database
      * @param string|null $name (default: null)
      * @return string
      */
-    public function lastInsertId(?string $name = null) : string
+    public function lastInsertId(string|null $name = null) : string
     {
         return $this->driver->lastInsertId($name);
     }
@@ -375,7 +375,7 @@ class Database
      * @param Cursor|null $cursor (default: null)
      * @return Statement
      */
-    protected function _query(string $sql, $order_by = null, $params = [], ?int $limit = null, bool $for_update = false, ?Pager $pager = null, ?Cursor $cursor = null) : Statement
+    protected function _query(string $sql, $order_by = null, $params = [], int|null $limit = null, bool $for_update = false, Pager|null $pager = null, Cursor|null $cursor = null) : Statement
     {
         $query = $this->compiler->compile($sql, OrderBy::valueOf($order_by), $params, $pager, $cursor);
         $query = $limit && $pager === null ? $query->appendLimitOffset($limit) : $query ;
@@ -418,7 +418,7 @@ class Database
      * @param string $class (default: 'stdClass')
      * @return ResultSet of given class instance
      */
-    public function select(string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false, string $class = 'stdClass') : ResultSet
+    public function select(string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false, string $class = 'stdClass') : ResultSet
     {
         return $this->_query($sql, $order_by, $params, $limit, $for_update)->all($class);
     }
@@ -435,7 +435,7 @@ class Database
      * @param string $optimised_count_sql only have one count total column (default: null)
      * @return Paginator
      */
-    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', ?string $optimised_count_sql = null) : Paginator
+    public function paginate(string $sql, $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', string|null $optimised_count_sql = null) : Paginator
     {
         $cursor   = $pager->useCursor() ? Cursor::load($pager->cursor()) : null ;
         $total    = $pager->needTotal() ? ($optimised_count_sql ? $this->get(0, $optimised_count_sql, $params) : $this->count($sql, $params)) : null ;
@@ -468,7 +468,7 @@ class Database
      * @param string|null $type name of convert to type (default: null)
      * @return ResultSet
      */
-    public function extract($column, string $sql, $order_by = null, array $params = [], ?string $type = null) : ResultSet
+    public function extract($column, string $sql, $order_by = null, array $params = [], string|null $type = null) : ResultSet
     {
         return $this->_query($sql, $order_by, $params)->allOf($column, $type);
     }
@@ -483,7 +483,7 @@ class Database
      * @param string|null $type name of convert to type (default: null)
      * @return mixed or given type
      */
-    public function get($column, string $sql, $order_by = null, array $params = [], ?string $type = null)
+    public function get($column, string $sql, $order_by = null, array $params = [], string|null $type = null)
     {
         return $this->_query($sql, $order_by, $params, 1)->firstOf($column, $type);
     }
@@ -523,7 +523,7 @@ class Database
      * @param bool $for_update (default: false)
      * @return void
      */
-    public function each(callable $callback, string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false) : void
+    public function each(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : void
     {
         $this->_query($sql, $order_by, $params, $limit, $for_update)->each($callback);
     }
@@ -539,7 +539,7 @@ class Database
      * @param bool $for_update (default: false)
      * @return ResultSet
      */
-    public function filter(callable $callback, string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false) : ResultSet
+    public function filter(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : ResultSet
     {
         return $this->_query($sql, $order_by, $params, $limit, $for_update)->filter($callback);
     }
@@ -555,7 +555,7 @@ class Database
      * @param bool $for_update (default: false)
      * @return ResultSet
      */
-    public function map(callable $callback, string $sql, $order_by = null, array $params = [], ?int $limit = null, bool $for_update = false) : ResultSet
+    public function map(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : ResultSet
     {
         return $this->_query($sql, $order_by, $params, $limit, $for_update)->map($callback);
     }
@@ -571,7 +571,7 @@ class Database
      * @param int|null $limit (default: null)
      * @return mixed
      */
-    public function reduce(callable $reducer, $initial, string $sql, $order_by = null, array $params = [], ?int $limit = null)
+    public function reduce(callable $reducer, $initial, string $sql, $order_by = null, array $params = [], int|null $limit = null)
     {
         return $this->_query($sql, $order_by, $params, $limit)->reduce($reducer, $initial);
     }
@@ -586,7 +586,7 @@ class Database
      * @uses Event::dispatch Creating when before data create.
      * @uses Event::dispatch Created when after data created.
      */
-    public function create(Entity &$entity, ?DateTime $now = null) : bool
+    public function create(Entity &$entity, DateTime|null $now = null) : bool
     {
         Event::dispatch(new Creating($this, $entity));
 
@@ -646,7 +646,7 @@ class Database
      * @uses Event::dispatch Updating when before data update.
      * @uses Event::dispatch Updated when after data updated.
      */
-    public function update(Entity &$entity, ?DateTime $now = null) : bool
+    public function update(Entity &$entity, DateTime|null $now = null) : bool
     {
         $old = $entity->origin();
         $now = $now ?? DateTime::now();
@@ -687,7 +687,7 @@ class Database
      * @param DateTime|null $now (default: null for DateTime::now())
      * @return boolean
      */
-    public function save(Entity $entity, ?DateTime $now = null) : bool
+    public function save(Entity $entity, DateTime|null $now = null) : bool
     {
         return $entity->exists($this->name) ? $this->update($entity, $now) : $this->create($entity, $now) ;
     }
@@ -725,7 +725,7 @@ class Database
      * @uses Event::dispatch BatchUpdating when before batch update.
      * @uses Event::dispatch BatchUpdated when after batch update.
      */
-    public function updateBy(string $entity, array $changes, $ransack, array $alias = [], ?DateTime $now = null) : int
+    public function updateBy(string $entity, array $changes, $ransack, array $alias = [], DateTime|null $now = null) : int
     {
         $now = $now ?? DateTime::now();
         Event::dispatch(new BatchUpdating($this, $entity, $changes, $ransack, $now));

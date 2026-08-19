@@ -71,7 +71,7 @@ class System
                     },
                 ],
                 'dns_get_record' => [
-                    'emulator' => function (string $hostname, int $type = DNS_ANY, ?array &$authns = null, ?array &$addtl = null, bool $raw = false) : array {
+                    'emulator' => function (string $hostname, int $type = DNS_ANY, array|null &$authns = null, array|null &$addtl = null, bool $raw = false) : array {
                         $emulated_dns = System::datasets('dns_get_record', 'emulated_dns');
                         if (isset($emulated_dns[$hostname])) {
                             $c = Tinker::with($emulated_dns[$hostname], true);
@@ -200,7 +200,7 @@ class System
      * @param bool|null $is_testing
      * @return bool
      */
-    public static function testing(?bool $is_testing = null) : bool
+    public static function testing(bool|null $is_testing = null) : bool
     {
         return $is_testing === null ? static::$is_testing : static::$is_testing = $is_testing ;
     }

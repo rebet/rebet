@@ -37,5 +37,5 @@ interface Dictionary
      * @param bool $recursive (default: true)
      * @return string|null
      */
-    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : ?string ;
+    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : string|null ;
 }

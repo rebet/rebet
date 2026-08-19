@@ -36,7 +36,7 @@ class BuiltinTagProcessors
      *
      * @return string|null
      */
-    public static function currentField() : ?string
+    public static function currentField() : string|null
     {
         return static::$field;
     }
@@ -136,7 +136,7 @@ class BuiltinTagProcessors
      */
     public static function error() : Processor
     {
-        $processor = function ($errors, ?string $names = null, ?string $outer = null, ?string $inner = null) {
+        $processor = function ($errors, string|null $names = null, string|null $outer = null, string|null $inner = null) {
             $errors = Tinker::with($errors, true);
             $names  = $names ?? '*' ;
             $outer  = $outer ?? Translator::grammar('message', "errors.outer") ?? '<ul class="error">:messages</ul>';
@@ -162,7 +162,7 @@ class BuiltinTagProcessors
 
         $selector = function (array $args) use ($processor) {
             if (BuiltinTagProcessors::$field) {
-                return function ($errors, ?string $outer = null, ?string $inner = null) use ($processor) { return $processor($errors, BuiltinTagProcessors::$field, $outer, $inner); };
+                return function ($errors, string|null $outer = null, string|null $inner = null) use ($processor) { return $processor($errors, BuiltinTagProcessors::$field, $outer, $inner); };
             }
             return $processor;
         };
@@ -301,7 +301,7 @@ class BuiltinTagProcessors
      */
     public static function lang() : Processor
     {
-        $processor = function (string $key, array $replacement = [], $selector = null, ?string $locale = null) {
+        $processor = function (string $key, array $replacement = [], $selector = null, string|null $locale = null) {
             $replacement = array_map(function ($value) { return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8'); }, $replacement);
             return Translator::get($key, $replacement, $selector, true, $locale);
         };

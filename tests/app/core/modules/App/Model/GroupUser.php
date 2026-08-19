@@ -23,16 +23,16 @@ class GroupUser extends Entity
     /**
      * @Defaults(3)
      */
-    public ?GroupPosition $position = null;
+    public GroupPosition|null $position = null;
 
     /**
      * @Defaults("today")
      */
-    public ?Date $join_on = null;
+    public Date|null $join_on = null;
 
     /**
      * @Defaults("now")
      */
-    public ?DateTime $created_at = null;
-    public ?DateTime $updated_at = null;
+    public DateTime|null $created_at = null;
+    public DateTime|null $updated_at = null;
 }

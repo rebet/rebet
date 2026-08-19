@@ -27,7 +27,7 @@ class Files
      * @param bool $remove_target_dir (default: true)
      * @return void
      */
-    public static function removeDir(?string $dir, bool $remove_target_dir = true) : void
+    public static function removeDir(string|null $dir, bool $remove_target_dir = true) : void
     {
         if ($dir === null || !file_exists($dir)) {
             return;
@@ -147,7 +147,7 @@ class Files
      * @return void
      * @throws ZipArchiveException
      */
-    public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, ?\Closure $filter = null, int $out_dir_permission = 0775) : void
+    public static function zip(string $source_path, string $out_zip_path, bool $include_target_dir = true, \Closure|null $filter = null, int $out_dir_permission = 0775) : void
     {
         if (empty($filter)) {
             $filter = function ($path) {

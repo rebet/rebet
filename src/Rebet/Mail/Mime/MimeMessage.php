@@ -58,7 +58,7 @@ class MimeMessage extends Swift_Message
      * @param int $index (default: 0)
      * @return Swift_Mime_SimpleMimeEntity|null
      */
-    public function getPart(int $index = 0) : ?Swift_Mime_SimpleMimeEntity
+    public function getPart(int $index = 0) : Swift_Mime_SimpleMimeEntity|null
     {
         return $this->getChildren()[$index] ?? null ;
     }

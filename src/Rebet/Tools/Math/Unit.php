@@ -340,7 +340,7 @@ class Unit
      * @param array|string $units
      * @return string|null
      */
-    public static function baseUnitOf($units) : ?string
+    public static function baseUnitOf($units) : string|null
     {
         $units = is_array($units) ? $units : static::factorsOf($units) ;
         return Arrays::find($units, function ($v) { return $v[0] === '1'; });
@@ -393,7 +393,7 @@ class Unit
      * @param array $options for runtime override (default: [])
      * @return string
      */
-    public function exchange($value, ?string $to = null, ?int $precision = 2, array $options = []) : string
+    public function exchange($value, string|null $to = null, int|null $precision = 2, array $options = []) : string
     {
         $options             = array_merge($this->options, $options);
         $omit_zero           = $options['omit_zero'];
@@ -443,7 +443,7 @@ class Unit
      * @param array $options for runtime override (default: [])
      * @return Decimal
      */
-    public function convert($value, ?string $to = null, array $options = []) : Decimal
+    public function convert($value, string|null $to = null, array $options = []) : Decimal
     {
         $to      = $to ?? static::baseUnitOf($this->units);
         $options = array_merge($this->options, $options, ['without_prefix' => true]);

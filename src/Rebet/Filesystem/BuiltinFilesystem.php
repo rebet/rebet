@@ -366,7 +366,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function mimeType(string $path) : ?string
+    public function mimeType(string $path) : string|null
     {
         $this->assertExists($path);
         try {
@@ -432,7 +432,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function ls(?string $directory = null, $pattern = '*', ?string $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {
         try {
             $contents = [];
@@ -449,7 +449,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function files(?string $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {
         return $this->ls($directory, $pattern, 'file', $recursive, $matching_mode);
     }
@@ -457,7 +457,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
-    public function directories(?string $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {
         return $this->ls($directory, $pattern, 'dir', $recursive, $matching_mode);
     }
@@ -471,7 +471,7 @@ class BuiltinFilesystem implements Filesystem
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array of matching paths
      */
-    protected function filter(array $lists, ?string $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
+    protected function filter(array $lists, string|null $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {
         return Tinker::with($lists, true)
             ->where(function ($content) use ($type) { return $type === null ? true : $content['type'] === $type; })

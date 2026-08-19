@@ -86,7 +86,7 @@ class Translator
      *
      * @return string|null
      */
-    public static function getLocale() : ?string
+    public static function getLocale() : string|null
     {
         return static::config('locale', false);
     }
@@ -98,7 +98,7 @@ class Translator
      * @param string|null $fallback_locale if null given then do nothing (default: null)
      * @return void
      */
-    public static function setLocale(string $locale, ?string $fallback_locale = null) : void
+    public static function setLocale(string $locale, string|null $fallback_locale = null) : void
     {
         static::setConfig(['locale' => $locale]);
         if ($fallback_locale !== null) {
@@ -161,7 +161,7 @@ class Translator
      * @param string $locale (default: depend on configure)
      * @return string|null
      */
-    public static function get(?string $key, array $replacement = [], $selector = null, bool $recursive = true, ?string $locale = null) : ?string
+    public static function get(string|null $key, array $replacement = [], $selector = null, bool $recursive = true, string|null $locale = null) : string|null
     {
         if ($key === null) {
             return null;
@@ -185,7 +185,7 @@ class Translator
      * @param string $delimiter for join array to string (default: ', ')
      * @return string|null
      */
-    public static function replace(?string $sentence, array $replacement, string $delimiter = ', ') : ?string
+    public static function replace(string|null $sentence, array $replacement, string $delimiter = ', ') : string|null
     {
         if ($sentence === null) {
             return null;
@@ -223,7 +223,7 @@ class Translator
      * @param string|null $locale (default: depend on self locale)
      * @return string
      */
-    public static function ordinalize(int $num, ?string $locale = null) : string
+    public static function ordinalize(int $num, string|null $locale = null) : string
     {
         $locale     = $locale ?? static::config('locale');
         $ordinalize = static::config("ordinalize.{$locale}", false, function (int $num) { return $num; });

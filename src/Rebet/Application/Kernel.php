@@ -2,16 +2,15 @@
 namespace Rebet\Application;
 
 use Rebet\Application\Bootstrap\Bootstrapper;
-use Rebet\Application\Console\Assistant;
 use Rebet\Application\Error\ExceptionHandler;
-use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Tools\Reflection\Reflector;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Kernel Class
+ *
+ * @template I
+ * @template R
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -25,21 +24,14 @@ abstract class Kernel
      *
      * @var Structure
      */
-    protected $structure;
+    protected Structure $structure;
 
     /**
      * The channel name
      *
      * @var string
      */
-    protected $channel;
-
-    /**
-     * Rebet assistant console application.
-     *
-     * @var Assistant
-     */
-    protected $assistant;
+    protected string $channel;
 
     /**
      * Create the application kernel
@@ -74,16 +66,6 @@ abstract class Kernel
     }
 
     /**
-     * Get rebet assistant console application.
-     *
-     * @return Assistant
-     */
-    public function assistant() : Assistant
-    {
-        return $this->assistant;
-    }
-
-    /**
      * Get core bootstrappers for this kernel.
      *
      * @return array<Bootstrapper|class-string<Bootstrapper>|array> class name of Bootstrapper, or [class name, ...args] for Reflector::instantiate()
@@ -100,27 +82,24 @@ abstract class Kernel
         foreach ($this->bootstrappers() as $bootstrapper) {
             Reflector::instantiate($bootstrapper)->bootstrap($this);
         }
-        $this->assistant = new Assistant();
     }
 
     /**
      * Handle the given input data.
      *
-     * @param mixed|null|Request|InputInterface $input (default: null)
-     * @param mixed|null|OutputInterface $output (default: null)
-     * @return mixed|Response|int
+     * @param I|null $input (default: null)
+     * @return R
      */
-    abstract public function handle($input = null, $output = null);
+    abstract public function handle($input = null);
 
     /**
      * Run an action/command by name.
      *
      * @param string $action
      * @param array $parameters (default: [])
-     * @param mixed|null|OutputInterface $output (default: null)
-     * @return mixed|Response|int
+     * @return R
      */
-    abstract public function call(string $action, array $parameters = [], $output = null);
+    abstract public function call(string $action, array $parameters = []);
 
     /**
      * Terminate the application.

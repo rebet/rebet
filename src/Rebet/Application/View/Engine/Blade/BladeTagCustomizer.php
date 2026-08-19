@@ -28,8 +28,8 @@ class BladeTagCustomizer
         $compiler = $blade->compiler();
 
         // Line feed handler that next of tag closing bracket.
-        $lf_trim_if_args = function (?string $expression) { return !empty($expression); };
-        $lf_not_trim     = function (?string $expression) { return false; };
+        $lf_trim_if_args = function (string|null $expression) { return !empty($expression); };
+        $lf_not_trim     = function (string|null $expression) { return false; };
 
         // ------------------------------------------------
         // Disable laravel blade built-in directives that not use in Rebet

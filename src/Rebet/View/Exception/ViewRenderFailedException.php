@@ -15,7 +15,7 @@ use Rebet\Tools\Exception\LogicException;
  */
 class ViewRenderFailedException extends LogicException
 {
-    public function __construct(string $message, ?\Throwable $previous = null)
+    public function __construct(string $message, \Throwable|null $previous = null)
     {
         parent::__construct($message, $previous);
     }

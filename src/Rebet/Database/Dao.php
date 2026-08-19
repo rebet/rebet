@@ -107,7 +107,7 @@ class Dao
     /**
      * Database dbs
      *
-     * @var Database[]
+     * @var Database[]|null
      */
     protected static $dbs = null;
 
@@ -132,7 +132,7 @@ class Dao
      * @param string|null $name (default: null for all clear)
      * @return void
      */
-    public static function clear(?string $name = null) : void
+    public static function clear(string|null $name = null) : void
     {
         if ($name === null) {
             foreach (static::$dbs ?? [] as $db) {
@@ -156,7 +156,7 @@ class Dao
      * @param bool $update_current_db (default: true)
      * @return Database
      */
-    public static function db(?string $name = null, bool $update_current_db = true) : Database
+    public static function db(string|null $name = null, bool $update_current_db = true) : Database
     {
         $name = $name ?? static::config('default_db');
         if ($db = static::$dbs[$name] ?? null) {
@@ -192,7 +192,7 @@ class Dao
      *
      * @return Database|null
      */
-    public static function current() : ?Database
+    public static function current() : Database|null
     {
         return static::$current;
     }

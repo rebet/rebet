@@ -70,7 +70,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @var string
      */
-    protected $default_format;
+    protected string $default_format;
 
     /**
      * Set the current date time for testing and mock this class.
@@ -88,7 +88,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return string|null
      */
-    public static function getTestNow() : ?string
+    public static function getTestNow() : string|null
     {
         return self::config('test_now', false);
     }
@@ -98,7 +98,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return string|null
      */
-    public static function getTestNowTimezone() : ?string
+    public static function getTestNowTimezone() : string|null
     {
         return self::config('test_now_timezone', false);
     }
@@ -119,7 +119,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param DateTime|null $now (default: null for DateTime::now())
      * @return mixed return value of given callback function as it is
      */
-    public static function freeze(\Closure $callback, ?DateTime $now = null)
+    public static function freeze(\Closure $callback, DateTime|null $now = null) : mixed
     {
         $old_test_now          = static::getTestNow();
         $old_test_now_timezone = static::getTestNowTimezone();
@@ -146,14 +146,14 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @see static::analyzeDateTime()
      * @see static::__construct()
      *
-     * @param string|\DateTimeInterface|int|null $from
+     * @param mixed $from
      * @return DateTime|null
      */
-    public static function valueOf($from) : ?DateTime
+    public static function valueOf($from) : DateTime|null
     {
         try {
             return static::createDateTime($from) ?? new static($from) ;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }
@@ -164,12 +164,12 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @see DateTime::analyzeDateTime()
      *
-     * @param string|\DateTimeInterface|int|float|null $value
-     * @param string|array $main_format for primary analyze (default: [])
-     * @param string|\DateTimezone|null $timezone (default: depend on configure)
+     * @param \DateTimeInterface|float|int|string|null $value
+     * @param array|string $main_format for primary analyze (default: [])
+     * @param \DateTimezone|string|null $timezone (default: depend on configure)
      * @return static|null
      */
-    public static function createDateTime($value, $main_format = [], $timezone = null) : ?DateTime
+    public static function createDateTime(\DateTimeInterface|float|int|string|null $value, array|string $main_format = [], \DateTimezone|string|null $timezone = null) : static|null
     {
         [$date, ] = self::analyzeDateTime($value, $main_format, $timezone);
         return $date;
@@ -194,12 +194,12 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *  This method also returns the date format that succeeded in analysis.
      *  The default time zone is used for the time zone.
      *
-     * @param string|\DateTimeInterface|int|float|null $value
-     * @param string|array $main_format for primary analyze (default: [])
-     * @param string|\DateTimezone|null $timezone (default: depend on configure)
+     * @param \DateTimeInterface|float|int|string|null $value
+     * @param array|string $main_format for primary analyze (default: [])
+     * @param \DateTimezone|string|null $timezone (default: depend on configure)
      * @return array [DateTime|null, apply_format|null] or null
      */
-    public static function analyzeDateTime($value, $main_format = [], $timezone = null) : array
+    public static function analyzeDateTime(\DateTimeInterface|float|int|string|null $value, array|string $main_format = [], \DateTimezone|string|null $timezone = null) : array
     {
         if ($value === null || $value === '') {
             return [null, null];
@@ -232,7 +232,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param string|\DateTimezone|null $timezone (default: depend on configure)
      * @return static|null
      */
-    private static function tryToParseDateTime($value, $format, $timezone = null)
+    private static function tryToParseDateTime(string $value, string $format, \DateTimezone|string|null $timezone = null)
     {
         $date = static::createFromFormat($format, $value, $timezone);
         $le   = static::getLastErrors();
@@ -248,7 +248,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param string|\DateTimezone|null $timezone (default: depend on confiure)
      * @return static|false
      */
-    public static function createFromFormat(string $format, $value, $timezone = null) : static|false
+    public static function createFromFormat(string $format, \DateTimeInterface|string|null $value, \DateTimezone|string|null $timezone = null) : false|static
     {
         if ($value === null || $value === '') {
             return false;
@@ -256,7 +256,6 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         if ($value instanceof \DateTimeInterface) {
             return new static($value, $timezone);
         }
-        $value = is_string($value) ? $value : (string)$value ;
 
         $date = parent::createFromFormat($format, $value, self::adoptTimezone($timezone));
         $le   = static::getLastErrors();
@@ -266,10 +265,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Adopt the time zone
      *
-     * @param string|\DateTimeZone|null $timezone
+     * @param \DateTimeZone|string|null $timezone
      * @return DateTimeZone
      */
-    private static function adoptTimezone($timezone) : DateTimeZone
+    private static function adoptTimezone(\DateTimeZone|string|null $timezone) : DateTimeZone
     {
         $adopt_timezone = $timezone ?? self::config('default_timezone');
         return $adopt_timezone instanceof DateTimeZone ? $adopt_timezone : new DateTimeZone($adopt_timezone);
@@ -278,21 +277,19 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Create the DateTime objects.
      *
-     * @param string|\DateTimeInterface|int $time
-     * @param string|\DateTimeZone $timezone (default: depend on configure)
+     * @param \DateTimeInterface|float|int|string $time
+     * @param \DateTimeZone|string|null $timezone (default: depend on configure)
      */
-    public function __construct($time = 'now', $timezone = null)
+    public function __construct(\DateTimeInterface|float|int|string $time = 'now', \DateTimeZone|string|null $timezone = null)
     {
         $adopt_time     = 'now';
-        $adopt_timezone = null;
-
         $adopt_timezone = self::adoptTimezone($timezone);
 
         if ($time instanceof \DateTimeInterface) {
             if ($timezone === null) {
                 $adopt_timezone = new DateTimeZone($time->getTimezone());
-            } elseif ($time instanceof \DateTime || $time instanceof \DateTimeImmutable) {
-                $time = $time->setTimezone($adopt_timezone);
+            } else {
+                $time = \DateTime::createFromInterface($time)->setTimezone($adopt_timezone);
             }
             $adopt_time = $time->format('Y-m-d H:i:s.u');
         } elseif (is_int($time)) {
@@ -314,11 +311,12 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 if (!$parsed_test_now) {
                     throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
                 }
-                $parsed_test_now = $parsed_test_now->modify($time);
-                if (!$parsed_test_now) {
+                /** @var \DateTime|false $modified_test_now */
+                $modified_test_now = $parsed_test_now->modify($time);
+                if (!$modified_test_now) {
                     throw new DateTimeFormatException("Invalid date time format [{$time}] given for modify.");
                 }
-                $adopt_time = $parsed_test_now->format('Y-m-d H:i:s.u');
+                $adopt_time = $modified_test_now->format('Y-m-d H:i:s.u');
             }
         }
 
@@ -345,6 +343,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     public function modify(string $modify) : static
     {
         $modified = parent::modify($modify);
+        // @phpstan-ignore booleanNot.alwaysFalse
         if (!$modified) {
             throw new DateTimeFormatException("Invalid date time format [{$modify}] given for modify.");
         }
@@ -354,10 +353,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Set timezone
      *
-     * @param \DateTimeZone|string|null $timezone (default: depend on confige)
+     * @param \DateTimeZone|string|null $timezone (null for depend on confige)
      * @return static
      */
-    public function setTimezone($timezone) : static
+    public function setTimezone(\DateTimeZone|string|null $timezone) : static
     {
         return parent::setTimezone(self::adoptTimezone($timezone));
     }
@@ -385,10 +384,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of now.
      *
-     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
+     * @param \DateTimeZone|string|null $timezone (default: depend on configure)
      * @return static
      */
-    public static function now($timezone = null) : DateTime
+    public static function now(\DateTimeZone|string|null $timezone = null) : static
     {
         return new static('now', $timezone);
     }
@@ -396,10 +395,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of today.
      *
-     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
+     * @param \DateTimeZone|string|null $timezone (default: depend on configure)
      * @return static
      */
-    public static function today($timezone = null) : DateTime
+    public static function today(\DateTimeZone|string|null $timezone = null) : static
     {
         return new static('today', $timezone);
     }
@@ -407,10 +406,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of yesterday.
      *
-     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
+     * @param \DateTimeZone|string|null $timezone (default: depend on configure)
      * @return static
      */
-    public static function yesterday($timezone = null) : DateTime
+    public static function yesterday(\DateTimeZone|string|null $timezone = null) : static
     {
         return new static('yesterday', $timezone);
     }
@@ -418,10 +417,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get DateTime of tomorrow.
      *
-     * @param string|\DateTimeZone|null $timezone (default: depend on configure)
+     * @param \DateTimeZone|string|null $timezone (default: depend on configure)
      * @return static
      */
-    public static function tomorrow($timezone = null) : DateTime
+    public static function tomorrow(\DateTimeZone|string|null $timezone = null) : static
     {
         return new static('tomorrow', $timezone);
     }
@@ -431,7 +430,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @param DateInterval|string $interval
      */
-    public function add($interval) : static
+    public function add(DateInterval|string $interval) : static
     {
         return parent::add(is_string($interval) ? new \DateInterval($interval) : $interval);
     }
@@ -441,7 +440,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @param DateInterval|string $interval
      */
-    public function sub($interval) : static
+    public function sub(DateInterval|string $interval) : static
     {
         return parent::sub(is_string($interval) ? new \DateInterval($interval) : $interval);
     }
@@ -452,7 +451,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $year
      * @return static
      */
-    public function addYear(int $year) : DateTime
+    public function addYear(int $year) : static
     {
         return $this->modify("{$year} year");
     }
@@ -473,7 +472,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $year
      * @return static
      */
-    public function setYear(int $year) : DateTime
+    public function setYear(int $year) : static
     {
         return $this->setDate($year, $this->getMonth(), $this->getDay());
     }
@@ -484,7 +483,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $month
      * @return static
      */
-    public function addMonth(int $month) : DateTime
+    public function addMonth(int $month) : static
     {
         return $this->modify("{$month} month");
     }
@@ -519,7 +518,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $month
      * @return static
      */
-    public function setMonth(int $month) : DateTime
+    public function setMonth(int $month) : static
     {
         return $this->setDate($this->getYear(), $month, $this->getDay());
     }
@@ -530,7 +529,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $day
      * @return static
      */
-    public function addDay(int $day) : DateTime
+    public function addDay(int $day) : static
     {
         return $this->modify("{$day} day");
     }
@@ -541,7 +540,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $day
      * @return static
      */
-    public function setDay(int $day) : DateTime
+    public function setDay(int $day) : static
     {
         return $this->setDate($this->getYear(), $this->getMonth(), $day);
     }
@@ -562,7 +561,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $hour
      * @return static
      */
-    public function addHour(int $hour) : DateTime
+    public function addHour(int $hour) : static
     {
         return $this->modify("{$hour} hour");
     }
@@ -573,7 +572,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $hour
      * @return static
      */
-    public function setHour(int $hour) : DateTime
+    public function setHour(int $hour) : static
     {
         return $this->setTime($hour, $this->getMinute(), $this->getSecond());
     }
@@ -594,7 +593,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $minute
      * @return static
      */
-    public function addMinute(int $minute) : DateTime
+    public function addMinute(int $minute) : static
     {
         return $this->modify("{$minute} minute");
     }
@@ -605,7 +604,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $minute
      * @return static
      */
-    public function setMinute(int $minute) : DateTime
+    public function setMinute(int $minute) : static
     {
         return $this->setTime($this->getHour(), $minute, $this->getSecond());
     }
@@ -626,7 +625,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $second
      * @return static
      */
-    public function addSecond(int $second) : DateTime
+    public function addSecond(int $second) : static
     {
         return $this->modify("{$second} second");
     }
@@ -637,7 +636,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $second
      * @return static
      */
-    public function setSecond(int $second) : DateTime
+    public function setSecond(int $second) : static
     {
         return $this->setTime($this->getHour(), $this->getMinute(), $second);
     }
@@ -658,7 +657,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $milli_micro
      * @return static
      */
-    public function addMilliMicro(int $milli_micro) : DateTime
+    public function addMilliMicro(int $milli_micro) : static
     {
         return $this->setMilliMicro($this->getMilliMicro() + $milli_micro);
     }
@@ -669,7 +668,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $milli_micro
      * @return static
      */
-    public function setMilliMicro(int $milli_micro) : DateTime
+    public function setMilliMicro(int $milli_micro) : static
     {
         if ($milli_micro >= 0) {
             $sec = floor($milli_micro / 1000000);
@@ -697,7 +696,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $milli
      * @return static
      */
-    public function addMilli(int $milli) : DateTime
+    public function addMilli(int $milli) : static
     {
         return $this->addMilliMicro($milli * 1000);
     }
@@ -708,7 +707,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $milli
      * @return static
      */
-    public function setMilli(int $milli) : DateTime
+    public function setMilli(int $milli) : static
     {
         return $this->setMilliMicro($milli * 1000 + $this->getMicro());
     }
@@ -729,7 +728,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $micro
      * @return static
      */
-    public function addMicro(int $micro) : DateTime
+    public function addMicro(int $micro) : static
     {
         return $this->addMilliMicro($micro);
     }
@@ -740,7 +739,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param int $micro
      * @return static
      */
-    public function setMicro(int $micro) : DateTime
+    public function setMicro(int $micro) : static
     {
         return $this->setMilliMicro($this->getMilli() * 1000 + $micro);
     }
@@ -786,7 +785,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param bool $uppercase (default: true)
      * @return string|null
      */
-    public function getMeridiem(bool $uppercase = true) : ?string
+    public function getMeridiem(bool $uppercase = true) : string|null
     {
         $callback = Translator::grammar('datetime', 'meridiem');
         return $callback ? $callback($this, $uppercase) : null ;
@@ -854,7 +853,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param string|null $format (default: null)
      * @return string
      */
-    public function format(?string $format = null) : string
+    public function format(string|null $format = null) : string
     {
         $format = $format ?? $this->default_format ;
 
@@ -940,9 +939,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of year (y-01-01 00:00:00.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfYear() : DateTime
+    public function startsOfYear() : static
     {
         return $this->modify('01/01 00:00:00.000000');
     }
@@ -950,9 +949,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of year (y-12-31 23:59:59.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfYear() : DateTime
+    public function endsOfYear() : static
     {
         return $this->modify('12/31 23:59:59.999999');
     }
@@ -960,9 +959,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of month (y-m-01 00:00:00.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfMonth() : DateTime
+    public function startsOfMonth() : static
     {
         return $this->setDay(1)->startsOfDay();
     }
@@ -970,9 +969,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of month (y-m-31|30|29|28 23:59:59.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfMonth() : DateTime
+    public function endsOfMonth() : static
     {
         return $this->modify('first day of next month')->addDay(-1)->endsOfDay();
     }
@@ -990,9 +989,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of day (y-m-d 23:59:59.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfDay() : DateTime
+    public function endsOfDay() : static
     {
         return $this->modify('23:59:59.999999');
     }
@@ -1000,9 +999,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of hour (y-m-d h:00:00.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfHour() : DateTime
+    public function startsOfHour() : static
     {
         return $this->modify($this->getHour().':00:00.000000');
     }
@@ -1010,9 +1009,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of hour (y-m-d h:59:59.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfHour() : DateTime
+    public function endsOfHour() : static
     {
         return $this->modify($this->getHour().':59:59.999999');
     }
@@ -1020,9 +1019,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of minute (y-m-d h:i:00.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfMinute() : DateTime
+    public function startsOfMinute() : static
     {
         return $this->setSecond(0)->startsOfSecond();
     }
@@ -1030,9 +1029,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of minute (y-m-d h:i:59.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfMinute() : DateTime
+    public function endsOfMinute() : static
     {
         return $this->setSecond(59)->endsOfSecond();
     }
@@ -1040,9 +1039,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of second (y-m-d h:i:s.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfSecond() : DateTime
+    public function startsOfSecond() : static
     {
         return $this->setMilliMicro(0);
     }
@@ -1050,9 +1049,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of second (y-m-d h:i:s.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfSecond() : DateTime
+    public function endsOfSecond() : static
     {
         return $this->setMilliMicro(999999);
     }
@@ -1060,9 +1059,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to starts of week (Monday this week 00:00:00.000000)
      *
-     * @return DateTime
+     * @return static
      */
-    public function startsOfWeek() : DateTime
+    public function startsOfWeek() : static
     {
         return $this->modify('Monday this week')->startsOfDay();
     }
@@ -1070,9 +1069,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Convert this to ends of week (Sunday of this week 23:59:59.999999)
      *
-     * @return DateTime
+     * @return static
      */
-    public function endsOfWeek() : DateTime
+    public function endsOfWeek() : static
     {
         return $this->modify('Sunday this week')->endsOfDay();
     }

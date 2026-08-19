@@ -21,7 +21,7 @@ class UserAgent extends DeviceDetector
      * @param string|DeviceDetector|UserAgent|null $ua
      * @return self|null
      */
-    public static function valueOf($ua) : ?self
+    public static function valueOf($ua) : self|null
     {
         switch (true) {
             case $ua === null:

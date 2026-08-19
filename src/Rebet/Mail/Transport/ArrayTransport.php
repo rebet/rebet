@@ -46,7 +46,7 @@ class ArrayTransport extends AbstractTransport
      *   - string|array 'always_bcc'        : Use AlwaysBccPlugin [?]
      * @param Swift_Events_EventDispatcher|null $event_dispatcher (default: null for use Mail::container()->lookup('transport.eventdispatcher'))
      */
-    public function __construct(array $options = [], ?Swift_Events_EventDispatcher $event_dispatcher = null)
+    public function __construct(array $options = [], Swift_Events_EventDispatcher|null $event_dispatcher = null)
     {
         parent::__construct($event_dispatcher);
         foreach ($options as $option => $value) {

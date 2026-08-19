@@ -55,7 +55,7 @@ class Reflector
             return $default;
         }
         if (Utils::isBlank($key)) {
-            return $object === null ? $default : self::resolveDotAccessDelegator($object) ;
+            return self::resolveDotAccessDelegator($object) ;
         }
 
         if (Arrays::accessible($object) && Arrays::exists($object, $key)) {
@@ -76,7 +76,7 @@ class Reflector
                 return $default;
             }
             $value = $object[$current];
-            return $value === null ? $default : self::resolveDotAccessDelegator($value) ;
+            return self::resolveDotAccessDelegator($value) ;
         }
 
         if (!static::canPropertyAccess($object, $current)) {
@@ -174,14 +174,14 @@ class Reflector
      * Reflector::set($_REQUEST, 'opt_in', false);
      * Reflector::has(Foo::class, 'static_property', 'value');
      *
-     * @param  array|object $object
-     * @param  int|string $key You can use dot notation
+     * @param  array|object|string $object
+     * @param  int|string|null $key You can use dot notation. null appends the value (like `$array[] = $value`).
      * @param  mixed $value
      * @param  bool $accessible (default: false) ... Valid only for objects
      * @return void
      * @throws \OutOfBoundsException
      */
-    public static function set(&$object, $key, $value, bool $accessible = false) : void
+    public static function set(array|object|string &$object, int|string|null $key, mixed $value, bool $accessible = false) : void
     {
         while ($object instanceof DotAccessDelegator) {
             $object = $object->get();
@@ -386,7 +386,7 @@ class Reflector
      * @param string|null $type
      * @return mixed
      */
-    public static function convert($value, ?string $type)
+    public static function convert($value, string|null $type)
     {
         try {
             if ($type === null) {
@@ -463,9 +463,6 @@ class Reflector
                 case 'int':
                 case 'float':
                 case 'bool':
-                    if (static::typeOf($value, $type)) {
-                        return $value;
-                    }
                     if ($value === '' || is_array($value)) {
                         return null;
                     }
@@ -557,7 +554,7 @@ class Reflector
      * @param string|null $type type or class
      * @return boolean
      */
-    public static function typeOf($value, ?string $type) : bool
+    public static function typeOf($value, string|null $type) : bool
     {
         if ($type === null || $type === 'mixed') {
             return true;
@@ -582,7 +579,7 @@ class Reflector
      * @param mixed $value
      * @return string|null
      */
-    public static function getType($value) : ?string
+    public static function getType($value) : string|null
     {
         if ($value === null) {
             return null;
@@ -606,7 +603,7 @@ class Reflector
      * @param \ReflectionParameter|\ReflectionProperty|null $target
      * @return string|null
      */
-    public static function getTypeHint($target) : ?string
+    public static function getTypeHint($target) : string|null
     {
         if ($target === null) {
             return null;
@@ -627,7 +624,7 @@ class Reflector
      * @param int $param_index
      * @return string|null
      */
-    public static function getParameterTypeHintOf(?callable $function, int $param_index) : ?string
+    public static function getParameterTypeHintOf(callable|null $function, int $param_index) : string|null
     {
         if ($function === null) {
             return null;
@@ -644,7 +641,7 @@ class Reflector
      * @param string $property name
      * @return string|null
      */
-    public static function getPropertyTypeHintOf($object_or_class, string $property) : ?string
+    public static function getPropertyTypeHintOf($object_or_class, string $property) : string|null
     {
         if ($object_or_class === null) {
             return null;
@@ -909,7 +906,7 @@ class Reflector
      *
      * @return string|null
      */
-    public static function caller() : ?string
+    public static function caller() : string|null
     {
         return debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)[2]['function'] ?? null ;
     }

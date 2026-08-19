@@ -59,7 +59,7 @@ class ProblemResponse extends JsonResponse
      * @param array $headers of HTTP response (default: [])
      * @param int $encoding_options of JSON encode (default: 0)
      */
-    public function __construct(int $status, ?string $title = null, ?string $type = null, array $headers = [], int $encoding_options = 0)
+    public function __construct(int $status, string|null $title = null, string|null $type = null, array $headers = [], int $encoding_options = 0)
     {
         $status_label = HttpStatus::reasonPhraseOf($status);
         if ($status_label === null) {
@@ -136,7 +136,7 @@ class ProblemResponse extends JsonResponse
      * @param string $key can contains dot notation (default: null)
      * @return mixed
      */
-    public function getProblem(?string $key = null)
+    public function getProblem(string|null $key = null)
     {
         return Reflector::get($this->problem, $key);
     }

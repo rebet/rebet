@@ -67,13 +67,13 @@ class Securities
      * $hash = Securities::hash('password', 'salt', 'pepper');
      *
      * @param string $text
-     * @param string $salt (default: depend on configure)
-     * @param string $pepper (default: depend on configure)
-     * @param string $algorithm (default: depend on configure)
+     * @param string|null $salt (default: depend on configure)
+     * @param string|null $pepper (default: depend on configure)
+     * @param string|null $algorithm (default: depend on configure)
      * @param int|null $stretching (default: depend on configure)
      * @return string
      */
-    public static function hash(string $text, string $salt = null, string $pepper = null, string $algorithm = null, ?int $stretching = null) : string
+    public static function hash(string $text, string|null $salt = null, string|null $pepper = null, string|null $algorithm = null, int|null $stretching = null) : string
     {
         $salt       = $salt ?? static::config('hash.salt') ;
         $pepper     = $pepper ?? static::config('hash.pepper') ;
@@ -95,7 +95,7 @@ class Securities
      * @param string $algorithm (default: depend on configure)
      * @return string
      */
-    public static function randomHash(string $algorithm = null) : string
+    public static function randomHash(string|null $algorithm = null) : string
     {
         $algorithm = $algorithm ?? static::config('hash.algorithm') ;
         return self::hash(date('Y-m-d H:i:s'), self::randomCode(8), self::randomCode(8), $algorithm, 10);

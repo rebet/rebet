@@ -42,7 +42,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Query {
+                function (Ransack $ransack) : Query|null {
                     return null;
                 }
             ],
@@ -50,7 +50,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? > :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Query {
+                function (Ransack $ransack) : Query|null {
                     return $ransack->convert();
                 }
             ],
@@ -58,7 +58,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? grater than :age_gt',
                 ['age_gt' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Query {
+                function (Ransack $ransack) : Query|null {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}');
                     }
@@ -69,7 +69,7 @@ class RansackTest extends RebetDatabaseTestCase
                 '?age? grater than :age_gt',
                 ['age_gt' => 40],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Query {
+                function (Ransack $ransack) : Query|null {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->convert('{col} grater than {val}', function ($v) { return $v * 2; });
                     }
@@ -80,7 +80,7 @@ class RansackTest extends RebetDatabaseTestCase
                 'age <> :bar',
                 ['bar' => 20],
                 'age_gt' , 20, [],
-                function (Ransack $ransack) : ?Query {
+                function (Ransack $ransack) : Query|null {
                     if ($ransack->origin() === 'age_gt') {
                         return $ransack->driver()->sql('age <> :bar', ['bar' => $ransack->value(true)]);
                     }
@@ -91,7 +91,7 @@ class RansackTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataResolves')]
-    public function test_resolve($expect_sql, $expect_params, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null)
+    public function test_resolve($expect_sql, $expect_params, $ransack_predicate, $value, array $alias = [], \Closure|null $extension = null)
     {
         self::eachDb(function (Database $db) use ($expect_sql, $expect_params, $ransack_predicate, $value, $alias, $extension) {
             $condition = Ransack::resolve($db->driver(), $ransack_predicate, $value, $alias, $extension);

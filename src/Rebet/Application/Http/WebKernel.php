@@ -1,42 +1,43 @@
 <?php
 namespace Rebet\Application\Http;
 
-use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\LoadRoutingConfiguration;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
-use Rebet\Application\Kernel as ApplicationKernel;
+use Rebet\Application\Kernel;
 use Rebet\Application\Structure;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\Router;
+use Rebet\Tools\Exception\LogicException;
 
 /**
  * Web Kernel Class
  *
+ * @template-extends Kernel<Request, Response>
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class WebKernel extends ApplicationKernel
+abstract class WebKernel extends Kernel
 {
     /**
      * Current handling request.
      *
-     * @var Request
+     * @var Request|null
      */
-    protected $request;
+    protected Request|null $request;
 
     /**
      * Current handling response.
      *
-     * @var Response
+     * @var Response|null
      */
-    protected $response;
+    protected Response|null $response;
 
     /**
      * {@inheritDoc}
@@ -68,10 +69,9 @@ abstract class WebKernel extends ApplicationKernel
      * {@inheritDoc}
      *
      * @param Request|null $input (default: null for Request::createFromGlobals())
-     * @param null $output do not use in this class (default: null)
      * @return Response
      */
-    public function handle($input = null, $output = null)
+    public function handle($input = null) : Response
     {
         return $this->response = Router::handle($this->request = $input ?? Request::createFromGlobals());
     }
@@ -81,10 +81,9 @@ abstract class WebKernel extends ApplicationKernel
      *
      * @param string $action
      * @param array $parameters (default: [])
-     * @param null $output do not use in this class (default: null)
      * @return Response
      */
-    public function call(string $action, array $parameters = [], $output = null)
+    public function call(string $action, array $parameters = []) : Response
     {
         return $this->response = Router::handle($this->request = Request::create($action, 'GET', $parameters));
     }
@@ -124,6 +123,9 @@ abstract class WebKernel extends ApplicationKernel
      */
     public function request() : Request
     {
+        if ($this->request === null) {
+            throw new LogicException('Request has not been set yet.');
+        }
         return $this->request;
     }
 }

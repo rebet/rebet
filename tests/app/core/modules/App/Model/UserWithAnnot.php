@@ -28,12 +28,12 @@ class UserWithAnnot extends Entity
     /**
      * @Defaults(2)
      */
-    public ?Gender $gender = null;
+    public Gender|null $gender = null;
 
     /**
      * @Defaults("20 years ago")
      */
-    public ?Date $birthday = null;
+    public Date|null $birthday = null;
 
     /**
      * @Defaults("foo@bar.local")
@@ -52,8 +52,8 @@ class UserWithAnnot extends Entity
     /**
      * @Defaults("now")
      */
-    public ?DateTime $created_at = null;
-    public ?DateTime $updated_at = null;
+    public DateTime|null $created_at = null;
+    public DateTime|null $updated_at = null;
 
     /**
      * @Unmap
@@ -65,22 +65,22 @@ class UserWithAnnot extends Entity
      */
     public $bar;
 
-    public function age() : ?int
+    public function age() : int|null
     {
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
 
-    public function fortune(bool $for_update = false, bool $eager_load = true) : ?Fortune
+    public function fortune(bool $for_update = false, bool $eager_load = true) : Fortune|null
     {
         return $this->belongsTo(Fortune::class, [], $for_update, $eager_load);
     }
 
-    public function bank() : ?Bank
+    public function bank() : Bank|null
     {
         return $this->hasOne(Bank::class);
     }
 
-    public function articles(?int $limit = null) : array
+    public function articles(int|null $limit = null) : array
     {
         return $this->hasMany(Article::class, [], [], null, $limit);
     }

@@ -27,7 +27,7 @@ class FilesystemAdapter extends AbstractSymfonyAdapter
      * @param null|string|CacheItemPoolInterface $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
      * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
-    public function __construct(string $namespace = '', $default_lifetime = 0, ?string $directory = null, ?MarshallerInterface $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
+    public function __construct(string $namespace = '', $default_lifetime = 0, string|null $directory = null, MarshallerInterface|null $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
     {
         parent::__construct(
             new SymfonyFilesystemAdapter(

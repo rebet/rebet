@@ -68,7 +68,7 @@ class Cookie extends SymfonyCookie
      * @param boolean|null $raw (default: depend on configure)
      * @param string|null $samesite (default: depend on configure)
      */
-    public function __construct(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null, bool $partitioned = false)
+    public function __construct(string $name, string|null $value = null, $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null, bool $partitioned = false)
     {
         parent::__construct(
             $name,
@@ -92,7 +92,7 @@ class Cookie extends SymfonyCookie
      * @param string|null $path
      * @return string
      */
-    public static function convertPath(?string $path) : string
+    public static function convertPath(string|null $path) : string
     {
         if (Strings::startsWith($path, '@')) {
             return Strings::ltrim($path, '@', 1);
@@ -104,7 +104,7 @@ class Cookie extends SymfonyCookie
     /**
      * {@inheritDoc}
      */
-    public static function create(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null, bool $partitioned = false) : self
+    public static function create(string $name, string|null $value = null, $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null, bool $partitioned = false) : self
     {
         return new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite, $partitioned);
     }
@@ -160,7 +160,7 @@ class Cookie extends SymfonyCookie
      * @param string|null $samesite (default: depend on configure)
      * @return void
      */
-    public static function set(string $name, ?string $value = null, $expire = null, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $http_only = null, ?bool $raw = null, ?string $samesite = null) : void
+    public static function set(string $name, string|null $value = null, $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null) : void
     {
         static::enqueue(new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite));
     }
@@ -173,7 +173,7 @@ class Cookie extends SymfonyCookie
      * @param string|null $domain (default: depend on configure)
      * @return void
      */
-    public static function remove(string $name, ?string $path = null, ?string $domain = null) : void
+    public static function remove(string $name, string|null $path = null, string|null $domain = null) : void
     {
         static::enqueue(new static($name, null, 0, $path, $domain));
     }
@@ -195,7 +195,7 @@ class Cookie extends SymfonyCookie
      * @param string $name
      * @return self|null
      */
-    public static function dequeue(string $name) : ?self
+    public static function dequeue(string $name) : self|null
     {
         $cookie = static::peek($name);
         unset(static::$queued[$name]);
@@ -208,7 +208,7 @@ class Cookie extends SymfonyCookie
      * @param string $name
      * @return self|null
      */
-    public static function peek(string $name) : ?self
+    public static function peek(string $name) : self|null
     {
         return static::$queued[$name] ?? null;
     }

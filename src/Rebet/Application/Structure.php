@@ -48,7 +48,7 @@ class Structure
      * @param string|null $relative_path
      * @return string
      */
-    public function path(?string $relative_path) : string
+    public function path(string|null $relative_path) : string
     {
         return Path::normalize("{$this->root()}/{$relative_path}");
     }
@@ -60,7 +60,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function env(?string $relative_path = null) : string
+    public function env(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/core')}/{$relative_path}");
     }
@@ -72,7 +72,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function bootstrap(?string $relative_path = null) : string
+    public function bootstrap(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/core/bootstrap')}/{$relative_path}");
     }
@@ -84,7 +84,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function configs(?string $relative_path = null) : string
+    public function configs(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/core/configs')}/{$relative_path}");
     }
@@ -96,7 +96,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function resources(?string $relative_path = null) : string
+    public function resources(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/core/resources')}/{$relative_path}");
     }
@@ -108,7 +108,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function routes(?string $relative_path = null) : string
+    public function routes(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/core/routes')}/{$relative_path}");
     }
@@ -120,7 +120,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function views(?string $relative_path = null) : string
+    public function views(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/core/views')}/{$relative_path}");
     }
@@ -132,7 +132,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function public(?string $relative_path = null) : string
+    public function public(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/public')}/{$relative_path}");
     }
@@ -144,7 +144,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function cache(?string $relative_path = null) : string
+    public function cache(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/var/cache')}/{$relative_path}");
     }
@@ -156,7 +156,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function logs(?string $relative_path = null) : string
+    public function logs(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/var/logs')}/{$relative_path}");
     }
@@ -168,7 +168,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function storage(?string $relative_path = null) : string
+    public function storage(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->path('/var/storage')}/{$relative_path}");
     }
@@ -180,7 +180,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function privateStorage(?string $relative_path = null) : string
+    public function privateStorage(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->storage('/private')}/{$relative_path}");
     }
@@ -192,7 +192,7 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
-    public function publicStorage(?string $relative_path = null) : string
+    public function publicStorage(string|null $relative_path = null) : string
     {
         return Path::normalize("{$this->storage('/public')}/{$relative_path}");
     }

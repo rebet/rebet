@@ -115,7 +115,7 @@ abstract class DataModel
      * @return void
      * @throws LogicException when give the class name that is not subclass of this class.
      */
-    protected static function mustBeSuperclassOf(?string $class) : void
+    protected static function mustBeSuperclassOf(string|null $class) : void
     {
         if ($class !== null && !is_subclass_of($class, static::class)) {
             throw new LogicException("Invalid class name given. {$class} is not subclass of ".static::class.".");
@@ -202,7 +202,7 @@ abstract class DataModel
      *
      * @return self|null
      */
-    public function belongsResultSet(?ResultSet $rs = null)
+    public function belongsResultSet(ResultSet|null $rs = null)
     {
         return $this->getset('_belongs_result_set', $rs);
     }
@@ -213,7 +213,7 @@ abstract class DataModel
      * @param DataModel|null $other
      * @return bool
      */
-    public function isSameSourceAs(?DataModel $other) : bool
+    public function isSameSourceAs(DataModel|null $other) : bool
     {
         if (!($other instanceof $this)) {
             return false;
@@ -227,7 +227,7 @@ abstract class DataModel
      * @param DataModel|null $other
      * @return bool
      */
-    public function isSameAs(?DataModel $other) : bool
+    public function isSameAs(DataModel|null $other) : bool
     {
         if (!($other instanceof $this)) {
             return false;
@@ -333,7 +333,7 @@ abstract class DataModel
      * @param mixed $primaries primary key value or array|object of primary keys
      * @return self|null
      */
-    public static function valueOf($primaries) : ?self
+    public static function valueOf($primaries) : self|null
     {
         return static::find($primaries);
     }
@@ -346,7 +346,7 @@ abstract class DataModel
      * @param Database|string|null $db (default: null)
      * @return self|null
      */
-    public static function find($primaries, bool $for_update = false, $db = null) : ?self
+    public static function find($primaries, bool $for_update = false, $db = null) : self|null
     {
         $where            = [];
         $params           = [];
@@ -372,7 +372,7 @@ abstract class DataModel
      * @param Database|string|null $db (default: null)
      * @return static|null
      */
-    public static function findBy($ransacks, bool $for_update = false, $db = null) : ?static
+    public static function findBy($ransacks, bool $for_update = false, $db = null) : static|null
     {
         $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->find($query->sql(), null, $query->params(), $for_update, get_called_class());
@@ -388,7 +388,7 @@ abstract class DataModel
      * @param Database|string|null $db (default: null)
      * @return ResultSet
      */
-    public static function select($ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, $db = null) : ResultSet
+    public static function select($ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, $db = null) : ResultSet
     {
         $query = static::buildSelectSql($db = static::db($db), Arrays::toArray($ransacks));
         return $db->select($query->sql(), $order_by ?? static::defaultOrderBy(), $query->params(), $limit, $for_update, get_called_class());
@@ -439,7 +439,7 @@ abstract class DataModel
      * @param array $ransacks conditions (default: [])
      * @return string|null
      */
-    protected static function buildOptimizedCountSql(Database $db, array $ransacks = []) : ?string
+    protected static function buildOptimizedCountSql(Database $db, array $ransacks = []) : string|null
     {
         return null;
     }
@@ -467,7 +467,7 @@ abstract class DataModel
      * @param Ransack $ransack
      * @return Query|null
      */
-    protected static function ransack(Ransack $ransack) : ?Query
+    protected static function ransack(Ransack $ransack) : Query|null
     {
         return null;
     }
@@ -519,7 +519,7 @@ abstract class DataModel
      * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return mixed Class instance of given $class or null.
      */
-    protected function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
+    protected function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
         if (!$eager_load || $this->_belongs_result_set === null) {
             return $class::find($this->ransacksForBelongsTo($class, $alias), $for_update);
@@ -621,7 +621,7 @@ abstract class DataModel
      * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return mixed Class instance of given $class or null.
      */
-    protected function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, ?string $name = null)
+    protected function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
         if (!$eager_load || $this->_belongs_result_set === null) {
             return $class::find($this->ransacksForHas($alias), $for_update);
@@ -707,7 +707,7 @@ abstract class DataModel
      * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return array
      */
-    protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, ?int $limit = null, bool $for_update = false, bool $eager_load = true, ?string $name = null) : array
+    protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array
     {
         if (!$eager_load || $this->_belongs_result_set === null) {
             return $class::select(array_merge($ransacks, $this->ransacksForHas($alias)), $order_by, $limit, $for_update)->toArray();

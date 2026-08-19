@@ -150,7 +150,7 @@ trait Populatable
 
         $alias = Reflector::get($options, "aliases.{$prefix}{$field}");
         if ($alias) {
-            $value = $alias ? Reflector::get($src, $alias) : $value ;
+            $value = Reflector::get($src, $alias);
             $field = $alias;
         }
 

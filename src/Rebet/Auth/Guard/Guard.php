@@ -53,7 +53,7 @@ abstract class Guard
      * @param string|null $name (default: null for get name)
      * @return self|string|null
      */
-    public function name(?string $name = null)
+    public function name(string|null $name = null)
     {
         if ($name === null) {
             return $this->name;
@@ -87,5 +87,5 @@ abstract class Guard
      *
      * @return Response|null response of fallback when authenticate failed
      */
-    abstract public function authenticate() : ?Response;
+    abstract public function authenticate() : Response|null;
 }

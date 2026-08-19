@@ -92,7 +92,7 @@ abstract class Controller
      * @param bool $apply_change (default: true)
      * @return View
      */
-    protected function view(?string $name = null, bool $apply_change = true) : View
+    protected function view(string|null $name = null, bool $apply_change = true) : View
     {
         $selector = new ViewSelector($this->request, Auth::user());
         return $selector->view($name, $apply_change);

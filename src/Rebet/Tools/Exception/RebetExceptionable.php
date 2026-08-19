@@ -32,7 +32,7 @@ trait RebetExceptionable
     /**
      * {@inheritDoc}
      */
-    public function getCaused() : ?\Throwable
+    public function getCaused() : \Throwable|null
     {
         $rc = new \ReflectionClass(\Exception::class);
         $rp = $rc->getProperty('previous');
@@ -74,13 +74,9 @@ trait RebetExceptionable
     {
         $string = parent::__toString();
         if ($this->appendix) {
-            try {
-                $appendix = json_encode($this->appendix);
-                $appendix = json_last_error() === JSON_ERROR_NONE ? $appendix : '(Can not stringize)' ;
-            } catch (\Exception $e) {
-                $appendix = '(Can not stringize)';
-            }
-            $string = preg_replace('/^Stack trace:$/mu', "Appendix:\n{$appendix}\nStack trace:", $string, 1);
+            $appendix = json_encode($this->appendix);
+            $appendix = json_last_error() === JSON_ERROR_NONE ? $appendix : '(Can not stringize)' ;
+            $string   = preg_replace('/^Stack trace:$/mu', "Appendix:\n{$appendix}\nStack trace:", $string, 1);
         }
         return $string;
     }

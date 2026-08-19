@@ -38,7 +38,7 @@ class Request extends SymfonyRequest
     /**
      * Route object matching routing
      *
-     * @var Route
+     * @var Route|null
      */
     public $route = null;
 
@@ -74,7 +74,7 @@ class Request extends SymfonyRequest
      *
      * @return Request|null
      */
-    public static function current() : ?Request
+    public static function current() : Request|null
     {
         return static::$current;
     }
@@ -106,7 +106,7 @@ class Request extends SymfonyRequest
      * @param mixed $default (default: null)
      * @return mixed
      */
-    public function all(?string $key = null, $default = null)
+    public function all(string|null $key = null, $default = null)
     {
         $all = array_replace_recursive($this->input(), $this->files());
         return Reflector::get($all, $key, $default);
@@ -119,7 +119,7 @@ class Request extends SymfonyRequest
      * @param mixed $default (default: null)
      * @return mixed
      */
-    public function input(?string $key = null, $default = null)
+    public function input(string|null $key = null, $default = null)
     {
         return Reflector::get($this->request->all() + $this->query->all(), $key, $default);
     }
@@ -131,7 +131,7 @@ class Request extends SymfonyRequest
      * @param mixed $default (default: null)
      * @return mixed
      */
-    public function files(?string $key = null, $default = null)
+    public function files(string|null $key = null, $default = null)
     {
         return Reflector::get($this->files->all(), $key, $default);
     }
@@ -257,7 +257,7 @@ class Request extends SymfonyRequest
         if (!$this->route) {
             return Router::getPrefixFrom($this->getRequestPath()) ?? '';
         }
-        return $this->route->prefix ?? '';
+        return $this->route->prefix;
     }
 
     /**
@@ -306,7 +306,7 @@ class Request extends SymfonyRequest
      * @param array $headers
      * @return RedirectResponse|null
      */
-    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : ?RedirectResponse
+    public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : RedirectResponse|null
     {
         if ($this->isSaved($name)) {
             $saved = $this->session()->flash()->get("_request_{$name}");

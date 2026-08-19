@@ -42,7 +42,7 @@ class Password
      * @param array|null $options (default: depend on configure)
      * @return string|null
      */
-    public static function hash(?string $password, $algorithm = null, ?array $options = null) : ?string
+    public static function hash(string|null $password, $algorithm = null, array|null $options = null) : string|null
     {
         if ($password === null) {
             return null;
@@ -59,7 +59,7 @@ class Password
      * @param string|null $hash
      * @return boolean
      */
-    public static function verify(?string $password, ?string $hash) : bool
+    public static function verify(string|null $password, string|null $hash) : bool
     {
         return ($password === null || $hash === null) ? false : password_verify($password, $hash) ;
     }
@@ -72,7 +72,7 @@ class Password
      * @param array|null $options (default: depend on configure)
      * @return bool
      */
-    public static function needsRehash(?string $hash, $algorithm = null, ?array $options = null) : bool
+    public static function needsRehash(string|null $hash, $algorithm = null, array|null $options = null) : bool
     {
         if ($hash === null) {
             return false;

@@ -23,10 +23,10 @@ class UserDetail extends Presentation
     public $email;
     public $role;
     public DateTime $created_at;
-    public ?DateTime $updated_at;
+    public DateTime|null $updated_at;
     public $article_count;
 
-    public function age() : ?int
+    public function age() : int|null
     {
         return $this->birthday ? Date::valueOf($this->birthday)->age() : null ;
     }
@@ -36,7 +36,7 @@ class UserDetail extends Presentation
         return $this->hasOne(User::class, [], $for_update);
     }
 
-    public function bank(bool $for_update = false) : ?Bank
+    public function bank(bool $for_update = false) : Bank|null
     {
         return $this->hasOne(Bank::class, [], $for_update);
     }
@@ -46,7 +46,7 @@ class UserDetail extends Presentation
         return $this->hasMany(Article::class, [], $conditions, null, null, $for_update);
     }
 
-    protected static function ransack(Ransack $ransack) : ?Query
+    protected static function ransack(Ransack $ransack) : Query|null
     {
         if (Utils::isBlank($ransack->value())) {
             return null;

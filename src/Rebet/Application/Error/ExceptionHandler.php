@@ -62,7 +62,7 @@ class ExceptionHandler extends FallbackHandler
      * @param \Throwable $e
      * @return void
      */
-    protected function reportHttp(Request $request, ?Response $response, \Throwable $e) : void
+    protected function reportHttp(Request $request, Response|null $response, \Throwable $e) : void
     {
         if (!$response) {
             Log::warning("Unhandled exception occurred.", compact('request'), $e);
@@ -102,7 +102,7 @@ class ExceptionHandler extends FallbackHandler
      * @param \Throwable $e
      * @return void
      */
-    protected function reportConsole(InputInterface $input, ?int $status, \Throwable $e) : void
+    protected function reportConsole(InputInterface $input, int|null $status, \Throwable $e) : void
     {
         Log::error("Console unhandled exception occurred. Error code: {$status}", ['arguments' => $input->getArguments(), 'options' => $input->getOptions()], $e);
     }
@@ -215,7 +215,7 @@ class ExceptionHandler extends FallbackHandler
      * @param \Throwable $e
      * @return Response
      */
-    protected function makeView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
+    protected function makeView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e) : Response
     {
         $title  = Translator::get("message.http.{$status}.title") ?? $title ;
         $detail = Translator::get("message.http.{$status}.detail") ?? $detail ;
@@ -248,7 +248,7 @@ class ExceptionHandler extends FallbackHandler
      * @param \Throwable $e
      * @return Response
      */
-    protected function makeDefaultView(int $status, ?string $title, ?string $detail, Request $request, \Throwable $e) : Response
+    protected function makeDefaultView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e) : Response
     {
         $custom_title = true;
         if ($title === null) {

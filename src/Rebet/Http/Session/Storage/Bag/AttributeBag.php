@@ -41,7 +41,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      * @param string $name
      * @param string|null $storage_key (default: null for "_rebet_{$name}")
      */
-    public function __construct(string $name, ?string $storage_key = null)
+    public function __construct(string $name, string|null $storage_key = null)
     {
         $this->name        = $name;
         $this->storage_key = $storage_key ?? "_rebet_{$name}";

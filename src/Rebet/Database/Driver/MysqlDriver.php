@@ -123,7 +123,7 @@ class MysqlDriver extends AbstractDriver
      *
      * @see 'mysql'  native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_mysql/mysql_statement.c.gcov.php
      */
-    public function toPhpType($value, array $meta = [], ?string $type = null)
+    public function toPhpType($value, array $meta = [], string|null $type = null)
     {
         if ($value === null) {
             return null;

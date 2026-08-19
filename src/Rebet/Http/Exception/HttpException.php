@@ -41,7 +41,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      * @param string|null $title or full transration key (default: Basic HTTP status label)
      * @param \Throwable $previous (default: null)
      */
-    public function __construct(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null)
+    public function __construct(int $status, string|null $detail = null, string|null $title = null, \Throwable|null $previous = null)
     {
         $this->status = $status;
         $this->detail($detail);
@@ -67,7 +67,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      * @param string|null $title or full transration key (default: Basic HTTP status label)
      * @return self
      */
-    public function title(?string $title) : self
+    public function title(string|null $title) : self
     {
         $this->title = Translator::get($title) ?? $title ?? Translator::get("message.http.{$this->status}.title") ?? HttpStatus::reasonPhraseOf($this->status) ?? 'Unknown Error';
         return $this;
@@ -89,7 +89,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      * @param string|null $detail message or full transration key (default: null)
      * @return self
      */
-    public function detail(?string $detail) : self
+    public function detail(string|null $detail) : self
     {
         $this->detail = Translator::get($detail) ?? $detail ;
         return $this;
@@ -100,7 +100,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
      *
      * @return string|null
      */
-    public function getDetail() : ?string
+    public function getDetail() : string|null
     {
         return $this->detail;
     }

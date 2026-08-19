@@ -40,7 +40,7 @@ class SessionGuard extends StatefulGuard
      * @param int $remember_days (default: 0)
      * @param Request $request (default: null for Request::current())
      */
-    public function __construct(string $provider, ?string $fallback = null, int $remember_days = 0, ?Request $request = null)
+    public function __construct(string $provider, string|null $fallback = null, int $remember_days = 0, Request|null $request = null)
     {
         parent::__construct($provider, $remember_days);
         $this->fallback = $fallback;
@@ -122,7 +122,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
-    public function authenticate() : ?Response
+    public function authenticate() : Response|null
     {
         $user = $this->provider->findById($this->request->session()->get($this->signinIdKey()));
         if ($user === null && $this->provider->supportRememberToken()) {

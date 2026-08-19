@@ -55,7 +55,7 @@ abstract class Entity extends DataModel
      * @return self|null
      * @throws \InvalidArgumentException when the given $origin class is not same as this
      */
-    public function origin(?Entity $origin = null) : ?self
+    public function origin(Entity|null $origin = null) : self|null
     {
         if ($origin !== null && ($class = get_class($this)) !== get_class($origin)) {
             throw new \InvalidArgumentException("Origin must be same class of [{$class}].");
@@ -242,7 +242,7 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function create(?DateTime $now = null, $db = null) : bool
+    public function create(DateTime|null $now = null, $db = null) : bool
     {
         return static::db($db)->create($this, $now);
     }
@@ -255,7 +255,7 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function update(?DateTime $now = null, $db = null) : bool
+    public function update(DateTime|null $now = null, $db = null) : bool
     {
         return static::db($db)->update($this, $now);
     }
@@ -267,7 +267,7 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return bool
      */
-    public function save(?DateTime $now = null, $db = null) : bool
+    public function save(DateTime|null $now = null, $db = null) : bool
     {
         return static::db($db)->save($this, $now);
     }
@@ -292,7 +292,7 @@ abstract class Entity extends DataModel
      * @param Database|string|null $db (default: null)
      * @return int affected row count
      */
-    public static function updateBy(array $changes, $ransack = [], ?DateTime $now = null, $db = null) : int
+    public static function updateBy(array $changes, $ransack = [], DateTime|null $now = null, $db = null) : int
     {
         return static::db($db)->updateBy(static::class, $changes, $ransack, static::ransackAliases(), $now);
     }

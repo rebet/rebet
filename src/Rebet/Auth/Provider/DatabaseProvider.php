@@ -89,10 +89,10 @@ class DatabaseProvider extends AuthProvider
         string $signin_id_name = 'email',
         string $password_name = 'password',
         string $api_token_name = 'api_token',
-        ?int $expired_remember_token_clean_rate = 100,
+        int|null $expired_remember_token_clean_rate = 100,
         array $precondition = [],
         array $alises = [],
-        ?string $db = null
+        string|null $db = null
     ) {
         $this->entity                            = $entity;
         $this->signin_id_name                    = $signin_id_name;
@@ -107,7 +107,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findById($id) : ?AuthUser
+    public function findById($id) : AuthUser|null
     {
         if ($id === null) {
             return null;
@@ -119,7 +119,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findByToken(?string $token, $precondition = null) : ?AuthUser
+    public function findByToken(string|null $token, $precondition = null) : AuthUser|null
     {
         if ($token === null) {
             return null;
@@ -131,7 +131,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    protected function findBySigninId($signin_id, $precondition = null) : ?AuthUser
+    protected function findBySigninId($signin_id, $precondition = null) : AuthUser|null
     {
         if ($signin_id === null) {
             return null;
@@ -151,7 +151,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function findByRememberToken(?string $token) : ?AuthUser
+    public function findByRememberToken(string|null $token) : AuthUser|null
     {
         if ($token === null) {
             return null;
@@ -163,7 +163,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function issuingRememberToken($id, int $remember_days) : ?string
+    public function issuingRememberToken($id, int $remember_days) : string|null
     {
         $now                      = DateTime::now();
         $remember_token           = new RememberToken();
@@ -181,7 +181,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
-    public function removeRememberToken(?string $token) : void
+    public function removeRememberToken(string|null $token) : void
     {
         RememberToken::deleteBy(['provider' => $this->name, 'remember_token' => $this->hashToken($token)], $this->db);
         if ($this->expired_remember_token_clean_rate && random_int(1, $this->expired_remember_token_clean_rate) === 1) {

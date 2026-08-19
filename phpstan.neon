@@ -1,9 +1,12 @@
 parameters:
-    level: 3
+    level: 4
     bootstrapFiles:
         - ./vendor/autoload.php
     paths:
         - ./src
+    stubFiles:
+        - ./stubs/swiftmailer/SimpleMimeEntity.stub.php
+        - ./stubs/swiftmailer/SimpleMessage.stub.php
     excludePaths:
         # Letterpress template with `{%-- if/else --%}` pseudo-conditional comments that
         # references the App\ namespace of the (not yet existing) generated application.

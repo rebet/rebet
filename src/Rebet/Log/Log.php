@@ -120,7 +120,7 @@ class Log
      * @param bool|null $is_unittest (default: null for get unittest mode or not)
      * @return bool
      */
-    public static function unittest(?bool $is_unittest = null) : bool
+    public static function unittest(bool|null $is_unittest = null) : bool
     {
         if ($is_unittest === null) {
             return static::config('unittest');
@@ -135,7 +135,7 @@ class Log
      * @param string|null $channel name that configured in 'Log.channels'. (default: null for depend on configuration 'default_channel')
      * @return string
      */
-    protected static function adoptChannel(?string $channel = null) : string
+    protected static function adoptChannel(string|null $channel = null) : string
     {
         switch (true) {
             case static::unittest(): return static::config('unittest_channel');
@@ -149,7 +149,7 @@ class Log
      * @param string $channel when the null given return the default channel logger (default: null)
      * @return Logger
      */
-    public static function channel(?string $channel = null) : Logger
+    public static function channel(string|null $channel = null) : Logger
     {
         $channel = static::adoptChannel($channel);
         if ($logger = static::$channels[$channel] ?? null) {

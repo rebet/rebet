@@ -22,7 +22,7 @@ class ClosureRouteTest extends RebetTestCase
         $this->assertInstanceOf(BasicResponse::class, $response);
         $this->assertSame('Hello World.', $response->getContent());
 
-        $route   = new ClosureRoute(['GET'], '/foo/{id}/{code?}', function (int $id, ?string $code = null) { return "id: {$id}, code: {$code}"; });
+        $route   = new ClosureRoute(['GET'], '/foo/{id}/{code?}', function (int $id, string|null $code = null) { return "id: {$id}, code: {$code}"; });
         $request = $this->createRequestMock('/foo/123');
         $this->assertTrue($route->match($request));
         $response = $route->handle($request);
@@ -40,6 +40,7 @@ class ClosureRouteTest extends RebetTestCase
     {
         $route   = new ClosureRoute(['GET'], '/', function () { return 'Hello World.'; });
         $request = $this->createRequestMock('/foo');
-        $this->assertNull($route->terminate($request, Responder::toResponse('foo')));
+        $route->terminate($request, Responder::toResponse('foo'));
+        $this->success();
     }
 }

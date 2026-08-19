@@ -77,9 +77,9 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
-    public function hasItem($key) : bool
+    public function hasItem(string $key) : bool
     {
-        if (\is_string($key) && isset($this->pool[$key]) && $this->pool[$key][1] > microtime(true)) {
+        if (isset($this->pool[$key]) && $this->pool[$key][1] > microtime(true)) {
             return true;
         }
         $this->deleteItem($key);

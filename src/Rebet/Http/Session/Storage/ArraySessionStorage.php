@@ -20,7 +20,7 @@ class ArraySessionStorage extends MockArraySessionStorage
      * @param string $name
      * @param MetadataBag|null $metadata_bag (default: null)
      */
-    public function __construct(string $name = 'MOCKSESSID', ?MetadataBag $metadata_bag = null)
+    public function __construct(string $name = 'MOCKSESSID', MetadataBag|null $metadata_bag = null)
     {
         $this->name = $name;
         $this->setMetadataBag($metadata_bag ?? new MetadataBag('_rebet_meta'));
@@ -29,7 +29,7 @@ class ArraySessionStorage extends MockArraySessionStorage
     /**
      * {@inheritdoc}
      */
-    public function regenerate(bool $destroy = false, ?int $lifetime = null) : bool
+    public function regenerate(bool $destroy = false, int|null $lifetime = null) : bool
     {
         if (!$this->started) {
             $this->start();

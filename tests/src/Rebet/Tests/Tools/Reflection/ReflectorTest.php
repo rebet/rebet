@@ -577,7 +577,7 @@ class ReflectorTest extends RebetTestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("Parameter 'nullable' is requierd.");
 
-        $function = function (?int $nullable) { return; };
+        $function = function (int|null $nullable) { return; };
         $rf       = new \ReflectionFunction($function);
         $args     = Reflector::toArgs($rf->getParameters(), []);
     }
@@ -612,7 +612,7 @@ class ReflectorTest extends RebetTestCase
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(['default'], Reflector::toArgs($reflection->getParameters(), []));
 
-        $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic) { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(
             ['a', 'b', 'c', 'd', 'e'],
@@ -693,7 +693,7 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame([], Reflector::toNamedArgs($reflection->getParameters(), []));
         $this->assertSame(['optional' => 1], Reflector::toNamedArgs($reflection->getParameters(), [1, 2, 3]));
 
-        $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic) { return; };
         $reflection = new \ReflectionFunction($function);
         $this->assertSame(
             [
@@ -762,7 +762,7 @@ class ReflectorTest extends RebetTestCase
 
     public function test_mergeArgs()
     {
-        $function   = function ($mixed, string $string, ?string $nullable, string $optional = 'default', string ...$variadic) { return; };
+        $function   = function ($mixed, string $string, string|null $nullable, string $optional = 'default', string ...$variadic) { return; };
         $reflection = new \ReflectionFunction($function);
         $parameters = $reflection->getParameters();
         $this->assertSame([], Reflector::mergeArgs($parameters, [], []));

@@ -54,7 +54,7 @@ class ViewSelector
      * @param AuthUser|null $user (default: Auth::user())
      * @param callable|null $changer function(string $view_name, Request $request, AuthUser $user):string|string[] to return changed view name (default: depend on configure)
      */
-    public function __construct(?Request $request = null, ?AuthUser $user = null, ?callable $changer = null)
+    public function __construct(Request|null $request = null, AuthUser|null $user = null, callable|null $changer = null)
     {
         $this->request = $request ?? Request::current();
         $this->user    = $user ?? Auth::user();
@@ -67,7 +67,7 @@ class ViewSelector
      * @param boolean $apply_change
      * @return \Closure|null
      */
-    protected function changer(bool $apply_change) : ?\Closure
+    protected function changer(bool $apply_change) : \Closure|null
     {
         if (!$this->changer || !$apply_change) {
             return null;
@@ -85,7 +85,7 @@ class ViewSelector
      * @param bool $apply_change (default: true)
      * @return View
      */
-    public function view(?string $name = null, bool $apply_change = true) : View
+    public function view(string|null $name = null, bool $apply_change = true) : View
     {
         $name    = $name ?? $this->request->route->defaultView();
         $changer = $this->changer($apply_change);

@@ -50,14 +50,14 @@ class Auth
      *
      * @var AuthProvider[]
      */
-    protected static $providers = [];
+    protected static array $providers = [];
 
     /**
      * Auth guards
      *
      * @var Guard[]
      */
-    protected static $guards = [];
+    protected static array $guards = [];
 
     /**
      * No instantiation
@@ -69,10 +69,10 @@ class Auth
     /**
      * [Authentication] Get the authenticated user.
      *
-     * @param string $guard (default: null for active guard)
+     * @param string|null $guard (default: null for active guard)
      * @return AuthUser
      */
-    public static function user(?string $guard = null) : AuthUser
+    public static function user(string|null $guard = null) : AuthUser
     {
         $guard = static::guard($guard ?? static::applicableGuard());
         return $guard ? $guard->user() : AuthUser::guest() ;
@@ -95,7 +95,7 @@ class Auth
      * @param string|null $name
      * @return Guard|null
      */
-    public static function guard(?string $name) : ?Guard
+    public static function guard(string|null $name) : Guard|null
     {
         if ($name === null) {
             return null;
@@ -120,7 +120,7 @@ class Auth
      * @param Request|null $request (default: null for Request::current())
      * @return string|null
      */
-    protected static function applicableGuard(?Request $request = null) : ?string
+    protected static function applicableGuard(Request|null $request = null) : string|null
     {
         $request = $request ?? Request::current() ;
         return $request->route ? $request->route->guard() : null ;
@@ -135,7 +135,7 @@ class Auth
      * @param string|null $guard (default: guard of the route, if not set then use channel name)
      * @return AuthUser
      */
-    public static function attempt(Request $request, $signin_id, string $password, ?string $guard = null) : AuthUser
+    public static function attempt(Request $request, mixed $signin_id, string $password, string|null $guard = null) : AuthUser
     {
         $guard = static::guard($guard ?? static::applicableGuard($request));
         if ($guard === null) {
@@ -210,7 +210,7 @@ class Auth
      * @uses Event::dispatch Authenticated when authenticate success (exclude Guest user).
      * @uses Event::dispatch AuthenticateFailed when authenticate failed (exclude Guest user).
      */
-    public static function authenticate(Request $request) : ?Response
+    public static function authenticate(Request $request) : Response|null
     {
         $guard = static::guard(static::applicableGuard($request));
         if (!$guard) {
@@ -273,7 +273,7 @@ class Auth
      * @param mixed ...$extras
      * @return boolean
      */
-    public static function policy(AuthUser $user, string $action, $target, ...$extras) : bool
+    public static function policy(AuthUser $user, string $action, object|string $target, mixed ...$extras) : bool
     {
         $target = Namespaces::resolve($target);
         return static::_policy($user, '@before', $target, array_merge([$action], $extras)) || static::_policy($user, $action, $target, $extras);
@@ -288,16 +288,13 @@ class Auth
      * @param array $extras (default: [])
      * @return boolean
      */
-    protected static function _policy(AuthUser $user, string $action, $target, array $extras = []) : bool
+    protected static function _policy(AuthUser $user, string $action, object|string $target, array $extras = []) : bool
     {
         if (empty($target)) {
             return true;
         }
         $selector = is_object($target) ? get_class($target) : $target ;
-        if (!is_string($selector)) {
-            return true;
-        }
-        $policy = static::config("policies.{$selector}.{$action}", false);
+        $policy   = static::config("policies.{$selector}.{$action}", false);
         return is_callable($policy) ? static::invoke(\Closure::fromCallable($policy), $user, array_merge([$target], $extras)) : false ;
     }
 
@@ -329,14 +326,13 @@ class Auth
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
      * @param AuthUser $user
-     * @param string $name
+     * @param string $role_names
      * @return boolean
      */
-    protected static function _role(AuthUser $user, string $name) : bool
+    protected static function _role(AuthUser $user, string $role_names) : bool
     {
-        $names = explode(':', $name);
-        foreach ($names as $name) {
-            $checker = static::config("roles.{$name}", false);
+        foreach (explode(':', $role_names) as $role_name) {
+            $checker = static::config("roles.{$role_name}", false);
             if (!is_callable($checker) || !static::invoke(\Closure::fromCallable($checker), $user)) {
                 return false;
             }
@@ -352,7 +348,7 @@ class Auth
      * @param array $targets (default: [])
      * @return boolean|null
      */
-    protected static function invoke(\Closure $action, $user, array $targets = []) : ?bool
+    protected static function invoke(\Closure $action, mixed $user, array $targets = []) : bool|null
     {
         $function = new \ReflectionFunction($action);
         $request  = Request::current();

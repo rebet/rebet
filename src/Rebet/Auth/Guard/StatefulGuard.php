@@ -40,7 +40,7 @@ abstract class StatefulGuard extends Guard
      * @param string|null $password
      * @return AuthUser
      */
-    public function attempt($signin_id, ?string $password) : AuthUser
+    public function attempt($signin_id, string|null $password) : AuthUser
     {
         $user = $this->provider->findByCredentials($signin_id, $password);
         return $user ? $user : AuthUser::guest($signin_id);

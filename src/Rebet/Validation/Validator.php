@@ -81,7 +81,7 @@ class Validator
      * @param bool $accept_undefined (default: false)
      * @return ValidData|null
      */
-    public function validate(string $crud, $rules, bool $accept_undefined = false) : ?ValidData
+    public function validate(string $crud, $rules, bool $accept_undefined = false) : ValidData|null
     {
         if (!Arrays::isSequential($rules)) {
             $rules = [$rules];
@@ -131,7 +131,7 @@ class Validator
      * @param Rule|null $spot_validations
      * @return ValidData
      */
-    protected function _validate(Context $context, $rules, ?Rule $spot_validations) : ValidData
+    protected function _validate(Context $context, $rules, Rule|null $spot_validations) : ValidData
     {
         $valid_data = [];
         foreach ($rules as $field => $config) {
@@ -192,7 +192,7 @@ class Validator
      * @param array $rules
      * @param Rule|null $spot_validations
      */
-    protected function validateRules(Context $context, array $rules, ?Rule $spot_validations) : void
+    protected function validateRules(Context $context, array $rules, Rule|null $spot_validations) : void
     {
         foreach ($rules as $rule) {
             if (!is_array($rule)) {

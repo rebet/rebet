@@ -53,7 +53,7 @@ class SmtpTransport extends Swift_SmtpTransport
      *   - bool|array   'pop_before_smtp'   : Use Swift_Plugins_PopBeforeSmtpPlugin ['host' => null (null for use SMTP host), 'port' => 110, 'crypto' => null (null, 'tls' or 'ssl' : null for choose default by port number), 'username' => null(null for use SMTP username), 'password' => null(null for use SMTP password), 'timeout' => 10]
      * @param string|null $encryption null, 'tls' or 'ssl' (default: null for choose default by port number)
      */
-    public function __construct(string $host = 'localhost', int $port = 25, ?string $username = null, ?string $password = null, array $options = [], ?string $encryption = null)
+    public function __construct(string $host = 'localhost', int $port = 25, string|null $username = null, string|null $password = null, array $options = [], string|null $encryption = null)
     {
         // Swiftmailer is abandoned and its constructor chain internally uses the
         // `call_user_func_array([$this, 'ParentClass::__construct'], ...)` idiom, which
@@ -89,7 +89,6 @@ class SmtpTransport extends Swift_SmtpTransport
                         break;
                     }
                     throw new LogicException("Invalid option '{$option}' was given.");
-                    break;
             }
         }
         if ($options['disable_ca_check'] ?? false) {

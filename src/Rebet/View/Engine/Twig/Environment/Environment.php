@@ -48,7 +48,7 @@ class Environment extends TwigEnvironment
      * @param bool $can_omit_first_arg (default: false)
      * @return void
      */
-    public function embed($name, ?string $verbs, ?array $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false) : void
+    public function embed($name, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false) : void
     {
         $this->addTokenParser(new EmbedTokenParser($name, $verbs, $separators, $open, $processor, $close, $binds, $can_omit_first_arg));
     }
@@ -64,7 +64,7 @@ class Environment extends TwigEnvironment
      * @param bool $can_omit_first_arg (default: false)
      * @return void
      */
-    public function case(string $name, ?string $verbs, ?array $separators, Processor $processor, array $binds = [], bool $can_omit_first_arg = false)
+    public function case(string $name, string|null $verbs, array|null $separators, Processor $processor, array $binds = [], bool $can_omit_first_arg = false)
     {
         $this->embed($name, $verbs, $separators, 'if(', $processor, ") {\n", $binds, $can_omit_first_arg);
         $this->embed("else{$name}", $verbs, $separators, '} elseif(', $processor, ") {\n", $binds, $can_omit_first_arg);

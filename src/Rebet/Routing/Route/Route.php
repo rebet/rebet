@@ -29,7 +29,7 @@ abstract class Route implements \Stringable
     /**
      * Route action.
      *
-     * @var RouteAction
+     * @var RouteAction|null
      */
     protected $route_action = null;
 
@@ -75,7 +75,7 @@ abstract class Route implements \Stringable
      * @param string|null $regex
      * @return self
      */
-    public function where($name, ?string $regex = null) : self
+    public function where($name, string|null $regex = null) : self
     {
         foreach (is_array($name) ? $name : [$name => $regex] as $key => $value) {
             $this->wheres[$key] = $value;
@@ -118,7 +118,7 @@ abstract class Route implements \Stringable
      * @return array|null
      * @throws RouteNotFoundException
      */
-    abstract protected function analyze(Request $request) : ?array;
+    abstract protected function analyze(Request $request) : array|null;
 
     /**
      * Returns the route action for processing the request matched.
@@ -177,7 +177,7 @@ abstract class Route implements \Stringable
      *
      * @return AnnotatedMethod|null
      */
-    public function getAnnotatedMethod() : ?AnnotatedMethod
+    public function getAnnotatedMethod() : AnnotatedMethod|null
     {
         return $this->route_action ? $this->route_action->getAnnotatedMethod() : null ;
     }
@@ -230,7 +230,7 @@ abstract class Route implements \Stringable
      * @param string|null $name
      * @return self|array
      */
-    public function guard(?string $name = null)
+    public function guard(string|null $name = null)
     {
         if ($name === null) {
             $guard = $this->annotation(Guard::class);

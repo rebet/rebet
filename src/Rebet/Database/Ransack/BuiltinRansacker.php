@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Database\Ransack;
 
-use Rebet\Database\Database;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Query;
 
@@ -48,7 +47,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public function resolve($ransack_predicate, $value, array $alias = [], ?\Closure $extension = null) : ?Query
+    public function resolve($ransack_predicate, $value, array $alias = [], \Closure|null $extension = null) : Query|null
     {
         return Ransack::resolve($this->driver, $ransack_predicate, $value, $alias, $extension);
     }
@@ -56,7 +55,7 @@ class BuiltinRansacker implements Ransacker
     /**
      * {@inheritDoc}
      */
-    public function build($ransack, array $alias = [], ?\Closure $extension = null) : Query
+    public function build($ransack, array $alias = [], \Closure|null $extension = null) : Query
     {
         $wheres = [];
         $params = [];

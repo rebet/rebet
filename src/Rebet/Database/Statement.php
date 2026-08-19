@@ -80,7 +80,7 @@ class Statement implements \IteratorAggregate
     /**
      * Executes a prepared statement
      *
-     * @param array|PdoParameter[] $params (default: [])
+     * @param array $params values can be raw scalars or PdoParameter instances (default: [])
      * @return self
      * @throws DatabaseException|PDOException
      */
@@ -110,7 +110,7 @@ class Statement implements \IteratorAggregate
      *
      * @return string|null
      */
-    protected function queryString() : ?string
+    protected function queryString() : string|null
     {
         return isset($this->stmt->queryString) ? $this->stmt->queryString : null;
     }
@@ -123,7 +123,7 @@ class Statement implements \IteratorAggregate
      * @param array|null $meta info of this statement for performance in loop (default: null)
      * @return mixed
      */
-    protected function convert($row, string $class, ?array $meta = null)
+    protected function convert($row, string $class, array|null $meta = null)
     {
         $meta = $meta ?? $this->meta();
         $dm   = new $class();
@@ -188,7 +188,7 @@ class Statement implements \IteratorAggregate
      * @param string|null $type name of convert to type
      * @return ResultSet
      */
-    public function allOf($column, ?string $type = null) : ResultSet
+    public function allOf($column, string|null $type = null) : ResultSet
     {
         $rs   = [];
         $meta = $this->meta();
@@ -205,7 +205,7 @@ class Statement implements \IteratorAggregate
      * @param string|null $type name of convert to type
      * @return mixed
      */
-    public function firstOf($column, ?string $type = null)
+    public function firstOf($column, string|null $type = null)
     {
         return ($row = $this->fetch(is_int($column) ? \PDO::FETCH_NUM : \PDO::FETCH_ASSOC)) ? $this->db->driver()->toPhpType($row[$column] ?? null, $this->meta()[$column] ?? [], $type) : null ;
     }

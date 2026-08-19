@@ -1,13 +1,12 @@
 <?php
 namespace Rebet\Application\Console;
 
-use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
-use Rebet\Application\Kernel as ApplicationKernel;
+use Rebet\Application\Kernel;
 use Rebet\Application\Structure;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -18,43 +17,53 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * CLI (Command Line Interface) Kernel Class
  *
+ * @template-extends Kernel<InputInterface, int>
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class CliKernel extends ApplicationKernel
+abstract class CliKernel extends Kernel
 {
     /**
      * Current handling input
      *
-     * @var InputInterface
+     * @var InputInterface|null
      */
-    protected $input;
+    protected InputInterface|null $input;
 
     /**
      * Current handling output
      *
-     * @var OutputInterface
+     * @var OutputInterface|null
      */
-    protected $output;
+    protected OutputInterface|null $output;
+
+    /**
+     * Rebet assistant console application.
+     *
+     * @var Assistant|null
+     */
+    protected Assistant|null $assistant;
 
     /**
      * Status code of handling result
      *
      * @var int|null
      */
-    protected $result;
+    protected int|null $result;
 
     /**
      * {@inheritDoc}
      *
      * @param Structure $structure
      * @param string $channel (default: 'cli')
+     * @param OutputInterface|null $output (default: null for ConsoleOutput())
      */
-    public function __construct(Structure $structure, string $channel = 'cli')
+    public function __construct(Structure $structure, string $channel = 'cli', OutputInterface|null $output = null)
     {
         parent::__construct($structure, $channel);
+        $this->output = $output ?? new ConsoleOutput();
     }
 
     /**
@@ -72,17 +81,37 @@ abstract class CliKernel extends ApplicationKernel
     }
 
     /**
+     * Get rebet assistant console application.
+     *
+     * @return Assistant
+     */
+    public function assistant() : Assistant
+    {
+        return $this->assistant;
+    }
+
+    /**
      * {@inheritDoc}
      *
-     * @param InputInterface $input (default: null)
-     * @param OutputInterface $output (default: null)
+     * @return void
+     */
+    public function bootstrap() : void
+    {
+        parent::bootstrap();
+        $this->assistant = new Assistant();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param InputInterface|null $input (default: null for ArgvInput())
      * @return int
      */
-    public function handle($input = null, $output = null)
+    public function handle($input = null) : int
     {
         return $this->result = $this->assistant()->run(
-            $this->input  = $input ?? new ArgvInput(),
-            $this->output = $output ?? new ConsoleOutput()
+            $this->input = $input ?? new ArgvInput(),
+            $this->output
         );
     }
 
@@ -91,14 +120,13 @@ abstract class CliKernel extends ApplicationKernel
      *
      * @param string $action
      * @param array $parameters (default: [])
-     * @param OutputInterface $output (default: null)
      * @return int
      */
-    public function call(string $action, array $parameters = [], $output = null)
+    public function call(string $action, array $parameters = []) : int
     {
         return $this->result = $this->assistant()->run(
-            $this->input  = new ArrayInput(array_merge($parameters, ['command' => $action])),
-            $this->output = $output ?? new ConsoleOutput()
+            $this->input = new ArrayInput(array_merge($parameters, ['command' => $action])),
+            $this->output
         );
     }
 

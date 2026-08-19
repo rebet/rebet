@@ -63,7 +63,7 @@ class BatchUpdated implements Saving
      * @param mixed $ransack conditions that arrayable
      * @param DateTime|null $now
      */
-    public function __construct(Database $db, string $entity, array $sets, $ransack, ?DateTime $now, int $affected_rows)
+    public function __construct(Database $db, string $entity, array $sets, $ransack, DateTime|null $now, int $affected_rows)
     {
         $this->db            = $db;
         $this->entity        = $entity;

@@ -48,7 +48,7 @@ class Dsn
      * @param string|null $dsn
      * @return array
      */
-    public static function parse(?string $dsn) : array
+    public static function parse(string|null $dsn) : array
     {
         if (empty($dsn)) {
             return [];

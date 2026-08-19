@@ -16,7 +16,7 @@ use Rebet\Tools\Exception\RuntimeException;
  */
 class FilesystemException extends RuntimeException
 {
-    public function __construct(string $message, ?\Throwable $previous = null)
+    public function __construct(string $message, \Throwable|null $previous = null)
     {
         parent::__construct($message, $previous);
     }

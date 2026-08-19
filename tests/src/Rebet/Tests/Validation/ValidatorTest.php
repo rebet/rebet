@@ -32,7 +32,7 @@ class ValidatorTest extends RebetTestCase
                     'Ok' => function (Context $c) {
                         return true;
                     },
-                    'Ng' => function (Context $c, ?string $message = null) {
+                    'Ng' => function (Context $c, string|null $message = null) {
                         $c->appendError($message ?? "@The {$c->label} is NG.");
                         return false;
                     },

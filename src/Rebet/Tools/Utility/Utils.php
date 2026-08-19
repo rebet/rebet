@@ -32,7 +32,7 @@ class Utils
      * @param \Closure|null $comparator (default: null)
      * @return boolean
      */
-    public static function equivalent($value, $other, ?\Closure $comparator = null) : bool
+    public static function equivalent($value, $other, \Closure|null $comparator = null) : bool
     {
         if ((is_iterable($value) || $value instanceof stdClass) && (is_iterable($other) || $other instanceof stdClass)) {
             foreach ($value as $k => $v) {
@@ -186,7 +186,7 @@ class Utils
      * @param int $base
      * @return int|null
      */
-    public static function intval($var, int $base = 10) : ?int
+    public static function intval($var, int $base = 10) : int|null
     {
         return $var === null || $var === '' ? null : intval($var, $base);
     }
@@ -198,7 +198,7 @@ class Utils
      * @param mixed $var
      * @return float|null
      */
-    public static function floatval($var) : ?float
+    public static function floatval($var) : float|null
     {
         return $var === null || $var === '' ? null : floatval($var);
     }

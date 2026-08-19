@@ -72,7 +72,7 @@ class DriverTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataAppendLimitOffers')]
-    public function test_appendLimitOffset(string $expect, string $sql, ?int $limit = null, ?int $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql'])
+    public function test_appendLimitOffset(string $expect, string $sql, int|null $limit = null, int|null $offset = null, array $dbs = ['sqlite', 'mysql', 'mariadb', 'pgsql'])
     {
         self::eachDb(function (Database $db) use ($expect, $sql, $limit, $offset) {
             $this->assertSame($expect, $db->driver()->appendLimitOffset($sql, $limit, $offset));

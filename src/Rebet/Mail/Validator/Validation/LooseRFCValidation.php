@@ -54,7 +54,7 @@ class LooseRFCValidation implements EmailValidation
      *
      * @param array|null $ignores (default: null for depend on configure)
      */
-    public function __construct(?array $ignores = null)
+    public function __construct(array|null $ignores = null)
     {
         $this->ignores = $ignores ?? static::config('ignores');
     }
@@ -78,7 +78,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
-    public function getError() : ?InvalidEmail
+    public function getError() : InvalidEmail|null
     {
         return $this->error;
     }

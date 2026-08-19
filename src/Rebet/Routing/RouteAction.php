@@ -7,7 +7,6 @@ use Rebet\Http\Responder;
 use Rebet\Http\Response;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\Route;
-use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Strings;
 
@@ -43,7 +42,7 @@ class RouteAction
     /**
      * Method annotation accessor
      *
-     * @var AnnotatedMethod
+     * @var AnnotatedMethod|null
      */
     private $annotated_method = null;
 
@@ -54,11 +53,8 @@ class RouteAction
      * @param \ReflectionFunction|\ReflectionMethod $reflector
      * @param mixed $instance
      */
-    public function __construct(Route $route, $reflector, $instance = null)
+    public function __construct(Route $route, \ReflectionFunction|\ReflectionMethod $reflector, $instance = null)
     {
-        if (!($reflector instanceof \ReflectionFunction) && !($reflector instanceof \ReflectionMethod)) {
-            throw new LogicException('Invalid type of reflector.');
-        }
         $this->route            = $route;
         $this->reflector        = $reflector;
         $this->instance         = $instance;
@@ -129,7 +125,7 @@ class RouteAction
      *
      * @return AnnotatedMethod|null
      */
-    public function getAnnotatedMethod() : ?AnnotatedMethod
+    public function getAnnotatedMethod() : AnnotatedMethod|null
     {
         return $this->annotated_method;
     }

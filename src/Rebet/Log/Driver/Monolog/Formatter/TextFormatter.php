@@ -53,7 +53,7 @@ class TextFormatter implements FormatterInterface
      * @param string $format (default: depend on configure)
      * @param array $stringifiers (default: depend on configure)
      */
-    public function __construct(?string $format = null, array $stringifiers = [])
+    public function __construct(string|null $format = null, array $stringifiers = [])
     {
         $this->format       = $format ?? static::config('default_format');
         $this->stringifiers = array_merge((array) static::config('stringifiers', false, []), (array) $stringifiers);

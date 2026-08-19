@@ -25,7 +25,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
         $this->engine = $this->createEngine();
     }
 
-    protected function render(string $name, array $args = []) : ?string
+    protected function render(string $name, array $args = []) : string|null
     {
         return EofLineFeed::TRIM()->process($this->engine->render($name, $args));
     }
@@ -714,7 +714,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
     }
 
     #[DataProvider('dataPaginates')]
-    public function test_tag_paginate(string $locale, array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, ?int $page = 1, ?int $total = null, ?int $next_page_count = 4)
+    public function test_tag_paginate(string $locale, array $expect, array $not_expect, string $action, array $options, int $each_side = 3, int $page_size = 3, int|null $page = 1, int|null $total = null, int|null $next_page_count = 4)
     {
         // @todo
         App::setLocale($locale);

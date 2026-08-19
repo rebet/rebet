@@ -114,7 +114,7 @@ class FileDictionary implements Dictionary
      * @param string|null $locale (default: null)
      * @return self
      */
-    public function clear(?string $group = null, ?string $locale = null) : self
+    public function clear(string|null $group = null, string|null $locale = null) : self
     {
         if ($group !== null && $locale !== null) {
             unset($this->resouces[$group][$locale]);
@@ -168,7 +168,7 @@ class FileDictionary implements Dictionary
     /**
      * {@inheritDoc}
      */
-    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : ?string
+    public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : string|null
     {
         $sentence = null;
         foreach ($locales as $locale) {
@@ -194,11 +194,11 @@ class FileDictionary implements Dictionary
     /**
      * Select a proper translation string based on the given selector.
      *
-     * @param string|array $sentence
+     * @param string|array|null $sentence
      * @param int|string|null $selector
      * @return string|null
      */
-    protected function choose($sentence, $selector) : ?string
+    protected function choose($sentence, $selector) : string|null
     {
         if (is_null($sentence)) {
             return null;
@@ -223,10 +223,10 @@ class FileDictionary implements Dictionary
      * Get the translation string if the condition matches.
      *
      * @param string $part
-     * @param int|string $selector
+     * @param int|string|null $selector
      * @return string|null
      */
-    protected function extract(string $part, $selector) : ?string
+    protected function extract(string $part, $selector) : string|null
     {
         preg_match('/^[\{\[]([^\[\]\{\}]*)[\}\]](.*)/s', $part, $matches);
         if (count($matches) !== 3) {

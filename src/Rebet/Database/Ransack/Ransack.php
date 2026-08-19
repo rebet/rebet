@@ -154,7 +154,7 @@ class Ransack
     /**
      * Analyzed value
      *
-     * @var string
+     * @var mixed
      */
     protected $value;
 
@@ -229,7 +229,7 @@ class Ransack
      * @param string|null $option
      * @param string $placeholder_suffix (default: '')
      */
-    protected function __construct(Driver $driver, string $origin, $value, string $predicate, string $template, ?\Closure $value_converter, array $columns, string $conjunction, ?string $compound, ?string $option, string $placeholder_suffix = '')
+    protected function __construct(Driver $driver, string $origin, $value, string $predicate, string $template, \Closure|null $value_converter, array $columns, string $conjunction, string|null $compound, string|null $option, string $placeholder_suffix = '')
     {
         $this->driver             = $driver;
         $this->origin             = $origin;
@@ -255,7 +255,7 @@ class Ransack
      * @param string $placeholder_suffix (default: '')
      * @return Query|null
      */
-    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], ?\Closure $extension = null, string $placeholder_suffix = '') : ?Query
+    public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], \Closure|null $extension = null, string $placeholder_suffix = '') : Query|null
     {
         //  1 | If value is blank(null, '' or []) then ransack will be ignored
         if (Utils::isBlank($value)) {
@@ -408,7 +408,7 @@ class Ransack
      * @param \Closure|null $value_converter function(mixed $value) { ... } (default: null)
      * @return mixed
      */
-    public function value(bool $convert = false, ?\Closure $value_converter = null)
+    public function value(bool $convert = false, \Closure|null $value_converter = null)
     {
         if (!$convert) {
             return $this->value;
@@ -452,7 +452,7 @@ class Ransack
      *
      * @return \Closure|null
      */
-    public function valueConverter() : ?\Closure
+    public function valueConverter() : \Closure|null
     {
         return $this->value_converter;
     }
@@ -472,7 +472,7 @@ class Ransack
      *
      * @return string|null 'any'|'all'
      */
-    public function compound() : ?string
+    public function compound() : string|null
     {
         return $this->compound;
     }
@@ -483,7 +483,7 @@ class Ransack
      *
      * @return string|null
      */
-    public function option() : ?string
+    public function option() : string|null
     {
         return $this->option;
     }
@@ -524,7 +524,7 @@ class Ransack
      * @param \Closure|null $value_converter function(mixed $value) { ... } (default: null)
      * @return Query
      */
-    public function convert(?string $template = null, ?\Closure $value_converter = null) : Query
+    public function convert(string|null $template = null, \Closure|null $value_converter = null) : Query
     {
         $template      = $template ?? $this->template;
         $params        = [];

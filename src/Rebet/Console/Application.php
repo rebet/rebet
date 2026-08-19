@@ -24,7 +24,7 @@ class Application extends SymfonyApplication
      * @param OutputInterface|null $output (default: null)
      * @return int
      */
-    public function call(string $command, array $parameters = [], ?OutputInterface $output = null) : int
+    public function call(string $command, array $parameters = [], OutputInterface|null $output = null) : int
     {
         return $this->run(new ArrayInput(array_merge($parameters, ['command' => $command])), $output);
     }
@@ -36,7 +36,7 @@ class Application extends SymfonyApplication
      * @param OutputInterface|null $output
      * @return integer
      */
-    public function execute(string $command_line, ?OutputInterface $output = null) : int
+    public function execute(string $command_line, OutputInterface|null $output = null) : int
     {
         return $this->run(new StringInput($command_line), $output);
     }

@@ -127,7 +127,7 @@ class HttpStatus
      * @param integer $status
      * @return string|null return null when not exists status was given
      */
-    public static function reasonPhraseOf(int $status) : ?string
+    public static function reasonPhraseOf(int $status) : string|null
     {
         return static::config("reason_phrases")[$status] ?? null ;
     }
@@ -149,7 +149,7 @@ class HttpStatus
      * @param int $status
      * @return int|null return null when not exists status was given
      */
-    public static function classOf(int $status) : ?int
+    public static function classOf(int $status) : int|null
     {
         if (!static::exists($status)) {
             return null;
@@ -222,7 +222,7 @@ class HttpStatus
      * @return void
      * @throws HttpException of given HTTP status code.
      */
-    public static function abort(int $status, ?string $detail = null, ?string $title = null, ?\Throwable $previous = null) : void
+    public static function abort(int $status, string|null $detail = null, string|null $title = null, \Throwable|null $previous = null) : void
     {
         throw new HttpException($status, $detail, $title, $previous);
     }

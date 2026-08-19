@@ -115,7 +115,7 @@ class TextFormatterTest extends RebetTestCase
     }
 
     #[DataProvider('dataFormats')]
-    public function test_format($expect, array $record = [], ?string $format = null, array $stringifiers = [])
+    public function test_format($expect, array $record = [], string|null $format = null, array $stringifiers = [])
     {
         $record = array_merge([
             'message'  => 'Log Message.',

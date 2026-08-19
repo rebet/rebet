@@ -93,7 +93,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% lang 'messages.tags', ['tags' => $tags], count($tags) %}
         //   {% lang 'messages.tags', ['tags' => $tags], count($tags), 'en' %}
         $processor = BuiltinTagProcessors::lang();
-        Letterpress::function('lang', function (string $key, $replacement = [], $selector = null, ?string $locale = null) use ($processor) {
+        Letterpress::function('lang', function (string $key, $replacement = [], $selector = null, string|null $locale = null) use ($processor) {
             return $processor->execute([$key, is_array($replacement) ? Tinker::peelAll($replacement) : Tinker::peel($replacement), Tinker::peel($selector), $locale]);
         });
 
@@ -109,7 +109,7 @@ class LetterpressTagCustomizer implements Bootstrapper
         //   {% commentif $use_db->not() %} ... {% endcommentif %}
         //   {% commentif $without_db, '# ', 'Something headline comment here' %} ... {% endcommentif %}
         //   {% commentif $without_db, 'indent' => false %} ... {% endcommentif %}
-        Letterpress::filter('commentif', function (string $body, $comment_out_needed, string $comment = '// ', ?string $message = null, bool $indent = true) {
+        Letterpress::filter('commentif', function (string $body, $comment_out_needed, string $comment = '// ', string|null $message = null, bool $indent = true) {
             if (! Tinker::peel($comment_out_needed)) {
                 return $body;
             }

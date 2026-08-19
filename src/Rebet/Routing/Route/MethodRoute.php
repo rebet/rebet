@@ -94,7 +94,7 @@ class MethodRoute extends DeclarativeRoute
      */
     public function terminate(Request $request, Response $response) : void
     {
-        if (is_object($this->controller) && method_exists($this->controller, 'terminate')) {
+        if ($this->controller !== null) {
             $this->controller->terminate($request, $response);
         }
     }

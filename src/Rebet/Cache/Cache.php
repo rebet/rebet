@@ -111,7 +111,7 @@ class Cache
      * @param string $name when the null given return the default cache store (default: null)
      * @return Store
      */
-    public static function store(?string $name = null) : Store
+    public static function store(string|null $name = null) : Store
     {
         $name = $name ?? static::config('default_store');
         return static::$stores[$name]

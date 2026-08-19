@@ -230,7 +230,7 @@ class UnitTest extends RebetTestCase
     }
 
     #[DataProvider('dataExchanges')]
-    public function test_exchange($expect, $units, $value, ?string $to = null, ?int $precision = 2, array $options = [])
+    public function test_exchange($expect, $units, $value, string|null $to = null, int|null $precision = 2, array $options = [])
     {
         $this->assertSame($expect, Unit::of($units)->exchange($value, $to, $precision, $options));
     }
@@ -274,7 +274,7 @@ class UnitTest extends RebetTestCase
     }
 
     #[DataProvider('dataConverts')]
-    public function test_convert($expect, $units, $value, ?string $to = null, array $options = [])
+    public function test_convert(string $expect, string $units, string $value, string|null $to = null, array $options = [])
     {
         $decimal = Unit::of($units)->convert($value, $to, $options);
         $this->assertInstanceOf(Decimal::class, $decimal);

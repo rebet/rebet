@@ -66,7 +66,7 @@ abstract class RebetTestCase extends TestCase
         return vfsStream::setup('root', null, $structure);
     }
 
-    protected function _randomCode(int $min_length, ?int $max_length = null, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
+    protected function _randomCode(int $min_length, int|null $max_length = null, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
     {
         if ($max_length == null) {
             $max_length = $min_length;

@@ -44,7 +44,7 @@ abstract class AbstractTransport implements Swift_Transport
      *
      * @param Swift_Events_EventDispatcher|null $event_dispatcher (default: null for use Mail::container()->lookup('transport.eventdispatcher'))
      */
-    public function __construct(?Swift_Events_EventDispatcher $event_dispatcher = null)
+    public function __construct(Swift_Events_EventDispatcher|null $event_dispatcher = null)
     {
         $this->event_dispatcher = $event_dispatcher ?? Mail::container()->lookup('transport.eventdispatcher');
     }
@@ -89,11 +89,10 @@ abstract class AbstractTransport implements Swift_Transport
      */
     protected function beforeSendPerformed(Swift_Mime_SimpleMessage $message) : bool
     {
-        if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-            $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
-            if ($evt->bubbleCancelled()) {
-                return false;
-            }
+        $evt = $this->event_dispatcher->createSendEvent($this, $message);
+        $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+        if ($evt->bubbleCancelled()) {
+            return false;
         }
 
         return true;
@@ -108,10 +107,9 @@ abstract class AbstractTransport implements Swift_Transport
      */
     protected function sendPerformed(Swift_Mime_SimpleMessage $message, int $result = Swift_Events_SendEvent::RESULT_SUCCESS) : bool
     {
-        if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-            $evt->setResult($result);
-            $this->event_dispatcher->dispatchEvent($evt, 'sendPerformed');
-        }
+        $evt = $this->event_dispatcher->createSendEvent($this, $message);
+        $evt->setResult($result);
+        $this->event_dispatcher->dispatchEvent($evt, 'sendPerformed');
 
         return true;
     }

@@ -142,7 +142,7 @@ class ConventionalRoute extends Route
     /**
      * Instance of controller.
      *
-     * @var Controller
+     * @var Controller|null
      */
     protected $controller = null;
 
@@ -198,7 +198,7 @@ class ConventionalRoute extends Route
      * @return array|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request) : ?array
+    protected function analyze(Request $request) : array|null
     {
         $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
         foreach ($this->aliases as $alias => $path) {
@@ -327,7 +327,7 @@ class ConventionalRoute extends Route
      *
      * @return string|null
      */
-    public function getAliasName() : ?string
+    public function getAliasName() : string|null
     {
         return $this->alias;
     }
@@ -341,7 +341,7 @@ class ConventionalRoute extends Route
      */
     public function terminate(Request $request, Response $response) : void
     {
-        if (is_object($this->controller) && method_exists($this->controller, 'terminate')) {
+        if ($this->controller !== null) {
             $this->controller->terminate($request, $response);
         }
     }
@@ -373,7 +373,7 @@ class ConventionalRoute extends Route
      * @param string|null $path
      * @return self
      */
-    public function aliases($alias, ?string $path = null) : self
+    public function aliases($alias, string|null $path = null) : self
     {
         foreach (is_array($alias) ? $alias : [$alias => $path] as $key => $value) {
             $this->aliases[$key] = $value;

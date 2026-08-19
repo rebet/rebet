@@ -26,7 +26,7 @@ interface RebetException extends \Throwable
      *
      * @return \Throwable|null
      */
-    public function getCaused() : ?\Throwable ;
+    public function getCaused() : \Throwable|null ;
 
     /**
      * Set the given code

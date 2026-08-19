@@ -54,7 +54,7 @@ class AnnotatedProperty
      * @param AnnotatedClass|null $annotated_class
      * @param AnnotationReader|null $reader
      */
-    public function __construct(\ReflectionProperty $property, ?AnnotatedClass $annotated_class = null, ?AnnotationReader $reader = null)
+    public function __construct(\ReflectionProperty $property, AnnotatedClass|null $annotated_class = null, AnnotationReader|null $reader = null)
     {
         $this->property        = $property;
         $this->reader          = $reader ?? AnnotationReader::getShared();

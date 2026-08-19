@@ -252,7 +252,7 @@ interface Filesystem
      * @return string|null
      * @throws FileNotFoundException
      */
-    public function mimeType(string $path) : ?string ;
+    public function mimeType(string $path) : string|null ;
 
     /**
      * Get the file's last modification time.
@@ -272,7 +272,7 @@ interface Filesystem
      * @throws FileNotFoundException when file not found or the file is not public.
      * @throws FilesystemException when the adapter does not support retrieving URLs.
      */
-    public function url(string $path) : ?string;
+    public function url(string $path) : string|null;
 
     /**
      * Retrieves a read-stream for a path.
@@ -293,7 +293,7 @@ interface Filesystem
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array of matching file paths
      */
-    public function ls(?string $directory = null, $pattern = '*', ?string $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
+    public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
 
     /**
      * Get an array of files in a directory.
@@ -304,7 +304,7 @@ interface Filesystem
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array of matching file paths
      */
-    public function files(?string $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
+    public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
 
     /**
      * Get an array of directories in a directory.
@@ -315,7 +315,7 @@ interface Filesystem
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array of matching file paths
      */
-    public function directories(?string $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
+    public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
 
     /**
      * Create a directory

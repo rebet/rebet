@@ -37,7 +37,7 @@ class TokenGuard extends Guard
      * @param string $input_key (default: 'api_token')
      * @param Request $request (default: null for Request::current())
      */
-    public function __construct(string $provider, string $input_key = 'api_token', ?Request $request = null)
+    public function __construct(string $provider, string $input_key = 'api_token', Request|null $request = null)
     {
         parent::__construct($provider);
         $this->input_key = $input_key;
@@ -47,7 +47,7 @@ class TokenGuard extends Guard
     /**
      * {@inheritDoc}
      */
-    public function authenticate() : ?Response
+    public function authenticate() : Response|null
     {
         $this->user    = $this->provider->findByToken($this->token()) ?? AuthUser::guest() ;
         $allowed_roles = $this->request->route->roles() ?: [];
@@ -59,7 +59,7 @@ class TokenGuard extends Guard
      *
      * @return string|null
      */
-    protected function token() : ?string
+    protected function token() : string|null
     {
         return $this->request->input($this->input_key) ?:
                $this->request->bearerToken() ?:

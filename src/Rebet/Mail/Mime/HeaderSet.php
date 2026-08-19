@@ -55,7 +55,7 @@ class HeaderSet
      * NOTE: This method can not set null value to header, so if the value can be null then you should use addXxxxHeader() method.
      *
      * @param string $name
-     * @param string|DateTimeInterface $value
+     * @param string|DateTimeInterface|null $value
      * @param array|null $params for add PARAMETERIZED header syntax. (default: null for depend on value type DATE or TEXT syntax).
      * @return self
      */
@@ -124,7 +124,7 @@ class HeaderSet
      * @param array $params (default: [])
      * @return self
      */
-    public function addParameterizedHeader(string $name, ?string $value = null, array $params = []) : self
+    public function addParameterizedHeader(string $name, string|null $value = null, array $params = []) : self
     {
         $this->headers->addParameterizedHeader($name, $value, $params);
         return $this;
@@ -137,7 +137,7 @@ class HeaderSet
      * @param string|null $value (default: null)
      * @return self
      */
-    public function addTextHeader(string $name, ?string $value = null) : self
+    public function addTextHeader(string $name, string|null $value = null) : self
     {
         $this->headers->addTextHeader($name, $value);
         return $this;
@@ -150,7 +150,7 @@ class HeaderSet
      * @param DateTimeInterface|null $datetime (default: null)
      * @return self
      */
-    public function addDateHeader(string $name, ?DateTimeInterface $datetime = null) : self
+    public function addDateHeader(string $name, DateTimeInterface|null $datetime = null) : self
     {
         $this->headers->addDateHeader($name, $datetime);
         return $this;
@@ -220,7 +220,7 @@ class HeaderSet
      * @param int|null $index (default: null for remove given name all headers)
      * @return self
      */
-    public function remove(string $name, ?int $index = null) : self
+    public function remove(string $name, int|null $index = null) : self
     {
         if ($index === null) {
             $this->headers->removeAll($name);
@@ -287,10 +287,10 @@ class HeaderSet
     /**
      * Get a loggable string out of a Swiftmailer HeaderSet.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
+     * @param HeaderSet|Swift_Mime_SimpleHeaderSet $headers
      * @return string
      */
-    public static function convertToReadableString(Swift_Mime_SimpleHeaderSet $headers) : string
+    public static function convertToReadableString(HeaderSet|Swift_Mime_SimpleHeaderSet $headers) : string
     {
         $headers = $headers instanceof HeaderSet ? $headers->headers : $headers ;
         $string  = '';

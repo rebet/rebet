@@ -70,7 +70,7 @@ abstract class DeclarativeRoute extends Route
      * @return array|null
      * @throws RouteNotFoundException
      */
-    protected function analyze(Request $request) : ?array
+    protected function analyze(Request $request) : array|null
     {
         $matches  = [];
         $is_match = preg_match($this->getMatchingRegex(), $request->getRequestPath(), $matches);

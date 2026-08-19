@@ -252,9 +252,9 @@ class Decimal
         $capture             = [];
         $significant_figures = null;
         if (preg_match('/^(?<sign>[+\-]?)(?<integer>[0-9]+)\.?(?<decimal>[0-9]+)?(?:[eE](?<exp>[+\-]?\d+))?(?: *\((?<sf>\d+) sf\))?$/u', $value, $capture)) {
-            $sign    = $capture['sign'] ?? '';
+            $sign    = $capture['sign'];
             $sign    = $sign === '+' ? '' : $sign ;
-            $integer = ltrim($capture['integer'] ?? '', '0');
+            $integer = ltrim($capture['integer'], '0');
             $integer = $integer === '' ? '0' : $integer ;
             $decimal = $capture['decimal'] ?? '';
             $exp     = intval($capture['exp'] ?? 0);
@@ -306,10 +306,10 @@ class Decimal
      * @param string $formula '+'|'-'|'*'|'/'|'^'|'√'
      * @param Decimal|null $right apply null when formula is '√'
      * @param Decimal $result
-     * @param int $precision (default: null for apply mode rules)
+     * @param int|null $precision (default: null for apply mode rules)
      * @return self
      */
-    protected static function roundBy(int $mode, Decimal $left, string $formula, ?Decimal $right, Decimal $result, ?int $precision = null) : self
+    protected static function roundBy(int $mode, Decimal $left, string $formula, Decimal|null $right, Decimal $result, int|null $precision = null) : self
     {
         if ($precision) {
             return $result->roundByDecimalPlaces($precision);
@@ -360,12 +360,12 @@ class Decimal
      * Create Decimal instance from given value.
      * NOTE: If the float value given then the value arbitrary precision could be lost when convert it to string.
      *
-     * @param string|int|float|null $value
+     * @param float|int|self|string|null $value
      * @param string $decimal_point (default: '.')
      * @param string $thousands_separator (default: ',')
      * @return self|null
      */
-    public static function of($value, string $decimal_point = ".", string $thousands_separator = ",") : ?self
+    public static function of(float|int|self|string|null $value, string $decimal_point = ".", string $thousands_separator = ",") : self|null
     {
         if ($value === null) {
             return null;
@@ -499,11 +499,11 @@ class Decimal
     /**
      * Perform arbitrary precision comparison by bccomp().
      *
-     * @param Decimal|string|int|null $other
-     * @param integer|null $precision (default: null for max scale of operand)
+     * @param Decimal|float|int|string|null $other
+     * @param int|null $precision (default: null for max scale of operand)
      * @return int
      */
-    public function comp($other, ?int $precision = null) : int
+    public function comp(Decimal|float|int|string|null $other, int|null $precision = null) : int
     {
         if ($other === null) {
             return 1;
@@ -516,11 +516,11 @@ class Decimal
     /**
      * It checks left equals right by perform arbitrary precision comparison.
      *
-     * @param Decimal|string|int|null $other
-     * @param integer|null $precision (default: null for max scale of operand)
+     * @param Decimal|float|int|string|null $other
+     * @param int|null $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function eq($other, ?int $precision = null) : bool
+    public function eq(Decimal|float|int|string|null $other, int|null $precision = null) : bool
     {
         return $this->comp($other, $precision) === 0;
     }
@@ -528,11 +528,11 @@ class Decimal
     /**
      * It checks left greater than right by perform arbitrary precision comparison.
      *
-     * @param Decimal|string|int|null $other
-     * @param integer|null $precision (default: null for max scale of operand)
+     * @param Decimal|float|int|string|null $other
+     * @param int|null $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function gt($other, ?int $precision = null) : bool
+    public function gt(Decimal|float|int|string|null $other, int|null $precision = null) : bool
     {
         return $this->comp($other, $precision) === 1;
     }
@@ -540,11 +540,11 @@ class Decimal
     /**
      * It checks left greater equals right by perform arbitrary precision comparison.
      *
-     * @param Decimal|string|int|null $other
-     * @param integer|null $precision (default: null for max scale of operand)
+     * @param Decimal|float|int|string|null $other
+     * @param int|null $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function gte($other, ?int $precision = null) : bool
+    public function gte(Decimal|float|int|string|null $other, int|null $precision = null) : bool
     {
         return $this->comp($other, $precision) !== -1;
     }
@@ -552,11 +552,11 @@ class Decimal
     /**
      * It checks left less than right by perform arbitrary precision comparison.
      *
-     * @param Decimal|string|int|null $other
-     * @param integer|null $precision (default: null for max scale of operand)
+     * @param Decimal|float|int|string|null $other
+     * @param int|null $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function lt($other, ?int $precision = null) : bool
+    public function lt(Decimal|float|int|string|null $other, int|null $precision = null) : bool
     {
         return $this->comp($other, $precision) === -1;
     }
@@ -564,11 +564,11 @@ class Decimal
     /**
      * It checks left less equals right by perform arbitrary precision comparison.
      *
-     * @param Decimal|string|int|null $other
-     * @param integer|null $precision (default: null for max scale of operand)
+     * @param Decimal|float|int|string|null $other
+     * @param int|null $precision (default: null for max scale of operand)
      * @return bool
      */
-    public function lte($other, ?int $precision = null) : bool
+    public function lte(Decimal|float|int|string|null $other, int|null $precision = null) : bool
     {
         return $this->comp($other, $precision) !== 1;
     }
@@ -586,7 +586,7 @@ class Decimal
     /**
      * Shift the decimal point to right (means $this * 10^{scale})
      *
-     * @param integer $scale
+     * @param int $scale
      * @return self
      */
     public function shift(int $scale) : self
@@ -597,7 +597,7 @@ class Decimal
     /**
      * Shift the decimal point to left (means $this * 10^-{scale})
      *
-     * @param integer $scale
+     * @param int $scale
      * @return self
      */
     public function unshift(int $scale) : self
@@ -737,12 +737,12 @@ class Decimal
     /**
      * Perform arbitrary precision addition by bcadd().
      *
-     * @param Decimal|string|int $other
+     * @param Decimal|float|int|string $other
      * @param int|null $precision (default: null for apply the mode rule)
      * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function add($other, ?int $precision = null, ?int $mode = null) : self
+    public function add(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
     {
         $other  = static::of($other);
         $result = static::of(bcadd($this->value, $other->value, max($this->scale, $other->scale)))->inheritDirtyFrom($this, $other);
@@ -752,12 +752,12 @@ class Decimal
     /**
      * Perform arbitrary precision subtraction by bcsub().
      *
-     * @param Decimal|string|int $other
+     * @param Decimal|float|int|string $other
      * @param int|null $precision (default: null for apply the mode rule)
      * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function sub($other, ?int $precision = null, ?int $mode = null) : self
+    public function sub(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
     {
         $other  = static::of($other);
         $result = static::of(bcsub($this->value, $other->value, max($this->scale, $other->scale)))->inheritDirtyFrom($this, $other);
@@ -767,12 +767,12 @@ class Decimal
     /**
      * Perform arbitrary precision multiplication by bcmul().
      *
-     * @param Decimal|string|int $other
+     * @param Decimal|float|int|string $other
      * @param int|null $precision (default: null for apply the mode rule)
      * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function mul($other, ?int $precision = null, ?int $mode = null) : self
+    public function mul(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
     {
         $other  = static::of($other);
         $result = static::of(bcmul($this->value, $other->value, $this->scale + $other->scale))->inheritDirtyFrom($this, $other);
@@ -782,12 +782,12 @@ class Decimal
     /**
      * Perform arbitrary precision division by bcmul().
      *
-     * @param Decimal|string|int $other
+     * @param Decimal|float|int|string $other
      * @param int|null $precision (default: null for apply the mode rule)
      * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function div($other, ?int $precision = null, ?int $mode = null) : self
+    public function div(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
     {
         $other  = static::of($other);
         $result = static::of(bcdiv($this->value, $other->value, max(mb_strlen($other->integers()) + min($this->significant_figures, $other->significant_figures), static::config('options.max_scale')) + 2))->inheritDirtyFrom($this, $other);
@@ -797,12 +797,12 @@ class Decimal
     /**
      * Perform arbitrary precision power by bcpow().
      *
-     * @param Decimal|string|int $exponent
+     * @param Decimal|float|int|string $exponent
      * @param int|null $precision (default: null for apply the mode rule)
      * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function pow($exponent, ?int $precision = null, ?int $mode = null) : self
+    public function pow(Decimal|float|int|string $exponent, int|null $precision = null, int|null $mode = null) : self
     {
         $exponent = static::of($exponent)->floor();
         $result   = static::of(bcpow($this->value, $exponent->value, $exponent->isNegative() ? static::config('options.max_scale') : $this->scale * abs(intval($exponent->value)) + 2))->inheritDirtyFrom($this, $exponent);
@@ -816,7 +816,7 @@ class Decimal
      * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
-    public function sqrt(?int $precision = null, ?int $mode = null) : self
+    public function sqrt(int|null $precision = null, int|null $mode = null) : self
     {
         $result = static::of(bcsqrt($this->value, static::config('options.max_scale')))->inheritDirtyFrom($this);
         return static::roundBy($mode ?? static::config('mode'), $this, '^', null, $result, $precision);
@@ -826,10 +826,10 @@ class Decimal
      * Perform arbitrary precision modulus by bcmod().
      * NOTE: The value and modulus can be only integer. For "float" decimal part will be ignored.
      *
-     * @param Decimal|string|int $modulus
+     * @param Decimal|float|int|string $modulus
      * @return self|null
      */
-    public function mod($modulus) : ?self
+    public function mod(Decimal|float|int|string $modulus) : self|null
     {
         $modulus = static::of($modulus);
         return $modulus->eq(0, 0) ? null : static::of(bcmod($this->value, $modulus->integers()))->inheritDirtyFrom($this, $modulus);
@@ -838,11 +838,11 @@ class Decimal
     /**
      * Perform arbitrary precision power and mond by bcpowmod().
      *
-     * @param Decimal|string|int $exponent
-     * @param Decimal|string|int $modulus
+     * @param Decimal|float|int|string $exponent
+     * @param Decimal|float|int|string $modulus
      * @return self
      */
-    public function powmod($exponent, $modulus) : self
+    public function powmod(Decimal|float|int|string $exponent, Decimal|float|int|string $modulus) : self
     {
         $exponent = static::of($exponent);
         $modulus  = static::of($modulus);

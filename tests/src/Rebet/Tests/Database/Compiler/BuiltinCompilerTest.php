@@ -417,7 +417,7 @@ class BuiltinCompilerTest extends RebetDatabaseTestCase
     }
 
     #[DataProvider('dataCompiles')]
-    public function test_compile(array $target_db_kinds, string $expect_sql, array $expect_params, string $sql, ?array $order_by = null, ?array $params = null, ?Pager $pager = null, ?Cursor $cursor = null)
+    public function test_compile(array $target_db_kinds, string $expect_sql, array $expect_params, string $sql, array|null $order_by = null, array|null $params = null, Pager|null $pager = null, Cursor|null $cursor = null)
     {
         self::eachDb(function (Database $db) use ($target_db_kinds, $expect_sql, $expect_params, $sql, $order_by, $params, $pager, $cursor) {
             if (!in_array($db->name(), $target_db_kinds)) {

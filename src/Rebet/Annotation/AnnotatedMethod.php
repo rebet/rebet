@@ -54,7 +54,7 @@ class AnnotatedMethod
      * @param AnnotatedClass|null $annotated_class
      * @param AnnotationReader|null $reader
      */
-    public function __construct(\ReflectionMethod $method, ?AnnotatedClass $annotated_class = null, ?AnnotationReader $reader = null)
+    public function __construct(\ReflectionMethod $method, AnnotatedClass|null $annotated_class = null, AnnotationReader|null $reader = null)
     {
         $this->method          = $method;
         $this->reader          = $reader ?? AnnotationReader::getShared();

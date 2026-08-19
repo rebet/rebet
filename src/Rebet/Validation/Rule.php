@@ -49,7 +49,7 @@ abstract class Rule
      *
      * @return bool|null
      */
-    public function nestedAttributeAutoFormat() : ?bool
+    public function nestedAttributeAutoFormat() : bool|null
     {
         return null;
     }

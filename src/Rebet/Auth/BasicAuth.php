@@ -34,7 +34,7 @@ class BasicAuth
      * @param string $charset Character encoding (default: UTF-8)
      * @return string
      */
-    public static function authenticate(array $auth_list, ?\Closure $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8') : string
+    public static function authenticate(array $auth_list, \Closure|null $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8') : string
     {
         if (empty($to_hash)) {
             $to_hash = function ($password) {

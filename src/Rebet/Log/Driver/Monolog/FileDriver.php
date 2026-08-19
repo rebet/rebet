@@ -55,7 +55,7 @@ class FileDriver extends MonologDriver
         int $file_permission = 0644,
         bool $use_locking = false,
         bool $with_browser_console = false,
-        ?string $format = null,
+        string|null $format = null,
         array $stringifiers = [],
         bool $bubble = true
     ) {

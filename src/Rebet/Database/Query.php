@@ -98,7 +98,7 @@ class Query
      * @param int|null $offset (default: null)
      * @return self
      */
-    public function appendLimitOffset(?int $limit, ?int $offset = null) : self
+    public function appendLimitOffset(int|null $limit, int|null $offset = null) : self
     {
         $this->sql = $this->driver->appendLimitOffset($this->sql, $limit, $offset);
         return $this;
