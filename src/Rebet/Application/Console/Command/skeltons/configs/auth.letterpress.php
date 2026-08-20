@@ -86,10 +86,10 @@ return [
             //{%-- if $use_auth -%}
             'user' => [
                 //{%-- if $use_db -%}
-                '@factory'     => DatabaseProvider::class,
+                '@factory'     => DatabaseProvider::class,    //{#-- @phpstan-ignore array.duplicateKey (-#})
                 'entity'       => User::class,
-                'precondition' => ['resign_at_null' => true],
-                'alises'       => ['role' => '@user'],
+                'precondition' => ['resign_at_null' => true], //{#-- @phpstan-ignore array.duplicateKey (-#})
+                'alises'       => ['role' => '@user'],        //{#-- @phpstan-ignore array.duplicateKey (-#})
                 //{%-- else -%}
                 '@factory' => ArrayProvider::class,
                 'users'    => [
@@ -127,7 +127,7 @@ return [
             //{%-- commentif !$use_auth -%}
             'all'   => function (AuthUser $user) { return true; },
             'guest' => function (AuthUser $user) { return $user->isGuest(); },
-            'user'  => function (AuthUser $user) { return $user->role === 'user'; },
+            'user'  => function (AuthUser $user) { return $user->role === 'user'; }, // @phpstan-ignore property.notFound (AuthUser allow dynamic properties)
             //{%-- endcommentif -%}
         ],
 

@@ -7,7 +7,8 @@ parameters:
     stubFiles:
         - ./stubs/swiftmailer/SimpleMimeEntity.stub.php
         - ./stubs/swiftmailer/SimpleMessage.stub.php
-    excludePaths:
-        # Letterpress template with `{%-- if/else --%}` pseudo-conditional comments that
-        # references the App\ namespace of the (not yet existing) generated application.
-        - ./src/Rebet/Application/Console/Command/skeltons/configs/*.letterpress.php
+    ignoreErrors:
+        # Classes under the `App` namespace are implemented by the application itself and 
+        # are therefore not included in this package; 
+        # consequently, `class.notFound` errors regarding these classes are ignored.
+        - '#^.*[Cc]lass|type App\\.*$#'
