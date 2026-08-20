@@ -309,7 +309,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                     }
                 }
                 if (!$parsed_test_now) {
-                    throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format').']'));
+                    throw new DateTimeFormatException("Invalid date time format for `test now`. Acceptable format are [".join(',', self::config('test_now_format')).']');
                 }
                 /** @var \DateTime|false $modified_test_now */
                 $modified_test_now = $parsed_test_now->modify($time);
@@ -671,11 +671,11 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     public function setMilliMicro(int $milli_micro) : static
     {
         if ($milli_micro >= 0) {
-            $sec = floor($milli_micro / 1000000);
-            $u   = str_pad($milli_micro % 1000000, 6, '0', STR_PAD_LEFT);
+            $sec = (int) floor($milli_micro / 1000000);
+            $u   = str_pad((string) ($milli_micro % 1000000), 6, '0', STR_PAD_LEFT);
         } else {
-            $sec = ceil(abs($milli_micro) / 1000000) * -1;
-            $u   = str_pad(((abs($sec) * 1000000) + $milli_micro) % 1000000, 6, '0', STR_PAD_LEFT);
+            $sec = (int) ceil(abs($milli_micro) / 1000000) * -1;
+            $u   = str_pad((string) ((abs($sec) * 1000000 + $milli_micro) % 1000000), 6, '0', STR_PAD_LEFT);
         }
         return $this->modify($this->format("H:i:s.{$u}"))->addSecond($sec);
     }

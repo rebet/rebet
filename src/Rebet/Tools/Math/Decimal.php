@@ -591,7 +591,7 @@ class Decimal
      */
     public function shift(int $scale) : self
     {
-        return static::of(bcmul($this->value, bcpow('10', $scale, abs(min($scale, 0))), max($this->scale - $scale, 0)))->inheritDirtyFrom($this);
+        return static::of(bcmul($this->value, bcpow('10', (string) $scale, abs(min($scale, 0))), max($this->scale - $scale, 0)))->inheritDirtyFrom($this);
     }
 
     /**

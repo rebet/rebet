@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\View\Engine\Blade;
 
-use Illuminate\Container\Container;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
@@ -16,12 +15,13 @@ use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\OverrideOption;
 use Rebet\Tools\Utility\Path;
 use Rebet\View\Engine\Blade\Compiler\BladeCompiler;
+use Rebet\View\Engine\Blade\Support\Application;
 use Rebet\View\Engine\Engine;
 
 /**
  * Blade Templeate Engine Class
  *
- * This class depends on illuminate/view ^5.7, so you should run composer command like below.
+ * This class depends on illuminate/view ^10.0, so you should run composer command like below.
  * $ composer require illuminate/view
  *
  * @package   Rebet
@@ -56,7 +56,7 @@ class Blade implements Engine
      */
     public static function clear() : void
     {
-        Container::setInstance(null);
+        Application::setInstance(null);
     }
 
     /**
@@ -67,7 +67,7 @@ class Blade implements Engine
      */
     public function __construct(bool $clean_rebuild = false)
     {
-        $app = Container::getInstance() ;
+        $app = Application::getInstance() ;
         if ($app->has('view') && !$clean_rebuild) {
             return;
         }
@@ -123,7 +123,7 @@ class Blade implements Engine
      */
     public function core()
     {
-        return Container::getInstance()['view'];
+        return Application::getInstance()['view'];
     }
 
     /**

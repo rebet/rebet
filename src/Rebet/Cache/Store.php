@@ -2,11 +2,11 @@
 namespace Rebet\Cache;
 
 use DateTimeInterface;
+use Psr\Cache\CacheItemInterface;
 use Rebet\Cache\Adapter\Adapter;
 use Rebet\Cache\Exception\CacheException;
 use Rebet\Tools\Math\Unit;
 use Rebet\Tools\Utility\Arrays;
-use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Store Class
@@ -25,12 +25,12 @@ class Store
      *
      * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @var Adapter of cache store
      */
-    protected $adapter;
+    protected Adapter $adapter;
 
     /**
      * Create cache store of given adapter.
@@ -77,11 +77,11 @@ class Store
     /**
      * Set expire to given cache item.
      *
-     * @param ItemInterface $item
+     * @param CacheItemInterface $item
      * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return void
      */
-    public static function setExpireTo(ItemInterface &$item, $expire) : void
+    public static function setExpireTo(CacheItemInterface &$item, $expire) : void
     {
         if ($expire instanceof DateTimeInterface) {
             $item->expiresAt($expire);

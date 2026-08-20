@@ -64,27 +64,27 @@ class Unit
 
                 // The Binary Prefix defined in IEEE 1541-2002 Symbol factors.
                 Unit::BINARY_PREFIX => [
-                    'Yi' => [bcpow(2, 80), true], // yobi
-                    'Zi' => [bcpow(2, 70), true], // zebi
-                    'Ei' => [bcpow(2, 60), true], // exbi
-                    'Pi' => [bcpow(2, 50), true], // pebi
-                    'Ti' => [bcpow(2, 40), true], // tebi
-                    'Gi' => [bcpow(2, 30), true], // gibi
-                    'Mi' => [bcpow(2, 20), true], // mebi
-                    'Ki' => [bcpow(2, 10), true], // kibi
+                    'Yi' => [bcpow('2', '80'), true], // yobi
+                    'Zi' => [bcpow('2', '70'), true], // zebi
+                    'Ei' => [bcpow('2', '60'), true], // exbi
+                    'Pi' => [bcpow('2', '50'), true], // pebi
+                    'Ti' => [bcpow('2', '40'), true], // tebi
+                    'Gi' => [bcpow('2', '30'), true], // gibi
+                    'Mi' => [bcpow('2', '20'), true], // mebi
+                    'Ki' => [bcpow('2', '10'), true], // kibi
                     ''   => ['1'         , true], // (Base Prefix)
                 ],
 
                 // Custom Binary Prefixes factors that omitted 'i' from symbols.
                 Unit::STORAGE_PREFIX => [
-                    'Y' => [bcpow(2, 80), true], // yotta
-                    'Z' => [bcpow(2, 70), true], // zetta
-                    'E' => [bcpow(2, 60), true], // exa
-                    'P' => [bcpow(2, 50), true], // peta
-                    'T' => [bcpow(2, 40), true], // tera
-                    'G' => [bcpow(2, 30), true], // giga
-                    'M' => [bcpow(2, 20), true], // mega
-                    'K' => [bcpow(2, 10), true], // kilo
+                    'Y' => [bcpow('2', '80'), true], // yotta
+                    'Z' => [bcpow('2', '70'), true], // zetta
+                    'E' => [bcpow('2', '60'), true], // exa
+                    'P' => [bcpow('2', '50'), true], // peta
+                    'T' => [bcpow('2', '40'), true], // tera
+                    'G' => [bcpow('2', '30'), true], // giga
+                    'M' => [bcpow('2', '20'), true], // mega
+                    'K' => [bcpow('2', '10'), true], // kilo
                     ''  => ['1'         , true], // (Base Prefix)
                 ],
 

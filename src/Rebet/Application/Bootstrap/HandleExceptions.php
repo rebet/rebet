@@ -21,10 +21,11 @@ class HandleExceptions implements Bootstrapper
         ini_set('display_errors', 'Off');
         error_reporting(-1);
 
-        set_error_handler(function ($level, $message, $file = '', $line = 0, $context = []) {
+        set_error_handler(function (int $level, string $message, string $file = '', int $line = 0) : bool {
             if (error_reporting() & $level) {
                 throw new \ErrorException($message, 0, $level, $file, $line);
             }
+            return false;
         });
 
         $fallbacker = function (\Throwable $e) use ($kernel) {

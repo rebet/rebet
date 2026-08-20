@@ -417,7 +417,9 @@ class Mail
         if ($address === null) {
             return $this->message->getSender() ?? [];
         }
-        $this->message->setSender(static::resolve($address));
+        $resolved = static::resolve($address);
+        $sender   = array_key_first($resolved);
+        $this->message->setSender($sender, $resolved[$sender]);
         return $this;
     }
 

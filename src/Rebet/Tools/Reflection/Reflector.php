@@ -39,7 +39,7 @@ class Reflector
      * @todo Wiled card access like 'array.*.key' support
      *
      * @param  mixed $object
-     * @param  int|string $key You can use dot notation
+     * @param  int|string|null $key You can use dot notation
      * @param  mixed $default (default: null)
      * @param  bool $accessible (default: false)
      * @return mixed
