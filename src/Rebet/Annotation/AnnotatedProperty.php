@@ -16,21 +16,21 @@ class AnnotatedProperty
      *
      * @var AnnotationReader
      */
-    protected $reader = null;
+    protected $reader;
 
     /**
      * Reflection class of annotation target
      *
      * @var \ReflectionProperty
      */
-    protected $property = null;
+    protected $property;
 
     /**
      * Annotated declaring class of the property.
      *
      * @var AnnotatedClass
      */
-    protected $annotated_class = null;
+    protected $annotated_class;
 
     /**
      * Create property annotations accesser.

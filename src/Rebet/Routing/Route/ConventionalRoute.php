@@ -67,42 +67,42 @@ class ConventionalRoute extends Route
      *
      * @var string
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * Default URI part of controller (default: top)
      *
      * @var string
      */
-    protected $default_part_of_controller = null;
+    protected $default_part_of_controller;
 
     /**
      * Default URI part of action (default: index)
      *
      * @var string
      */
-    protected $default_part_of_action = null;
+    protected $default_part_of_action;
 
     /**
      * URI snake separator (default: '-')
      *
      * @var string
      */
-    protected $uri_snake_separator = null;
+    protected $uri_snake_separator;
 
     /**
      * Controller name suffix (default: Controller)
      *
      * @var string
      */
-    protected $controller_suffix = null;
+    protected $controller_suffix;
 
     /**
      * Action name suffix (default: '')
      *
      * @var string
      */
-    protected $action_suffix = null;
+    protected $action_suffix;
 
     /**
      * Accessible to non public member action(method).

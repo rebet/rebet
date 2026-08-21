@@ -16,14 +16,14 @@ class AnnotatedClass
      *
      * @var AnnotationReader
      */
-    protected $reader = null;
+    protected $reader;
 
     /**
      * Reflection class of annotation target
      *
      * @var \ReflectionClass<object>
      */
-    protected $class = null;
+    protected $class;
 
     /**
      * Create class annotations accesser.

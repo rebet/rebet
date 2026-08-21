@@ -24,7 +24,7 @@ class Context
      *
      * @var string
      */
-    private $crud = null;
+    private $crud;
 
     /**
      * The data under validation.

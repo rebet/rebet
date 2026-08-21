@@ -574,7 +574,7 @@ class Router
      *
      * @var string
      */
-    protected $channel = null;
+    protected $channel;
 
     /**
      * The prefix path for this rules.

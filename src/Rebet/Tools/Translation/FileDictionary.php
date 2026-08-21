@@ -61,7 +61,7 @@ class FileDictionary implements Dictionary
      *
      * @var string
      */
-    protected $suffix = null;
+    protected $suffix;
 
     /**
      * Resource file loading option

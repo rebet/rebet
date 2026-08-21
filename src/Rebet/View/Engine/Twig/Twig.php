@@ -55,7 +55,7 @@ class Twig implements Engine
      *
      * @var string
      */
-    protected $file_suffix = null;
+    protected $file_suffix;
 
     /**
      * Crear view template engine.

@@ -34,7 +34,7 @@ abstract class DeclarativeRoute extends Route
      *
      * @var string
      */
-    public $uri = null;
+    public $uri;
 
     /**
      * {@inheritDoc}

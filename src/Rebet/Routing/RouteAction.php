@@ -23,7 +23,7 @@ class RouteAction
     /**
      * @var Route of this action
      */
-    private $route = null;
+    private $route;
 
     /**
      * Instance to be action executed
@@ -37,7 +37,7 @@ class RouteAction
      *
      * @var \ReflectionFunction|\ReflectionMethod
      */
-    private $reflector = null;
+    private $reflector;
 
     /**
      * Method annotation accessor

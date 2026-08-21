@@ -16,21 +16,21 @@ class AnnotatedMethod
      *
      * @var AnnotationReader
      */
-    protected $reader = null;
+    protected $reader;
 
     /**
      * Reflection class of annotation target
      *
      * @var \ReflectionMethod
      */
-    protected $method = null;
+    protected $method;
 
     /**
      * Annotated declaring class of the method.
      *
      * @var AnnotatedClass
      */
-    protected $annotated_class = null;
+    protected $annotated_class;
 
     /**
      * Create method annotations accesser.

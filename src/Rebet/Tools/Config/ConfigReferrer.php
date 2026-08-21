@@ -26,7 +26,7 @@ class ConfigReferrer implements DotAccessDelegator
     /**
      * @var string of refer section name
      */
-    private $section = null;
+    private $section;
 
     /**
      * @var string of refer key name

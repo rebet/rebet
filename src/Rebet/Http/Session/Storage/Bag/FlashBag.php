@@ -19,14 +19,14 @@ class FlashBag implements SessionBagInterface
      *
      * @var string
      */
-    private $name = null;
+    private $name;
 
     /**
      * Strage key.
      *
      * @var string
      */
-    private $storage_key = null;
+    private $storage_key;
 
     /**
      * Attribute data.

@@ -41,28 +41,28 @@ class DatabaseProvider extends AuthProvider
      *
      * @var string
      */
-    protected $signin_id_name = null;
+    protected $signin_id_name;
 
     /**
      * Password attribute name
      *
      * @var string
      */
-    protected $password_name = null;
+    protected $password_name;
 
     /**
      * API token attribute name
      *
      * @var string
      */
-    protected $api_token_name = null;
+    protected $api_token_name;
 
     /**
      * Preconditions for signin id authenticate.
      *
      * @var callable
      */
-    protected $precondition = null;
+    protected $precondition;
 
     /**
      * remember_me table expired data clean rate.

@@ -22,7 +22,7 @@ class ConfigPromise implements DotAccessDelegator
     /**
      * @var \Closure of delay evaluation
      */
-    private $promise = null;
+    private $promise;
 
     /**
      * Whether or not to determine the value by the first delay evaluation

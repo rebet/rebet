@@ -26,14 +26,14 @@ class ControllerRoute extends ConventionalRoute
      *
      * @var string
      */
-    public $uri = null;
+    public $uri;
 
     /**
      * Controller action
      *
      * @var \ReflectionClass<object>
      */
-    protected $action = null;
+    protected $action;
 
     /**
      * Create a controller route.

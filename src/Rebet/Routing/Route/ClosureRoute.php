@@ -21,7 +21,7 @@ class ClosureRoute extends DeclarativeRoute
      *
      * @var \Closure
      */
-    protected $action = null;
+    protected $action;
 
     /**
      * Create a closure route

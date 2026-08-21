@@ -38,7 +38,7 @@ class ViewSelector
      *
      * @var AuthUser
      */
-    protected $user = null;
+    protected $user;
 
     /**
      * View changer

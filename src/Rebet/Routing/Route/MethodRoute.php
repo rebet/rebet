@@ -31,7 +31,7 @@ class MethodRoute extends DeclarativeRoute
     /**
      * @var \ReflectionMethod
      */
-    protected $action = null;
+    protected $action;
 
     /**
      * @var Controller|null

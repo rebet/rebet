@@ -19,7 +19,7 @@ class Logger
      *
      * @var PsrLogger
      */
-    protected $driver = null;
+    protected $driver;
 
     /**
      * Create Logger using given log driver.

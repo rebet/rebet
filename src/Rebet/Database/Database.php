@@ -57,14 +57,14 @@ class Database
      *
      * @var string
      */
-    protected $name = null;
+    protected $name;
 
     /**
      * The PDO Driver instance.
      *
      * @var Driver
      */
-    protected $driver = null;
+    protected $driver;
 
     /**
      * Status that logging or not.
@@ -85,14 +85,14 @@ class Database
      *
      * @var Compiler
      */
-    protected $compiler = null;
+    protected $compiler;
 
     /**
      * Ransacker of this database.
      *
      * @var Ransacker
      */
-    protected $ransacker = null;
+    protected $ransacker;
 
     /**
      * Create database instance using given PDO instance.

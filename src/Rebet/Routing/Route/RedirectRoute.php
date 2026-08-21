@@ -20,14 +20,14 @@ class RedirectRoute extends ClosureRoute
      *
      * @var string
      */
-    protected $destination = null;
+    protected $destination;
 
     /**
      * Http status of redirect
      *
      * @var int
      */
-    protected $status = null;
+    protected $status;
 
     /**
      * Create a redirect route
