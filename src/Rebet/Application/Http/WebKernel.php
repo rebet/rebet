@@ -31,14 +31,14 @@ abstract class WebKernel extends Kernel
      *
      * @var Request|null
      */
-    protected Request|null $request;
+    protected Request|null $request = null;
 
     /**
      * Current handling response.
      *
      * @var Response|null
      */
-    protected Response|null $response;
+    protected Response|null $response = null;
 
     /**
      * {@inheritDoc}

@@ -31,28 +31,28 @@ abstract class CliKernel extends Kernel
      *
      * @var InputInterface|null
      */
-    protected InputInterface|null $input;
+    protected InputInterface|null $input = null;
 
     /**
      * Current handling output
      *
-     * @var OutputInterface|null
+     * @var OutputInterface
      */
-    protected OutputInterface|null $output;
+    protected OutputInterface $output;
 
     /**
      * Rebet assistant console application.
      *
      * @var Assistant|null
      */
-    protected Assistant|null $assistant;
+    protected Assistant|null $assistant = null;
 
     /**
      * Status code of handling result
      *
      * @var int|null
      */
-    protected int|null $result;
+    protected int|null $result = null;
 
     /**
      * {@inheritDoc}
