@@ -22,7 +22,7 @@ abstract class Route implements \Stringable
     /**
      * Regex patterns for routing parameters.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $wheres = [];
 
@@ -50,7 +50,7 @@ abstract class Route implements \Stringable
     /**
      * Middlewares for this route.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $middlewares = [];
 
@@ -64,14 +64,14 @@ abstract class Route implements \Stringable
     /**
      * The roles for this route
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $roles = [];
 
     /**
      * Configure regex check of routing parameters.
      *
-     * @param array|string $name or [$name => $regex, ...]
+     * @param array<string, string>|string $name or [$name => $regex, ...]
      * @param string|null $regex
      * @return self
      */
@@ -115,7 +115,7 @@ abstract class Route implements \Stringable
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
-     * @return array|null
+     * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
     abstract protected function analyze(Request $request) : array|null;
@@ -197,7 +197,7 @@ abstract class Route implements \Stringable
      *  Get or set the middlewares attached to the route.
      *
      * @param mixed ...$middlewares
-     * @return self|array
+     * @return self|array<int, string>
      */
     public function middlewares(...$middlewares)
     {
@@ -211,8 +211,8 @@ abstract class Route implements \Stringable
     /**
      * Get or set the roles attached to the route.
      *
-     * @param string|array ...$roles
-     * @return self|array
+     * @param string|array<int, string>|null $roles
+     * @return self|array<int, string>
      */
     public function roles($roles = null)
     {
@@ -228,7 +228,7 @@ abstract class Route implements \Stringable
      *  Get or set the guard name attached to the route.
      *
      * @param string|null $name
-     * @return self|array
+     * @return self|string|null
      */
     public function guard(string|null $name = null)
     {

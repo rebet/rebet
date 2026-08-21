@@ -232,7 +232,7 @@ class Database
      * Output SQL log.
      *
      * @param string $sql
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return void
      */
     public function log(string $sql, array $params = []) : void
@@ -245,9 +245,9 @@ class Database
     /**
      * Create Database exception from given information.
      *
-     * @param array|\PDOException $error
+     * @param array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
      * @param string|null $sql (default: null)
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return DatabaseException
      */
     public function exception($error, string|null $sql = null, array $params = []) : DatabaseException
@@ -367,7 +367,7 @@ class Database
      * Executes an SQL statement, returning a result set as a Statement object.
      *
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
      * @param mixed $params can be arrayable (default: [])
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
@@ -387,7 +387,7 @@ class Database
      * Executes an SQL statement, returning a result set as a Statement object.
      *
      * @param string $sql
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return Statement
      */
     public function query(string $sql, $params = []) : Statement
@@ -399,7 +399,7 @@ class Database
      * Executes an SQL(INSERT/UPDATE/DELETE) statement, returning affected rows count.
      *
      * @param string $sql
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return int
      */
     public function execute(string $sql, $params = []) : int
@@ -411,8 +411,8 @@ class Database
      * Execute given SQL and get the result (N rows and M columns).
      *
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @param string $class (default: 'stdClass')
@@ -427,9 +427,9 @@ class Database
      * Execute given SQL and get the result as paginator (N rows and M columns).
      *
      * @param string $sql
-     * @param OrderBy|array $order_by
+     * @param OrderBy|array<string, string> $order_by
      * @param Pager $pager
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @param bool $for_update (default: false)
      * @param string $class (default: 'stdClass')
      * @param string $optimised_count_sql only have one count total column (default: null)
@@ -447,8 +447,8 @@ class Database
      * Execute given SQL and get the first result (1 rows and M columns).
      *
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param bool $for_update (default: false)
      * @param string $class (default: 'stdClass')
      * @return mixed of given class instance
@@ -463,8 +463,8 @@ class Database
      *
      * @param string|int $column
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param string|null $type name of convert to type (default: null)
      * @return ResultSet
      */
@@ -478,8 +478,8 @@ class Database
      *
      * @param string|int $column
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: null)
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: null)
      * @param string|null $type name of convert to type (default: null)
      * @return mixed or given type
      */
@@ -492,7 +492,7 @@ class Database
      * It checks the given SQL result is exist.
      *
      * @param string $sql
-     * @param array $params (default: null)
+     * @param array<int|string, mixed> $params (default: null)
      * @return boolean
      */
     public function exists(string $sql, array $params = []) : bool
@@ -504,7 +504,7 @@ class Database
      * Gets the number of search results for the given SQL.
      *
      * @param string $sql
-     * @param array $params (default: null)
+     * @param array<int|string, mixed> $params (default: null)
      * @return int
      */
     public function count(string $sql, array $params = []) : int
@@ -517,8 +517,8 @@ class Database
      *
      * @param callable $callback function(Class $row) : bool {}
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @return void
@@ -533,8 +533,8 @@ class Database
      *
      * @param callable $callback function(Class $row) : bool {}
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @return ResultSet
@@ -549,8 +549,8 @@ class Database
      *
      * @param callable $callback function(Class $row) : mixed {}
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @return ResultSet
@@ -566,8 +566,8 @@ class Database
      * @param callable $reducer function(Class $row, $carry) : mixed {}
      * @param mixed $initial
      * @param string $sql
-     * @param OrderBy|array|null $order_by (default: null)
-     * @param array $params (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
+     * @param array<int|string, mixed> $params (default: [])
      * @param int|null $limit (default: null)
      * @return mixed
      */
@@ -717,9 +717,9 @@ class Database
      * Update data using ransack conditions.
      *
      * @param string $entity class name
-     * @param array $changes
+     * @param array<string, mixed> $changes
      * @param mixed $ransack conditions that arrayable
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @param DateTime|null $now (default: null)
      * @return int affected row count
      * @uses Event::dispatch BatchUpdating when before batch update.
@@ -754,7 +754,7 @@ class Database
      *
      * @param string $entity class name
      * @param mixed $ransack conditions that arrayable
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @return int affected row count
      * @uses Event::dispatch BatchDeleting when before batch delete.
      * @uses Event::dispatch BatchDeleted when after batch delete.
@@ -776,7 +776,7 @@ class Database
      *
      * @param string $entity class name
      * @param mixed $ransack conditions that arrayable
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @return bool
      */
     public function existsBy(string $entity, $ransack, array $alias = []) : bool
@@ -790,7 +790,7 @@ class Database
      *
      * @param string $entity class name
      * @param mixed $ransack conditions that arrayable
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @return int
      */
     public function countBy(string $entity, $ransack, array $alias = []) : int
@@ -825,7 +825,7 @@ class Database
      * Create SQL query for this database driver.
      *
      * @param string $sql
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return Query
      */
     public function sql(string $sql, array $params = []) : Query

@@ -31,7 +31,7 @@ class FlashBag implements SessionBagInterface
     /**
      * Attribute data.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $attributes = [];
 
@@ -57,6 +57,8 @@ class FlashBag implements SessionBagInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<string, mixed> $attributes
      */
     public function initialize(array &$attributes) : void
     {
@@ -131,7 +133,7 @@ class FlashBag implements SessionBagInterface
     /**
      * Peek the all attibutes.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function peekAll() : array
     {
@@ -141,7 +143,7 @@ class FlashBag implements SessionBagInterface
     /**
      * Get the all attibutes.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function all() : array
     {

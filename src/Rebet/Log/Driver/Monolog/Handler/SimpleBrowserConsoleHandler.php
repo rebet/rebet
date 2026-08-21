@@ -26,7 +26,7 @@ use Rebet\Tools\Utility\Strings;
 class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
 {
     /**
-     * @var array of Monolog level to console method and color style map []
+     * @var array<int, array{0: string, 1: string, 2: string}> of Monolog level to console method and color style map []
      */
     public const OUTPUT_STYLES = [
         MonologLogger::DEBUG     => ['log', 'color: #333333; background-color: #f9f9f9; display: block; border-left: 8px solid #333333; padding-left: 5px; padding-right: 10px;', 'color: #333333; background-color: #ffffff; display: block; border-left: 2px solid #333333; padding-left: 5px; padding-right: 10px;'],
@@ -45,7 +45,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     protected static $initialized = false;
 
     /**
-     * @var array of log records
+     * @var array<int, LogRecord> of log records
      */
     protected static $records = [];
 

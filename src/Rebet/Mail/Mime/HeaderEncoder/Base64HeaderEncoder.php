@@ -52,7 +52,7 @@ class Base64HeaderEncoder implements Swift_Mime_HeaderEncoder
     /**
      * Does nothing.
      */
-    public function charsetChanged($charset)
+    public function charsetChanged($charset) : void
     {
     }
 }

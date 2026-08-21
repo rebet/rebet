@@ -25,7 +25,7 @@ class BuiltinAnalyzer implements Analyzer
     protected $parser;
 
     /**
-     * @var array of extract alias select column cache
+     * @var array<string, string> of extract alias select column cache
      */
     protected $cache = [];
 
@@ -106,38 +106,53 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * Build selection real expressions from parsed tree.
      *
-     * @param array $parsed
+     * @param array<mixed> $parsed
      * @return string
      */
     protected function build(array $parsed) : string
     {
         $sql = "";
         $sql .= (new class extends ColumnReferenceBuilder {
-            protected function buildAlias($parsed)
+            /**
+             * @param array<mixed> $parsed
+             */
+            protected function buildAlias($parsed) : string
             {
                 return '';
             }
         })->build($parsed);
         $sql .= (new class extends SelectBracketExpressionBuilder {
-            protected function buildAlias($parsed)
+            /**
+             * @param array<mixed> $parsed
+             */
+            protected function buildAlias($parsed) : string
             {
                 return '';
             }
         })->build($parsed);
         $sql .= (new class extends SelectExpressionBuilder {
-            protected function buildAlias($parsed)
+            /**
+             * @param array<mixed> $parsed
+             */
+            protected function buildAlias($parsed) : string
             {
                 return '';
             }
         })->build($parsed);
         $sql .= (new class extends FunctionBuilder {
-            protected function buildAlias($parsed)
+            /**
+             * @param array<mixed> $parsed
+             */
+            protected function buildAlias($parsed) : string
             {
                 return '';
             }
         })->build($parsed);
         $sql .= (new class extends ConstantBuilder {
-            protected function buildAlias($parsed)
+            /**
+             * @param array<mixed> $parsed
+             */
+            protected function buildAlias($parsed) : string
             {
                 return '';
             }

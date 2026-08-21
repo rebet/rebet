@@ -22,7 +22,7 @@ class Expression
     protected $expression;
 
     /**
-     * @var array value
+     * @var array<int, mixed> value
      */
     protected $values;
 

@@ -29,7 +29,7 @@ class Context
     /**
      * The data under validation.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     private $data = [];
 
@@ -64,7 +64,7 @@ class Context
     /**
      * Validation errors
      *
-     * @var array
+     * @var array<string, array<int, string>>
      */
     private $errors = [];
 
@@ -78,7 +78,7 @@ class Context
     /**
      * Validation label settings
      *
-     * @var array
+     * @var array<string, mixed>
      */
     private $rules = [];
 
@@ -113,7 +113,7 @@ class Context
     /**
      * Extra infomation for handle validation
      *
-     * @var array
+     * @var array<string, array<string, mixed>>
      */
     private $extra = [];
 
@@ -121,9 +121,9 @@ class Context
      * Create validation context instance.
      *
      * @param string $crud
-     * @param array $data
-     * @param array $errors
-     * @param array $rules
+     * @param array<string, mixed> $data
+     * @param array<string, array<int, string>> $errors
+     * @param array<string, mixed> $rules
      * @param bool $nested_attribute_auto_format (default: true)
      */
     public function __construct(string $crud, array $data, array &$errors, array $rules, bool $nested_attribute_auto_format = true)
@@ -217,10 +217,11 @@ class Context
      * If this method is called before initBy(), the message is stored in the message key 'global'.
      *
      * @param string $key
-     * @param array $replace (default: [])
+     * @param array<string, mixed> $replace (default: [])
+     * @param int|string|null $selector (default: null)
      * @return bool false
      */
-    public function appendError(string $key, array $replace = [], $selector = null) : bool
+    public function appendError(string $key, array $replace = [], int|string|null $selector = null) : bool
     {
         if ($this->isQuiet()) {
             return false;
@@ -357,7 +358,7 @@ class Context
     /**
      * Get the labels of given fields
      *
-     * @param array $fields
+     * @param array<int, string> $fields
      * @param string|null $delimiter (default: depend on configure)
      * @return string
      */
@@ -373,7 +374,7 @@ class Context
      * Resolve value / :field_name string / Enum object
      *
      * @param mixed $value value or :field_name string or Enum object
-     * @return array [$value, $label]
+     * @return array{0: mixed, 1: mixed} [$value, $label]
      */
     public function resolve($value) : array
     {
@@ -391,7 +392,7 @@ class Context
      * Pluck the nested field values as array.
      *
      * @param string|null $nested_field
-     * @return array [$list, $label]
+     * @return array{0: array<int|string, mixed>, 1: string|null} [$list, $label]
      */
     public function pluckNested(string|null $nested_field) : array
     {
@@ -407,8 +408,8 @@ class Context
     /**
      * Pluck the correlated fields value and label.
      *
-     * @param array $fields
-     * @return array [$field => ['field' => $field, 'value' => $value, 'label' => $label], ...]
+     * @param array<int, string> $fields
+     * @return array<string, array{field: string, value: mixed, label: string}> [$field => ['field' => $field, 'value' => $value, 'label' => $label], ...]
      */
     public function pluckCorrelated(array $fields) : array
     {

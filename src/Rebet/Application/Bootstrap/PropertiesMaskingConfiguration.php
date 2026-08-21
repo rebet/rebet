@@ -23,7 +23,7 @@ class PropertiesMaskingConfiguration implements Bootstrapper
     /**
      * Create properties masking bootstrapper.
      *
-     * @param array $masks property names
+     * @param string[] $masks property names
      */
     public function __construct(array $masks)
     {

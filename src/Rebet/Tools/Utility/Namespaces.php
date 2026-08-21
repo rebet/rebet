@@ -15,6 +15,9 @@ class Namespaces
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [

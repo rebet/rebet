@@ -45,12 +45,12 @@ class Request extends SymfonyRequest
     /**
      * {@inheritdoc}
      *
-     * @param array                $query      The GET parameters
-     * @param array                $request    The POST parameters
-     * @param array                $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
-     * @param array                $cookies    The COOKIE parameters
-     * @param array                $files      The FILES parameters
-     * @param array                $server     The SERVER parameters
+     * @param array<string, mixed> $query      The GET parameters
+     * @param array<string, mixed> $request    The POST parameters
+     * @param array<string, mixed> $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array<string, mixed> $cookies    The COOKIE parameters
+     * @param array<int|string, mixed> $files      The FILES parameters
+     * @param array<string, mixed> $server     The SERVER parameters
      * @param string|resource|null $content    The raw body data
      */
     public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
@@ -83,7 +83,7 @@ class Request extends SymfonyRequest
      * Validate input data by given rules.
      *
      * @param string $crud
-     * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
+     * @param array<string, mixed>|array<int, array<string, mixed>>|string|array<int, string>|Rule|array<int, Rule> $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
      * @param string $fallback_url
      * @param bool $accept_undefined (default: false)
      * @return ValidData
@@ -138,6 +138,14 @@ class Request extends SymfonyRequest
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<string, mixed> $query      The GET parameters
+     * @param array<string, mixed> $request    The POST parameters
+     * @param array<string, mixed> $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array<string, mixed> $cookies    The COOKIE parameters
+     * @param array<int|string, mixed> $files      The FILES parameters
+     * @param array<string, mixed> $server     The SERVER parameters
+     * @param string|resource|null $content    The raw body data
      */
     public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null) : void
     {
@@ -147,6 +155,13 @@ class Request extends SymfonyRequest
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<string, mixed>|null $query      The GET parameters
+     * @param array<string, mixed>|null $request    The POST parameters
+     * @param array<string, mixed>|null $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array<string, mixed>|null $cookies    The COOKIE parameters
+     * @param array<int|string, mixed>|null $files      The FILES parameters
+     * @param array<string, mixed>|null $server     The SERVER parameters
      */
     public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null) : static
     {
@@ -301,9 +316,9 @@ class Request extends SymfonyRequest
      * Replay the saved request of given name using redirect.
      *
      * @param string $name
-     * @param array $append_query
+     * @param array<string, mixed> $append_query
      * @param integer $status
-     * @param array $headers
+     * @param array<string, string|array<int, string>> $headers
      * @return RedirectResponse|null
      */
     public function replay(string $name, array $append_query = [], int $status = 302, array $headers = []) : RedirectResponse|null
@@ -333,7 +348,7 @@ class Request extends SymfonyRequest
     /**
      * Inherit input data to next request.
      *
-     * @param string|array $wildcard of request path (default: '*')
+     * @param string|array<int, string> $wildcard of request path (default: '*')
      * @return self
      */
     public function inheritInputTo($wildcard = '*') : self
@@ -411,7 +426,7 @@ class Request extends SymfonyRequest
      * Set a header on the Response.
      *
      * @param string $key
-     * @param array|string $values
+     * @param array<int, string>|string $values
      * @param boolean $replace (default: true)
      * @return self
      */

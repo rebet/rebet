@@ -32,7 +32,7 @@ interface Dictionary
      *
      * @param string $group
      * @param string $key can contains dot notation
-     * @param array $locales
+     * @param array<int, string> $locales
      * @param int|string|null $selector (default: null)
      * @param bool $recursive (default: true)
      * @return string|null

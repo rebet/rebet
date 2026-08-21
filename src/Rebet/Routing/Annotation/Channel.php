@@ -21,12 +21,12 @@ namespace Rebet\Routing\Annotation;
 final class Channel
 {
     /**
-     * @var array of allow channels
+     * @var array<string> of allow channels
      */
     public $allows = [];
 
     /**
-     * @var array of reject channels
+     * @var array<string> of reject channels
      */
     public $rejects = [];
 

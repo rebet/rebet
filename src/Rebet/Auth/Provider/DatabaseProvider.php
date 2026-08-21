@@ -32,7 +32,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * Aliases for AuthUser who provided by this provider.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $alises = [];
 
@@ -80,8 +80,8 @@ class DatabaseProvider extends AuthProvider
      * @param string $password_name (default: 'password')
      * @param string $api_token_name (default: 'api_token')
      * @param int|null $expired_remember_token_clean_rate (default: 100)
-     * @param array $precondition for ransack conditions (default: [])
-     * @param array $alises for AuthUser who provided by this provider. (default: [])
+     * @param array<string, mixed> $precondition for ransack conditions (default: [])
+     * @param array<string, mixed> $alises for AuthUser who provided by this provider. (default: [])
      * @param string|null $db name configured Dao.dbs (default: null for default database)
      */
     public function __construct(
@@ -118,8 +118,10 @@ class DatabaseProvider extends AuthProvider
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<string, mixed>|null $precondition for ransack conditions (default: depend on constructor)
      */
-    public function findByToken(string|null $token, $precondition = null) : AuthUser|null
+    public function findByToken(string|null $token, array|null $precondition = null) : AuthUser|null
     {
         if ($token === null) {
             return null;
@@ -130,8 +132,10 @@ class DatabaseProvider extends AuthProvider
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<string, mixed>|null $precondition for ransack conditions (default: depend on constructor)
      */
-    protected function findBySigninId($signin_id, $precondition = null) : AuthUser|null
+    protected function findBySigninId($signin_id, array|null $precondition = null) : AuthUser|null
     {
         if ($signin_id === null) {
             return null;

@@ -37,7 +37,7 @@ class SmtpTransport extends Swift_SmtpTransport
      * @param int $port (default: 25)
      * @param string|null $username (default: null)
      * @param string|null $password (default: null)
-     * @param array $options (default: [])
+     * @param array<string, mixed> $options (default: [])
      *   - int          'timeout'
      *   - string       'source_ip'
      *   - string       'local_domain'

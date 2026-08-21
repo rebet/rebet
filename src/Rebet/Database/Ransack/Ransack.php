@@ -203,7 +203,7 @@ class Ransack
     /**
      * Analyzed columns
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $columns;
 
@@ -223,7 +223,7 @@ class Ransack
      * @param string $predicate
      * @param string $template
      * @param \Closure|null $value_converter
-     * @param array $columns
+     * @param array<int, string> $columns
      * @param string|null $compound
      * @param string $conjunction
      * @param string|null $option
@@ -250,7 +250,7 @@ class Ransack
      * @param Driver $driver
      * @param int|string $ransack_predicate
      * @param mixed $value
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @param \Closure|null $extension function(Ransack $ransack) : Query { ... } (default: null)
      * @param string $placeholder_suffix (default: '')
      * @return Query|null
@@ -298,7 +298,7 @@ class Ransack
      * @param Driver $driver
      * @param string $ransack_predicate
      * @param mixed $value
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @param string $placeholder_suffix (default: '')
      * @return self
      */
@@ -365,8 +365,8 @@ class Ransack
      * Resolve alias column name
      *
      * @param string $column
-     * @param array $alias
-     * @return array
+     * @param array<string, string|array<int, string>> $alias
+     * @return array<int, string>
      */
     protected static function resolveAlias(string $column, array $alias) : array
     {
@@ -493,7 +493,7 @@ class Ransack
      * You can choose apply option or not.
      *
      * @param boolean $apply_option (default: true)
-     * @return array
+     * @return array<int, string>
      */
     public function columns(bool $apply_option = true) : array
     {

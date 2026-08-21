@@ -121,7 +121,7 @@ class Storage
      * @param string $from_path
      * @param string $to_disk
      * @param string|null $to_path (default: null for use $from_path, as it is)
-     * @param string|array $options (default: [])
+     * @param string|array<string, mixed> $options (default: [])
      * @param bool $replace (default: false)
      * @return void
      */
@@ -164,7 +164,7 @@ class Storage
      * @param string $from_path
      * @param string $to_disk
      * @param string|null $to_path (default: null for use $from_path, as it is)
-     * @param string|array $options (default: [])
+     * @param string|array<string, mixed> $options (default: [])
      * @param bool $replace (default: false)
      * @return void
      */

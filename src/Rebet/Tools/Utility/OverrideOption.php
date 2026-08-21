@@ -44,7 +44,7 @@ class OverrideOption
      * Divides the specified key string into pure key names and options.
      *
      * @param string|int $key
-     * @return array [string|int $key, string|null $option]
+     * @return array{0: string|int, 1: string|null} [string|int $key, string|null $option]
      */
     public static function split($key) : array
     {

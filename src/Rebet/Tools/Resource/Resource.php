@@ -57,6 +57,9 @@ class Resource
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -107,7 +110,7 @@ class Resource
      *
      * @param string $type
      * @param string $path
-     * @param array $option (default: [])
+     * @param array<string, mixed> $option (default: [])
      * @return mixed
      * @throws LogicException
      */

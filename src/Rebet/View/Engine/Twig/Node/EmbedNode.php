@@ -49,7 +49,7 @@ class EmbedNode extends Node
      * Execute given name callback.
      *
      * @param string $name
-     * @param array $args (default: [])
+     * @param array<int|string, mixed> $args (default: [])
      * @return mixed
      */
     public static function execute(string $name, array $args = [])
@@ -62,9 +62,9 @@ class EmbedNode extends Node
      *
      * @param string $open
      * @param string $name
-     * @param array $args
+     * @param array<int|string, mixed> $args
      * @param string $close
-     * @param array $binds (default: [])
+     * @param array<int, string> $binds (default: [])
      * @param bool $invert (default: false)
      * @param int $lineno (default: 0)
      */

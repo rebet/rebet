@@ -174,7 +174,7 @@ class Reflector
      * Reflector::set($_REQUEST, 'opt_in', false);
      * Reflector::has(Foo::class, 'static_property', 'value');
      *
-     * @param  array|object|string $object
+     * @param  array<mixed>|object|string $object
      * @param  int|string|null $key You can use dot notation. null appends the value (like `$array[] = $value`).
      * @param  mixed $value
      * @param  bool $accessible (default: false) ... Valid only for objects
@@ -234,7 +234,7 @@ class Reflector
      * Reflector::has($_REQUEST, 'opt_in');
      * Reflector::has(Foo::class, 'static_property');
      *
-     * @param  array|object|null $object
+     * @param  array<mixed>|object|null $object
      * @param  int|string $key You can use dot notation
      * @param  bool $accessible (default: false) ... Valid only for objects
      * @return bool
@@ -284,7 +284,7 @@ class Reflector
      * Reflector::remove($user, 'shipping_address.0');
      * Reflector::remove($_REQUEST, 'opt_in');
      *
-     * @param  array|object $object
+     * @param  array<mixed>|object $object
      * @param  int|string $key You can use dot notation
      * @param  bool $accessible (default: false) ... Valid only for objects
      * @return mixed removed value
@@ -655,9 +655,9 @@ class Reflector
      * NOTE: Named arguments must come after positional arguments.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array $values that positional, named or mixed.
+     * @param array<int|string, mixed> $values that positional, named or mixed.
      * @param bool $type_convert (default: false)
-     * @return array
+     * @return array<int|string, mixed>
      */
     public static function toArgs(array $parameters, array $values, bool $type_convert = false) : array
     {
@@ -702,8 +702,8 @@ class Reflector
      * NOTE: Named arguments must come after positional arguments.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array $values that positional, named or mixed.
-     * @return array that named args map
+     * @param array<int|string, mixed> $values that positional, named or mixed.
+     * @return array<int|string, mixed> that named args map
      * @throws LogicException
      */
     public static function toNamedArgs(array $parameters, array $values) : array
@@ -764,9 +764,9 @@ class Reflector
      * Merge two ordered or named args array to one named args.
      *
      * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array $defaults that ordered or named default args.
-     * @param array $args that ordered or named.
-     * @return array
+     * @param array<int|string, mixed> $defaults that ordered or named default args.
+     * @param array<int|string, mixed> $args that ordered or named.
+     * @return array<int|string, mixed>
      */
     public static function mergeArgs(array $parameters, array $defaults, array $args) : array
     {
@@ -781,7 +781,7 @@ class Reflector
      *
      * @param string|object $object
      * @param string $method
-     * @param array $args that ordered or named (default: [])
+     * @param array<int|string, mixed> $args that ordered or named (default: [])
      * @param boolean $accessible (default: false)
      * @param boolean $type_convert (default: false)
      * @return mixed
@@ -797,7 +797,7 @@ class Reflector
      * Evaluate a given function
      *
      * @param callable $function
-     * @param array $args that ordered or named (default: [])
+     * @param array<int|string, mixed> $args that ordered or named (default: [])
      * @param boolean $type_convert (default: false)
      * @return mixed
      */
@@ -811,7 +811,7 @@ class Reflector
      * Create a new instance of given class.
      *
      * @param string $class
-     * @param array $args that ordered or named (default: [])
+     * @param array<int|string, mixed> $args that ordered or named (default: [])
      * @param bool $type_convert (default: false)
      * @return mixed
      */

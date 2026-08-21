@@ -67,7 +67,7 @@ class EmbedTokenParser extends AbstractTokenParser
      *     '...' => [',', 'or'], // Variadic separator can be repeated by ',' or 'or'.
      * ]
      *
-     * @var array
+     * @var array<int|string, string|array<int, string>>|null
      */
     protected $separators;
 
@@ -81,7 +81,7 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * Bound values for embedded templates.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $binds = [];
 
@@ -90,11 +90,11 @@ class EmbedTokenParser extends AbstractTokenParser
      *
      * @param string $tag
      * @param string|null $verbs
-     * @param array|null $separators null for no argument, [] for one argument
+     * @param array<int|string, string|array<int, string>>|null $separators null for no argument, [] for one argument
      * @param string $open
      * @param Processor $processor
      * @param string $close
-     * @param array $binds (default: [])
+     * @param array<int, string> $binds (default: [])
      * @param bool $can_omit_first_arg (default: false)
      */
     public function __construct(string $tag, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false)
@@ -152,8 +152,9 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * Parses arguments.
      *
+     * @param array<int|string, string|array<int, string>>|null $separators
      * @param bool $allow_arrow Whether to allow arrow function call
-     * @return array
+     * @return array<int|string, \Twig\Node\Expression\AbstractExpression>
      * @throws SyntaxError
      */
     public function parseArguments(array|null $separators, bool $allow_arrow = false) : array

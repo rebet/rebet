@@ -66,6 +66,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int, mixed> $options
      */
     public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver
     {
@@ -76,6 +78,7 @@ abstract class AbstractDriver implements Driver
      * Create driver instance.
      *
      * @param \PDO $pdo
+     * @param array<int, mixed> $driver_options (default: [])
      */
     protected function __construct(\PDO $pdo, array $driver_options = [])
     {
@@ -128,9 +131,9 @@ abstract class AbstractDriver implements Driver
     /**
      * Create Database exception from given error information.
      *
-     * @param array|\PDOException $error
+     * @param array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
      * @param string|null $sql (default: null)
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return DatabaseException
      */
     protected function exception($error, string|null $sql = null, array $params = []) : DatabaseException
@@ -261,6 +264,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int, mixed> $driver_options
      */
     public function prepare(string $sql, array $driver_options = []) : \PDOStatement
     {
@@ -315,6 +320,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @param string|array<int, string> $where
      */
     public function appendWhere(string $sql, $where) : string
     {
@@ -381,6 +388,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<string, \Closure>
      */
     public function ransackValueConverters() : array
     {
@@ -389,6 +398,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<string, array{0: string, 1: string|\Closure|null, 2: string}>
      */
     public function ransackPredicates() : array
     {
@@ -397,6 +408,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<string, string>
      */
     public function ransackOptions() : array
     {
@@ -405,6 +418,8 @@ abstract class AbstractDriver implements Driver
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int|string, mixed> $params
      */
     public function sql(string $sql, array $params = []) : Query
     {

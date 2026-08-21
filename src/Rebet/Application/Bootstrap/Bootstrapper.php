@@ -18,7 +18,7 @@ interface Bootstrapper
     /**
      * Bootstrap proccess execute for the application.
      *
-     * @param Kernel $kernel of this application
+     * @param Kernel<mixed, mixed> $kernel of this application
      * @return void
      */
     public function bootstrap(Kernel $kernel);

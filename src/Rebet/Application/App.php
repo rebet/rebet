@@ -39,7 +39,7 @@ class App
     /**
      * The kernel of this application
      *
-     * @var Kernel|null
+     * @var Kernel<mixed, mixed>|null
      */
     protected static Kernel|null $kernel;
 
@@ -64,7 +64,7 @@ class App
     /**
      * Get the application kernel
      *
-     * @return Kernel
+     * @return Kernel<mixed, mixed>
      */
     public static function kernel() : Kernel
     {
@@ -233,7 +233,7 @@ class App
      *  3. env
      *  4. default
      *
-     * @param array $case
+     * @param array<string, mixed> $case
      * @return ConfigPromise
      */
     public static function when(array $case) : ConfigPromise

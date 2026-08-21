@@ -125,7 +125,7 @@ abstract class Entity extends DataModel
     /**
      * Get unmaps (non public and @Unmap annotated) properties.
      *
-     * @return array
+     * @return array<int, string>
      * @see Unmap
      */
     public static function unmaps() : array
@@ -147,7 +147,7 @@ abstract class Entity extends DataModel
     /**
      * Get default (@Defaults with/without property type hint) properties.
      *
-     * @return array [property_name => [default_value, null|php_type(from property hint)]]
+     * @return array<string, array{0: mixed, 1: string|null}> [property_name => [default_value, null|php_type(from property hint)]]
      * @see Defaults
      */
     public static function defaults() : array
@@ -172,7 +172,7 @@ abstract class Entity extends DataModel
      * Get the property and value list that changed.
      * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
      *
-     * @return array
+     * @return array<string, mixed>
      * @see Unmap
      * @see Entity::isDynamicProperty()
      */
@@ -286,7 +286,7 @@ abstract class Entity extends DataModel
     /**
      * Update data using ransack conditions.
      *
-     * @param array $changes
+     * @param array<string, mixed> $changes
      * @param mixed $ransack conditions that arrayable (default: [])
      * @param DateTime|null $now (default: null)
      * @param Database|string|null $db (default: null)

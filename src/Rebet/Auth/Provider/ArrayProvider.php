@@ -26,7 +26,7 @@ class ArrayProvider extends AuthProvider
     /**
      * Sign in id attribute name
      *
-     * @var string
+     * @var string|null
      */
     protected $signin_id_name = null;
 
@@ -35,19 +35,19 @@ class ArrayProvider extends AuthProvider
      *
      * @var string
      */
-    protected $token_name = null;
+    protected $token_name;
 
     /**
      * Preconditions for signin id authenticate.
      *
-     * @var callable
+     * @var callable|null
      */
     protected $precondition = null;
 
     /**
      * Aliases for AuthUser who provided by this provider.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $aliases = [];
 
@@ -62,11 +62,11 @@ class ArrayProvider extends AuthProvider
      *
      * And if you want to add other information, you can add attribute to users record.
      *
-     * @param array $users
+     * @param array<int, array<string, mixed>> $users
      * @param string|null $signin_id_name (default: 'email')
      * @param string $token_name (default: 'api_token')
      * @param callable|null $precondition function($user):bool {...} (default: `function ($user) { return true; }`)
-     * @param array $aliases for AuthUser who provided by this provider. (default: [])
+     * @param array<string, mixed> $aliases for AuthUser who provided by this provider. (default: [])
      */
     public function __construct(array $users, string|null $signin_id_name = 'email', string $token_name = 'api_token', callable|null $precondition = null, array $aliases = [])
     {

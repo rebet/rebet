@@ -14,7 +14,7 @@ interface Processor
     /**
      * Execute processor with given args.
      *
-     * @param array $args
+     * @param array<int|string, mixed> $args
      * @return mixed
      */
     public function execute(array $args);

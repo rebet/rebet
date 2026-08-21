@@ -15,7 +15,14 @@ use Twig\TokenParser\AbstractTokenParser;
  */
 class RawTokenParser extends AbstractTokenParser
 {
+    /**
+     * @var string
+     */
     protected $tag;
+
+    /**
+     * @var string
+     */
     protected $code;
 
     /**

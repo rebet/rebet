@@ -63,8 +63,8 @@ trait Populatable
      *     ],
      * ],
      *
-     * @param array|object $src
-     * @param array $options that availables are 'embeds', 'aliases', 'includes' and 'excludes' (default: [])
+     * @param array<mixed>|object $src
+     * @param array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes' (default: [])
      * @return self
      */
     public function populate($src, $options = []) : self
@@ -75,8 +75,8 @@ trait Populatable
     /**
      * It copies the value from Map or Object to instance variable for recursive call.
      *
-     * @param array|object $src
-     * @param array $options that availables are 'embeds', 'aliases', 'includes' and 'excludes'
+     * @param array<mixed>|object $src
+     * @param array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes'
      * @param string $prefix
      * @return self
      */
@@ -118,9 +118,10 @@ trait Populatable
      * Create embedded populatable object of given class
      *
      * @param string $class name to populate
-     * @param array|object $src
-     * @param array $options
+     * @param array<mixed>|object $src
+     * @param array<string, mixed> $options
      * @param string $prefix
+     * @return mixed
      */
     private function embed($class, $src, array $options, string $prefix)
     {
@@ -132,10 +133,10 @@ trait Populatable
     /**
      * Apply Input Option
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      * @param string $prefix
      * @param string $field
-     * @param array|object $src
+     * @param array<mixed>|object $src
      * @param mixed $origin
      * @return mixed
      */
@@ -176,7 +177,7 @@ trait Populatable
     /**
      * It checks that an options include ignore embed settings.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      * @param string $field
      * @return bool
      */

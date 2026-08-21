@@ -20,6 +20,9 @@ class Decimal
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -36,7 +39,7 @@ class Decimal
      * Set significance arithmetic mode for all of calculations.
      *
      * @param int $mode Decimal::MODE_*
-     * @param array $options for Decimal::MODE_* (default: [])
+     * @param array<string, mixed> $options for Decimal::MODE_* (default: [])
      *     - fixed_scale  : For MODE_FIXED_DECIMAL_PLACES
      *     - guard_digits : For MODE_FIXED_DECIMAL_PLACES / MODE_SIGNIFICANCE_ARITHMETIC
      *     - max_scale    : For MODE_AUTO_PRECISION_SCALING
@@ -243,7 +246,7 @@ class Decimal
      * @param string $value
      * @param string $decimal_point (default: '.')
      * @param string $thousands_separator (default: ',')
-     * @return array of [value, scale, significant_figures]
+     * @return array{0: string, 1: int, 2: int|null} of [value, scale, significant_figures]
      * @throws InvalidArgumentException when the value format is invalid.
      */
     protected static function analyze(string $value, string $decimal_point = ".", string $thousands_separator = ",") : array
@@ -852,7 +855,7 @@ class Decimal
     /**
      * Get min value in given values.
      *
-     * @param array|Decimal|string|int|float ...$values
+     * @param array<mixed>|Decimal|string|int|float ...$values
      * @return self
      */
     public static function min(...$values) : self
@@ -874,7 +877,7 @@ class Decimal
     /**
      * Get max value in given values.
      *
-     * @param array|Decimal|string|int|float ...$values
+     * @param array<mixed>|Decimal|string|int|float ...$values
      * @return self
      */
     public static function max(...$values) : self

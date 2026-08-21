@@ -25,7 +25,7 @@ class SendmailTransport extends Swift_SendmailTransport
 
     /**
      * @param string $command (default: null for use 'sendmail_path' of php.ini , if it is not set then '/usr/sbin/sendmail -bs')
-     * @param array  $options (default: [])
+     * @param array<string, mixed>  $options (default: [])
      *   - string       'source_ip'
      *   - string       'local_domain'
      *   - string       'sender'            : Use Swift_Plugins_ImpersonatePlugin [?]

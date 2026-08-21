@@ -48,7 +48,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * Create Stack Driver using given channels.
      *
-     * @param array $channels
+     * @param array<int, string> $channels
      */
     public function __construct(array $channels)
     {
@@ -101,7 +101,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
      *
      * @param string $level
      * @param string|\Stringable $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @return void
      */
     public function log($level, string|\Stringable $message, array $context = []) : void

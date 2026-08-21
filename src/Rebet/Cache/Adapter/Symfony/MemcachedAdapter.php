@@ -20,8 +20,8 @@ class MemcachedAdapter extends AbstractSymfonyAdapter
     /**
      * Create Memcached Adapter
      *
-     * @param array[]|string|string[] $dsn An array of servers, a DSN, or an array of DSNs
-     * @param array $options for connect memcached. (default: [])
+     * @param array<int, array<int, string>>|string|array<int, string> $dsn An array of servers, a DSN, or an array of DSNs
+     * @param array<string, mixed> $options for connect memcached. (default: [])
      * @param string $namespace (default: '')
      * @param int|string $default_lifetime that time unit labeled string like '12min', or int seconds. (default: 0)
      * @param MarshallerInterface|null $marshaller (default: mull)

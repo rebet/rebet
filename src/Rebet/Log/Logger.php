@@ -66,7 +66,7 @@ class Logger
      * System is unusable.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -83,7 +83,7 @@ class Logger
      * trigger the SMS alerts and wake you up.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -99,7 +99,7 @@ class Logger
      * Example: Application component unavailable, unexpected exception.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -113,7 +113,7 @@ class Logger
      * Runtime errors that do not require immediate action but should typically be logged and monitored.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -130,7 +130,7 @@ class Logger
      * that are not necessarily wrong.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -144,7 +144,7 @@ class Logger
      * Normal but significant events.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -160,7 +160,7 @@ class Logger
      * Example: User logs in, SQL logs.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -174,7 +174,7 @@ class Logger
      * Detailed debug information.
      *
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */
@@ -188,7 +188,7 @@ class Logger
      *
      * @param string $level
      * @param mixed $message
-     * @param array $context (default: [])
+     * @param array<string, mixed> $context (default: [])
      * @param \Throwable $exception (default: null)
      * @return void
      */

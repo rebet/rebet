@@ -32,7 +32,7 @@ interface Compiler
      *
      * @param string $sql
      * @param OrderBy|null $order_by (default: null)
-     * @param array|object|null $params can be arrayable (default: [])
+     * @param array<string, mixed>|object|null $params can be arrayable (default: [])
      * @param Pager|null $pager (default: null)
      * @param Cursor|null $cursor (default: null)
      * @return Query of full SQL sentence

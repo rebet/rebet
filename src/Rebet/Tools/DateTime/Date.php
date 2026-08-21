@@ -13,6 +13,9 @@ namespace Rebet\Tools\DateTime;
  */
 class Date extends DateTime
 {
+    /**
+     * @return \Rebet\Tools\Config\ConfigPromise
+     */
     public static function defaultConfig()
     {
         return static::shareConfigWith(parent::class, [

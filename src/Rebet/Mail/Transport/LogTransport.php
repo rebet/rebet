@@ -36,7 +36,7 @@ class LogTransport extends AbstractTransport
      * Create a new log transport.
      *
      * @param LoggerInterface|string|null $logger instance or log channel name configured in Log.channels (default: null for use default channel logger)
-     * @param array $options (default: [])
+     * @param array<string, mixed> $options (default: [])
      *   - string       'sender'            : Use Swift_Plugins_ImpersonatePlugin [?]
      *   - array        'redirecting'       : Use Swift_Plugins_RedirectingPlugin ['recipient' => ?, 'whitelist' => []]
      *   - array        'antiflood'         : Use Swift_Plugins_AntiFloodPlugin ['threshold' => 99, 'sleep' => 0]

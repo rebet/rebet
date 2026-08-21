@@ -16,7 +16,7 @@ use Symfony\Component\Cache\CacheItem;
 class ArrayPool implements AdapterInterface
 {
     /**
-     * @var array of [key => [value, expiry, tags], ...]
+     * @var array<string, array{0: mixed, 1: int|float, 2: array<string, string>|null}> of [key => [value, expiry, tags], ...]
      */
     protected $pool = [];
 

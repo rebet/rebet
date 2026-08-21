@@ -46,7 +46,7 @@ abstract class DataModel
     /**
      * Meta information cache
      *
-     * @var array
+     * @var array<class-string, array<string, mixed>>
      */
     protected static $_meta = [];
 
@@ -61,14 +61,14 @@ abstract class DataModel
     /**
      * Eager loaded data cache
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_eager_loads = [];
 
     /**
      * Relations entity cache
      *
-     * @var array $_relations[table_name][relation_holder_object_hash][condition_digest] = $entity|$result_set
+     * @var array<string, array<string, array<string, mixed>>> $_relations[table_name][relation_holder_object_hash][condition_digest] = $entity|$result_set
      */
     protected static $_relations = [];
 
@@ -146,7 +146,7 @@ abstract class DataModel
     /**
      * Get primary values of this data model.
      *
-     * @return array [primary_key => value, ... ]
+     * @return array<string, mixed> [primary_key => value, ... ]
      */
     public function primaryValues() : array
     {
@@ -157,7 +157,7 @@ abstract class DataModel
      * Generate foreign hash of this data mode from given foreign key/values.
      *
      * @param string $class name of data model
-     * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @return string
      */
     public function foreignHash(string $class, array $alias = []) : string
@@ -169,8 +169,8 @@ abstract class DataModel
      * Get given foreign values of this data model.
      *
      * @param string $class name of data model
-     * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
-     * @return array [foreign_key => value, ... ]
+     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @return array<string, mixed> [foreign_key => value, ... ]
      */
     public function foreignValues(string $class, array $alias = []) : array
     {
@@ -186,7 +186,7 @@ abstract class DataModel
      * Pluck given column-value pairs.
      *
      * @param string ...$columns
-     * @return array [column => value, ...]
+     * @return array<string, mixed> [column => value, ...]
      */
     public function pluck(string ...$columns) : array
     {
@@ -287,7 +287,7 @@ abstract class DataModel
     /**
      * Get primary keys properties.
      *
-     * @return array
+     * @return array<int, string>
      */
     public static function primaryKeys() : array
     {
@@ -382,7 +382,7 @@ abstract class DataModel
      * Select data model by given ransacks conditions.
      *
      * @param mixed $ransacks conditions that arrayable (default: [])
-     * @param OrderBy|array|null $order_by (default: null)
+     * @param OrderBy|array<string, string>|null $order_by (default: null)
      * @param int|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @param Database|string|null $db (default: null)
@@ -399,7 +399,7 @@ abstract class DataModel
      *
      * @param Pager $pager
      * @param mixed $ransacks conditions that arrayable (default: [])
-     * @param OrderBy|array|null $order_by (default: null for get from defaultOrderBy())
+     * @param OrderBy|array<string, string>|null $order_by (default: null for get from defaultOrderBy())
      * @param bool $for_update (default: false)
      * @param Database|string|null $db (default: null)
      * @return Paginator
@@ -415,7 +415,7 @@ abstract class DataModel
      * If the ransack conditions is empty then select all of the data.
      *
      * @param Database $db
-     * @param array $ransacks condition (default: [])
+     * @param array<int|string, mixed> $ransacks condition (default: [])
      * @return Query
      */
     protected static function buildSelectSql(Database $db, array $ransacks = []) : Query
@@ -436,7 +436,7 @@ abstract class DataModel
      * Build optimized count SQL using given ransack conditions for paginate.
      *
      * @param Database $db
-     * @param array $ransacks conditions (default: [])
+     * @param array<int|string, mixed> $ransacks conditions (default: [])
      * @return string|null
      */
     protected static function buildOptimizedCountSql(Database $db, array $ransacks = []) : string|null
@@ -476,7 +476,7 @@ abstract class DataModel
      * Get ransack aliases of this data model.
      * If you want to define ransack aliases of this data model, please override this method.
      *
-     * @return array
+     * @return array<string, string|array<int, string>>
      */
     protected static function ransackAliases() : array
     {
@@ -488,7 +488,7 @@ abstract class DataModel
      * This method return primary keys 'desc' order defaultly.
      * If you want to change default order then please override this method.
      *
-     * @return array
+     * @return array<string, string>
      */
     protected static function defaultOrderBy() : array
     {
@@ -513,7 +513,7 @@ abstract class DataModel
      * But if you don't want that, add caching function when overriding in subclasses.
      *
      * @param string $class of data model
-     * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @param bool $for_update (default: false)
      * @param bool $eager_load (default: true)
      * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
@@ -551,7 +551,7 @@ abstract class DataModel
      * Create optimized ransacks condition for eager loads.
      *
      * @param \Closure $extracter of each ransacks, function(DataModel $dm) :array { ... }
-     * @return array of each ransack conditions
+     * @return array<int|string, array<int, mixed>> of each ransack conditions
      */
     protected function eagerRansack(\Closure $extracter) : array
     {
@@ -584,8 +584,8 @@ abstract class DataModel
      * Create `ransacks` relational conditions for 'belongs-to'.
      *
      * @param string $class
-     * @param array $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
-     * @return array
+     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @return array<string, mixed>
      */
     protected function ransacksForBelongsTo(string $class, array $alias = []) : array
     {
@@ -615,7 +615,7 @@ abstract class DataModel
      * But if you don't want that, add caching function when overriding in subclasses.
      *
      * @param string $class of relational data model
-     * @param array $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
+     * @param array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
      * @param bool $for_update (default: false)
      * @param bool $eager_load (default: true)
      * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
@@ -652,8 +652,8 @@ abstract class DataModel
     /**
      * Create `ransacks` relational conditions for 'has-one/has-many'.
      *
-     * @param array $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
-     * @return array
+     * @param array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
+     * @return array<string, mixed>
      */
     protected function ransacksForHas(array $alias = []) : array
     {
@@ -698,14 +698,14 @@ abstract class DataModel
      * But if you don't want that, add caching function when overriding in subclasses.
      *
      * @param string $class
-     * @param array $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
-     * @param array $ransacks of preconditions (default: [])
-     * @param OrderBy|array|null $order_by (default: null for get from defaultOrderBy())
+     * @param array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
+     * @param array<int|string, mixed> $ransacks of preconditions (default: [])
+     * @param OrderBy|array<string, string>|null $order_by (default: null for get from defaultOrderBy())
      * @param integer|null $limit (default: null)
      * @param bool $for_update (default: false)
      * @param boolean $eager_load (default: true)
      * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
-     * @return array
+     * @return array<int, mixed>
      */
     protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array
     {

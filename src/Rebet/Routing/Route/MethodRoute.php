@@ -48,7 +48,7 @@ class MethodRoute extends DeclarativeRoute
     /**
      * Create Route instance.
      *
-     * @param array $methods
+     * @param array<int, string> $methods
      * @param string $uri
      * @param string $action 'Namespace\\Controller::method'. The namespace can be use @ namespace alias. (default namespace: depend on configure)
      * @throws \ReflectionException

@@ -36,7 +36,7 @@ class MongoDbSessionHandler extends SymfonyMongoDbSessionHandler
      * {@inheritDoc}
      *
      * @param \MongoDB\Client $mongo
-     * @param array $options (default: depend on configure)
+     * @param array<string, mixed> $options (default: depend on configure)
      */
     public function __construct(\MongoDB\Client $mongo, array $options = [])
     {

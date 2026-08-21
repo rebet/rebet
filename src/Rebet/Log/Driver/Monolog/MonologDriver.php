@@ -44,8 +44,8 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
     /**
      * Create logger using given handlers.
      *
-     * @param array $handlers (default: [])
-     * @param array $processors (default: [])
+     * @param array<int, \Monolog\Handler\HandlerInterface> $handlers (default: [])
+     * @param array<int, callable> $processors (default: [])
      * @param string|\DateTimeZone|null $timezone (default: null for use Datetime.default_timezone configure)
      */
     public function __construct(array $handlers = [], array $processors = [], $timezone = null)

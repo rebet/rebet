@@ -68,7 +68,7 @@ abstract class Kernel
     /**
      * Get core bootstrappers for this kernel.
      *
-     * @return array<Bootstrapper|class-string<Bootstrapper>|array> class name of Bootstrapper, or [class name, ...args] for Reflector::instantiate()
+     * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>> class name of Bootstrapper, or [class name, ...args] for Reflector::instantiate()
      */
     abstract protected function bootstrappers() : array;
 
@@ -96,7 +96,7 @@ abstract class Kernel
      * Run an action/command by name.
      *
      * @param string $action
-     * @param array $parameters (default: [])
+     * @param array<string, mixed> $parameters (default: [])
      * @return R
      */
     abstract public function call(string $action, array $parameters = []);

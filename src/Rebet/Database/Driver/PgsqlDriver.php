@@ -104,6 +104,7 @@ class PgsqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      *
+     * @param array<string, mixed> $meta
      * @see 'pgsql'  native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_pgsql/pgsql_statement.c.gcov.php and `SELECT TYPNAME FROM PG_TYPE` results.
      */
     public function toPhpType($value, array $meta = [], string|null $type = null)

@@ -114,7 +114,7 @@ class ConventionalRoute extends Route
     /**
      * Routing aliases map.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $aliases = [];
 
@@ -149,7 +149,7 @@ class ConventionalRoute extends Route
     /**
      * Create a conventional route.
      *
-     * @param array  $option [
+     * @param array<string, mixed>  $option [
      *     'namespace'                  => '@controller', // can be use @ namespace alias
      *     'default_part_of_controller' => 'top',
      *     'default_part_of_action'     => 'index',
@@ -176,7 +176,7 @@ class ConventionalRoute extends Route
      * Resolve request URI into controller name / action name / arguments.
      *
      * @param string $request_uri
-     * @return array
+     * @return array{0: string, 1: string, 2: array<int, string>}
      */
     protected function resolveRequestUri(string $request_uri) : array
     {
@@ -195,7 +195,7 @@ class ConventionalRoute extends Route
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
-     * @return array|null
+     * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
     protected function analyze(Request $request) : array|null
@@ -369,7 +369,7 @@ class ConventionalRoute extends Route
     /**
      * Set aliases.
      *
-     * @param array|string $alias or [$alias => $path, ...]
+     * @param array<string, string>|string $alias or [$alias => $path, ...]
      * @param string|null $path
      * @return self
      */

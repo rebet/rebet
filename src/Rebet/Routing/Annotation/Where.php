@@ -18,7 +18,7 @@ namespace Rebet\Routing\Annotation;
 final class Where
 {
     /**
-     * @var array of where conditions, key is parameter name and value is acceptable regex.
+     * @var array<string> of where conditions, key is parameter name and value is acceptable regex.
      */
     public $wheres = [];
 }

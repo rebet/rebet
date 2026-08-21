@@ -242,7 +242,7 @@ class BuiltinValidations implements Validations
      * With condition
      *
      * @param Context $c
-     * @param string|array $other
+     * @param string|array<int, string> $other
      * @param int|null $at_least
      * @return boolean
      */
@@ -257,7 +257,7 @@ class BuiltinValidations implements Validations
      * Without condition
      *
      * @param Context $c
-     * @param string|array $other
+     * @param string|array<int, string> $other
      * @param int|null $at_least
      * @return boolean
      */
@@ -354,7 +354,7 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string $other
-     * @param string|array $value value or array or :field_name
+     * @param string|array<int, mixed> $value value or array or :field_name
      * @param callable $callback function(Context $c, string $other, $value, string $label):bool
      * @return boolean
      */
@@ -372,7 +372,7 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string $other
-     * @param string|array $value value or array or :field_name
+     * @param string|array<int, mixed> $value value or array or :field_name
      * @param callable $callback function(Context $c, string $other, $value, string $label):bool
      * @return boolean
      */
@@ -389,7 +389,7 @@ class BuiltinValidations implements Validations
      * Required With Validation
      *
      * @param Context $c
-     * @param string|array $other field names
+     * @param string|array<int, string> $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
@@ -408,7 +408,7 @@ class BuiltinValidations implements Validations
      * Required Without Validation
      *
      * @param Context $c
-     * @param string|array $other field names
+     * @param string|array<int, string> $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
@@ -427,7 +427,7 @@ class BuiltinValidations implements Validations
      * Handle With validate precondition
      *
      * @param Context $c
-     * @param string|array $other
+     * @param string|array<int, string> $other
      * @param integer|null $at_least
      * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $inputed):bool
      * @return boolean
@@ -451,7 +451,7 @@ class BuiltinValidations implements Validations
      * Handle Without validate precondition
      *
      * @param Context $c
-     * @param string|array $other
+     * @param string|array<int, string> $other
      * @param integer|null $at_least
      * @param callable $callback function(Context $c, $other, ?int $at_least, int $max, int $not_inputed):bool
      * @return boolean
@@ -505,7 +505,7 @@ class BuiltinValidations implements Validations
      * Blank With Validation
      *
      * @param Context $c
-     * @param string|array $other field names
+     * @param string|array<int, string> $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
@@ -524,7 +524,7 @@ class BuiltinValidations implements Validations
      * Blank Without Validation
      *
      * @param Context $c
-     * @param string|array $other field names
+     * @param string|array<int, string> $other field names
      * @param int|null $at_least (default: null)
      * @return boolean
      */
@@ -592,7 +592,7 @@ class BuiltinValidations implements Validations
      * @param Kind $kind
      * @param callable $test function($value):bool
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
@@ -628,7 +628,7 @@ class BuiltinValidations implements Validations
      * @param Kind $kind
      * @param string $pattern
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @param int|string $selector (default: null)
      * @return boolean
      */
@@ -667,7 +667,7 @@ class BuiltinValidations implements Validations
      * @param Kind $kind
      * @param string $pattern
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @param int|string $selector (default: null)
      * @return boolean
      */
@@ -788,7 +788,7 @@ class BuiltinValidations implements Validations
      * @param int|null $precision (default: null)
      * @param callable $test function(Decimal $value, Decimal $number, ?int $precision):bool
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @return boolean
      */
     protected function handleNumber(Context $c, $number, int|null $precision, callable $test, string $messsage_key, array $replacement = []) : bool
@@ -1080,7 +1080,7 @@ class BuiltinValidations implements Validations
      * Ng Word Validation
      *
      * @param Context $c
-     * @param string|array $ng_words
+     * @param string|array<int, string> $ng_words
      * @param string|null $word_split_pattern (default: depend on configure)
      * @param string|null $delimiter_pattern (default: depend on configure)
      * @param string|null $omission_pattern (default: depend on configure)
@@ -1145,7 +1145,7 @@ class BuiltinValidations implements Validations
      * @param string $word_split_pattern
      * @param string $delimiter_pattern
      * @param string $omission_pattern
-     * @param array $ambiguous_patterns
+     * @param array<string, string> $ambiguous_patterns
      * @return string
      */
     private function ngWordToMatcher(string $ng_word, string $word_split_pattern, string $delimiter_pattern, string $omission_pattern, int $omission_length, array $ambiguous_patterns) : string
@@ -1175,7 +1175,7 @@ class BuiltinValidations implements Validations
      * Contains Validation
      *
      * @param Context $c
-     * @param array $list
+     * @param array<int, mixed> $list
      * @return boolean
      */
     public function validationContains(Context $c, array $list) : bool
@@ -1251,7 +1251,7 @@ class BuiltinValidations implements Validations
      * Datetime Validation
      *
      * @param Context $c
-     * @param string|array $format
+     * @param array<int, string>|string $format
      * @return boolean
      */
     public function validationDatetime(Context $c, $format = []) : bool
@@ -1264,7 +1264,7 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string|\DateTimeInterface $at_time
-     * @param string|array $format
+     * @param array<int, string>|string $format
      * @return boolean
      */
     public function validationFutureThan(Context $c, $at_time, $format = []) : bool
@@ -1278,10 +1278,10 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string|\DateTimeInterface $at_time
-     * @param string|array $format
+     * @param array<int, string>|string $format
      * @param callable $test function(DateTime $value, DateTime at_time):bool
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
@@ -1323,7 +1323,7 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string|\DateTimeInterface $at_time
-     * @param string|array $format
+     * @param array<int, string>|string $format
      * @return boolean
      */
     public function validationFutureThanOrEqual(Context $c, $at_time, $format = []) : bool
@@ -1336,7 +1336,7 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string|\DateTimeInterface $at_time
-     * @param string|array $format
+     * @param array<int, string>|string $format
      * @return boolean
      */
     public function validationPastThan(Context $c, $at_time, $format = []) : bool
@@ -1349,7 +1349,7 @@ class BuiltinValidations implements Validations
      *
      * @param Context $c
      * @param string|\DateTimeInterface $at_time
-     * @param string|array $format
+     * @param array<int, string>|string $format
      * @return boolean
      */
     public function validationPastThanOrEqual(Context $c, $at_time, $format = []) : bool
@@ -1363,7 +1363,7 @@ class BuiltinValidations implements Validations
      * @param Context $c
      * @param int|string $max
      * @param string|\DateTimeInterface $at_time (default: 'today')
-     * @param string|array $format (default: [])
+     * @param array<int, string>|string $format (default: [])
      * @return boolean
      */
     public function validationMaxAge(Context $c, $max, $at_time = 'today', $format = []) : bool
@@ -1388,7 +1388,7 @@ class BuiltinValidations implements Validations
      * @param Context $c
      * @param int|string $min
      * @param string|\DateTimeInterface $at_time (default: 'today')
-     * @param string|array $format (default: [])
+     * @param array<int, string>|string $format (default: [])
      * @return boolean
      */
     public function validationMinAge(Context $c, $min, $at_time = 'today', $format = []) : bool
@@ -1448,7 +1448,7 @@ class BuiltinValidations implements Validations
      * Correlation Required Validation
      *
      * @param Context $c
-     * @param array $fields
+     * @param array<int, string> $fields
      * @param int $at_least
      * @return boolean
      */
@@ -1466,7 +1466,7 @@ class BuiltinValidations implements Validations
      * Correlation Unique Validation
      *
      * @param Context $c
-     * @param array $fields
+     * @param array<int, string> $fields
      * @return boolean
      */
     public function validationCorrelatedUnique(Context $c, array $fields) : bool
@@ -1560,7 +1560,7 @@ class BuiltinValidations implements Validations
      * @param Context $c
      * @param string $pattern
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @param callable $selector function($value):mixed (default: null)
      * @return boolean
      */
@@ -1647,7 +1647,7 @@ class BuiltinValidations implements Validations
      * @param Context $c
      * @param callable $test function(int $width, int $height) : bool
      * @param string $messsage_key
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @return boolean
      */
     protected function handleFileImageArea(Context $c, callable $test, string $messsage_key, array $replacement = []) : bool

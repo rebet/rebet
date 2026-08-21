@@ -38,7 +38,7 @@ class MimePart extends Swift_MimePart
     /**
      * {@inheritDoc}
      */
-    protected function convertString($string)
+    protected function convertString(mixed $string) : mixed
     {
         return $string;
     }

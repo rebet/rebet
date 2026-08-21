@@ -19,6 +19,9 @@ class Translator
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -155,7 +158,7 @@ class Translator
      * If this behavior is not desirable, you can suppress recursive search by $recursive option.
      *
      * @param string|null $key "{$group}.{$key}"
-     * @param array $replacement (default: [])
+     * @param array<string, mixed> $replacement (default: [])
      * @param int|string|null $selector (default: null)
      * @param bool $recursive (default: true)
      * @param string $locale (default: depend on configure)
@@ -181,7 +184,7 @@ class Translator
      * Replace the placeholder in translation text by given replacement.
      *
      * @param string|null $sentence
-     * @param array $replacement
+     * @param array<string, mixed> $replacement
      * @param string $delimiter for join array to string (default: ', ')
      * @return string|null
      */

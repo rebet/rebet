@@ -119,7 +119,7 @@ class Mail
     protected $message;
 
     /**
-     * @var array of embedded file CIDs.
+     * @var array<string, string> of embedded file CIDs.
      */
     protected $embedded_cids = [];
 
@@ -370,8 +370,8 @@ class Mail
     /**
      * Resolve address(es) mixtured of multiple formats to ['foo@bar.com' => 'Name', ...].
      *
-     * @param string|array $addresses can be 'foo@bar.com', 'Foo <foo@bar.com>', ['foo@bar.com' => 'Foo'] or ['foo@bar.com' => 'Foo', 'baz@bar.com', 'Qux <qux@bar.com>', ...]
-     * @return array [address => name, ...]
+     * @param string|array<int|string, string|null> $addresses can be 'foo@bar.com', 'Foo <foo@bar.com>', ['foo@bar.com' => 'Foo'] or ['foo@bar.com' => 'Foo', 'baz@bar.com', 'Qux <qux@bar.com>', ...]
+     * @return array<string, string|null> [address => name, ...]
      */
     public static function resolve($addresses) : array
     {
@@ -394,8 +394,8 @@ class Mail
     /**
      * Get/Set "From" addresses from/to the message.
      *
-     * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].
-     * @return null|array|self
+     * @param string|array<int|string, string|null>|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].
+     * @return null|array<string, string|null>|self
      */
     public function from($addresses = null)
     {
@@ -409,8 +409,8 @@ class Mail
     /**
      * Get/Set the "Sender" address from/to the message.
      *
-     * @param null|string|array $address is an address, a name combined address like 'Name <foo@bar.com>' or a singlemap of address and name like [address => name]. (default: null for get sender)
-     * @return null|string|array|self
+     * @param null|string|array<int|string, string|null> $address is an address, a name combined address like 'Name <foo@bar.com>' or a singlemap of address and name like [address => name]. (default: null for get sender)
+     * @return null|string|array<string, string|null>|self
      */
     public function sender($address = null)
     {
@@ -426,7 +426,7 @@ class Mail
     /**
      * Get/Set the "Return-Path" address from/to the message.
      *
-     * @param null|string|array $address is an address, a name combined address like 'Name <foo@bar.com>' or a single map of address and name like [address => name]. (Ignore the name and only the address part is used) (default: null for get return-path)
+     * @param null|string|array<int|string, string|null> $address is an address, a name combined address like 'Name <foo@bar.com>' or a single map of address and name like [address => name]. (Ignore the name and only the address part is used) (default: null for get return-path)
      * @return null|string|self
      */
     public function returnPath($address = null)
@@ -441,8 +441,8 @@ class Mail
     /**
      * Get/Set recipients(=To) from/to the message.
      *
-     * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].(default: null for get to recipients)
-     * @return null|array|self
+     * @param string|array<int|string, string|null>|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].(default: null for get to recipients)
+     * @return null|array<string, string|null>|self
      */
     public function to($addresses = null)
     {
@@ -456,8 +456,8 @@ class Mail
     /**
      * Get/Set carbon copies(=Cc) from/to the message.
      *
-     * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get cc recipients)
-     * @return null|array|self
+     * @param string|array<int|string, string|null>|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get cc recipients)
+     * @return null|array<string, string|null>|self
      */
     public function cc($addresses = null)
     {
@@ -471,8 +471,8 @@ class Mail
     /**
      * Get/Set blind carbon copies(=Bcc) from/to the message.
      *
-     * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get bcc recipients)
-     * @return null|array|self
+     * @param string|array<int|string, string|null>|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get bcc recipients)
+     * @return null|array<string, string|null>|self
      */
     public function bcc($addresses = null)
     {
@@ -486,8 +486,8 @@ class Mail
     /**
      * Get/Set "Reply-To" addresses from/to the message.
      *
-     * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get Reply-To recipients)
-     * @return null|string|array|self
+     * @param string|array<int|string, string|null>|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...]. (default: null for get Reply-To recipients)
+     * @return null|string|array<string, string|null>|self
      */
     public function replyTo($addresses = null)
     {
@@ -501,8 +501,8 @@ class Mail
     /**
      * Get/Set "Disposition-Notification-To" addresses from/to the message.
      *
-     * @param string|array|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].(default: null for get Disposition-Notification-To recipients)
-     * @return null|string|array|self
+     * @param string|array<int|string, string|null>|null $addresses can contains an address, a name combined address like 'Name <foo@bar.com>' or a map of address and name like [address => name, ...].(default: null for get Disposition-Notification-To recipients)
+     * @return null|string|array<string, string|null>|self
      */
     public function dispositionNotificationTo($addresses = null)
     {
@@ -752,7 +752,7 @@ class Mail
      *
      * @param string|null $content_type (default: 'text/plain')
      * @param string|null $charset (default: null)
-     * @param array $options (default: [])
+     * @param array<string, mixed> $options (default: [])
      * @return self
      */
     public function generateAlternativePart(string|null $content_type = 'text/plain', string|null $charset = null, array $options = []) : self
@@ -848,7 +848,7 @@ class Mail
      * Send the mail using given transport.
      *
      * @param string|null $transport name (default: null for use default transport)
-     * @return array of failed recipients
+     * @return array<int, string> of failed recipients
      */
     public function send(string|null $transport = null) : array
     {

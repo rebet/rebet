@@ -21,7 +21,7 @@ class StreamedResponse extends SymfonyStreamedResponse implements Response
      *
      * @param callable $callback function():void { streamd send content logic }
      * @param integer $status (default: 200)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      */
     public function __construct(callable $callback = null, int $status = 200, array $headers = [])
     {

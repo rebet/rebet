@@ -50,7 +50,7 @@ interface Filesystem
      * Create Filesystem using given adapter and config.
      *
      * @param FilesystemAdapter $adapter
-     * @param array|null $config (default: null)
+     * @param array<string, mixed>|null $config (default: null)
      */
     public function __construct(FilesystemAdapter $adapter, $config = null);
 
@@ -120,7 +120,7 @@ interface Filesystem
      *
      * @param string $path can be contains {.ext} placeholder.
      * @param string|resource|\SplFileInfo|StreamInterface $contents string will be file contents
-     * @param string|array $options (default: [])
+     * @param string|array<string, mixed> $options (default: [])
      * @return string of saved path
      * @throws FilesystemException when can not save given contents
      */
@@ -137,7 +137,7 @@ interface Filesystem
      *
      * @param string $path can be contains {.ext} placeholder.
      * @param string|resource|\SplFileInfo|StreamInterface $file string will be file path
-     * @param string|array $options (default: [])
+     * @param string|array<string, mixed> $options (default: [])
      * @return string of saved path
      * @throws FilesystemException when can not save given file
      */
@@ -239,7 +239,7 @@ interface Filesystem
      * Get a file's metadata.
      *
      * @param string $path
-     * @return array
+     * @return array{type: string, path: string, size: int|null, timestamp: int}
      * @throws FileNotFoundException
      * @throws FilesystemException when can not get metadata
      */
@@ -291,7 +291,7 @@ interface Filesystem
      * @param string|null $type 'file' or 'dir' (default: null for all type)
      * @param boolean $recursive (defalt: false)
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
-     * @return array of matching file paths
+     * @return array<int, string> of matching file paths
      */
     public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
 
@@ -302,7 +302,7 @@ interface Filesystem
      * @param string|string[] $pattern (default: '*' that all matching pattern for 'wildcard' matching mode)
      * @param boolean $recursive (defalt: false)
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
-     * @return array of matching file paths
+     * @return array<int, string> of matching file paths
      */
     public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
 
@@ -313,7 +313,7 @@ interface Filesystem
      * @param string|string[] $pattern (default: '*' that all matching pattern for 'wildcard' matching mode)
      * @param boolean $recursive (defalt: false)
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
-     * @return array of matching file paths
+     * @return array<int, string> of matching file paths
      */
     public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
 
@@ -321,7 +321,7 @@ interface Filesystem
      * Create a directory
      *
      * @param string $path
-     * @param array $config (default: [])
+     * @param array<string, mixed> $config (default: [])
      * @return self
      */
     public function mkdir(string $path, array $config = []) : self;

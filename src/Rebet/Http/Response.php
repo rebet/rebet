@@ -37,7 +37,7 @@ interface Response
      * Set a header on the Response.
      *
      * @param string $key
-     * @param array|string $values
+     * @param array<int, string>|string $values
      * @param boolean $replace (default: true)
      * @return self
      */
@@ -49,7 +49,7 @@ interface Response
      * @param string $name
      * @param string|null $path filter can contains shell's wildcard (default: '*')
      * @param string|null $domain filter can contains shell's wildcard (default: '*')
-     * @return Cookie|array|null
+     * @return Cookie|array<int, Cookie>|null
      */
     public function getCookie(string $name, string|null $path = '*', string|null $domain = '*');
 
@@ -417,6 +417,7 @@ interface Response
      *
      * Available options are: etag, last_modified, max_age, s_maxage, private, public and immutable.
      *
+     * @param array<string, mixed> $options
      * @return self
      * @throws \InvalidArgumentException
      * @final
@@ -445,6 +446,7 @@ interface Response
     /**
      * Returns an array of header names given in the Vary header.
      *
+     * @return array<int, string>
      * @final
      */
     public function getVary() : array;
@@ -452,7 +454,7 @@ interface Response
     /**
      * Sets the Vary header.
      *
-     * @param string|array $headers
+     * @param string|array<int, string> $headers
      * @param bool         $replace Whether to replace the actual value or not (true by default)
      * @return self
      * @final
@@ -554,6 +556,7 @@ interface Response
      *
      * Resulting level can be greater than target level if a non-removable buffer has been encountered.
      *
+     * @return void
      * @final
      */
     public static function closeOutputBuffers(int $targetLevel, bool $flush);

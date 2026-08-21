@@ -49,7 +49,7 @@ class AuthUser implements \JsonSerializable
     /**
      * The alias map to connect from the authenticated to user.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $aliases = [];
 
@@ -104,7 +104,7 @@ class AuthUser implements \JsonSerializable
      * (If the user source is null or an array, use "user_id" as it is defaultly.)
      *
      * @param mixed $user
-     * @param array $aliases (default: [])
+     * @param array<string, mixed> $aliases (default: [])
      * @param AuthProvider|null $provider of the given user (default: null)
      */
     public function __construct(mixed $user, array $aliases = [], AuthProvider|null $provider = null)
@@ -121,7 +121,7 @@ class AuthUser implements \JsonSerializable
      * Get the Guest user instance.
      *
      * @param mixed $charenged_signin_id when signin failed.
-     * @param array $aliases (default: depend on configure)
+     * @param array<string, mixed> $aliases (default: depend on configure)
      * @return self
      */
     public static function guest(mixed $charenged_signin_id = null, array $aliases = []) : self

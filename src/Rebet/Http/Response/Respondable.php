@@ -32,7 +32,7 @@ trait Respondable
      * Set a header on the Response.
      *
      * @param string $key
-     * @param array|string $values
+     * @param array<int, string>|string $values
      * @param boolean $replace (default: true)
      * @return Response
      */
@@ -48,7 +48,7 @@ trait Respondable
      * @param string $name
      * @param string|null $path can contains shell's wildcard (default: '*')
      * @param string|null $domain can contains shell's wildcard (default: '*')
-     * @return Cookie|array|null
+     * @return Cookie|array<int, Cookie>|null
      */
     public function getCookie(string $name, string|null $path = '*', string|null $domain = '*')
     {

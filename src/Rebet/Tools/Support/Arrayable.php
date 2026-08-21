@@ -25,7 +25,7 @@ trait Arrayable
     /**
      * Get the all items.
      *
-     * @return array
+     * @return array<int|string, mixed>
      */
     public function all() : array
     {
@@ -109,7 +109,7 @@ trait Arrayable
     /**
      * Get the collection of items as a plain array.
      *
-     * @return array
+     * @return array<int|string, mixed>
      */
     public function toArray() : array
     {

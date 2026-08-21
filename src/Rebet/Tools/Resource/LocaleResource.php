@@ -30,12 +30,12 @@ class LocaleResource
     /**
      * Load the given resource.
      *
-     * @param string|array $loading_path
+     * @param string|array<int, string> $loading_path
      * @param string $locale
      * @param string $base_name
      * @param string $suffix (default: .php)
-     * @param array $option (default: [])
-     * @return array
+     * @param array<string, mixed> $option (default: [])
+     * @return array<string, mixed>
      * @throws LogicException
      */
     public static function load($loading_path, string $locale, string $base_name, string $suffix = 'php', array $option = []) : array

@@ -53,7 +53,7 @@ use Rebet\Tools\Config\Configurable;
  * @method static bool          flush()                                                                                                       Dynamically call the default store method.
  * @method static mixed         retrieve(string $key, int|string|DateTimeInterface $expire, \Closure|mixed $supplier, bool $remember = true)  Dynamically call the default store method.
  * @method static mixed|mixed[] get(string ...$keys)                                                                                          Dynamically call the default store method.
- * @method static bool          put(array $values, int|string|DateTimeInterface $expire)                                                      Dynamically call the default store method.
+ * @method static bool          put(array<string, mixed> $values, int|string|DateTimeInterface $expire)                                       Dynamically call the default store method.
  * @method static bool          has(string $key)                                                                                              Dynamically call the default store method.
  * @method static mixed|mixed[] pull(string ...$keys)                                                                                         Dynamically call the default store method.
  * @method static bool          delete(string ...$keys)                                                                                       Dynamically call the default store method.
@@ -123,7 +123,7 @@ class Cache
      * Dynamically call the default Store instance.
      *
      * @param string $method
-     * @param array $parameters
+     * @param array<int, mixed> $parameters
      * @return mixed
      */
     public static function __callStatic($method, $parameters)

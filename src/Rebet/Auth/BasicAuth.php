@@ -27,7 +27,7 @@ class BasicAuth
     /**
      * Provides simple BASIC authentication.
      *
-     * @param array $auth_list Authentication list
+     * @param array<string, mixed> $auth_list Authentication list
      * @param ?\Closure $to_hash Password hashing logic for the authentication list (default: null)
      * @param string $realm Realm text
      * @param string $failed_text Message on authentication failure

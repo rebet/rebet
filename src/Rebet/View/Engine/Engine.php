@@ -21,7 +21,7 @@ interface Engine
     /**
      * Get template paths
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getPaths() : array;
 
@@ -45,7 +45,7 @@ interface Engine
      * Get the string contents of the view.
      *
      * @param string $name Template name without base template dir and template file suffix
-     * @param array $data
+     * @param array<string, mixed> $data
      * @return string
      */
     public function render(string $name, array $data = []) : string;

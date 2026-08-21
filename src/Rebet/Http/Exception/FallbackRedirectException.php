@@ -28,14 +28,14 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Input data for fallback.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $input = [];
 
     /**
      * Errors cause of fallback.
      *
-     * @var array
+     * @var array<string, array<int, string>>
      */
     protected $errors = [];
 
@@ -65,7 +65,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set input.
      *
-     * @param array $input
+     * @param array<string, mixed> $input
      * @return self
      */
     public function with(array $input) : self
@@ -77,7 +77,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set errors.
      *
-     * @param array $errors
+     * @param array<string, array<int, string>> $errors
      * @return self
      */
     public function errors(array $errors) : self

@@ -16,6 +16,9 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 abstract class InputDataTransform
 {
+    /**
+     * @var array<int, string>
+     */
     protected $except = [];
 
     /**
@@ -56,9 +59,9 @@ abstract class InputDataTransform
     /**
      * Transform the value of given value.
      *
-     * @param array $array
+     * @param array<int|string, mixed> $array
      * @param string $prefix (default: '')
-     * @return array
+     * @return array<int|string, mixed>
      */
     protected function transformArray(array $array, string $prefix = '') : array
     {

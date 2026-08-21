@@ -37,14 +37,14 @@ class Validator
     /**
      * The data under validation.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $data = [];
 
     /**
      * Validation errors
      *
-     * @var array
+     * @var array<string, array<int, string>>
      */
     protected $errors = [];
 
@@ -62,7 +62,7 @@ class Validator
     /**
      * Create a new Validator instance.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      * @param Validations $validations (default: depend on configure)
      */
     public function __construct(array $data, Validations $validations = null)
@@ -77,7 +77,7 @@ class Validator
      * @todo Need to consider whether an argument should contains $nested_attribute_auto_format.
      *
      * @param string $crud
-     * @param array|array[]|string|string[]|Rule|Rule[] $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
+     * @param array<string, mixed>|array<int, array<string, mixed>>|string|array<int, string>|Rule|array<int, Rule> $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
      * @param bool $accept_undefined (default: false)
      * @return ValidData|null
      */
@@ -127,7 +127,7 @@ class Validator
      * Validate the data by given context and rules for recursive.
      *
      * @param Context $context
-     * @param array $rules
+     * @param array<string, mixed> $rules
      * @param Rule|null $spot_validations
      * @return ValidData
      */
@@ -189,7 +189,7 @@ class Validator
      * Handle validation rules
      *
      * @param Context $context
-     * @param array $rules
+     * @param array<int, mixed> $rules
      * @param Rule|null $spot_validations
      */
     protected function validateRules(Context $context, array $rules, Rule|null $spot_validations) : void
@@ -239,7 +239,7 @@ class Validator
     /**
      * Get the validation errors.
      *
-     * @return array
+     * @return array<string, array<int, string>>
      */
     public function errors() : array
     {

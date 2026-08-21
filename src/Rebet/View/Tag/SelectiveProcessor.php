@@ -41,6 +41,8 @@ class SelectiveProcessor implements Processor
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int|string, mixed> $args
      */
     public function execute(array $args)
     {

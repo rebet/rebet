@@ -32,14 +32,14 @@ class View implements Renderable
     /**
      * The global share valiables.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected static $share = [];
 
     /**
      * The view valiable composers.
      *
-     * @var array
+     * @var array<string, \Closure>
      */
     protected static $composer = [];
 
@@ -67,7 +67,7 @@ class View implements Renderable
     /**
      * View data.
      *
-     * @var array
+     * @var array<string, Tinker>
      */
     protected $data = [];
 
@@ -147,7 +147,7 @@ class View implements Renderable
     /**
      * Set the global share valiables.
      *
-     * @param string|array $key
+     * @param string|array<string, mixed> $key
      * @param mixed $value
      * @return void
      */
@@ -174,7 +174,7 @@ class View implements Renderable
     /**
      * Add a piece of data to the view.
      *
-     * @param string|array $key
+     * @param string|array<string, mixed> $key
      * @param mixed $value
      * @return self
      */
@@ -254,7 +254,7 @@ class View implements Renderable
     /**
      * Get template paths
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getPaths() : array
     {

@@ -21,12 +21,12 @@ namespace Rebet\Routing\Annotation;
 final class Method
 {
     /**
-     * @var array of allow HTTP methods GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS.
+     * @var array<string> of allow HTTP methods GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS.
      */
     public $allows = [];
 
     /**
-     * @var array of reject HTTP methods GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS.
+     * @var array<string> of reject HTTP methods GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS.
      */
     public $rejects = [];
 

@@ -17,6 +17,8 @@ class ArrayCursorStorage implements CursorStorage
 {
     /**
      * Strage
+     *
+     * @var array<string, Cursor>
      */
     private static $strage = [];
 

@@ -56,7 +56,7 @@ class HeaderSet
      *
      * @param string $name
      * @param string|DateTimeInterface|null $value
-     * @param array|null $params for add PARAMETERIZED header syntax. (default: null for depend on value type DATE or TEXT syntax).
+     * @param array<string, mixed>|null $params for add PARAMETERIZED header syntax. (default: null for depend on value type DATE or TEXT syntax).
      * @return self
      */
     public function add(string $name, $value, $params = null) : self
@@ -81,7 +81,7 @@ class HeaderSet
      * Add a new ID header like Message-ID or Content-ID.
      *
      * @param string $name
-     * @param string|array|null $ids format of `id-left "@" id-right` defined in RFC 2822
+     * @param string|array<int, string>|null $ids format of `id-left "@" id-right` defined in RFC 2822
      * @return self
      */
     public function addIdHeader(string $name, $ids = null) : self
@@ -94,7 +94,7 @@ class HeaderSet
      * Add a new Mailbox Header with a list of $addresses.
      *
      * @param string $name
-     * @param string|array|null $addresses can be 'foo@bar.com', 'Foo <foo@bar.com>', ['foo@bar.com' => 'Foo'] or ['foo@bar.com' => 'Foo', 'baz@bar.com', 'Qux <qux@bar.com>', ...]
+     * @param string|array<int|string, string>|null $addresses can be 'foo@bar.com', 'Foo <foo@bar.com>', ['foo@bar.com' => 'Foo'] or ['foo@bar.com' => 'Foo', 'baz@bar.com', 'Qux <qux@bar.com>', ...]
      * @return self
      */
     public function addMailboxHeader(string $name, $addresses = null) : self
@@ -107,7 +107,7 @@ class HeaderSet
      * Add a new Path header with an address (path) in it.
      *
      * @param string $name
-     * @param string|array|null $address can be 'foo@bar.com', 'Foo <foo@bar.com>' or ['foo@bar.com' => 'Foo'] but it is just used email address part. (default: null)
+     * @param string|array<int|string, string>|null $address can be 'foo@bar.com', 'Foo <foo@bar.com>' or ['foo@bar.com' => 'Foo'] but it is just used email address part. (default: null)
      * @return self
      */
     public function addPathHeader(string $name, $address = null) : self
@@ -121,7 +121,7 @@ class HeaderSet
      *
      * @param string $name
      * @param string|null $value (default: null)
-     * @param array $params (default: [])
+     * @param array<string, mixed> $params (default: [])
      * @return self
      */
     public function addParameterizedHeader(string $name, string|null $value = null, array $params = []) : self

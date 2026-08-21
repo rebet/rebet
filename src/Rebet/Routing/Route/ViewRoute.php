@@ -23,7 +23,7 @@ class ViewRoute extends ClosureRoute
      *
      * @param string $uri
      * @param string $name
-     * @param array $args (default: [])
+     * @param array<string, mixed> $args (default: [])
      * @param bool $apply_change (default: true)
      */
     public function __construct(string $uri, string $name, array $args = [], bool $apply_change = true)

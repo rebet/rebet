@@ -118,7 +118,7 @@ class UploadedFile extends SymfonyUploadedFile
      * If can not guess extension by mime type then use this uploaded file extension as it is.
      *
      * @param string $path can be contains {.ext} placeholder.
-     * @param string|array $options (default: [])
+     * @param string|array<string, mixed> $options (default: [])
      * @param string|null $disk name (default: null for private disk)
      * @return string of saved path
      */

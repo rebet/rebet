@@ -75,7 +75,7 @@ abstract class Controller
      * Validate input data by given rules.
      *
      * @param string $crud
-     * @param string|Rule|array $rules
+     * @param string|Rule|array<mixed> $rules
      * @param string $fallback_url
      * @param bool $accept_undefined (default: false)
      * @return ValidData

@@ -32,7 +32,7 @@ class Responder
      *
      * @param mixed $data
      * @param int $status code of HTTP (default: 200)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      * @param Request|null $request (default: null for Request::current())
      * @return Response
      */
@@ -60,7 +60,7 @@ class Responder
      *
      * @param mixed $data
      * @param int $status code of HTTP (default: 200)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      * @return Response
      */
     protected static function createResponseByTypeOf($data, int $status = 200, array $headers = []) : Response
@@ -89,9 +89,9 @@ class Responder
      * If you do not want this behavior you can use starts with 'http(s)//...' or '@/path/to/page'.
      *
      * @param string $url
-     * @param array $query (default: [])
+     * @param array<string, mixed> $query (default: [])
      * @param int $status (default: 302)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      * @param Request|null $request (default: null for Request::current())
      * @return RedirectResponse
      */
@@ -117,7 +117,7 @@ class Responder
      * @param int $status of HTTP response
      * @param string|null $title of problem or full transration key (default: HTTP status label)
      * @param string|null $type of problem (default: TYPE_HTTP_STATUS)
-     * @param array $headers of HTTP response (default: [])
+     * @param array<string, string|array<int, string>> $headers of HTTP response (default: [])
      * @param int $encoding_options of JSON encode (default: 0)
      * @return ProblemResponse
      */
@@ -132,7 +132,7 @@ class Responder
      *
      * @param string $path
      * @param string|null $filename (default: null)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      * @param string $disposition (default: 'inline')
      * @param string $disk of filesystem (default: null for use private disk)
      * @return StreamedResponse
@@ -169,7 +169,7 @@ class Responder
      *
      * @param string $path
      * @param string|null $filename (default: null)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      * @param string $disk of filesystem (default: null)
      * @return StreamedResponse
      */

@@ -33,7 +33,7 @@ class Mailer
      * Send the given Message like it would be sent in a mail client.
      *
      * @param Mail|Swift_Mime_SimpleMessage $mail
-     * @return array of failed recipients
+     * @return array<int, string> of failed recipients
      */
     public function send($mail) : array
     {
@@ -45,7 +45,7 @@ class Mailer
     /**
      * Register a plugin using a known unique key (e.g. myPlugin).
      */
-    public function plugin(Swift_Events_EventListener $plugin)
+    public function plugin(Swift_Events_EventListener $plugin) : void
     {
         $this->mailer->registerPlugin($plugin);
     }

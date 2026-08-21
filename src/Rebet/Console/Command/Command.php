@@ -44,21 +44,21 @@ abstract class Command extends SymfonyCommand
     /**
      * The arguments of command.
      * Must be overloaded in subclass if necessary.
-     * @var array
+     * @var array<int, array<int, mixed>>
      */
     const ARGUMENTS = [];
 
     /**
      * The options of command.
      * Must be overloaded in subclass if necessary.
-     * @var array
+     * @var array<int, array<int, mixed>>
      */
     const OPTIONS = [];
 
     /**
      * The mapping between human readable verbosity levels and Symfony's OutputInterface.
      *
-     * @var array
+     * @var array<string, int>
      */
     const VERBOSITIES = [
         'q'   => OutputInterface::VERBOSITY_QUIET,
@@ -165,7 +165,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Get all of the arguments passed to the command.
      *
-     * @return array
+     * @return array<string, string|bool|int|float|array<int|string, mixed>|null>
      */
     public function arguments() : array
     {
@@ -197,7 +197,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Get all of the options passed to the command.
      *
-     * @return array
+     * @return array<string, string|bool|int|float|array<int|string, mixed>|null>
      */
     public function options() : array
     {
@@ -234,7 +234,7 @@ abstract class Command extends SymfonyCommand
      * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
      * @param bool $required (default: true)
      * @param string|null $default (default: null)
-     * @param array|callable|null $choices for auto completion. (default: null)
+     * @param array<int|string, string>|callable|null $choices for auto completion. (default: null)
      * @param string $retry_message (default: '-> This question is required, try again.')
      * @return mixed
      */
@@ -262,7 +262,7 @@ abstract class Command extends SymfonyCommand
      *
      * @param string $question
      * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
-     * @param array $availables (default: [])
+     * @param array<int, string> $availables (default: [])
      * @return string|null
      */
     protected function viaOption(string $question, string|null $via_option = null, array $availables = []) : string|null
@@ -322,12 +322,12 @@ abstract class Command extends SymfonyCommand
      * Give the user a single choice from an array of answers.
      *
      * @param string $question
-     * @param array $choices
+     * @param array<int|string, string|bool|int|float|\Stringable> $choices
      * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
      * @param string|null $default (default: null)
      * @param int|null $attempts (default: null)
      * @param bool $multiple (default: false)
-     * @return string|array
+     * @return string|bool|int|float|\Stringable|array<int, string|bool|int|float|\Stringable>
      */
     protected function choice(string $question, array $choices, string|null $via_option = null, $default = null, int|null $attempts = null, $multiple = false)
     {
@@ -341,10 +341,10 @@ abstract class Command extends SymfonyCommand
     /**
      * Format input to textual table.
      *
-     * @param array $headers
-     * @param array $rows
+     * @param array<int, mixed> $headers
+     * @param array<int, mixed> $rows
      * @param string $table_style (default: 'default')
-     * @param array $column_styles (default: [])
+     * @param array<int, \Symfony\Component\Console\Helper\TableStyle|string> $column_styles (default: [])
      * @return void
      */
     protected function table(array $headers, array $rows, $table_style = 'default', array $column_styles = [])

@@ -62,14 +62,14 @@ abstract class AbstractTransport implements Swift_Transport
     /**
      * Starts this Transport mechanism.
      */
-    public function start()
+    public function start() : void
     {
     }
 
     /**
      * Stops this Transport mechanism.
      */
-    public function stop()
+    public function stop() : void
     {
     }
 
@@ -132,7 +132,7 @@ abstract class AbstractTransport implements Swift_Transport
     /**
      * {@inheritDoc}
      */
-    public function registerPlugin(Swift_Events_EventListener $plugin)
+    public function registerPlugin(Swift_Events_EventListener $plugin) : void
     {
         foreach ($this->plugins as $p) {
             // Already loaded (Same as Swift_Events_SimpleEventDispatcher::bindEventListener() check logic)

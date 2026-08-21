@@ -8,6 +8,9 @@ use Rebet\Tools\Utility\Arrays;
 /**
  * Result Set Class
  *
+ * @implements \ArrayAccess<int|string, mixed>
+ * @implements \IteratorAggregate<int|string, mixed>
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -20,7 +23,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * All of the items in result set.
      *
-     * @var array
+     * @var array<int|string, mixed>
      */
     protected $items;
 
@@ -41,6 +44,8 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<int|string, mixed>
      */
     protected function &container() : array
     {
@@ -78,7 +83,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      *
      * @param int|string|\Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
      * @param int|string|\Closure|null $key_field Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
-     * @return array
+     * @return array<int|string, mixed>
      */
     public function pluk($value_field, $key_field = null) : array
     {

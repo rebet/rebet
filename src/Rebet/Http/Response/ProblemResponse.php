@@ -19,7 +19,7 @@ use Rebet\Tools\Translation\Translator;
 class ProblemResponse extends JsonResponse
 {
     /**
-     * @var array of reserved words of RFC7807 Problem Details for HTTP APIs
+     * @var array<int, string> of reserved words of RFC7807 Problem Details for HTTP APIs
      */
     protected const RESERVED_WORDS = ['status', 'type', 'title', 'detail', 'instance'];
 
@@ -42,7 +42,7 @@ class ProblemResponse extends JsonResponse
     const TYPE_FALLBACK_ERRORS = 'https://github.com/rebet/rebet/blob/master/spec/problem-details/fallback-errors.md';
 
     /**
-     * @var array of problem
+     * @var array<string, mixed> of problem
      */
     protected $problem = [];
 
@@ -56,7 +56,7 @@ class ProblemResponse extends JsonResponse
      * @param int $status of HTTP response
      * @param string|null $title of problem or full transration key (default: HTTP status label)
      * @param string|null $type of problem (default: TYPE_HTTP_STATUS)
-     * @param array $headers of HTTP response (default: [])
+     * @param array<string, string|array<int, string>> $headers of HTTP response (default: [])
      * @param int $encoding_options of JSON encode (default: 0)
      */
     public function __construct(int $status, string|null $title = null, string|null $type = null, array $headers = [], int $encoding_options = 0)
@@ -104,7 +104,7 @@ class ProblemResponse extends JsonResponse
     /**
      * Set the additional data.
      *
-     * @param string|array $key
+     * @param string|array<string, mixed> $key
      * @param mixed $value (default: null)
      * @return self
      */

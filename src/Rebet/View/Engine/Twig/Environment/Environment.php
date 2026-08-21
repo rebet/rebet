@@ -40,11 +40,11 @@ class Environment extends TwigEnvironment
      *
      * @param string $name
      * @param string|null $verbs
-     * @param array|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
+     * @param array<int|string, string|array<int, string>>|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
      * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
      * @param Processor $processor
      * @param string $close code to callbak returns like ');', ';', '):' etc
-     * @param array $binds (default: [])
+     * @param array<int, string> $binds (default: [])
      * @param bool $can_omit_first_arg (default: false)
      * @return void
      */
@@ -58,9 +58,9 @@ class Environment extends TwigEnvironment
      *
      * @param string $name
      * @param string|null $verbs
-     * @param array|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
+     * @param array<int|string, string|array<int, string>>|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
      * @param Processor $processor
-     * @param array $binds (default: [])
+     * @param array<int, string> $binds (default: [])
      * @param bool $can_omit_first_arg (default: false)
      * @return void
      */

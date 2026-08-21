@@ -24,7 +24,7 @@ class LooseEmailParser extends EmailParser
      * Create Email Parser.
      *
      * @param EmailLexer $lexer
-     * @param array $ignores errors you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
+     * @param array<int, class-string> $ignores errors you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
      */
     public function __construct(EmailLexer $lexer, array $ignores = [])
     {

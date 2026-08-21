@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application\Http;
 
+use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
@@ -52,6 +53,7 @@ abstract class WebKernel extends Kernel
 
     /**
      * {@inheritDoc}
+     * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
     protected function bootstrappers() : array
     {
@@ -80,7 +82,7 @@ abstract class WebKernel extends Kernel
      * Run an action by name.
      *
      * @param string $action
-     * @param array $parameters (default: [])
+     * @param array<string, mixed> $parameters (default: [])
      * @return Response
      */
     public function call(string $action, array $parameters = []) : Response

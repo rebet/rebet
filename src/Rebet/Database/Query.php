@@ -29,7 +29,7 @@ class Query
     /**
      * Full or partial SQL parameters
      *
-     * @var array
+     * @var array<int|string, mixed>
      */
     protected array $params = [];
 
@@ -38,7 +38,7 @@ class Query
      *
      * @param Driver $driver
      * @param string $sql
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      */
     public function __construct(Driver $driver, string $sql, array $params = [])
     {
@@ -70,7 +70,7 @@ class Query
     /**
      * Get full or partial SQL parameters
      *
-     * @return array
+     * @return array<int|string, mixed>
      */
     public function params() : array
     {
@@ -80,8 +80,8 @@ class Query
     /**
      * Append where condition to this query.
      *
-     * @param string|array $where
-     * @param array $params (default: [])
+     * @param string|array<int, string> $where
+     * @param array<int|string, mixed> $params (default: [])
      * @return self
      */
     public function appendWhere($where, array $params = []) : self
@@ -164,8 +164,10 @@ class Query
 
     /**
      * Convert to exception/log message string
+     *
+     * @return string
      */
-    public function toString()
+    public function toString() : string
     {
         return "Query[".$this->driver->name()."] {\n".
                "  sql: ".Strings::indent(Strings::stringify($this->sql), " ", 4).

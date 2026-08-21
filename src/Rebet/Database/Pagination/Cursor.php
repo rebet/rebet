@@ -17,6 +17,9 @@ use Rebet\Tools\Utility\Utils;
  *
  * @phpstan-consistent-constructor
  *
+ * @implements \ArrayAccess<string, mixed>
+ * @implements \IteratorAggregate<string, mixed>
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -41,7 +44,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Cursor pointed data
      *
-     * @var array of [col => $value, ... ]
+     * @var array<string, mixed> of [col => $value, ... ]
      */
     protected $cursor = [];
 
@@ -70,7 +73,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * Create Cursor instance.
      *
      * @param Pager $pager
-     * @param array $cursor of [col => $value, ... ]
+     * @param array<string, mixed> $cursor of [col => $value, ... ]
      * @param int|null $next_page_count that confirmed to be exists
      */
     public function __construct(Pager $pager, array $cursor, int|null $next_page_count = null)
@@ -83,6 +86,8 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<string, mixed>
      */
     protected function &container() : array
     {
@@ -92,9 +97,9 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Create given pages cursor using given column orders and cursor pointed data.
      *
-     * @param OrderBy|array $order_by
+     * @param OrderBy|array<string, string> $order_by
      * @param Pager $pager
-     * @param object|array $data of cursor poitned
+     * @param object|array<string, mixed> $data of cursor poitned
      * @param int $next_page_count that confirmed to be exists
      * @return self
      */

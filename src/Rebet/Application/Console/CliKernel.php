@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Application\Console;
 
+use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
@@ -68,6 +69,7 @@ abstract class CliKernel extends Kernel
 
     /**
      * {@inheritDoc}
+     * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
     protected function bootstrappers() : array
     {
@@ -119,7 +121,7 @@ abstract class CliKernel extends Kernel
      * Run a command by name.
      *
      * @param string $action
-     * @param array $parameters (default: [])
+     * @param array<string, mixed> $parameters (default: [])
      * @return int
      */
     public function call(string $action, array $parameters = []) : int

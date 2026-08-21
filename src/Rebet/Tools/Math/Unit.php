@@ -22,6 +22,9 @@ class Unit
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -313,12 +316,12 @@ class Unit
     const TEMPERATURE = 'temperature';
 
     /**
-     * @var array of Unit factors
+     * @var array<string, array<int, mixed>> of Unit factors
      */
     protected $units = [];
 
     /**
-     * @var array of Options
+     * @var array<string, mixed> of Options
      */
     protected $options = [];
 
@@ -327,7 +330,7 @@ class Unit
      *
      * @param string $name
      * @param bool $safety convert using library default configure. (default: false)
-     * @return array
+     * @return array<string, array<int, mixed>>
      */
     public static function factorsOf(string $name, bool $safety = false) : array
     {
@@ -337,7 +340,7 @@ class Unit
     /**
      * Get base unit symbol from given units.
      *
-     * @param array|string $units
+     * @param array<string, array<int, mixed>>|string $units
      * @return string|null
      */
     public static function baseUnitOf($units) : string|null
@@ -349,8 +352,8 @@ class Unit
     /**
      * Create Unit Converter of given name or unit factors.
      *
-     * @param array|string $name
-     * @param array $options (default: depend on configure)
+     * @param array<string, array<int, mixed>>|string $name
+     * @param array<string, mixed> $options (default: depend on configure)
      *     - omit_zero            : true
      *     - without_prefix       : false
      *     - before_prefix        : ''
@@ -368,8 +371,8 @@ class Unit
     /**
      * Create Unit Converter of given name or unit factors.
      *
-     * @param array|string $units name or array of unit factors
-     * @param array $options (default: depend on configure)
+     * @param array<string, array<int, mixed>>|string $units name or array of unit factors
+     * @param array<string, mixed> $options (default: depend on configure)
      *     - omit_zero            : true
      *     - without_prefix       : false
      *     - before_prefix        : ''
@@ -390,7 +393,7 @@ class Unit
      * @param int|float|string|Decimal $value can be contains unit.
      * @param string|null $to prefix name to exchange. If the null given then exchange to human readable. (default: null)
      * @param int|null $precision (default: 2).
-     * @param array $options for runtime override (default: [])
+     * @param array<string, mixed> $options for runtime override (default: [])
      * @return string
      */
     public function exchange($value, string|null $to = null, int|null $precision = 2, array $options = []) : string
@@ -440,7 +443,7 @@ class Unit
      *
      * @param int|float|string $value can be contains unit.
      * @param string $to prefix name to convert. (default: null for base unit)
-     * @param array $options for runtime override (default: [])
+     * @param array<string, mixed> $options for runtime override (default: [])
      * @return Decimal
      */
     public function convert($value, string|null $to = null, array $options = []) : Decimal

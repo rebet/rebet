@@ -75,6 +75,7 @@ class PdoParameter
      * Create string (PDO::PARAM_STR) type parameter.
      *
      * @param mixed $value
+     * @param mixed $option for driver (default: null)
      * @return self
      */
     public static function str($value, $option = null) : self
@@ -86,6 +87,7 @@ class PdoParameter
      * Create integer (PDO::PARAM_INT) type parameter.
      *
      * @param mixed $value
+     * @param mixed $option for driver (default: null)
      * @return self
      */
     public static function int($value, $option = null) : self
@@ -97,6 +99,7 @@ class PdoParameter
      * Create boolean (PDO::PARAM_BOOL) type parameter.
      *
      * @param mixed $value
+     * @param mixed $option for driver (default: null)
      * @return self
      */
     public static function bool($value, $option = null) : self
@@ -108,6 +111,7 @@ class PdoParameter
      * Create lob (PDO::PARAM_LOB) type parameter.
      *
      * @param mixed $value
+     * @param mixed $option for driver (default: null)
      * @return self
      */
     public static function lob($value, $option = null) : self
@@ -118,6 +122,7 @@ class PdoParameter
     /**
      * Create null (PDO::PARAM_NULL) type parameter.
      *
+     * @param mixed $option for driver (default: null)
      * @return self
      */
     public static function null($option = null) : self

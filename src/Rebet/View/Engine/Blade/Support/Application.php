@@ -109,6 +109,8 @@ class Application extends Container implements ApplicationContract
 
     /**
      * {@inheritDoc}
+     *
+     * @param string|array<int, string> ...$environments
      */
     public function environment(...$environments)
     {
@@ -213,6 +215,8 @@ class Application extends Container implements ApplicationContract
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int, string> $bootstrappers
      */
     public function bootstrapWith(array $bootstrappers)
     {
@@ -237,6 +241,8 @@ class Application extends Container implements ApplicationContract
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<int, \Illuminate\Support\ServiceProvider>
      */
     public function getProviders($provider)
     {

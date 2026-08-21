@@ -39,7 +39,7 @@ class Password
      *
      * @param string|null $password
      * @param int|string|null $algorithm (default: depend on configure)
-     * @param array|null $options (default: depend on configure)
+     * @param array<string, mixed>|null $options (default: depend on configure)
      * @return string|null
      */
     public static function hash(string|null $password, $algorithm = null, array|null $options = null) : string|null
@@ -69,7 +69,7 @@ class Password
      *
      * @param string|null $hash
      * @param int|string|null $algorithm (default: depend on configure)
-     * @param array|null $options (default: depend on configure)
+     * @param array<string, mixed>|null $options (default: depend on configure)
      * @return bool
      */
     public static function needsRehash(string|null $hash, $algorithm = null, array|null $options = null) : bool

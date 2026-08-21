@@ -64,7 +64,7 @@ class AnnotatedProperty
     /**
      * Get property annotations
      *
-     * @return array Annotation
+     * @return array<object> Annotation
      */
     public function annotations() : array
     {

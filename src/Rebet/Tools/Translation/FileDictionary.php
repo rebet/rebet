@@ -19,6 +19,9 @@ class FileDictionary implements Dictionary
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -29,12 +32,12 @@ class FileDictionary implements Dictionary
     }
 
     /**
-     * @var array of resouce adders class names
+     * @var array<int, class-string> of resouce adders class names
      */
     protected static $resouce_adders = [];
 
     /**
-     * @var array of resouce dirs
+     * @var array<int, string> of resouce dirs
      */
     protected static $resouce_dirs = [];
 
@@ -49,7 +52,7 @@ class FileDictionary implements Dictionary
      *     ]
      * ]
      *
-     * @var array
+     * @var array<string, array<string, array<string, string>>>
      */
     public $resouces = [];
 
@@ -64,7 +67,7 @@ class FileDictionary implements Dictionary
      * Resource file loading option
      *
      * @see Rebet\Tools\Resource\Resource
-     * @var array
+     * @var array<string, mixed>
      */
     protected $option = [];
 
@@ -72,7 +75,7 @@ class FileDictionary implements Dictionary
      * Create a new file dictionary instance.
      *
      * @param string $suffix (default: 'php')
-     * @param array $option (default: [])
+     * @param array<string, mixed> $option (default: [])
      */
     public function __construct(string $suffix = 'php', array $option = [])
     {
@@ -167,6 +170,8 @@ class FileDictionary implements Dictionary
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int, string> $locales
      */
     public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : string|null
     {
@@ -194,7 +199,7 @@ class FileDictionary implements Dictionary
     /**
      * Select a proper translation string based on the given selector.
      *
-     * @param string|array|null $sentence
+     * @param string|array<int|string, string>|null $sentence
      * @param int|string|null $selector
      * @return string|null
      */

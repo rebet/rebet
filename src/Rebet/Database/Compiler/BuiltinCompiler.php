@@ -65,6 +65,8 @@ class BuiltinCompiler implements Compiler
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<string, mixed>|object|null $params
      */
     public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null) : Query
     {

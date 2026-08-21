@@ -31,7 +31,7 @@ class PdoAdapter extends AbstractSymfonyAdapter
      *  * db_time_col    : The column where to store the timestamp  [default: time]
      *
      * @param string|\PDO|null $db name a string of Dao.dbs.* configuration or a \PDO instance. (default: null for use default database of `Dao.dbs` configure)
-     * @param array $options for connect memcached. (default: [])
+     * @param array<string, mixed> $options for connect memcached. (default: [])
      * @param string $namespace (default: '')
      * @param int|string $default_lifetime that time unit labeled string like '12min', or int seconds. (default: 0)
      * @param MarshallerInterface|null $marshaller (default: null)
@@ -39,7 +39,7 @@ class PdoAdapter extends AbstractSymfonyAdapter
      * @param null|string|CacheItemPoolInterface $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
      * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
-    public function __construct($db = null, string $namespace = '', $default_lifetime = 0, array $options = [], MarshallerInterface $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
+    public function __construct($db = null, string $namespace = '', $default_lifetime = 0, array $options = [], MarshallerInterface|null $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
     {
         $options = array_merge([
             'db_table'        => 'cache_items',

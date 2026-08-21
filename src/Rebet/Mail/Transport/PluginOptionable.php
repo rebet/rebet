@@ -33,7 +33,7 @@ trait PluginOptionable
      *   - bool|string  'logging'           : Use LoggingPlugin [when value is true then use default channel, otherwise give channel name of Log.channels]
      *   - string|array 'always_bcc'        : Use AlwaysBccPlugin [?]
      * @param mixed $value
-     * @param array $unavailables option name (default: [] for all available)
+     * @param array<int, string> $unavailables option name (default: [] for all available)
      * @return bool applied or not
      */
     protected function apply(string $option, $value, array $unavailables = []) : bool
@@ -67,5 +67,5 @@ trait PluginOptionable
      *
      * @param Swift_Events_EventListener $plugin
      */
-    abstract public function registerPlugin(Swift_Events_EventListener $plugin);
+    abstract public function registerPlugin(Swift_Events_EventListener $plugin) : void;
 }

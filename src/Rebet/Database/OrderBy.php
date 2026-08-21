@@ -8,6 +8,9 @@ use Rebet\Tools\Support\Arrayable;
  *
  * @phpstan-consistent-constructor
  *
+ * @implements \ArrayAccess<string, string>
+ * @implements \IteratorAggregate<string, string>
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -20,14 +23,14 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
     /**
      * Orders
      *
-     * @var array of [col => asc|desc, ... ]
+     * @var array<string, string> of [col => asc|desc, ... ]
      */
     protected $order_by = [];
 
     /**
      * Create Cursor instance.
      *
-     * @param array $order_by of [col => asc|desc, ... ]
+     * @param array<string, string> $order_by of [col => asc|desc, ... ]
      */
     public function __construct(array $order_by)
     {
@@ -36,6 +39,8 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<string, string>
      */
     protected function &container() : array
     {

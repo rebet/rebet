@@ -14,7 +14,7 @@ abstract class Rule
     /**
      * Get the validation rules.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     abstract public function rules() : array;
 

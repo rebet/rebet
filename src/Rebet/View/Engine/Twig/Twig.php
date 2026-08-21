@@ -33,6 +33,9 @@ class Twig implements Engine
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfigOverrideOptions() : array
     {
         return [
@@ -95,6 +98,8 @@ class Twig implements Engine
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<int, string>
      */
     public function getPaths() : array
     {
@@ -130,6 +135,8 @@ class Twig implements Engine
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<string, mixed> $data
      */
     public function render(string $name, array $data = []) : string
     {

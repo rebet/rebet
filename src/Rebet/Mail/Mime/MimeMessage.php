@@ -39,7 +39,7 @@ class MimeMessage extends Swift_Message
     /**
      * {@inheritDoc}
      */
-    protected function convertString($string)
+    protected function convertString(mixed $string) : mixed
     {
         return $string ;
     }

@@ -264,7 +264,7 @@ class Inflector
     /**
      * pluralize/singularize cache array.
      *
-     * @var array
+     * @var array<string, array<string, string>>
      */
     private static $cache = [
         'pluralize'   => [],
@@ -274,7 +274,7 @@ class Inflector
     /**
      * pluralize/singularize compiled array.
      *
-     * @var array
+     * @var array<string, array<string, mixed>>
      */
     private static $compiled = [
         'pluralize'   => [],
@@ -318,7 +318,7 @@ class Inflector
      * Converts 'ClassName' to 'class_name' and ['tables', 'others'] to 'other_table'.
      * NOTE: When the array words given then the words count must be two otherwise return null.
      *
-     * @param string|array|null $word
+     * @param string|array<int, string>|null $word
      * @param string $replacement (default: '_')
      * @param string $delimiters (default: ' _-')
      * @return string|null

@@ -42,7 +42,7 @@ class VerifyCsrfToken
     /**
      * Create Verify Csrf Token Middleware
      *
-     * @param array $excludes (default: [])
+     * @param array<int, string> $excludes (default: [])
      * @param bool $is_support_xsrf (default: false)
      * @param int|string|null $xsrf_lifetime (default: depend on configure 'Rebet\Http\Cookie.expire')
      */

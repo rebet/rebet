@@ -41,7 +41,7 @@ class BladeCompiler extends LaravelBladeCompiler
      * Execute the given name code.
      *
      * @param string $name
-     * @param array $args (default: [])
+     * @param array<int|string, mixed> $args (default: [])
      * @return bool
      */
     public function execute($name, array $args = [])
@@ -77,7 +77,7 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Register an "if" (and not) statement directive.
      *
-     * @param string|array $name
+     * @param string $name
      * @param Processor $processor
      * @param string|null $binds (default: null)
      * @return void

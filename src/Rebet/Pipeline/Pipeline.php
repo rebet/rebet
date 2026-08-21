@@ -30,14 +30,14 @@ class Pipeline
     /**
      * The array of class pipes.
      *
-     * @var array
+     * @var array<int, mixed>
      */
     protected $pipes = [];
 
     /**
      * The array of latest instantiated pipes.
      *
-     * @var array
+     * @var array<int, mixed>
      */
     protected $real_pipes = [];
 

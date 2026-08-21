@@ -27,7 +27,7 @@ class StderrDriver extends MonologDriver
      *
      * @param string $level
      * @param string|null $format (default: null)
-     * @param array $stringifiers (default: [])
+     * @param array<string, callable> $stringifiers (default: [])
      * @param boolean $bubble (default: true)
      */
     public function __construct(string $level, string $format = null, array $stringifiers = [], bool $bubble = true)

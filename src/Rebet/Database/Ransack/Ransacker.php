@@ -27,7 +27,7 @@ interface Ransacker
      *
      * @param int|string $predicate
      * @param mixed $value
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query|null condition or null when ignored
      */
@@ -37,7 +37,7 @@ interface Ransacker
      * Build 'WHERE' condition expression from given ransack conditions.
      *
      * @param mixed $ransack condition that arrayable
-     * @param array $alias (default: [])
+     * @param array<string, string|array<int, string>> $alias (default: [])
      * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query
      */

@@ -31,6 +31,11 @@ class DatabaseSessionHandler extends SymfonyPdoSessionHandler
         ];
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param array<string, mixed> $options (default: depend on configure)
+     */
     public function __construct(string $db = null, array $options = [])
     {
         parent::__construct(Dao::db($db)->pdo(), array_merge(static::config('options'), $options));

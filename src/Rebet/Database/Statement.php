@@ -12,6 +12,8 @@ use Rebet\Tools\Reflection\Reflector;
  *
  * @todo support fetched data cache and repeatble method call (if need)
  *
+ * @implements \IteratorAggregate<int|string, mixed>
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -58,7 +60,7 @@ class Statement implements \IteratorAggregate
     /**
      * Get the column meta data.
      *
-     * @return array
+     * @return array<int|string, array<string, mixed>>
      */
     public function meta() : array
     {
@@ -80,7 +82,7 @@ class Statement implements \IteratorAggregate
     /**
      * Executes a prepared statement
      *
-     * @param array $params values can be raw scalars or PdoParameter instances (default: [])
+     * @param array<int|string, mixed> $params values can be raw scalars or PdoParameter instances (default: [])
      * @return self
      * @throws DatabaseException|PDOException
      */
@@ -120,7 +122,7 @@ class Statement implements \IteratorAggregate
      *
      * @param mixed $row
      * @param string $class
-     * @param array|null $meta info of this statement for performance in loop (default: null)
+     * @param array<int|string, array<string, mixed>>|null $meta info of this statement for performance in loop (default: null)
      * @return mixed
      */
     protected function convert($row, string $class, array|null $meta = null)

@@ -20,7 +20,7 @@ namespace Rebet\Auth\Annotation;
 final class Role
 {
     /**
-     * @var array of acceptable role names
+     * @var array<string> of acceptable role names
      */
     public $names = [];
 }

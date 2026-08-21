@@ -62,7 +62,7 @@ class SessionStorage extends NativeSessionStorage
     /**
      * {@inheritDoc}
      *
-     * @param array $options (default: [])
+     * @param array<string, mixed> $options (default: [])
      * @param \SessionHandlerInterface|null $handler (default: depend on configure)
      * @param MetadataBag|null $metadata_bag (default: null)
      */

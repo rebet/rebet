@@ -43,7 +43,7 @@ class FileDriver extends MonologDriver
      * @param bool $use_locking (default: false)
      * @param bool $with_browser_console (default: false)
      * @param string|null $format (default: null)
-     * @param array $stringifiers (default: [])
+     * @param array<string, callable> $stringifiers (default: [])
      * @param boolean $bubble (default: true)
      */
     public function __construct(

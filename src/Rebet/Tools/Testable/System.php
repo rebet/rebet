@@ -14,8 +14,8 @@ use Rebet\Tools\Utility\Arrays;
  * Note that language structures such as exit and die are not handled in this class because it is desirable to exclude them in terms of testability.
  *
  * @method static void  header(string $header, bool $replace = true, int $http_response_code = null)
- * @method static array headers_list()
- * @method static array dns_get_record(string $hostname, int $type = 268435456, ?array &$authns = null, ?array &$addtl = null, bool $raw = false)
+ * @method static array<int, string> headers_list()
+ * @method static array<int|string, mixed> dns_get_record(string $hostname, int $type = 268435456, array<int|string, mixed>|null &$authns = null, array<int|string, mixed>|null &$addtl = null, bool $raw = false)
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -26,6 +26,9 @@ class System
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -129,7 +132,7 @@ class System
     /**
      * Memory data needed for php function emurating.
      *
-     * @var array of ['name' => [ *Registered data you want* ]]
+     * @var array<string, array<mixed>> of ['name' => [ *Registered data you want* ]]
      */
     protected static $memory = [];
 
@@ -137,7 +140,7 @@ class System
      * Get memory data.
      *
      * @param string $name
-     * @return array
+     * @return array<mixed>
      */
     public static function &memory(string $name) : array
     {
@@ -179,7 +182,7 @@ class System
      *
      * @param string $function_name
      * @param \Closure $emurator
-     * @param array $datasets
+     * @param array<string, mixed> $datasets
      * @return void
      */
     public static function emulator(string $function_name, \Closure $emurator, array $datasets = [])
@@ -220,7 +223,7 @@ class System
      * Delegate php function directly, but call emulator if it's testing.
      *
      * @param string $name
-     * @param array $args
+     * @param array<int|string, mixed> $args
      * @return mixed
      */
     public static function __callStatic($name, array $args)

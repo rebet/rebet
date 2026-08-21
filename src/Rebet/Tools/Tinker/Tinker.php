@@ -34,11 +34,11 @@ use Rebet\Tools\Utility\Utils;
  * @method bool        wildmatch(string|string[] $patterns)                                                                                                  Call Strings::wildmatch($value, ...)
  * @method Tinker      split(string $delimiter, int $size, $padding = null)                                                                                  Call Strings::split($value, ...)
  * @method Tinker      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                              Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value) {...}`
- * @method Tinker      override($diff, array|string $option = [], string $default_array_override_option = '>', ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Tinker      override($diff, array<mixed>|string $option = [], string $default_array_override_option = '>', ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
  * @method Tinker      duplicate()                                                                                                                           Call Arrays::duplicate($value)
- * @method Tinker      crossJoin(iterable ...$arrays)                                                                                                        Call Arrays::crossJoin($value, ...)
- * @method Tinker      only(array|string $keys)                                                                                                              Call Arrays::only($value, ...)
- * @method Tinker      except(array|string $keys)                                                                                                            Call Arrays::except($value, ...)
+ * @method Tinker      crossJoin(iterable<mixed> ...$arrays)                                                                                                        Call Arrays::crossJoin($value, ...)
+ * @method Tinker      only(array<int|string>|string $keys)                                                                                                              Call Arrays::only($value, ...)
+ * @method Tinker      except(array<int|string>|string $keys)                                                                                                            Call Arrays::except($value, ...)
  * @method Tinker      where(?callable $callback)                                                                                                            Call Arrays::where($value, ...) - $callback : `function($value[, $key]) : bool {...}`
  * @method Tinker      compact()                                                                                                                             Call Arrays::compact($value)
  * @method Tinker      unique(int $sort_flag = 0)                                                                                                 Call Arrays::unique($value, ...)
@@ -52,7 +52,7 @@ use Rebet\Tools\Utility\Utils;
  * @method Tinker      diff($items, ?callable $comparator = null)                                                                                            Call Arrays::diff($value, ...) - $comparator : `function($a, $b) : int {...}`
  * @method Tinker      intersect($items, ?callable $comparator = null)                                                                                       Call Arrays::intersect($value, ...) - $comparator : `function($a, $b) : int {...}`
  * @method bool        every(callable $test)                                                                                                                 Call Arrays::every($value, ...) - $test : `function($v, $k) : bool {...}`
- * @method Tinker      groupBy(callable|string|array $group_by = null, bool $preserve_keys = false)                                                          Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key) {...}`
+ * @method Tinker      groupBy(callable|string|array<mixed> $group_by = null, bool $preserve_keys = false)                                                          Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key) {...}`
  * @method Tinker      union($other)                                                                                                                         Call Arrays::union($value, ...)
  * @method Tinker|bool min(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::min($value, ...) - $retriever : `function($value) {...}`
  * @method Tinker|bool max(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::max($value, ...) - $retriever : `function($value) {...}`
@@ -101,7 +101,7 @@ use Rebet\Tools\Utility\Utils;
  * @method Tinker      nbvl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnbl($value, ...) configured closure - Return given value if the wrapped value is NOT blank(= null,'',[]).
  * @method Tinker      nevl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnel($value, ...) configured closure - Return given value if the wrapped value is NOT empty(= null,'',[], 0).
  * @method Tinker      when(mixed $test, $then, $else = null)                                                                                                Call Tinker.filter.customs.when($value, ...) configured closure - Return given value if the wrapped value matched given test. - $test : value or `function($value) {...}`
- * @method Tinker      case(array $map, $default = null)                                                                                                     Call Tinker.filter.customs.case($value, ...) configured closure - Return given case value if the wrapped value matched given case key.
+ * @method Tinker      case(array<mixed> $map, $default = null)                                                                                                     Call Tinker.filter.customs.case($value, ...) configured closure - Return given case value if the wrapped value matched given case key.
  * @method Tinker      length()                                                                                                                              Call Tinker.filter.customs.length($value, ...) configured closure - Get the wrapped value string length.
  * @method Tinker      values()                                                                                                                              Call Tinker.filter.customs.values($value, ...) configured closure - Get values from the wrapped value.
  * @method Tinker      keys()                                                                                                                                Call Tinker.filter.customs.keys($value, ...) configured closure - Get keys from the wrapped value.
@@ -117,6 +117,9 @@ use Rebet\Tools\Utility\Utils;
  *
  * @phpstan-consistent-constructor
  *
+ * @implements \ArrayAccess<int|string, mixed>
+ * @implements \IteratorAggregate<int|string, mixed>
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -127,6 +130,9 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -235,14 +241,14 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Delegate filters
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected static $delegate_filters = null;
 
     /**
      * Safety delegate filters that contains only library layer configure.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected static $safety_delegate_filters = null;
 
@@ -267,8 +273,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Peel the Tinker wrapper of given all values if wrapped
      *
-     * @param array $values
-     * @return array of Tinker peeled values
+     * @param array<mixed> $values
+     * @return array<mixed> of Tinker peeled values
      */
     public static function peelAll(array $values) : array
     {
@@ -484,7 +490,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *   $value->_('filterName', ...$args)
      *
      * @param string $name
-     * @param array $args
+     * @param array<mixed> $args
      * @return self|bool
      */
     public function __call($name, $args)

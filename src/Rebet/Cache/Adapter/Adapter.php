@@ -27,7 +27,7 @@ interface Adapter extends CacheItemPoolInterface
      * If the given tag is empty then this method just call save() as it is.
      *
      * @param CacheItemInterface $item The cache item to save.
-     * @param array $tags The array of tags to save. (default: [])
+     * @param array<int, string> $tags The array of tags to save. (default: [])
      * @return bool True if the item was successfully persisted. False if there was an error.
      * @throws UnsupportedTaggingException when tags given but the adapter does not support tag
      */
@@ -38,7 +38,7 @@ interface Adapter extends CacheItemPoolInterface
      * If the given tag is empty then this method just call saveDeferred() as it is.
      *
      * @param CacheItemInterface $item The cache item to save.
-     * @param array $tags The array of tags to save. (default: [])
+     * @param array<int, string> $tags The array of tags to save. (default: [])
      * @return bool False if the item could not be queued or if a commit was attempted and failed. True otherwise.
      * @throws UnsupportedTaggingException when tags given but the adapter does not support tag
      */

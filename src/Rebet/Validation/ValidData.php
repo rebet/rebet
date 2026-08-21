@@ -9,6 +9,9 @@ use Rebet\Tools\Utility\Arrays;
 /**
  * Valid Data Class
  *
+ * @implements \ArrayAccess<int|string, mixed>
+ * @implements \IteratorAggregate<int|string, mixed>
+ *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
@@ -22,7 +25,7 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * Valid data.
      *
-     * @var array
+     * @var array<int|string, mixed>
      */
     protected $data = null;
 
@@ -38,6 +41,8 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
 
     /**
      * {@inheritDoc}
+     *
+     * @return array<int|string, mixed>
      */
     protected function &container() : array
     {

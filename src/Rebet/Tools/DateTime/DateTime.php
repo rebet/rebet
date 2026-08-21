@@ -33,6 +33,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
 {
     use Configurable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function defaultConfig()
     {
         return [
@@ -165,7 +168,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @see DateTime::analyzeDateTime()
      *
      * @param \DateTimeInterface|float|int|string|null $value
-     * @param array|string $main_format for primary analyze (default: [])
+     * @param array<int, string>|string $main_format for primary analyze (default: [])
      * @param \DateTimezone|string|null $timezone (default: depend on configure)
      * @return static|null
      */
@@ -195,9 +198,9 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *  The default time zone is used for the time zone.
      *
      * @param \DateTimeInterface|float|int|string|null $value
-     * @param array|string $main_format for primary analyze (default: [])
+     * @param array<int, string>|string $main_format for primary analyze (default: [])
      * @param \DateTimezone|string|null $timezone (default: depend on configure)
-     * @return array [DateTime|null, apply_format|null] or null
+     * @return array{0: static|null, 1: string|null} [DateTime|null, apply_format|null] or null
      */
     public static function analyzeDateTime(\DateTimeInterface|float|int|string|null $value, array|string $main_format = [], \DateTimezone|string|null $timezone = null) : array
     {

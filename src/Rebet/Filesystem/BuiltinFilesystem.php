@@ -58,7 +58,7 @@ class BuiltinFilesystem implements Filesystem
     protected $adapter;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $config;
 
@@ -465,11 +465,11 @@ class BuiltinFilesystem implements Filesystem
     /**
      * Filtered given contents lists by file type and pattern (wildcard or regex)
      *
-     * @param array $lists
+     * @param array<int, array{type: string, path: string}> $lists
      * @param string|null $type (default: null for not filtered)
      * @param string|string[] $pattern (default: '*' that all matching pattern for 'wildcard' matching mode)
      * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
-     * @return array of matching paths
+     * @return array<int, string> of matching paths
      */
     protected function filter(array $lists, string|null $type = null, $pattern = '*', string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array
     {

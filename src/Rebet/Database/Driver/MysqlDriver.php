@@ -121,6 +121,7 @@ class MysqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      *
+     * @param array<string, mixed> $meta
      * @see 'mysql'  native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_mysql/mysql_statement.c.gcov.php
      */
     public function toPhpType($value, array $meta = [], string|null $type = null)

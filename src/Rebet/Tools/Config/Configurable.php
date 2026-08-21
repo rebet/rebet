@@ -79,7 +79,7 @@ trait Configurable
      *     ]);
      * }
      *
-     * @return array|DotAccessDelegator
+     * @return array<string, mixed>|DotAccessDelegator
      */
     abstract public static function defaultConfig() ;
 
@@ -89,7 +89,7 @@ trait Configurable
      * For example, if you are using the configInstantiate() method in your library, the setting should set REPLACE as the default behavior.
      * You should also define default settings so that application layer settings work naturally if the order of settings that require arrays affects behavior.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public static function defaultConfigOverrideOptions() : array
     {
@@ -107,8 +107,8 @@ trait Configurable
      * @see self::shareConfigWith()
      *
      * @param string $class
-     * @param array $diff (default: [])
-     * @return array
+     * @param array<string, mixed> $diff (default: [])
+     * @return array<string, mixed>
      */
     protected static function copyConfigFrom(string $class, array $diff = []) : array
     {
@@ -125,7 +125,7 @@ trait Configurable
      * @see self::copyConfigFrom()
      *
      * @param string $class
-     * @param array $diff (default: [])
+     * @param array<string, mixed> $diff (default: [])
      * @return ConfigPromise
      */
     protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
@@ -157,7 +157,7 @@ trait Configurable
      * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
      * @param string $key can contains dot notation
-     * @param array $runtime_args that override defined configuration args (default: [])
+     * @param array<int|string, mixed> $runtime_args that override defined configuration args (default: [])
      * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
      * @param mixed $default (default: null)
      * @return mixed
@@ -172,7 +172,7 @@ trait Configurable
      * Update own configuration settings by given config.
      * This method adds the configuration setting of the runtime layer.
      *
-     * @param array $config
+     * @param array<string, mixed> $config
      */
     protected static function setConfig(array $config) : void
     {

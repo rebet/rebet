@@ -21,7 +21,7 @@ class AnnotatedClass
     /**
      * Reflection class of annotation target
      *
-     * @var \ReflectionClass
+     * @var \ReflectionClass<object>
      */
     protected $class = null;
 
@@ -51,7 +51,7 @@ class AnnotatedClass
     /**
      * Get class annotations
      *
-     * @return array [Annotation, ...]
+     * @return array<object> [Annotation, ...]
      */
     public function annotations() : array
     {
@@ -104,7 +104,7 @@ class AnnotatedClass
     /**
      * Get the reflector of target class
      *
-     * @return \ReflectionClass
+     * @return \ReflectionClass<object>
      */
     public function reflector() : \ReflectionClass
     {

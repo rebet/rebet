@@ -114,6 +114,7 @@ class SqliteDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      *
+     * @param array<string, mixed> $meta
      * @see 'sqlite' native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_sqlite/sqlite_statement.c.gcov.php
      */
     public function toPhpType($value, array $meta = [], string|null $type = null)

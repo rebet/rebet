@@ -29,7 +29,7 @@ class BatchUpdating implements Saving
     /**
      * Column and value map for updating.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     public $sets;
 
@@ -52,7 +52,7 @@ class BatchUpdating implements Saving
      *
      * @param Database $db
      * @param string $entity class name
-     * @param array $sets
+     * @param array<string, mixed> $sets
      * @param mixed $ransack conditions that arrayable
      * @param DateTime|null $now
      */

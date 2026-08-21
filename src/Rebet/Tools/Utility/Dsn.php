@@ -46,7 +46,7 @@ class Dsn
      *  ]
      *
      * @param string|null $dsn
-     * @return array
+     * @return array<string, mixed>
      */
     public static function parse(string|null $dsn) : array
     {

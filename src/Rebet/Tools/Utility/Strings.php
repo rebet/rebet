@@ -233,7 +233,7 @@ class Strings
      *
      * @param string|null $text
      * @param string $encode (default: 'sjis-win')
-     * @return array of dependence chars
+     * @return array<int, string> of dependence chars
      */
     public static function checkDependenceChar(string|null $text, string $encode = 'sjis-win') : array
     {
@@ -256,7 +256,7 @@ class Strings
      * Strings::toCharArray('abc'); //=> ['a', 'b', 'c']
      *
      * @param string|null $string
-     * @return array
+     * @return array<int, string>
      */
     public static function toCharArray(string|null $string) : array
     {
@@ -439,7 +439,7 @@ class Strings
      * Convert value to string.
      *
      * @param mixed $value
-     * @param array $masks the property name list that you want to mask. (default: [])
+     * @param array<int, string> $masks the property name list that you want to mask. (default: [])
      * @param string $masked_label (default: '********')
      * @return string
      */
@@ -453,7 +453,7 @@ class Strings
      *
      * @param mixed $value
      * @param bool $is_nested
-     * @param array $masks the property name list that you want to mask. (default: [])
+     * @param array<int, string> $masks the property name list that you want to mask. (default: [])
      * @param string $masked_label (default: '********')
      * @return string
      */
@@ -512,7 +512,7 @@ class Strings
     /**
      * Convert debug_backtrace to string.
      *
-     * @param array $trace
+     * @param array<int, array<string, mixed>> $trace
      * @return string
      */
     public static function traceToString(array $trace) : string
@@ -538,7 +538,7 @@ class Strings
      * @param string $delimiter
      * @param integer $size
      * @param mixed $padding (default: null)
-     * @return array
+     * @return array<int, mixed>
      */
     public static function split(string|null $string, string $delimiter, int $size, $padding = null) : array
     {

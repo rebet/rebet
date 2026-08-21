@@ -31,7 +31,7 @@ class ControllerRoute extends ConventionalRoute
     /**
      * Controller action
      *
-     * @var \ReflectionClass
+     * @var \ReflectionClass<object>
      */
     protected $action = null;
 
@@ -58,7 +58,7 @@ class ControllerRoute extends ConventionalRoute
      * Resolve request URI into controller name / action name / arguments.
      *
      * @param string $request_uri
-     * @return array
+     * @return array{0: string, 1: string, 2: array<int, string>}
      */
     protected function resolveRequestUri(string $request_uri) : array
     {
@@ -78,7 +78,7 @@ class ControllerRoute extends ConventionalRoute
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
      * @param Request $request
-     * @return array|null
+     * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
     protected function analyze(Request $request) : array|null

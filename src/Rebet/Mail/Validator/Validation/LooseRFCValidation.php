@@ -52,7 +52,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * Create loose RFC validation
      *
-     * @param array|null $ignores (default: null for depend on configure)
+     * @param array<int, class-string>|null $ignores (default: null for depend on configure)
      */
     public function __construct(array|null $ignores = null)
     {

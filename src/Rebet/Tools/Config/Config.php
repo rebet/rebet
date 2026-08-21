@@ -65,7 +65,7 @@ class Config
      *    ],
      * ]
      *
-     * @var array
+     * @var array<string, array<string, array<string, mixed>>>
      */
     protected static $config = [
         Layer::LIBRARY     => [],
@@ -83,7 +83,7 @@ class Config
      *   ],
      * ]
      *
-     * @var array
+     * @var array<string, array<string, mixed>>
      */
     protected static $compiled = [];
 
@@ -134,7 +134,7 @@ class Config
      *    it may not be included in the return value of this method.
      *
      * @param string ...$sections (default: all)
-     * @return array
+     * @return array<string, mixed>
      */
     public static function all(string ...$sections) : array
     {
@@ -185,7 +185,7 @@ class Config
      * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
      * @param string $layer
-     * @param array $config
+     * @param array<string, array<string, mixed>> $config
      * @return void
      */
     protected static function put(string $layer, array $config) : void
@@ -220,6 +220,9 @@ class Config
      *          'key' => 'value',
      *     ],
      * ]);
+     *
+     * @param array<string, array<string, mixed>> $config
+     * @return void
      */
     public static function framework(array $config) : void
     {
@@ -244,6 +247,9 @@ class Config
      *          'key' => 'value',
      *     ],
      * ]);
+     *
+     * @param array<string, array<string, mixed>> $config
+     * @return void
      */
     public static function application(array $config) : void
     {
@@ -268,6 +274,9 @@ class Config
      *          'key' => 'value',
      *     ],
      * ]);
+     *
+     * @param array<string, array<string, mixed>> $config
+     * @return void
      */
     public static function runtime(array $config) : void
     {
@@ -278,7 +287,7 @@ class Config
      * It checks the configuration setting for the given target is defined.
      * Note: This method will throw an exception if the key selector contains only numeric values.
      *
-     * @param array $config
+     * @param array<string, mixed> $config
      * @param string $section
      * @param string|null $key can contains dot notation
      * @return bool
@@ -356,7 +365,7 @@ class Config
      * Get library configuration override options from given section.
      *
      * @param string $section
-     * @return array
+     * @return array<string, mixed>
      */
     protected static function getLibraryConfigOverrideOptions(string $section) : array
     {
@@ -370,7 +379,7 @@ class Config
      *
      * @param string $section
      * @param string $key can contains dot notation
-     * @param array $runtime_args that override defined configuration args (default: [])
+     * @param array<int|string, mixed> $runtime_args that override defined configuration args (default: [])
      * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
      * @param mixed $default (default: null)
      * @return mixed

@@ -120,7 +120,7 @@ class Session implements SessionInterface
     /**
      * Get the all attributes from attribute session bag.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function all() : array
     {
@@ -130,7 +130,7 @@ class Session implements SessionInterface
     /**
      * Replace the all attributes of attribute session bag.
      *
-     * @param array $attributes
+     * @param array<string, mixed> $attributes
      * @return void
      */
     public function replace(array $attributes) : void
@@ -426,7 +426,7 @@ class Session implements SessionInterface
      * Analyze token scope from given key.
      *
      * @param string $key
-     * @return array
+     * @return array<int, string>
      * @throws LogicException when invalid token key was given.
      */
     public static function analyzeTokenScope(string $key) : array
@@ -443,7 +443,7 @@ class Session implements SessionInterface
      *
      * @param string $name
      * @param mixed $data
-     * @param string|array $wildcard of request path without route prefix (default: '*')
+     * @param string|array<int, string> $wildcard of request path without route prefix (default: '*')
      * @return self
      */
     public function saveInheritData(string $name, $data, $wildcard = '*') : self
@@ -463,7 +463,7 @@ class Session implements SessionInterface
      * @param string $name
      * @param string $request_path without route prefix
      * @param mixed $default (default: [])
-     * @return array
+     * @return array<mixed>
      */
     public function loadInheritData(string $name, string $request_path, $default = []) : array
     {

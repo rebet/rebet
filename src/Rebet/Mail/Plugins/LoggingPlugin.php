@@ -38,7 +38,7 @@ class LoggingPlugin implements Swift_Events_SendListener
      *
      * @param Swift_Events_SendEvent $evt
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(Swift_Events_SendEvent $evt) : void
     {
         // Nothing to do
     }
@@ -48,7 +48,7 @@ class LoggingPlugin implements Swift_Events_SendListener
      *
      * @param Swift_Events_SendEvent $evt
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(Swift_Events_SendEvent $evt) : void
     {
         Log::channel($this->channel)->debug(MimeMessage::convertToReadableString($evt->getMessage()));
     }

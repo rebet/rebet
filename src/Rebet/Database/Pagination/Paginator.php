@@ -109,7 +109,7 @@ class Paginator extends ResultSet
     /**
      * Pagination link action url queries.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $queries = [];
 
@@ -187,7 +187,7 @@ class Paginator extends ResultSet
      * Set/Append the pagination link action url queries.
      * If the null given then reset the queries.
      *
-     * @param array|null $queries
+     * @param array<string, mixed>|null $queries
      * @return self
      */
     public function with(array|null $queries) : self
@@ -476,7 +476,7 @@ class Paginator extends ResultSet
     /**
      * Get focused page numbers near the current page that considered the range of each sides.
      *
-     * @return array
+     * @return array<int, int>
      */
     public function focusPages() : array
     {

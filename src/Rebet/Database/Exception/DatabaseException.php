@@ -56,6 +56,7 @@ class DatabaseException extends RuntimeException
     /**
      * Get/Set Database
      *
+     * @param Database|null $db
      * @return DatabaseException|Database|null
      */
     public function db($db = null)
@@ -67,9 +68,9 @@ class DatabaseException extends RuntimeException
       * Create the exception using given PDO error info.
       *
       * @param string $name of database or PDO driver
-      * @param array|\PDOException $error
+      * @param array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
       * @param string|null $sql (default: null)
-      * @param array $params (default: [])
+      * @param array<int|string, mixed> $params (default: [])
       * @return self
       */
     public static function from(string $name, $error, string|null $sql = null, array $params = []) : self

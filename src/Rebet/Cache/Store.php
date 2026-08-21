@@ -145,7 +145,7 @@ class Store
     /**
      * Store a item/items in the cache for a given expire.
      *
-     * @param array $values of ['key' => 'value', ...]
+     * @param array<string, mixed> $values of ['key' => 'value', ...]
      * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return bool
      */

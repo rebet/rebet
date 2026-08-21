@@ -33,8 +33,8 @@ class EnvResource
      * @param string $dir_path
      * @param string|string[]|null $base_names (default: null for all load)
      * @param string $suffix (default: php)
-     * @param array $option (default: [])
-     * @return array
+     * @param array<string, mixed> $option (default: [])
+     * @return array<string, mixed>
      * @throws LogicException
      */
     public static function load(string $env, string $dir_path, $base_names = null, string $suffix = 'php', array $option = []) : array
@@ -63,7 +63,7 @@ class EnvResource
      *
      * @param string $dir_path
      * @param string $suffix
-     * @return array
+     * @return array<int, string>
      */
     protected static function listBaseNames(string $dir_path, string $suffix) : array
     {

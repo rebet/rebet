@@ -33,8 +33,9 @@ abstract class FallbackHandler
      *
      * @param Request $request
      * @param \Throwable $e
+     * @return Response
      */
-    public function __invoke($request, $e)
+    public function __invoke($request, $e) : Response
     {
         return $this->fallback($request, $e);
     }

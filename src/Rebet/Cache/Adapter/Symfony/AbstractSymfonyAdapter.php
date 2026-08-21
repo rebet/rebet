@@ -69,6 +69,8 @@ abstract class AbstractSymfonyAdapter implements Adapter
 
     /**
      * {@inheritDoc}
+     *
+     * @return iterable<string, CacheItemInterface>
      */
     public function getItems(array $keys = []) : iterable
     {
@@ -142,6 +144,8 @@ abstract class AbstractSymfonyAdapter implements Adapter
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int, string> $tags
      */
     public function saveWithTags(CacheItemInterface $item, array $tags = [])
     {
@@ -157,6 +161,8 @@ abstract class AbstractSymfonyAdapter implements Adapter
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<int, string> $tags
      */
     public function saveDeferredWithTags(CacheItemInterface $item, array $tags = [])
     {

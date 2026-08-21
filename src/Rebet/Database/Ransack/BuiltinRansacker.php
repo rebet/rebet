@@ -46,6 +46,10 @@ class BuiltinRansacker implements Ransacker
 
     /**
      * {@inheritDoc}
+     *
+     * @param int|string $ransack_predicate
+     * @param mixed $value
+     * @param array<string, string|array<int, string>> $alias
      */
     public function resolve($ransack_predicate, $value, array $alias = [], \Closure|null $extension = null) : Query|null
     {
@@ -54,6 +58,9 @@ class BuiltinRansacker implements Ransacker
 
     /**
      * {@inheritDoc}
+     *
+     * @param mixed $ransack condition that arrayable
+     * @param array<string, string|array<int, string>> $alias
      */
     public function build($ransack, array $alias = [], \Closure|null $extension = null) : Query
     {

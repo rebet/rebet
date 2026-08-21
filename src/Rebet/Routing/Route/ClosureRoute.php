@@ -26,7 +26,7 @@ class ClosureRoute extends DeclarativeRoute
     /**
      * Create a closure route
      *
-     * @param array $methods
+     * @param array<int, string> $methods
      * @param string $uri
      * @param callable $action function([Request $request,] mixed ...$route_parameters)
      */

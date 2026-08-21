@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
+ *
+ * @implements \IteratorAggregate<string, mixed>
  */
 class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countable
 {
@@ -31,7 +33,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * Attribute data.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $attributes = [];
 
@@ -57,6 +59,8 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
 
     /**
      * {@inheritdoc}
+     *
+     * @param array<string, mixed> $attributes
      */
     public function initialize(array &$attributes) : void
     {
@@ -119,7 +123,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * Get the all attibutes.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function all() : array
     {
@@ -140,7 +144,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * Returns an iterator for attributes.
      *
-     * @return \ArrayIterator
+     * @return \ArrayIterator<string, mixed>
      */
     public function getIterator() : \Traversable
     {

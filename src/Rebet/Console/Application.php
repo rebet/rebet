@@ -20,7 +20,7 @@ class Application extends SymfonyApplication
      * Run a command by name.
      *
      * @param string $command
-     * @param array $parameters (default: [])
+     * @param array<string, mixed> $parameters (default: [])
      * @param OutputInterface|null $output (default: null)
      * @return int
      */

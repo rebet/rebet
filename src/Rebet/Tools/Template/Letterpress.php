@@ -122,7 +122,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Available tag set configuration.
      *
-     * @var array
+     * @var array<string, array<string, mixed>>
      */
     protected static $tag_set = [];
 
@@ -136,14 +136,14 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Syntax tree of this text.
      *
-     * @var array
+     * @var array<int, mixed>
      */
     protected $syntax = [];
 
     /**
      * Assigned variables
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $vars = [];
 
@@ -197,8 +197,8 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Get unavailable siblings tags.
      *
-     * @param array $siblings
-     * @return array
+     * @param array<mixed> $siblings
+     * @return array<int, mixed>
      */
     protected static function unavailableSiblings(array $siblings) : array
     {
@@ -209,7 +209,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Register block type `{% tag %} contents {% endtag %}` tag.
      *
      * @param string $tag name of open tag
-     * @param array|null $siblings tag name [tag => [Tags that can be placed continuously], ...], when you want make if block then siblings should be `['if' => ['elseif', 'else'], 'elseif' => ['elseif', 'else'], 'else' => []]`.
+     * @param array<string, array<int, string>>|null $siblings tag name [tag => [Tags that can be placed continuously], ...], when you want make if block then siblings should be `['if' => ['elseif', 'else'], 'elseif' => ['elseif', 'else'], 'else' => []]`.
      * @param \Closure $handler for tag processing `function(array $nodes, array $vars) : string { ... }`, The nodes is passed a chunk block of consecutive tags defined in siblings.
      * @return void
      */
@@ -376,7 +376,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Assign given vars.
      * This method merge own assigned vars by given vars.
      *
-     * @param array $vars
+     * @param array<string, mixed> $vars
      * @return self
      */
     public function with(array $vars) : self
@@ -413,7 +413,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Compile the given template using tags configuration to syntax tree.
      *
      * @param string $template
-     * @return array of syntax tree
+     * @return array<int, mixed> of syntax tree
      */
     protected function compile(string $template) : array
     {
@@ -433,8 +433,8 @@ class Letterpress implements Renderable, \JsonSerializable
      * Parse leftovers that unanalyzed part of template.
      *
      * @param string $leftovers that unanalyzed part of template
-     * @param array $parent node
-     * @return array of partial syntax tree
+     * @param array<string, mixed> $parent node
+     * @return array<int, mixed> of partial syntax tree
      */
     protected function parse(string $leftovers, array $parent) : array
     {
@@ -546,8 +546,8 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Process syntax tree node using given vars context and tags configuration.
      *
-     * @param array $nodes of process target
-     * @param array $vars of current context
+     * @param array<int, mixed> $nodes of process target
+     * @param array<string, mixed> $vars of current context
      * @return string of partial result text
      */
     public static function process(array $nodes, array $vars) : string
@@ -618,9 +618,9 @@ class Letterpress implements Renderable, \JsonSerializable
      * - Wrap in Tinker if the value is used as an object with operations. (this is prioritized when value using both way)
      *
      * @param string $code
-     * @param array $vars
+     * @param array<string, mixed> $vars
      * @param bool $alone_var_without_tinker (default: true)
-     * @return array
+     * @return array<string, mixed>
      */
     public static function optimizeVars(string $code, array $vars, bool $alone_var_without_tinker = true) : array
     {
@@ -642,7 +642,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Expand placeholder in template using given vars.
      *
      * @param string $template
-     * @param array|Tinker $vars
+     * @param array<string, mixed>|Tinker $vars
      * @return string
      * @throws LogicException when placeholder format is invalid.
      */
@@ -663,7 +663,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Execute PHP partial expression code.
      *
      * @param string $__code
-     * @param array|Tinker $__vars
+     * @param array<string, mixed>|Tinker $__vars
      * @param bool $__alone_var_without_tinker (default: true)
      * @return mixed
      */
@@ -676,7 +676,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Execute PHP partial code.
      *
      * @param string $__code
-     * @param array|Tinker $__vars
+     * @param array<string, mixed>|Tinker $__vars
      * @param bool $__alone_var_without_tinker (default: true)
      * @return mixed
      */

@@ -34,7 +34,7 @@ class RedirectRoute extends ClosureRoute
      *
      * @param string $uri
      * @param string $destination
-     * @param array $query (default: [])
+     * @param array<string, mixed> $query (default: [])
      * @param integer $status (default: 302)
      */
     public function __construct(string $uri, string $destination, array $query = [], int $status = 302)

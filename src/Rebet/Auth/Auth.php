@@ -285,7 +285,7 @@ class Auth
      * @param AuthUser $user
      * @param string $action
      * @param string|object $target
-     * @param array $extras (default: [])
+     * @param array<int, mixed> $extras (default: [])
      * @return boolean
      */
     protected static function _policy(AuthUser $user, string $action, object|string $target, array $extras = []) : bool
@@ -345,7 +345,7 @@ class Auth
      *
      * @param \Closure $action
      * @param mixed $user
-     * @param array $targets (default: [])
+     * @param array<int, mixed> $targets (default: [])
      * @return boolean|null
      */
     protected static function invoke(\Closure $action, mixed $user, array $targets = []) : bool|null

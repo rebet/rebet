@@ -21,7 +21,7 @@ class BinaryFileResponse extends SymfonyBinaryFileResponse implements Response
      *
      * @param mixed $file
      * @param integer $status (default: 200)
-     * @param array $headers (default: [])
+     * @param array<string, string|array<int, string>> $headers (default: [])
      * @param boolean $public (default: true)
      * @param string $contentDisposition (default: null)
      * @param boolean $autoEtag (default: false)

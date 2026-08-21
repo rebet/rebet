@@ -66,21 +66,21 @@ class Router
     /**
      * Route search tree
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected static $routing_tree = [];
 
     /**
      * Default Route
      *
-     * @var array [prefix => Route]
+     * @var array<string, Route> [prefix => Route]
      */
     protected static $default_route = [];
 
     /**
      * Fallback actions
      *
-     * @var array|null [prefix => \Closure]
+     * @var array<string, \Closure>|null [prefix => \Closure]
      */
     protected static $fallback = null;
 
@@ -108,7 +108,7 @@ class Router
     /**
      * The defined prefixes
      *
-     * @var array
+     * @var array<int, string>
      */
     protected static $prefixes = [];
 
@@ -232,7 +232,7 @@ class Router
      *
      * Please note that routing annotation is not interpreted by declarative routing setting by this method.
      *
-     * @param array|string $methods
+     * @param array<int, string>|string $methods
      * @param string $uri
      * @param string|callable $action can be use @ namespace alias
      * @return Route
@@ -278,7 +278,7 @@ class Router
      *
      * @param string $uri
      * @param string $destination
-     * @param array $query (default: [])
+     * @param array<string, mixed> $query (default: [])
      * @param integer $status (deafult: 302)
      * @return Route
      */
@@ -294,7 +294,7 @@ class Router
      *
      * @param string $uri
      * @param string $name
-     * @param array $args (default: [])
+     * @param array<string, mixed> $args (default: [])
      * @return Route
      */
     public static function view(string $uri, string $name, array $args = []) : Route
@@ -322,8 +322,8 @@ class Router
     /**
      * Stores the root object while digging the route search tree.
      *
-     * @param array $tree
-     * @param array $nests
+     * @param array<string, mixed> $tree
+     * @param array<int, string> $nests
      * @param Route $route
      * @return void
      */
@@ -586,14 +586,14 @@ class Router
     /**
      * The middlewares for this rules.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $middlewares = [];
 
     /**
      * The roles/abilities for this rules.
      *
-     * @var array
+     * @var array<int, string>
      */
     protected $roles = [];
 
@@ -661,7 +661,7 @@ class Router
     /**
      * Set the roles/abilities for this rules.
      *
-     * @param string|array ...$roles
+     * @param string ...$roles
      * @return self
      */
     public function roles(...$roles) : self

@@ -22,7 +22,7 @@ interface Driver
      * @param string $dsn
      * @param string|null $user (default: null)
      * @param string|null $password (default: null)
-     * @param array $options  (default: [])
+     * @param array<int, mixed> $options PDO driver options keyed by PDO::ATTR_* constant (default: [])
      * @return Driver
      */
     public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver;
@@ -123,7 +123,7 @@ interface Driver
      * Prepares a statement for execution and returns a statement object.
      *
      * @param string $sql
-     * @param array $driver_options (default: [])
+     * @param array<int, mixed> $driver_options (default: [])
      * @return \PDOStatement
      */
     public function prepare(string $sql, array $driver_options = []) : \PDOStatement;
@@ -164,7 +164,7 @@ interface Driver
      * Append where condition to given SQL.
      *
      * @param string $sql
-     * @param string|array $where
+     * @param string|array<int, string> $where
      * @return string
      */
     public function appendWhere(string $sql, $where) : string;
@@ -200,7 +200,7 @@ interface Driver
      * Convert given PDO data type to PHP data type.
      *
      * @param mixed $value
-     * @param array $meta data of PDO column meta data. (default: [])
+     * @param array<string, mixed> $meta data of PDO column meta data. (default: [])
      * @param string|null $type that defined in property annotation. (default: null)
      * @return mixed
      */
@@ -218,7 +218,7 @@ interface Driver
      * Get ransack value converters depends on this PDO driver.
      *
      * @see Rebet\Database\Ransack\Ransack
-     * @return array $name => function($value) { ... }
+     * @return array<string, \Closure> $name => function($value) { ... }
      */
     public function ransackValueConverters() : array;
 
@@ -226,7 +226,7 @@ interface Driver
      * Get ransack predicates depends on this PDO driver.
      *
      * @see Rebet\Database\Ransack\Ransack
-     * @return array predicate => [template, value_converter, multiple_columns_conjunction]
+     * @return array<string, array{0: string, 1: string|\Closure|null, 2: string}> predicate => [template, value_converter, multiple_columns_conjunction]
      */
     public function ransackPredicates() : array;
 
@@ -234,7 +234,7 @@ interface Driver
      * Get ransack options depends on this PDO driver.
      *
      * @see Rebet\Database\Ransack\Ransack
-     * @return array option_name => template
+     * @return array<string, string> option_name => template
      */
     public function ransackOptions() : array;
 
@@ -242,7 +242,7 @@ interface Driver
      * Create SQL query for this driver.
      *
      * @param string $sql
-     * @param array $params (default: [])
+     * @param array<int|string, mixed> $params (default: [])
      * @return Query
      */
     public function sql(string $sql, array $params = []) : Query;

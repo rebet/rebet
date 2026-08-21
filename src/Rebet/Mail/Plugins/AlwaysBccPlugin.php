@@ -16,14 +16,14 @@ use Swift_Events_SendListener;
 class AlwaysBccPlugin implements Swift_Events_SendListener
 {
     /**
-     * @var array of bcc addresses to send always
+     * @var array<string, string|null> of bcc addresses to send always
      */
     protected $bccs = [];
 
     /**
      * Create Always Bcc Plugin
      *
-     * @param string|array $bccs can be 'foo@bar.com', 'Foo <foo@bar.com>', ['foo@bar.com' => 'Foo'] or ['foo@bar.com' => 'Foo', 'baz@bar.com', 'Qux <qux@bar.com>', ...]
+     * @param string|array<int|string, string|null> $bccs can be 'foo@bar.com', 'Foo <foo@bar.com>', ['foo@bar.com' => 'Foo'] or ['foo@bar.com' => 'Foo', 'baz@bar.com', 'Qux <qux@bar.com>', ...]
      */
     public function __construct($bccs)
     {
@@ -35,7 +35,7 @@ class AlwaysBccPlugin implements Swift_Events_SendListener
      *
      * @param Swift_Events_SendEvent $evt
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(Swift_Events_SendEvent $evt) : void
     {
         foreach ($this->bccs as $address => $name) {
             $evt->getMessage()->addBcc($address, $name);
@@ -47,7 +47,7 @@ class AlwaysBccPlugin implements Swift_Events_SendListener
      *
      * @param Swift_Events_SendEvent $evt
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(Swift_Events_SendEvent $evt) : void
     {
         // Nothing to do
     }
@@ -55,7 +55,7 @@ class AlwaysBccPlugin implements Swift_Events_SendListener
     /**
      * Get bcc addresses to send always.
      *
-     * @return array
+     * @return array<string, string|null>
      */
     public function bccs() : array
     {

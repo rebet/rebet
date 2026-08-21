@@ -18,7 +18,7 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
  *
  * TestHandler delegate methods.
  * ========================================================
- * @method array getRecords()
+ * @method array<int, \Monolog\LogRecord> getRecords()
  * @method void clear()
  * @method bool hasRecords($level)
  * @method bool hasRecord($record, $level)
@@ -89,7 +89,7 @@ class TestDriver extends MonologDriver
      *
      * @param string $level
      * @param string|null $format (default: null)
-     * @param array $stringifiers (default: [])
+     * @param array<string, callable> $stringifiers (default: [])
      * @param boolean $bubble (default: true)
      */
     public function __construct(string $level, string $format = null, array $stringifiers = [], bool $bubble = true)
@@ -103,7 +103,7 @@ class TestDriver extends MonologDriver
      * Delegate methods to Monolog\Handler\TestHandler instance.
      *
      * @param string $method
-     * @param array $args
+     * @param array<int, mixed> $args
      * @return mixed
      */
     public function __call($method, $args)

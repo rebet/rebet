@@ -15,7 +15,7 @@ use Rebet\Tools\Reflection\Reflector;
 class Callbacks
 {
     /**
-     * @var array
+     * @var array<string, \Closure>
      */
     protected static $cache = [];
 

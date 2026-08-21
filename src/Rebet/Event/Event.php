@@ -32,7 +32,7 @@ class Event
     /**
      * The compiled listeners.
      *
-     * @var array|null [event => [listener, ...]]
+     * @var array<string, array<int, mixed>>|null [event => [listener, ...]]
      */
     protected static $listeners = null;
 
@@ -118,7 +118,7 @@ class Event
      * Resolve what event should be listened the given listener.
      *
      * @param mixed $listener
-     * @return array [event, listener]
+     * @return array{0: string|null, 1: mixed} [event, listener]
      */
     protected static function resolve($listener) : array
     {
