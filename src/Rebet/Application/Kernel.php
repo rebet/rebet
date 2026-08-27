@@ -2,7 +2,6 @@
 namespace Rebet\Application;
 
 use Rebet\Application\Bootstrap\Bootstrapper;
-use Rebet\Application\Error\ExceptionHandler;
 use Rebet\Http\Response;
 use Rebet\Tools\Reflection\Reflector;
 
@@ -111,7 +110,7 @@ abstract class Kernel
     /**
      * Get exception handler.
      *
-     * @return ExceptionHandler
+     * @return ExceptionHandler<I, R>
      */
     abstract public function exceptionHandler() : ExceptionHandler;
 

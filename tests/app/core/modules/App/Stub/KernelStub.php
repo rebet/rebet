@@ -1,7 +1,7 @@
 <?php
 namespace App\Stub;
 
-use Rebet\Application\Error\ExceptionHandler;
+use Rebet\Application\ExceptionHandler;
 use Rebet\Application\Kernel;
 use Rebet\Application\Structure;
 

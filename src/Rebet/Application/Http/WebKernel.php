@@ -105,7 +105,7 @@ abstract class WebKernel extends Kernel
      */
     public function fallback(\Throwable $e) : int
     {
-        $this->response = $this->exceptionHandler()->handle($this->request ?? $this->request = Request::createFromGlobals(), null, $e);
+        $this->response = $this->exceptionHandler()->handle($this->request ?? $this->request = Request::createFromGlobals(), $e);
         $this->response->send();
         return 0;
     }

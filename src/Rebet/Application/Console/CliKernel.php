@@ -147,7 +147,7 @@ abstract class CliKernel extends Kernel
      */
     public function fallback(\Throwable $e) : int
     {
-        return $this->result = $this->exceptionHandler()->handle($this->input ?? $this->input = new ArgvInput(), $this->output, $e);
+        return $this->result = $this->exceptionHandler()->handle($this->input ?? $this->input = new ArgvInput(), $e);
     }
 
     /**
