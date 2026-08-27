@@ -104,9 +104,9 @@ class Cookie extends SymfonyCookie
     /**
      * {@inheritDoc}
      *
-     * @param string|int|\DateTimeInterface|null $expire (default: depend on configure)
+     * @param \DateTimeInterface|int|string|null $expire (default: depend on configure)
      */
-    public static function create(string $name, string|null $value = null, string|int|\DateTimeInterface|null $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null, bool $partitioned = false) : self
+    public static function create(string $name, string|null $value = null, \DateTimeInterface|int|string|null $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null, bool $partitioned = false) : self
     {
         return new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite, $partitioned);
     }
@@ -131,11 +131,11 @@ class Cookie extends SymfonyCookie
      * Get the cookie value of given name from current request.
      *
      * @param string $name
-     * @param string|int|float|bool|null $default (default: null)
+     * @param bool|float|int|string|null $default (default: null)
      * @return mixed
      * @throws LogicException when request has not been initialized.
      */
-    public static function get(string $name, string|int|float|bool|null $default = null)
+    public static function get(string $name, bool|float|int|string|null $default = null)
     {
         $request = Request::current();
         if (!$request) {
