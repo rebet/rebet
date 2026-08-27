@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * CLI (Command Line Interface) Kernel Class
+ * If necessary, please subclass this class and override the various settings to customize it.
  *
  * @template-extends Kernel<InputInterface, int>
  * @package   Rebet
@@ -24,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class CliKernel extends Kernel
+class CliKernel extends Kernel
 {
     /**
      * Current handling input
@@ -140,6 +141,16 @@ abstract class CliKernel extends Kernel
     public function terminate() : void
     {
         // Currently nothing to do.
+    }
+
+    /**
+     * Get exception handler for CLI.
+     *
+     * @return CliExceptionHandler
+     */
+    public function exceptionHandler() : CliExceptionHandler
+    {
+        return new CliExceptionHandler($this->output);
     }
 
     /**

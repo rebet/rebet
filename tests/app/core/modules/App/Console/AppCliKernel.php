@@ -8,7 +8,6 @@ use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Console\CliKernel;
-use Rebet\Application\ExceptionHandler;
 
 /**
  * AppCliKernel For Unit Tests
@@ -34,7 +33,7 @@ class AppCliKernel extends CliKernel
         ];
     }
 
-    public function exceptionHandler() : ExceptionHandler
+    public function exceptionHandler() : AppCliExceptionHandler
     {
         return new AppCliExceptionHandler($this->output);
     }

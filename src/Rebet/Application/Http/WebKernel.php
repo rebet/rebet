@@ -17,6 +17,7 @@ use Rebet\Tools\Exception\LogicException;
 
 /**
  * Web Kernel Class
+ * If necessary, please subclass this class and override the various settings to customize it.
  *
  * @template-extends Kernel<Request, Response>
  * @package   Rebet
@@ -24,7 +25,7 @@ use Rebet\Tools\Exception\LogicException;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-abstract class WebKernel extends Kernel
+class WebKernel extends Kernel
 {
     /**
      * Current handling request.
@@ -129,5 +130,15 @@ abstract class WebKernel extends Kernel
             throw new LogicException('Request has not been set yet.');
         }
         return $this->request;
+    }
+
+    /**
+     * Get exception handler for WEB.
+     *
+     * @return WebExceptionHandler
+     */
+    public function exceptionHandler() : WebExceptionHandler
+    {
+        return new WebExceptionHandler();
     }
 }

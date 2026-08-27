@@ -8,7 +8,6 @@ use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
 use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\LoadRoutingConfiguration;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
-use Rebet\Application\ExceptionHandler;
 use Rebet\Application\Http\WebKernel;
 
 /**
@@ -36,7 +35,7 @@ class AppWebKernel extends WebKernel
         ];
     }
 
-    public function exceptionHandler() : ExceptionHandler
+    public function exceptionHandler() : AppWebExceptionHandler
     {
         return new AppWebExceptionHandler();
     }
