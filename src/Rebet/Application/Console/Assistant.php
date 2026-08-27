@@ -42,7 +42,7 @@ class Assistant extends Application
     {
         parent::__construct();
         foreach (static::config('commands') as $command) {
-            $this->add(Reflector::instantiate($command));
+            $this->addCommand(Reflector::instantiate($command));
         }
     }
 }
