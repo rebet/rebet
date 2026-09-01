@@ -15,7 +15,9 @@ use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 class MultipleValidation extends MultipleValidationWithAnd
 {
     /**
-     * It will be able to create Multiple Validation using Swift_DependencyContainer::withDependencies()
+     * Accept the validations as variadic arguments (instead of the parent's single array
+     * argument), so this class can be instantiated directly from config (e.g. via
+     * Reflector::instantiate()).
      *
      * @param EmailValidation ...$validations
      */

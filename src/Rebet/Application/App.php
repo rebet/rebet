@@ -8,7 +8,8 @@ use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
 use Rebet\Log\Log;
-use Rebet\Mail\Mail;
+use Rebet\Mail\Email;
+use Rebet\Mail\Validator\EmailValidator;
 use Rebet\Routing\Router;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigPromise;
@@ -291,7 +292,8 @@ class App
         Storage::reset();
         Letterpress::reset();
         Log::reset();
-        Mail::reset();
+        Email::reset();
+        EmailValidator::reset();
         Auth::reset();
     }
 }

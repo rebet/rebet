@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
@@ -32,6 +33,7 @@ class AppWebKernel extends WebKernel
             LoadRoutingConfiguration::class,
             HandleExceptions::class,
             LetterpressTagCustomizer::class,
+            EmailValidatorEnable::class,
         ];
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace Rebet\Event;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
@@ -35,6 +36,33 @@ class Event
      * @var array<string, array<int, mixed>>|null [event => [listener, ...]]
      */
     protected static $listeners = null;
+
+    /**
+     * The PSR-14 EventDispatcherInterface adapter instance.
+     *
+     * @var EventDispatcherInterface|null
+     */
+    protected static EventDispatcherInterface|null $psr_adapter = null;
+
+    /**
+     * Get the PSR-14 EventDispatcherInterface adapter instance.
+     *
+     * @return EventDispatcherInterface
+     */
+    public static function psrDispatcher() : EventDispatcherInterface
+    {
+        if (static::$psr_adapter !== null) {
+            return static::$psr_adapter;
+        }
+
+        return static::$psr_adapter = new class() implements EventDispatcherInterface {
+            public function dispatch(object $event)
+            {
+                Event::dispatch($event);
+                return $event;
+            }
+        };
+    }
 
     /**
      * No instantiation

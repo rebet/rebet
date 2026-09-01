@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
@@ -30,6 +31,7 @@ class AppCliKernel extends CliKernel
             LoadApplicationConfiguration::class,
             HandleExceptions::class,
             LetterpressTagCustomizer::class,
+            EmailValidatorEnable::class,
         ];
     }
 

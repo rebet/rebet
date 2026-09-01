@@ -4,9 +4,6 @@ parameters:
         - ./vendor/autoload.php
     paths:
         - ./src
-    stubFiles:
-        - ./stubs/swiftmailer/SimpleMimeEntity.stub.php
-        - ./stubs/swiftmailer/SimpleMessage.stub.php
     ignoreErrors:
         # Classes under the `App` namespace are implemented by the application itself and
         # are therefore not included in this package;

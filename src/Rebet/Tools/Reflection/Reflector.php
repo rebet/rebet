@@ -71,18 +71,15 @@ class Reflector
             return static::get($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $default, $accessible);
         }
 
-        if (Arrays::accessible($object)) {
-            if (!isset($object[$current])) {
-                return $default;
-            }
+        if (Arrays::accessible($object) && isset($object[$current])) {
             $value = $object[$current];
             return self::resolveDotAccessDelegator($value) ;
         }
 
-        if (!static::canPropertyAccess($object, $current)) {
+        $rp = static::reflectProperty($object, $current);
+        if ($rp === null) {
             return $default;
         }
-        $rp = new \ReflectionProperty($object, $current);
         if (!$accessible && !$rp->isPublic()) {
             return $default;
         }
@@ -100,7 +97,36 @@ class Reflector
      */
     protected static function canPropertyAccess($target, string $property) : bool
     {
-        return ((\is_string($target) && \class_exists($target)) || \is_object($target)) && \property_exists($target, $property) ;
+        return static::reflectProperty($target, $property) !== null;
+    }
+
+    /**
+     * Get the ReflectionProperty of given property name.
+     *
+     * Note: `property_exists()` finds public/protected/private properties declared on the given
+     * object's own class, and also dynamic (not declared anywhere) properties, but NOT a private
+     * property declared on an ANCESTOR class when given a subclass instance/name (such a property
+     * is not visible outside its declaring class). For that case, walk up the hierarchy via
+     * `ReflectionClass::getParentClass()` to find the class that actually declares it.
+     *
+     * @param mixed $object
+     * @param string $property
+     * @return \ReflectionProperty|null
+     */
+    protected static function reflectProperty($object, string $property) : \ReflectionProperty|null
+    {
+        if (!((\is_string($object) && \class_exists($object)) || \is_object($object))) {
+            return null;
+        }
+        if (\property_exists($object, $property)) {
+            return new \ReflectionProperty($object, $property);
+        }
+        for ($rc = new \ReflectionClass($object); $rc !== false; $rc = $rc->getParentClass()) {
+            if ($rc->hasProperty($property)) {
+                return $rc->getProperty($property);
+            }
+        }
+        return null;
     }
 
     /**
@@ -195,33 +221,40 @@ class Reflector
             return;
         }
         $current = Strings::latrim($key, '.');
-        if (Arrays::accessible($object)) {
-            if ($current != $key) {
-                if (!\array_key_exists($current, $object)) {
-                    throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
-                }
+        if ($current != $key) {
+            if (Arrays::accessible($object) && \array_key_exists($current, $object)) {
                 static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
-            } else {
-                $object[$current] = $value;
+                return;
             }
-            return;
-        }
-
-        if (!\property_exists($object, $current)) {
+            $rp = static::reflectProperty($object, $current);
+            if ($rp !== null) {
+                $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+                $target = static::getPropertyValue($rp, $object);
+                static::set($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
+                static::setPropertyValue($rp, $object, $target);
+                return;
+            }
+            if (Arrays::accessible($object)) {
+                throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
+            }
             throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
         }
-        if ($current != $key) {
-            $rp = new \ReflectionProperty($object, $current);
-            $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
-            $target = static::getPropertyValue($rp, $object);
-            static::set($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
-            static::setPropertyValue($rp, $object, $target);
-        } else {
-            $rp = new \ReflectionProperty($object, $current);
+
+        if (Arrays::accessible($object) && isset($object[$current])) {
+            $object[$current] = $value;
+            return;
+        }
+        $rp = static::reflectProperty($object, $current);
+        if ($rp !== null) {
             $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
             static::setPropertyValue($rp, $object, $value);
+            return;
         }
-        return;
+        if (Arrays::accessible($object)) {
+            $object[$current] = $value;
+            return;
+        }
+        throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
     }
 
     /**
@@ -250,16 +283,13 @@ class Reflector
 
         $current  = Strings::latrim($key, '.');
         $nest_obj = null;
-        if (Arrays::accessible($object)) {
-            if (!Arrays::exists($object, $current)) {
-                return false;
-            }
+        if (Arrays::accessible($object) && Arrays::exists($object, $current)) {
             $nest_obj = $object[$current];
         } else {
-            if (!static::canPropertyAccess($object, $current)) {
+            $rp = static::reflectProperty($object, $current);
+            if ($rp === null) {
                 return false;
             }
-            $rp = new \ReflectionProperty($object, $current);
             if (!$accessible && !$rp->isPublic()) {
                 return false;
             }
@@ -301,36 +331,44 @@ class Reflector
             return self::resolveDotAccessDelegator($ret);
         }
         $current = Strings::latrim($key, '.');
-        if (Arrays::accessible($object)) {
-            if ($current != $key) {
-                if (!\array_key_exists($current, $object)) {
-                    throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
-                }
+        if ($current != $key) {
+            if (Arrays::accessible($object) && \array_key_exists($current, $object)) {
                 return static::remove($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
             }
+            $rp = static::reflectProperty($object, $current);
+            if ($rp !== null) {
+                $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
+                $target = static::getPropertyValue($rp, $object);
+                $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
+                static::setPropertyValue($rp, $object, $target);
+                return self::resolveDotAccessDelegator($ret);
+            }
+            if (Arrays::accessible($object)) {
+                throw new \OutOfBoundsException("Nested parent key '{$current}' does not exist.");
+            }
+            throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
+        }
+
+        if (Arrays::accessible($object) && isset($object[$current])) {
+            $ret = $object[$current];
+            unset($object[$current]);
+            return self::resolveDotAccessDelegator($ret);
+        }
+        $rp = static::reflectProperty($object, $current);
+        if ($rp !== null) {
+            if ($rp->isPublic() || $rp->getModifiers() === 4096) {
+                $ret = $object->$current;
+                unset($object->$current);
+                return self::resolveDotAccessDelegator($ret);
+            }
+            throw new \OutOfBoundsException("Nested key '{$current}' can not access.");
+        }
+        if (Arrays::accessible($object)) {
             $ret = $object[$current] ?? null;
             unset($object[$current]);
             return self::resolveDotAccessDelegator($ret);
         }
-
-        if (!\property_exists($object, $current)) {
-            throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
-        }
-        if ($current != $key) {
-            $rp = new \ReflectionProperty($object, $current);
-            $rp->setAccessible($rp->getModifiers() === 4096 ? true : $accessible);
-            $target = static::getPropertyValue($rp, $object);
-            $ret    = static::remove($target, \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
-            static::setPropertyValue($rp, $object, $target);
-            return self::resolveDotAccessDelegator($ret);
-        }
-        $rp = new \ReflectionProperty($object, $current);
-        if ($rp->isPublic() || $rp->getModifiers() === 4096) {
-            $ret = $object->$current;
-            unset($object->$current);
-            return self::resolveDotAccessDelegator($ret);
-        }
-        throw new \OutOfBoundsException("Nested key '{$current}' can not access.");
+        throw new \OutOfBoundsException("Nested key '{$current}' does not exist.");
     }
 
     /**

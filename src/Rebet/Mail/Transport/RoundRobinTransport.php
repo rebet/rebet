@@ -4,18 +4,18 @@ namespace Rebet\Mail\Transport;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Rebet\Tools\Reflection\Reflector;
-use Symfony\Component\Mailer\Transport\FailoverTransport as SymfonyFailoverTransport;
+use Symfony\Component\Mailer\Transport\RoundRobinTransport as SymfonyRoundRobinTransport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 
 /**
- * Failover Transport class
+ * Round-Robin Transport class
  *
  * @package   Rebet
  * @author    github.com/rain-noise
  * @copyright Copyright (c) 2020 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class FailoverTransport extends SymfonyFailoverTransport
+class RoundRobinTransport extends SymfonyRoundRobinTransport
 {
     /**
      * @param array<TransportInterface|class-string<TransportInterface>|array<string, mixed>> $transports

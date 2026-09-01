@@ -3,66 +3,49 @@
 use Egulias\EmailValidator\Result\Reason\ConsecutiveDot;
 use Egulias\EmailValidator\Result\Reason\DotAtEnd;
 use Egulias\EmailValidator\Result\Reason\DotAtStart;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Html2Text\Html2Text;
-use Rebet\Mail\Mail;
-use Rebet\Mail\Transport\ArrayTransport;
-use Rebet\Mail\Transport\LogTransport;
-use Rebet\Mail\Transport\SendmailTransport;
-use Rebet\Mail\Transport\SmtpTransport;
+use Rebet\Mail\Email;
+use Rebet\Mail\Transport\InMemoryTransport;
+use Rebet\Mail\Validator\EmailValidator;
 use Rebet\Mail\Validator\Validation\LooseRFCValidation;
+use Rebet\Tools\Utility\Env;
+use Symfony\Component\Mailer\Transport;
 
 return [
-    Mail::class => [
-        'development' => false,
-        'unittest'    => false,
-        'initialize'  => [
-            'handler' => null, // function (Swift_DependencyContainer $c) { ... }
-            'default' => [
-                'charset'          => 'UTF-8',
-                'idright'          => null,
-                'content_encoder'  => 'mime.base64contentencoder',
-                'header_encoder'   => 'mime.base64headerencoder',
-                'param_encoder'    => 'mime.base64encoder',
-                'address_encoder'  => 'address.utf8addressencoder',
-                'email_validation' => [],
+    Email::class => [
+        'default_mailer' => 'main',
+        'mailers'        => [
+            'main' => [
+                'transport' => [
+                    '@factory'   => Transport::class."::fromDsn",
+                    'dsn'        => Env::get('MAILER_DSN', 'null://null'),
+                    'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
+                    'client'     => null, // Instantiable class name of HttpClientInterface implementation, or null to disable.
+                    'logger'     => null, // Instantiable class name of LoggerInterface implementation [ex: Log::channel()->driver()] or null to disable.
+                ],
+                'bus'        => null, // Instantiable class name of MessageBusInterface implementation, or null to disable.
+                'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
+            ],
+            'unittest' => [
+                'transport' => [
+                    '@factory'   => InMemoryTransport::class,
+                    'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
+                    'logger'     => null, // Instantiable class name of LoggerInterface implementation [ex: Log::channel('test')->driver()] or null to disable.
+                ],
+                'bus'        => null, // Instantiable class name of MessageBusInterface implementation, or null to disable.
+                'dispatcher' => null, // Instantiable class name of EventDispatcherInterface implementation [ex: Event::psrDispatcher()] or null to disable.
             ],
         ],
-        'transports' => [
-            'smtp' => [
-                'transporter' => [
-                    '@factory' => SmtpTransport::class,
-                ],
-                'plugins' => [],
-            ],
-            'sendmail' => [
-                'transporter' => [
-                    '@factory' => SendmailTransport::class,
-                ],
-                'plugins' => [],
-            ],
-            'log' => [
-                'transporter' => [
-                    '@factory' => LogTransport::class,
-                ],
-                'plugins' => [],
-            ],
-            'test' => [
-                'transporter' => [
-                    '@factory' => ArrayTransport::class,
-                ],
-                'plugins' => [],
-            ],
+        'encodes' => [
+            'header' => 'base64', // 'quoted-printable', 'base64'
+            'body'   => 'base64', // 'quoted-printable', 'base64', '8bit'
         ],
-        'default_transport'     => 'smtp',
-        'development_transport' => 'log',
-        'unittest_transport'    => 'test',
-        'alternative_generator' => [
-            'text/html' => [
-                'text/plain' => function (string $body, array $options = []) {
-                    return (new Html2Text($body, array_merge(['width' => 0], $options)))->getText();
-                },
-            ],
-        ],
+        'html2text_generator' => fn (string $body) => (new Html2Text($body, ['width' => 0]))->getText(),
+    ],
+
+    EmailValidator::class => [
+        'validation' => new RFCValidation(),
     ],
 
     LooseRFCValidation::class => [

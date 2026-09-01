@@ -94,20 +94,7 @@ trait TestHelper // @phpstan-ignore trait.unused
     }
 
     /**
-     * Get value from an array/object/class-statics using "dot" notation.
-     * This method can be accessed non-public property.
-     *
-     * @param mixed $target
-     * @param string $key You can use dot notation
-     * @return mixed
-     */
-    public static function get($target, string $key)
-    {
-        return Reflector::get($target, $key, null, true);
-    }
-
-    /**
-     * Inspect property value of object/class-statics.
+     * Inspect property value of array/object/class-statics using "dot" notation.
      * This method can be accessed non-public property.
      *
      * @param object|string $target
@@ -116,10 +103,7 @@ trait TestHelper // @phpstan-ignore trait.unused
      */
     public function inspect($target, string $name)
     {
-        $class = is_string($target) ? $target : get_class($target) ;
-        $rp    = new \ReflectionProperty($class, $name);
-        $rp->setAccessible(true);
-        return $rp->getValue(is_string($target) ? null : $target);
+        return Reflector::get($target, $name, null, true);
     }
 
     /**

@@ -1,10 +1,9 @@
 <?php
 
-use Rebet\Mail\Mail;
+use Rebet\Mail\Email;
 
 return [
-    Mail::class => [
-        'development' => true,
-        'unittest'    => true,
+    Email::class => [
+        'default_mailer' => 'unittest',
     ],
 ];

@@ -319,7 +319,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 if (!$modified_test_now) {
                     throw new DateTimeFormatException("Invalid date time format [{$time}] given for modify.");
                 }
-                $adopt_time = $modified_test_now->format('Y-m-d H:i:s.u');
+                $adopt_time     = $modified_test_now->format('Y-m-d H:i:s.u');
+                $adopt_timezone = $modified_test_now->getTimezone();
             }
         }
 

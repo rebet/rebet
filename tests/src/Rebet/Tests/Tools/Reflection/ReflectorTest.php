@@ -15,11 +15,12 @@ use Rebet\Tools\Tinker\Tinker;
 
 class ReflectorTest extends RebetTestCase
 {
-    private $array       = null;
-    private $map         = null;
-    private $object      = null;
-    private $transparent = null;
-    private $accessible  = null;
+    private $array            = null;
+    private $map              = null;
+    private $object           = null;
+    private $transparent      = null;
+    private $accessible       = null;
+    private $accessible_child = null;
 
     protected function setUp() : void
     {
@@ -77,6 +78,10 @@ class ReflectorTest extends RebetTestCase
         $this->accessible                = new ReflectorTest_Accessible();
         $this->accessible->public_parent = new ReflectorTest_Accessible();
         $this->accessible->setPrivateParent(new ReflectorTest_Accessible());
+
+        $this->accessible_child                = new ReflectorTest_AccessibleChild();
+        $this->accessible_child->public_parent = new ReflectorTest_AccessibleChild();
+        $this->accessible_child->setPrivateParent(new ReflectorTest_AccessibleChild());
 
         $this->vfs([
             'dummy.txt' => 'dummy'
@@ -171,16 +176,44 @@ class ReflectorTest extends RebetTestCase
         $view = (object)['data' => ['name' => $name]];
         $this->assertSame($name, Reflector::get($view, 'data.name', null, true));
 
+        $this->assertSame('private', Reflector::get($this->accessible, 'private', null, true));
+        $this->assertSame('protected', Reflector::get($this->accessible, 'protected', null, true));
+        $this->assertSame('public', Reflector::get($this->accessible, 'public'));
+        $this->assertSame('private', Reflector::get($this->accessible, 'public_parent.private', null, true));
+        $this->assertSame('protected', Reflector::get($this->accessible, 'public_parent.protected', null, true));
+        $this->assertSame('public', Reflector::get($this->accessible, 'public_parent.public'));
+        $this->assertSame('private', Reflector::get($this->accessible, 'private_parent.private', null, true));
+        $this->assertSame('protected', Reflector::get($this->accessible, 'private_parent.protected', null, true));
+        $this->assertSame('public', Reflector::get($this->accessible, 'private_parent.public', null, true));
+
+        $this->assertSame('private', Reflector::get($this->accessible_child, 'private', null, true));
+        $this->assertSame('protected', Reflector::get($this->accessible_child, 'protected', null, true));
+        $this->assertSame('public', Reflector::get($this->accessible_child, 'public'));
+        $this->assertSame('private', Reflector::get($this->accessible_child, 'public_parent.private', null, true));
+        $this->assertSame('protected', Reflector::get($this->accessible_child, 'public_parent.protected', null, true));
+        $this->assertSame('public', Reflector::get($this->accessible_child, 'public_parent.public'));
+        $this->assertSame('private', Reflector::get($this->accessible_child, 'private_parent.private', null, true));
+        $this->assertSame('protected', Reflector::get($this->accessible_child, 'private_parent.protected', null, true));
+        $this->assertSame('public', Reflector::get($this->accessible_child, 'private_parent.public', null, true));
+
         $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'static_private'));
         $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'static_protected'));
         $this->assertSame("static_public", Reflector::get(ReflectorTest_Accessible::class, 'static_public'));
         $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'nothing'));
+        $this->assertSame(null, Reflector::get(ReflectorTest_AccessibleChild::class, 'static_private'));
+        $this->assertSame(null, Reflector::get(ReflectorTest_AccessibleChild::class, 'static_protected'));
+        $this->assertSame("static_public", Reflector::get(ReflectorTest_AccessibleChild::class, 'static_public'));
+        $this->assertSame(null, Reflector::get(ReflectorTest_AccessibleChild::class, 'nothing'));
         $this->assertSame(null, Reflector::get("NothingClass", 'foo'));
 
         $this->assertSame("static_private", Reflector::get(ReflectorTest_Accessible::class, 'static_private', null, true));
         $this->assertSame("static_protected", Reflector::get(ReflectorTest_Accessible::class, 'static_protected', null, true));
         $this->assertSame("static_public", Reflector::get(ReflectorTest_Accessible::class, 'static_public', null, true));
         $this->assertSame(null, Reflector::get(ReflectorTest_Accessible::class, 'nothing', null, true));
+        $this->assertSame("static_private", Reflector::get(ReflectorTest_AccessibleChild::class, 'static_private', null, true));
+        $this->assertSame("static_protected", Reflector::get(ReflectorTest_AccessibleChild::class, 'static_protected', null, true));
+        $this->assertSame("static_public", Reflector::get(ReflectorTest_AccessibleChild::class, 'static_public', null, true));
+        $this->assertSame(null, Reflector::get(ReflectorTest_AccessibleChild::class, 'nothing', null, true));
         $this->assertSame(null, Reflector::get("NothingClass", 'foo', null, true));
     }
 
@@ -353,6 +386,103 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame(null, Reflector::get($this->transparent, 'b'));
     }
 
+    /**
+     * Regression tests for a bug where Reflector::get()/has()/set()/remove() always treated an
+     * `\ArrayAccess` (and `\Traversable` and `\Countable`) object as a pure array container,
+     * so a key that was not a valid array item was reported as missing even when the object
+     * actually had a real property of that name (e.g. Rebet\Database\Pagination\Paginator,
+     * whose parent Rebet\Database\ResultSet implements all three).
+     *
+     * An array item that genuinely exists must still take priority over a same-named property.
+     */
+    public function test_get_arrayAccessibleObjectFallsBackToProperty()
+    {
+        $target    = new ReflectorTest_ArrayAccessible();
+        $target[0] = 'item0';
+
+        // An existing array item still takes priority.
+        $this->assertSame('item0', Reflector::get($target, 0));
+
+        // A key that is not a valid array item must fall through to the real object property.
+        $this->assertSame('public', Reflector::get($target, 'public'));
+        $this->assertNull(Reflector::get($target, 'protected'));
+        $this->assertSame('protected', Reflector::get($target, 'protected', null, true));
+        $this->assertNull(Reflector::get($target, 'private'));
+        $this->assertSame('private', Reflector::get($target, 'private', null, true));
+
+        // Neither an array item nor a property.
+        $this->assertNull(Reflector::get($target, 'nothing'));
+        $this->assertSame('default', Reflector::get($target, 'nothing', 'default'));
+    }
+
+    public function test_has_arrayAccessibleObjectFallsBackToProperty()
+    {
+        $target    = new ReflectorTest_ArrayAccessible();
+        $target[0] = 'item0';
+
+        $this->assertTrue(Reflector::has($target, 0));
+        $this->assertTrue(Reflector::has($target, 'public'));
+        $this->assertFalse(Reflector::has($target, 'protected'));
+        $this->assertTrue(Reflector::has($target, 'protected', true));
+        $this->assertFalse(Reflector::has($target, 'nothing'));
+    }
+
+    public function test_set_arrayAccessibleObjectFallsBackToProperty()
+    {
+        $target    = new ReflectorTest_ArrayAccessible();
+        $target[0] = 'item0';
+
+        // An existing array item still takes priority.
+        Reflector::set($target, 0, 'updated item0');
+        $this->assertSame('updated item0', $target[0]);
+        $this->assertSame('public', $target->public);
+
+        // A key that is not a valid array item must be written to the real property, not the
+        // items container.
+        Reflector::set($target, 'public', 'updated public');
+        $this->assertSame('updated public', $target->public);
+        $this->assertFalse(isset($target['public']));
+        $this->assertSame('updated public', Reflector::get($target, 'public'));
+
+        Reflector::set($target, 'protected', 'updated protected', true);
+        $this->assertSame('updated protected', Reflector::get($target, 'protected', null, true));
+        $this->assertFalse(isset($target['protected']));
+
+        // Neither an array item nor a property: falls back to creating a new array item, just
+        // like setting a brand-new key on a plain array.
+        Reflector::set($target, 'nothing', 'new item');
+        $this->assertSame('new item', $target['nothing']);
+
+        $target['public'] = 'item public';
+        $this->assertSame('updated public', $target->public);
+        $this->assertSame('item public', $target['public']);
+        $this->assertSame('item public', Reflector::get($target, 'public'));
+        Reflector::set($target, 'public', 'updated item public');
+        $this->assertSame('updated public', $target->public);
+        $this->assertSame('updated item public', $target['public']);
+        $this->assertSame('updated item public', Reflector::get($target, 'public'));
+    }
+
+    public function test_remove_arrayAccessibleObjectFallsBackToProperty()
+    {
+        $target    = new ReflectorTest_ArrayAccessible();
+        $target[0] = 'item0';
+
+        // An existing array item still takes priority.
+        $this->assertSame('item0', Reflector::remove($target, 0));
+        $this->assertFalse(isset($target[0]));
+        $this->assertSame('public', $target->public);
+
+        // A public property that is not a valid array item is removed via the real property.
+        $this->assertSame('public', Reflector::remove($target, 'public'));
+        $this->assertFalse(isset($target->public));
+
+        // A non-public property can not be removed, per remove()'s "public properties only"
+        // contract, even with $accessible=true.
+        $this->expectException(\OutOfBoundsException::class);
+        Reflector::remove($target, 'protected', true);
+    }
+
     public function test_set_undefindKeyArray()
     {
         Reflector::set($this->array, 'undefind_key', 'value');
@@ -424,6 +554,33 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('value', Reflector::get($this->accessible, 'private_parent.private', null, true));
     }
 
+    public function test_set_accessible_child()
+    {
+        Reflector::set($this->accessible_child, 'public', 'value');
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'public'));
+
+        Reflector::set($this->accessible_child, 'public', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'public'));
+
+        Reflector::set($this->accessible_child, 'protected', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'protected', null, true));
+
+        Reflector::set($this->accessible_child, 'private', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'private', null, true));
+
+        Reflector::set($this->accessible_child, 'public_parent.public', 'value');
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'public_parent.public'));
+
+        Reflector::set($this->accessible_child, 'public_parent.private', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'public_parent.private', null, true));
+
+        Reflector::set($this->accessible_child, 'private_parent.public', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'private_parent.public', null, true));
+
+        Reflector::set($this->accessible_child, 'private_parent.private', 'value', true);
+        $this->assertSame('value', Reflector::get($this->accessible_child, 'private_parent.private', null, true));
+    }
+
     public function test_invoke()
     {
         $this->assertSame('public', Reflector::invoke($this->accessible, 'callPublic'));
@@ -438,6 +595,22 @@ class ReflectorTest extends RebetTestCase
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['gender' => 1, 'age' => '20'], false, true));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', ['age' => '20', 'gender' => 1], false, true));
         $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
+    }
+
+    public function test_invoke_child()
+    {
+        $this->assertSame('public', Reflector::invoke($this->accessible_child, 'callPublic'));
+        $this->assertSame('protected', Reflector::invoke($this->accessible_child, 'callProtected', [], true));
+        $this->assertSame('private', Reflector::invoke($this->accessible_child, 'callPrivate', [], true));
+        $this->assertSame('public', Reflector::invoke($this->accessible_child, 'callStaticPublic'));
+        $this->assertSame('protected', Reflector::invoke($this->accessible_child, 'callStaticProtected', [], true));
+        $this->assertSame('private', Reflector::invoke($this->accessible_child, 'callStaticPrivate', [], true));
+        $this->assertSame('public - 123', Reflector::invoke($this->accessible_child, 'callPublicWithArgs', [123]));
+        $this->assertSame('public - 123', Reflector::invoke($this->accessible_child, 'callPublicWithArgs', ['arg' => 123]));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['gender' => Gender::MALE(), 'age' => 20]));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['gender' => 1, 'age' => '20'], false, true));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', ['age' => '20', 'gender' => 1], false, true));
+        $this->assertSame('public - 20 years old 男性', Reflector::invoke($this->accessible_child, 'callPublicWithTypeHintingArgs', [1, '20'], false, true));
     }
 
     public function test_evaluate()
@@ -1320,6 +1493,51 @@ class ReflectorTest_Accessible
     public function callPublicWithTypeHintingArgs(Gender $gender, int $age)
     {
         return "public - {$age} years old {$gender}";
+    }
+}
+class ReflectorTest_AccessibleChild extends ReflectorTest_Accessible
+{
+}
+class ReflectorTest_ArrayAccessible implements \ArrayAccess, \Countable, \IteratorAggregate
+{
+    private $private     = 'private';
+    protected $protected = 'protected';
+    public $public       = 'public';
+
+    private array $items = [];
+
+    public function offsetExists($offset) : bool
+    {
+        return isset($this->items[$offset]);
+    }
+
+    public function offsetGet($offset) : mixed
+    {
+        return $this->items[$offset] ?? null;
+    }
+
+    public function offsetSet($offset, $value) : void
+    {
+        if ($offset === null) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset($offset) : void
+    {
+        unset($this->items[$offset]);
+    }
+
+    public function count() : int
+    {
+        return count($this->items);
+    }
+
+    public function getIterator() : \Iterator
+    {
+        return new \ArrayIterator($this->items);
     }
 }
 class ReflectorTest_TraitParent
