@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Database\DataModel;
 
-use Rebet\Database\Annotation\Defaults;
-use Rebet\Database\Annotation\Table;
-use Rebet\Database\Annotation\Unmap;
+use Rebet\Database\Attribute\Defaults;
+use Rebet\Database\Attribute\Table;
+use Rebet\Database\Attribute\Unmap;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Database\Query;
@@ -75,7 +75,7 @@ abstract class Entity extends DataModel
     }
 
     /**
-     * Get the table name (@Table annotated, Inflector::tableize or Inflector::pivotize) of this entity.
+     * Get the table name (#[Table] attributed, Inflector::tableize or Inflector::pivotize) of this entity.
      *
      * @return string
      * @see Table
@@ -88,8 +88,8 @@ abstract class Entity extends DataModel
             return $table;
         }
 
-        $ac = static::annotatedClass();
-        if ($table = $ac->annotation(Table::class)) {
+        $ac = static::attributedClass();
+        if ($table = $ac->attribute(Table::class)) {
             return static::meta(__METHOD__, $table->value);
         }
 
@@ -123,7 +123,7 @@ abstract class Entity extends DataModel
     }
 
     /**
-     * Get unmaps (non public and @Unmap annotated) properties.
+     * Get unmaps (non public and #[Unmap] attributed) properties.
      *
      * @return array<int, string>
      * @see Unmap
@@ -135,9 +135,9 @@ abstract class Entity extends DataModel
         }
 
         $unmaps = [];
-        $ac     = static::annotatedClass();
+        $ac     = static::attributedClass();
         foreach ($ac->properties() as $ap) {
-            if (!$ap->reflector()->isPublic() || $ap->annotation(Unmap::class)) {
+            if (!$ap->reflector()->isPublic() || $ap->attribute(Unmap::class)) {
                 $unmaps[] = $ap->reflector()->getName();
             }
         }
@@ -145,7 +145,7 @@ abstract class Entity extends DataModel
     }
 
     /**
-     * Get default (@Defaults with/without property type hint) properties.
+     * Get default (#[Defaults] with/without property type hint) properties.
      *
      * @return array<string, array{0: mixed, 1: string|null}> [property_name => [default_value, null|php_type(from property hint)]]
      * @see Defaults
@@ -157,9 +157,9 @@ abstract class Entity extends DataModel
         }
 
         $defaults = [];
-        $ac       = static::annotatedClass();
+        $ac       = static::attributedClass();
         foreach ($ac->properties() as $ap) {
-            $default = $ap->annotation(Defaults::class);
+            $default = $ap->attribute(Defaults::class);
             if ($default) {
                 $defaults[$ap->reflector()->getName()] = [$default->value, Reflector::getTypeHint($ap->reflector())];
             }
@@ -170,7 +170,7 @@ abstract class Entity extends DataModel
 
     /**
      * Get the property and value list that changed.
-     * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
+     * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
      * @return array<string, mixed>
      * @see Unmap
@@ -193,7 +193,7 @@ abstract class Entity extends DataModel
 
     /**
      * It checks the entity was changed.
-     * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
+     * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
      * @return bool
      */
@@ -236,7 +236,7 @@ abstract class Entity extends DataModel
 
     /**
      * Create own data to given name database.
-     * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
+     * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
      * @param DateTime|null $now (default: null)
      * @param Database|string|null $db (default: null)
@@ -249,7 +249,7 @@ abstract class Entity extends DataModel
 
     /**
      * Update own changed data to given name database.
-     * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
+     * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
      * @param DateTime|null $now (default: null)
      * @param Database|string|null $db (default: null)

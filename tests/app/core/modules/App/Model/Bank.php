@@ -1,15 +1,13 @@
 <?php
 namespace App\Model;
 
-use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\DateTime;
 
 class Bank extends Entity
 {
-    /**
-     * @PrimaryKey
-     */
+    #[PrimaryKey]
     public $user_id;
     public $name;
     public $branch;

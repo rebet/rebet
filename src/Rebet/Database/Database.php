@@ -578,7 +578,7 @@ class Database
 
     /**
      * Create (Insert) given entity data.
-     * This method ignore unmaps (non public and @Unmaps annotated) properties and dynamic properties.
+     * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
      * @param Entity $entity
      * @param DateTime|null $now (default: null for DateTime::now())

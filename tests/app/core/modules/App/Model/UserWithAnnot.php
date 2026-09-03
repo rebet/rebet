@@ -2,67 +2,47 @@
 namespace App\Model;
 
 use App\Enum\Gender;
-use Rebet\Database\Annotation\Defaults;
-use Rebet\Database\Annotation\PrimaryKey;
-use Rebet\Database\Annotation\Table;
-use Rebet\Database\Annotation\Unmap;
+use Rebet\Database\Attribute\Defaults;
+use Rebet\Database\Attribute\PrimaryKey;
+use Rebet\Database\Attribute\Table;
+use Rebet\Database\Attribute\Unmap;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 
-/**
- * @Table("users")
- */
+#[Table("users")]
 class UserWithAnnot extends Entity
 {
-    /**
-     * @PrimaryKey
-     */
+    #[PrimaryKey]
     public $user_id;
 
-    /**
-     * @Defaults("foo")
-     */
+    #[Defaults("foo")]
     public $name;
 
-    /**
-     * @Defaults(2)
-     */
+    #[Defaults(2)]
     public Gender|null $gender = null;
 
-    /**
-     * @Defaults("20 years ago")
-     */
+    #[Defaults("20 years ago")]
     public Date|null $birthday = null;
 
-    /**
-     * @Defaults("foo@bar.local")
-     */
+    #[Defaults("foo@bar.local")]
     public $email;
 
-    /**
-     * @Defaults("user")
-     */
+    #[Defaults("user")]
     public $role;
 
     public $password;
 
     public $api_token;
 
-    /**
-     * @Defaults("now")
-     */
+    #[Defaults("now")]
     public DateTime|null $created_at = null;
     public DateTime|null $updated_at = null;
 
-    /**
-     * @Unmap
-     */
+    #[Unmap]
     public $foo;
 
-    /**
-     * @Unmap
-     */
+    #[Unmap]
     public $bar;
 
     public function age() : int|null

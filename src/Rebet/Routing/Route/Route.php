@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Annotation\AnnotatedMethod;
-use Rebet\Auth\Annotation\Guard;
-use Rebet\Auth\Annotation\Role;
+use Rebet\Attribute\AttributedMethod;
+use Rebet\Auth\Attribute\Guard;
+use Rebet\Auth\Attribute\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -122,7 +122,7 @@ abstract class Route implements \Stringable
 
     /**
      * Returns the route action for processing the request matched.
-     * For subclasses, additional annotation verification etc. can be done here.
+     * For subclasses, additional attribute verification etc. can be done here.
      *
      * If routing is not performed by additional verification, please throw RouteNotFoundException.
      *
@@ -173,24 +173,24 @@ abstract class Route implements \Stringable
     }
 
     /**
-     * Get the method annotation accessor for this route.
+     * Get the method attribute accessor for this route.
      *
-     * @return AnnotatedMethod|null
+     * @return AttributedMethod|null
      */
-    public function getAnnotatedMethod() : AnnotatedMethod|null
+    public function getAttributedMethod() : AttributedMethod|null
     {
-        return $this->route_action ? $this->route_action->getAnnotatedMethod() : null ;
+        return $this->route_action ? $this->route_action->getAttributedMethod() : null ;
     }
 
     /**
-     * Gets the annotation associated with this route.
+     * Gets the attribute associated with this route.
      *
-     * @param string $annotation
+     * @param string $attribute
      * @return mixed
      */
-    public function annotation(string $annotation)
+    public function attribute(string $attribute)
     {
-        return $this->route_action ? $this->route_action->annotation($annotation) : null ;
+        return $this->route_action ? $this->route_action->attribute($attribute) : null ;
     }
 
     /**
@@ -217,7 +217,7 @@ abstract class Route implements \Stringable
     public function roles($roles = null)
     {
         if ($roles === null) {
-            $role = $this->annotation(Role::class);
+            $role = $this->attribute(Role::class);
             return $role ? $role->names : $this->roles ;
         }
         $this->roles = func_get_args();
@@ -233,7 +233,7 @@ abstract class Route implements \Stringable
     public function guard(string|null $name = null)
     {
         if ($name === null) {
-            $guard = $this->annotation(Guard::class);
+            $guard = $this->attribute(Guard::class);
             return $guard ? $guard->name : $this->guard ;
         }
         $this->guard = $name;

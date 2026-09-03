@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Routing;
 
-use Rebet\Annotation\AnnotatedMethod;
 use Rebet\Application\App;
+use Rebet\Attribute\AttributedMethod;
 use Rebet\Http\Response\BasicResponse;
-use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Attribute\Method;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ConventionalRoute;
@@ -100,30 +100,30 @@ class RouteActionTest extends RebetTestCase
         $response = $route_action->invoke($request);
     }
 
-    public function test_getAnnotatedMethod()
+    public function test_getAttributedMethod()
     {
         $route_action = $this->createRouteActionBasedClosureMock(function () { return 'Hello'; });
-        $this->assertNull($route_action->getAnnotatedMethod());
+        $this->assertNull($route_action->getAttributedMethod());
 
 
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/annotation-method-get');
 
-        $am = $route_action->getAnnotatedMethod();
-        $this->assertInstanceOf(AnnotatedMethod::class, $am);
-        $method = $am->annotation(Method::class);
+        $am = $route_action->getAttributedMethod();
+        $this->assertInstanceOf(AttributedMethod::class, $am);
+        $method = $am->attribute(Method::class);
         $this->assertInstanceOf(Method::class, $method);
         $this->assertSame(['GET'], $method->allows);
     }
 
-    public function test_annotation()
+    public function test_attribute()
     {
         $route_action = $this->createRouteActionBasedClosureMock(function () { return 'Hello'; });
-        $this->assertNull($route_action->annotation(Method::class));
+        $this->assertNull($route_action->attribute(Method::class));
 
 
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/annotation-method-get');
 
-        $method = $route_action->annotation(Method::class);
+        $method = $route_action->attribute(Method::class);
         $this->assertInstanceOf(Method::class, $method);
         $this->assertSame(['GET'], $method->allows);
     }

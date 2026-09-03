@@ -2,7 +2,7 @@
 namespace App\Model;
 
 use App\Enum\Gender;
-use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\Database;
 use Rebet\Database\DataModel\Presentation;
 use Rebet\Database\Query;
@@ -13,9 +13,7 @@ use Rebet\Tools\Utility\Utils;
 
 class UserDetail extends Presentation
 {
-    /**
-     * @PrimaryKey
-     */
+    #[PrimaryKey]
     public $user_id;
     public $name;
     public Gender $gender;

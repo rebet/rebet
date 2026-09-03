@@ -118,7 +118,7 @@ return [
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Define the role of the user.
         | You can use the roles defined here to control access to actions using routing and
-        | controller annotations.
+        | controller attributes.
         |
         | You can also use `Auth::role()` and `Auth::user()->is()` methods, or `role` tag in views
         | to see if the target user belongs to a role.

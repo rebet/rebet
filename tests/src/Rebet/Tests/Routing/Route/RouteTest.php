@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Routing\Route;
 
-use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Attribute\AttributedMethod;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Middleware\Routing\AddGlobalShareVariableToView;
-use Rebet\Routing\Annotation\Method;
+use Rebet\Routing\Attribute\Method;
 use Rebet\Routing\Route\ClosureRoute;
 use Rebet\Routing\Route\ConventionalRoute;
 use Rebet\Tests\RebetTestCase;
@@ -32,24 +32,24 @@ class RouteTest extends RebetTestCase
         $this->assertSame('Hello World.', $response->getContent());
     }
 
-    public function test_getAnnotatedMethod()
+    public function test_getAttributedMethod()
     {
         $route = new ConventionalRoute();
-        $this->assertNull($route->getAnnotatedMethod());
+        $this->assertNull($route->getAttributedMethod());
         $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
-        $am = $route->getAnnotatedMethod();
-        $this->assertInstanceOf(AnnotatedMethod::class, $am);
-        $this->assertInstanceOf(Method::class, $am->annotation(Method::class));
+        $am = $route->getAttributedMethod();
+        $this->assertInstanceOf(AttributedMethod::class, $am);
+        $this->assertInstanceOf(Method::class, $am->attribute(Method::class));
     }
 
-    public function test_annotation()
+    public function test_attribute()
     {
         $route = new ConventionalRoute();
-        $this->assertNull($route->annotation(Method::class));
+        $this->assertNull($route->attribute(Method::class));
         $request = $this->createRequestMock('/test/annotation-method-get', null, 'web', 'web', 'GET', '', $route);
         $route->match($request);
-        $this->assertInstanceOf(Method::class, $route->annotation(Method::class));
+        $this->assertInstanceOf(Method::class, $route->attribute(Method::class));
     }
 
     public function test_middlewares()
