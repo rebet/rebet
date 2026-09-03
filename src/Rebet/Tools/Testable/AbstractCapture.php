@@ -74,10 +74,10 @@ abstract class AbstractCapture extends \php_user_filter
     public function filter($in, $out, &$consumed, bool $closing) : int
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
+            $consumed += $bucket->datalen;
             if (self::$is_capture) {
                 self::$message .= $bucket->data;
             } else {
-                $consumed += $bucket->datalen;
                 stream_bucket_append($out, $bucket);
             }
         }
