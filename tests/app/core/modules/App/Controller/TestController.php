@@ -2,21 +2,19 @@
 namespace App\Controller;
 
 use App\Enum\Gender;
-use Rebet\Auth\Annotation\Guard;
-use Rebet\Auth\Annotation\Role;
+use Rebet\Auth\Attribute\Guard;
+use Rebet\Auth\Attribute\Role;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
-use Rebet\Routing\Annotation\AliasOnly;
-use Rebet\Routing\Annotation\Channel;
-use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Attribute\AliasOnly;
+use Rebet\Routing\Attribute\Channel;
+use Rebet\Routing\Attribute\Method;
+use Rebet\Routing\Attribute\NotRouting;
+use Rebet\Routing\Attribute\Where;
 use Rebet\Routing\Controller;
 
-/**
- * @Channel("web")
- * @Where({"user_id": "/^[0-9]+$/"})
- */
+#[Channel("web")]
+#[Where(user_id: "/^[0-9]+$/")]
 class TestController extends Controller
 {
     public static $latest = null;
@@ -92,25 +90,19 @@ class TestController extends Controller
         return "Controller: withConvertEnumParam - {$gender}";
     }
 
-    /**
-     * @Channel("api")
-     */
+    #[Channel("api")]
     public function annotationChannelApi()
     {
         return 'Controller: annotationChannelApi';
     }
 
-    /**
-     * @Method("GET")
-     */
+    #[Method("GET")]
     public function annotationMethodGet()
     {
         return 'Controller: annotationMethodGet';
     }
 
-    /**
-     * @Where({"id": "/^[a-zA-Z]+$/"})
-     */
+    #[Where(id: "/^[a-zA-Z]+$/")]
     public function annotationWhere($id)
     {
         return "Controller: annotationWhere - {$id}";
@@ -121,33 +113,25 @@ class TestController extends Controller
         return "Controller: annotationClassWhere - {$user_id}";
     }
 
-    /**
-     * @NotRouting
-     */
+    #[NotRouting]
     public function annotationNotRouting()
     {
         return "Controller: annotationNotRouting";
     }
 
-    /**
-     * @Role("user")
-     */
+    #[Role("user")]
     public function annotationRoleUser()
     {
         return "Controller: annotationRoleUser";
     }
 
-    /**
-     * @Guard("api")
-     */
+    #[Guard("api")]
     public function annotationGuardApi()
     {
         return "Controller: annotationGuardApi";
     }
 
-    /**
-     * @AliasOnly
-     */
+    #[AliasOnly]
     public function annotationAliasOnly()
     {
         return "Controller: annotationAliasOnly";

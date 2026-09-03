@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Auth\Provider\Entity;
 
-use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\DateTime;
 
@@ -17,16 +17,14 @@ class RememberToken extends Entity
 {
     /**
      * Auth provider name that created this remember token.
-     *
-     * @PrimaryKey
      */
+    #[PrimaryKey]
     public string|null $provider = null;
 
     /**
      * Remember token value.
-     *
-     * @PrimaryKey
      */
+    #[PrimaryKey]
     public string|null $remember_token = null;
 
     /**

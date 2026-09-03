@@ -2,8 +2,8 @@
 namespace App\Model;
 
 use App\Enum\Gender;
-use Rebet\Database\Annotation\Defaults;
-use Rebet\Database\Annotation\Unmap;
+use Rebet\Database\Attribute\Defaults;
+use Rebet\Database\Attribute\Unmap;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
@@ -17,18 +17,14 @@ class User extends Entity
     public Date|null $birthday = null;
     public $email;
 
-    /**
-     * @Defaults("user")
-     */
+    #[Defaults("user")]
     public $role;
     public $password;
     public $api_token;
     public DateTime|null $created_at = null;
     public DateTime|null $updated_at = null;
 
-    /**
-     * @Unmap
-     */
+    #[Unmap]
     public $unmap;
 
     public function age() : int|null

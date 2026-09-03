@@ -131,7 +131,7 @@ class Router
     /**
      * Register a new GET route with the router.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -145,7 +145,7 @@ class Router
     /**
      * Register a new POST route with the router.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -159,7 +159,7 @@ class Router
     /**
      * Register a new PUT route with the router.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -173,7 +173,7 @@ class Router
     /**
      * Register a new PATCH route with the router.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -187,7 +187,7 @@ class Router
     /**
      * Register a new DELETE route with the router.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -201,7 +201,7 @@ class Router
     /**
      * Register a new OPTIONS route with the router.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -215,7 +215,7 @@ class Router
     /**
      * Register a new route responding to all methods.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param  string  $uri
      * @param  callable|string  $action
@@ -230,7 +230,7 @@ class Router
      * Register a new route responding to some methods.
      * If given methods is empty(=[]) then match all method.
      *
-     * Please note that routing annotation is not interpreted by declarative routing setting by this method.
+     * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
      * @param array<int, string>|string $methods
      * @param string $uri
@@ -254,12 +254,12 @@ class Router
 
     /**
      * Sets the controller route that matches the specified URI.
-     * Various routing annotations are available for detailed access control.
+     * Various routing attributes are available for detailed access control.
      *
      * In addition, the where condition set for this route is global setting with controller scope.
-     * Please use the @Where routing annotation if you want to set the where condition on an individual action basis.
+     * Please use the #[Where] routing attribute if you want to set the where condition on an individual action basis.
      *
-     * @see Rebet\Routing\Annotation
+     * @see Rebet\Routing\Attribute
      *
      * @param string $uri
      * @param string $controller

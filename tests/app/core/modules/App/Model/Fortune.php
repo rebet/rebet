@@ -2,7 +2,7 @@
 namespace App\Model;
 
 use App\Enum\Gender;
-use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
@@ -10,14 +10,10 @@ use Rebet\Tools\Reflection\Reflector;
 
 class Fortune extends Entity
 {
-    /**
-     * @PrimaryKey
-     */
+    #[PrimaryKey]
     public Gender|null $gender = null;
 
-    /**
-     * @PrimaryKey
-     */
+    #[PrimaryKey]
     public Date|null $birthday = null;
 
     public $result;

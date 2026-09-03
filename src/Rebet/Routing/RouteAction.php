@@ -1,7 +1,7 @@
 <?php
 namespace Rebet\Routing;
 
-use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Attribute\AttributedMethod;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Http\Response;
@@ -40,11 +40,11 @@ class RouteAction
     private $reflector;
 
     /**
-     * Method annotation accessor
+     * Method attribute accessor
      *
-     * @var AnnotatedMethod|null
+     * @var AttributedMethod|null
      */
-    private $annotated_method = null;
+    private $attributed_method = null;
 
     /**
      * Create a route action object
@@ -55,10 +55,10 @@ class RouteAction
      */
     public function __construct(Route $route, \ReflectionFunction|\ReflectionMethod $reflector, $instance = null)
     {
-        $this->route            = $route;
-        $this->reflector        = $reflector;
-        $this->instance         = $instance;
-        $this->annotated_method = $this->isFunction() ? null : AnnotatedMethod::of($reflector);
+        $this->route             = $route;
+        $this->reflector         = $reflector;
+        $this->instance          = $instance;
+        $this->attributed_method = $this->isFunction() ? null : AttributedMethod::of($reflector);
     }
 
     /**
@@ -121,23 +121,23 @@ class RouteAction
     }
 
     /**
-     * Get method annotation accessor of this route action.
+     * Get method attribute accessor of this route action.
      *
-     * @return AnnotatedMethod|null
+     * @return AttributedMethod|null
      */
-    public function getAnnotatedMethod() : AnnotatedMethod|null
+    public function getAttributedMethod() : AttributedMethod|null
     {
-        return $this->annotated_method;
+        return $this->attributed_method;
     }
 
     /**
-     * Get given annotation of this route action.
+     * Get given attribute of this route action.
      *
-     * @param string $annotation
+     * @param string $attribute
      * @return mixed
      */
-    public function annotation(string $annotation)
+    public function attribute(string $attribute)
     {
-        return $this->annotated_method ? $this->annotated_method->annotation($annotation) : null ;
+        return $this->attributed_method ? $this->attributed_method->attribute($attribute) : null ;
     }
 }

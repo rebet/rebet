@@ -2,8 +2,8 @@
 namespace Rebet\Database\DataModel;
 
 use Closure;
-use Rebet\Annotation\AnnotatedClass;
-use Rebet\Database\Annotation\PrimaryKey;
+use Rebet\Attribute\AttributedClass;
+use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\OrderBy;
@@ -39,9 +39,9 @@ abstract class DataModel
     use Populatable, Describable, Getsetable;
 
     /**
-     * @var AnnotatedClass[]
+     * @var AttributedClass[]
      */
-    protected static $_annotated_class = [];
+    protected static $_attributed_class = [];
 
     /**
      * Meta information cache
@@ -200,7 +200,7 @@ abstract class DataModel
     /**
      * Get and Set result set container of this data model
      *
-     * @return self|null
+     * @return static|null
      */
     public function belongsResultSet(ResultSet|null $rs = null)
     {
@@ -247,8 +247,8 @@ abstract class DataModel
     public function __construct()
     {
         $class = get_class($this);
-        if (!isset(static::$_annotated_class[$class])) {
-            static::$_annotated_class[$class] = new AnnotatedClass($class);
+        if (!isset(static::$_attributed_class[$class])) {
+            static::$_attributed_class[$class] = new AttributedClass($class);
         }
     }
 
@@ -271,17 +271,17 @@ abstract class DataModel
     }
 
     /**
-     * Get the annotated class.
+     * Get the attributed class.
      *
-     * @return AnnotatedClass
+     * @return AttributedClass
      */
-    protected static function annotatedClass() : AnnotatedClass
+    protected static function attributedClass() : AttributedClass
     {
         $class = get_called_class();
-        if (isset(static::$_annotated_class[$class])) {
-            return static::$_annotated_class[$class];
+        if (isset(static::$_attributed_class[$class])) {
+            return static::$_attributed_class[$class];
         }
-        return static::$_annotated_class[$class] = new AnnotatedClass($class);
+        return static::$_attributed_class[$class] = new AttributedClass($class);
     }
 
     /**
@@ -296,9 +296,9 @@ abstract class DataModel
         }
 
         $primary_keys = [];
-        $ac           = static::annotatedClass();
+        $ac           = static::attributedClass();
         foreach ($ac->properties() as $ap) {
-            if ($ap->annotation(PrimaryKey::class)) {
+            if ($ap->attribute(PrimaryKey::class)) {
                 $primary_keys[] = $ap->reflector()->getName();
             }
         }
@@ -331,9 +331,9 @@ abstract class DataModel
      * If conversion is not possible then return null.
      *
      * @param mixed $primaries primary key value or array|object of primary keys
-     * @return self|null
+     * @return static|null
      */
-    public static function valueOf($primaries) : self|null
+    public static function valueOf($primaries) : static|null
     {
         return static::find($primaries);
     }
@@ -344,9 +344,9 @@ abstract class DataModel
      * @param mixed $primaries primary key value or array|object of primary keys
      * @param bool $for_update (default: false)
      * @param Database|string|null $db (default: null)
-     * @return self|null
+     * @return static|null
      */
-    public static function find($primaries, bool $for_update = false, $db = null) : self|null
+    public static function find($primaries, bool $for_update = false, $db = null) : static|null
     {
         $where            = [];
         $params           = [];

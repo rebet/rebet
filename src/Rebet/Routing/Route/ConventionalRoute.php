@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Routing\Route;
 
-use Rebet\Annotation\AnnotatedMethod;
+use Rebet\Attribute\AttributedMethod;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Inflection\Inflector;
-use Rebet\Routing\Annotation\AliasOnly;
-use Rebet\Routing\Annotation\Channel;
-use Rebet\Routing\Annotation\Method;
-use Rebet\Routing\Annotation\NotRouting;
-use Rebet\Routing\Annotation\Where;
+use Rebet\Routing\Attribute\AliasOnly;
+use Rebet\Routing\Attribute\Channel;
+use Rebet\Routing\Attribute\Method;
+use Rebet\Routing\Attribute\NotRouting;
+use Rebet\Routing\Attribute\Where;
 use Rebet\Routing\Controller;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Routing\RouteAction;
@@ -231,14 +231,14 @@ class ConventionalRoute extends Route
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] not accessible.");
         }
 
-        $am = AnnotatedMethod::of($method);
-        if ($am->annotation(NotRouting::class)) {
+        $am = AttributedMethod::of($method);
+        if ($am->attribute(NotRouting::class)) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] is not routing.");
         }
-        if ($am->annotation(AliasOnly::class) && !$this->alias) {
+        if ($am->attribute(AliasOnly::class) && !$this->alias) {
             throw new RouteNotFoundException("Route not found : Action [ {$controller}::{$action} ] accespt only alias access.");
         }
-        $wheres = Reflector::get($am->annotation(Where::class), 'wheres', []);
+        $wheres = Reflector::get($am->attribute(Where::class), 'wheres', []);
         $vars   = [];
         foreach ($method->getParameters() as $parameter) {
             $name = $parameter->getName();
@@ -265,7 +265,7 @@ class ConventionalRoute extends Route
 
     /**
      * Returns the route action for processing the request matched.
-     * For subclasses, additional annotation verification etc. can be done here.
+     * For subclasses, additional attribute verification etc. can be done here.
      *
      * If routing is not performed by additional verification, please throw RouteNotFoundException.
      *
@@ -279,12 +279,12 @@ class ConventionalRoute extends Route
         $method->setAccessible($this->accessible);
         $route_action = new RouteAction($this, $method, $this->controller);
 
-        $channel = $route_action->annotation(Channel::class);
+        $channel = $route_action->attribute(Channel::class);
         if (!$channel || $channel->reject(Router::getCurrentChannel())) {
             throw new RouteNotFoundException("{$this} not found. Routing channel '".Router::getCurrentChannel()."' not allowed or not annotated channel meta info.");
         }
 
-        $method = $route_action->annotation(Method::class);
+        $method = $route_action->attribute(Method::class);
         if ($method && $method->reject($request->getMethod())) {
             throw new RouteNotFoundException("{$this} not found. Routing method '{$request->getMethod()}' not allowed.");
         }

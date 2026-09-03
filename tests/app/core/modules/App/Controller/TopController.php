@@ -1,12 +1,10 @@
 <?php
 namespace App\Controller;
 
-use Rebet\Routing\Annotation\Channel;
+use Rebet\Routing\Attribute\Channel;
 use Rebet\Routing\Controller;
 
-/**
- * @Channel("web")
- */
+#[Channel("web")]
 class TopController extends Controller
 {
     public function index()

@@ -201,7 +201,7 @@ interface Driver
      *
      * @param mixed $value
      * @param array<string, mixed> $meta data of PDO column meta data. (default: [])
-     * @param string|null $type that defined in property annotation. (default: null)
+     * @param string|null $type that defined in property attribute. (default: null)
      * @return mixed
      */
     public function toPhpType($value, array $meta = [], string|null $type = null);
