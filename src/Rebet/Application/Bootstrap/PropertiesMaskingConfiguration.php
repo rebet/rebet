@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Application\Bootstrap;
 
 use Rebet\Application\Kernel;

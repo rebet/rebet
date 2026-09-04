@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Application\View\Tag;
 
 use Rebet\Application\App;
@@ -146,14 +148,14 @@ class BuiltinTagProcessors
             if ($names === '*') {
                 foreach ($errors as $messages) {
                     foreach ($messages as $message) {
-                        $output .= str_replace(':message', $message->escape(), $inner);
+                        $output .= str_replace(':message', (string) $message->escape(), $inner);
                     }
                 }
             } else {
                 $names = (array)$names;
                 foreach ($names as $name) {
                     foreach ($errors[$name] as $message) {
-                        $output .= str_replace(':message', $message->escape(), $inner);
+                        $output .= str_replace(':message', (string) $message->escape(), $inner);
                     }
                 }
             }

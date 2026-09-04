@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Log\Driver\Monolog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;

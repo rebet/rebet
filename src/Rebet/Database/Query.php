@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Database;
 
 use Rebet\Database\Driver\Driver;
@@ -159,7 +161,7 @@ class Query
         if ($param->type === \PDO::PARAM_LOB) {
             return 'NULL/*LOB('.strlen($param->value).')*/';
         }
-        return $this->driver->quote($param->value, $param->type);
+        return $this->driver->quote((string) $param->value, $param->type);
     }
 
     /**

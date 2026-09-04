@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Tools\Utility;
 
 use Rebet\Tools\Config\Configurable;
@@ -145,6 +147,6 @@ class Securities
         $iv         = substr($encrypted, 0, $iv_size);
         $encrypted  = substr($encrypted, $iv_size);
         $decrypted  = openssl_decrypt($encrypted, $cipher, $secret_key, OPENSSL_RAW_DATA, $iv);
-        return rtrim($decrypted, "\0");
+        return rtrim((string) $decrypted, "\0");
     }
 }

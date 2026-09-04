@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\View\Engine\Blade;
 
 use Illuminate\Events\Dispatcher;

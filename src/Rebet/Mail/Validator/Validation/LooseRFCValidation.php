@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Mail\Validator\Validation;
 
 use Egulias\EmailValidator\EmailLexer;

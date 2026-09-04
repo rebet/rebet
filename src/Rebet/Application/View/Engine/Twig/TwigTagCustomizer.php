@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Application\View\Engine\Twig;
 
 use Rebet\Application\View\Tag\BuiltinTagProcessors;

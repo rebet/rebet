@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Http;
 
 use Rebet\Http\Bag\FileBag;

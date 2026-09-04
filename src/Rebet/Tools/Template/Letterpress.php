@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Tools\Template;
 
 use Rebet\Tools\Exception\LogicException;
@@ -655,7 +657,7 @@ class Letterpress implements Renderable, \JsonSerializable
                 throw new LogicException("Invalid placeholder format '{{$sanitise_open} ... {$sanitise_close}}' found.");
             }
             $value = static::evaluate(trim($matches['code']), $vars);
-            return $sanitise_open === '!' ? $value : htmlentities($value ?? '', ENT_QUOTES, 'UTF-8', false) ;
+            return $sanitise_open === '!' ? $value : htmlentities((string) ($value ?? ''), ENT_QUOTES, 'UTF-8', false) ;
         }, $template);
     }
 

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Database\Compiler;
 
 use Rebet\Database\Analysis\Analyzer;
@@ -308,7 +310,7 @@ class BuiltinCompiler implements Compiler
             $page            = $last_page < $page ? $last_page : $page ;
             $next_page_count = $last_page - $page;
         } else {
-            $next_page_count = max(max(0, ceil($count / $page_size) - 1), $cursor ? $cursor->pager()->page() - $page + $cursor->nextPageCount() : 0);
+            $next_page_count = (int) max(max(0, ceil($count / $page_size) - 1), $cursor ? $cursor->pager()->page() - $page + $cursor->nextPageCount() : 0);
         }
         if ($use_curosr && $count !== 0) {
             $delta = $count <= $page_size ? 0 : 1 ;

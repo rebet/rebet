@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Validation;
 
 use Rebet\Http\UploadedFile;
@@ -638,7 +640,7 @@ class BuiltinValidations implements Validations
             $c,
             $kind,
             function ($value) use ($pattern) {
-                return preg_match($pattern, $value);
+                return preg_match($pattern, (string) $value);
             },
             $messsage_key,
             $replacement,
@@ -677,7 +679,7 @@ class BuiltinValidations implements Validations
             $c,
             $kind,
             function ($value) use ($pattern) {
-                return !preg_match($pattern, $value);
+                return !preg_match($pattern, (string) $value);
             },
             $messsage_key,
             $replacement,
@@ -1106,6 +1108,7 @@ class BuiltinValidations implements Validations
             $c,
             Kind::INDEPENDENTLY(),
             function ($text) use ($ng_words, $word_split_pattern, $delimiter_pattern, $omission_pattern, $omission_length, $omission_ratio, $ambiguous_patterns, &$hit_ng_word) {
+                $text   = (string) $text;
                 $length = mb_strlen($text);
                 foreach ($ng_words as $ng_word) {
                     if (mb_strlen(trim($ng_word, '^$')) > $length) {
@@ -1572,7 +1575,7 @@ class BuiltinValidations implements Validations
             function (UploadedFile $value, array &$replacement) use ($pattern) {
                 $replacement['file_name'] = $value->getClientOriginalName();
                 $replacement['mime_type'] = ($mime_type = $value->getMimeType());
-                return preg_match($pattern, $mime_type);
+                return preg_match($pattern, (string) $mime_type);
             },
             $messsage_key,
             $replacement,

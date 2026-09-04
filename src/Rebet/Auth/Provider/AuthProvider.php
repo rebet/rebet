@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Auth\Provider;
 
 use Rebet\Auth\AuthUser;
@@ -111,7 +113,7 @@ abstract class AuthProvider
      * If this provider support remember token must be override the method in sub class.
      *
      * @param mixed $id
-     * @param integer $remember_days
+     * @param int $remember_days
      * @return string|null token
      */
     public function issuingRememberToken($id, int $remember_days) : string|null

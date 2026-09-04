@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Auth\Provider\Entity;
 
 use Rebet\Database\Attribute\PrimaryKey;
@@ -30,7 +32,7 @@ class RememberToken extends Entity
     /**
      * ID that remembered by this remember token's provider.
      */
-    public string|null $remember_id = null;
+    public mixed $remember_id = null;
 
     /**
      * Token expired date time.

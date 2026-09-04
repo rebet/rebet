@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Filesystem\Exception;
 
 use League\Flysystem\FilesystemException as FlysystemException;

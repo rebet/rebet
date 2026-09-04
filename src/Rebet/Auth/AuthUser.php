@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Auth;
 
 use Rebet\Auth\Provider\AuthProvider;
@@ -182,11 +184,11 @@ class AuthUser implements \JsonSerializable
         if ($alias instanceof \Closure) {
             return $alias($this->user);
         }
-        if (Strings::startsWith($alias, '@')) {
-            return Strings::lcut($alias, 1);
-        }
         if (!is_string($alias)) {
             return $alias ?? $default;
+        }
+        if (Strings::startsWith($alias, '@')) {
+            return Strings::lcut($alias, 1);
         }
         return Reflector::get($this->user, $alias, $default);
     }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Mail;
 
 use Html2Text\Html2Text;

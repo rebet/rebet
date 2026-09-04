@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Tools\Config;
 
 use Rebet\Tools\Reflection\DotAccessDelegator;

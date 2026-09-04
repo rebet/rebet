@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\View\Engine\Twig\Parser;
 
 use Rebet\Tools\Translation\Translator;

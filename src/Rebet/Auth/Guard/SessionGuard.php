@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Auth\Guard;
 
 use Rebet\Auth\AuthUser;

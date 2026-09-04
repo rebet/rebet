@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Pipeline;
 
 use Rebet\Tools\Exception\LogicException;

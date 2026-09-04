@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Tools\Utility;
 
 use Rebet\Tools\Utility\Exception\ZipArchiveException;

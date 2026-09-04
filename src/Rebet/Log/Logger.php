@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Log;
 
 use Psr\Log\LoggerInterface as PsrLogger;

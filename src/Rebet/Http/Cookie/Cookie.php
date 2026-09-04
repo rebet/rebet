@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Http\Cookie;
 
 use Rebet\Http\Request;

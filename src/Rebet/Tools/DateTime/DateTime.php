@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Tools\DateTime;
 
 use DateInterval;
@@ -898,10 +900,10 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * Get age of this date time as of given at time.
      *
-     * @param string $at_time (default: 'today')
+     * @param \DateTimeInterface|float|int|string|null $at_time (default: 'today')
      * @return integer
      */
-    public function age($at_time = 'today') : int
+    public function age(\DateTimeInterface|float|int|string|null $at_time = 'today') : int
     {
         $at_time = static::valueOf($at_time);
         if ($at_time === null) {

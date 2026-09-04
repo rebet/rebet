@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Rebet\Tools\Reflection;
 
 use Rebet\Tools\Exception\LogicException;
@@ -62,7 +64,7 @@ class Reflector
             return self::resolveDotAccessDelegator($object[$key]) ?? $default ;
         }
 
-        $current = Strings::latrim($key, '.');
+        $current = Strings::latrim((string) $key, '.');
         if ($current != $key) {
             $target = static::get($object, $current, null, $accessible);
             if ($target === null) {
@@ -220,7 +222,7 @@ class Reflector
             }
             return;
         }
-        $current = Strings::latrim($key, '.');
+        $current = Strings::latrim($key === null ? null : (string) $key, '.');
         if ($current != $key) {
             if (Arrays::accessible($object) && \array_key_exists($current, $object)) {
                 static::set($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $value, $accessible);
@@ -281,7 +283,7 @@ class Reflector
             return false;
         }
 
-        $current  = Strings::latrim($key, '.');
+        $current  = Strings::latrim((string) $key, '.');
         $nest_obj = null;
         if (Arrays::accessible($object) && Arrays::exists($object, $current)) {
             $nest_obj = $object[$current];
@@ -330,7 +332,7 @@ class Reflector
             unset($object[$key]);
             return self::resolveDotAccessDelegator($ret);
         }
-        $current = Strings::latrim($key, '.');
+        $current = Strings::latrim((string) $key, '.');
         if ($current != $key) {
             if (Arrays::accessible($object) && \array_key_exists($current, $object)) {
                 return static::remove($object[$current], \mb_substr($key, \mb_strlen($current) - \mb_strlen($key) + 1), $accessible);
