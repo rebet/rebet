@@ -66,7 +66,7 @@ class Log
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/log.letterpress.php
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/log.lp.php
      */
     public static function defaultConfig()
     {

@@ -24,7 +24,7 @@
     </include>
     <exclude>
       <directory suffix=".blade.php">./src</directory>
-      <directory suffix=".letterpress.php">./src</directory>
+      <directory suffix=".lp.php">./src</directory>
     </exclude>
   </source>
 </phpunit>

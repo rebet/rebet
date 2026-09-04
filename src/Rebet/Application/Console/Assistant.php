@@ -24,7 +24,7 @@ class Assistant extends Application
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/application.letterpress.php
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/application.lp.php
      */
     public static function defaultConfig()
     {

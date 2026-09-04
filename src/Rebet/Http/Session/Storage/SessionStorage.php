@@ -21,7 +21,7 @@ class SessionStorage extends NativeSessionStorage
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/http.letterpress.php
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/http.lp.php
      */
     public static function defaultConfig()
     {

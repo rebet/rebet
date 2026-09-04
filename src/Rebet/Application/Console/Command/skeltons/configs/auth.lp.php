@@ -41,7 +41,7 @@ return [
     | You may change these defaults as required, but they're a good start for many applications.
     |
     | See below for more detailed configuration examples for this file:
-    | @see Rebet\Application\Console\Command\skeltons\configs\auth.letterpress.php
+    | @see Rebet\Application\Console\Command\skeltons\configs\auth.lp.php
     */
     Auth::class => [
         /*
