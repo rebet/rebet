@@ -25,6 +25,10 @@ class LooseRFCValidation implements EmailValidation
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/mail.lp.php
+     */
     public static function defaultConfig()
     {
         return [

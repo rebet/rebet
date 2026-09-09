@@ -25,7 +25,8 @@ class Unit
     use Configurable;
 
     /**
-     * @return array<string, mixed>
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/tools.lp.php
      */
     public static function defaultConfig()
     {
@@ -77,7 +78,7 @@ class Unit
                     'Gi' => [bcpow('2', '30'), true], // gibi
                     'Mi' => [bcpow('2', '20'), true], // mebi
                     'Ki' => [bcpow('2', '10'), true], // kibi
-                    ''   => ['1'         , true], // (Base Prefix)
+                    ''   => ['1'             , true], // (Base Prefix)
                 ],
 
                 // Custom Binary Prefixes factors that omitted 'i' from symbols.
@@ -90,7 +91,7 @@ class Unit
                     'G' => [bcpow('2', '30'), true], // giga
                     'M' => [bcpow('2', '20'), true], // mega
                     'K' => [bcpow('2', '10'), true], // kilo
-                    ''  => ['1'         , true], // (Base Prefix)
+                    ''  => ['1'             , true], // (Base Prefix)
                 ],
 
                 // Time Units include Non-SI units accepted for use with SI and useful units.
@@ -240,29 +241,29 @@ class Unit
                     'zK' => ['1e-21', true ], // zepttokelvin
                     'yK' => ['1e-24', true ], // yopttokelvin
                     '°C' => [[                // Celsius
-                        'from_base' => function (Decimal $value) { return $value->sub('273.15'); },
-                        'to_base'   => function (Decimal $value) { return $value->add('273.15'); },
+                        'from_base' => fn (Decimal $value) => $value->sub('273.15'),
+                        'to_base'   => fn (Decimal $value) => $value->add('273.15'),
                     ], false],
                     '°F' => [[                // Fahrenheit
-                        'from_base' => function (Decimal $value) { return $value->mul('9.0000')->div('5.0000')->sub('459.67'); },
-                        'to_base'   => function (Decimal $value) { return $value->add('459.67')->mul('5.0000')->div('9.0000'); },
+                        'from_base' => fn (Decimal $value) => $value->mul('9.0000')->div('5.0000')->sub('459.67'),
+                        'to_base'   => fn (Decimal $value) => $value->add('459.67')->mul('5.0000')->div('9.0000'),
                     ], false],
                     '°R'  => ['1.8', false],  // Rankine
                     '°De' => [[               // Delisle
-                        'from_base' => function (Decimal $value) { return Decimal::of('373.15')->sub($value)->mul('3.0000')->div('2.0000'); },
-                        'to_base'   => function (Decimal $value) { return Decimal::of('373.15')->sub($value->mul('2.0000')->div('3.0000')); },
+                        'from_base' => fn (Decimal $value) => Decimal::of('373.15')->sub($value)->mul('3.0000')->div('2.0000'),
+                        'to_base'   => fn (Decimal $value) => Decimal::of('373.15')->sub($value->mul('2.0000')->div('3.0000')),
                     ], false],
                     '°N' => [[                // Newton
-                        'from_base' => function (Decimal $value) { return $value->sub('273.15')->mul('33.000')->div('100.00'); },
-                        'to_base'   => function (Decimal $value) { return $value->mul('100.00')->div('33.000')->add('273.15'); },
+                        'from_base' => fn (Decimal $value) => $value->sub('273.15')->mul('33.000')->div('100.00'),
+                        'to_base'   => fn (Decimal $value) => $value->mul('100.00')->div('33.000')->add('273.15'),
                     ], false],
                     '°Ré' => [[               // Réaumur
-                        'from_base' => function (Decimal $value) { return $value->sub('273.15')->mul('4.0000')->div('5.0000'); },
-                        'to_base'   => function (Decimal $value) { return $value->mul('5.0000')->div('4.0000')->add('273.15'); },
+                        'from_base' => fn (Decimal $value) => $value->sub('273.15')->mul('4.0000')->div('5.0000'),
+                        'to_base'   => fn (Decimal $value) => $value->mul('5.0000')->div('4.0000')->add('273.15'),
                     ], false],
                     '°Rø' => [[               // Rømer
-                        'from_base' => function (Decimal $value) { return $value->sub('273.15')->mul('21.000')->div('40.000')->add('7.5000'); },
-                        'to_base'   => function (Decimal $value) { return $value->sub('7.5000')->mul('40.000')->div('21.000')->add('273.15'); },
+                        'from_base' => fn (Decimal $value) => $value->sub('273.15')->mul('21.000')->div('40.000')->add('7.5000'),
+                        'to_base'   => fn (Decimal $value) => $value->sub('7.5000')->mul('40.000')->div('21.000')->add('273.15'),
                     ], false],
                 ],
             ],

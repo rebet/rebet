@@ -28,6 +28,6 @@ class ArraySessionStorageTest extends RebetTestCase
 
         $storage->regenerate(true);
         $this->assertNotSame($id, $storage->getId());
-        $this->assertSame(null, $storage->getBag('attributes')->get('foo'));
+        $this->assertSame('bar', $storage->getBag('attributes')->get('foo'));
     }
 }

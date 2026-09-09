@@ -21,9 +21,9 @@ class ArrayProviderTest extends RebetTestCase
     {
         parent::setUp();
         $this->users = [
-            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hash('api-1'), 'resigned_at' => null], // password: admin
-            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => Securities::hash('api-2'), 'resigned_at' => null], // password: user
-            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => Securities::hash('api-3'), 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
+            ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'       , 'signin_id' => 'admin'       , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hmac('api-1'), 'resigned_at' => null], // password: admin
+            ['user_id' => 2, 'role' => 'user' , 'name' => 'User'        , 'signin_id' => 'user'        , 'email' => 'user@rebet.local'         , 'password' => '$2y$04$o9wMO8hXHHFpoNdLYRBtruWIUjPMU3Jqw9JAS0Oc7LOXiHFfn.7F2', 'api_token' => Securities::hmac('api-2'), 'resigned_at' => null], // password: user
+            ['user_id' => 3, 'role' => 'user' , 'name' => 'Resignd User', 'signin_id' => 'user.resignd', 'email' => 'user.resignd@rebet.local' , 'password' => '$2y$04$GwwjNndAojOi8uFu6xwFHe6L6Q/v6/7VynBatMHhCyfNt7momtiqK', 'api_token' => Securities::hmac('api-3'), 'resigned_at' => DateTime::createDateTime('2001-01-01 12:34:56')], // password: user.resignd
         ];
 
         $this->provider                  = new ArrayProvider($this->users);

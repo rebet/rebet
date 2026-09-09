@@ -17,18 +17,18 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
         parent::setUp();
         $this->setUpDataSet([
             'users' => [
-                ['user_id' , 'name'           , 'gender' , 'birthday'   , 'email'                 , 'role' , 'password'                                                     , 'api_token'                                                        ],
-                // ------- | ---------------- | -------- | ------------ | ----------------------- | ------ | -------------------------------------------------------------- | ----------------------------------------------------------------- //
-                [        1 , 'Elody Bode III' ,        2 , '1990-01-08' , 'elody@s1.rebet.local'  , 'user' , '$2y$10$iUQ0l38dqjdf.L7OeNpyNuzmYf5qPzXAUwyKhC3G0oqTuUAO5ouci' , 'fe0c1b9ca200d6e01d96f60bab714cbbaffdf89fed5a946ff1b9f024902d2a26' ], // password-{user_id}, api-{user_id}
-                [        2 , 'Alta Hegmann'   ,        1 , '2003-02-16' , 'alta_h@s2.rebet.local' , 'user' , '$2y$10$xpouw11HAUb3FAEBXYcwm.kcGmF0.FetTqkQQJFiShY2TiVCwEAQW' , '3d9b9b04a60382dd0f0acb2672b3b87acba7e9a9e44c529ba37baebe1cf9a00c' ], // password-{user_id}, api-{user_id}
-                [        3 , 'Damien Kling'   ,        1 , '1992-10-17' , 'damien@s0.rebet.local' , 'user' , '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe' , 'df38d2697f917ca9460677a98bfbb8baaeabab8e83b9858ea70d6da10b06ad4d' ], // password-{user_id}, api-{user_id}
+                ['user_id' , 'name'           , 'gender' , 'birthday'   , 'email'                 , 'role' , 'password'                                                     , 'api_token'                    ],
+                // ------- | ---------------- | -------- | ------------ | ----------------------- | ------ | -------------------------------------------------------------- | ------------------------------- //
+                [        1 , 'Elody Bode III' ,        2 , '1990-01-08' , 'elody@s1.rebet.local'  , 'user' , '$2y$10$iUQ0l38dqjdf.L7OeNpyNuzmYf5qPzXAUwyKhC3G0oqTuUAO5ouci' , Securities::hmac('api-1') ], // password: password-1
+                [        2 , 'Alta Hegmann'   ,        1 , '2003-02-16' , 'alta_h@s2.rebet.local' , 'user' , '$2y$10$xpouw11HAUb3FAEBXYcwm.kcGmF0.FetTqkQQJFiShY2TiVCwEAQW' , Securities::hmac('api-2') ], // password: password-2
+                [        3 , 'Damien Kling'   ,        1 , '1992-10-17' , 'damien@s0.rebet.local' , 'user' , '$2y$10$ciYenJCNJh/rKRy9GRNTIO5HQwP0N2t0Hb5db2ESj8Veaty/TjJCe' , Securities::hmac('api-3') ], // password: password-3
             ],
             'remember_tokens' => [
                 ['provider' , 'remember_token'              , 'remember_id' , 'expires_at'                ],
                 // -------- | ----------------------------- | ------------- | -------------------------- //
-                ['web'      , Securities::hash('token-1-a') , '1'           , DateTime::now()->addDay(30) ],
-                ['web'      , Securities::hash('token-1-b') , '1'           , DateTime::now()->addDay(-3) ],
-                ['web'      , Securities::hash('token-2-a') , '2'           , DateTime::now()->addDay(15) ],
+                ['web'      , Securities::hmac('token-1-a') , '1'           , DateTime::now()->addDay(30) ],
+                ['web'      , Securities::hmac('token-1-b') , '1'           , DateTime::now()->addDay(-3) ],
+                ['web'      , Securities::hmac('token-2-a') , '2'           , DateTime::now()->addDay(15) ],
             ],
         ]);
     }
@@ -135,7 +135,7 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
 
             foreach (User::select() as $user) {
                 $this->assertNotNull($token = $provider->issuingRememberToken($user->user_id, 3));
-                $this->assertNotNull($remember_token = RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash($token)]));
+                $this->assertNotNull($remember_token = RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac($token)]));
                 $this->assertSame('2020-01-13 00:00:00', $remember_token->expires_at->format());
                 $this->assertTrue($user->isSameAs($provider->findByRememberToken($token)->raw()));
             }
@@ -147,9 +147,9 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $provider = (new DatabaseProvider(User::class))->name('web');
 
-            $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));
+            $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac('token-1-a')]));
             $provider->removeRememberToken('token-1-a');
-            $this->assertNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));
+            $this->assertNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac('token-1-a')]));
         });
     }
 
@@ -158,11 +158,11 @@ class DatabaseProviderTest extends RebetDatabaseTestCase
         self::eachDb(function (Database $db) {
             $provider = (new DatabaseProvider(User::class, 'email', 'password', 'api_token', 1))->name('web');
 
-            $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));
-            $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-b')]));
+            $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac('token-1-a')]));
+            $this->assertNotNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac('token-1-b')]));
             $provider->removeRememberToken('token-1-a');
-            $this->assertNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-a')]));
-            $this->assertNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hash('token-1-b')]));
+            $this->assertNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac('token-1-a')]));
+            $this->assertNull(RememberToken::find(['provider' => 'web', 'remember_token' => Securities::hmac('token-1-b')]));
         });
     }
 

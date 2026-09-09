@@ -30,6 +30,10 @@ class BuiltinValidations implements Validations
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/validation.lp.php
+     */
     public static function defaultConfig()
     {
         return [
@@ -74,9 +78,9 @@ class BuiltinValidations implements Validations
                         "x"  => "([xXẌẍẊẋᶍｘＸⓍⓧ🅇🅧🆇])",
                         "y"  => "([yYʎÝýỲỳŶŷY̊ẙŸÿỸỹẎẏȲȳỶỷỴỵʏɎɏƳƴｙＹⓎⓨ🅈🅨🆈])",
                         "z"  => "([zZŹźẐẑŽžŻżẒẓẔẕƵƶᵶᶎȤȥʐʑɀⱫⱬǮǯᶚƺꝢꝣｚＺⓏⓩ🅉🅩🆉])",
-                        "0"  => "([0０⓿])",
+                        "0"  => "([0０⓿O])",
                         "1"  => "([1１①⓵❶➀➊㊀一壱壹弌🈩])",
-                        "2"  => "([2２②⓶❷➁➋㊁二弐貳弎🈔])",
+                        "2"  => "([2２②⓶❷➁➋㊁二弐貳🈔])",
                         "3"  => "([3Ʒʒ３③⓷❸➂➌㊂三参參弎🈪])",
                         "4"  => "([4４Ꝝꝝ④⓸❹➃➍㊃四肆])",
                         "5"  => "([5Ƽƽ５⑤⓹❺➄➎㊄五伍])",

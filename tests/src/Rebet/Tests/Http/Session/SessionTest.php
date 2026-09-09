@@ -201,14 +201,25 @@ class SessionTest extends RebetTestCase
         $this->assertSame('bar', $session->get('foo'));
 
         $id = $session->id();
-        $session->migrate(false);
+        $session->migrate();
         $this->assertNotSame($id, $session->id());
-        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->get('foo'), "migrate() (without destroy) must keep session attributes.");
 
         $id = $session->id();
         $session->migrate(true);
         $this->assertNotSame($id, $session->id());
-        $this->assertSame(null, $session->get('foo'));
+        $this->assertSame('bar', $session->get('foo'), "migrate(true) (with destroy) must also keep session attributes, only the old persisted session storage is deleted.");
+
+        // Session::migrate() must delegate to the underlying storage's regenerate() with the given arguments and return its result as-is.
+        $mock = $this->getMockBuilder(SessionStorageInterface::class)->getMock();
+        $mock->expects($this->once())->method('regenerate')->with(false, null)->willReturn(true);
+        $session = new Session($mock);
+        $this->assertTrue($session->migrate());
+
+        $mock = $this->getMockBuilder(SessionStorageInterface::class)->getMock();
+        $mock->expects($this->once())->method('regenerate')->with(true, 1200)->willReturn(false);
+        $session = new Session($mock);
+        $this->assertFalse($session->migrate(true, 1200));
     }
 
     public function test_save()

@@ -48,6 +48,7 @@ return [
         */
         'expire' => 0,
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Cookie Available Path
@@ -58,6 +59,7 @@ return [
         */
         // 'path' => fn($path) => (Request::current() ? Request::current()->getRoutePrefix() : '').$path,
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Cookie Available Domain
@@ -66,6 +68,7 @@ return [
         | Normally you don't need to change the settings, but if you need to set the domain.
         */
         'domain' => null,
+
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,6 +80,7 @@ return [
         */
         'secure' => true,
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default HTTP Access Only
@@ -87,6 +91,7 @@ return [
         */
         'http_only' => true,
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default No URL Encoding
@@ -95,6 +100,7 @@ return [
         | Normally you don't need to change the settings, but you can set to true if you want.
         */
         'raw' => false,
+
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,6 +169,7 @@ return [
         |    \SessionHandlerInterface and \SessionUpdateTimestampHandlerInterface
         */
         'handler' => NativeFileSessionHandler::class,
+
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

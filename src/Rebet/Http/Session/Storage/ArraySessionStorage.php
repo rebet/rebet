@@ -37,10 +37,6 @@ class ArraySessionStorage extends MockArraySessionStorage
             $this->start();
         }
 
-        if ($destroy) {
-            $this->clear();
-        }
-
         return parent::regenerate($destroy, $lifetime);
     }
 }

@@ -30,11 +30,11 @@ return [
         return $datetime->getHour() < 12 ? '午前' : '午後' ;
     },
     '@formats' => [
-        'Xt'   => 'H:i',
-        'Xtt'  => 'H:i:s',
-        'Xttt' => 'H:i:s.u',
-        'Xd'   => 'Y/m/d',
-        'Xdd'  => 'Y年m月d日',
-        'Xddd' => 'Y年m月d日(xww)',
+        '@t'   => 'H:i',
+        '@tt'  => 'H:i:s',
+        '@ttt' => 'H:i:s.u',
+        '@d'   => 'Y/m/d',
+        '@dd'  => 'Y年m月d日',
+        '@ddd' => 'Y年m月d日(@ww)',
     ],
 ];

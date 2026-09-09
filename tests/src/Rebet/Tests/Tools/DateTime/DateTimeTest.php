@@ -263,6 +263,22 @@ class DateTimeTest extends RebetTestCase
         $this->assertSame('2010-10-20 00:00:00.000000', $date->format('Y-m-d H:i:s.u'));
         $this->assertSame($input, $date->format($apply_format));
 
+        $input                 = 'Wed, 20 Oct 2010 12:34:56 +0900';
+        [$date, $apply_format] = DateTime::analyzeDateTime($input);
+        $this->assertInstanceOf(DateTime::class, $date);
+        $this->assertSame('+09:00', $date->getTimezone()->getName());
+        $this->assertSame(DateTime::RFC2822, $apply_format);
+        $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame($input, $date->format($apply_format));
+
+        $input                 = '2010-10-20T12:34:56+09:00';
+        [$date, $apply_format] = DateTime::analyzeDateTime($input);
+        $this->assertInstanceOf(DateTime::class, $date);
+        $this->assertSame('+09:00', $date->getTimezone()->getName());
+        $this->assertSame(DateTime::ATOM, $apply_format);
+        $this->assertSame('2010-10-20 12:34:56.000000', $date->format('Y-m-d H:i:s.u'));
+        $this->assertSame($input, $date->format($apply_format));
+
         [$date, $apply_format] = DateTime::analyzeDateTime(null);
         $this->assertNull($date);
         $this->assertNull($apply_format);
@@ -1046,59 +1062,64 @@ class DateTimeTest extends RebetTestCase
         $now = DateTime::now();
 
         return [
-            ['en', '2010-10-20(x3) 13:20:30', $now, 'Y-m-d(\xw) H:i:s'],
-            ['en', '2010-10-20(x33) 13:20:30', $now, 'Y-m-d(\xww) H:i:s'],
-            ['en', '2010-10-20(x333) 13:20:30', $now, 'Y-m-d(\xwww) H:i:s'],
-            ['en', '2010-10-20(xw) 13:20:30', $now, 'Y-m-d(x\w) H:i:s'],
+            ['en', '2010-10-20(@3) 13:20:30', $now, 'Y-m-d(\@w) H:i:s'],
+            ['en', '2010-10-20(@33) 13:20:30', $now, 'Y-m-d(\@ww) H:i:s'],
+            ['en', '2010-10-20(@333) 13:20:30', $now, 'Y-m-d(\@www) H:i:s'],
+            ['en', '2010-10-20(@w) 13:20:30', $now, 'Y-m-d(@\w) H:i:s'],
+
+            // Since the extended-format prefix '@' never collides with any native directive, the
+            // native 'x'/'X' (ISO-8601 basic/expanded year) directives are now usable as-is.
+            ['en', '2010-10-20(2010) 13:20:30', $now, 'Y-m-d(x) H:i:s'],
+            ['en', '2010-10-20(+2010) 13:20:30', $now, 'Y-m-d(X) H:i:s'],
 
             // en
-            ['en', '2010-10-20(We) 13:20:30', $now, 'Y-m-d(xw) H:i:s'],
-            ['en', '2010-10-20(Wed) 13:20:30', $now, 'Y-m-d(xww) H:i:s'],
-            ['en', '2010-10-20(Wednesday) 13:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+            ['en', '2010-10-20(We) 13:20:30', $now, 'Y-m-d(@w) H:i:s'],
+            ['en', '2010-10-20(Wed) 13:20:30', $now, 'Y-m-d(@ww) H:i:s'],
+            ['en', '2010-10-20(Wednesday) 13:20:30', $now, 'Y-m-d(@www) H:i:s'],
 
-            ['en', '2010-Oct-20 13:20:30', $now, 'Y-xmm-d H:i:s'],
-            ['en', '2010-October-20 13:20:30', $now, 'Y-xmmm-d H:i:s'],
+            ['en', '2010-Oct-20 13:20:30', $now, 'Y-@mm-d H:i:s'],
+            ['en', '2010-October-20 13:20:30', $now, 'Y-@mmm-d H:i:s'],
 
-            ['en', '2010-10-20 am 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
-            ['en', '2010-10-20 AM 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
-            ['en', '2010-10-20 pm 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
-            ['en', '2010-10-20 PM 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
+            ['en', '2010-10-20 am 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d @a H:i:s'],
+            ['en', '2010-10-20 AM 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d @A H:i:s'],
+            ['en', '2010-10-20 pm 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d @a H:i:s'],
+            ['en', '2010-10-20 PM 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d @A H:i:s'],
 
-            ['en', '13:20', $now, 'Xt'],
-            ['en', '13:20:30', $now, 'Xtt'],
-            ['en', '13:20:30.123456', $now, 'Xttt'],
-            ['en', '20/10/2010', $now, 'Xd'],
-            ['en', '20 October 2010', $now, 'Xdd'],
-            ['en', 'Wednesday, 20 October 2010', $now, 'Xddd'],
-            ['en', 'Wednesday, 20 October 2010 13:20:30', $now, 'Xddd Xtt'],
-            ['en', 'Wednesday, 20 October 2010 13:20:30 UTC [PM]', $now, 'Xddd Xtt e [xA]'],
+            ['en', '13:20', $now, '@t'],
+            ['en', '13:20:30', $now, '@tt'],
+            ['en', '13:20:30.123456', $now, '@ttt'],
+            ['en', '20/10/2010', $now, '@d'],
+            ['en', '20 October 2010', $now, '@dd'],
+            ['en', 'Wednesday, 20 October 2010', $now, '@ddd'],
+            ['en', 'Wednesday, 20 October 2010 13:20:30', $now, '@ddd @tt'],
+            ['en', 'Wednesday, 20 October 2010 13:20:30 UTC [PM]', $now, '@ddd @tt e [@A]'],
 
             // ja
-            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(xw) H:i:s'],
-            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(xww) H:i:s'],
-            ['ja', '2010-10-20(水曜日) 13:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(@w) H:i:s'],
+            ['ja', '2010-10-20(水) 13:20:30', $now, 'Y-m-d(@ww) H:i:s'],
+            ['ja', '2010-10-20(水曜日) 13:20:30', $now, 'Y-m-d(@www) H:i:s'],
 
-            ['ja', '2010-10月-20 13:20:30', $now, 'Y-xmm-d H:i:s'],
-            ['ja', '2010-10月-20 13:20:30', $now, 'Y-xmmm-d H:i:s'],
+            ['ja', '2010-10月-20 13:20:30', $now, 'Y-@mm-d H:i:s'],
+            ['ja', '2010-10月-20 13:20:30', $now, 'Y-@mmm-d H:i:s'],
 
-            ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xa H:i:s'],
-            ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d xA H:i:s'],
-            ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xa H:i:s'],
-            ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d xA H:i:s'],
+            ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d @a H:i:s'],
+            ['ja', '2010-10-20 午前 11:00:00', DateTime::createDateTime('2010-10-20 11:00:00'), 'Y-m-d @A H:i:s'],
+            ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d @a H:i:s'],
+            ['ja', '2010-10-20 午後 12:00:00', DateTime::createDateTime('2010-10-20 12:00:00'), 'Y-m-d @A H:i:s'],
 
-            ['ja', '13:20', $now, 'Xt'],
-            ['ja', '13:20:30', $now, 'Xtt'],
-            ['ja', '13:20:30.123456', $now, 'Xttt'],
-            ['ja', '2010/10/20', $now, 'Xd'],
-            ['ja', '2010年10月20日', $now, 'Xdd'],
-            ['ja', '2010年10月20日(水)', $now, 'Xddd'],
-            ['ja', '2010年10月20日(水) 13:20:30', $now, 'Xddd Xtt'],
-            ['ja', '2010年10月20日(水) 13:20:30 UTC [午後]', $now, 'Xddd Xtt e [xA]'],
+            ['ja', '13:20', $now, '@t'],
+            ['ja', '13:20:30', $now, '@tt'],
+            ['ja', '13:20:30.123456', $now, '@ttt'],
+            ['ja', '2010/10/20', $now, '@d'],
+            ['ja', '2010年10月20日', $now, '@dd'],
+            ['ja', '2010年10月20日(水)', $now, '@ddd'],
+            ['ja', '2010年10月20日(水) 13:20:30', $now, '@ddd @tt'],
+            ['ja', '2010年10月20日(水) 13:20:30 UTC [午後]', $now, '@ddd @tt e [@A]'],
 
 
-            ['non', '2010-10-20(We) 13:20:30', $now, 'Y-m-d(xw) H:i:s'],
-            ['non', '2010-10-20(Wed) 13:20:30', $now, 'Y-m-d(xww) H:i:s'],
-            ['non', '2010-10-20(Wednesday) 13:20:30', $now, 'Y-m-d(xwww) H:i:s'],
+            ['non', '2010-10-20(We) 13:20:30', $now, 'Y-m-d(@w) H:i:s'],
+            ['non', '2010-10-20(Wed) 13:20:30', $now, 'Y-m-d(@ww) H:i:s'],
+            ['non', '2010-10-20(Wednesday) 13:20:30', $now, 'Y-m-d(@www) H:i:s'],
         ];
     }
 
@@ -1112,8 +1133,8 @@ class DateTimeTest extends RebetTestCase
             $resource = Resource::load('php', "{$i18n_dir}/{$locale}/datetime.php");
 
             foreach ([
-                'label'       => 'xmmm',
-                'label_short' => 'xmm',
+                'label'       => '@mmm',
+                'label_short' => '@mm',
             ] as $key => $format) {
                 foreach ($resource[Month::class][$key] as $month => $label) {
                     if ($month === 0) {
@@ -1125,9 +1146,9 @@ class DateTimeTest extends RebetTestCase
             }
 
             foreach ([
-                'label'       => 'xwww',
-                'label_short' => 'xww',
-                'label_min'   => 'xw',
+                'label'       => '@www',
+                'label_short' => '@ww',
+                'label_min'   => '@w',
             ] as $key => $format) {
                 foreach ($resource[DayOfWeek::class][$key] as $day_of_week => $label) {
                     $test_at = $datetime->addDay($day_of_week);
@@ -1139,8 +1160,8 @@ class DateTimeTest extends RebetTestCase
             $this->assertNotNull($meridiem);
             foreach (range(0, 23) as $hour) {
                 $test_at = $datetime->addHour($hour);
-                $this->assertSame($meridiem($test_at, true), $test_at->format('xA'), "{$test_at} in {$locale}");
-                $this->assertSame($meridiem($test_at, false), $test_at->format('xa'), "{$test_at} in {$locale}");
+                $this->assertSame($meridiem($test_at, true), $test_at->format('@A'), "{$test_at} in {$locale}");
+                $this->assertSame($meridiem($test_at, false), $test_at->format('@a'), "{$test_at} in {$locale}");
             }
 
             $formats = $resource['@formats'];

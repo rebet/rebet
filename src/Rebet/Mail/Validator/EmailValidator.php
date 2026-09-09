@@ -41,7 +41,8 @@ class EmailValidator extends EguliasEmailValidator
     protected static EguliasEmailValidator|null $original_validator = null;
 
     /**
-     * @return array<string, mixed>
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/mail.lp.php
      */
     #[Override]
     public static function defaultConfig()

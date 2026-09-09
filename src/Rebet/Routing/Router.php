@@ -36,6 +36,10 @@ class Router
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/routing.lp.php
+     */
     public static function defaultConfig()
     {
         return [

@@ -52,6 +52,31 @@ class SecuritiesTest extends RebetTestCase
         $this->assertNotSame(Securities::randomHash(), Securities::randomHash());
     }
 
+    public function test_hmac()
+    {
+        putenv('DEFAULT_HMAC_SECRET_KEY=secret');
+        $this->assertSame(Securities::hmac('text'), Securities::hmac('text'));
+        $this->assertNotSame(Securities::hmac('text'), Securities::hmac('other'));
+        $this->assertSame(hash_hmac('SHA256', 'text', 'secret'), Securities::hmac('text'));
+    }
+
+    public function test_hmac_unsetSecretKey()
+    {
+        putenv('DEFAULT_HMAC_SECRET_KEY');
+        $this->expectException(ConfigNotDefineException::class);
+        $this->expectExceptionMessage("Required config Rebet\Tools\Utility\Securities.hmac.secret_key is blank or not define.");
+        Securities::hmac('text');
+    }
+
+    public function test_hmac_withArgs()
+    {
+        putenv('DEFAULT_HMAC_SECRET_KEY');
+        $this->assertSame(Securities::hmac('text', 'secret_key'), Securities::hmac('text', 'secret_key'));
+        $this->assertNotSame(Securities::hmac('text', 'secret_key'), Securities::hmac('other', 'secret_key'));
+        $this->assertNotSame(Securities::hmac('text', 'secret_key'), Securities::hmac('text', 'other_secret_key'));
+        $this->assertSame(hash_hmac('sha512', 'text', 'secret_key'), Securities::hmac('text', 'secret_key', 'sha512'));
+    }
+
     public function test_encrypt()
     {
         for ($i = 0; $i < 20; $i++) {

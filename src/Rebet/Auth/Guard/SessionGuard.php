@@ -93,6 +93,8 @@ class SessionGuard extends StatefulGuard
         }
 
         $this->user = $user;
+        // Regenerate the session ID (keeping current attributes) to prevent session fixation attacks.
+        $this->request->session()->migrate(true);
         $this->request->session()->set($this->signinIdKey(), $user->id);
         if ($remember && $this->provider->supportRememberToken()) {
             $token = $this->provider->issuingRememberToken($user->id, $this->remember_days);
@@ -114,7 +116,8 @@ class SessionGuard extends StatefulGuard
                 $this->provider->removeRememberToken($this->request->cookies->get($remember_token_key = $this->rememberTokenKey()));
                 Cookie::remove($remember_token_key);
             }
-            $this->request->session()->remove($this->signinIdKey());
+            // Clear all session data and regenerate the session ID so the old session cannot be reused after signout.
+            $this->request->session()->invalidate();
             $this->user = AuthUser::guest();
         }
 

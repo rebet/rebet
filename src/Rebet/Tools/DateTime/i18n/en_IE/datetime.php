@@ -33,11 +33,11 @@ return [
         ;
     },
     '@formats' => [
-        'Xt'   => 'H:i',
-        'Xtt'  => 'H:i:s',
-        'Xttt' => 'H:i:s.u',
-        'Xd'   => 'd-m-Y',
-        'Xdd'  => 'd xmmm Y',
-        'Xddd' => 'xwww d xmmm Y',
+        '@t'   => 'H:i',
+        '@tt'  => 'H:i:s',
+        '@ttt' => 'H:i:s.u',
+        '@d'   => 'd-m-Y',
+        '@dd'  => 'd @mmm Y',
+        '@ddd' => '@www d @mmm Y',
     ],
 ];

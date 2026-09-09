@@ -35,6 +35,10 @@ class Blade implements Engine
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/view.lp.php
+     */
     public static function defaultConfig()
     {
         return [

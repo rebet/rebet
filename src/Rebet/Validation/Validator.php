@@ -21,6 +21,10 @@ class Validator
 {
     use Configurable;
 
+    /**
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/validation.lp.php
+     */
     public static function defaultConfig()
     {
         return [

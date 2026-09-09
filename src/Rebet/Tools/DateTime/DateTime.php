@@ -36,7 +36,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     use Configurable;
 
     /**
-     * @return array<string, mixed>
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/tools.lp.php
      */
     public static function defaultConfig()
     {
@@ -44,6 +45,8 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             'default_format'             => 'Y-m-d H:i:s',
             'default_timezone'           => date_default_timezone_get() ?: 'UTC',
             'acceptable_datetime_format' => [
+                static::ATOM,
+                static::RFC2822,
                 'Y-m-d H:i:s.u',
                 'Y-m-d H:i:s',
                 'Y/m/d H:i:s',
@@ -59,13 +62,13 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
             'test_now_timezone' => null,
             'test_now_format'   => ['Y#m#d H:i:s.u', 'Y#m#d H:i:s', 'Y#m#d H:i', 'Y#m#d'],
             'custom_formats'    => [
-                'xwww' => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label'); },
-                'xww'  => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_short'); },
-                'xw'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },
-                'xmmm' => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label'); },
-                'xmm'  => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label_short'); },
-                'xa'   => function (DateTime $datetime) { return $datetime->getMeridiem(false); },
-                'xA'   => function (DateTime $datetime) { return $datetime->getMeridiem(true); },
+                '@www' => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label'); },
+                '@ww'  => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_short'); },
+                '@w'   => function (DateTime $datetime) { return $datetime->getDayOfWeek()->translate('label_min'); },
+                '@mmm' => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label'); },
+                '@mm'  => function (DateTime $datetime) { return $datetime->getLocalizedMonth()->translate('label_short'); },
+                '@a'   => function (DateTime $datetime) { return $datetime->getMeridiem(false); },
+                '@A'   => function (DateTime $datetime) { return $datetime->getMeridiem(true); },
             ],
         ];
     }
@@ -830,26 +833,28 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * Get the formatted datetime.
      * If null given as format then use default_format to format.
      *
-     * The following extended formats are available in this class.
+     * The following extended formats are available in this class, all starting with '@' so they
+     * never collide with any native DateTime::format() directive (including 'x'/'X', which remain
+     * fully usable natively, ex: for ISO8601_EXPANDED).
      *
-     * $ Parts that make up the elements of the date (starts with 'x')
-     *   - xw   : A min   textual representation of the `LOCALIZED` day of the week
-     *   - xww  : A short textual representation of the `LOCALIZED` day of the week
-     *   - xwww : A full  textual representation of the `LOCALIZED` day of the week
-     *   - xmm  : A short textual representation of the `LOCALIZED` month
-     *   - xmmm : A full  textual representation of the `LOCALIZED` month
-     *   - xa   : Lowercase `LOCALIZED` meridiem
-     *   - xA   : Uppercase `LOCALIZED` meridiem
+     * $ Parts that make up the elements of the date
+     *   - @w   : A min   textual representation of the `LOCALIZED` day of the week
+     *   - @ww  : A short textual representation of the `LOCALIZED` day of the week
+     *   - @www : A full  textual representation of the `LOCALIZED` day of the week
+     *   - @mm  : A short textual representation of the `LOCALIZED` month
+     *   - @mmm : A full  textual representation of the `LOCALIZED` month
+     *   - @a   : Lowercase `LOCALIZED` meridiem
+     *   - @A   : Uppercase `LOCALIZED` meridiem
      *
      *   Note: You can add/change custom formats by defining the 'custom_formats' configure settings.
      *
-     * $ Localized date and time format template (starts with 'X')
-     *   - Xt   : A min   `LOCALIZED` time (include hour and minute with/without meridiem)
-     *   - Xtt  : A short `LOCALIZED` time (include hour, minute and second with/without meridiem)
-     *   - Xttt : A full  `LOCALIZED` time (include hour, minute, second and milli/micro second with/without meridiem)
-     *   - Xd   : A min   `LOCALIZED` date (include year, month and day. using number and mark separator)
-     *   - Xdd  : A short `LOCALIZED` date (include year, month and day.)
-     *   - Xddd : A full  `LOCALIZED` date (include year, month, day and day of week)
+     * $ Localized date and time format template
+     *   - @t   : A min   `LOCALIZED` time (include hour and minute with/without meridiem)
+     *   - @tt  : A short `LOCALIZED` time (include hour, minute and second with/without meridiem)
+     *   - @ttt : A full  `LOCALIZED` time (include hour, minute, second and milli/micro second with/without meridiem)
+     *   - @d   : A min   `LOCALIZED` date (include year, month and day. using number and mark separator)
+     *   - @dd  : A short `LOCALIZED` date (include year, month and day.)
+     *   - @ddd : A full  `LOCALIZED` date (include year, month, day and day of week)
      *
      *   Note: You can add/change custom formats by defining the 'formats' datetime transration settings.
      *
@@ -877,11 +882,6 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
                 $format = preg_replace("/(?<!\\\\){$key}/u", $this->escape($callback($this)), $format);
             }
         }
-
-        // Any 'x'/'X' left unconsumed by the localized/custom formats above is not a valid
-        // directive of this class, so it must be escaped to literal text instead of falling
-        // through to the native DateTime::format() 'x'/'X' directive (expanded year).
-        $format = preg_replace('/(?<!\\\\)[xX]/u', '\\\\$0', $format);
 
         return parent::format($format);
     }

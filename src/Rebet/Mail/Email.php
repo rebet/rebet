@@ -62,7 +62,8 @@ class Email extends SymfonyEmail
     use Configurable;
 
     /**
-     * @return array<string, mixed>
+     * {@inheritDoc}
+     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/mail.lp.php
      */
     public static function defaultConfig()
     {

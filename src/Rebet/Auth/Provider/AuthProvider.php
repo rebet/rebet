@@ -18,6 +18,14 @@ use Rebet\Tools\Utility\Securities;
 abstract class AuthProvider
 {
     /**
+     * A fixed, valid bcrypt hash of an arbitrary dummy password.
+     * Used by findByCredentials() so that Password::verify() always runs (and takes a similar
+     * amount of time) even when the given signin_id does not match any user, preventing user
+     * enumeration via response-time differences.
+     */
+    protected const DUMMY_PASSWORD_HASH = '$2y$10$xTLUPn4JrGiJ51JAnPVJSOiTj0coJISz.uuFCBI0UHLdgrjEbj/BK';
+
+    /**
      * The name of this provider.
      *
      * @var string
@@ -44,6 +52,10 @@ abstract class AuthProvider
      * Find user by signin_id and password.
      * The signin_id may be named 'login_id', 'email', etc.
      *
+     * Note: Password::verify() is always executed, even when the given signin_id matches no user
+     * (using a dummy hash in that case), so that the response time does not reveal whether the
+     * signin_id is registered (protection against user enumeration via timing attacks).
+     *
      * @param mixed $signin_id
      * @param string|null $password
      * @return AuthUser|null
@@ -51,11 +63,12 @@ abstract class AuthProvider
     public function findByCredentials($signin_id, string|null $password) : AuthUser|null
     {
         $user = $this->findBySigninId($signin_id);
-        if ($user === null) {
+
+        if (!Password::verify($password, $user->password ?? static::DUMMY_PASSWORD_HASH)) {
             return null;
         }
 
-        if (!Password::verify($password, $user->password)) {
+        if ($user === null) {
             return null;
         }
 
@@ -167,6 +180,6 @@ abstract class AuthProvider
      */
     protected function hashToken(string|null $token) : string|null
     {
-        return $token ? Securities::hash($token) : null ;
+        return $token ? Securities::hmac($token) : null ;
     }
 }

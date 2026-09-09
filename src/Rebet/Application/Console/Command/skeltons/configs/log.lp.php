@@ -52,6 +52,7 @@ return [
         */
         // 'unittest' => false,
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Unit Test Log Channel
@@ -61,6 +62,7 @@ return [
         */
         // 'unittest_channel' => 'test',
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Log Channel
@@ -69,6 +71,7 @@ return [
         | Normally you don't need to change this setting.
         */
         'default_channel' => App::channel() ?? 'stderr',
+
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,6 +104,7 @@ return [
                 ],
             ],
 
+
             /*
             |--------------------------------------------------------------------------------------
             | API Channel
@@ -113,6 +117,7 @@ return [
                     'channels' => ['app'],
                 ],
             ],
+
 
             /*
             |--------------------------------------------------------------------------------------
@@ -127,6 +132,7 @@ return [
                     'channels' => ['command'],
                 ],
             ],
+
 
             /*
             |--------------------------------------------------------------------------------------
@@ -159,6 +165,7 @@ return [
                 ],
             ],
 
+
             /*
             |--------------------------------------------------------------------------------------
             | Command Channel
@@ -176,6 +183,7 @@ return [
                 ],
             ],
 
+
             /*
             |--------------------------------------------------------------------------------------
             | Standard Error Channel
@@ -189,6 +197,7 @@ return [
             //         'level'    => LogLevel::DEBUG,
             //     ],
             // ],
+
 
             /*
             |--------------------------------------------------------------------------------------
@@ -205,6 +214,7 @@ return [
             // ],
         ],
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Fallback Logger
@@ -214,6 +224,7 @@ return [
         */
         // 'fallback_log' => defined('STDERR') ? STDERR : 'php://stderr',
     ],
+
 
     /*
     |==============================================================================================
@@ -249,6 +260,7 @@ return [
         // ],
     ],
 
+
     /*
     |==============================================================================================
     | Log Message Text Formatter Configuration
@@ -271,6 +283,7 @@ return [
         */
         // 'default_format' => "{datetime} {channel}/{extra.process_id} [{level_name}] {message}{context}{extra}{exception}\n",
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Default Placeholder Stringifier Function
@@ -280,6 +293,7 @@ return [
         | `TextFormatter.stringifiers`.
         */
         // 'default_stringifier' => function ($val, array $masks, string $masked_label) { return Strings::stringify($val, $masks, $masked_label); },
+
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -296,6 +310,7 @@ return [
             */
             // '{datetime}' => function ($val, array $masks, string $masked_label) { return $val->format('Y-m-d H:i:s.u'); },
 
+
             /*
             |--------------------------------------------------------------------------------------
             | Stringifier Function For '{context}' Placeholder
@@ -304,6 +319,7 @@ return [
             */
             // '{context}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n====== [  CONTEXT  ] ======\n".Strings::indent(Strings::stringify($val, $masks, $masked_label), "== ") ; },
 
+
             /*
             |--------------------------------------------------------------------------------------
             | Stringifier Function For '{extra}' Placeholder
@@ -311,6 +327,7 @@ return [
             | In default, it convert from array to string using Strings::stringify().
             */
             // '{extra}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n------ [   EXTRA   ] ------\n".Strings::indent(Strings::stringify($val, $masks, $masked_label), "-- ") ; },
+
 
             /*
             |--------------------------------------------------------------------------------------
@@ -321,6 +338,7 @@ return [
             // '{exception}' => function ($val, array $masks, string $masked_label) { return empty($val) ? '' : "\n****** [ EXCEPTION ] ******\n".Strings::indent("{$val}", "** ") ; },
         ],
 
+
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         | Property Names That Need Masking
@@ -329,6 +347,7 @@ return [
         | you can do that by these properties write here.
         */
         'masks' => ['password', 'password_confirm'],
+
 
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

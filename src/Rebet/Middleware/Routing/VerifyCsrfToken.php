@@ -69,7 +69,10 @@ class VerifyCsrfToken
         if ($this->verifyToken($request)) {
             $response = $next($request);
             if ($this->is_support_xsrf) {
-                $response->headers->setCookie(Cookie::create('XSRF-TOKEN', Nets::encodeBase64Url(Securities::encrypt($request->session()->token())), $this->xsrf_lifetime));
+                // The XSRF-TOKEN cookie must be readable by client-side JavaScript (ex: Angular's
+                // HttpClientXsrfModule, Axios' xsrfCookieName) so it can be echoed back as the
+                // X-XSRF-TOKEN header, so http_only must be false here (unlike other cookies).
+                $response->headers->setCookie(Cookie::create('XSRF-TOKEN', Nets::encodeBase64Url(Securities::encrypt($request->session()->token())), $this->xsrf_lifetime, http_only: false));
             }
             return $response;
         }
