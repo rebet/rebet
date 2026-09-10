@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console;
 
+use Rebet\Application\Console\Command\Crypto\CryptoDecryptCommand;
+use Rebet\Application\Console\Command\Crypto\CryptoEncryptCommand;
 use Rebet\Application\Console\Command\EnvCommand;
-use Rebet\Application\Console\Command\HashPasswordCommand;
+use Rebet\Application\Console\Command\Hash\HashHmacCommand;
+use Rebet\Application\Console\Command\Hash\HashPasswordCommand;
+use Rebet\Application\Console\Command\Hash\HashTextCommand;
 use Rebet\Application\Console\Command\InitCommand;
 use Rebet\Console\Application;
 use Rebet\Tools\Config\Configurable;
@@ -32,7 +36,11 @@ class Assistant extends Application
             'commands' => [
                 InitCommand::class,
                 EnvCommand::class,
-                HashPasswordCommand::class
+                HashPasswordCommand::class,
+                HashTextCommand::class,
+                HashHmacCommand::class,
+                CryptoEncryptCommand::class,
+                CryptoDecryptCommand::class,
             ],
         ];
     }

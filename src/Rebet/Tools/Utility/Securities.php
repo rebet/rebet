@@ -134,20 +134,22 @@ class Securities
 
     /**
      * Encrypt with private key encryption by openssl_encrypt(), then apply Encrypt-then-MAC using
-     * Securities::hmac() (with the independently configured 'hmac.secret_key') so that any
-     * tampering of the returned payload can be detected before it is ever passed to
-     * openssl_decrypt(), avoiding padding-oracle style attacks against plain AES-CBC.
+     * Securities::hmac() (with an independent HMAC secret_key, not shared with the cipher's
+     * secret_key) so that any tampering of the returned payload can be detected before it is ever
+     * passed to openssl_decrypt(), avoiding padding-oracle style attacks against plain AES-CBC.
      *
      * ex)
      * $encrypted = Nets::encodeBase64Url(Securities::encrypt($text, 'secret_key'));
      *
      * @param string $plain
-     * @param string $secret_key (default: depend on configure)
-     * @param string $cipher (default: depend on configure)
+     * @param string|null $secret_key (default: depend on configure)
+     * @param string|null $cipher (default: depend on configure)
+     * @param string|null $hmac_secret_key (default: depend on configure)
+     * @param string|null $hmac_algorithm (default: depend on configure)
      * @return string
      * @see Nets::encodeBase64Url();
      */
-    public static function encrypt($plain, $secret_key = null, $cipher = null)
+    public static function encrypt(string $plain, string|null $secret_key = null, string|null $cipher = null, string|null $hmac_secret_key = null, string|null $hmac_algorithm = null)
     {
         $secret_key = $secret_key ?? static::config('crypto.secret_key') ;
         $cipher     = $cipher ?? static::config('crypto.cipher') ;
@@ -155,7 +157,7 @@ class Securities
         $iv         = random_bytes($iv_size);
         $encrypted  = openssl_encrypt($plain, $cipher, $secret_key, OPENSSL_RAW_DATA, $iv);
         $payload    = $iv.$encrypted;
-        return static::hmac($payload).$payload;
+        return static::hmac($payload, $hmac_secret_key, $hmac_algorithm).$payload;
     }
 
     /**
@@ -167,19 +169,21 @@ class Securities
      * $decrypted = Securities::decrypt(Nets::decodeBase64Url($text), 'secret_key');
      *
      * @param string $encrypted
-     * @param string $secret_key (default: depend on configure)
-     * @param string $cipher (default: depend on configure)
+     * @param string|null $secret_key (default: depend on configure)
+     * @param string|null $cipher (default: depend on configure)
+     * @param string|null $hmac_secret_key (default: depend on configure)
+     * @param string|null $hmac_algorithm (default: depend on configure)
      * @return string|null
      */
-    public static function decrypt($encrypted, $secret_key = null, $cipher = null)
+    public static function decrypt(string $encrypted, string|null $secret_key = null, string|null $cipher = null, string|null $hmac_secret_key = null, string|null $hmac_algorithm = null)
     {
         $secret_key = $secret_key ?? static::config('crypto.secret_key') ;
         $cipher     = $cipher ?? static::config('crypto.cipher') ;
 
-        $mac_size = strlen(static::hmac(''));
+        $mac_size = strlen(static::hmac('', $hmac_secret_key, $hmac_algorithm));
         $mac      = substr((string) $encrypted, 0, $mac_size);
         $payload  = substr((string) $encrypted, $mac_size);
-        if (!hash_equals(static::hmac($payload), $mac)) {
+        if (!hash_equals(static::hmac($payload, $hmac_secret_key, $hmac_algorithm), $mac)) {
             return null;
         }
 

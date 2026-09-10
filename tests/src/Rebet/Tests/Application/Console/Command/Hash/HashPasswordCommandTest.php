@@ -1,8 +1,8 @@
 <?php
-namespace Rebet\Tests\Application\Console\Command;
+namespace Rebet\Tests\Application\Console\Command\Hash;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rebet\Application\Console\Command\HashPasswordCommand;
+use Rebet\Application\Console\Command\Hash\HashPasswordCommand;
 use Rebet\Auth\Password;
 use Rebet\Tests\RebetConsoleTestCase;
 use Rebet\Tools\Utility\Strings;

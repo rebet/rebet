@@ -252,7 +252,11 @@ return [
         | Preinstalled Commands:
         |  - Rebet\Application\Console\Command\InitCommand::class
         |  - Rebet\Application\Console\Command\EnvCommand::class
-        |  - Rebet\Application\Console\Command\HashPasswordCommand::class
+        |  - Rebet\Application\Console\Command\Hash\HashPasswordCommand::class
+        |  - Rebet\Application\Console\Command\Hash\HashTextCommand::class
+        |  - Rebet\Application\Console\Command\Hash\HashHmacCommand::class
+        |  - Rebet\Application\Console\Command\Crypto\CryptoEncryptCommand::class
+        |  - Rebet\Application\Console\Command\Crypto\CryptoDecryptCommand::class
         */
         'commands' => [
             // YourApplicationJobCommand::class,

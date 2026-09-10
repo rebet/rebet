@@ -303,7 +303,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
         } elseif (is_int($time)) {
             $adopt_time = static::createDateTime((string)$time, ['U'])->format('Y-m-d H:i:s.u');
         } elseif (is_float($time)) {
-            [$second, $milli_micro] = Strings::split((string)$time, '.', 2, 0);
+            [$second, $milli_micro] = Strings::split((string)$time, '.', 2, '0');
             $adopt_time             = static::createDateTime($second, ['U'])->setMilliMicro((int) str_pad(substr($milli_micro, 0, 6), 6, '0'))->format('Y-m-d H:i:s.u');
         } else {
             $test_now = self::getTestNow();

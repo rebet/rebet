@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Rebet\Application\Console\Command;
+namespace Rebet\Application\Console\Command\Hash;
 
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;

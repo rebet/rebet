@@ -110,4 +110,21 @@ class SecuritiesTest extends RebetTestCase
         $decrypted = Securities::decrypt($encrypted.'a', $secretKey);
         $this->assertNotSame($plain, $decrypted);
     }
+
+    public function test_encrypt_withHmacArgs()
+    {
+        $plain           = 'This is pen';
+        $secretKey       = 'crypto_secret';
+        $hmacSecretKey   = 'hmac_secret';
+        $otherHmacSecret = 'other_hmac_secret';
+
+        $encrypted = Securities::encrypt($plain, $secretKey, null, $hmacSecretKey, 'sha512');
+        $this->assertSame($plain, Securities::decrypt($encrypted, $secretKey, null, $hmacSecretKey, 'sha512'));
+
+        // Decrypting with the wrong hmac secret_key must fail the MAC check (independent of the crypto secret_key).
+        $this->assertNull(Securities::decrypt($encrypted, $secretKey, null, $otherHmacSecret, 'sha512'));
+
+        // Decrypting with the wrong hmac algorithm must also fail the MAC check.
+        $this->assertNull(Securities::decrypt($encrypted, $secretKey, null, $hmacSecretKey, 'sha256'));
+    }
 }
