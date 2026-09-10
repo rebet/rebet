@@ -23,7 +23,7 @@ class Translator
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/tools.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
     public static function defaultConfig()
     {

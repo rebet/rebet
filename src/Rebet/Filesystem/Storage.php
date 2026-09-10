@@ -26,7 +26,7 @@ class Storage
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/filesystem.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/filesystem.lp.php
      */
     public static function defaultConfig()
     {

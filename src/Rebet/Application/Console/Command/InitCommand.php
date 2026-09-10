@@ -165,10 +165,15 @@ class InitCommand extends Command
         $configs['http_port']  = $this->ask("* HTTP  Port : [80] ", 'http-port', true, '80');
         $configs['https_port'] = $https_port = $this->ask("* HTTPS Port : [443] ", 'https-port', true, '443');
 
+        // @todo Mail settings use mailhog for local development
+
+        // @todo Confirm inputed configs, if you have something wrong, you can fixed it.
         $this->writeln('');
-        $this->comment('You are inputed -------');
+        $this->comment('DEBUG: You are inputed -------');
         $this->comment(Strings::stringify($configs));
         $this->comment('-----------------------');
+
+        // @todo generat application files using skeltons template of Letterpress.
 
         $app_url = 'https://'.$domain.($https_port == '443' ? '' : ":{$https_port}");
         $this->info('-----------------------');

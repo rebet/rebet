@@ -25,7 +25,7 @@ class Cookie extends SymfonyCookie
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/http.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/http.lp.php
      */
     public static function defaultConfig()
     {

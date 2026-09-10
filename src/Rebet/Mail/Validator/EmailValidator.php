@@ -42,7 +42,7 @@ class EmailValidator extends EguliasEmailValidator
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/mail.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/mail.lp.php
      */
     #[Override]
     public static function defaultConfig()

@@ -27,7 +27,7 @@ class Twig implements Engine
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/view.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/view.lp.php
      */
     public static function defaultConfig()
     {

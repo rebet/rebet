@@ -48,7 +48,7 @@ class App
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/application.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/application.lp.php
      */
     public static function defaultConfig()
     {

@@ -4,10 +4,3 @@ parameters:
         - ./vendor/autoload.php
     paths:
         - ./src
-    ignoreErrors:
-        # Classes under the `App` namespace are implemented by the application itself and
-        # are therefore not included in this package;
-        # consequently, `class.notFound` errors regarding these classes are ignored.
-        -
-            identifier: class.notFound
-            message: '#App\\[A-Za-z0-9_\\]+#'

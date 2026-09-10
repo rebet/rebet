@@ -32,7 +32,7 @@ class BuiltinValidations implements Validations
 
     /**
      * {@inheritDoc}
-     * @see https://github.com/rebet/rebet/blob/master/src/Rebet/Application/Console/Command/skeltons/configs/validation.lp.php
+     * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/validation.lp.php
      */
     public static function defaultConfig()
     {
