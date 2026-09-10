@@ -1,7 +1,5 @@
 <?php
 
-use App\Model\User;
-use App\Stub\Address;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Guard\SessionGuard;
@@ -9,6 +7,8 @@ use Rebet\Auth\Guard\TokenGuard;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Securities;
+use TestApp\Model\User;
+use TestApp\Stub\Address;
 
 $users = [
     ['user_id' => 1, 'role' => 'admin', 'name' => 'Admin'        , 'signin_id' => 'admin'        , 'email' => 'admin@rebet.local'        , 'password' => '$2y$04$68GZ8.IwFPFiVsae03fP7uMD76RYsEp9WunbITtrdRgvtJO1DGrim', 'api_token' => Securities::hmac('token_1'), 'resigned_at' => null], // password: admin

@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use App\Validation\UserValidation;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
+use TestApp\Validation\UserValidation;
 
 class RuleTest extends RebetTestCase
 {

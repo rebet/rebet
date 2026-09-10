@@ -4,10 +4,10 @@ can update user
 @cannot('update', $user)
 can not update user
 @endcannot
-@can('create', 'App\\Model\\User')
+@can('create', 'TestApp\\Model\\User')
 can create user(absolute class name 1)
 @endcan
-@can('create', '\\App\\Model\\User')
+@can('create', '\\TestApp\\Model\\User')
 can create user(absolute class name 2)
 @endcan
 @can('create', '@model\\User')

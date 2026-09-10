@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Tests\Auth;
 
-use App\Model\Bank;
-use App\Model\User;
-use App\Stub\Address;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Event\Authenticated;
@@ -22,6 +19,9 @@ use Rebet\Http\Response\RedirectResponse;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Exception\ConfigNotDefineException;
+use TestApp\Model\Bank;
+use TestApp\Model\User;
+use TestApp\Stub\Address;
 
 class AuthTest extends RebetTestCase
 {

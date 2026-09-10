@@ -1,10 +1,6 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use App\Enum\Gender;
-use App\Model\Article;
-use App\Model\User;
-use App\Model\UserWithAnnot;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Auth\Password;
@@ -37,6 +33,10 @@ use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Utility\Arrays;
 use stdClass;
+use TestApp\Enum\Gender;
+use TestApp\Model\Article;
+use TestApp\Model\User;
+use TestApp\Model\UserWithAnnot;
 
 class DatabaseTest extends RebetDatabaseTestCase
 {

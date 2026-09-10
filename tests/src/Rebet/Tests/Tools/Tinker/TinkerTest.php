@@ -1,13 +1,13 @@
 <?php
 namespace Rebet\Tests\Tools\Tinker;
 
-use App\Enum\Gender;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Math\Decimal;
 use Rebet\Tools\Tinker\Tinker;
+use TestApp\Enum\Gender;
 
 class TinkerTest extends RebetTestCase
 {

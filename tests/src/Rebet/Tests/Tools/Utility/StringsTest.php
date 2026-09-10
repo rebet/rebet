@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use App\Stub\JsonSerializableStub;
-use App\Stub\ToStringStub;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Strings;
+use TestApp\Stub\JsonSerializableStub;
+use TestApp\Stub\ToStringStub;
 
 class StringsTest extends RebetTestCase
 {
@@ -314,18 +314,18 @@ class StringsTest extends RebetTestCase
             ['2010-10-20 10:20:30', DateTime::now()],
             ['2010-10-20 10:20:30', new \DateTime('2010-10-20 10:20:30')],
             ['2010-10-20 10:20:30', new \DateTimeImmutable('2010-10-20 10:20:30')],
-            ['App\Stub\ToStringStub : single line', new ToStringStub('single line')],
+            ['TestApp\Stub\ToStringStub : single line', new ToStringStub('single line')],
             [
                 <<<EOS
                 array:1 [
-                    0 => App\Stub\ToStringStub : single line text in array
+                    0 => TestApp\Stub\ToStringStub : single line text in array
                 ]
                 EOS,
                 [new ToStringStub('single line text in array')]
             ],
             [
                 <<<EOS
-                App\Stub\ToStringStub : """
+                TestApp\Stub\ToStringStub : """
                     multi
                     line
                     text
@@ -336,7 +336,7 @@ class StringsTest extends RebetTestCase
             [
                 <<<EOS
                 array:1 [
-                    0 => App\Stub\ToStringStub : """
+                    0 => TestApp\Stub\ToStringStub : """
                         multi
                         line
                         text
@@ -348,11 +348,11 @@ class StringsTest extends RebetTestCase
                 [new ToStringStub("multi\nline\ntext\nin\narray")]
             ],
             ['Rebet\Tests\Tools\Utility\StringsTest::{closure}($a, ?int $b, string $c = default) : ?bool', function ($a, int|null $b, string $c = 'default') : bool|null { return true; }],
-            ['App\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
-            ['App\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
+            ['TestApp\Stub\JsonSerializableStub : 123', new JsonSerializableStub(123)],
+            ['TestApp\Stub\JsonSerializableStub : abc', new JsonSerializableStub('abc')],
             [
                 <<<EOS
-                App\Stub\JsonSerializableStub : array:1 [
+                TestApp\Stub\JsonSerializableStub : array:1 [
                     a => A
                 ]
                 EOS,

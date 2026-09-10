@@ -13,7 +13,7 @@ class NamespacesTest extends RebetTestCase
         Config::application([
             Namespaces::class => [
                 'aliases' => [
-                    '@root'       => 'App\\Rebet',
+                    '@root'       => 'TestApp\\Rebet',
                     '@controller' => '@root\\Controller',
                     '@model'      => '@root\\Model',
                     '@C'          => '@controller',
@@ -24,22 +24,22 @@ class NamespacesTest extends RebetTestCase
 
     public function test_setAlias()
     {
-        Namespaces::setAlias('@new', 'App\\New\\Test');
-        $this->assertSame('App\\New\\Test\\HelloWorld', Namespaces::resolve('@new\\HelloWorld'));
+        Namespaces::setAlias('@new', 'TestApp\\New\\Test');
+        $this->assertSame('TestApp\\New\\Test\\HelloWorld', Namespaces::resolve('@new\\HelloWorld'));
     }
 
     public function test_resolve()
     {
         $this->assertSame(null, Namespaces::resolve(null));
         $this->assertSame('HelloWorld', Namespaces::resolve('HelloWorld'));
-        $this->assertSame('App\\Rebet\\HelloWorld', Namespaces::resolve('App\\Rebet\\HelloWorld'));
-        $this->assertSame('App\\Rebet\\HelloWorld', Namespaces::resolve('\\App\\Rebet\\HelloWorld'));
-        $this->assertSame('App\\Rebet\\HelloWorld', Namespaces::resolve('@root\\HelloWorld'));
-        $this->assertSame('App\\Rebet\\Controller\\HelloWorld', Namespaces::resolve('@controller\\HelloWorld'));
-        $this->assertSame('App\\Rebet\\Model\\HelloWorld', Namespaces::resolve('@model\\HelloWorld'));
-        $this->assertSame('App\\Rebet\\Controller\\HelloWorld', Namespaces::resolve('@C\\HelloWorld'));
+        $this->assertSame('TestApp\\Rebet\\HelloWorld', Namespaces::resolve('TestApp\\Rebet\\HelloWorld'));
+        $this->assertSame('TestApp\\Rebet\\HelloWorld', Namespaces::resolve('\\TestApp\\Rebet\\HelloWorld'));
+        $this->assertSame('TestApp\\Rebet\\HelloWorld', Namespaces::resolve('@root\\HelloWorld'));
+        $this->assertSame('TestApp\\Rebet\\Controller\\HelloWorld', Namespaces::resolve('@controller\\HelloWorld'));
+        $this->assertSame('TestApp\\Rebet\\Model\\HelloWorld', Namespaces::resolve('@model\\HelloWorld'));
+        $this->assertSame('TestApp\\Rebet\\Controller\\HelloWorld', Namespaces::resolve('@C\\HelloWorld'));
 
-        Namespaces::setAlias('@new', '\\App\\New');
-        $this->assertSame('App\\New\\HelloWorld', Namespaces::resolve('@new\\HelloWorld'));
+        Namespaces::setAlias('@new', '\\TestApp\\New');
+        $this->assertSame('TestApp\\New\\HelloWorld', Namespaces::resolve('@new\\HelloWorld'));
     }
 }

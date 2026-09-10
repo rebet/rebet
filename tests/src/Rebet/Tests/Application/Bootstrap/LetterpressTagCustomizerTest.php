@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Tests\Application\Bootstrap;
 
-use App\Model\User;
 use function PHPUnit\Framework\assertSame;
-
 use PHPUnit\Framework\Attributes\DataProvider;
+
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
 use Rebet\Application\Http\WebKernel;
 use Rebet\Tests\RebetTestCase;
-
 use Rebet\Tools\Template\Letterpress;
+
+use TestApp\Model\User;
 
 class LetterpressTagCustomizerTest extends RebetTestCase
 {

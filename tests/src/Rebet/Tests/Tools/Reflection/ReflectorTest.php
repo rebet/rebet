@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Tests\Tools\Reflection;
 
-use App\Enum\Gender;
-use App\Stub\JsonSerializableStub;
-use App\Stub\ToArrayStub;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Configurable;
@@ -12,6 +9,9 @@ use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Tinker\Tinker;
+use TestApp\Enum\Gender;
+use TestApp\Stub\JsonSerializableStub;
+use TestApp\Stub\ToArrayStub;
 
 class ReflectorTest extends RebetTestCase
 {
@@ -758,7 +758,7 @@ class ReflectorTest extends RebetTestCase
     public function test_toArgs_errorConvert()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Parameter gender(=3) can not convert to App\Enum\Gender.");
+        $this->expectExceptionMessage("Parameter gender(=3) can not convert to TestApp\Enum\Gender.");
 
         $function = function (Gender $gender) { return; };
         $rf       = new \ReflectionFunction($function);

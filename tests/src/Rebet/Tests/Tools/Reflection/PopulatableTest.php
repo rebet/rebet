@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Tools\Reflection;
 
-use App\Model\Bank;
-use App\Stub\Address;
-use App\Stub\Customer;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\ValidData;
+use TestApp\Model\Bank;
+use TestApp\Stub\Address;
+use TestApp\Stub\Customer;
 
 class PopulatableTest extends RebetTestCase
 {

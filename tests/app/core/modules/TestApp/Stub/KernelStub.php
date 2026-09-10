@@ -1,5 +1,5 @@
 <?php
-namespace App\Stub;
+namespace TestApp\Stub;
 
 use Rebet\Application\ExceptionHandler;
 use Rebet\Application\Kernel;

@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Database\Attribute;
 
-use App\Stub\AttributedStub;
 use Rebet\Attribute\AttributedClass;
 use Rebet\Database\Attribute\Unmap;
 use Rebet\Tests\RebetTestCase;
+use TestApp\Stub\AttributedStub;
 
 class UnmapTest extends RebetTestCase
 {

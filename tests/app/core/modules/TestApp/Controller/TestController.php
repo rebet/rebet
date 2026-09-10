@@ -1,7 +1,6 @@
 <?php
-namespace App\Controller;
+namespace TestApp\Controller;
 
-use App\Enum\Gender;
 use Rebet\Auth\Attribute\Guard;
 use Rebet\Auth\Attribute\Role;
 use Rebet\Http\Request;
@@ -12,6 +11,7 @@ use Rebet\Routing\Attribute\Method;
 use Rebet\Routing\Attribute\NotRouting;
 use Rebet\Routing\Attribute\Where;
 use Rebet\Routing\Controller;
+use TestApp\Enum\Gender;
 
 #[Channel("web")]
 #[Where(user_id: "/^[0-9]+$/")]

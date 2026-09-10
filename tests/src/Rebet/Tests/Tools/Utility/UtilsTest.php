@@ -1,9 +1,9 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use App\Enum\Gender;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Utils;
+use TestApp\Enum\Gender;
 
 class UtilsTest extends RebetTestCase
 {

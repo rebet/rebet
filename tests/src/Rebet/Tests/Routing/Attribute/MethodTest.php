@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Routing\Attribute;
 
-use App\Stub\AttributedStub;
 use Rebet\Attribute\AttributedClass;
 use Rebet\Routing\Attribute\Method;
 use Rebet\Tests\RebetTestCase;
+use TestApp\Stub\AttributedStub;
 
 class MethodTest extends RebetTestCase
 {

@@ -1,7 +1,7 @@
 <?php
 
-use App\Enum\Gender;
 use Rebet\Validation\Kind;
+use TestApp\Enum\Gender;
 
 return [
     Gender::class => [

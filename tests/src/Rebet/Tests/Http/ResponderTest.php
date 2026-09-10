@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Http;
 
-use App\Enum\Gender;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Filesystem\Exception\FileNotFoundException;
@@ -16,6 +15,7 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\View\Engine\Blade\Blade;
 use Rebet\View\View;
+use TestApp\Enum\Gender;
 
 class ResponderTest extends RebetTestCase
 {

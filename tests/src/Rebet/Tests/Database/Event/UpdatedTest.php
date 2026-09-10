@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Database\Event;
 
-use App\Model\User;
 use Rebet\Database\Dao;
 use Rebet\Database\Event\Saved;
 use Rebet\Database\Event\Updated;
 use Rebet\Tests\RebetDatabaseTestCase;
+use TestApp\Model\User;
 
 class UpdatedTest extends RebetDatabaseTestCase
 {

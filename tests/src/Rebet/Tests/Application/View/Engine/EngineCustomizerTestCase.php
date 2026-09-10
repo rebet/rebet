@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Application\View\Engine;
 
-use App\Model\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Database\Pagination\Paginator;
@@ -10,6 +9,7 @@ use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\View\Engine\Engine;
 use Rebet\View\EofLineFeed;
+use TestApp\Model\User;
 
 abstract class EngineCustomizerTestCase extends RebetTestCase
 {

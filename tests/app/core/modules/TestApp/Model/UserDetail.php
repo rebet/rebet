@@ -1,7 +1,6 @@
 <?php
-namespace App\Model;
+namespace TestApp\Model;
 
-use App\Enum\Gender;
 use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\Database;
 use Rebet\Database\DataModel\Presentation;
@@ -10,6 +9,7 @@ use Rebet\Database\Ransack\Ransack;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Utils;
+use TestApp\Enum\Gender;
 
 class UserDetail extends Presentation
 {

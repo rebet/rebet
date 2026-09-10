@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Database;
 
-use App\Enum\Gender;
-use App\Model\User;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
@@ -13,6 +11,8 @@ use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Arrays;
+use TestApp\Enum\Gender;
+use TestApp\Model\User;
 
 class StatementTest extends RebetDatabaseTestCase
 {

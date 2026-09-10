@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Routing\Route;
 
-use App\Controller\TestController;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Route\ControllerRoute;
 use Rebet\Tests\RebetTestCase;
+use TestApp\Controller\TestController;
 
 class ControllerRouteTest extends RebetTestCase
 {

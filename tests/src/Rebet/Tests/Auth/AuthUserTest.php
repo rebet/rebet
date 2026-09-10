@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests\Auth;
 
-use App\Model\Bank;
-use App\Model\User;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\ArrayProvider;
@@ -11,6 +9,8 @@ use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
+use TestApp\Model\Bank;
+use TestApp\Model\User;
 
 class AuthUserTest extends RebetTestCase
 {

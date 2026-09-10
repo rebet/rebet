@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use App\Enum\Gender;
-use App\Validation\BarValidation;
-use App\Validation\FooValidation;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
@@ -16,6 +13,9 @@ use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
 use Rebet\Validation\Validator;
 use Rebet\Validation\ValidData;
+use TestApp\Enum\Gender;
+use TestApp\Validation\BarValidation;
+use TestApp\Validation\FooValidation;
 
 class ValidatorTest extends RebetTestCase
 {

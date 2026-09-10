@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Auth\Attribute;
 
-use App\Stub\AttributedStub;
 use Rebet\Attribute\AttributedClass;
 use Rebet\Auth\Attribute\Role;
 use Rebet\Tests\RebetTestCase;
+use TestApp\Stub\AttributedStub;
 
 class RoleTest extends RebetTestCase
 {

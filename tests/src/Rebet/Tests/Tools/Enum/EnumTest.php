@@ -1,12 +1,12 @@
 <?php
 namespace Rebet\Tests\Tools\Enum;
 
-use App\Enum\Gender;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Translation\Translator;
+use TestApp\Enum\Gender;
 
 class EnumTest extends RebetTestCase
 {
@@ -72,7 +72,7 @@ class EnumTest extends RebetTestCase
     public function test_callStatic_undefine()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Invalid enum const. App\Enum\Gender::INVALID is not defined.");
+        $this->expectExceptionMessage("Invalid enum const. TestApp\Enum\Gender::INVALID is not defined.");
 
         $invalid = Gender::INVALID();
     }
@@ -183,7 +183,7 @@ class EnumTest extends RebetTestCase
     public function test_maps_invalid()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Invalid property access. Property App\Enum\Gender->invalid is not exists.");
+        $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
 
         Gender::maps('invalid');
     }
@@ -208,7 +208,7 @@ class EnumTest extends RebetTestCase
     public function test_fieldOf_invalid()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Invalid property access. Property App\Enum\Gender->invalid is not exists.");
+        $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
 
         $this->assertNull(Gender::fieldOf('invalid', 1));
     }
@@ -313,7 +313,7 @@ class EnumTest extends RebetTestCase
     public function test_listOf_invalid()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Invalid property access. Property App\Enum\Gender->invalid is not exists.");
+        $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
 
         $this->assertNull(Gender::listOf('invalid'));
     }
@@ -490,7 +490,7 @@ class EnumTest extends RebetTestCase
     public function test_nextOf_invalid()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("Invalid property access. Property App\Enum\Gender->invalid is not exists.");
+        $this->expectExceptionMessage("Invalid property access. Property TestApp\Enum\Gender->invalid is not exists.");
 
         $this->assertNull(Gender::listOf('invalid'));
     }

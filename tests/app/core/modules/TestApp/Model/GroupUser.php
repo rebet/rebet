@@ -1,12 +1,12 @@
 <?php
-namespace App\Model;
+namespace TestApp\Model;
 
-use App\Enum\GroupPosition;
 use Rebet\Database\Attribute\Defaults;
 use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
+use TestApp\Enum\GroupPosition;
 
 class GroupUser extends Entity
 {

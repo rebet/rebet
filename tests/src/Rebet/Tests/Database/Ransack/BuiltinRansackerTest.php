@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Database\Ransack;
 
-use App\Enum\Gender;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Database;
 use Rebet\Database\Ransack\BuiltinRansacker;
 use Rebet\Tests\RebetDatabaseTestCase;
+use TestApp\Enum\Gender;
 
 class BuiltinRansackerTest extends RebetDatabaseTestCase
 {

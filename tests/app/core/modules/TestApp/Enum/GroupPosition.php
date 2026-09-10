@@ -1,5 +1,5 @@
 <?php
-namespace App\Enum;
+namespace TestApp\Enum;
 
 use Rebet\Tools\Enum\Enum;
 

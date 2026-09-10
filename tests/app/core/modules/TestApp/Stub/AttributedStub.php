@@ -1,5 +1,5 @@
 <?php
-namespace App\Stub;
+namespace TestApp\Stub;
 
 use Rebet\Auth\Attribute\Guard;
 use Rebet\Auth\Attribute\Role;

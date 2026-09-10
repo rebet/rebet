@@ -1,13 +1,13 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use App\Enum\Gender;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Enum\Enum;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Callbacks;
+use TestApp\Enum\Gender;
 
 class CallbacksTest extends RebetTestCase
 {
@@ -231,7 +231,7 @@ class CallbacksTest extends RebetTestCase
             ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(array &$a, string &...$s)', function (array &$a, string &...$s) { }, true ],
             ['CallbacksTest::{closure}(&$a, &...$s)'                                       , function (array &$a, string &...$s) { }, false],
 
-            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(App\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
+            ['Rebet\Tests\Tools\Utility\CallbacksTest::{closure}(TestApp\Enum\Gender $g) : Rebet\Tools\Enum\Enum', function (Gender $g) : Enum { return $g; } , true ],
             ['CallbacksTest::{closure}($g)'                                                                               , function (Gender $g) : Enum { return $g; } , false],
         ];
     }

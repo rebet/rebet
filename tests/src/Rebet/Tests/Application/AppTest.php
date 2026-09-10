@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Application;
 
-use App\AppStructure;
-use App\Stub\KernelStub;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
+use TestApp\AppStructure;
+use TestApp\Stub\KernelStub;
 
 class AppTest extends RebetTestCase
 {

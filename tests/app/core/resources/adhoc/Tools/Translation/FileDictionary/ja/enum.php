@@ -1,6 +1,6 @@
 <?php
 
-use App\Enum\Gender;
+use TestApp\Enum\Gender;
 
 return [
     Gender::class => [

@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Database\Compiler;
 
-use App\Enum\Gender;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
@@ -11,6 +10,7 @@ use Rebet\Database\Pagination\Pager;
 use Rebet\Database\PdoParameter;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\DateTime;
+use TestApp\Enum\Gender;
 
 class BuiltinCompilerTest extends RebetDatabaseTestCase
 {

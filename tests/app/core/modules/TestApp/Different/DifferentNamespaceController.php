@@ -1,5 +1,5 @@
 <?php
-namespace App\Different;
+namespace TestApp\Different;
 
 use Rebet\Routing\Attribute\Channel;
 use Rebet\Routing\Controller;

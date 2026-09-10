@@ -13,7 +13,7 @@ return [
 
     Namespaces::class => [
         'aliases' => [
-            '@app'        => 'App',
+            '@app'        => 'TestApp',
             '@controller' => '@app\\Controller',
             '@model'      => '@app\\Model',
             '@stub'       => '@app\\Stub',

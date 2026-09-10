@@ -1,15 +1,15 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use App\Enum\Gender;
-use App\Stub\CountableStub;
-use App\Stub\IteratorAggregateStub;
-use App\Stub\JsonSerializableStub;
-use App\Stub\ToArrayStub;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
 use Rebet\Tools\Utility\OverrideOption;
+use TestApp\Enum\Gender;
+use TestApp\Stub\CountableStub;
+use TestApp\Stub\IteratorAggregateStub;
+use TestApp\Stub\JsonSerializableStub;
+use TestApp\Stub\ToArrayStub;
 
 class ArraysTest extends RebetTestCase
 {

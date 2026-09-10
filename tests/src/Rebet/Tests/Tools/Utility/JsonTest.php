@@ -1,14 +1,14 @@
 <?php
 namespace Rebet\Tests\Tools\Utility;
 
-use App\Enum\Gender;
-use App\Stub\IteratorAggregateStub;
-use App\Stub\JsonSerializableStub;
-use App\Stub\ToArrayStub;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Utility\Json;
+use TestApp\Enum\Gender;
+use TestApp\Stub\IteratorAggregateStub;
+use TestApp\Stub\JsonSerializableStub;
+use TestApp\Stub\ToArrayStub;
 
 class JsonTest extends RebetTestCase
 {

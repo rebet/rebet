@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console;
+namespace TestApp\Console;
 
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;

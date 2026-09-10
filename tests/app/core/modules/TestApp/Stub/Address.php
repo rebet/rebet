@@ -1,5 +1,5 @@
 <?php
-namespace App\Stub;
+namespace TestApp\Stub;
 
 use Rebet\Tools\Reflection\Populatable;
 

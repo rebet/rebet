@@ -1,7 +1,6 @@
 <?php
 namespace Rebet\Tests\Database\Driver;
 
-use App\Enum\Gender;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Database\Database;
@@ -12,6 +11,7 @@ use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\DateTime\DateTimeZone;
 use Rebet\Tools\Math\Decimal;
+use TestApp\Enum\Gender;
 
 class DriverTest extends RebetDatabaseTestCase
 {

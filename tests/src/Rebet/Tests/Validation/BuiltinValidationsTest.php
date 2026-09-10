@@ -1,9 +1,6 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use App\AppStructure;
-use App\Enum\Gender;
-use App\Http\AppWebKernel;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
@@ -12,6 +9,9 @@ use Rebet\Tools\DateTime\DateTime;
 use Rebet\Validation\BuiltinValidations;
 use Rebet\Validation\Context;
 use Rebet\Validation\Validator;
+use TestApp\AppStructure;
+use TestApp\Enum\Gender;
+use TestApp\Http\AppWebKernel;
 
 class BuiltinValidationsTest extends RebetTestCase
 {

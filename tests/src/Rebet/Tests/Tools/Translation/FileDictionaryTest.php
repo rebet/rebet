@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Tools\Translation;
 
-use App\Enum\Gender;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Translation\FileDictionary;
+use TestApp\Enum\Gender;
 
 class FileDictionaryTest extends RebetTestCase
 {

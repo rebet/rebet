@@ -1,11 +1,11 @@
 <?php
 namespace Rebet\Tests\Validation;
 
-use App\Enum\Gender;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
 use Rebet\Validation\Valid;
+use TestApp\Enum\Gender;
 
 class ContextTest extends RebetTestCase
 {

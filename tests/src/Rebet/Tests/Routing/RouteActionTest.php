@@ -83,7 +83,7 @@ class RouteActionTest extends RebetTestCase
     public function test_invoke_withParam_error()
     {
         $this->expectException(RouteNotFoundException::class);
-        $this->expectExceptionMessage("Route: App\Controller\TestController::withParam not found. Routing parameter 'id' is requierd.");
+        $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withParam not found. Routing parameter 'id' is requierd.");
 
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/with-param/123');
         $request->attributes->set('id', null);
@@ -93,7 +93,7 @@ class RouteActionTest extends RebetTestCase
     public function test_invoke_withParam_convertError()
     {
         $this->expectException(RouteNotFoundException::class);
-        $this->expectExceptionMessage("Route: App\Controller\TestController::withConvertEnumParam not found. Routing parameter gender(=3) can not convert to App\Enum\Gender.");
+        $this->expectExceptionMessage("Route: TestApp\Controller\TestController::withConvertEnumParam not found. Routing parameter gender(=3) can not convert to TestApp\Enum\Gender.");
 
         [$request, $route, $route_action, $controller] = $this->createRouteActionBasedControllerMock('/test/with-convert-enum-param/3');
 

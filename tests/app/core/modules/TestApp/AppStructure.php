@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace TestApp;
 
 use Rebet\Application\Structure;
 

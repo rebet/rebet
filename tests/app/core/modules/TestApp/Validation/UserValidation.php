@@ -1,11 +1,11 @@
 <?php
-namespace App\Validation;
+namespace TestApp\Validation;
 
-use App\Enum\Gender;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
 use Rebet\Validation\Valid;
+use TestApp\Enum\Gender;
 
 class UserValidation extends Rule
 {

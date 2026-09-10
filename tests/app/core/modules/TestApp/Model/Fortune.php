@@ -1,12 +1,12 @@
 <?php
-namespace App\Model;
+namespace TestApp\Model;
 
-use App\Enum\Gender;
 use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Reflection\Reflector;
+use TestApp\Enum\Gender;
 
 class Fortune extends Entity
 {

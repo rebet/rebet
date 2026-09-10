@@ -1,5 +1,5 @@
 <?php
-namespace App\Validation;
+namespace TestApp\Validation;
 
 use Rebet\Validation\Rule;
 use Rebet\Validation\Valid;

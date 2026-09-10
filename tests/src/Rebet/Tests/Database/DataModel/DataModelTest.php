@@ -1,20 +1,20 @@
 <?php
 namespace Rebet\Tests\Database\DataModel;
 
-use App\Enum\Gender;
-use App\Model\Article;
-use App\Model\Bank;
-use App\Model\Fortune;
-use App\Model\Group;
-use App\Model\GroupUser;
-use App\Model\User;
-use App\Model\UserWithAnnot;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\ResultSet;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
+use TestApp\Enum\Gender;
+use TestApp\Model\Article;
+use TestApp\Model\Bank;
+use TestApp\Model\Fortune;
+use TestApp\Model\Group;
+use TestApp\Model\GroupUser;
+use TestApp\Model\User;
+use TestApp\Model\UserWithAnnot;
 
 class DataModelTest extends RebetDatabaseTestCase
 {

@@ -1,8 +1,6 @@
 <?php
 namespace Rebet\Tests;
 
-use App\AppStructure;
-use App\Http\AppWebKernel;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
@@ -16,6 +14,8 @@ use Rebet\Routing\Router;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Testable\TestHelper;
 use Rebet\Tools\Utility\Securities;
+use TestApp\AppStructure;
+use TestApp\Http\AppWebKernel;
 
 /**
  * RebetTestCase Class

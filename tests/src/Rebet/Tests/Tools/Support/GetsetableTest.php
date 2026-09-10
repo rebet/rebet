@@ -1,8 +1,8 @@
 <?php
 namespace Rebet\Tests\Tools\Support;
 
-use App\Stub\GetsetableStub;
 use Rebet\Tests\RebetTestCase;
+use TestApp\Stub\GetsetableStub;
 
 class GetsetableTest extends RebetTestCase
 {

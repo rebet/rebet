@@ -1,5 +1,5 @@
 <?php
-namespace App\Stub;
+namespace TestApp\Stub;
 
 class IteratorAggregateStub implements \IteratorAggregate
 {

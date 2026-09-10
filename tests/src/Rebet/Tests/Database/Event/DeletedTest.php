@@ -1,10 +1,10 @@
 <?php
 namespace Rebet\Tests\Database\Event;
 
-use App\Model\User;
 use Rebet\Database\Dao;
 use Rebet\Database\Event\Deleted;
 use Rebet\Tests\RebetDatabaseTestCase;
+use TestApp\Model\User;
 
 class DeletedTest extends RebetDatabaseTestCase
 {

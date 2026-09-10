@@ -1,5 +1,5 @@
 <?php
-namespace App\Model;
+namespace TestApp\Model;
 
 use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\DataModel\Entity;
