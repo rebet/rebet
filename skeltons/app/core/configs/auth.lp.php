@@ -1,7 +1,7 @@
 <?php
 
 //{%-- if $use_auth && $use_db -%}
-use App\Model\Entity\User;
+use App\Model\User;
 //{%-- endif -%}
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;

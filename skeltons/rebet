@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+//-------------------------------------------------
+// Register The Auto Loader
+//-------------------------------------------------
+require __DIR__.'/app/vendor/autoload.php';
+
+//-------------------------------------------------
+// Create kernel and initilizing application
+//-------------------------------------------------
+$kernel = Rebet\Application\App::init(new App\Console\AppCliKernel(new App\AppStructure(__DIR__.'/app/')));
+
+//-------------------------------------------------
+// Invoke command and handle action
+//-------------------------------------------------
+$kernel->handle();
+
+//-------------------------------------------------
+// Terminate the application
+//-------------------------------------------------
+$kernel->terminate();

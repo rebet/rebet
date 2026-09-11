@@ -1,60 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Rebet\Application;
+namespace App;
 
-use Rebet\Tools\Utility\Path;
+use Override;
+use Rebet\Application\Structure;
 
 /**
- * Application Structure Class
+ * Application Structure Class For {! $code_name !} Application
  *
  * Define application structure settings.
- *
- * @package   Rebet
- * @author    github.com/rain-noise
- * @copyright Copyright (c) 2018 github.com/rain-noise
- * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
+ * NOTE: If you want to change project directories structure, you can do it by override methods of this class.
  */
-class Structure
+class AppStructure extends Structure
 {
-    /**
-     * The application root directory.
-     *
-     * @var string
-     */
-    protected $root;
-
-    /**
-     * Create application structure settings.
-     *
-     * @param string $root
-     */
-    public function __construct(string $root)
-    {
-        $this->root = Path::normalize($root);
-    }
-
-    /**
-     * Get application root path
-     *
-     * @return string
-     */
-    public function root() : string
-    {
-        return $this->root;
-    }
-
-    /**
-     * Convert application root relative path to absolute path.
-     *
-     * @param string|null $relative_path
-     * @return string
-     */
-    public function path(string|null $relative_path) : string
-    {
-        return Path::normalize("{$this->root()}/{$relative_path}");
-    }
-
     /**
      * Get environment file path
      * Defaultly this method return "{Structure::root()}/core/{$relative_path}", you can override this method if you want.
@@ -62,9 +21,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function env(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/core')}/{$relative_path}");
+        return parent::env($relative_path);
     }
 
     /**
@@ -74,9 +34,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function configs(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/core/configs')}/{$relative_path}");
+        return parent::configs($relative_path);
     }
 
     /**
@@ -86,9 +47,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function resources(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/core/resources')}/{$relative_path}");
+        return parent::resources($relative_path);
     }
 
     /**
@@ -98,9 +60,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function routes(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/core/routes')}/{$relative_path}");
+        return parent::routes($relative_path);
     }
 
     /**
@@ -110,9 +73,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function views(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/core/views')}/{$relative_path}");
+        return parent::views($relative_path);
     }
 
     /**
@@ -122,9 +86,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function public(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/public')}/{$relative_path}");
+        return parent::public($relative_path);
     }
 
     /**
@@ -134,9 +99,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function cache(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/var/cache')}/{$relative_path}");
+        return parent::cache($relative_path);
     }
 
     /**
@@ -146,9 +112,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function logs(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/var/logs')}/{$relative_path}");
+        return parent::logs($relative_path);
     }
 
     /**
@@ -158,9 +125,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function storage(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->path('/var/storage')}/{$relative_path}");
+        return parent::storage($relative_path);
     }
 
     /**
@@ -170,9 +138,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function privateStorage(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->storage('/private')}/{$relative_path}");
+        return parent::privateStorage($relative_path);
     }
 
     /**
@@ -182,9 +151,10 @@ class Structure
      * @param string|null $relative_path (default: null)
      * @return string
      */
+    #[Override]
     public function publicStorage(string|null $relative_path = null) : string
     {
-        return Path::normalize("{$this->storage('/public')}/{$relative_path}");
+        return parent::publicStorage($relative_path);
     }
 
     /**
@@ -193,8 +163,9 @@ class Structure
      *
      * @return string
      */
+    #[Override]
     public function storageUrl() : string
     {
-        return "/storage";
+        return parent::storageUrl();
     }
 }

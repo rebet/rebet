@@ -50,6 +50,7 @@ return (new PhpCsFixer\Config())
                 __DIR__.'/src',
                 __DIR__.'/tests/src',
                 __DIR__.'/tests/app',
+                __DIR__.'/skeltons/app',
             ])
     )
 ;

@@ -4,3 +4,4 @@ parameters:
         - ./vendor/autoload.php
     paths:
         - ./src
+        - ./skeltons/app
