@@ -15,7 +15,7 @@ class HashHmacCommandTest extends RebetConsoleTestCase
         return [
             ['foobar'],
             ['foobar', ['--secret-key' => 'secret']],
-            ['foobar', ['--algorithm'  => 'sha512']],
+            ['foobar', ['--algorithm' => 'sha512']],
             ['foobar', ['--secret-key' => 'secret', '--algorithm' => 'sha512']],
         ];
     }

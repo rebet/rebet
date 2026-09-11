@@ -34,6 +34,7 @@
         "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
         "illuminate/view": "^13.21",
         "league/flysystem": "^3.35",
         "league/flysystem-aws-s3-v3": "^3.29",
@@ -41,8 +42,10 @@
         "league/flysystem-sftp-v3": "^3.0",
         "mikey179/vfsstream": "^1.6",
         "mongodb/mongodb": "^2.3",
+        "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^11.5",
         "predis/predis": "^2.3",
+        "psy/psysh": "^0.12.24",
         "twig/twig": "^3.21"
     },
     "autoload": {

@@ -14,10 +14,10 @@ class HashTextCommandTest extends RebetConsoleTestCase
     {
         return [
             ['foobar'],
-            ['foobar', ['--salt'       => 'salt', '--pepper' => 'pepper']],
-            ['foobar', ['--algorithm'  => 'SHA512']],
+            ['foobar', ['--salt' => 'salt', '--pepper' => 'pepper']],
+            ['foobar', ['--algorithm' => 'SHA512']],
             ['foobar', ['--stretching' => '3']],
-            ['foobar', ['--salt'       => 'salt', '--pepper' => 'pepper', '--algorithm' => 'SHA512', '--stretching' => '3']],
+            ['foobar', ['--salt' => 'salt', '--pepper' => 'pepper', '--algorithm' => 'SHA512', '--stretching' => '3']],
         ];
     }
 

@@ -17,7 +17,7 @@ alias la='ls -A'
 # ---------------------------------------------------------
 # Add Composer global vendor bin directory to PATH
 # ---------------------------------------------------------
-export PATH=$PATH:~/.composer/vendor/bin
+export PATH=$PATH:/workspace/vendor/bin
 
 # ---------------------------------------------------------
 # php-cs-fixer

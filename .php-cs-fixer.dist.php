@@ -1,5 +1,5 @@
 <?php
-// For php-cs-fixer 3.95.17
+// For php-cs-fixer 3.95.25
 // https://github.com/PHP-CS-Fixer/PHP-CS-Fixer#usage
 // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.95
 return (new PhpCsFixer\Config())

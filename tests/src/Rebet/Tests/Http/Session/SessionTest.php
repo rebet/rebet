@@ -341,9 +341,9 @@ class SessionTest extends RebetTestCase
         $this->assertSame(
             [
                 [['*'], ['a' => 'A']],
-                [['*'], ['b'                            => 'B']],
-                [['/user/edit'], ['b'                   => 'b', 'c' => 'c']],
-                [['/user/*'], ['c'                      => 'C']],
+                [['*'], ['b' => 'B']],
+                [['/user/edit'], ['b' => 'b', 'c' => 'c']],
+                [['/user/*'], ['c' => 'C']],
                 [['/blog/register', '/blog/copy'], ['d' => 'D']],
             ],
             $session->flash()->peek('_inherit_input')
