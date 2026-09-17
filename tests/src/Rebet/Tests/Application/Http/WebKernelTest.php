@@ -94,7 +94,9 @@ class WebKernelTest extends RebetTestCase
         $content = ob_get_clean();
         $this->assertSame(0, $code);
         $this->assertStringContainsString('<span class="status">500</span>', $content);
-        $this->assertStringContainsString('Kernel fallback test', $content);
+        // WebExceptionHandler no longer forwards the raw exception message as the view detail for
+        // unhandled/default exceptions (avoids leaking internal exception messages to the end user).
+        $this->assertStringNotContainsString('Kernel fallback test', $content);
     }
 
     public function test_report()

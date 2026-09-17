@@ -270,14 +270,15 @@ abstract class Command extends SymfonyCommand
     protected function viaOption(string $question, string|null $via_option = null, array $availables = []) : string|null
     {
         if ($via_option) {
-            if ($answer = trim(Strings::startsWith($via_option, '@') ? Strings::ltrim($via_option, '@') : $this->option($via_option))) {
+            $value = Strings::startsWith($via_option, '@') ? Strings::ltrim($via_option, '@') : $this->option($via_option);
+            if ($value !== null && ($answer = trim((string) $value))) {
                 if (!empty($availables) && !in_array($answer, $availables, true)) {
                     return null;
                 }
                 $this->write($question);
                 $this->info("{$answer} (via option)");
                 return $answer;
-            };
+            }
         }
         return null;
     }

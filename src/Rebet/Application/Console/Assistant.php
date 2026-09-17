@@ -9,7 +9,6 @@ use Rebet\Application\Console\Command\EnvCommand;
 use Rebet\Application\Console\Command\Hash\HashHmacCommand;
 use Rebet\Application\Console\Command\Hash\HashPasswordCommand;
 use Rebet\Application\Console\Command\Hash\HashTextCommand;
-use Rebet\Application\Console\Command\InitCommand;
 use Rebet\Console\Application;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
@@ -34,13 +33,12 @@ class Assistant extends Application
     {
         return [
             'commands' => [
-                InitCommand::class,
-                EnvCommand::class,
-                HashPasswordCommand::class,
-                HashTextCommand::class,
-                HashHmacCommand::class,
                 CryptoEncryptCommand::class,
                 CryptoDecryptCommand::class,
+                EnvCommand::class,
+                HashHmacCommand::class,
+                HashPasswordCommand::class,
+                HashTextCommand::class,
             ],
         ];
     }

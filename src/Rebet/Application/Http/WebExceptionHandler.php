@@ -143,19 +143,18 @@ class WebExceptionHandler extends ExceptionHandler
                 $response = $e->redirect();
                 break;
             case $e instanceof HttpException:
-                $reason_phrase = HttpStatus::reasonPhraseOf($e->getStatus());
-                $response      = $this->makeView($e->getStatus(), $reason_phrase === $e->getTitle() ? null : $e->getTitle(), $e->getDetail(), $request, $e);
+                $response = $this->makeView($e->getStatus(), $e->getTitle(), $e->getDetail(), $request, $e);
                 break;
             case $e instanceof AuthenticateException:
-                $response = $this->makeView(403, null, $e->getMessage(), $request, $e);
+                $response = $this->makeView(403, null, null, $request, $e);
                 break;
             case $e instanceof RouteNotFoundException: // Do not break.
             case $e instanceof TokenMismatchException: // Do not break.
             case $e instanceof FileNotFoundException:
-                $response = $this->makeView(404, null, $e->getMessage(), $request, $e);
+                $response = $this->makeView(404, null, null, $request, $e);
                 break;
             default:
-                $response = $this->makeView(500, null, $e->getMessage(), $request, $e);
+                $response = $this->makeView(500, null, null, $request, $e);
                 break;
         }
         $this->report($request, $response, $e);
@@ -177,15 +176,15 @@ class WebExceptionHandler extends ExceptionHandler
      */
     protected function makeView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e) : Response
     {
-        $title  = Translator::get("message.http.{$status}.title") ?? $title ;
-        $detail = Translator::get("message.http.{$status}.detail") ?? $detail ;
+        $title  = $title ?? Translator::get("message.http.{$status}.title") ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
+        $detail = $detail ?? Translator::get("message.http.{$status}.detail");
 
         if (View::isEnabled()) {
             $view = View::of("/errors/{$status}");
             if ($view->exists()) {
                 return Responder::toResponse($view->with([
                     'status'    => $status,
-                    'title'     => $title ?? HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error',
+                    'title'     => $title,
                     'detail'    => $detail,
                     'exception' => $e
                 ]), $status);
@@ -210,12 +209,6 @@ class WebExceptionHandler extends ExceptionHandler
      */
     protected function makeDefaultView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e) : Response
     {
-        $custom_title = true;
-        if ($title === null) {
-            $title        = HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error';
-            $custom_title = false;
-        }
-
         if (View::isEnabled()) {
             $view = View::of("/errors/default");
             if ($view->exists()) {
@@ -228,9 +221,10 @@ class WebExceptionHandler extends ExceptionHandler
             }
         }
 
-        $home  = $request->getRoutePrefix().'/' ;
-        $title = Tinker::with($title, true)->escape()->nl2br();
-        if (!$custom_title) {
+        $home            = $request->getRoutePrefix().'/' ;
+        $is_reason_title = $title === (HttpStatus::reasonPhraseOf($status) ?? 'Unknown Error');
+        $title           = Tinker::with($title, true)->escape()->nl2br();
+        if ($is_reason_title) {
             $title = $title->stringf('<span class="status">'.$status.'</span>%s');
         }
         $detail = Tinker::with($detail, true)->escape()->nl2br()->stringf('<div class="detail">%s</div>')->default('');

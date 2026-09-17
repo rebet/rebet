@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Rebet\Application\Console\Command;
+namespace Rebet\Application\Console\Command\Project;
 
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
@@ -18,9 +18,9 @@ use Symfony\Component\Console\Input\InputOption;
  * @copyright Copyright (c) 2018 github.com/rain-noise
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  */
-class InitCommand extends Command
+class ProjectInitCommand extends Command
 {
-    const NAME        = 'init';
+    const NAME        = 'project:init';
     const DESCRIPTION = 'Initialize a new Rebet application';
     const OPTIONS     = [
         ['domain'        , 'd'  , InputOption::VALUE_OPTIONAL, 'Application domain for local development.'],
@@ -46,10 +46,17 @@ class InitCommand extends Command
         // @todo https://techblog.istyle.co.jp/archives/97
         // @todo https://github.com/laravel/framework/blob/7.x/src/Illuminate/Foundation/Console/EnvironmentCommand.php
 
+        $configs['cwd'] = $cwd = Path::normalize(getcwd());
+
+        $app_dir = Path::normalize("{$cwd}/app");
+        if (is_dir($app_dir)) {
+            $this->error("This directory seems to already be initialized (`{$app_dir}` already exists).");
+            $this->error('`'.static::NAME.'` is only for setting up a brand-new Rebet application, so nothing was done.');
+            return 1;
+        }
+
         $total_step = 7;
         $step       = 0;
-
-        $configs['cwd'] = $cwd = Path::normalize(getcwd());
 
         $this->comment('===========================================');
         $this->comment(' Welcome to Rebet Application Initializing ');

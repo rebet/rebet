@@ -176,7 +176,9 @@ class WebExceptionHandlerTest extends RebetTestCase
 
         $response = $handler->handle($request, new  AuthenticateException('Authentication failed'));
         $this->assertStringContainsString('<span class="status">403</span>Forbidden', $response->getContent());
-        $this->assertStringContainsString('Authentication failed', $response->getContent());
+        // AuthenticateException's own message is no longer forwarded as the view detail (avoids
+        // leaking internal exception messages to the end user); it only shows a translated message.
+        $this->assertStringNotContainsString('Authentication failed', $response->getContent());
         $driver = Log::channel()->driver();
         $this->assertTrue($driver->hasDebugRecords());
         $log = $driver->formatted();
@@ -185,7 +187,8 @@ class WebExceptionHandlerTest extends RebetTestCase
 
         $response = $handler->handle($request, new RouteNotFoundException('Route not found'));
         $this->assertStringContainsString('<span class="status">404</span>Not Found', $response->getContent());
-        $this->assertStringContainsString('Route not found', $response->getContent());
+        // Same as above: RouteNotFoundException's own message is no longer forwarded as the view detail.
+        $this->assertStringNotContainsString('Route not found', $response->getContent());
         $driver = Log::channel()->driver();
         $this->assertTrue($driver->hasDebugRecords());
         $log = $driver->formatted();
@@ -194,7 +197,9 @@ class WebExceptionHandlerTest extends RebetTestCase
 
         $response = $handler->handle($request, new ConfigNotDefineException('unit test'));
         $this->assertStringContainsString('<span class="status">500</span>Internal Server Error', $response->getContent());
-        $this->assertStringContainsString('unit test', $response->getContent());
+        // Same as above: for unhandled/default exceptions, the raw exception message is no longer
+        // forwarded as the view detail.
+        $this->assertStringNotContainsString('unit test', $response->getContent());
         $driver = Log::channel()->driver();
         $this->assertTrue($driver->hasErrorRecords());
         $log = $driver->formatted();

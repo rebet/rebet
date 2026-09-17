@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+use Rebet\Application\App;
+use Rebet\Application\Bootstrap\HandleExceptions;
+use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
+use Rebet\Application\Console\Assistant;
+use Rebet\Application\Console\CliKernel;
+use Rebet\Application\Console\Command\Project\ProjectInitCommand;
+use Rebet\Application\NullStructure;
+use Rebet\Tools\Config\Config;
+
+//-------------------------------------------------
+// Register The Auto Loader
+//-------------------------------------------------
+require __DIR__.'/../autoload.php';
+
+//-------------------------------------------------
+// Setup configure for rebet command
+//-------------------------------------------------
+Config::runtime([
+    CliKernel::class => [
+        'bootstrappers=' => [
+            HandleExceptions::class,
+            LetterpressTagCustomizer::class,
+        ],
+    ],
+    Assistant::class => [
+        // Suport only project:init command
+        'commands=' => [
+            ProjectInitCommand::class
+        ],
+    ],
+]);
+
+//-------------------------------------------------
+// Create kernel and initilizing application with out structure.
+//-------------------------------------------------
+$kernel = App::init(new CliKernel(new NullStructure()));
+
+//-------------------------------------------------
+// Invoke command and handle action
+//-------------------------------------------------
+$kernel->handle();
+
+//-------------------------------------------------
+// Terminate the application
+//-------------------------------------------------
+$kernel->terminate();

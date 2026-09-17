@@ -16,6 +16,7 @@ use Rebet\Application\Structure;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\Router;
+use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 
 /**
@@ -30,6 +31,26 @@ use Rebet\Tools\Exception\LogicException;
  */
 class WebKernel extends Kernel
 {
+    use Configurable;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function defaultConfig()
+    {
+        return [
+            'bootstrappers' => [
+                LoadEnvironmentVariables::class,
+                [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
+                LoadApplicationConfiguration::class,
+                LoadRoutingConfiguration::class,
+                HandleExceptions::class,
+                LetterpressTagCustomizer::class,
+                EmailValidatorEnable::class,
+            ],
+        ];
+    }
+
     /**
      * Current handling request.
      *
@@ -61,15 +82,7 @@ class WebKernel extends Kernel
      */
     protected function bootstrappers() : array
     {
-        return [
-            LoadEnvironmentVariables::class,
-            [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
-            LoadApplicationConfiguration::class,
-            LoadRoutingConfiguration::class,
-            HandleExceptions::class,
-            LetterpressTagCustomizer::class,
-            EmailValidatorEnable::class,
-        ];
+        return static::config('bootstrappers');
     }
 
     /**

@@ -1,6 +1,15 @@
 <?php
 use Rebet\Application\App;
+use Rebet\Application\Bootstrap\EmailValidatorEnable;
+use Rebet\Application\Bootstrap\HandleExceptions;
+use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
+use Rebet\Application\Bootstrap\LoadApplicationConfiguration;
+use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
+use Rebet\Application\Bootstrap\LoadRoutingConfiguration;
+use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Console\Assistant;
+use Rebet\Application\Console\CliKernel;
+use Rebet\Application\Http\WebKernel;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Http\Request;
 use Rebet\Tools\Utility\Env;
@@ -233,6 +242,47 @@ return [
     ],
 
 
+    /*
+    |==============================================================================================
+    | CLI Kernel Configuration
+    |==============================================================================================
+    | This section defines settings about Rebet\Application\Console\CliKernel that boots the
+    | console (CLI) application before rebet assistant starts handling commands.
+    */
+    CliKernel::class => [
+        /*
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        | CLI Kernel Bootstrappers
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        | Here you may define the bootstrap processes that run, in order, before the CLI kernel
+        | starts handling console commands.
+        |
+        | NOTE: Bootstrappers run in the order listed here, and some of the preinstalled ones depend
+        |       on an earlier one having already run (ex, 'LoadApplicationConfiguration' expects env
+        |       vars to be available, so it must run after 'LoadEnvironmentVariables'). The list below
+        |       is defined using the 'bootstrappers=' key (REPLACE), so it completely replaces the
+        |       library default list rather than merging with it, giving you full control over the
+        |       order.
+        |
+        | Preinstalled Bootstrappers (in order):
+        |  - Rebet\Application\Bootstrap\LoadEnvironmentVariables::class
+        |  - [Rebet\Application\Bootstrap\PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']]
+        |  - Rebet\Application\Bootstrap\LoadApplicationConfiguration::class
+        |  - Rebet\Application\Bootstrap\HandleExceptions::class
+        |  - Rebet\Application\Bootstrap\LetterpressTagCustomizer::class
+        |  - Rebet\Application\Bootstrap\EmailValidatorEnable::class
+        */
+        'bootstrappers=' => [
+            // --- You can add/change/remove only what you need for your application specific bootstrap process ---
+            LoadEnvironmentVariables::class,
+            [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
+            LoadApplicationConfiguration::class,
+            HandleExceptions::class,
+            LetterpressTagCustomizer::class,
+            EmailValidatorEnable::class,
+        ],
+    ],
+
 
     /*
     |==============================================================================================
@@ -250,16 +300,58 @@ return [
         | command and registering it here, it can be executed like `rebet app:data-clean`.
         |
         | Preinstalled Commands:
-        |  - Rebet\Application\Console\Command\InitCommand::class
-        |  - Rebet\Application\Console\Command\EnvCommand::class
-        |  - Rebet\Application\Console\Command\Hash\HashPasswordCommand::class
-        |  - Rebet\Application\Console\Command\Hash\HashTextCommand::class
-        |  - Rebet\Application\Console\Command\Hash\HashHmacCommand::class
         |  - Rebet\Application\Console\Command\Crypto\CryptoEncryptCommand::class
         |  - Rebet\Application\Console\Command\Crypto\CryptoDecryptCommand::class
+        |  - Rebet\Application\Console\Command\EnvCommand::class
+        |  - Rebet\Application\Console\Command\Hash\HashHmacCommand::class
+        |  - Rebet\Application\Console\Command\Hash\HashPasswordCommand::class
+        |  - Rebet\Application\Console\Command\Hash\HashTextCommand::class
         */
         'commands' => [
+            // --- You can add only what you need for your application job command ---
             // YourApplicationJobCommand::class,
+        ],
+    ],
+
+
+    /*
+    |==============================================================================================
+    | Web Kernel Configuration
+    |==============================================================================================
+    | This section defines settings about Rebet\Application\Http\WebKernel that boots the web
+    | (HTTP) application before the router starts handling requests.
+    */
+    WebKernel::class => [
+        /*
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        | Web Kernel Bootstrappers
+        |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        | Here you may define the bootstrap processes that run, in order, before the web kernel
+        | starts handling HTTP requests.
+        |
+        | NOTE: See the note on 'Rebet\Application\Console\CliKernel::class' -> 'bootstrappers=' above
+        |       about why the list below is defined with the 'bootstrappers=' key (REPLACE) instead
+        |       of plain 'bootstrappers' (PREPEND) or 'bootstrappers>' (APPEND); the same rule applies
+        |       here.
+        |
+        | Preinstalled Bootstrappers (in order):
+        |  - Rebet\Application\Bootstrap\LoadEnvironmentVariables::class
+        |  - [Rebet\Application\Bootstrap\PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']]
+        |  - Rebet\Application\Bootstrap\LoadApplicationConfiguration::class
+        |  - Rebet\Application\Bootstrap\LoadRoutingConfiguration::class
+        |  - Rebet\Application\Bootstrap\HandleExceptions::class
+        |  - Rebet\Application\Bootstrap\LetterpressTagCustomizer::class
+        |  - Rebet\Application\Bootstrap\EmailValidatorEnable::class
+        */
+        'bootstrappers=' => [
+            // --- You can add/change/remove only what you need for your application specific bootstrap process ---
+            LoadEnvironmentVariables::class,
+            [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
+            LoadApplicationConfiguration::class,
+            LoadRoutingConfiguration::class,
+            HandleExceptions::class,
+            LetterpressTagCustomizer::class,
+            EmailValidatorEnable::class,
         ],
     ],
 ];

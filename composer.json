@@ -48,6 +48,9 @@
         "psy/psysh": "^0.12.24",
         "twig/twig": "^3.21"
     },
+    "bin": [
+        "bin/rebet"
+    ],
     "autoload": {
         "psr-4": {
             "Rebet\\": "src/Rebet/"

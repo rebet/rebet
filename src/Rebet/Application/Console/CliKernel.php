@@ -12,6 +12,7 @@ use Rebet\Application\Bootstrap\LoadEnvironmentVariables;
 use Rebet\Application\Bootstrap\PropertiesMaskingConfiguration;
 use Rebet\Application\Kernel;
 use Rebet\Application\Structure;
+use Rebet\Tools\Config\Configurable;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +31,25 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CliKernel extends Kernel
 {
+    use Configurable;
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function defaultConfig()
+    {
+        return [
+            'bootstrappers' => [
+                LoadEnvironmentVariables::class,
+                [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
+                LoadApplicationConfiguration::class,
+                HandleExceptions::class,
+                LetterpressTagCustomizer::class,
+                EmailValidatorEnable::class,
+            ],
+        ];
+    }
+
     /**
      * Current handling input
      *
@@ -77,14 +97,7 @@ class CliKernel extends Kernel
      */
     protected function bootstrappers() : array
     {
-        return [
-            LoadEnvironmentVariables::class,
-            [PropertiesMaskingConfiguration::class, 'masks' => ['password', 'password_confirm']],
-            LoadApplicationConfiguration::class,
-            HandleExceptions::class,
-            LetterpressTagCustomizer::class,
-            EmailValidatorEnable::class,
-        ];
+        return static::config('bootstrappers');
     }
 
     /**
