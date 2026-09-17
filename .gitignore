@@ -4,8 +4,8 @@ Thumbs.db
 /.phpunit.result.cache
 /composer.phar
 /vendor/
-/.vscode/
 /nbproject/
 /.history/
 /.phpunit.cache/
+/.sandbox/
 .php-cs-fixer.cache

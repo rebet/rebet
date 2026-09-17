@@ -14,7 +14,7 @@ use Rebet\Tools\Config\Config;
 //-------------------------------------------------
 // Register The Auto Loader
 //-------------------------------------------------
-require $GLOBALS['_composer_autoload_path'];
+require $GLOBALS['_composer_autoload_path'] ?? __DIR__.'/../vendor/autoload.php';
 
 //-------------------------------------------------
 // Setup configure for rebet command
