@@ -35,7 +35,7 @@ Config::runtime([
 ]);
 
 //-------------------------------------------------
-// Create kernel and initilizing application with out structure.
+// Create kernel and initilizing application without structure.
 //-------------------------------------------------
 $kernel = App::init(new CliKernel(new NullStructure()));
 
