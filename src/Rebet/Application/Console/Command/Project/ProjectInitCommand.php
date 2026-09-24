@@ -39,19 +39,44 @@ class ProjectInitCommand extends Command
         ['https-port'    , 'sp' , InputOption::VALUE_OPTIONAL, 'Nginx https port number for local development.'],
     ];
 
+    /**
+     * The path to the skeltons directory that this command renders (via Letterpress) into the new
+     * application's `app/` directory.
+     *
+     * @var string
+     */
+    protected string $skeltons_dir;
+
+    /**
+     * Create the project:init command.
+     *
+     * @param string $skeltons_dir path to the skeltons directory that provides the template files
+     */
+    public function __construct(string $skeltons_dir)
+    {
+        parent::__construct(null, null);
+        $this->skeltons_dir = $skeltons_dir;
+    }
+
     protected function handle()
     {
-        // @todo https://symfony.com/doc/current/console.html
-        // @todo https://symfony.com/doc/current/components/console/helpers/questionhelper.html
-        // @todo https://techblog.istyle.co.jp/archives/97
-        // @todo https://github.com/laravel/framework/blob/7.x/src/Illuminate/Foundation/Console/EnvironmentCommand.php
+        // 参考
+        // @see https://symfony.com/doc/current/console.html
+        // @see https://symfony.com/doc/current/components/console/helpers/questionhelper.html
+        // @see https://techblog.istyle.co.jp/archives/97
+        // @see https://github.com/laravel/framework/blob/7.x/src/Illuminate/Foundation/Console/EnvironmentCommand.php
 
         $configs['cwd'] = $cwd = Path::normalize(getcwd());
-
-        $app_dir = Path::normalize("{$cwd}/app");
+        $app_dir        = Path::normalize("{$cwd}/app");
         if (is_dir($app_dir)) {
             $this->error("This directory seems to already be initialized (`{$app_dir}` already exists).");
             $this->error('`'.static::NAME.'` is only for setting up a brand-new Rebet application, so nothing was done.');
+            return 1;
+        }
+
+        $configs['skeltons_dir'] = $this->skeltons_dir;
+        if (!is_dir($this->skeltons_dir)) {
+            $this->error("Rebet skeltons directory `{$this->skeltons_dir}` not exists.");
             return 1;
         }
 
@@ -59,7 +84,7 @@ class ProjectInitCommand extends Command
         $step       = 0;
 
         $this->comment('===========================================');
-        $this->comment(' Welcome to Rebet Application Initializing ');
+        $this->comment(' Welcome to Rebet Project Initializing ');
         $this->comment('===========================================');
         $this->comment('Please answer questions below.');
 
@@ -182,16 +207,12 @@ class ProjectInitCommand extends Command
 
         // @todo generat application files using skeltons template of Letterpress.
 
-        $app_url = 'https://'.$domain.($https_port == '443' ? '' : ":{$https_port}");
+        $this->writeln('');
         $this->info('-----------------------');
-        $this->info("Let's add `127.0.0.1 {$domain}` to your hosts file.");
-        $this->info("Then access:");
-        $this->info(" - Site Top : {$app_url}");
-        if ($use_db && !$is_sqlite) {
-            $this->info(" - Adminer  : {$app_url}/adminer/");
-        }
+        $this->info("Let's type `code .` in terminal, then `Reopen in Container` on your VSCode");
+        $this->info("to start development your application.");
         $this->info('-----------------------');
 
-        $this->comment('Application ready! Build something amazing.');
+        $this->comment("Project {$code_name} initilized! Build something amazing.");
     }
 }
