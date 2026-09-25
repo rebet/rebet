@@ -12,7 +12,7 @@
         }
     ],
     "license": "MIT",
-    "type": "project",
+    "type": "library",
     "support": {
         "email": "rain.noise@gmail.com",
         "issues": "https://github.com/rebet/rebet/issues",
