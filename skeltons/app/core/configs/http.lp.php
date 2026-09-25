@@ -5,6 +5,7 @@ use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\HttpStatus;
 use Rebet\Http\Request;
 use Rebet\Http\Session\Session;
+use Rebet\Http\Session\Storage\Handler\DatabaseSessionHandler;
 use Rebet\Http\Session\Storage\Handler\MemcachedSessionHandler;
 use Rebet\Http\Session\Storage\Handler\MongoDbSessionHandler;
 use Rebet\Http\Session\Storage\Handler\NativeFileSessionHandler;
@@ -168,7 +169,21 @@ return [
         |  - And you can use any handler that extends \SessionHandler or implements
         |    \SessionHandlerInterface and \SessionUpdateTimestampHandlerInterface
         */
-        'handler' => NativeFileSessionHandler::class,
+        //{%-- uncommentif $session == 'database' -%}
+        // 'handler' => DatabaseSessionHandler::class,
+        //{%-- enduncommentif -%}
+        //{%-- uncommentif $session == 'memcached' -%}
+        // 'handler' => MemcachedSessionHandler::class,
+        //{%-- enduncommentif -%}
+        //{%-- uncommentif $session == 'redis' -%}
+        // 'handler' => RedisSessionHandler::class,
+        //{%-- enduncommentif -%}
+        //{%-- uncommentif $session == 'mongodb' -%}
+        // 'handler' => MongoDbSessionHandler::class,
+        //{%-- enduncommentif -%}
+        //{%-- uncommentif $session == 'native' -%}
+        // 'handler' => NativeFileSessionHandler::class,
+        //{%-- enduncommentif -%}
 
 
         /*
@@ -228,6 +243,7 @@ return [
     | This section defines Native File Session Handler settings.
     | You may change these defaults as required.
     */
+    //{%-- commentif $session != 'native', 'message' => '--- Please uncomment if you want to use native file session ---' -%}
     NativeFileSessionHandler::class => [
         /*
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,6 +253,7 @@ return [
         */
         // 'save_path' => ini_get('session.save_path'),
     ],
+    //{%-- endcommentif -%}
 
 
     /*
@@ -272,15 +289,17 @@ return [
     | If you use such an index, you can drop `gc_probability` to 0 since no garbage-collection is
     | required.
     */
+    //{%-- commentif $session != 'mongodb', 'message' => '--- Please uncomment if you want to use mongodb session ---' -%}
     MongoDbSessionHandler::class => [
-        'database'   => null,
-        'collection' => null,
+        'database'   => App::codeName(),
+        'collection' => 'sessions',
         // --- You can change only what you need for these default options ---
         // 'id_field'     => '_id',
         // 'data_field'   => 'data',
         // 'time_field'   => 'time',
         // 'expiry_field' => 'expires_at',
     ],
+    //{%-- endcommentif -%}
 
 
     /*
@@ -295,11 +314,13 @@ return [
     |  * prefix     : The prefix to use for the memcached keys in order to avoid collision. [required]
     |  * expiretime : The time to live in seconds.                                          [default: 86400]
     */
+    //{%-- commentif $session != 'memcached', 'message' => '--- Please uncomment if you want to use memcached session ---' -%}
     MemcachedSessionHandler::class => [
         'prefix' => App::codeName(),
         // --- You can change only what you need for these default options ---
         // 'expiretime' => 86400,
     ],
+    //{%-- endcommentif -%}
 
 
     /*
@@ -311,14 +332,16 @@ return [
     | defaults as required.
     |
     | Available Options:
-    |  * prefix : The prefix to use for the memcached keys in order to avoid collision. [required]
-    |  * ttl    : The time to live in seconds.                                          [default: null]
+    |  * prefix : The prefix to use for the redis keys in order to avoid collision. [required]
+    |  * ttl    : The time to live in seconds.                                      [default: null]
     */
+    //{%-- commentif $session != 'redis', 'message' => '--- Please uncomment if you want to use redis session ---' -%}
     RedisSessionHandler::class => [
         'prefix' => App::codeName(),
         // --- You can change only what you need for these default options ---
         // 'ttl'    => null,
     ],
+    //{%-- endcommentif -%}
 
 
     /*

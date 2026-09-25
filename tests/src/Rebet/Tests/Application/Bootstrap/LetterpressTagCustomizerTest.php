@@ -275,6 +275,98 @@ class LetterpressTagCustomizerTest extends RebetTestCase
                 EOS,
                 ['foo' => false, 'bar' => false]
             ],
+
+            // uncommentif
+            [
+                <<<EOS
+                                line 1
+
+                EOS,
+                <<<EOS
+                                //{%-- uncommentif true -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS
+            ],
+            [
+                "",
+                <<<EOS
+                                //{%-- uncommentif false -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS
+            ],
+            [
+                <<<EOS
+                                line 1
+                                    indented line 2
+                                line 4
+
+                EOS,
+                <<<EOS
+                                //{%-- uncommentif true -%}
+                                // line 1
+                                //     indented line 2
+                                // line 4
+                                //{%-- enduncommentif -%}
+                EOS
+            ],
+            [
+                <<<EOS
+                                line 1
+
+                EOS,
+                <<<EOS
+                                //{%-- uncommentif true, '# ' -%}
+                                # line 1
+                                //{%-- enduncommentif -%}
+                EOS
+            ],
+            [
+                <<<EOS
+                                // line 1
+
+                EOS,
+                <<<EOS
+                                //{%-- uncommentif false, 'keep_body' => true -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS
+            ],
+            [
+                // `keep_body` only affects the (non-matching) else branch, so a matching condition
+                // still uncomments as usual.
+                <<<EOS
+                                line 1
+
+                EOS,
+                <<<EOS
+                                //{%-- uncommentif true, 'keep_body' => true -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS
+            ],
+            [
+                <<<EOS
+                                line 1
+
+                EOS,
+                <<<EOS
+                                //{%-- uncommentif \$use_db->not() -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                ['use_db' => false]
+            ],
+            [
+                "",
+                <<<EOS
+                                //{%-- uncommentif \$use_db->not() -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                ['use_db' => true]
+            ],
         ];
     }
 

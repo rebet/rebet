@@ -53,13 +53,12 @@ return [
         |  - @see Rebet\View\Engine\Twig\Twig
         |  - and also you can use any view engine class that implemented Rebet\View\Engine\Engine.
         */
-        //{%-- if $view == 'blade' -%}
-        'engine' => Blade::class, //{#-- @phpstan-ignore array.duplicateKey (-#})
-        //{%-- elseif $view == 'twig' -%}
-        'engine' => Twig::class,
-        //{%-- else -%}
-        'engine' => null,
-        //{%-- endif -%}
+        //{%-- uncommentif $view == 'blade' -%}
+        // 'engine' => Blade::class,
+        //{%-- enduncommentif -%}
+        //{%-- uncommentif $view == 'twig' -%}
+        // 'engine' => Twig::class,
+        //{%-- enduncommentif -%}
 
 
         /*

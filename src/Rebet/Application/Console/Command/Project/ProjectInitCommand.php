@@ -7,6 +7,7 @@ use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\Template\Letterpress;
+use Rebet\Tools\Testable\System;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,6 +40,7 @@ class ProjectInitCommand extends Command
         [['cache'         , 'c'  ], null, InputOption::VALUE_OPTIONAL, 'Cache store product. (choices: apcu, file, memcached, redis, and also database when a database is used / default: memcached)'],
         [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the application code name)'],
         [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: P@ssw0rd)'],
+        [['session'       , 's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
         [['http-port'     , 'hp' ], null, InputOption::VALUE_OPTIONAL, 'Nginx http port number for local development. (default: 80)'],
         [['https-port'    , 'hsp'], null, InputOption::VALUE_OPTIONAL, 'Nginx https port number for local development. (default: 443)'],
         [['dry-run'              ], null, InputOption::VALUE_NONE    , 'Show the settings and the list of files that would be generated, without writing anything.'],
@@ -50,11 +52,34 @@ class ProjectInitCommand extends Command
      *
      * @var array<string, string>
      */
-    const DATABASES = [
+    const SUPPORTED_DATABASES = [
         'sqlite'  => 'SQLite 3',
         'mysql'   => 'MySQL',
         'mariadb' => 'MariaDB',
         'pgsql'   => 'PostgreSQL',
+    ];
+
+    const COMPOSER_REQUIRE = [
+        'session' => [
+            'mongodb' => 'mongodb/mongodb',
+            'redis'   => 'predis/predis',
+        ],
+        'cache' => [
+            'redis' => 'predis/predis',
+        ],
+        'view' => [
+            'twig'  => 'twig/twig',
+            'blade' => 'illuminate/view',
+        ],
+    ];
+
+    const COMPOSER_REQUIRE_DEV = [
+        'always' => [
+            "friendsofphp/php-cs-fixer",
+            "phpstan/phpstan",
+            "phpunit/phpunit",
+            "psy/psysh",
+        ]
     ];
 
     /**
@@ -84,22 +109,14 @@ class ProjectInitCommand extends Command
         // @see https://techblog.istyle.co.jp/archives/97
         // @see https://github.com/laravel/framework/blob/7.x/src/Illuminate/Foundation/Console/EnvironmentCommand.php
 
-        $configs['cwd'] = $cwd = Path::normalize(getcwd());
-
+        $configs['cwd']          = $cwd = Path::normalize(getcwd());
         $configs['skeltons_dir'] = $this->skeltons_dir;
-        if (!is_dir($this->skeltons_dir)) {
-            $this->error("Rebet skeltons directory `{$this->skeltons_dir}` not exists.");
+
+        if (!$this->checkEnvironment($cwd)) {
             return 1;
         }
 
-        $existing = $this->existingSkeltonEntries($cwd);
-        if (!empty($existing)) {
-            $this->error("This directory seems to already be initialized (`".implode('`, `', $existing)."` already exists).");
-            $this->error('`'.static::NAME.'` is only for setting up a brand-new Rebet application, so nothing was done.');
-            return 1;
-        }
-
-        $total_step = 7;
+        $total_step = 8;
         $step       = 0;
 
         $this->comment('===========================================');
@@ -139,10 +156,10 @@ class ProjectInitCommand extends Command
             // choice()'s non-interactive fallback, which would otherwise silently substitute the
             // default below instead of failing (Command::choice() cannot tell "not given" apart
             // from "given but unresolved" once it falls back to the underlying ChoiceQuestion).
-            if (($given = $this->option('database')) && !$this->requireValidChoice('database', $given, static::DATABASES)) {
+            if (($given = $this->option('database')) && !$this->requireValidChoice('database', $given, static::SUPPORTED_DATABASES)) {
                 return 1;
             }
-            $configs['database'] = $this->choice("* DB Product  : ", static::DATABASES, 'database', 'mysql');
+            $configs['database'] = $this->choice("* DB Product  : ", static::SUPPORTED_DATABASES, 'database', 'mysql');
             $is_sqlite           = $configs['database'] === 'sqlite';
             $configs['db_name']  = $this->ask("* DB Name     : [{$code_name}] ", 'database-name', true, $code_name);
             if (!$is_sqlite) {
@@ -225,6 +242,25 @@ class ProjectInitCommand extends Command
             $configs['memcached_user'] = $code_name;
         }
 
+        $step++;
+        $this->writeln('');
+        $this->writeln("{$step}) Setup Session Storage Configs ({$step}/{$total_step})");
+        $session_choices = [
+            'native' => 'Native (File)',
+        ] +
+        ($use_db ? ['database' => 'Database'] : []) +
+        [
+            'memcached' => 'Memcached',
+            'redis'     => 'Redis',
+            'mongodb'   => 'MongoDB',
+        ];
+        // Same reasoning as the --database/--cache checks above: reject an explicitly given but
+        // invalid --session value before it can silently fall back to the default below.
+        if (($given = $this->option('session')) && !$this->requireValidChoice('session', $given, $session_choices)) {
+            return 1;
+        }
+        $configs['session'] = $this->choice("* Session Storage : ", $session_choices, 'session', 'native');
+
 
         $step++;
         $this->writeln('');
@@ -252,6 +288,23 @@ class ProjectInitCommand extends Command
         }
         $this->writeln('  '.count($generated).' files '.($dry_run ? 'would be generated.' : 'generated.'));
 
+        $require     = $this->resolveComposerPackages(static::COMPOSER_REQUIRE, $configs);
+        $require_dev = $this->resolveComposerPackages(static::COMPOSER_REQUIRE_DEV, $configs);
+        if (!empty($require) || !empty($require_dev)) {
+            $this->writeln('');
+            $this->writeln($dry_run ? 'Composer packages that would be required...' : 'Installing required Composer packages...');
+            if (!empty($require)) {
+                $this->writeln('  - composer require '.implode(' ', $require));
+            }
+            if (!empty($require_dev)) {
+                $this->writeln('  - composer require --dev '.implode(' ', $require_dev));
+            }
+            if (!$dry_run) {
+                $this->composerRequire($cwd, $require, false);
+                $this->composerRequire($cwd, $require_dev, true);
+            }
+        }
+
         if ($dry_run) {
             $this->comment("Dry-run finished, nothing was written. Remove `--dry-run` to actually initialize the {$code_name} project.");
             return 0;
@@ -264,6 +317,43 @@ class ProjectInitCommand extends Command
         $this->info('-----------------------');
 
         $this->comment("Project {$code_name} initilized! Build something amazing.");
+    }
+
+    /**
+     * Check that the environment this command is running in is suitable for `project:init`, and
+     * print an error otherwise.
+     *
+     *  - The skeltons directory (that this command renders from) must exist.
+     *  - The given directory must be the root of an existing Composer project (ie. it must contain
+     *    a `composer.json`), since `project:init` only adds the Rebet application skeleton to an
+     *    existing Composer project rather than creating a brand-new one.
+     *  - The given directory must not already be initialized (see `existingSkeltonEntries()`).
+     *
+     * @param string $cwd
+     * @return bool
+     */
+    protected function checkEnvironment(string $cwd) : bool
+    {
+        if (!is_dir($this->skeltons_dir)) {
+            $this->error("Rebet skeltons directory `{$this->skeltons_dir}` not exists.");
+            return false;
+        }
+
+        $composer_json = Path::normalize("{$cwd}/composer.json");
+        if (!file_exists($composer_json)) {
+            $this->error("This directory does not seem to be a Composer project (`{$composer_json}` not found).");
+            $this->error('`'.static::NAME.'` must be run from the root of an existing Composer project.');
+            return false;
+        }
+
+        $existing = $this->existingSkeltonEntries($cwd);
+        if (!empty($existing)) {
+            $this->error("This directory seems to already be initialized (`".implode('`, `', $existing)."` already exists).");
+            $this->error('`'.static::NAME.'` is only for setting up a brand-new Rebet application, so nothing was done.');
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -410,11 +500,84 @@ class ProjectInitCommand extends Command
     protected function excludedDatabaseDirs(array $configs) : array
     {
         $selected = ($configs['use_db'] ?? false) ? ($configs['database'] ?? null) : null;
-        $excluded = array_filter(array_keys(static::DATABASES), fn ($driver) => $driver !== $selected);
+        $excluded = array_filter(array_keys(static::SUPPORTED_DATABASES), fn ($driver) => $driver !== $selected);
 
         return array_values(array_map(
             fn ($driver) => Path::normalize("{$this->skeltons_dir}/.devcontainer/docker/{$driver}"),
             $excluded
         ));
+    }
+
+    /**
+     * Resolve the Composer package names to require from the given rules and the collected
+     * $configs (see static::COMPOSER_REQUIRE / static::COMPOSER_REQUIRE_DEV).
+     *
+     * Each top-level key of $rules is either:
+     *  - `'always'`, whose value is a plain list of package names that are always required
+     *    regardless of $configs, or
+     *  - a $configs key (ex `'view'`, `'cache'`), whose value is a map of
+     *    `[$configs value => package name]`; the package is only required when
+     *    `$configs[$group]` matches one of that map's keys.
+     *
+     * @param array<string, array<int|string, string>> $rules
+     * @param array<string, mixed> $configs
+     * @return string[] unique package names
+     */
+    protected function resolveComposerPackages(array $rules, array $configs) : array
+    {
+        $packages = [];
+        foreach ($rules as $group => $mapping) {
+            if ($group === 'always') {
+                $packages = array_merge($packages, $mapping);
+                continue;
+            }
+
+            $selected = $configs[$group] ?? null;
+            if ($selected !== null && isset($mapping[$selected])) {
+                $packages[] = $mapping[$selected];
+            }
+        }
+
+        return array_values(array_unique($packages));
+    }
+
+    /**
+     * Run `composer require` (or, when `$dev` is true, `composer require --dev`) for the given
+     * packages against the `composer.json` in the given directory.
+     *
+     * @param string $cwd project root directory (where `composer.json` lives)
+     * @param string[] $packages
+     * @param bool $dev
+     * @return bool true on success (or when $packages is empty), false if the command failed
+     */
+    protected function composerRequire(string $cwd, array $packages, bool $dev) : bool
+    {
+        if (empty($packages)) {
+            return true;
+        }
+
+        $command = 'composer require '.($dev ? '--dev ' : '')
+            .implode(' ', array_map('escapeshellarg', $packages))
+            .' --working-dir='.escapeshellarg($cwd);
+
+        $this->writeln("> {$command}");
+
+        // Never actually shell out to Composer while under test (slow, network-dependent, and
+        // would mutate the test working directory's vendor/composer.lock). RebetTestCase enables
+        // System::testing() for every test, so this is transparent to callers/tests.
+        // NOTE: passthru()'s $result_code is a by-reference parameter, which System::__callStatic()
+        // cannot forward (PHP's magic __call/__callStatic always receives $args by value), so the
+        // real passthru() must be called directly here rather than via System::passthru().
+        if (System::testing()) {
+            return true;
+        }
+
+        passthru($command, $exit_code);
+        if ($exit_code !== 0) {
+            $this->error('`composer require'.($dev ? ' --dev' : '')."` failed (exit code {$exit_code}).");
+            return false;
+        }
+
+        return true;
     }
 }

@@ -121,12 +121,12 @@ abstract class Command extends SymfonyCommand
             // Most OPTIONS entries only define [name, shortcut, mode, description], so read by
             // index with Symfony Command::addOption()'s own defaults instead of list() destructuring
             // (which would emit "Undefined array key" for the omitted trailing elements).
-            $name              = $option[0];
-            $shortcut          = $option[1] ?? null;
-            $mode              = $option[2] ?? null;
-            $description       = $option[3] ?? '';
-            $default           = $option[4] ?? null;
-            $suggested_values  = $option[5] ?? [];
+            $name             = $option[0];
+            $shortcut         = $option[1] ?? null;
+            $mode             = $option[2] ?? null;
+            $description      = $option[3] ?? '';
+            $default          = $option[4] ?? null;
+            $suggested_values = $option[5] ?? [];
 
             $name_and_aliases = is_array($name) ? $name : explode('|', $name);
             $has_option_alias = count($name_and_aliases) > 1;

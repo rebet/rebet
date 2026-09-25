@@ -21,8 +21,9 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     }
 
     /**
-     * Run the given callback with the current directory changed to a fresh sub working directory,
-     * then restore the original current directory afterward.
+     * Run the given callback with the current directory changed to a fresh sub working directory
+     * that already has a (stub) `composer.json` (since `project:init` now requires one), then
+     * restore the original current directory afterward.
      *
      * @param string $sub_dir
      * @param \Closure $callback function(string $work_dir) : mixed
@@ -31,7 +32,8 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     protected function runInFreshWorkDir(string $sub_dir, \Closure $callback)
     {
         $work_dir = static::makeSubWorkingDir($sub_dir);
-        $cwd      = getcwd();
+        file_put_contents("{$work_dir}/composer.json", '{}');
+        $cwd = getcwd();
         chdir($work_dir);
         try {
             return $callback($work_dir);
@@ -210,6 +212,146 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
                 "This directory seems to already be initialized (`{$work_dir}/app` already exists).",
+                $tester->getDisplay()
+            );
+        });
+    }
+
+    public function test_execute_noComposerJson_refusesToRun()
+    {
+        // Unlike runInFreshWorkDir(), this deliberately does NOT create a composer.json.
+        $work_dir = static::makeSubWorkingDir('project_init_no_composer_json');
+        $cwd      = getcwd();
+        chdir($work_dir);
+        try {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--dry-run' => true], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString(
+                "This directory does not seem to be a Composer project (`{$work_dir}/composer.json` not found).",
+                $tester->getDisplay()
+            );
+        } finally {
+            chdir($cwd);
+        }
+    }
+
+    public function test_execute_composerRequire_default()
+    {
+        // RebetTestCase enables System::testing() for every test, so ProjectInitCommand::
+        // composerRequire() never actually shells out to Composer here; it only prints the
+        // command it would have run.
+        $this->runInFreshWorkDir('project_init_composer_require_default', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute([], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $display = $tester->getDisplay();
+            // Default view is 'twig', so only twig/twig is required (session/cache have no match).
+            $this->assertStringContainsString('composer require twig/twig', $display);
+            $this->assertStringNotContainsString('mongodb/mongodb', $display);
+            $this->assertStringNotContainsString('predis/predis', $display);
+            // COMPOSER_REQUIRE_DEV's 'always' group is applied unconditionally.
+            $this->assertStringContainsString(
+                'composer require --dev friendsofphp/php-cs-fixer phpstan/phpstan phpunit/phpunit psy/psysh',
+                $display
+            );
+        });
+    }
+
+    public function test_execute_composerRequire_viewBlade()
+    {
+        $this->runInFreshWorkDir('project_init_composer_require_blade', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--view' => 'blade'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+
+            $display = $tester->getDisplay();
+            $this->assertStringContainsString('composer require illuminate/view', $display);
+            $this->assertStringNotContainsString('twig/twig', $display);
+        });
+    }
+
+    public function test_execute_composerRequire_cacheRedis()
+    {
+        $this->runInFreshWorkDir('project_init_composer_require_redis', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--cache' => 'redis'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            // 'predis/predis' (cache=redis) and 'twig/twig' (default view) are both required
+            // together, in COMPOSER_REQUIRE's declared group order (cache before view).
+            $this->assertStringContainsString('composer require predis/predis twig/twig', $tester->getDisplay());
+        });
+    }
+
+    public function test_execute_noInteraction_session_defaultsToNative()
+    {
+        $this->runInFreshWorkDir('project_init_session_default', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute([], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('session => native,', $tester->getDisplay());
+        });
+    }
+
+    public function test_execute_noInteraction_session_redis()
+    {
+        $this->runInFreshWorkDir('project_init_session_redis', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--session' => 'redis'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $display = $tester->getDisplay();
+            $this->assertStringContainsString('session => redis,', $display);
+            // Regression check for COMPOSER_REQUIRE['session']['redis'].
+            $this->assertStringContainsString('composer require predis/predis twig/twig', $display);
+        });
+    }
+
+    public function test_execute_noInteraction_session_mongodb()
+    {
+        $this->runInFreshWorkDir('project_init_session_mongodb', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--session' => 'mongodb'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $display = $tester->getDisplay();
+            $this->assertStringContainsString('session => mongodb,', $display);
+            // Regression check for COMPOSER_REQUIRE['session']['mongodb'].
+            $this->assertStringContainsString('composer require mongodb/mongodb twig/twig', $display);
+        });
+    }
+
+    public function test_execute_noInteraction_session_databaseRequiresDatabase()
+    {
+        // 'database' is only a valid --session choice when a database is actually used.
+        $this->runInFreshWorkDir('project_init_session_database_without_db', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--session' => 'database'], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString(
+                'Invalid value `database` given via `--session`. Choices are: `native`, `memcached`, `redis`, `mongodb`.',
+                $tester->getDisplay()
+            );
+        });
+    }
+
+    public function test_execute_noInteraction_session_databaseWithDatabase()
+    {
+        $this->runInFreshWorkDir('project_init_session_database_with_db', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--session' => 'database', '--database' => 'mysql'], ['interactive' => false]);
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('session => database,', $tester->getDisplay());
+        });
+    }
+
+    public function test_execute_noInteraction_invalidSession()
+    {
+        $this->runInFreshWorkDir('project_init_invalid_session', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $status = $tester->execute(['--session' => 'oracle'], ['interactive' => false]);
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString(
+                'Invalid value `oracle` given via `--session`. Choices are: `native`, `memcached`, `redis`, `mongodb`.',
                 $tester->getDisplay()
             );
         });

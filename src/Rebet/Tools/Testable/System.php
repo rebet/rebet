@@ -15,7 +15,8 @@ use Rebet\Tools\Utility\Arrays;
  * and functions that operate only with SAPI such as header.
  * Note that language structures such as exit and die are not handled in this class because it is desirable to exclude them in terms of testability.
  *
- * @method static void  header(string $header, bool $replace = true, int $http_response_code = null)
+ * @method static void passthru(string $command, &$result_code = null) : bool|null
+ * @method static void header(string $header, bool $replace = true, int $http_response_code = null)
  * @method static array<int, string> headers_list()
  * @method static array<int|string, mixed> dns_get_record(string $hostname, int $type = 268435456, array<int|string, mixed>|null &$authns = null, array<int|string, mixed>|null &$addtl = null, bool $raw = false)
  *
@@ -37,7 +38,7 @@ class System
         return [
             'emulators' => [
                 'header' => [
-                    'emulator' => function (string $header, bool $replace = true, int $http_response_code = null) {
+                    'emulator' => function (string $header, bool $replace = true, int|null $http_response_code = null) {
                         $emulated_header = &System::memory('emulated_header');
                         $http_status     = System::datasets('header', 'http_status');
                         if (\preg_match('/^HTTP\//', $header)) {

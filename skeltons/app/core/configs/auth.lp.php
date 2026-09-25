@@ -86,25 +86,26 @@ return [
             //{%-- if $use_auth -%}
             'user' => [
                 //{%-- if $use_db -%}
-                '@factory'     => DatabaseProvider::class,    //{#-- @phpstan-ignore array.duplicateKey (-#})
+                '@factory'     => DatabaseProvider::class,
                 'entity'       => User::class,
-                'precondition' => ['resign_at_null' => true], //{#-- @phpstan-ignore array.duplicateKey (-#})
-                'alises'       => ['role' => '@user'],        //{#-- @phpstan-ignore array.duplicateKey (-#})
-                //{%-- else -%}
-                '@factory' => ArrayProvider::class,
-                'users'    => [
-                    ['user_id' => 1, 'active' => true, 'name' => '{! $auth_name !}', 'email' => '{! $auth_email !}', 'password' => '{! $auth_password !}'],
-                    // If you want to add new user then write user information here.
-                    // NOTE: You can use Rebet assistant `hash:password` command to create password hash.
-                ],
-                'precondition' => function ($user) { return $user['active'] ?? false; },
+                'precondition' => ['resign_at_null' => true],
                 'alises'       => ['role' => '@user'],
                 //{%-- endif -%}
+                //{%-- uncommentif !$use_db -%}
+                // '@factory' => ArrayProvider::class,
+                // 'users'    => [
+                //     ['user_id' => 1, 'active' => true, 'name' => '{! $auth_name !}', 'email' => '{! $auth_email !}', 'password' => '{! $auth_password !}'],
+                //     // If you want to add new user then write user information here.
+                //     // NOTE: You can use Rebet assistant `hash:password` command to create password hash.
+                // ],
+                // 'precondition' => function ($user) { return $user['active'] ?? false; },
+                // 'alises'       => ['role' => '@user'],
+                //{%-- enduncommentif -%}
             ],
             //{%-- else -%}
             // 'user' => [
             //     '@factory'     => DatabaseProvider::class,
-            //     'entity'       => 'App\\Model\\Entity\\User',
+            //     'entity'       => User::class,
             //     'precondition' => ['resign_at_null' => true],
             //     'alises'       => ['role' => '@user']
             // ],
