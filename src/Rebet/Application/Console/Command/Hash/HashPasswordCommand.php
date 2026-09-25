@@ -33,10 +33,13 @@ class HashPasswordCommand extends Command
      */
     protected function handle()
     {
-        $option = $this->option('option') ? json_decode($this->option('option'), true) : null ;
-        if (($error = json_last_error_msg()) !== 'No error') {
-            $this->error("Can not parse --option JSON : {$error}");
-            return 1;
+        $option = null;
+        if ($this->option('option')) {
+            $option = json_decode($this->option('option'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $this->error("Can not parse --option JSON : ".json_last_error_msg());
+                return 1;
+            }
         }
 
         $this->writeln('<info>Hashed password:</info> '. Password::hash($this->argument('password'), $this->option('algorithm'), $option));

@@ -173,6 +173,34 @@ class Letterpress implements Renderable, \JsonSerializable
     }
 
     /**
+     * Determine whether the given file name is marked as a Letterpress template file, ie. its name
+     * contains the `.lp` marker (ex `application.lp.php`, `Dockerfile.lp`, `.lp.env`).
+     *
+     * This is a file naming convention (unrelated to the template tag syntax) that callers such as
+     * project scaffolding tools can use to decide which files of a template directory tree should be
+     * rendered through Letterpress and which should just be copied as-is.
+     *
+     * @param string $filename
+     * @return bool
+     */
+    public static function isTemplateFile(string $filename) : bool
+    {
+        return Strings::contains($filename, '.lp.') || Strings::endsWith($filename, '.lp');
+    }
+
+    /**
+     * Remove the `.lp` marker from the given Letterpress template file name
+     * (ex `application.lp.php` => `application.php`, `Dockerfile.lp` => `Dockerfile`, `.lp.env` => `.env`).
+     *
+     * @param string $filename
+     * @return string
+     */
+    public static function stripMarker(string $filename) : string
+    {
+        return Strings::endsWith($filename, '.lp') ? Strings::rtrim($filename, '.lp', 1) : str_replace('.lp.', '.', $filename) ;
+    }
+
+    /**
      * Reset registered tag set configuration.
      *
      * @return void

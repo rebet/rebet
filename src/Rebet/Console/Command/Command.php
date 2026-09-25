@@ -99,6 +99,13 @@ abstract class Command extends SymfonyCommand
     protected $questionner;
 
     /**
+     * Option aliases map
+     *
+     * @var array<string, array<string>>
+     */
+    protected $option_aliases = [];
+
+    /**
      * Configure the command options.
      *
      * @return void
@@ -111,7 +118,34 @@ abstract class Command extends SymfonyCommand
             $this->addArgument(...$argment);
         }
         foreach (static::OPTIONS as $option) {
-            $this->addOption(...$option);
+            // Most OPTIONS entries only define [name, shortcut, mode, description], so read by
+            // index with Symfony Command::addOption()'s own defaults instead of list() destructuring
+            // (which would emit "Undefined array key" for the omitted trailing elements).
+            $name              = $option[0];
+            $shortcut          = $option[1] ?? null;
+            $mode              = $option[2] ?? null;
+            $description       = $option[3] ?? '';
+            $default           = $option[4] ?? null;
+            $suggested_values  = $option[5] ?? [];
+
+            $name_and_aliases = is_array($name) ? $name : explode('|', $name);
+            $has_option_alias = count($name_and_aliases) > 1;
+            foreach ($name_and_aliases as $i => $name_and_alias) {
+                if ($has_option_alias) {
+                    $this->option_aliases[$name_and_alias] = $name_and_aliases;
+                }
+                // A shortcut can only belong to one registered option name, so only the primary
+                // (first) name gets it; otherwise InputDefinition::addOption() throws a
+                // LogicException ("An option with shortcut ... already exists.") on the 2nd alias.
+                $this->addOption(
+                    $name_and_alias,
+                    $i === 0 ? $shortcut : null,
+                    $mode,
+                    $i === 0 ? $description : "Alias of --{$name_and_aliases[0]}.",
+                    $default,
+                    $suggested_values
+                );
+            }
         }
         $this->setHelperSet(new HelperSet([new QuestionHelper()]));
     }
@@ -188,11 +222,22 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the value of a command option.
      *
+     * If the given key has registered aliases (see static::OPTIONS), every alias name is checked
+     * (in the order they were declared) and the value of the first one that was actually given
+     * (ie. differs from its own default) is returned. If none of them were given, the given key's
+     * own value (its default) is returned.
+     *
      * @param string $key
      * @return string|bool|null
      */
     public function option(string $key)
     {
+        foreach ($this->option_aliases[$key] ?? [$key] as $name) {
+            $value = $this->input->getOption($name);
+            if ($value !== $this->getDefinition()->getOption($name)->getDefault()) {
+                return $value;
+            }
+        }
         return $this->input->getOption($key);
     }
 
@@ -264,7 +309,7 @@ abstract class Command extends SymfonyCommand
      *
      * @param string $question
      * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
-     * @param array<int, string> $availables (default: [])
+     * @param array<int|string, string> $availables of choice (both keys and values are accepted) (default: [])
      * @return string|null
      */
     protected function viaOption(string $question, string|null $via_option = null, array $availables = []) : string|null
@@ -272,7 +317,7 @@ abstract class Command extends SymfonyCommand
         if ($via_option) {
             $value = Strings::startsWith($via_option, '@') ? Strings::ltrim($via_option, '@') : $this->option($via_option);
             if ($value !== null && ($answer = trim((string) $value))) {
-                if (!empty($availables) && !in_array($answer, $availables, true)) {
+                if (!empty($availables) && !in_array($answer, $availables, true) && !array_key_exists($answer, $availables)) {
                     return null;
                 }
                 $this->write($question);

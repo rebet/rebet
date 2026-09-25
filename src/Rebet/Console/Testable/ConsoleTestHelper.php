@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Rebet\Console\Testable;
 
 use Rebet\Console\Application;
+use Rebet\Console\Command\Command;
+use Rebet\Tools\Reflection\Reflector;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -30,14 +32,14 @@ trait ConsoleTestHelper // @phpstan-ignore trait.unused
     /**
      * Set up console application for given commands.
      *
-     * @param string ...$commands
+     * @param string|array<mixed>|callable|Command ...$commands
      * @return void
      */
-    protected function setUpConsole(string ...$commands) : void
+    protected function setUpConsole(mixed ...$commands) : void
     {
         $this->app = new Application();
         foreach ($commands as $command) {
-            $this->app->add(new $command);
+            $this->app->addCommand(Reflector::instantiate($command));
         }
     }
 

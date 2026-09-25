@@ -851,6 +851,33 @@ class LetterpressTest extends RebetTestCase
         $this->assertFalse(Letterpress::defined('nothing'));
     }
 
+    public static function dataTemplateFiles() : array
+    {
+        return [
+            ['application.lp.php', true, 'application.php'],
+            ['Dockerfile.lp', true, 'Dockerfile'],
+            ['.lp.env', true, '.env'],
+            ['.lp.bash_aliases', true, '.bash_aliases'],
+            ['001_create_database.lp.sql', true, '001_create_database.sql'],
+            ['TopController.php', false, 'TopController.php'],
+            ['my.cnf', false, 'my.cnf'],
+            ['.gitignore', false, '.gitignore'],
+            ['Dockerfile', false, 'Dockerfile'],
+        ];
+    }
+
+    #[DataProvider('dataTemplateFiles')]
+    public function test_isTemplateFile(string $filename, bool $expect_is_template, string $expect_stripped)
+    {
+        $this->assertSame($expect_is_template, Letterpress::isTemplateFile($filename));
+    }
+
+    #[DataProvider('dataTemplateFiles')]
+    public function test_stripMarker(string $filename, bool $expect_is_template, string $expect_stripped)
+    {
+        $this->assertSame($expect_stripped, Letterpress::stripMarker($filename));
+    }
+
     public function test_block()
     {
         $this->assertFalse(Letterpress::defined('upper'));
