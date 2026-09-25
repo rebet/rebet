@@ -539,7 +539,10 @@ class Letterpress implements Renderable, \JsonSerializable
                 $this->open_tags[]  = $tag;
                 $prev['nodes'][]    = ['tag' => $tag, 'code' => $code, 'nodes' => []];
                 [$prev, $leftovers] = $this->parse($leftovers, $prev);
-                return [$parent, $leftovers];
+                if (empty($leftovers)) {
+                    return [$parent, $leftovers];
+                }
+                continue;
             }
 
             break;

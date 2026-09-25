@@ -914,6 +914,32 @@ class LetterpressTest extends RebetTestCase
         $this->assertSame('foo bAr baz', Letterpress::of('foo {% replace "/a/", "A" %}bar{% endreplace %} baz')->render());
     }
 
+    public function test_filter_nestedInIf()
+    {
+        // Regression test: a filter-type block tag (`upper`, like `commentif`/`uncommentif`) used
+        // inside an `if` branch that is itself nested inside another `if` used to corrupt parsing
+        // of the outer `if`'s own `else`/`endif` (they were misrouted to the template root once the
+        // filter tag's nested block finished), throwing "Unsupported (or invalid position) tag
+        // {% else %} found." for input that is otherwise perfectly valid.
+        Letterpress::filter('upper', function (string $body) {
+            return strtoupper($body);
+        });
+
+        $template = 'a {% if $x %} x {% if $y %} y {% else %} {% upper %}z{% endupper %} {% endif %} {% else %} not-x {% endif %} b';
+
+        $this->assertSame('a  x  y   b', Letterpress::of($template)->with(['x' => true, 'y' => true])->render());
+        $this->assertSame('a  x  Z   b', Letterpress::of($template)->with(['x' => true, 'y' => false])->render());
+        $this->assertSame('a  not-x  b', Letterpress::of($template)->with(['x' => false, 'y' => true])->render());
+
+        // Three levels deep, and with trailing content after the outermost `endif`, to make sure
+        // parsing correctly resumes at each enclosing level rather than bubbling up to the root.
+        $template3 = '{% if $a %}A{% if $b %}B{% if $c %}C{% else %}{% upper %}c{% endupper %}{% endif %}{% endif %}{% else %}not-a{% endif %}TAIL';
+
+        $this->assertSame('ABCTAIL', Letterpress::of($template3)->with(['a' => true, 'b' => true, 'c' => true])->render());
+        $this->assertSame('ABCTAIL', Letterpress::of($template3)->with(['a' => true, 'b' => true, 'c' => false])->render());
+        $this->assertSame('not-aTAIL', Letterpress::of($template3)->with(['a' => false, 'b' => true, 'c' => true])->render());
+    }
+
     public function test_reset()
     {
         $this->assertTrue(Letterpress::defined('if'));
