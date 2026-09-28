@@ -831,6 +831,337 @@ class LetterpressTest extends RebetTestCase
                 ['foo' => 'f'],
                 "a\nfb",
             ],
+
+            // commentif
+            [
+                <<<EOS
+                                //{%-- commentif true -%}
+                                line 1
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                // line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif false -%}
+                                line 1
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif true -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                // line 1
+                                //     indented line 2
+                                // 
+                                // line 4
+
+                EOS
+            ],
+            // commentif
+            [
+                <<<EOS
+                                //{%-- commentif true -%}
+                                line 1
+                                    indented line 2
+
+                            line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                            //     line 1
+                            //         indented line 2
+                            // 
+                            // line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif false -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+                                    indented line 2
+
+                                line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif true, '# ' -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                # line 1
+                                #     indented line 2
+                                # 
+                                # line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif true, '# ', '--- Something headline comment here ---' -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                # --- Something headline comment here ---
+                                # line 1
+                                #     indented line 2
+                                # 
+                                # line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif false, '# ', '--- Something headline comment here ---' -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+                                    indented line 2
+
+                                line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif true, 'indent' => false -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                //                 line 1
+                //                     indented line 2
+                // 
+                //                 line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif true, '# ', '--- Something headline comment here ---', false -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                # --- Something headline comment here ---
+                #                 line 1
+                #                     indented line 2
+                # 
+                #                 line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif \$use_db->not() -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                ['use_db' => false],
+                <<<EOS
+                                // line 1
+                                //     indented line 2
+                                // 
+                                // line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif \$use_db->not() -%}
+                                line 1
+                                    indented line 2
+
+                                line 4
+                                //{%-- endcommentif -%}
+                EOS,
+                ['use_db' => true],
+                <<<EOS
+                                line 1
+                                    indented line 2
+
+                                line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif !\$use_db -%}
+                                line 1
+                                //{%-- endcommentif -%}
+                EOS,
+                ['use_db' => true],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- commentif \$foo || \$bar -%}
+                                line 1
+                                //{%-- endcommentif -%}
+                EOS,
+                ['foo' => false, 'bar' => false],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+
+            // uncommentif
+            [
+                <<<EOS
+                                //{%-- uncommentif true -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- uncommentif false -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                [],
+                ""
+            ],
+            [
+                <<<EOS
+                                //{%-- uncommentif true -%}
+                                // line 1
+                                //     indented line 2
+                                // line 4
+                                //{%-- enduncommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+                                    indented line 2
+                                line 4
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- uncommentif true, '# ' -%}
+                                # line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- uncommentif false, 'keep_body' => true -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                // line 1
+
+                EOS
+            ],
+            [
+                // `keep_body` only affects the (non-matching) else branch, so a matching condition
+                // still uncomments as usual.
+                <<<EOS
+                                //{%-- uncommentif true, 'keep_body' => true -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                [],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- uncommentif \$use_db->not() -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                ['use_db' => false],
+                <<<EOS
+                                line 1
+
+                EOS
+            ],
+            [
+                <<<EOS
+                                //{%-- uncommentif \$use_db->not() -%}
+                                // line 1
+                                //{%-- enduncommentif -%}
+                EOS,
+                ['use_db' => true],
+                ""
+            ],
         ];
     }
 

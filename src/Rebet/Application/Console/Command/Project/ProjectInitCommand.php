@@ -333,10 +333,10 @@ class ProjectInitCommand extends Command
      */
     protected function displayConfigs(array $configs) : void
     {
-        $yn      = fn ($value) => $value ? 'Yes' : 'No';
-        $mask    = '********';
-        $use_db  = $configs['use_db'] ?? false;
-        $labels  = array_values(static::STEPS);
+        $yn     = fn ($value) => $value ? 'Yes' : 'No';
+        $mask   = '********';
+        $use_db = $configs['use_db'] ?? false;
+        $labels = array_values(static::STEPS);
 
         $groups = [
             [
@@ -382,7 +382,7 @@ class ProjectInitCommand extends Command
         foreach ($groups as $i => $group) {
             $rows[] = [new TableCell("<comment>".($i + 1).") {$labels[$i]}</comment>", ['colspan' => 2])];
             foreach ($group as $setting) {
-                $indent  = ($setting[2] ?? false) ? '    ' : '  ';
+                $indent = ($setting[2] ?? false) ? '    ' : '  ';
                 $rows[] = ["{$indent}{$setting[0]}", $setting[1]];
             }
         }

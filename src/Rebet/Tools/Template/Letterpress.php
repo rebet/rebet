@@ -404,6 +404,93 @@ class Letterpress implements Renderable, \JsonSerializable
                 return $contents;
             }
         );
+
+        // ====================================================================
+        // Define 'commentif' filter tag: Comment out body text if needed
+        // ====================================================================
+        // Params:
+        //   $comment_out_needed : boolean - conditions need comment out or not.
+        //   $comment            : string  - comment out mark for line comments. (default: '// ')
+        //   $message            : string  - comment message for headline of commented block. (default: null)
+        //   $indent             : bool    - use auto indent mode or not. (default: true)
+        // Usage:
+        //   {% commentif $use_db->not() %} ... {% endcommentif %}
+        //   {% commentif $without_db, '# ', 'Something headline comment here' %} ... {% endcommentif %}
+        //   {% commentif $without_db, 'indent' => false %} ... {% endcommentif %}
+        static::filter('commentif', function (string $body, $comment_out_needed, string $comment = '// ', string|null $message = null, bool $indent = true) {
+            if (! Tinker::peel($comment_out_needed)) {
+                return $body;
+            }
+
+            $headline = $message !== null ? Strings::indent($message, $comment)."\n" : '' ;
+            if (!$indent) {
+                return $headline.Strings::indent($body, $comment);
+            }
+
+            $body_lines     = explode("\n", Strings::rtrim($body, "\n", 1));
+            $indent_depthes = [];
+            foreach ($body_lines as $line) {
+                if (trim($line) === '') {
+                    continue;
+                }
+                $indent_depthes[] = mb_strlen($line) - mb_strlen(ltrim($line));
+            }
+            $indent_depth   = min($indent_depthes ?: [0]);
+            $indent_space   = str_repeat(' ', $indent_depth);
+            $commented_body = empty($headline) ? '' : $indent_space.$headline;
+            foreach ($body_lines as $line) {
+                $commented_body .= $indent_space.$comment.Strings::lcut($line, $indent_depth)."\n";
+            }
+            return $commented_body;
+        });
+
+        // ====================================================================
+        // Define 'uncommentif' filter tag: Uncomment body text if needed
+        // ====================================================================
+        // Params:
+        //   $uncomment_needed : boolean - conditions need uncomment or not.
+        //   $comment          : string  - comment mark that prefixes each line to be stripped. (default: '// ')
+        //   $keep_body        : bool    - when the condition is false, keep the (still commented) body as-is
+        //                                 instead of discarding it. (default: false)
+        //   $indent           : bool    - use auto indent mode or not. (default: true)
+        // Usage:
+        //   {% uncommentif $session == 'redis' %} // 'handler' => RedisSessionHandler::class, {% enduncommentif %}
+        //   {% uncommentif $without_db, '# ' %} ... {% enduncommentif %}
+        //   {% uncommentif $flag, '// ', 'keep_body' => true %} ... {% enduncommentif %}
+        //   {% uncommentif $flag, 'indent' => false %} ... {% enduncommentif %}
+        static::filter('uncommentif', function (string $body, $uncomment_needed, string $comment = '// ', bool $keep_body = false, bool $indent = true) {
+            if (! Tinker::peel($uncomment_needed)) {
+                return $keep_body ? $body : '';
+            }
+
+            if (!$indent) {
+                $uncommented_body = '';
+                foreach (explode("\n", Strings::rtrim($body, "\n", 1)) as $line) {
+                    $uncommented_body .= (Strings::startsWith($line, $comment) ? Strings::ltrim($line, $comment, 1) : $line)."\n";
+                }
+                return $uncommented_body;
+            }
+
+            $body_lines     = explode("\n", Strings::rtrim($body, "\n", 1));
+            $indent_depthes = [];
+            foreach ($body_lines as $line) {
+                if (trim($line) === '') {
+                    continue;
+                }
+                $indent_depthes[] = mb_strlen($line) - mb_strlen(ltrim($line));
+            }
+            $indent_depth     = min($indent_depthes ?: [0]);
+            $indent_space     = str_repeat(' ', $indent_depth);
+            $uncommented_body = '';
+            foreach ($body_lines as $line) {
+                $content = Strings::lcut($line, $indent_depth);
+                if (Strings::startsWith($content, $comment)) {
+                    $content = Strings::ltrim($content, $comment, 1);
+                }
+                $uncommented_body .= $indent_space.$content."\n";
+            }
+            return $uncommented_body;
+        });
     }
 
     /**
