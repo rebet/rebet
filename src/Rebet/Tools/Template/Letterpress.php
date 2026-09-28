@@ -375,10 +375,14 @@ class Letterpress implements Renderable, \JsonSerializable
      */
     public static function init()
     {
+        // ====================================================================
         // Define 'if' block tag
+        // ====================================================================
         static::if('if', function ($value) { return Tinker::peel($value); });
 
+        // ====================================================================
         // Define 'for' block tag
+        // ====================================================================
         static::block(
             'for',
             ['for' => ['else'], 'else' => []],

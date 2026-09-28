@@ -356,4 +356,92 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             );
         });
     }
+
+    /**
+     * Answers for a full interactive run that accepts every default (no database, no auth, no
+     * cache, twig, native session), followed by the given answers for the settings review prompt.
+     *
+     * @param string[] $review_answers
+     * @return string[]
+     */
+    protected function minimalInteractiveInputs(array $review_answers) : array
+    {
+        return array_merge(
+            ['', '', '', '', 'n', 'n', '', 'n', '', '', ''], // defaults through nginx ports
+            $review_answers
+        );
+    }
+
+    public function test_execute_interactive_reviewConfirmYes()
+    {
+        $this->runInFreshWorkDir('project_init_review_yes', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs($this->minimalInteractiveInputs([
+                '', // Are these settings OK? -> yes (default)
+                'y', // Are you really sure? -> yes
+            ]));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('Current settings', $display);
+            $this->assertStringContainsString('Are these settings OK?', $display);
+            $this->assertStringContainsString('Are you really sure these settings are correct and ready to proceed?', $display);
+            $this->assertStringContainsString('Generating application files from skeltons...', $display);
+            $this->assertStringNotContainsString('Aborted', $display);
+        });
+    }
+
+    public function test_execute_interactive_reviewRedoStep()
+    {
+        $this->runInFreshWorkDir('project_init_review_redo', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs($this->minimalInteractiveInputs([
+                '5',     // Are these settings OK? -> type the step number to fix -> 5) View
+                'blade', // View Engine -> blade
+                'yes',   // Are these settings OK (redisplayed)? -> yes
+                'y',     // Are you really sure? -> yes
+            ]));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            // The redone step is asked a second time, and the final settings/generation reflect it.
+            $this->assertSame(2, substr_count($display, '5) Setup View Configs (5/8)'));
+            $this->assertStringContainsString('composer require illuminate/view', $display);
+        });
+    }
+
+    public function test_execute_interactive_reviewAbort()
+    {
+        $this->runInFreshWorkDir('project_init_review_abort', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs($this->minimalInteractiveInputs([
+                'abort', // Are these settings OK? -> abort
+                'y',     // Are you sure you want to abort?
+            ]));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(1, $status);
+            $this->assertStringContainsString('Are you sure you want to abort?', $display);
+            $this->assertStringContainsString('Aborted by user, nothing was done.', $display);
+            $this->assertStringNotContainsString('Generating application files from skeltons...', $display);
+        });
+    }
+
+    public function test_execute_interactive_reviewAbort_declinedKeepsReviewing()
+    {
+        $this->runInFreshWorkDir('project_init_review_abort_declined', function () {
+            $tester = $this->getCommandTester(ProjectInitCommand::NAME);
+            $tester->setInputs($this->minimalInteractiveInputs([
+                'abort', // Are these settings OK? -> abort
+                'n',     // Are you sure you want to abort? -> no, keep reviewing
+                'yes',   // Are these settings OK (redisplayed)? -> yes
+                'y',     // Are you really sure? -> yes
+            ]));
+            $status  = $tester->execute([], ['interactive' => true]);
+            $display = $tester->getDisplay();
+            $this->assertSame(0, $status);
+            $this->assertStringContainsString('Generating application files from skeltons...', $display);
+            $this->assertStringNotContainsString('Aborted', $display);
+        });
+    }
 }

@@ -10,6 +10,7 @@ use Rebet\Tools\Template\Letterpress;
 use Rebet\Tools\Testable\System;
 use Rebet\Tools\Utility\Path;
 use Rebet\Tools\Utility\Strings;
+use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -123,6 +124,23 @@ class ProjectInitCommand extends Command
     ];
 
     /**
+     * The wizard steps this command asks, in order, as [step method => step label]. Used to drive
+     * the initial pass (see handle()) and to let the user pick a step to redo (see reviewConfigs()).
+     *
+     * @var array<string, string>
+     */
+    const STEPS = [
+        'stepDefaults' => 'Setup Your Application Default Configs',
+        'stepDomain'   => 'Setup Your Application Domain for Local Development',
+        'stepDatabase' => 'Setup Database For Local Development Configs',
+        'stepAuth'     => 'Setup Auth Configs',
+        'stepView'     => 'Setup View Configs',
+        'stepCache'    => 'Setup Cache Store For Local Development Configs',
+        'stepSession'  => 'Setup Session Storage Configs',
+        'stepNginx'    => 'Setup Nginx For Local Development Configs',
+    ];
+
+    /**
      * The path to the skeltons directory that this command renders (via Letterpress) into the new
      * application's `app/` directory.
      *
@@ -156,157 +174,41 @@ class ProjectInitCommand extends Command
             return 1;
         }
 
-        $total_step = 8;
-        $step       = 0;
+        $total_step = count(static::STEPS);
 
         $this->comment('===========================================');
         $this->comment(' Welcome to Rebet Project Initializing ');
         $this->comment('===========================================');
         $this->comment('Please answer questions below.');
 
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Your Application Default Configs ({$step}/{$total_step})");
-        $configs['code_name'] = $code_name = $this->ask("* Application Code Name : ", null, true, Inflector::kebabize(basename($cwd))) ;
-        // Same fallback as the library default (see Rebet\Application\App::defaultConfig()).
-        $configs['locale']   = $this->ask("* Default Locale        : [".locale_get_default()."] ", 'locale', true, locale_get_default()) ;
-        $configs['timezone'] = $this->ask("* Default Timezone      : [".(date_default_timezone_get() ?: 'UTC')."] ", 'timezone', true, date_default_timezone_get() ?: 'UTC') ;
-
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Your Application Domain for Local Development ({$step}/{$total_step})");
-        $this->comment(" - If you already have production domain, then type it with prefix `local.` (ex local.{$code_name}.com)");
-        $this->comment(" - If you don't have production domain yet, then type app name with suffix `.local` (ex {$code_name}.local)");
-        $this->comment(" - If you don't care local development doamin, then type `localhost`");
-        // Same fallback as the skelton's own `APP_DOMAIN` default (see skeltons/app/core/.lp.env).
-        $configs['domain'] = $domain = $this->ask("* Application Domain for Local Development : [localhost] ", 'domain', true, 'localhost');
-        // The docker/nginx skelton templates refer to this same value as `site_domain`.
-        $configs['site_domain'] = $domain;
-
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Database For Local Development Configs ({$step}/{$total_step})");
-        $use_db    = false;
-        $is_sqlite = false;
-        if ($this->option('database') || $this->confirm("Will you use database? [y/n] : ")) {
-            // Reject an explicitly given but invalid --database value before it ever reaches
-            // choice()'s non-interactive fallback, which would otherwise silently substitute the
-            // default below instead of failing (Command::choice() cannot tell "not given" apart
-            // from "given but unresolved" once it falls back to the underlying ChoiceQuestion).
-            if (($given = $this->option('database')) && !$this->requireValidChoice('database', $given, static::SUPPORTED_DATABASES)) {
+        $step = 0;
+        foreach (static::STEPS as $method => $label) {
+            $configs = $this->runStep(++$step, $total_step, $label, $method, $configs);
+            if ($configs === null) {
                 return 1;
             }
-            $configs['database'] = $this->choice("* DB Product  : ", static::SUPPORTED_DATABASES, 'database', 'mysql');
-            $is_sqlite           = $configs['database'] === 'sqlite';
-            $configs['db_name']  = $this->ask("* DB Name     : [{$code_name}] ", 'database-name', true, $code_name);
-            if (!$is_sqlite) {
-                $configs['db_user'] = $this->ask("* DB User     : [{$code_name}] ", 'database-user', true, $code_name);
-                $configs['db_pass'] = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
-            }
-            $use_db = true;
         }
-        $configs['use_db'] = $use_db;
-        if (!$use_db) {
-            $configs['database'] = 'mysql';
-            $configs['db_name']  = $code_name;
-        }
-
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Auth Configs ({$step}/{$total_step})");
-        $use_auth = false;
-        if ($this->option('auth') || $this->confirm("Will you use user auth? [y/n] : ")) {
-            if (!$use_db) {
-                // Unlike the other questions, there is no sensible default for a user's name/email/
-                // password, so `--auth` without a database requires these to be given explicitly
-                // (via --auth-name/--auth-email/--auth-password) when running with --no-interaction.
-                if (!$this->input->isInteractive() && !($this->option('auth-name') && $this->option('auth-email') && $this->option('auth-password'))) {
-                    $this->error('`--auth` without a database requires `--auth-name`, `--auth-email` and `--auth-password` when running with `--no-interaction`.');
-                    return 1;
-                }
-
-                $this->comment("You do not use database, so set ArrayProvider as read only authentication.");
-                $this->comment("Please input an authentication user information that will be written in auth.php configuration file.");
-                $this->writeln("NOTE: If you want to change the password or add new user then you can use Rebet assistant `hash:password` command to create password hash.");
-                $configs['auth_name']     = $this->ask("* Name             : ", 'auth-name', true);
-                $configs['auth_email']    = $this->ask("* Email            : ", 'auth-email', true);
-                $configs['auth_password'] = Password::hash($this->option('auth-password') ?: $this->password("* Password         : ", "* Confirm Password : "));
-            }
-            $use_auth = true;
-        }
-        $configs['use_auth'] = $use_auth;
-
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup View Configs ({$step}/{$total_step})");
-        $configs['view'] = $this->choice("* View Engine : ", [
-            'twig'  => 'Twig',
-            'blade' => 'Larabel Blade',
-        ], 'view', 'twig');
-
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Cache Store For Local Development Configs ({$step}/{$total_step})");
-        $use_cache = false;
-        if ($this->option('cache') || $this->confirm("Will you use cache store? [y/n] : ")) {
-            $cache_choices = static::SUPPORTED_CACHES;
-            if (!$use_db) {
-                unset($cache_choices['database']);
-            }
-            // Same reasoning as the --database check above: reject an explicitly given but
-            // invalid --cache value before it can silently fall back to the default below.
-            if (($given = $this->option('cache')) && !$this->requireValidChoice('cache', $given, $cache_choices)) {
-                return 1;
-            }
-            $configs['cache'] = $this->choice("* Cache Store : ", $cache_choices, 'cache', 'memcached');
-            if ($configs['cache'] == 'memcached') {
-                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$code_name}] ", 'memcached-user', true, $code_name);
-                $configs['memcached_pass'] = $this->ask("* Memcached Password : [P@ssw0rd] ", 'memcached-pass', true, 'P@ssw0rd');
-            }
-            $use_cache = true;
-        }
-        $configs['use_cache'] = $use_cache;
-        if (!$use_cache) {
-            $configs['cache']          = 'memcached';
-            $configs['memcached_user'] = $code_name;
-        }
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Session Storage Configs ({$step}/{$total_step})");
-        $session_choices = static::SUPPORTED_SESSIONS;
-        if (!$use_db) {
-            unset($session_choices['database']);
-        }
-        // Same reasoning as the --database/--cache checks above: reject an explicitly given but
-        // invalid --session value before it can silently fall back to the default below.
-        if (($given = $this->option('session')) && !$this->requireValidChoice('session', $given, $session_choices)) {
-            return 1;
-        }
-        $configs['session'] = $this->choice("* Session Storage : ", $session_choices, 'session', 'native');
-
-
-        $step++;
-        $this->writeln('');
-        $this->writeln("{$step}) Setup Nginx For Local Development Configs ({$step}/{$total_step})");
-        $configs['http_port']  = $this->ask("* HTTP  Port : [80] ", 'http-port', true, '80');
-        $configs['https_port'] = $https_port = $this->ask("* HTTPS Port : [443] ", 'https-port', true, '443');
 
         // @todo Mail settings use mailhog for local development
 
-        // @todo Confirm inputed configs, if you have something wrong, you can fixed it.
         $this->writeln('');
         $this->comment('DEBUG: You are inputed -------');
         $this->comment(Strings::stringify($configs));
         $this->comment('-----------------------');
 
-        $dry_run = (bool) $this->option('dry-run');
+        // Let the user review the collected settings, redo any step that needs fixing, or abort,
+        // before anything is actually written. Skipped entirely under --no-interaction, since
+        // there is nobody to review/confirm anything.
+        if ($this->input->isInteractive()) {
+            $configs = $this->reviewConfigs($configs, $total_step);
+            if ($configs === null) {
+                $this->comment('Aborted by user, nothing was done.');
+                return 1;
+            }
+        }
+
+        $code_name = $configs['code_name'];
+        $dry_run   = (bool) $this->option('dry-run');
 
         $this->writeln('');
         $this->writeln($dry_run ? 'Previewing application files that would be generated from skeltons (dry-run, nothing is written)...' : 'Generating application files from skeltons...');
@@ -347,6 +249,342 @@ class ProjectInitCommand extends Command
         $this->info('-----------------------');
 
         $this->comment("Project {$code_name} initilized! Build something amazing.");
+    }
+
+    /**
+     * Print a step header and run the given wizard step method (see static::STEPS).
+     *
+     * @param int $step 1-based step number
+     * @param int $total_step
+     * @param string $label
+     * @param string $method one of static::STEPS's keys
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>|null updated $configs, or null when the step failed (the
+     *  failure reason has already been printed via $this->error())
+     */
+    protected function runStep(int $step, int $total_step, string $label, string $method, array $configs) : array|null
+    {
+        $this->writeln('');
+        $this->writeln("-------------------------------------------");
+        $this->writeln("{$step}) {$label} ({$step}/{$total_step})");
+        $this->writeln("-------------------------------------------");
+        return $this->{$method}($configs);
+    }
+
+    /**
+     * Show the collected $configs, then let the user confirm them, jump straight to a specific
+     * step to fix it (by its step number), or abort, repeating until the user either confirms
+     * (with a second "are you sure?" confirmation) or aborts (also with a second confirmation).
+     *
+     * @param array<string, mixed> $configs
+     * @param int $total_step
+     * @return array<string, mixed>|null the confirmed $configs, or null when the user aborted
+     */
+    protected function reviewConfigs(array $configs, int $total_step) : array|null
+    {
+        $methods = array_keys(static::STEPS);
+        $labels  = array_values(static::STEPS);
+
+        while (true) {
+            $this->writeln('');
+            $this->displayConfigs($configs);
+
+            $choices = ['yes' => 'Yes, proceed with these settings'];
+            foreach ($labels as $i => $label) {
+                $choices[$i + 1] = ($i + 1).") Fix: {$label}";
+            }
+            $choices['abort'] = 'Abort (cancel initialization)';
+
+            $picked = $this->choice("Are these settings OK? If not, type the step number to fix it. : ", $choices, null, 'yes');
+            // ChoiceQuestion may resolve to either the chosen key or its value depending on the
+            // key's type (an all-integer choice list resolves to the value), so normalize back to
+            // the canonical choice key via a value => key reverse lookup.
+            $action = array_key_exists($picked, $choices) ? $picked : (array_search($picked, $choices, true) ?: $picked);
+
+            if ($action === 'abort') {
+                if ($this->confirm("Are you sure you want to abort? Nothing will be initialized. [y/n] : ", false)) {
+                    return null;
+                }
+                continue;
+            }
+
+            if ($action === 'yes') {
+                if ($this->confirm("Are you really sure these settings are correct and ready to proceed? [y/n] : ", true)) {
+                    return $configs;
+                }
+                continue;
+            }
+
+            // Otherwise $action is the 1-based step number to fix.
+            $index   = ((int) $action) - 1;
+            $configs = $this->runStep($index + 1, $total_step, $labels[$index], $methods[$index], $configs);
+            if ($configs === null) {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Print the currently collected $configs as a human readable table, grouped by the wizard
+     * step that asked each setting. Password-like values are masked.
+     *
+     * @param array<string, mixed> $configs
+     * @return void
+     */
+    protected function displayConfigs(array $configs) : void
+    {
+        $yn      = fn ($value) => $value ? 'Yes' : 'No';
+        $mask    = '********';
+        $use_db  = $configs['use_db'] ?? false;
+        $labels  = array_values(static::STEPS);
+
+        $groups = [
+            [
+                ['Application Code Name', $configs['code_name'] ?? ''],
+                ['Locale', $configs['locale'] ?? ''],
+                ['Timezone', $configs['timezone'] ?? ''],
+            ],
+            [
+                ['Domain', $configs['domain'] ?? ''],
+            ],
+            array_values(array_filter([
+                ['Use Database', $yn($use_db)],
+                $use_db ? ['DB Product', $configs['database'] ?? '', true] : null,
+                $use_db ? ['DB Name', $configs['db_name'] ?? '', true] : null,
+                isset($configs['db_user']) ? ['DB User', $configs['db_user'], true] : null,
+                isset($configs['db_pass']) ? ['DB Password', $mask, true] : null,
+            ])),
+            array_values(array_filter([
+                ['Use Auth', $yn($configs['use_auth'] ?? false)],
+                isset($configs['auth_name']) ? ['Auth Name', $configs['auth_name'], true] : null,
+                isset($configs['auth_email']) ? ['Auth Email', $configs['auth_email'], true] : null,
+                isset($configs['auth_password']) ? ['Auth Password', $mask, true] : null,
+            ])),
+            [
+                ['View Engine', $configs['view'] ?? ''],
+            ],
+            array_values(array_filter([
+                ['Use Cache', $yn($configs['use_cache'] ?? false)],
+                ($configs['use_cache'] ?? false) ? ['Cache Store', $configs['cache'] ?? '', true] : null,
+                ($configs['cache'] ?? null) === 'memcached' && isset($configs['memcached_user']) ? ['Memcached User', $configs['memcached_user'], true] : null,
+                isset($configs['memcached_pass']) ? ['Memcached Password', $mask, true] : null,
+            ])),
+            [
+                ['Session Storage', $configs['session'] ?? ''],
+            ],
+            [
+                ['HTTP Port', $configs['http_port'] ?? ''],
+                ['HTTPS Port', $configs['https_port'] ?? ''],
+            ],
+        ];
+
+        $rows = [];
+        foreach ($groups as $i => $group) {
+            $rows[] = [new TableCell("<comment>".($i + 1).") {$labels[$i]}</comment>", ['colspan' => 2])];
+            foreach ($group as $setting) {
+                $indent  = ($setting[2] ?? false) ? '    ' : '  ';
+                $rows[] = ["{$indent}{$setting[0]}", $setting[1]];
+            }
+        }
+
+        $this->comment('Current settings -------------------------');
+        $this->table(['Setting', 'Value'], $rows);
+    }
+
+    /**
+     * Wizard step: application code name, locale and timezone.
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>
+     */
+    protected function stepDefaults(array $configs) : array
+    {
+        $configs['code_name'] = $this->ask("* Application Code Name : ", null, true, Inflector::kebabize(basename($configs['cwd'])));
+        // Same fallback as the library default (see Rebet\Application\App::defaultConfig()).
+        $configs['locale']   = $this->ask("* Default Locale        : [".locale_get_default()."] ", 'locale', true, locale_get_default());
+        $configs['timezone'] = $this->ask("* Default Timezone      : [".(date_default_timezone_get() ?: 'UTC')."] ", 'timezone', true, date_default_timezone_get() ?: 'UTC');
+        return $configs;
+    }
+
+    /**
+     * Wizard step: application domain for local development.
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>
+     */
+    protected function stepDomain(array $configs) : array
+    {
+        $code_name = $configs['code_name'];
+        $this->comment(" - If you already have production domain, then type it with prefix `local.` (ex local.{$code_name}.com)");
+        $this->comment(" - If you don't have production domain yet, then type app name with suffix `.local` (ex {$code_name}.local)");
+        $this->comment(" - If you don't care local development doamin, then type `localhost`");
+        // Same fallback as the skelton's own `APP_DOMAIN` default (see skeltons/app/core/.lp.env).
+        $configs['domain'] = $domain = $this->ask("* Application Domain for Local Development : [localhost] ", 'domain', true, 'localhost');
+        // The docker/nginx skelton templates refer to this same value as `site_domain`.
+        $configs['site_domain'] = $domain;
+        return $configs;
+    }
+
+    /**
+     * Wizard step: database product and credentials for local development (or none at all).
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>|null null when an explicitly given --database value is invalid
+     */
+    protected function stepDatabase(array $configs) : array|null
+    {
+        $code_name = $configs['code_name'];
+        unset($configs['db_user'], $configs['db_pass']);
+
+        $use_db = false;
+        if ($this->option('database') || $this->confirm("Will you use database? [y/n] : ")) {
+            // Reject an explicitly given but invalid --database value before it ever reaches
+            // choice()'s non-interactive fallback, which would otherwise silently substitute the
+            // default below instead of failing (Command::choice() cannot tell "not given" apart
+            // from "given but unresolved" once it falls back to the underlying ChoiceQuestion).
+            if (($given = $this->option('database')) && !$this->requireValidChoice('database', $given, static::SUPPORTED_DATABASES)) {
+                return null;
+            }
+            $configs['database'] = $this->choice("* DB Product  : ", static::SUPPORTED_DATABASES, 'database', 'mysql');
+            $is_sqlite           = $configs['database'] === 'sqlite';
+            $configs['db_name']  = $this->ask("* DB Name     : [{$code_name}] ", 'database-name', true, $code_name);
+            if (!$is_sqlite) {
+                $configs['db_user'] = $this->ask("* DB User     : [{$code_name}] ", 'database-user', true, $code_name);
+                $configs['db_pass'] = $this->ask("* DB Password : [P@ssw0rd] ", 'database-pass', true, 'P@ssw0rd');
+            }
+            $use_db = true;
+        }
+        $configs['use_db'] = $use_db;
+        if (!$use_db) {
+            $configs['database'] = 'mysql';
+            $configs['db_name']  = $code_name;
+        }
+        return $configs;
+    }
+
+    /**
+     * Wizard step: user auth (and, when not using a database, the single ArrayProvider user).
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>|null null when `--auth` is used without a database and without
+     *  `--auth-name`/`--auth-email`/`--auth-password` under `--no-interaction`
+     */
+    protected function stepAuth(array $configs) : array|null
+    {
+        unset($configs['auth_name'], $configs['auth_email'], $configs['auth_password']);
+        $use_db = $configs['use_db'] ?? false;
+
+        $use_auth = false;
+        if ($this->option('auth') || $this->confirm("Will you use user auth? [y/n] : ")) {
+            if (!$use_db) {
+                // Unlike the other questions, there is no sensible default for a user's name/email/
+                // password, so `--auth` without a database requires these to be given explicitly
+                // (via --auth-name/--auth-email/--auth-password) when running with --no-interaction.
+                if (!$this->input->isInteractive() && !($this->option('auth-name') && $this->option('auth-email') && $this->option('auth-password'))) {
+                    $this->error('`--auth` without a database requires `--auth-name`, `--auth-email` and `--auth-password` when running with `--no-interaction`.');
+                    return null;
+                }
+
+                $this->comment("You do not use database, so set ArrayProvider as read only authentication.");
+                $this->comment("Please input an authentication user information that will be written in auth.php configuration file.");
+                $this->writeln("NOTE: If you want to change the password or add new user then you can use Rebet assistant `hash:password` command to create password hash.");
+                $configs['auth_name']     = $this->ask("* Name             : ", 'auth-name', true);
+                $configs['auth_email']    = $this->ask("* Email            : ", 'auth-email', true);
+                $configs['auth_password'] = Password::hash($this->option('auth-password') ?: $this->password("* Password         : ", "* Confirm Password : "));
+            }
+            $use_auth = true;
+        }
+        $configs['use_auth'] = $use_auth;
+        return $configs;
+    }
+
+    /**
+     * Wizard step: view template engine.
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>
+     */
+    protected function stepView(array $configs) : array
+    {
+        $configs['view'] = $this->choice("* View Engine : ", [
+            'twig'  => 'Twig',
+            'blade' => 'Larabel Blade',
+        ], 'view', 'twig');
+        return $configs;
+    }
+
+    /**
+     * Wizard step: cache store product for local development (or none at all).
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>|null null when an explicitly given --cache value is invalid
+     */
+    protected function stepCache(array $configs) : array|null
+    {
+        $code_name = $configs['code_name'];
+        $use_db    = $configs['use_db'] ?? false;
+        unset($configs['memcached_user'], $configs['memcached_pass']);
+
+        $use_cache = false;
+        if ($this->option('cache') || $this->confirm("Will you use cache store? [y/n] : ")) {
+            $cache_choices = static::SUPPORTED_CACHES;
+            if (!$use_db) {
+                unset($cache_choices['database']);
+            }
+            // Same reasoning as the --database check above: reject an explicitly given but
+            // invalid --cache value before it can silently fall back to the default below.
+            if (($given = $this->option('cache')) && !$this->requireValidChoice('cache', $given, $cache_choices)) {
+                return null;
+            }
+            $configs['cache'] = $this->choice("* Cache Store : ", $cache_choices, 'cache', 'memcached');
+            if ($configs['cache'] == 'memcached') {
+                $configs['memcached_user'] = $this->ask("* Memcached User     : [{$code_name}] ", 'memcached-user', true, $code_name);
+                $configs['memcached_pass'] = $this->ask("* Memcached Password : [P@ssw0rd] ", 'memcached-pass', true, 'P@ssw0rd');
+            }
+            $use_cache = true;
+        }
+        $configs['use_cache'] = $use_cache;
+        if (!$use_cache) {
+            $configs['cache']          = 'memcached';
+            $configs['memcached_user'] = $code_name;
+        }
+        return $configs;
+    }
+
+    /**
+     * Wizard step: session storage handler.
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>|null null when an explicitly given --session value is invalid
+     */
+    protected function stepSession(array $configs) : array|null
+    {
+        $use_db = $configs['use_db'] ?? false;
+
+        $session_choices = static::SUPPORTED_SESSIONS;
+        if (!$use_db) {
+            unset($session_choices['database']);
+        }
+        // Same reasoning as the --database/--cache checks above: reject an explicitly given but
+        // invalid --session value before it can silently fall back to the default below.
+        if (($given = $this->option('session')) && !$this->requireValidChoice('session', $given, $session_choices)) {
+            return null;
+        }
+        $configs['session'] = $this->choice("* Session Storage : ", $session_choices, 'session', 'native');
+        return $configs;
+    }
+
+    /**
+     * Wizard step: nginx ports for local development.
+     *
+     * @param array<string, mixed> $configs
+     * @return array<string, mixed>
+     */
+    protected function stepNginx(array $configs) : array
+    {
+        $configs['http_port']  = $this->ask("* HTTP  Port : [80] ", 'http-port', true, '80');
+        $configs['https_port'] = $this->ask("* HTTPS Port : [443] ", 'https-port', true, '443');
+        return $configs;
     }
 
     /**
