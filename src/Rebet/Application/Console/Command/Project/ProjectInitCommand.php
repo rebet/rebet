@@ -59,6 +59,40 @@ class ProjectInitCommand extends Command
         'pgsql'   => 'PostgreSQL',
     ];
 
+    /**
+     * Supported cache store products [driver => label]. The `database` choice is only offered when
+     * a database is actually used (see the `use_db` config).
+     *
+     * @var array<string, string>
+     */
+    const SUPPORTED_CACHES = [
+        'apcu'      => 'APCu',
+        'database'  => 'Database',
+        'file'      => 'File System',
+        'memcached' => 'Memcached',
+        'redis'     => 'Redis',
+    ];
+
+    /**
+     * Supported session storage handlers [handler => label]. The `database` choice is only offered
+     * when a database is actually used (see the `use_db` config).
+     *
+     * @var array<string, string>
+     */
+    const SUPPORTED_SESSIONS = [
+        'native'    => 'Native (File)',
+        'database'  => 'Database',
+        'memcached' => 'Memcached',
+        'redis'     => 'Redis',
+        'mongodb'   => 'MongoDB',
+    ];
+
+    /**
+     * Composer packages to `composer require` based on the collected $configs, grouped by the
+     * $configs key that decides whether each package is required (see resolveComposerPackages()).
+     *
+     * @var array<string, array<string, string>>
+     */
     const COMPOSER_REQUIRE = [
         'session' => [
             'mongodb' => 'mongodb/mongodb',
@@ -73,6 +107,12 @@ class ProjectInitCommand extends Command
         ],
     ];
 
+    /**
+     * Composer packages to always `composer require --dev`, regardless of $configs (see
+     * resolveComposerPackages()).
+     *
+     * @var array<string, array<int, string>>
+     */
     const COMPOSER_REQUIRE_DEV = [
         'always' => [
             "friendsofphp/php-cs-fixer",
@@ -215,15 +255,10 @@ class ProjectInitCommand extends Command
         $this->writeln("{$step}) Setup Cache Store For Local Development Configs ({$step}/{$total_step})");
         $use_cache = false;
         if ($this->option('cache') || $this->confirm("Will you use cache store? [y/n] : ")) {
-            $cache_choices = [
-                'apcu' => 'APCu',
-            ] +
-            ($use_db ? ['database' => 'Database'] : []) +
-            [
-                'file'      => 'File System',
-                'memcached' => 'Memcached',
-                'redis'     => 'Redis',
-            ];
+            $cache_choices = static::SUPPORTED_CACHES;
+            if (!$use_db) {
+                unset($cache_choices['database']);
+            }
             // Same reasoning as the --database check above: reject an explicitly given but
             // invalid --cache value before it can silently fall back to the default below.
             if (($given = $this->option('cache')) && !$this->requireValidChoice('cache', $given, $cache_choices)) {
@@ -245,15 +280,10 @@ class ProjectInitCommand extends Command
         $step++;
         $this->writeln('');
         $this->writeln("{$step}) Setup Session Storage Configs ({$step}/{$total_step})");
-        $session_choices = [
-            'native' => 'Native (File)',
-        ] +
-        ($use_db ? ['database' => 'Database'] : []) +
-        [
-            'memcached' => 'Memcached',
-            'redis'     => 'Redis',
-            'mongodb'   => 'MongoDB',
-        ];
+        $session_choices = static::SUPPORTED_SESSIONS;
+        if (!$use_db) {
+            unset($session_choices['database']);
+        }
         // Same reasoning as the --database/--cache checks above: reject an explicitly given but
         // invalid --session value before it can silently fall back to the default below.
         if (($given = $this->option('session')) && !$this->requireValidChoice('session', $given, $session_choices)) {
