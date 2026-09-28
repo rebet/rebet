@@ -1,0 +1,8 @@
+/.history/
+/.phpunit.cache/
+/app/vendor/
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+.env
+.DS_Store
+Thumbs.db

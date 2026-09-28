@@ -1,10 +1,15 @@
 FROM php:8.3-fpm
 
+# Use bash
+SHELL ["/bin/bash", "-c"]
+
 # Install Required extensions and depends
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libfreetype6-dev libjpeg62-turbo-dev libpq-dev libzip-dev libicu-dev \
     && docker-php-ext-configure                   gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc)          gd bcmath zip intl
+    && docker-php-ext-install -j$(nproc)          gd bcmath zip intl \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 #{%-- if $database == 'mysql' -%}
 # Install MySQL/MariaDB extensions and depends

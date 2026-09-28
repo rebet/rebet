@@ -56,7 +56,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('view => twig,', $display);
 
             $this->assertFileExists("{$work_dir}/app/core/.env");
-            $this->assertFileExists("{$work_dir}/bin/app");
+            $this->assertFileExists("{$work_dir}/app/bin/assistant");
         });
     }
 
@@ -140,14 +140,14 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
             $display = $tester->getDisplay();
             $this->assertStringContainsString('nothing is written', $display);
-            $this->assertStringContainsString("  - {$work_dir}/bin/app", $display);
+            $this->assertStringContainsString("  - {$work_dir}/app/bin/assistant", $display);
             // Database is not used by default, so all `.devcontainer/docker/{driver}` dirs are excluded.
-            $this->assertStringContainsString('45 files would be generated.', $display);
+            $this->assertStringContainsString('61 files would be generated.', $display);
             $this->assertStringContainsString('Dry-run finished, nothing was written.', $display);
 
             // Nothing was actually written to disk.
             $this->assertFileDoesNotExist("{$work_dir}/app");
-            $this->assertFileDoesNotExist("{$work_dir}/bin");
+            $this->assertFileDoesNotExist("{$work_dir}/.devcontainer");
         });
     }
 
@@ -168,16 +168,16 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
 
     public function test_execute_alreadyInitialized_anyTopLevelSkeltonEntry()
     {
-        // Not just `app/`: any top-level skelton entry (eg. `bin/`, `.devcontainer/`, `tests/`)
+        // Not just `app/`: any top-level skelton entry (eg. `tests/`, `.devcontainer/`)
         // already existing must also refuse to run.
         $this->runInFreshWorkDir('project_init_already_initialized', function (string $work_dir) {
-            mkdir("{$work_dir}/bin");
+            mkdir("{$work_dir}/tests");
 
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(1, $status);
             $this->assertStringContainsString(
-                "This directory seems to already be initialized (`{$work_dir}/bin` already exists).",
+                "This directory seems to already be initialized (`{$work_dir}/tests` already exists).",
                 $tester->getDisplay()
             );
 
