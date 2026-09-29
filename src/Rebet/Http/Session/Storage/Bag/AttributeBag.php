@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Bag;
 
+use Override;
 use Rebet\Tools\Reflection\Reflector;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 
@@ -55,6 +56,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function getName(): string
     {
         return $this->name;
@@ -65,6 +67,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @param array<string, mixed> $attributes
      */
+    #[Override]
     public function initialize(array &$attributes): void
     {
         $this->attributes = &$attributes;
@@ -73,6 +76,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function getStorageKey(): string
     {
         return $this->storage_key;
@@ -81,6 +85,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function clear(): mixed
     {
         $value            = $this->attributes;
@@ -149,6 +154,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return \ArrayIterator<string, mixed>
      */
+    #[Override]
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->attributes);
@@ -159,6 +165,7 @@ class AttributeBag implements SessionBagInterface, \IteratorAggregate, \Countabl
      *
      * @return int
      */
+    #[Override]
     public function count(): int
     {
         return \count($this->attributes);

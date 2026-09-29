@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth\Provider;
 
+use Override;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\Entity\RememberToken;
 use Rebet\Tools\DateTime\DateTime;
@@ -110,6 +111,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function findById($id): AuthUser|null
     {
         if ($id === null) {
@@ -124,6 +126,7 @@ class DatabaseProvider extends AuthProvider
      *
      * @param array<string, mixed>|null $precondition for ransack conditions (default: depend on constructor)
      */
+    #[Override]
     public function findByToken(string|null $token, array|null $precondition = null): AuthUser|null
     {
         if ($token === null) {
@@ -138,6 +141,7 @@ class DatabaseProvider extends AuthProvider
      *
      * @param array<string, mixed>|null $precondition for ransack conditions (default: depend on constructor)
      */
+    #[Override]
     protected function findBySigninId($signin_id, array|null $precondition = null): AuthUser|null
     {
         if ($signin_id === null) {
@@ -150,6 +154,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function supportRememberToken(): bool
     {
         return true;
@@ -158,6 +163,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function findByRememberToken(string|null $token): AuthUser|null
     {
         if ($token === null) {
@@ -170,6 +176,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function issuingRememberToken($id, int $remember_days): string|null
     {
         $now                      = DateTime::now();
@@ -188,6 +195,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function removeRememberToken(string|null $token): void
     {
         RememberToken::deleteBy(['provider' => $this->name, 'remember_token' => $this->hashToken($token)], $this->db);
@@ -199,6 +207,7 @@ class DatabaseProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function rehashPassword($id, string $new_hash): void
     {
         $this->entity::updateBy(

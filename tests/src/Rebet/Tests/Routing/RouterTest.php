@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Routing;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
@@ -28,6 +29,7 @@ use TestApp\Enum\Gender;
 
 class RouterTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database;
 
+use Override;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Auth\Password;
@@ -43,6 +44,7 @@ use TestApp\Model\UserWithAnnot;
 
 class DatabaseTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database;
 
+use Override;
 use Rebet\Database\DataModel\DataModel;
 use Rebet\Tools\Support\Arrayable;
 use Rebet\Tools\Utility\Arrays;
@@ -50,6 +51,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      *
      * @return array<int|string, mixed>
      */
+    #[Override]
     protected function &container(): array
     {
         return $this->items;
@@ -58,6 +60,7 @@ class ResultSet implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function offsetSet($offset, $value): void
     {
         if ($value instanceof DataModel) {

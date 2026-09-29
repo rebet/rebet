@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Config;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\ConfigReferrer;
@@ -13,6 +14,7 @@ class ConfigReferrerTest_Mock
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -28,6 +30,7 @@ class ConfigReferrerTest_MockOrigin
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -42,6 +45,7 @@ class ConfigReferrerTest extends RebetTestCase
     private $ref_database;
     private $ref_user;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

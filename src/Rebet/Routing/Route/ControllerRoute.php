@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Inflection\Inflector;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -19,6 +20,7 @@ use Rebet\Tools\Utility\Strings;
  */
 class ControllerRoute extends ConventionalRoute
 {
+    #[Override]
     public static function defaultConfig()
     {
         return static::shareConfigWith(parent::class);
@@ -63,6 +65,7 @@ class ControllerRoute extends ConventionalRoute
      * @param  string                                             $request_uri
      * @return array{0: string, 1: string, 2: array<int, string>}
      */
+    #[Override]
     protected function resolveRequestUri(string $request_uri): array
     {
         $request_uri        = Strings::ltrim($request_uri, $this->uri, 1);
@@ -84,6 +87,7 @@ class ControllerRoute extends ConventionalRoute
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
+    #[Override]
     protected function analyze(Request $request): array|null
     {
         $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
@@ -101,6 +105,7 @@ class ControllerRoute extends ConventionalRoute
      * @param  bool   $with_namespace (default: true)
      * @return string
      */
+    #[Override]
     public function getControllerName(bool $with_namespace = true): string
     {
         return $with_namespace ? $this->action->getName() : $this->action->getShortName() ;

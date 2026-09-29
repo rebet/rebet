@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth\Guard;
 
+use Override;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Http\Cookie\Cookie;
@@ -83,6 +84,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function signin(AuthUser $user, string $goto = '/', bool $remember = false): Response
     {
         if ($user->isGuest()) {
@@ -110,6 +112,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function signout(string $goto = '/'): Response
     {
         if (!$this->user()->isGuest()) {
@@ -128,6 +131,7 @@ class SessionGuard extends StatefulGuard
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function authenticate(): Response|null
     {
         $user = $this->provider->findById($this->request->session()->get($this->signinIdKey()));

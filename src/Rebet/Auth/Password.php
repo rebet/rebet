@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 
 /**
@@ -22,6 +23,7 @@ class Password
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/auth.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

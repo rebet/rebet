@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application;
 
+use Override;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Event\Authentication;
 use Rebet\Auth\Event\Signined;
@@ -16,6 +17,7 @@ use Rebet\Tools\Config\Config;
 
 class EventTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

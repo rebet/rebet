@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Model;
 
+use Override;
 use Rebet\Database\Attribute\Defaults;
 use Rebet\Database\Attribute\Unmap;
 use Rebet\Database\DataModel\Entity;
@@ -53,6 +54,7 @@ class User extends Entity
     /**
      * Method for unit test
      */
+    #[Override]
     public function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
         return parent::belongsTo($class, $alias, $for_update, $eager_load, $name ?? Reflector::caller());
@@ -61,6 +63,7 @@ class User extends Entity
     /**
      * Method for unit test
      */
+    #[Override]
     public function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
         return parent::hasOne($class, $alias, $for_update, $eager_load, $name ?? Reflector::caller());
@@ -69,6 +72,7 @@ class User extends Entity
     /**
      * Method for unit test
      */
+    #[Override]
     public function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null): array
     {
         return parent::hasMany($class, $alias, $ransacks, $order_by, $limit, $for_update, $eager_load, $name ?? Reflector::caller());

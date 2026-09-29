@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Tinker;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Exception\LogicException;
@@ -137,6 +138,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -527,6 +529,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function offsetSet($offset, $value): void
     {
         $origin = &$this->origin();
@@ -538,6 +541,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function offsetExists($offset): bool
     {
         return Reflector::has($this->origin(), $offset);
@@ -546,6 +550,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function offsetUnset($offset): void
     {
         $origin = $this->origin();
@@ -557,6 +562,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function offsetGet($offset): mixed
     {
         return $this->__get($offset);
@@ -565,6 +571,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function count(): int
     {
         return Arrays::count($this->origin());
@@ -573,6 +580,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getIterator(): \Traversable
     {
         $origin = $this->origin();
@@ -585,6 +593,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return Reflector::convert($this->origin(), 'string') ?? '' ;
@@ -593,6 +602,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function jsonSerialize(): mixed
     {
         return Json::serialize($this->origin());

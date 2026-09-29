@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Resource;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\LogicException;
@@ -13,6 +14,7 @@ class EnvResourceTest extends RebetTestCase
 {
     private $resources;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

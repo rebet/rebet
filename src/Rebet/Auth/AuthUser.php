@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth;
 
+use Override;
 use Rebet\Auth\Provider\AuthProvider;
 use Rebet\Inflection\Inflector;
 use Rebet\Tools\Config\Configurable;
@@ -34,6 +35,7 @@ class AuthUser implements \JsonSerializable
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/auth.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -320,6 +322,7 @@ class AuthUser implements \JsonSerializable
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return Reflector::convert($this->user, 'string') ?? json_encode($this) ;
@@ -328,6 +331,7 @@ class AuthUser implements \JsonSerializable
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function jsonSerialize(): mixed
     {
         return Json::serialize($this->user);

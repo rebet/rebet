@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Node;
 
+use Override;
 use Twig\Compiler;
 use Twig\Node\Node;
 
@@ -32,6 +33,7 @@ class RawNode extends Node
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function compile(Compiler $compiler): void
     {
         $compiler->raw($this->getAttribute('code'));

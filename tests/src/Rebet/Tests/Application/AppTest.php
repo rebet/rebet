@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
@@ -12,6 +13,7 @@ use TestApp\Stub\KernelStub;
 
 class AppTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

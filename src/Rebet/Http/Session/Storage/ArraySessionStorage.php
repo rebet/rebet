@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage;
 
+use Override;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
@@ -32,6 +33,7 @@ class ArraySessionStorage extends MockArraySessionStorage
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function regenerate(bool $destroy = false, int|null $lifetime = null): bool
     {
         if (!$this->started) {

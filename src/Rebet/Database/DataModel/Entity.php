@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\DataModel;
 
+use Override;
 use Rebet\Database\Attribute\Defaults;
 use Rebet\Database\Attribute\Table;
 use Rebet\Database\Attribute\Unmap;
@@ -339,6 +340,7 @@ abstract class Entity extends DataModel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected static function buildSelectAllSql(Database $db): Query
     {
         return $db->sql("SELECT * FROM " . $db->driver()->quoteIdentifier(static::tabelName()));

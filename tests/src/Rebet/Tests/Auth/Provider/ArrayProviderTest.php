@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Auth\Provider;
 
+use Override;
 use Rebet\Auth\Password;
 use Rebet\Auth\Provider\ArrayProvider;
 use Rebet\Tests\RebetTestCase;
@@ -20,6 +21,7 @@ class ArrayProviderTest extends RebetTestCase
     private $provider_exclude_resigned;
     private $provider_with_aliases;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

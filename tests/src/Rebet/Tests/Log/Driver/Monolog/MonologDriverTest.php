@@ -7,12 +7,14 @@ namespace Rebet\Tests\Log\Driver\Monolog;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
+use Override;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 
 class MonologDriverTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

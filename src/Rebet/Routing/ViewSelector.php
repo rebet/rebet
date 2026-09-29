@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing;
 
+use Override;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Http\Request;
@@ -26,6 +27,7 @@ class ViewSelector
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/routing.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

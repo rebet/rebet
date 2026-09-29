@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database;
 
+use Override;
 use PDOException;
 use PDOStatement;
 use Rebet\Database\DataModel\Entity;
@@ -308,6 +309,7 @@ class Statement implements \IteratorAggregate
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getIterator(): \Traversable
     {
         return $this->stmt;

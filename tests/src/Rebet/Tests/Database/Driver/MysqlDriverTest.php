@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database\Driver;
 
+use Override;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -14,6 +15,7 @@ use Rebet\Tools\Reflection\Reflector;
 
 class MysqlDriverTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

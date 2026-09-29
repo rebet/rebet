@@ -8,6 +8,7 @@ use Monolog\JsonSerializableDateTimeImmutable;
 use Monolog\Level;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\ProcessIdProcessor;
+use Override;
 use Rebet\Log\Driver\NameableDriver;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
@@ -35,6 +36,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -67,6 +69,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -79,6 +82,7 @@ class MonologDriver extends MonologLogger implements NameableDriver // @phpstan-
      * Override for use Rebet DateTime class (which is testable via DateTime::setTestNow())
      * as the source of the record 'datetime' attribute creation.
      */
+    #[Override]
     public function addRecord(int|Level $level, string $message, array $context = [], JsonSerializableDateTimeImmutable|null $datetime = null): bool
     {
         if ($datetime === null) {

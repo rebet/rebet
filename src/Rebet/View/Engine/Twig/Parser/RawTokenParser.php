@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Parser;
 
+use Override;
 use Rebet\View\Engine\Twig\Node\RawNode;
 use Twig\Token;
 use Twig\TokenParser\AbstractTokenParser;
@@ -43,6 +44,7 @@ class RawTokenParser extends AbstractTokenParser
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function parse(Token $token)
     {
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
@@ -52,6 +54,7 @@ class RawTokenParser extends AbstractTokenParser
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getTag()
     {
         return $this->tag;

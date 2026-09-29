@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Pagination;
 
+use Override;
 use Rebet\Database\ResultSet;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Json;
@@ -204,6 +205,7 @@ class Paginator extends ResultSet
      *
      * @return int
      */
+    #[Override]
     public function count(): int
     {
         return Arrays::count($this->items);
@@ -493,6 +495,7 @@ class Paginator extends ResultSet
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function jsonSerialize(): mixed
     {
         $page_urls = [];

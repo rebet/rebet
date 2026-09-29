@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Routing;
 
+use Override;
 use Rebet\Http\Responder;
 use Rebet\Routing\Controller;
 use Rebet\Tests\RebetTestCase;
@@ -15,6 +16,7 @@ class ControllerTest extends RebetTestCase
      */
     private $controller;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

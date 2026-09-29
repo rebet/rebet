@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Testable;
 
+use Override;
+
 /**
  * Abstract Capture Class
  *
@@ -74,6 +76,7 @@ abstract class AbstractCapture extends \php_user_filter
      * @param  bool     $closing
      * @return int
      */
+    #[Override]
     public function filter($in, $out, &$consumed, bool $closing): int
     {
         while ($bucket = stream_bucket_make_writeable($in)) {

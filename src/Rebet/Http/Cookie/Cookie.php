@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Cookie;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
@@ -28,6 +29,7 @@ class Cookie extends SymfonyCookie
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/http.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -109,6 +111,7 @@ class Cookie extends SymfonyCookie
      *
      * @param \DateTimeInterface|int|string|null $expire (default: depend on configure)
      */
+    #[Override]
     public static function create(string $name, string|null $value = null, \DateTimeInterface|int|string|null $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null, bool $partitioned = false): self
     {
         return new static($name, $value, $expire, $path, $domain, $secure, $http_only, $raw, $samesite, $partitioned);

@@ -11,6 +11,7 @@ use Egulias\EmailValidator\Result\Reason\DotAtEnd;
 use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Egulias\EmailValidator\Validation\EmailValidation;
 use Egulias\EmailValidator\Warning\Warning;
+use Override;
 use Rebet\Mail\Validator\Parser\LooseEmailParser;
 use Rebet\Tools\Config\Configurable;
 
@@ -30,6 +31,7 @@ class LooseRFCValidation implements EmailValidation
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/mail.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -69,6 +71,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function isValid($email, EmailLexer $emailLexer): bool
     {
         $parser = new LooseEmailParser($emailLexer, $this->ignores);
@@ -85,6 +88,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getError(): InvalidEmail|null
     {
         return $this->error;
@@ -93,6 +97,7 @@ class LooseRFCValidation implements EmailValidation
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getWarnings(): array
     {
         return $this->warnings;

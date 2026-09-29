@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\View\Engine\Blade\Compiler;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
@@ -19,6 +20,7 @@ class BladeCompilerTest extends RebetTestCase
      */
     private $compiler;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

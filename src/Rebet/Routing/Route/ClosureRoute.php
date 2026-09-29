@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -46,6 +47,7 @@ class ClosureRoute extends DeclarativeRoute
      * @return RouteAction
      * @throws RouteNotFoundException
      */
+    #[Override]
     protected function createRouteAction(Request $request): RouteAction
     {
         return new RouteAction($this, new \ReflectionFunction($this->action));
@@ -58,6 +60,7 @@ class ClosureRoute extends DeclarativeRoute
      * @param  Response $response
      * @return void
      */
+    #[Override]
     public function terminate(Request $request, Response $response): void
     {
         // Do Nothing.

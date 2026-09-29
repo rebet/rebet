@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console;
 
+use Override;
 use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
@@ -37,6 +38,7 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -96,6 +98,7 @@ class CliKernel extends Kernel
      * {@inheritDoc}
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
+    #[Override]
     protected function bootstrappers(): array
     {
         return static::config('bootstrappers');
@@ -116,6 +119,7 @@ class CliKernel extends Kernel
      *
      * @return void
      */
+    #[Override]
     public function bootstrap(): void
     {
         parent::bootstrap();
@@ -128,6 +132,7 @@ class CliKernel extends Kernel
      * @param  InputInterface|null $input (default: null for ArgvInput())
      * @return int
      */
+    #[Override]
     public function handle($input = null): int
     {
         return $this->result = $this->assistant()->run(
@@ -143,6 +148,7 @@ class CliKernel extends Kernel
      * @param  array<string, mixed> $parameters (default: [])
      * @return int
      */
+    #[Override]
     public function call(string $action, array $parameters = []): int
     {
         return $this->result = $this->assistant()->run(
@@ -156,6 +162,7 @@ class CliKernel extends Kernel
      *
      * @return void
      */
+    #[Override]
     public function terminate(): void
     {
         // Currently nothing to do.
@@ -166,6 +173,7 @@ class CliKernel extends Kernel
      *
      * @return CliExceptionHandler
      */
+    #[Override]
     public function exceptionHandler(): CliExceptionHandler
     {
         return new CliExceptionHandler($this->output);
@@ -174,6 +182,7 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function fallback(\Throwable $e): int
     {
         return $this->result = $this->exceptionHandler()->handle($this->input ?? $this->input = new ArgvInput(), $e);
@@ -182,6 +191,7 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function report(\Throwable $e): void
     {
         $this->exceptionHandler()->report($this->input ?? $this->input = new ArgvInput(), $this->result, $e);

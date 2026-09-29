@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Translation;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Tinker\Tinker;
 use Rebet\Tools\Utility\Arrays;
@@ -26,6 +27,7 @@ class Translator
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database;
 
+use Override;
 use Rebet\Database\Dao;
 use Rebet\Database\Database;
 use Rebet\Database\Exception\DatabaseException;
@@ -19,6 +20,7 @@ use TestApp\Model\User;
 
 class StatementTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

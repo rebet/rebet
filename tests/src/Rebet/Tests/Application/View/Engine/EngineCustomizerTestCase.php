@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\View\Engine;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Database\Pagination\Paginator;
@@ -20,6 +21,7 @@ abstract class EngineCustomizerTestCase extends RebetTestCase
 
     abstract protected function createEngine(): Engine;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

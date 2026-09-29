@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View\Tag;
 
+use Override;
 use Rebet\Tools\Reflection\Reflector;
 
 /**
@@ -47,6 +48,7 @@ class SelectiveProcessor implements Processor
      *
      * @param array<int|string, mixed> $args
      */
+    #[Override]
     public function execute(array $args)
     {
         $selector = $this->selector;

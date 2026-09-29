@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Hash;
 
+use Override;
 use Rebet\Console\Command\Command;
 use Rebet\Tools\Utility\Securities;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,6 +35,7 @@ class HashTextCommand extends Command
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function handle(): void
     {
         $stretching = $this->option('stretching');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Kernel;
 use Rebet\Mail\Validator\EmailValidator;
@@ -16,6 +17,7 @@ class EmailValidatorEnableTest extends RebetTestCase
     private $validator_backup;
     private $original_validator_backup;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -27,6 +29,7 @@ class EmailValidatorEnableTest extends RebetTestCase
         $this->original_validator_backup = Reflector::get(EmailValidator::class, 'original_validator', null, true);
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         $address_class = Address::class;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\Http;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Application\Http\WebExceptionHandler;
 use Rebet\Auth\Exception\AuthenticateException;
@@ -27,6 +28,7 @@ class WebExceptionHandlerTest extends RebetTestCase
     /** @var WebExceptionHandler */
     public $handler;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -43,6 +45,7 @@ class WebExceptionHandlerTest extends RebetTestCase
         $this->handler = new class extends WebExceptionHandler {
             public $reported_count = 0;
 
+            #[Override]
             public function report($input, $result, \Throwable $e): void
             {
                 $this->reported_count++;

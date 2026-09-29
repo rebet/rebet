@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\Http;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Application\Http\WebExceptionHandler;
 use Rebet\Application\Http\WebKernel;
@@ -20,6 +21,7 @@ class WebKernelTest extends RebetTestCase
     /** @var WebKernel */
     protected $kernel;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

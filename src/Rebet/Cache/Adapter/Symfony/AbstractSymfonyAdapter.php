@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony;
 
+use Override;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Rebet\Cache\Adapter\Adapter;
@@ -65,6 +66,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getItem($key): CacheItemInterface
     {
         return $this->pool->getItem($key);
@@ -75,6 +77,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
      *
      * @return iterable<string, CacheItemInterface>
      */
+    #[Override]
     public function getItems(array $keys = []): iterable
     {
         return $this->pool->getItems($keys);
@@ -83,6 +86,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasItem($key): bool
     {
         return $this->pool->hasItem($key);
@@ -91,6 +95,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function clear(): bool
     {
         return $this->pool->clear();
@@ -99,6 +104,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function deleteItem($key): bool
     {
         return $this->pool->deleteItem($key);
@@ -107,6 +113,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function deleteItems(array $keys): bool
     {
         return $this->pool->deleteItems($keys);
@@ -115,6 +122,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function save(CacheItemInterface $item): bool
     {
         return $this->pool->save($item);
@@ -123,6 +131,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function saveDeferred(CacheItemInterface $item): bool
     {
         return $this->pool->saveDeferred($item);
@@ -131,6 +140,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function commit(): bool
     {
         return $this->pool->commit();
@@ -140,6 +150,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
      * {@inheritDoc}
      * @phpstan-assert-if-true TagAwareAdapterInterface $this->pool
      */
+    #[Override]
     public function taggable(): bool
     {
         return $this->pool instanceof TagAwareAdapterInterface;
@@ -150,6 +161,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
      *
      * @param array<int, string> $tags
      */
+    #[Override]
     public function saveWithTags(CacheItemInterface $item, array $tags = [])
     {
         if (empty($tags)) {
@@ -167,6 +179,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
      *
      * @param array<int, string> $tags
      */
+    #[Override]
     public function saveDeferredWithTags(CacheItemInterface $item, array $tags = [])
     {
         if (empty($tags)) {
@@ -182,6 +195,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function clearByTags(array $tags): bool
     {
         if ($this->taggable()) {
@@ -194,6 +208,7 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function prune(): bool
     {
         return $this->pool instanceof PruneableInterface && $this->pool->prune() ;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Cache\Adapter\Symfony\Pool;
 
+use Override;
 use Rebet\Cache\Adapter\Symfony\Pool\ArrayPool;
 use Rebet\Tests\RebetTestCase;
 use Symfony\Component\Cache\Adapter\ProxyAdapter;
@@ -18,6 +19,7 @@ class ArrayPoolTest extends RebetTestCase
      */
     protected $pools = [];
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

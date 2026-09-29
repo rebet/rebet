@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Handler;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Symfony\Component\Cache\Traits\RedisProxy;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler as SymfonyRedisSessionHandler;
@@ -24,6 +25,7 @@ class RedisSessionHandler extends SymfonyRedisSessionHandler
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/http.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

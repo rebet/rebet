@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Config;
 
+use Override;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Utility\Strings;
 
@@ -60,6 +61,7 @@ class ConfigPromise implements DotAccessDelegator
     /**
      * Get the delay evaluation result.
      */
+    #[Override]
     public function get()
     {
         if (!$this->only_once) {
@@ -76,6 +78,7 @@ class ConfigPromise implements DotAccessDelegator
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         if ($this->is_evaluated) {

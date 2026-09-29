@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Model;
 
+use Override;
 use Rebet\Database\Attribute\PrimaryKey;
 use Rebet\Database\Database;
 use Rebet\Database\DataModel\Presentation;
@@ -47,6 +48,7 @@ class UserDetail extends Presentation
         return $this->hasMany(Article::class, [], $conditions, null, null, $for_update);
     }
 
+    #[Override]
     protected static function ransack(Ransack $ransack): Query|null
     {
         if (Utils::isBlank($ransack->value())) {
@@ -60,6 +62,7 @@ class UserDetail extends Presentation
         return parent::ransack($ransack);
     }
 
+    #[Override]
     protected static function buildSelectAllSql(Database $db): Query
     {
         return $db->sql(

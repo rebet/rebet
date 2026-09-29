@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Http\Session\Storage\Handler;
 
+use Override;
 use Rebet\Http\Session\Storage\Handler\MongoDbSessionHandler;
 use Rebet\Tests\RebetTestCase;
 
 class MongoDbSessionHandlerTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

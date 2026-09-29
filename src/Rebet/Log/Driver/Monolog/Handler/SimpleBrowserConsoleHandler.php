@@ -8,6 +8,7 @@ use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger as MonologLogger;
 use Monolog\LogRecord;
+use Override;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Tools\Testable\System;
@@ -55,6 +56,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function getDefaultFormatter(): FormatterInterface
     {
         return new TextFormatter();
@@ -63,6 +65,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function write(LogRecord $record): void
     {
         // Accumulate records
@@ -100,6 +103,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function close(): void
     {
         static::clear();
@@ -108,6 +112,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function reset(): void
     {
         static::clear();

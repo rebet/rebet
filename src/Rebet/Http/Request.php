@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http;
 
+use Override;
 use Rebet\Http\Bag\FileBag;
 use Rebet\Http\Exception\FallbackRedirectException;
 use Rebet\Http\Response\RedirectResponse;
@@ -150,6 +151,7 @@ class Request extends SymfonyRequest
      * @param array<string, mixed>     $server     The SERVER parameters
      * @param string|resource|null     $content    The raw body data
      */
+    #[Override]
     public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null): void
     {
         parent::initialize($query, $request, $attributes, $cookies, $files, $server, $content);
@@ -166,6 +168,7 @@ class Request extends SymfonyRequest
      * @param array<int|string, mixed>|null $files      The FILES parameters
      * @param array<string, mixed>|null     $server     The SERVER parameters
      */
+    #[Override]
     public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null): static
     {
         $duplicate = parent::duplicate($query, $request, $attributes, $cookies, $files, $server);
@@ -183,6 +186,7 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws \BadMethodCallException when the method was called.
      */
+    #[Override]
     public function getSession(): SessionInterface
     {
         throw new \BadMethodCallException("Request::getSession() method is unspported in Rebet. You can use Request::session() method to get the session instead.");
@@ -196,6 +200,7 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws \BadMethodCallException when the method was called.
      */
+    #[Override]
     public function setSession(SessionInterface $session): void
     {
         throw new \BadMethodCallException("Request::setSession() method is unspported in Rebet. You can use Request::session() method to set the session instead.");
@@ -209,6 +214,7 @@ class Request extends SymfonyRequest
      * @deprecated Not unspported in Rebet.
      * @throws \BadMethodCallException when the method was called.
      */
+    #[Override]
     public function setSessionFactory(callable $factory): void
     {
         throw new \BadMethodCallException("Request::setSessionFactory() method is unspported in Rebet. You can use Request::session() method to set the session factory instead.");

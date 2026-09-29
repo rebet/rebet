@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Node;
 
+use Override;
 use Rebet\View\Tag\Processor;
 use Twig\Compiler;
 use Twig\Node\Expression\ArrayExpression;
@@ -101,6 +102,7 @@ class EmbedNode extends Node
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function compile(Compiler $compiler): void
     {
         $invert = $this->getAttribute('invert');

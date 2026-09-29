@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\View\Engine\Twig;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
@@ -16,6 +17,7 @@ class TwigTest extends RebetTestCase
      */
     private $twig;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

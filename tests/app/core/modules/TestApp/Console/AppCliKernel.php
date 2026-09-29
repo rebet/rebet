@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Console;
 
+use Override;
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
@@ -17,6 +18,7 @@ use Rebet\Application\Console\CliKernel;
  */
 class AppCliKernel extends CliKernel
 {
+    #[Override]
     public function bootstrap(): void
     {
         parent::bootstrap();
@@ -25,6 +27,7 @@ class AppCliKernel extends CliKernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function bootstrappers(): array
     {
         return [
@@ -37,6 +40,7 @@ class AppCliKernel extends CliKernel
         ];
     }
 
+    #[Override]
     public function exceptionHandler(): AppCliExceptionHandler
     {
         return new AppCliExceptionHandler($this->output);

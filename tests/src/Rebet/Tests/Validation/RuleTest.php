@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Validation;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
@@ -14,6 +15,7 @@ class RuleTest extends RebetTestCase
     private $errors;
     private $rule;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

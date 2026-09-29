@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database\DataModel;
 
+use Override;
 use Rebet\Auth\Password;
 use Rebet\Database\Database;
 use Rebet\Database\Event\BatchDeleted;
@@ -23,6 +24,7 @@ use TestApp\Model\UserWithAnnot;
 
 class EntityTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

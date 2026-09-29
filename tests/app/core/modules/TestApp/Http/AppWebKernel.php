@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Http;
 
+use Override;
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
 use Rebet\Application\Bootstrap\LetterpressTagCustomizer;
@@ -18,6 +19,7 @@ use Rebet\Application\Http\WebKernel;
  */
 class AppWebKernel extends WebKernel
 {
+    #[Override]
     public function bootstrap(): void
     {
         parent::bootstrap();
@@ -26,6 +28,7 @@ class AppWebKernel extends WebKernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function bootstrappers(): array
     {
         return [
@@ -39,6 +42,7 @@ class AppWebKernel extends WebKernel
         ];
     }
 
+    #[Override]
     public function exceptionHandler(): AppWebExceptionHandler
     {
         return new AppWebExceptionHandler();

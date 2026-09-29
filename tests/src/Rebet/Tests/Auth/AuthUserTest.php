@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Auth;
 
+use Override;
 use Rebet\Auth\Auth;
 use Rebet\Auth\AuthUser;
 use Rebet\Auth\Provider\ArrayProvider;
@@ -20,6 +21,7 @@ class AuthUserTest extends RebetTestCase
     private $array_user_source;
     private $object_user_source;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

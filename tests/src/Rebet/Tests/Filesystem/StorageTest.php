@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Filesystem;
 
+use Override;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;
@@ -12,6 +13,7 @@ use Rebet\Tools\Config\Exception\ConfigNotDefineException;
 
 class StorageTest extends RebetTestCase
 {
+    #[Override]
     protected function tearDown(): void
     {
         Storage::reset();

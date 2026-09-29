@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Translation;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Translation\FileDictionary;
@@ -11,6 +12,7 @@ use Rebet\Tools\Translation\Translator;
 
 class TranslatorTest extends RebetTestCase
 {
+    #[Override]
     public function setUp(): void
     {
         parent::setUp();

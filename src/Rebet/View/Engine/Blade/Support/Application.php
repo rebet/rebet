@@ -6,6 +6,7 @@ namespace Rebet\View\Engine\Blade\Support;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Override;
 use Rebet\Tools\Exception\LogicException;
 
 /**
@@ -41,6 +42,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function version()
     {
         $this->unsupported(__FUNCTION__);
@@ -49,6 +51,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function basePath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -57,6 +60,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrapPath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -65,6 +69,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function configPath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -73,6 +78,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function databasePath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -81,6 +87,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function langPath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -89,6 +96,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function publicPath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -97,6 +105,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function resourcePath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -105,6 +114,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function storagePath($path = '')
     {
         $this->unsupported(__FUNCTION__);
@@ -115,6 +125,7 @@ class Application extends Container implements ApplicationContract
      *
      * @param string|array<int, string> ...$environments
      */
+    #[Override]
     public function environment(...$environments)
     {
         $this->unsupported(__FUNCTION__);
@@ -123,6 +134,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function runningInConsole()
     {
         $this->unsupported(__FUNCTION__);
@@ -131,6 +143,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function runningUnitTests()
     {
         $this->unsupported(__FUNCTION__);
@@ -139,6 +152,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasDebugModeEnabled()
     {
         $this->unsupported(__FUNCTION__);
@@ -147,6 +161,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function maintenanceMode()
     {
         $this->unsupported(__FUNCTION__);
@@ -155,6 +170,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function isDownForMaintenance()
     {
         $this->unsupported(__FUNCTION__);
@@ -163,6 +179,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function registerConfiguredProviders(): void
     {
         $this->unsupported(__FUNCTION__);
@@ -171,6 +188,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function register($provider, $force = false)
     {
         $this->unsupported(__FUNCTION__);
@@ -179,6 +197,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function registerDeferredProvider($provider, $service = null): void
     {
         $this->unsupported(__FUNCTION__);
@@ -187,6 +206,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function resolveProvider($provider)
     {
         $this->unsupported(__FUNCTION__);
@@ -195,6 +215,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function boot(): void
     {
         $this->unsupported(__FUNCTION__);
@@ -203,6 +224,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function booting($callback): void
     {
         $this->unsupported(__FUNCTION__);
@@ -211,6 +233,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function booted($callback): void
     {
         $this->unsupported(__FUNCTION__);
@@ -221,6 +244,7 @@ class Application extends Container implements ApplicationContract
      *
      * @param array<int, string> $bootstrappers
      */
+    #[Override]
     public function bootstrapWith(array $bootstrappers): void
     {
         $this->unsupported(__FUNCTION__);
@@ -229,6 +253,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getLocale()
     {
         $this->unsupported(__FUNCTION__);
@@ -237,6 +262,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getNamespace()
     {
         $this->unsupported(__FUNCTION__);
@@ -247,6 +273,7 @@ class Application extends Container implements ApplicationContract
      *
      * @return array<int, \Illuminate\Support\ServiceProvider>
      */
+    #[Override]
     public function getProviders($provider)
     {
         $this->unsupported(__FUNCTION__);
@@ -255,6 +282,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasBeenBootstrapped()
     {
         $this->unsupported(__FUNCTION__);
@@ -263,6 +291,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function loadDeferredProviders(): void
     {
         $this->unsupported(__FUNCTION__);
@@ -271,6 +300,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setLocale($locale): void
     {
         $this->unsupported(__FUNCTION__);
@@ -279,6 +309,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function shouldSkipMiddleware()
     {
         $this->unsupported(__FUNCTION__);
@@ -287,6 +318,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function terminating($callback)
     {
         $this->unsupported(__FUNCTION__);
@@ -295,6 +327,7 @@ class Application extends Container implements ApplicationContract
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function terminate(): void
     {
         $this->unsupported(__FUNCTION__);

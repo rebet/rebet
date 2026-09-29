@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\DateTime;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
@@ -19,6 +20,7 @@ use Rebet\Tools\Utility\Strings;
 
 class DateTimeTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

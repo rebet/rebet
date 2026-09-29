@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Console\Command;
 
+use Override;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Strings;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -111,6 +112,7 @@ abstract class Command extends SymfonyCommand
      *
      * @return void
      */
+    #[Override]
     protected function configure(): void
     {
         $this->setName(static::NAME);
@@ -158,6 +160,7 @@ abstract class Command extends SymfonyCommand
      * @param  OutputInterface $output
      * @return int
      */
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input  = $input;

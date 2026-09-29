@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Console;
 
+use Override;
 use Rebet\Application\Console\Command\EnvCommand;
 use Rebet\Console\Application;
 use Rebet\Tests\RebetTestCase;
@@ -14,6 +15,7 @@ class ApplicationTest extends RebetTestCase
     /** @var Application */
     protected $app;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Bag;
 
+use Override;
 use Rebet\Http\UploadedFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 use Symfony\Component\HttpFoundation\FileBag as SymfonyFileBag;
@@ -24,6 +25,7 @@ class FileBag extends SymfonyFileBag
      * @param  array<mixed>|SymfonyUploadedFile $file
      * @return UploadedFile|UploadedFile[]|null
      */
+    #[Override]
     protected function convertFileInformation(array|SymfonyUploadedFile $file): array|SymfonyUploadedFile|null
     {
         $file = parent::convertFileInformation($file);

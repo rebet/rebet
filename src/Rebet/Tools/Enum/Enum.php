@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Enum;
 
+use Override;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Reflection\Reflector;
@@ -271,6 +272,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      *
      * @return string
      */
+    #[Override]
     public function __toString(): string
     {
         return $this->translate();
@@ -279,6 +281,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Get JSON Serialize objects.
      */
+    #[Override]
     public function jsonSerialize(): mixed
     {
         return $this->value;
@@ -290,6 +293,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  string $type
      * @return mixed
      */
+    #[Override]
     public function convertTo(string $type)
     {
         if ($type === static::class) {
@@ -441,6 +445,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * @param  mixed     $value
      * @return self|null
      */
+    #[Override]
     public static function valueOf($value): self|null
     {
         return self::fieldOf('value', $value);

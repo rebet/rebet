@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Resource;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 
@@ -64,6 +65,7 @@ class Resource
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

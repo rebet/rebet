@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Math;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Math\Decimal;
 
 class DecimalTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Pagination\Storage;
 
+use Override;
 use Rebet\Database\Pagination\Cursor;
 
 /**
@@ -28,6 +29,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function save(string $name, Cursor $cursor): void
     {
         self::$strage[$name] = $cursor;
@@ -36,6 +38,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function load(string $name): Cursor|null
     {
         return self::$strage[$name] ?? null ;
@@ -44,6 +47,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function remove(string $name): void
     {
         unset(self::$strage[$name]);
@@ -52,6 +56,7 @@ class ArrayCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function clear(): void
     {
         self::$strage = [];

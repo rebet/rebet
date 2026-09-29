@@ -6,6 +6,7 @@ namespace Rebet\Log;
 
 use Exception;
 use Monolog\Handler\StreamHandler;
+use Override;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Log\Driver\Monolog\MonologDriver;
 use Rebet\Log\Driver\Monolog\StderrDriver;
@@ -69,6 +70,7 @@ class Log
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/log.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

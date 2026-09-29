@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Translation;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
@@ -18,6 +19,7 @@ class FileDictionaryTest extends RebetTestCase
      */
     private $dictionary;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

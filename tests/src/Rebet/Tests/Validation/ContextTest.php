@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Validation;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\Context;
@@ -15,6 +16,7 @@ class ContextTest extends RebetTestCase
     private $errors;
     private $rule_set;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

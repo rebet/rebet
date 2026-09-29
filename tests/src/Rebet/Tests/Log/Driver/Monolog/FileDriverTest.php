@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tests\Log\Driver\Monolog;
 
 use Monolog\Handler\RotatingFileHandler;
+use Override;
 use Rebet\Log\Driver\Monolog\FileDriver;
 use Rebet\Log\Driver\Monolog\Handler\SimpleBrowserConsoleHandler;
 use Rebet\Log\LogLevel;
@@ -13,6 +14,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class FileDriverTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

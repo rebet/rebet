@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Routing\Controller;
@@ -28,6 +29,7 @@ class MethodRoute extends DeclarativeRoute
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/routing.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -77,6 +79,7 @@ class MethodRoute extends DeclarativeRoute
      * @return RouteAction
      * @throws RouteNotFoundException
      */
+    #[Override]
     protected function createRouteAction(Request $request): RouteAction
     {
         $this->controller = null;
@@ -99,6 +102,7 @@ class MethodRoute extends DeclarativeRoute
      * @param  Response $response
      * @return void
      */
+    #[Override]
     public function terminate(Request $request, Response $response): void
     {
         if ($this->controller !== null) {

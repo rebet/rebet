@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\DateTime;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 
 class DateTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

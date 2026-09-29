@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage;
 
+use Override;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
 use Rebet\Tools\Config\Configurable;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
@@ -24,6 +25,7 @@ class SessionStorage extends NativeSessionStorage
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/http.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

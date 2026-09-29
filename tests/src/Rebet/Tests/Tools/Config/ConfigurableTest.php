@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Config;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
@@ -13,6 +14,7 @@ use Rebet\Tools\Utility\OverrideOption;
 
 class ConfigurableTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -372,6 +374,7 @@ class ConfigurableTest_Mock
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -429,6 +432,7 @@ class ConfigurableTest_MockChildInherit extends ConfigurableTest_Mock
 }
 class ConfigurableTest_MockChildOverride extends ConfigurableTest_Mock
 {
+    #[Override]
     public static function defaultConfig()
     {
         return self::copyConfigFrom(parent::class, [
@@ -439,6 +443,7 @@ class ConfigurableTest_MockChildOverride extends ConfigurableTest_Mock
 }
 class ConfigurableTest_MockChildShare extends ConfigurableTest_Mock
 {
+    #[Override]
     public static function defaultConfig()
     {
         return static::shareConfigWith(parent::class, [
@@ -448,6 +453,7 @@ class ConfigurableTest_MockChildShare extends ConfigurableTest_Mock
 }
 class ConfigurableTest_MockChildHide extends ConfigurableTest_Mock
 {
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -457,6 +463,7 @@ class ConfigurableTest_MockChildHide extends ConfigurableTest_Mock
 }
 class ConfigurableTest_MockGrandChildOverride extends ConfigurableTest_MockChildOverride
 {
+    #[Override]
     public static function defaultConfig()
     {
         return self::copyConfigFrom(parent::class, [
@@ -473,6 +480,7 @@ class ConfigurableTest_MockNonOverrideOptions
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [

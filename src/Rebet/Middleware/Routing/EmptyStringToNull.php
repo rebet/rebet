@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
 
+use Override;
+
 /**
  * [Routing Middleware] Trim Strings Middleware Class
  *
@@ -17,6 +19,7 @@ class EmptyStringToNull extends InputDataTransform
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function transform($key, $value)
     {
         return $value === '' ? null : $value ;

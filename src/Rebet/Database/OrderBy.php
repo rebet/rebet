@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database;
 
+use Override;
 use Rebet\Tools\Support\Arrayable;
 
 /**
@@ -45,6 +46,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
      *
      * @return array<string, string>
      */
+    #[Override]
     protected function &container(): array
     {
         return $this->order_by;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Cache\Adapter\Symfony\Pool;
 
+use Override;
 use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\CacheItem;
@@ -57,6 +58,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getItem($key): CacheItem
     {
         $isHit = $this->hasItem($key);
@@ -68,6 +70,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getItems(array $keys = []): iterable
     {
         $items = [];
@@ -80,6 +83,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasItem(string $key): bool
     {
         if (isset($this->pool[$key]) && $this->pool[$key][1] > microtime(true)) {
@@ -92,6 +96,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function clear(string $prefix = ''): bool
     {
         $prefix = 0 < \func_num_args() ? (string) func_get_arg(0) : '';
@@ -111,6 +116,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function deleteItem($key): bool
     {
         CacheItem::validateKey($key);
@@ -121,6 +127,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function deleteItems(array $keys): bool
     {
         foreach ($keys as $key) {
@@ -132,6 +139,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function save(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem) {
@@ -155,6 +163,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function saveDeferred(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem) {
@@ -167,6 +176,7 @@ class ArrayPool implements AdapterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function commit(): bool
     {
         foreach ($this->deferred as $item) {

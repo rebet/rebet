@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Compiler;
 
+use Override;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Exception\DatabaseException;
@@ -61,6 +62,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public static function of(Driver $driver): Compiler
     {
         return new static($driver);
@@ -71,6 +73,7 @@ class BuiltinCompiler implements Compiler
      *
      * @param array<string, mixed>|object|null $params
      */
+    #[Override]
     public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null): Query
     {
         // ---------------------------------------------------------------------
@@ -283,6 +286,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass'): Paginator
     {
         $cursor = $this->verify($pager, $cursor);
@@ -323,6 +327,7 @@ class BuiltinCompiler implements Compiler
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function convertParam(string $key, $value): Query
     {
         $key = Strings::startsWith($key, ':') ? $key : ":{$key}" ;

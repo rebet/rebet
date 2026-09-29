@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth\Provider;
 
+use Override;
 use Rebet\Auth\AuthUser;
 use Rebet\Tools\Tinker\Tinker;
 
@@ -83,6 +84,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function findById($id): AuthUser|null
     {
         return $this->users
@@ -93,6 +95,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function findByToken(string|null $token): AuthUser|null
     {
         return $this->users
@@ -105,6 +108,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function findBySigninId($signin_id): AuthUser|null
     {
         return $this->users
@@ -117,6 +121,7 @@ class ArrayProvider extends AuthProvider
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function rehashPassword($id, string $new_hash): void
     {
         // Nothing to do (Password rehash not supported)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Validation;
 
+use Override;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Support\Arrayable;
@@ -48,6 +49,7 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
      *
      * @return array<int|string, mixed>
      */
+    #[Override]
     protected function &container(): array
     {
         return $this->data;

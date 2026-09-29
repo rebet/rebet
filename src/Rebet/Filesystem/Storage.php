@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Filesystem;
 
+use Override;
 use Rebet\Filesystem\Exception\FilesystemException;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\Path;
@@ -29,6 +30,7 @@ class Storage
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/filesystem.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

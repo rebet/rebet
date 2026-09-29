@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tests\Mail\Validator;
 
 use Egulias\EmailValidator\Validation\RFCValidation;
+use Override;
 use Rebet\Mail\Validator\EmailValidator;
 use Rebet\Mail\Validator\Validation\LooseRFCValidation;
 use Rebet\Tests\RebetTestCase;
@@ -17,6 +18,7 @@ class EmailValidatorTest extends RebetTestCase
     private $validator_backup;
     private $original_validator_backup;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,6 +30,7 @@ class EmailValidatorTest extends RebetTestCase
         $this->original_validator_backup = Reflector::get(EmailValidator::class, 'original_validator', null, true);
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         $address_class = Address::class;

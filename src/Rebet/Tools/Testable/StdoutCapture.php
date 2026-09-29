@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Testable;
 
+use Override;
+
 /**
  * Stdout Capture Class
  *
@@ -17,6 +19,7 @@ class StdoutCapture extends AbstractCapture
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public static function start(): void
     {
         \ob_start();
@@ -27,6 +30,7 @@ class StdoutCapture extends AbstractCapture
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public static function stop(): string
     {
         return parent::stop() . \ob_get_clean();
@@ -35,6 +39,7 @@ class StdoutCapture extends AbstractCapture
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function filter($in, $out, &$consumed, bool $closing): int
     {
         while ($bucket = stream_bucket_make_writeable($in)) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\Kernel;
 use Rebet\Env\Dotenv;
 
@@ -20,6 +21,7 @@ class LoadEnvironmentVariables implements Bootstrapper
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrap(Kernel $kernel): void
     {
         Dotenv::load($kernel->structure()->env());

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Pagination;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Support\Getsetable;
 
@@ -26,6 +27,7 @@ class Pager
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Config;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\ConfigPromise;
 
@@ -12,6 +13,7 @@ class ConfigPromiseTest extends RebetTestCase
     private $promise_once;
     private $promise_every;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -20,6 +22,7 @@ class ConfigPromiseTest extends RebetTestCase
         $this->promise_every = new ConfigPromise(fn() => \getenv('PROMISE_TEST') ?: 'default', false);
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         \putenv('PROMISE_TEST=');

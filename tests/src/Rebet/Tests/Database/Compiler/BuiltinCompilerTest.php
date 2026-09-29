@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database\Compiler;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Database\Database;
 use Rebet\Database\Expression;
@@ -17,6 +18,7 @@ use TestApp\Enum\Gender;
 
 class BuiltinCompilerTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

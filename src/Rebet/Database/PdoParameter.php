@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rebet\Database;
 
+use Override;
+
 /**
  * PDO Parameter Class
  *
@@ -50,6 +52,7 @@ class PdoParameter
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         $type_label = static::typeToLabel($this->type);

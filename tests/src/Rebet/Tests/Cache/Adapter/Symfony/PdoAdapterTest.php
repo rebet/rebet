@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
+use Override;
 use Rebet\Cache\Adapter\Symfony\PdoAdapter;
 use Rebet\Tests\RebetDatabaseTestCase;
 
 class PdoAdapterTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

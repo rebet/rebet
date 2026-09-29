@@ -6,6 +6,7 @@ namespace Rebet\Log\Driver\Monolog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\LogRecord;
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Arrays;
@@ -24,6 +25,7 @@ class TextFormatter implements FormatterInterface
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -77,6 +79,7 @@ class TextFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function format(LogRecord $record)
     {
         $output       = $this->format;
@@ -121,6 +124,7 @@ class TextFormatter implements FormatterInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function formatBatch(array $records): string
     {
         $message = '';

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Mail\Transport;
 
+use Override;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\SentMessage;
@@ -42,6 +43,7 @@ class InMemoryTransport extends AbstractTransport
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function doSend(SentMessage $message): void
     {
         $this->message = $message;
@@ -60,6 +62,7 @@ class InMemoryTransport extends AbstractTransport
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString(): string
     {
         return 'rebet://in-memory';

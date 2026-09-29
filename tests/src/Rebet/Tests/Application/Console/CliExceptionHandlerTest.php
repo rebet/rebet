@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\Console;
 
+use Override;
 use Rebet\Application\Console\CliExceptionHandler;
 use Rebet\Log\Log;
 use Rebet\Tests\RebetTestCase;
@@ -18,6 +19,7 @@ class CliExceptionHandlerTest extends RebetTestCase
     /** @var BufferedOutput */
     public $output;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -25,6 +27,7 @@ class CliExceptionHandlerTest extends RebetTestCase
         $this->handler = new class ($this->output) extends CliExceptionHandler {
             public $reported_count = 0;
 
+            #[Override]
             public function report($input, $result, \Throwable $e): void
             {
                 $this->reported_count++;

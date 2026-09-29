@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\Kernel;
 
 /**
@@ -19,6 +20,7 @@ class HandleExceptions implements Bootstrapper
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrap(Kernel $kernel): void
     {
         ini_set('display_errors', 'Off');

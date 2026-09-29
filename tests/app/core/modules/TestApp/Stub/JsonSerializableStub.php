@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TestApp\Stub;
 
+use Override;
+
 class JsonSerializableStub implements \JsonSerializable
 {
     private $value;
@@ -13,6 +15,7 @@ class JsonSerializableStub implements \JsonSerializable
         $this->value = $value;
     }
 
+    #[Override]
     public function jsonSerialize(): mixed
     {
         return $this->value;

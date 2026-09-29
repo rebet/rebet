@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests;
 
+use Override;
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Cache\Adapter\Symfony\ArrayAdapter;
 use Rebet\Cache\Adapter\Symfony\FilesystemAdapter;
@@ -23,6 +24,7 @@ abstract class RebetCacheTestCase extends RebetDatabaseTestCase
 {
     use CacheTestHelper;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

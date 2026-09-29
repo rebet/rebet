@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Pipeline;
 
+use Override;
 use Rebet\Pipeline\Pipeline;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Exception\LogicException;
@@ -12,6 +13,7 @@ class PipelineTest extends RebetTestCase
 {
     private $pipeline;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

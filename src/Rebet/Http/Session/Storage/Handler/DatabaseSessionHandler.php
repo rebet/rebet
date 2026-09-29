@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Handler;
 
+use Override;
 use Rebet\Database\Dao;
 use Rebet\Tools\Config\Configurable;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler as SymfonyPdoSessionHandler;
@@ -20,6 +21,7 @@ class DatabaseSessionHandler extends SymfonyPdoSessionHandler
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [

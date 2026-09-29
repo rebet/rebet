@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Crypto;
 
+use Override;
 use Rebet\Console\Command\Command;
 use Rebet\Tools\Utility\Nets;
 use Rebet\Tools\Utility\Securities;
@@ -35,6 +36,7 @@ class CryptoDecryptCommand extends Command
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function handle()
     {
         $decrypted = Securities::decrypt(

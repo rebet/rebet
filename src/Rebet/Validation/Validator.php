@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Validation;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
@@ -26,6 +27,7 @@ class Validator
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/validation.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

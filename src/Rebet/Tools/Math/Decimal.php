@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tools\Math;
 
 use InvalidArgumentException;
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Strings;
@@ -27,6 +28,7 @@ class Decimal
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -461,6 +463,7 @@ class Decimal
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return $this->significant_figures === static::significantFiguresOf($this->value) ? $this->value : "{$this->value} ({$this->significant_figures} sf)";

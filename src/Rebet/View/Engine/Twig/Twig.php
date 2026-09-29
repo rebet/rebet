@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Utility\OverrideOption;
 use Rebet\Tools\Utility\Path;
@@ -30,6 +31,7 @@ class Twig implements Engine
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/view.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -98,6 +100,7 @@ class Twig implements Engine
      *
      * @return Environment
      */
+    #[Override]
     public function core()
     {
         return static::$twig;
@@ -108,6 +111,7 @@ class Twig implements Engine
      *
      * @return array<int, string>
      */
+    #[Override]
     public function getPaths(): array
     {
         $loader = static::$twig->getLoader();
@@ -117,6 +121,7 @@ class Twig implements Engine
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function prependPath(string $path): Engine
     {
         $path   = Path::normalize($path);
@@ -130,6 +135,7 @@ class Twig implements Engine
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function appendPath(string $path): Engine
     {
         $path   = Path::normalize($path);
@@ -145,6 +151,7 @@ class Twig implements Engine
      *
      * @param array<string, mixed> $data
      */
+    #[Override]
     public function render(string $name, array $data = []): string
     {
         return static::$twig->render($name . $this->file_suffix, $data);
@@ -153,6 +160,7 @@ class Twig implements Engine
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function exists(string $name): bool
     {
         return static::$twig->getLoader()->exists($name . $this->file_suffix);

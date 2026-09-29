@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\View\Engine\Twig\Node;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Engine\Twig\Node\RawNode;
@@ -15,6 +16,7 @@ class RawNodeTest extends RebetTestCase
     protected $env;
     protected $compiler;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Hash;
 
+use Override;
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,6 +33,7 @@ class HashPasswordCommand extends Command
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function handle()
     {
         $option = null;

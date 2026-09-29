@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Auth\Provider\Entity;
 
+use Override;
 use Rebet\Auth\Provider\Entity\RememberToken;
 use Rebet\Database\Database;
 use Rebet\Tests\RebetDatabaseTestCase;
@@ -12,6 +13,7 @@ use Rebet\Tools\Utility\Securities;
 
 class RememberTokenTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

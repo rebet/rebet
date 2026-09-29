@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application;
 
+use Override;
 use Rebet\Auth\Auth;
 use Rebet\Event\Event;
 use Rebet\Filesystem\Storage;
@@ -51,6 +52,7 @@ class App
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/application.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

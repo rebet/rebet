@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Reflection;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Configurable;
@@ -25,6 +26,7 @@ class ReflectorTest extends RebetTestCase
     private $accessible       = null;
     private $accessible_child = null;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -52,11 +54,13 @@ class ReflectorTest extends RebetTestCase
         ];
         $this->transparent = (object) [
             'a' => new class implements DotAccessDelegator {
+                #[Override]
                 public function get()
                 {
                     return [
                         'b' => 'ab',
                         'c' => new class implements DotAccessDelegator {
+                            #[Override]
                             public function get()
                             {
                                 return 'ac';
@@ -66,9 +70,11 @@ class ReflectorTest extends RebetTestCase
                 }
             },
             'b' => new class implements DotAccessDelegator {
+                #[Override]
                 public function get()
                 {
                     return new class implements DotAccessDelegator {
+                        #[Override]
                         public function get()
                         {
                             return 'b';
@@ -1356,6 +1362,7 @@ class ReflectorTest_Mock
         return new static($value . ' via build()');
     }
 
+    #[Override]
     public function __toString()
     {
         return (string) $this->value;
@@ -1499,16 +1506,19 @@ class ReflectorTest_ArrayAccessible implements \ArrayAccess, \Countable, \Iterat
 
     private array $items = [];
 
+    #[Override]
     public function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
     }
 
+    #[Override]
     public function offsetGet($offset): mixed
     {
         return $this->items[$offset] ?? null;
     }
 
+    #[Override]
     public function offsetSet($offset, $value): void
     {
         if ($offset === null) {
@@ -1518,16 +1528,19 @@ class ReflectorTest_ArrayAccessible implements \ArrayAccess, \Countable, \Iterat
         }
     }
 
+    #[Override]
     public function offsetUnset($offset): void
     {
         unset($this->items[$offset]);
     }
 
+    #[Override]
     public function count(): int
     {
         return count($this->items);
     }
 
+    #[Override]
     public function getIterator(): \Iterator
     {
         return new \ArrayIterator($this->items);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Utility;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Exception\ZipArchiveException;
@@ -14,6 +15,7 @@ class FilesTest extends RebetTestCase
 {
     protected $test_dir;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

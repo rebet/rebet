@@ -13,6 +13,7 @@ use Illuminate\View\Engines\FileEngine;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\OverrideOption;
@@ -40,6 +41,7 @@ class Blade implements Engine
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/view.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -117,6 +119,7 @@ class Blade implements Engine
      *
      * @return Factory
      */
+    #[Override]
     public function core()
     {
         return Application::getInstance()['view'];
@@ -127,6 +130,7 @@ class Blade implements Engine
      *
      * @return array<int, string>
      */
+    #[Override]
     public function getPaths(): array
     {
         return array_map(fn($path) => Path::normalize($path), $this->finder()->getPaths());
@@ -135,6 +139,7 @@ class Blade implements Engine
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function prependPath(string $path): Engine
     {
         $path = Path::normalize($path);
@@ -147,6 +152,7 @@ class Blade implements Engine
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function appendPath(string $path): Engine
     {
         $path = Path::normalize($path);
@@ -161,6 +167,7 @@ class Blade implements Engine
      *
      * @param array<string, mixed> $data
      */
+    #[Override]
     public function render(string $name, array $data = []): string
     {
         return $this->core()->make($name, $data)->render();
@@ -169,6 +176,7 @@ class Blade implements Engine
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function exists(string $name): bool
     {
         return $this->core()->exists($name);

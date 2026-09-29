@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Utility;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 
 /**
@@ -22,6 +23,7 @@ class Securities
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

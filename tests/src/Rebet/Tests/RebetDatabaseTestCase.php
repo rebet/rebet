@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests;
 
+use Override;
 use Rebet\Database\Dao;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Testable\DatabaseTestHelper;
@@ -18,12 +19,14 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
 {
     use DatabaseTestHelper;
 
+    #[Override]
     public static function tearDownAfterClass(): void
     {
         static::tearDownDatabase();
         parent::tearDownAfterClass();
     }
 
+    #[Override]
     protected static function setUpStatic(): void
     {
         parent::setUpStatic();
@@ -67,6 +70,7 @@ abstract class RebetDatabaseTestCase extends RebetTestCase
         static::setUpDatabase();
     }
 
+    #[Override]
     protected function setUp(): void
     {
         self::setUpStatic();

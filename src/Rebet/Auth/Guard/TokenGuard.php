@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth\Guard;
 
+use Override;
 use Rebet\Auth\AuthUser;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
@@ -50,6 +51,7 @@ class TokenGuard extends Guard
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function authenticate(): Response|null
     {
         $this->user    = $this->provider->findByToken($this->token()) ?? AuthUser::guest() ;

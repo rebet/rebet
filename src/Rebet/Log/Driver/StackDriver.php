@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Log\Driver;
 
+use Override;
 use Psr\Log\AbstractLogger as PsrAbstractLogger;
 use Psr\Log\LoggerInterface as PsrLogger;
 use Rebet\Log\Log;
@@ -66,6 +67,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setName(string $name): self
     {
         $this->name = $name;
@@ -80,6 +82,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getName(): string
     {
         return $this->name;
@@ -88,6 +91,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function withName(string $name): self
     {
         $new          = clone $this;
@@ -107,6 +111,7 @@ class StackDriver extends PsrAbstractLogger implements NameableDriver
      * @param  array<string, mixed> $context (default: [])
      * @return void
      */
+    #[Override]
     public function log($level, string|\Stringable $message, array $context = []): void
     {
         static::$call_stack[] = $this;

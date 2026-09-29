@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\Kernel;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
 use Rebet\Tools\Config\Config;
@@ -36,6 +37,7 @@ class PropertiesMaskingConfiguration implements Bootstrapper
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrap(Kernel $kernel): void
     {
         Config::framework([

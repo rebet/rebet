@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Exception;
 
+use Override;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
@@ -102,6 +103,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function problem(): ProblemResponse
     {
         return Responder::problem(

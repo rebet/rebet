@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Auth;
 
+use Override;
 use Rebet\Auth\BasicAuth;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Tests\RebetTestCase;
@@ -11,6 +12,7 @@ use Rebet\Tools\Testable\System;
 
 class BasicAuthTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

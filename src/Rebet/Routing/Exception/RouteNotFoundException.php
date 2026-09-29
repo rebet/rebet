@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Exception;
 
+use Override;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
@@ -33,6 +34,7 @@ class RouteNotFoundException extends RuntimeException implements ProblemResponda
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function problem(): ProblemResponse
     {
         return Responder::problem(404)->detail(Translator::get('message.http.404.detail') ?? $this->getMessage());

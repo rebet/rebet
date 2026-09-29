@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Auth\Provider;
 
+use Override;
 use Rebet\Auth\Password;
 use Rebet\Auth\Provider\DatabaseProvider;
 use Rebet\Auth\Provider\Entity\RememberToken;
@@ -15,6 +16,7 @@ use TestApp\Model\User;
 
 class DatabaseProviderTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Mail\Transport;
 
+use Override;
 use Psr\Log\NullLogger;
 use Rebet\Mail\Transport\FailoverTransport;
 use Rebet\Mail\Transport\InMemoryTransport;
@@ -70,11 +71,13 @@ class FailoverTransportTest extends RebetTestCase
     private function createFailingTransport(): AbstractTransport
     {
         return new class extends AbstractTransport {
+            #[Override]
             protected function doSend(SentMessage $message): void
             {
                 throw new TransportException('Simulated transport failure.');
             }
 
+            #[Override]
             public function __toString(): string
             {
                 return 'failing://test';

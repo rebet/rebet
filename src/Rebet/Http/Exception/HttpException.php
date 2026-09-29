@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Exception;
 
+use Override;
 use Rebet\Http\HttpStatus;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
@@ -111,6 +112,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function problem(): ProblemResponse
     {
         return Responder::problem($this->status, $this->title)->detail($this->detail);

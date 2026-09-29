@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database;
 
+use Override;
 use Rebet\Database\Analysis\Analyzer;
 use Rebet\Database\Compiler\Compiler;
 use Rebet\Database\DataModel\Entity;
@@ -94,6 +95,7 @@ class Dao
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

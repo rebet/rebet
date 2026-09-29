@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
 
+use Override;
+
 /**
  * Date Class
  *
@@ -19,6 +21,7 @@ class Date extends DateTime
     /**
      * @return \Rebet\Tools\Config\ConfigPromise
      */
+    #[Override]
     public static function defaultConfig()
     {
         return static::shareConfigWith(parent::class, [
@@ -41,6 +44,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function modify(string $modify): static
     {
         $date = parent::modify($modify);
@@ -50,6 +54,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setTime($hour, $minute, $second = 0, $microseconds = 0): static
     {
         return parent::setTime($hour, $minute, $second, $microseconds)->startsOfDay();
@@ -58,6 +63,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setTimestamp($unixtimestamp): static
     {
         return parent::setTimestamp($unixtimestamp)->startsOfDay();
@@ -66,6 +72,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setTimezone($timezone): static
     {
         return parent::setTimezone($timezone)->startsOfDay();
@@ -74,6 +81,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function add($interval): static
     {
         return parent::add($interval)->startsOfDay();
@@ -82,6 +90,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function sub($interval): static
     {
         return parent::sub($interval)->startsOfDay();
@@ -90,6 +99,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function toDate(): Date
     {
         return $this;
@@ -98,6 +108,7 @@ class Date extends DateTime
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function toDateTime(): DateTime
     {
         return new DateTime($this);

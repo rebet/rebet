@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Math;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Utility\Arrays;
@@ -29,6 +30,7 @@ class Unit
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Cache;
 
 use DateTimeInterface;
+use Override;
 use Rebet\Cache\Adapter\Adapter;
 use Rebet\Tools\Config\Configurable;
 
@@ -76,6 +77,7 @@ class Cache
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/cache.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TestApp\Stub;
 
+use Override;
+
 class CountableStub implements \Countable
 {
     private $count;
@@ -13,6 +15,7 @@ class CountableStub implements \Countable
         $this->count = $count;
     }
 
+    #[Override]
     public function count(): int
     {
         return $this->count;

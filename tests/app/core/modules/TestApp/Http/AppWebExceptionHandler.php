@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Http;
 
+use Override;
 use Rebet\Application\Http\WebExceptionHandler;
 
 /**
@@ -11,6 +12,7 @@ use Rebet\Application\Http\WebExceptionHandler;
  */
 class AppWebExceptionHandler extends WebExceptionHandler
 {
+    #[Override]
     public function handle($input, \Throwable $e): void
     {
         throw $e;

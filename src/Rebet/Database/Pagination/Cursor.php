@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Pagination;
 
+use Override;
 use Rebet\Database\OrderBy;
 use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\Tools\Config\Configurable;
@@ -37,6 +38,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -93,6 +95,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      * @return array<string, mixed>
      */
+    #[Override]
     protected function &container(): array
     {
         return $this->cursor;

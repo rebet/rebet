@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session;
 
+use Override;
 use Rebet\Http\Session\Storage\Bag\AttributeBag;
 use Rebet\Http\Session\Storage\Bag\FlashBag;
 use Rebet\Http\Session\Storage\Bag\MetadataBag;
@@ -32,6 +33,7 @@ class Session implements SessionInterface
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/http.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -91,6 +93,7 @@ class Session implements SessionInterface
      * @param  string $name
      * @return bool
      */
+    #[Override]
     public function has(string $name): bool
     {
         return $this->attribute()->has($name);
@@ -103,6 +106,7 @@ class Session implements SessionInterface
      * @param  mixed  $default
      * @return mixed
      */
+    #[Override]
     public function get(string $name, mixed $default = null): mixed
     {
         return $this->attribute()->get($name, $default);
@@ -115,6 +119,7 @@ class Session implements SessionInterface
      * @param  mixed  $value
      * @return void
      */
+    #[Override]
     public function set(string $name, mixed $value): void
     {
         $this->attribute()->set($name, $value);
@@ -125,6 +130,7 @@ class Session implements SessionInterface
      *
      * @return array<string, mixed>
      */
+    #[Override]
     public function all(): array
     {
         return $this->attribute()->all();
@@ -136,6 +142,7 @@ class Session implements SessionInterface
      * @param  array<string, mixed> $attributes
      * @return void
      */
+    #[Override]
     public function replace(array $attributes): void
     {
         $this->attribute()->initialize($attributes);
@@ -147,6 +154,7 @@ class Session implements SessionInterface
      * @param  string $name
      * @return mixed
      */
+    #[Override]
     public function remove(string $name): mixed
     {
         return $this->attribute()->remove($name);
@@ -157,6 +165,7 @@ class Session implements SessionInterface
      *
      * @return void
      */
+    #[Override]
     public function clear(): void
     {
         $this->storage->clear();
@@ -203,6 +212,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getMetadataBag(): MetadataBag
     {
         $bag = $this->storage->getMetadataBag();
@@ -215,6 +225,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function registerBag(SessionBagInterface $bag): void
     {
         $this->storage->registerBag($bag);
@@ -223,6 +234,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getBag(string $name): SessionBagInterface
     {
         return $this->storage->getBag($name);
@@ -233,6 +245,7 @@ class Session implements SessionInterface
      *
      * @return boolean
      */
+    #[Override]
     public function start(): bool
     {
         return $this->storage->start();
@@ -243,6 +256,7 @@ class Session implements SessionInterface
      *
      * @return boolean
      */
+    #[Override]
     public function isStarted(): bool
     {
         return $this->storage->isStarted();
@@ -261,6 +275,7 @@ class Session implements SessionInterface
      *
      * @return bool True if session invalidated, false if error
      */
+    #[Override]
     public function invalidate(int|null $lifetime = null): bool
     {
         $this->storage->clear();
@@ -279,6 +294,7 @@ class Session implements SessionInterface
      *
      * @return bool True if session migrated, false if error
      */
+    #[Override]
     public function migrate(bool $destroy = false, int|null $lifetime = null): bool
     {
         return $this->storage->regenerate($destroy, $lifetime);
@@ -293,6 +309,7 @@ class Session implements SessionInterface
      *
      * @return void
      */
+    #[Override]
     public function save(): void
     {
         $this->storage->save();
@@ -301,6 +318,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getId(): string
     {
         return $this->storage->getId();
@@ -309,6 +327,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setId(string $id): void
     {
         if ($this->storage->getId() !== $id) {
@@ -319,6 +338,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getName(): string
     {
         return $this->storage->getName();
@@ -327,6 +347,7 @@ class Session implements SessionInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setName(string $name): void
     {
         $this->storage->setName($name);

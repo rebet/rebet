@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http;
 
+use Override;
 use Rebet\Filesystem\Filesystem;
 use Rebet\Filesystem\Storage;
 use Rebet\Tools\Utility\Strings;
@@ -145,6 +146,7 @@ class UploadedFile extends SymfonyUploadedFile
      * @see MimeTypes
      * @see getMimeType()
      */
+    #[Override]
     public function guessExtension(): string|null
     {
         $candidate_extensions = MimeTypes::getDefault()->getExtensions($this->getMimeType());

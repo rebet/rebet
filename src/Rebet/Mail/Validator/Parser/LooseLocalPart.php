@@ -13,6 +13,7 @@ use Egulias\EmailValidator\Result\Reason\DotAtStart;
 use Egulias\EmailValidator\Result\Result;
 use Egulias\EmailValidator\Result\ValidEmail;
 use Egulias\EmailValidator\Warning\LocalTooLong;
+use Override;
 use Rebet\Mail\Validator\Warning\ConsecutiveDotWarning;
 use Rebet\Mail\Validator\Warning\DotAtEndWarning;
 use Rebet\Mail\Validator\Warning\DotAtStartWarning;
@@ -56,6 +57,7 @@ class LooseLocalPart extends LocalPart
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function parse(): Result
     {
         $this->lexer->clearRecorded();

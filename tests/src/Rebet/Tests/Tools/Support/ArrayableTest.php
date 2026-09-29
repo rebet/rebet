@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Support;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Support\Arrayable;
@@ -14,6 +15,7 @@ class ArrayableTest extends RebetTestCase
     private $array;
     private $map;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -138,6 +140,7 @@ class ArrayableTest_Mock implements \ArrayAccess, \Countable, \IteratorAggregate
         $this->container = $array;
     }
 
+    #[Override]
     protected function &container(): array
     {
         return $this->container;

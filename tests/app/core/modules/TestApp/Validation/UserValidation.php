@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Validation;
 
+use Override;
 use Rebet\Tools\Utility\Strings;
 use Rebet\Validation\Context;
 use Rebet\Validation\Rule;
@@ -13,6 +14,7 @@ use TestApp\Enum\Gender;
 class UserValidation extends Rule
 {
     // Validation rules
+    #[Override]
     public function rules(): array
     {
         return [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Routing\Exception\RouteNotFoundException;
 use Rebet\Tools\Utility\Path;
@@ -42,6 +43,7 @@ abstract class DeclarativeRoute extends Route
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         $rc     = new \ReflectionClass($this);
@@ -73,6 +75,7 @@ abstract class DeclarativeRoute extends Route
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
+    #[Override]
     protected function analyze(Request $request): array|null
     {
         $matches  = [];
@@ -105,6 +108,7 @@ abstract class DeclarativeRoute extends Route
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function defaultView(): string
     {
         return Path::normalize(Strings::latrim($this->uri, '{'));

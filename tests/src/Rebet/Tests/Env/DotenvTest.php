@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tests\Env;
 
 use Dotenv\Exception\InvalidPathException;
+use Override;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rebet\Application\App;
@@ -13,6 +14,7 @@ use Rebet\Tests\RebetTestCase;
 
 class DotenvTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

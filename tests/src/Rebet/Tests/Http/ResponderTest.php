@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Http;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Filesystem\Exception\FileNotFoundException;
@@ -22,6 +23,7 @@ use TestApp\Enum\Gender;
 
 class ResponderTest extends RebetTestCase
 {
+    #[Override]
     protected function tearDown(): void
     {
         parent::tearDown();

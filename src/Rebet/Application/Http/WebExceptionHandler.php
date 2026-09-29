@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Http;
 
+use Override;
 use Rebet\Application\ExceptionHandler;
 use Rebet\Auth\Exception\AuthenticateException;
 use Rebet\Filesystem\Exception\FileNotFoundException;
@@ -47,6 +48,7 @@ class WebExceptionHandler extends ExceptionHandler
      * @param  \Throwable    $e
      * @return void
      */
+    #[Override]
     public function report($input, $result, \Throwable $e): void
     {
         if (!$result) {
@@ -86,6 +88,7 @@ class WebExceptionHandler extends ExceptionHandler
      * @param  \Throwable   $e
      * @return Response
      */
+    #[Override]
     public function handle($input, \Throwable $e)
     {
         return $input->expectsJson() ? $this->handleJson($input, $e) : $this->handleView($input, $e) ;

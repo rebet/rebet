@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Config;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
@@ -14,12 +15,14 @@ use Rebet\Tools\Exception\LogicException;
 
 class ConfigTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
         \putenv('PROMISE_TEST=');
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         \putenv('PROMISE_TEST=');
@@ -730,6 +733,7 @@ class ConfigTest extends RebetTestCase
         $a = new class {
             use Configurable;
 
+            #[Override]
             public static function defaultConfig()
             {
                 return [ 'key' => 'a' ];
@@ -738,6 +742,7 @@ class ConfigTest extends RebetTestCase
         $b = new class {
             use Configurable;
 
+            #[Override]
             public static function defaultConfig()
             {
                 return [ 'key' => 'b' ];
@@ -801,6 +806,7 @@ class ConfigTest_Mock
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -816,6 +822,7 @@ class ConfigTest_MockOption
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -832,6 +839,7 @@ class ConfigTest_MockRefer
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -843,6 +851,7 @@ class ConfigTest_MockPromise
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -856,6 +865,7 @@ class ConfigTest_MockPromiseReferrer
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -869,6 +879,7 @@ class ConfigTest_MockInstantiate
 {
     use Configurable;
 
+    #[Override]
     public static function defaultConfig()
     {
         return [

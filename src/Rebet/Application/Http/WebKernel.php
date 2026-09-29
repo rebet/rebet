@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Http;
 
+use Override;
 use Rebet\Application\Bootstrap\Bootstrapper;
 use Rebet\Application\Bootstrap\EmailValidatorEnable;
 use Rebet\Application\Bootstrap\HandleExceptions;
@@ -37,6 +38,7 @@ class WebKernel extends Kernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -81,6 +83,7 @@ class WebKernel extends Kernel
      * {@inheritDoc}
      * @return array<int, Bootstrapper|class-string<Bootstrapper>|array<int|string, mixed>>
      */
+    #[Override]
     protected function bootstrappers(): array
     {
         return static::config('bootstrappers');
@@ -92,6 +95,7 @@ class WebKernel extends Kernel
      * @param  Request|null $input (default: null for Request::createFromGlobals())
      * @return Response
      */
+    #[Override]
     public function handle($input = null): Response
     {
         return $this->response = Router::handle($this->request = $input ?? Request::createFromGlobals());
@@ -104,6 +108,7 @@ class WebKernel extends Kernel
      * @param  array<string, mixed> $parameters (default: [])
      * @return Response
      */
+    #[Override]
     public function call(string $action, array $parameters = []): Response
     {
         return $this->response = Router::handle($this->request = Request::create($action, 'GET', $parameters));
@@ -114,6 +119,7 @@ class WebKernel extends Kernel
      *
      * @return void
      */
+    #[Override]
     public function terminate(): void
     {
         Router::terminate($this->request ?? $this->request = Request::createFromGlobals(), $this->response);
@@ -122,6 +128,7 @@ class WebKernel extends Kernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function fallback(\Throwable $e): int
     {
         $this->response = $this->exceptionHandler()->handle($this->request ?? $this->request = Request::createFromGlobals(), $e);
@@ -132,6 +139,7 @@ class WebKernel extends Kernel
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function report(\Throwable $e): void
     {
         $this->exceptionHandler()->report($this->request ?? $this->request = Request::createFromGlobals(), $this->response, $e);
@@ -155,6 +163,7 @@ class WebKernel extends Kernel
      *
      * @return WebExceptionHandler
      */
+    #[Override]
     public function exceptionHandler(): WebExceptionHandler
     {
         return new WebExceptionHandler();

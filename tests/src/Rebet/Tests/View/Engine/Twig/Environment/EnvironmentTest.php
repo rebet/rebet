@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\View\Engine\Twig\Environment;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\View\Engine\Twig\Environment\Environment;
 use Rebet\View\Tag\CallbackProcessor;
@@ -19,6 +20,7 @@ class EnvironmentTest extends RebetTestCase
      */
     protected $env;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

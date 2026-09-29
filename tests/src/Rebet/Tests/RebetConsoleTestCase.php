@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests;
 
+use Override;
 use Rebet\Console\Testable\ConsoleTestHelper;
 
 /**
@@ -17,6 +18,7 @@ abstract class RebetConsoleTestCase extends RebetTestCase
 
     public const AVIRABLE_COMMANDS = [];
 
+    #[Override]
     public function setUp(): void
     {
         parent::setUp();

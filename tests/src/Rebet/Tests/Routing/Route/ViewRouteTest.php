@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Routing\Route;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Http\Response\BasicResponse;
 use Rebet\Routing\Exception\RouteNotFoundException;
@@ -15,6 +16,7 @@ use Rebet\View\View;
 
 class ViewRouteTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

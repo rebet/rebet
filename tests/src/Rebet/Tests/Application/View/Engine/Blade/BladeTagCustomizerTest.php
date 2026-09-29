@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\View\Engine\Blade;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\Application\View\Engine\EngineCustomizerTestCase;
 use Rebet\Tools\Config\Config;
@@ -14,6 +15,7 @@ use Rebet\View\View;
 
 class BladeTagCustomizerTest extends EngineCustomizerTestCase
 {
+    #[Override]
     protected function createEngine(): Engine
     {
         Config::application([

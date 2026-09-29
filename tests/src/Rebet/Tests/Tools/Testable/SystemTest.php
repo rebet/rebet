@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Testable;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Testable\System;
 
 class SystemTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

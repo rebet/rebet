@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Http\Responder;
 use Rebet\Tools\Utility\Strings;
@@ -62,6 +63,7 @@ class RedirectRoute extends ClosureRoute
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return parent::__toString() . " redirect to {$this->destination} (status: {$this->status})";

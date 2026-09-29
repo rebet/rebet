@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database\DataModel;
 
+use Override;
 use Rebet\Database\Database;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\ResultSet;
@@ -21,6 +22,7 @@ use TestApp\Model\UserWithAnnot;
 
 class DataModelTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Application\Kernel;
 use Rebet\Tools\Resource\EnvResource;
@@ -21,6 +22,7 @@ class LoadRoutingConfiguration implements Bootstrapper
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrap(Kernel $kernel): void
     {
         EnvResource::load(App::env(), $kernel->structure()->routes());

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Log;
 
+use Override;
 use Rebet\Log\Driver\Monolog\StderrDriver;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Driver\NullDriver;
@@ -15,6 +16,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class LogTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tests\Http;
 
 use BadMethodCallException;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\Bag\FileBag;
@@ -27,6 +28,7 @@ use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 
 class RequestTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

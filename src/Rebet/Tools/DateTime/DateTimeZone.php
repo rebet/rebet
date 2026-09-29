@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\DateTime;
 
+use Override;
 use Rebet\Tools\Reflection\Convertible;
 use Rebet\Tools\Reflection\Reflector;
 
@@ -39,6 +40,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      * @param  string|\DateTimeZone $value
      * @return DateTimeZone
      */
+    #[Override]
     public static function valueOf($value): DateTimeZone
     {
         return new DateTimeZone($value);
@@ -47,6 +49,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return $this->getName();
@@ -60,6 +63,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      * @param  string $type
      * @return mixed
      */
+    #[Override]
     public function convertTo(string $type)
     {
         if (Reflector::typeOf($this, $type)) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Reflection;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Validation\ValidData;
 use TestApp\Model\Bank;
@@ -14,6 +15,7 @@ class PopulatableTest extends RebetTestCase
 {
     public $valid_data;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

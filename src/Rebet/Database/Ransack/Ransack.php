@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Ransack;
 
+use Override;
 use Rebet\Database\Driver\Driver;
 use Rebet\Database\Exception\RansackException;
 use Rebet\Database\Query;
@@ -104,6 +105,7 @@ class Ransack
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

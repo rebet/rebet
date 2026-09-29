@@ -9,6 +9,7 @@ use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use League\Flysystem\UrlGeneration\PublicUrlGenerator;
+use Override;
 use Psr\Http\Message\StreamInterface;
 use Rebet\Filesystem\Exception\FileNotFoundException;
 use Rebet\Filesystem\Exception\FilesystemException;
@@ -43,6 +44,7 @@ class BuiltinFilesystem implements Filesystem
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/filesystem.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -80,6 +82,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function driver(): FilesystemOperator
     {
         return $this->driver;
@@ -88,6 +91,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function adapter(): FilesystemAdapter
     {
         return $this->adapter;
@@ -96,6 +100,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function exists(string $path): bool
     {
         return $this->driver->has($path);
@@ -104,6 +109,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function isFile(string $path): bool
     {
         return $this->driver->fileExists($path);
@@ -112,6 +118,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function isDirectory(string $path): bool
     {
         return $this->driver->directoryExists($path);
@@ -120,6 +127,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function path(string $path = '/'): string
     {
         $prefixer = Reflector::get($this->adapter, 'prefixer', null, true);
@@ -157,6 +165,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function get(string $path): string
     {
         if (!$this->driver->fileExists($path)) {
@@ -172,6 +181,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function put(string $path, $contents, $options = []): string
     {
         $options = is_string($options) ? ['visibility' => $options] : (array) $options ;
@@ -205,6 +215,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function putFile(string $path, $file, $options = []): string
     {
         return $this->put($path, is_string($file) ? new \SplFileInfo($file) : $file, $options);
@@ -213,6 +224,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getVisibility(string $path): string
     {
         try {
@@ -225,6 +237,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function setVisibility(string $path, string $visibility): Filesystem
     {
         $this->assertExists($path);
@@ -239,6 +252,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function prepend(string $path, string $data, string $separator = "\n"): Filesystem
     {
         $this->exists($path) ? $this->put($path, $data . $separator . $this->get($path)) : $this->put($path, $data) ;
@@ -248,6 +262,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function append(string $path, string $data, string $separator = "\n"): Filesystem
     {
         $this->exists($path) ? $this->put($path, $this->get($path) . $separator . $data) : $this->put($path, $data) ;
@@ -257,6 +272,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function delete(string ...$paths): Filesystem
     {
         foreach ($paths as $path) {
@@ -276,6 +292,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function clean(string $directory = '/'): Filesystem
     {
         return $this->delete(...$this->ls($directory));
@@ -284,6 +301,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function copy(string $from, string $to, bool $replace = false): Filesystem
     {
         $this->assertExists($from);
@@ -318,6 +336,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function move(string $from, string $to, bool $replace = false): Filesystem
     {
         $this->assertExists($from);
@@ -337,6 +356,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function size(string $path): int
     {
         $this->assertExists($path);
@@ -350,6 +370,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function metadata(string $path): array
     {
         $this->assertExists($path);
@@ -369,6 +390,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function mimeType(string $path): string|null
     {
         $this->assertExists($path);
@@ -385,6 +407,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function lastModified(string $path): DateTime
     {
         $this->assertExists($path);
@@ -398,6 +421,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function url(string $path): string
     {
         if ($this->getVisibility($path) !== Filesystem::VISIBILITY_PUBLIC) {
@@ -422,6 +446,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function readStream(string $path)
     {
         $this->assertExists($path);
@@ -435,6 +460,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         try {
@@ -452,6 +478,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         return $this->ls($directory, $pattern, 'file', $recursive, $matching_mode);
@@ -460,6 +487,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD): array
     {
         return $this->ls($directory, $pattern, 'dir', $recursive, $matching_mode);
@@ -488,6 +516,7 @@ class BuiltinFilesystem implements Filesystem
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function mkdir(string $path, array $config = []): Filesystem
     {
         try {

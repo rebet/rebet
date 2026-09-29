@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Http\Cookie;
 
+use Override;
 use Rebet\Http\Cookie\Cookie;
 use Rebet\Http\Request;
 use Rebet\Tests\RebetTestCase;
@@ -12,6 +13,7 @@ use Rebet\Tools\Exception\LogicException;
 
 class CookieTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

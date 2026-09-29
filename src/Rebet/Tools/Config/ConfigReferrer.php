@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Config;
 
+use Override;
 use Rebet\Tools\Reflection\DotAccessDelegator;
 use Rebet\Tools\Utility\Strings;
 
@@ -61,6 +62,7 @@ class ConfigReferrer implements DotAccessDelegator
      *
      * @return mixed
      */
+    #[Override]
     public function get()
     {
         return Config::get($this->section, $this->key, false, $this->default);
@@ -69,6 +71,7 @@ class ConfigReferrer implements DotAccessDelegator
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return "<Referrer: {$this->section}.{$this->key} (default: " . Strings::stringify($this->default) . ")>";

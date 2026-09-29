@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Reflection;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Reflection\Describable;
 use Rebet\Tools\Reflection\Reflector;
@@ -15,6 +16,7 @@ class DescribableTest extends RebetTestCase
     public $dest_b;
     public $dest_array;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\Kernel;
 use Rebet\Mail\Validator\EmailValidator;
 
@@ -20,6 +21,7 @@ class EmailValidatorEnable implements Bootstrapper
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrap(Kernel $kernel): void
     {
         EmailValidator::enable();

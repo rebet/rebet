@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Controller;
 
+use Override;
 use Rebet\Auth\Attribute\Guard;
 use Rebet\Auth\Attribute\Role;
 use Rebet\Http\Request;
@@ -31,18 +32,21 @@ class TestController extends Controller
     public $after_count     = 0;
     public $terminate_count = 0;
 
+    #[Override]
     public function before(Request $request): Request
     {
         $this->before_count++;
         return $request;
     }
 
+    #[Override]
     public function after(Request $request, Response $response): Response
     {
         $this->after_count++;
         return $response;
     }
 
+    #[Override]
     public function terminate(Request $request, Response $response): void
     {
         $this->terminate_count++;

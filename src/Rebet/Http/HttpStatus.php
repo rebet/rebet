@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http;
 
+use Override;
 use Rebet\Http\Exception\HttpException;
 use Rebet\Tools\Config\Configurable;
 
@@ -25,6 +26,7 @@ class HttpStatus
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/http.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

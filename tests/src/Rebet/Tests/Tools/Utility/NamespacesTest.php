@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Utility;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Utility\Namespaces;
 
 class NamespacesTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

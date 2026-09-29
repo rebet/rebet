@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Analysis;
 
+use Override;
 use PHPSQLParser\builders\ColumnReferenceBuilder;
 use PHPSQLParser\builders\ConstantBuilder;
 use PHPSQLParser\builders\FunctionBuilder;
@@ -45,6 +46,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function isUnion(): bool
     {
         return isset($this->parser->parsed['UNION ALL']) || isset($this->parser->parsed['UNION']);
@@ -53,6 +55,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasWhere(): bool
     {
         return isset($this->parser->parsed['WHERE']);
@@ -61,6 +64,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasHaving(): bool
     {
         return isset($this->parser->parsed['HAVING']);
@@ -69,6 +73,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasGroupBy(): bool
     {
         return isset($this->parser->parsed['GROUP']);
@@ -77,6 +82,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function hasOrderBy(): bool
     {
         return isset($this->parser->parsed['ORDER']);
@@ -85,6 +91,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function extractAliasSelectColumn(string $alias): string
     {
         if (isset($this->cache[$alias])) {
@@ -119,6 +126,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
+            #[Override]
             protected function buildAlias($parsed): string
             {
                 return '';
@@ -128,6 +136,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
+            #[Override]
             protected function buildAlias($parsed): string
             {
                 return '';
@@ -137,6 +146,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
+            #[Override]
             protected function buildAlias($parsed): string
             {
                 return '';
@@ -146,6 +156,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
+            #[Override]
             protected function buildAlias($parsed): string
             {
                 return '';
@@ -155,6 +166,7 @@ class BuiltinAnalyzer implements Analyzer
             /**
              * @param array<mixed> $parsed
              */
+            #[Override]
             protected function buildAlias($parsed): string
             {
                 return '';

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tools\DateTime;
 
 use DateInterval;
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\Exception\DateTimeFormatException;
 use Rebet\Tools\Exception\LogicException;
@@ -40,6 +41,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -158,6 +160,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param  mixed         $from
      * @return DateTime|null
      */
+    #[Override]
     public static function valueOf($from): DateTime|null
     {
         try {
@@ -257,6 +260,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param  string|\DateTimezone|null      $timezone (default: depend on confiure)
      * @return static|false
      */
+    #[Override]
     public static function createFromFormat(string $format, \DateTimeInterface|string|null $value, \DateTimezone|string|null $timezone = null): false|static
     {
         if ($value === null || $value === '') {
@@ -350,6 +354,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function modify(string $modify): static
     {
         $modified = parent::modify($modify);
@@ -366,6 +371,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param  \DateTimeZone|string|null $timezone (null for depend on confige)
      * @return static
      */
+    #[Override]
     public function setTimezone(\DateTimeZone|string|null $timezone): static
     {
         return parent::setTimezone(self::adoptTimezone($timezone));
@@ -376,6 +382,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return string
      */
+    #[Override]
     public function __toString(): string
     {
         return $this->format($this->default_format);
@@ -386,6 +393,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @return string
      */
+    #[Override]
     public function jsonSerialize(): string
     {
         return $this->format($this->default_format);
@@ -440,6 +448,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @param DateInterval|string $interval
      */
+    #[Override]
     public function add(DateInterval|string $interval): static
     {
         return parent::add(is_string($interval) ? new \DateInterval($interval) : $interval);
@@ -450,6 +459,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      *
      * @param DateInterval|string $interval
      */
+    #[Override]
     public function sub(DateInterval|string $interval): static
     {
         return parent::sub(is_string($interval) ? new \DateInterval($interval) : $interval);
@@ -808,6 +818,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param  string $type
      * @return mixed
      */
+    #[Override]
     public function convertTo(string $type)
     {
         if (Reflector::typeOf($this, $type)) {
@@ -865,6 +876,7 @@ class DateTime extends \DateTimeImmutable implements \JsonSerializable, Converti
      * @param  string|null $format (default: null)
      * @return string
      */
+    #[Override]
     public function format(string|null $format = null): string
     {
         $format ??= $this->default_format ;

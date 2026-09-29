@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Validation;
 
+use Override;
 use Rebet\Tools\Enum\Enum;
 
 /**
@@ -50,6 +51,7 @@ class Kind extends Enum
      *
      * @return boolean
      */
+    #[Override]
     protected function translatable(): bool
     {
         return false;

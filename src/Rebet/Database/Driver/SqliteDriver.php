@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
 
+use Override;
 use Rebet\Database\Exception\DatabaseException;
 use Rebet\Tools\Reflection\Reflector;
 
@@ -47,6 +48,7 @@ class SqliteDriver extends AbstractDriver
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -94,6 +96,7 @@ class SqliteDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function truncate(string $table_name, bool|null $with_vacuum = true): string
     {
         $sqls              = [];
@@ -109,6 +112,7 @@ class SqliteDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function appendForUpdate(string $sql): string
     {
         throw new DatabaseException("SQLite does not support `FOR UPDATE`");
@@ -120,6 +124,7 @@ class SqliteDriver extends AbstractDriver
      * @param array<string, mixed> $meta
      * @see 'sqlite' native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_sqlite/sqlite_statement.c.gcov.php
      */
+    #[Override]
     public function toPhpType($value, array $meta = [], string|null $type = null)
     {
         if ($value === null) {

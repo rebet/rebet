@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Validation;
 
+use Override;
 use Rebet\Http\UploadedFile;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\DateTime\DateTime;
@@ -35,6 +36,7 @@ class BuiltinValidations implements Validations
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/validation.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -207,6 +209,7 @@ class BuiltinValidations implements Validations
      * @param  mixed   ...$args
      * @return boolean
      */
+    #[Override]
     public function validate(string $name, Context $c, ...$args): bool
     {
         $custom = static::config("customs.{$name}", false, null);

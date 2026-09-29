@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database\Driver;
 
+use Override;
 use Rebet\Database\Dao;
 use Rebet\Tests\RebetDatabaseTestCase;
 use Rebet\Tools\DateTime\DateTime;
@@ -11,6 +12,7 @@ use Rebet\Tools\Reflection\Reflector;
 
 class SqliteDriverTest extends RebetDatabaseTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

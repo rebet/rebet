@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing;
 
+use Override;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
 use Rebet\Pipeline\Pipeline;
@@ -41,6 +42,7 @@ class Router
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/routing.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

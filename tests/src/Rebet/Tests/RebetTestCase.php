@@ -6,6 +6,7 @@ namespace Rebet\Tests;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Override;
 use PHPUnit\Framework\TestCase;
 use Rebet\Application\App;
 use Rebet\Auth\Auth;
@@ -29,6 +30,7 @@ abstract class RebetTestCase extends TestCase
 {
     use TestHelper;
 
+    #[Override]
     public static function setUpBeforeClass(): void
     {
         static::setUpWorkingDir((new AppStructure(__DIR__ . '/../../../'))->path('/work'));
@@ -41,6 +43,7 @@ abstract class RebetTestCase extends TestCase
         App::init(new AppWebKernel(new AppStructure(__DIR__ . '/../../../app')));
     }
 
+    #[Override]
     protected function setUp(): void
     {
         self::setUpStatic();
@@ -50,6 +53,7 @@ abstract class RebetTestCase extends TestCase
 
     // protected function assertPostConditions() {}
 
+    #[Override]
     protected function tearDown(): void
     {
         restore_error_handler();     // @todo Move to Responsible for error handler registration and restore (HandleExceptions::class).
@@ -58,6 +62,7 @@ abstract class RebetTestCase extends TestCase
 
     // protected function onNotSuccessfulTest(Throwable $t) {}
 
+    #[Override]
     public static function tearDownAfterClass(): void
     {
         static::tearDownWorkingDir();

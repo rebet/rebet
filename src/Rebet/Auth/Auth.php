@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth;
 
+use Override;
 use Rebet\Auth\Event\Authenticated;
 use Rebet\Auth\Event\AuthenticateFailed;
 use Rebet\Auth\Event\Signined;
@@ -38,6 +39,7 @@ class Auth
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/auth.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

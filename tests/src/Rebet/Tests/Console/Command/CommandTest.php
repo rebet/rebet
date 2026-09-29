@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Console\Command;
 
+use Override;
 use Rebet\Console\Command\Command;
 use Rebet\Tests\RebetTestCase;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,6 +16,7 @@ class CommandTest extends RebetTestCase
     /** @var Command */
     protected $hello;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,6 +31,7 @@ class CommandTest extends RebetTestCase
                 ['command', 'c', InputArgument::OPTIONAL, 'Command to display', 'comment'],
             ];
 
+            #[Override]
             protected function handle(): void
             {
                 switch ($this->option('meeting-time') ?? 'unknown') {
@@ -126,6 +129,7 @@ class CommandTest extends RebetTestCase
                 ['fruit', 'f', InputOption::VALUE_OPTIONAL, 'Favorite fruit.'],
             ];
 
+            #[Override]
             protected function handle(): void
             {
                 $this->writeln($this->choice("Favorite fruit : ", ['apple' => 'Apple', 'banana' => 'Banana'], 'fruit', 'apple'));
@@ -155,6 +159,7 @@ class CommandTest extends RebetTestCase
                 [['dry-run', 'dr'], null, InputOption::VALUE_NONE, 'A flag option with a long alias.'],
             ];
 
+            #[Override]
             protected function handle(): void
             {
                 $this->writeln(var_export($this->option('long-name'), true));

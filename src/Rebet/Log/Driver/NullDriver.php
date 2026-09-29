@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Log\Driver;
 
+use Override;
 use Psr\Log\AbstractLogger as PsrAbstractLogger;
 
 /**
@@ -27,6 +28,7 @@ class NullDriver extends PsrAbstractLogger
      * @param  array<string, mixed> $context (default: [])
      * @return void
      */
+    #[Override]
     public function log($level, string|\Stringable $message, array $context = []): void
     {
         // Do nothing.

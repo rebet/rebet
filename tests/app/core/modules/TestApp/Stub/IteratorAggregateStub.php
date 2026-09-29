@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TestApp\Stub;
 
+use Override;
+
 class IteratorAggregateStub implements \IteratorAggregate
 {
     private $data;
@@ -13,6 +15,7 @@ class IteratorAggregateStub implements \IteratorAggregate
         $this->data = $data;
     }
 
+    #[Override]
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->data);

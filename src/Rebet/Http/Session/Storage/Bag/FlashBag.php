@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Http\Session\Storage\Bag;
 
+use Override;
 use Rebet\Tools\Reflection\Reflector;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 
@@ -53,6 +54,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function getName(): string
     {
         return $this->name;
@@ -63,6 +65,7 @@ class FlashBag implements SessionBagInterface
      *
      * @param array<string, mixed> $attributes
      */
+    #[Override]
     public function initialize(array &$attributes): void
     {
         $this->attributes = &$attributes;
@@ -71,6 +74,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function getStorageKey(): string
     {
         return $this->storage_key;
@@ -79,6 +83,7 @@ class FlashBag implements SessionBagInterface
     /**
      * {@inheritdoc}
      */
+    #[Override]
     public function clear(): mixed
     {
         $value            = $this->attributes;

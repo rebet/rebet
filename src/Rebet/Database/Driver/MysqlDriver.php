@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
 
+use Override;
 use Rebet\Database\PdoParameter;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
@@ -53,6 +54,7 @@ class MysqlDriver extends AbstractDriver
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -108,6 +110,7 @@ class MysqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function toPdoType($value): PdoParameter
     {
         if ($value instanceof Enum) {
@@ -127,6 +130,7 @@ class MysqlDriver extends AbstractDriver
      * @param array<string, mixed> $meta
      * @see 'mysql'  native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_mysql/mysql_statement.c.gcov.php
      */
+    #[Override]
     public function toPhpType($value, array $meta = [], string|null $type = null)
     {
         if ($value === null) {

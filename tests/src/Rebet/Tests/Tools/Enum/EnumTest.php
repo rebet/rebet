@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Enum;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Enum\Enum;
@@ -16,6 +17,7 @@ class EnumTest extends RebetTestCase
     private $male;
     private $female;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -545,6 +547,7 @@ class EnumTest_AcceptStatus extends Enum
         $this->icon  = $icon;
     }
 
+    #[Override]
     public static function nexts($current, array|null $context = null): array
     {
         switch ($context['role']) {

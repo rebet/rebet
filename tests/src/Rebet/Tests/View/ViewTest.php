@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\View;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Config\Config;
@@ -17,6 +18,7 @@ use Rebet\View\View;
 
 class ViewTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

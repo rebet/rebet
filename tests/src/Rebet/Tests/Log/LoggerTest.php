@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Log;
 
+use Override;
 use Psr\Log\NullLogger;
 use Rebet\Log\Driver\Monolog\TestDriver;
 use Rebet\Log\Logger;
@@ -13,6 +14,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class LoggerTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

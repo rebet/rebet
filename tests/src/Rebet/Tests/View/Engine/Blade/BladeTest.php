@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rebet\Tests\View\Engine\Blade;
 
 use Illuminate\View\Compilers\BladeCompiler as LaravelBladeCompiler;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
@@ -19,6 +20,7 @@ class BladeTest extends RebetTestCase
      */
     private $blade;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

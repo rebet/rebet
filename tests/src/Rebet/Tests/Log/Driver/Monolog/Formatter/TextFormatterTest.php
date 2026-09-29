@@ -6,6 +6,7 @@ namespace Rebet\Tests\Log\Driver\Monolog\Formatter;
 
 use Monolog\Logger as MonologLogger;
 use Monolog\LogRecord;
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
@@ -14,6 +15,7 @@ use Rebet\Tools\DateTime\DateTime;
 
 class TextFormatterTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

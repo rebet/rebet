@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Translation;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Config\Layer;
 use Rebet\Tools\Reflection\Reflector;
@@ -26,6 +27,7 @@ class FileDictionary implements Dictionary
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/tools.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -166,6 +168,7 @@ class FileDictionary implements Dictionary
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function grammar(string $group, string $key, string $locale, $default = null)
     {
         $this->load($group, $locale);
@@ -177,6 +180,7 @@ class FileDictionary implements Dictionary
      *
      * @param array<int, string> $locales
      */
+    #[Override]
     public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true): string|null
     {
         $sentence = null;

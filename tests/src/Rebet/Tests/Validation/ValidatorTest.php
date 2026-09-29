@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Validation;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\UploadedFile;
@@ -24,6 +25,7 @@ class ValidatorTest extends RebetTestCase
 {
     private $root;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

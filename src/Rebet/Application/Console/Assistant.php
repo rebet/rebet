@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console;
 
+use Override;
 use Rebet\Application\Console\Command\Crypto\CryptoDecryptCommand;
 use Rebet\Application\Console\Command\Crypto\CryptoEncryptCommand;
 use Rebet\Application\Console\Command\EnvCommand;
@@ -30,6 +31,7 @@ class Assistant extends Application
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/application.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

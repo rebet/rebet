@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View\Engine\Twig\Parser;
 
+use Override;
 use Rebet\Tools\Translation\Translator;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\View\Engine\Twig\Node\EmbedNode;
@@ -116,6 +117,7 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function parse(Token $token)
     {
         $stream = $this->parser->getStream();
@@ -270,6 +272,7 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getTag()
     {
         return $this->tag;

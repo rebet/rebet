@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Database\Pagination\Storage;
 
+use Override;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Storage\CursorStorage;
 use Rebet\Http\Session\Session;
@@ -21,6 +22,7 @@ class SessionCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function save(string $name, Cursor $cursor): void
     {
         Session::current()->set($name, $cursor);
@@ -29,6 +31,7 @@ class SessionCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function load(string $name): Cursor|null
     {
         return Session::current()->get($name);
@@ -37,6 +40,7 @@ class SessionCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function remove(string $name): void
     {
         Session::current()->remove($name);
@@ -45,6 +49,7 @@ class SessionCursorStorage implements CursorStorage
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function clear(): void
     {
         Session::current()->invalidate();

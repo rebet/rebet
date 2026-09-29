@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Console\Command\Command;
 
@@ -23,6 +24,7 @@ class EnvCommand extends Command
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function handle(): void
     {
         $this->writeln('<info>Current application environment:</info> <comment>' . App::env() . '.</comment>');

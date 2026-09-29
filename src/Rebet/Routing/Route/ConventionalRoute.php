@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Routing\Route;
 
+use Override;
 use Rebet\Attribute\AttributedMethod;
 use Rebet\Http\Request;
 use Rebet\Http\Response;
@@ -55,6 +56,7 @@ class ConventionalRoute extends Route
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/routing.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -205,6 +207,7 @@ class ConventionalRoute extends Route
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
+    #[Override]
     protected function analyze(Request $request): array|null
     {
         $request_uri = Strings::ltrim($request->getRequestPath(), $this->prefix, 1);
@@ -280,6 +283,7 @@ class ConventionalRoute extends Route
      * @return RouteAction
      * @throws RouteNotFoundException
      */
+    #[Override]
     protected function createRouteAction(Request $request): RouteAction
     {
         $method = new \ReflectionMethod($this->controller, $this->getActionName());
@@ -302,6 +306,7 @@ class ConventionalRoute extends Route
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function defaultView(): string
     {
         return "/{$this->part_of_controller}/{$this->part_of_action}";
@@ -346,6 +351,7 @@ class ConventionalRoute extends Route
      * @param  Response $response
      * @return void
      */
+    #[Override]
     public function terminate(Request $request, Response $response): void
     {
         if ($this->controller !== null) {
@@ -356,6 +362,7 @@ class ConventionalRoute extends Route
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function __toString()
     {
         return "Route: {$this->getControllerName()}::{$this->getActionName()}";

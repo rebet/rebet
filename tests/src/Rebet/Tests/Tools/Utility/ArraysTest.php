@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Utility;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Arrays;
 use Rebet\Tools\Utility\Callbacks;
@@ -16,6 +17,7 @@ use TestApp\Stub\ToArrayStub;
 
 class ArraysTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

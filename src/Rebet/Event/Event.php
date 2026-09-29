@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Event;
 
+use Override;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Rebet\Tools\Config\Config;
 use Rebet\Tools\Config\Configurable;
@@ -26,6 +27,7 @@ class Event
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/event.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -59,6 +61,7 @@ class Event
         }
 
         return static::$psr_adapter = new class implements EventDispatcherInterface {
+            #[Override]
             public function dispatch(object $event)
             {
                 Event::dispatch($event);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tools\Template;
 
+use Override;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Reflection\Reflector;
 use Rebet\Tools\Tinker\Tinker;
@@ -521,6 +522,7 @@ class Letterpress implements Renderable, \JsonSerializable
      *
      * @return string
      */
+    #[Override]
     public function render(): string
     {
         if (empty($this->syntax)) {
@@ -818,6 +820,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function jsonSerialize(): mixed
     {
         return Json::serialize($this->vars);

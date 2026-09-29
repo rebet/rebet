@@ -7,6 +7,7 @@ namespace Rebet\Mail\Validator\Parser;
 use Egulias\EmailValidator\EmailLexer;
 use Egulias\EmailValidator\EmailParser;
 use Egulias\EmailValidator\Result\Result;
+use Override;
 
 /**
  * Loose Email Parser Class
@@ -38,6 +39,7 @@ class LooseEmailParser extends EmailParser
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function parseLeftFromAt(): Result
     {
         $localPartParser = new LooseLocalPart($this->lexer, $this->ignores);

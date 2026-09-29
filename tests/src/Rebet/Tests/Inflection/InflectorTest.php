@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Inflection;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Inflection\Inflector;
 use Rebet\Tests\RebetTestCase;
@@ -17,6 +18,7 @@ use Rebet\Tools\Config\Config;
  */
 class InflectorTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

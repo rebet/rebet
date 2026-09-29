@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Utility;
 
+use Override;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\Utility\Nets;
 
 class NetsTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

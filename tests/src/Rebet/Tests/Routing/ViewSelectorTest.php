@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Routing;
 
+use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rebet\Application\App;
 use Rebet\Http\Request;
@@ -17,6 +18,7 @@ use Rebet\View\View;
 
 class ViewSelectorTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TestApp\Model;
 
+use Override;
 use Rebet\Database\DataModel\Entity;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Reflection\Reflector;
@@ -25,6 +26,7 @@ class Article extends Entity
     /**
      * Method for unit test
      */
+    #[Override]
     public function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
         return parent::belongsTo($class, $alias, $for_update, $eager_load, $name ?? Reflector::caller());

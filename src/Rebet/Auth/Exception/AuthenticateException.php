@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Auth\Exception;
 
+use Override;
 use Rebet\Http\ProblemRespondable;
 use Rebet\Http\Responder;
 use Rebet\Http\Response\ProblemResponse;
@@ -28,6 +29,7 @@ class AuthenticateException extends RuntimeException implements ProblemRespondab
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function problem(): ProblemResponse
     {
         return Responder::problem(403)->detail(Translator::get('message.http.403.detail') ?? $this->getMessage());

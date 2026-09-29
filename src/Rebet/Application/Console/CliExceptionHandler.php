@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console;
 
+use Override;
 use Rebet\Application\ExceptionHandler;
 use Rebet\Log\Log;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -47,6 +48,7 @@ class CliExceptionHandler extends ExceptionHandler
      * @param  \Throwable     $e
      * @return void
      */
+    #[Override]
     public function report($input, $result, \Throwable $e): void
     {
         Log::error("Console unhandled exception occurred. Error code: {$result}", ['arguments' => $input->getArguments(), 'options' => $input->getOptions()], $e);
@@ -59,6 +61,7 @@ class CliExceptionHandler extends ExceptionHandler
      * @param  \Throwable          $e
      * @return int
      */
+    #[Override]
     public function handle($input, \Throwable $e)
     {
         $input ??= new ArgvInput();

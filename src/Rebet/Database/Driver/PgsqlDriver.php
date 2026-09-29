@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Database\Driver;
 
+use Override;
 use Rebet\Tools\DateTime\Date;
 use Rebet\Tools\DateTime\DateTime;
 use Rebet\Tools\Math\Decimal;
@@ -47,6 +48,7 @@ class PgsqlDriver extends AbstractDriver
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/database.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -97,6 +99,7 @@ class PgsqlDriver extends AbstractDriver
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function truncate(string $table_name, bool|null $with_vacuum = true): string
     {
         $quoted_table_name = $this->quoteIdentifier($table_name);
@@ -110,6 +113,7 @@ class PgsqlDriver extends AbstractDriver
      * @param array<string, mixed> $meta
      * @see 'pgsql'  native_type from http://gcov.php.net/PHP_7_4/lcov_html/ext/pdo_pgsql/pgsql_statement.c.gcov.php and `SELECT TYPNAME FROM PG_TYPE` results.
      */
+    #[Override]
     public function toPhpType($value, array $meta = [], string|null $type = null)
     {
         if ($value === null) {

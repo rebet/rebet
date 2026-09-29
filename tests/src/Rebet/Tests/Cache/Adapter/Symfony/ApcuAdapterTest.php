@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Cache\Adapter\Symfony;
 
+use Override;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Rebet\Cache\Adapter\Symfony\ApcuAdapter;
 use Rebet\Tests\RebetTestCase;
@@ -27,6 +28,7 @@ use Rebet\Tests\RebetTestCase;
 #[RequiresPhpExtension('apcu')]
 class ApcuAdapterTest extends RebetTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         if (!ApcuAdapter::isSupported()) {

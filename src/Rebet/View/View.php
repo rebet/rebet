@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\View;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Template\Renderable;
 use Rebet\Tools\Tinker\Tinker;
@@ -28,6 +29,7 @@ class View implements Renderable
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/view.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [
@@ -213,6 +215,7 @@ class View implements Renderable
      * @return string
      * @throws ViewRenderFailedException
      */
+    #[Override]
     public function render(): string
     {
         $names = $this->getPossibleNames();

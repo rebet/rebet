@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Application\Console;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Application\Console\Assistant;
 use Rebet\Application\Console\CliExceptionHandler;
@@ -22,6 +23,7 @@ class CliKernelTest extends RebetTestCase
     /** @var BufferedOutput */
     protected $output;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -40,6 +42,7 @@ class CliKernelTest extends RebetTestCase
         $this->kernel->assistant()->setAutoExit(false);
     }
 
+    #[Override]
     protected function tearDown(): void
     {
         // bootstrap() -> HandleExceptions pushes another error/exception handler onto the global

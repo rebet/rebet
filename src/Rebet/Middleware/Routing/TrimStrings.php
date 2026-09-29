@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Middleware\Routing;
 
+use Override;
 use Rebet\Tools\Utility\Strings;
 
 /**
@@ -19,6 +20,7 @@ class TrimStrings extends InputDataTransform
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function transform($key, $value)
     {
         return is_string($value) ? Strings::mbtrim($value) : $value ;

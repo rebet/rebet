@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Bootstrap;
 
+use Override;
 use Rebet\Application\Http\WebKernel;
 use Rebet\Application\Kernel;
 use Rebet\Application\View\Tag\BuiltinTagProcessors;
@@ -23,6 +24,7 @@ class LetterpressTagCustomizer implements Bootstrapper
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function bootstrap(Kernel $kernel): void
     {
         // ------------------------------------------------

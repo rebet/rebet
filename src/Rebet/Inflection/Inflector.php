@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Inflection;
 
+use Override;
 use Rebet\Tools\Config\Configurable;
 use Rebet\Tools\Exception\LogicException;
 use Rebet\Tools\Utility\Arrays;
@@ -64,6 +65,7 @@ class Inflector
      * {@inheritDoc}
      * @see https://github.com/rebet/rebet/blob/master/skeltons/app/core/configs/inflection.lp.php
      */
+    #[Override]
     public static function defaultConfig()
     {
         return [

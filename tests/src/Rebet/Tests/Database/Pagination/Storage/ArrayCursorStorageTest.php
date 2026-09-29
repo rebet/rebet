@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Database\Pagination\Storage;
 
+use Override;
 use Rebet\Database\Pagination\Cursor;
 use Rebet\Database\Pagination\Pager;
 use Rebet\Database\Pagination\Storage\ArrayCursorStorage;
@@ -17,6 +18,7 @@ class ArrayCursorStorageTest extends RebetTestCase
      */
     protected $strage;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();

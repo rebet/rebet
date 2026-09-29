@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Application\Console\Command\Project;
 
+use Override;
 use Rebet\Auth\Password;
 use Rebet\Console\Command\Command;
 use Rebet\Inflection\Inflector;
@@ -160,6 +161,7 @@ class ProjectInitCommand extends Command
         $this->skeltons_dir = Path::normalize($skeltons_dir);
     }
 
+    #[Override]
     protected function handle()
     {
         // 参考

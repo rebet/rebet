@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rebet\Tests\Tools\Tinker;
 
+use Override;
 use Rebet\Application\App;
 use Rebet\Tests\RebetTestCase;
 use Rebet\Tools\DateTime\DateTime;
@@ -32,6 +33,7 @@ class TinkerTest extends RebetTestCase
     private $destructive;
     private $safty;
 
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
