@@ -21,9 +21,9 @@ class Application extends SymfonyApplication
     /**
      * Run a command by name.
      *
-     * @param string $command
-     * @param array<string, mixed> $parameters (default: [])
-     * @param OutputInterface|null $output (default: null)
+     * @param  string               $command
+     * @param  array<string, mixed> $parameters (default: [])
+     * @param  OutputInterface|null $output     (default: null)
      * @return int
      */
     public function call(string $command, array $parameters = [], OutputInterface|null $output = null) : int
@@ -34,8 +34,8 @@ class Application extends SymfonyApplication
     /**
      * Execute a given command line.
      *
-     * @param string $command_line
-     * @param OutputInterface|null $output
+     * @param  string               $command_line
+     * @param  OutputInterface|null $output
      * @return integer
      */
     public function execute(string $command_line, OutputInterface|null $output = null) : int

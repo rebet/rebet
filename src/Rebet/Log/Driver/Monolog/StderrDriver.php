@@ -27,10 +27,10 @@ class StderrDriver extends MonologDriver
     /**
      * Create Stderr ouput logging driver.
      *
-     * @param string $level
-     * @param string|null $format (default: null)
+     * @param string                  $level
+     * @param string|null             $format       (default: null)
      * @param array<string, callable> $stringifiers (default: [])
-     * @param boolean $bubble (default: true)
+     * @param boolean                 $bubble       (default: true)
      */
     public function __construct(string $level, string $format = null, array $stringifiers = [], bool $bubble = true)
     {

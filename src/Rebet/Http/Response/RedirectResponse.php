@@ -24,8 +24,8 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
     /**
      * Create Redirect Response
      *
-     * @param string $url
-     * @param integer $status (default: 302)
+     * @param string                                   $url
+     * @param integer                                  $status  (default: 302)
      * @param array<string, string|array<int, string>> $headers (default: [])
      */
     public function __construct(string $url, int $status = 302, array $headers = [])
@@ -36,7 +36,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
     /**
      * Set the input data to the redirect.
      *
-     * @param array<string, mixed> $input
+     * @param  array<string, mixed> $input
      * @return self
      */
     public function with(array $input) : self
@@ -50,7 +50,7 @@ class RedirectResponse extends SymfonyRedirectResponse implements Response
      *
      * @todo MessageBag
      *
-     * @param array<string, array<int, string>> $errors
+     * @param  array<string, array<int, string>> $errors
      * @return self
      */
     public function errors(array $errors) : self

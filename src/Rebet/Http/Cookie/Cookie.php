@@ -60,15 +60,15 @@ class Cookie extends SymfonyCookie
     /**
      * Create a Cookie based on Symfony's Cookie::create() default parameters.
      *
-     * @param string $name
-     * @param string|null $value
-     * @param string|int|null $expire (default: depend on configure)
-     * @param string|null $path (default: depend on configure)
-     * @param string|null $domain (default: depend on configure)
-     * @param boolean|null $secure (default: depend on configure)
-     * @param boolean|null $http_only (default: depend on configure)
-     * @param boolean|null $raw (default: depend on configure)
-     * @param string|null $samesite (default: depend on configure)
+     * @param string          $name
+     * @param string|null     $value
+     * @param string|int|null $expire    (default: depend on configure)
+     * @param string|null     $path      (default: depend on configure)
+     * @param string|null     $domain    (default: depend on configure)
+     * @param boolean|null    $secure    (default: depend on configure)
+     * @param boolean|null    $http_only (default: depend on configure)
+     * @param boolean|null    $raw       (default: depend on configure)
+     * @param string|null     $samesite  (default: depend on configure)
      */
     public function __construct(string $name, string|null $value = null, $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null, bool $partitioned = false)
     {
@@ -91,7 +91,7 @@ class Cookie extends SymfonyCookie
      * Note: Defaultly, the path converter will prepend a route prefix to the given path if it is necessary.
      * Note: If you want to use fixed path then give the path starts with '@'. It will be returned the given path without '@' as it is.
      *
-     * @param string|null $path
+     * @param  string|null $path
      * @return string
      */
     public static function convertPath(string|null $path) : string
@@ -116,7 +116,7 @@ class Cookie extends SymfonyCookie
     /**
      * It checks current request has a given name cookie.
      *
-     * @param string $name
+     * @param  string         $name
      * @return bool
      * @throws LogicException when request has not been initialized.
      */
@@ -132,10 +132,10 @@ class Cookie extends SymfonyCookie
     /**
      * Get the cookie value of given name from current request.
      *
-     * @param string $name
-     * @param bool|float|int|string|null $default (default: null)
+     * @param  string                     $name
+     * @param  bool|float|int|string|null $default (default: null)
      * @return mixed
-     * @throws LogicException when request has not been initialized.
+     * @throws LogicException             when request has not been initialized.
      */
     public static function get(string $name, bool|float|int|string|null $default = null)
     {
@@ -153,15 +153,15 @@ class Cookie extends SymfonyCookie
      *  - the path   will be set to current route prefix, if it is empty then '/'
      * defaultly.
      *
-     * @param string $name
-     * @param string|null $value
-     * @param string|int|null $expire (default: depend on configure)
-     * @param string|null $path (default: depend on configure)
-     * @param string|null $domain (default: depend on configure)
-     * @param boolean|null $secure (default: depend on configure)
-     * @param boolean|null $http_only (default: depend on configure)
-     * @param boolean|null $raw (default: depend on configure)
-     * @param string|null $samesite (default: depend on configure)
+     * @param  string          $name
+     * @param  string|null     $value
+     * @param  string|int|null $expire    (default: depend on configure)
+     * @param  string|null     $path      (default: depend on configure)
+     * @param  string|null     $domain    (default: depend on configure)
+     * @param  boolean|null    $secure    (default: depend on configure)
+     * @param  boolean|null    $http_only (default: depend on configure)
+     * @param  boolean|null    $raw       (default: depend on configure)
+     * @param  string|null     $samesite  (default: depend on configure)
      * @return void
      */
     public static function set(string $name, string|null $value = null, $expire = null, string|null $path = null, string|null $domain = null, bool|null $secure = null, bool|null $http_only = null, bool|null $raw = null, string|null $samesite = null) : void
@@ -172,9 +172,9 @@ class Cookie extends SymfonyCookie
     /**
      * Set the expiered cookie of given name to queued for next response.
      *
-     * @param string $name
-     * @param string|null $path (default: depend on configure)
-     * @param string|null $domain (default: depend on configure)
+     * @param  string      $name
+     * @param  string|null $path   (default: depend on configure)
+     * @param  string|null $domain (default: depend on configure)
      * @return void
      */
     public static function remove(string $name, string|null $path = null, string|null $domain = null) : void
@@ -185,7 +185,7 @@ class Cookie extends SymfonyCookie
     /**
      * Set the cookie to queued for next response.
      *
-     * @param Cookie $cookie
+     * @param  Cookie $cookie
      * @return void
      */
     public static function enqueue(Cookie $cookie) : void
@@ -196,7 +196,7 @@ class Cookie extends SymfonyCookie
     /**
      * Get and remove the cookie of given name from queued for next response.
      *
-     * @param string $name
+     * @param  string    $name
      * @return self|null
      */
     public static function dequeue(string $name) : self|null
@@ -209,7 +209,7 @@ class Cookie extends SymfonyCookie
     /**
      * Get the cookie of given name from queued for next response.
      *
-     * @param string $name
+     * @param  string    $name
      * @return self|null
      */
     public static function peek(string $name) : self|null

@@ -39,8 +39,8 @@ class Updated implements Saved
      * Create an event
      *
      * @param Database $db
-     * @param Entity $old
-     * @param Entity $new
+     * @param Entity   $old
+     * @param Entity   $new
      */
     public function __construct(Database $db, Entity $old, Entity &$new)
     {

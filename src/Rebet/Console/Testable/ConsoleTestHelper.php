@@ -32,7 +32,7 @@ trait ConsoleTestHelper // @phpstan-ignore trait.unused
     /**
      * Set up console application for given commands.
      *
-     * @param string|array<mixed>|callable|Command ...$commands
+     * @param  string|array<mixed>|callable|Command ...$commands
      * @return void
      */
     protected function setUpConsole(mixed ...$commands) : void
@@ -46,7 +46,7 @@ trait ConsoleTestHelper // @phpstan-ignore trait.unused
     /**
      * Get command tester for given command.
      *
-     * @param string $command
+     * @param  string        $command
      * @return CommandTester
      */
     protected function getCommandTester(string $command) : CommandTester
@@ -57,7 +57,7 @@ trait ConsoleTestHelper // @phpstan-ignore trait.unused
     /**
      * Execute command.
      *
-     * @param string $command
+     * @param  string $command
      * @return void
      */
     protected function execute(string $command)

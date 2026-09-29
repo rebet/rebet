@@ -139,8 +139,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function get(string $uri, $action) : Route
@@ -153,8 +153,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function post(string $uri, $action) : Route
@@ -167,8 +167,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function put(string $uri, $action) : Route
@@ -181,8 +181,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function patch(string $uri, $action) : Route
@@ -195,8 +195,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function delete(string $uri, $action) : Route
@@ -209,8 +209,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function options(string $uri, $action) : Route
@@ -223,8 +223,8 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param  string  $uri
-     * @param  callable|string  $action
+     * @param  string          $uri
+     * @param  callable|string $action
      * @return Route
      */
     public static function any(string $uri, $action) : Route
@@ -238,9 +238,9 @@ class Router
      *
      * Please note that routing attribute is not interpreted by declarative routing setting by this method.
      *
-     * @param array<int, string>|string $methods
-     * @param string $uri
-     * @param string|callable $action can be use @ namespace alias
+     * @param  array<int, string>|string $methods
+     * @param  string                    $uri
+     * @param  string|callable           $action  can be use @ namespace alias
      * @return Route
      */
     public static function match($methods, string $uri, $action) : Route
@@ -267,8 +267,8 @@ class Router
      *
      * @see Rebet\Routing\Attribute
      *
-     * @param string $uri
-     * @param string $controller
+     * @param  string $uri
+     * @param  string $controller
      * @return Route
      */
     public static function controller(string $uri, string $controller) : Route
@@ -282,10 +282,10 @@ class Router
      * You can use '{key}' replacement in the given destination when use '{key}' placeholder in given uri.
      * If you do not use '{key}' replacement in the destination, then '{key}' placeholder become query string.
      *
-     * @param string $uri
-     * @param string $destination
-     * @param array<string, mixed> $query (default: [])
-     * @param integer $status (deafult: 302)
+     * @param  string               $uri
+     * @param  string               $destination
+     * @param  array<string, mixed> $query       (default: [])
+     * @param  integer              $status      (deafult: 302)
      * @return Route
      */
     public static function redirect(string $uri, string $destination, array $query = [], int $status = 302) : Route
@@ -298,9 +298,9 @@ class Router
      *
      * You can use '{key}' placeholder in given uri for view arguments.
      *
-     * @param string $uri
-     * @param string $name
-     * @param array<string, mixed> $args (default: [])
+     * @param  string               $uri
+     * @param  string               $name
+     * @param  array<string, mixed> $args (default: [])
      * @return Route
      */
     public static function view(string $uri, string $name, array $args = []) : Route
@@ -312,7 +312,7 @@ class Router
      * Add given route to the router.
      * This method constructs an incomplete route search tree for route resolution speeding up.
      *
-     * @param Route $route
+     * @param  Route $route
      * @return Route given route
      */
     protected static function addRoute(Route $route) : Route
@@ -328,9 +328,9 @@ class Router
     /**
      * Stores the root object while digging the route search tree.
      *
-     * @param array<string, mixed> $tree
-     * @param array<int, string> $nests
-     * @param Route $route
+     * @param  array<string, mixed> $tree
+     * @param  array<int, string>   $nests
+     * @param  Route                $route
      * @return void
      */
     private static function digging(array &$tree, array $nests, Route $route) : void
@@ -357,7 +357,7 @@ class Router
     /**
      * Set the default route.
      *
-     * @param mixed $route Route object or instantiatable setting that can generate route
+     * @param  mixed $route Route object or instantiatable setting that can generate route
      * @return Route
      */
     public static function default($route) : Route
@@ -374,7 +374,7 @@ class Router
     /**
      * Apply roules to given route.
      *
-     * @param Route $route
+     * @param  Route $route
      * @return void
      */
     protected static function applyRulesTo(Route &$route) : void
@@ -393,7 +393,7 @@ class Router
     /**
      * Handle the given request.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return Response
      */
     public static function handle(Request $request) : Response
@@ -415,8 +415,8 @@ class Router
     /**
      * Handle fallback.
      *
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  Request    $request
+     * @param  \Throwable $e
      * @return Response
      */
     protected static function handleFallback(Request $request, \Throwable $e) : Response
@@ -446,8 +446,8 @@ class Router
     /**
      * Handle default fallback.
      *
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  Request    $request
+     * @param  \Throwable $e
      * @return Response
      */
     protected static function handleDefaultFallback(Request $request, \Throwable $e) : Response
@@ -463,7 +463,7 @@ class Router
     /**
      * Search route matching given request.
      *
-     * @param Request $request
+     * @param  Request $request
      * @return Route
      */
     protected static function findRoute(Request $request) : Route
@@ -512,8 +512,8 @@ class Router
     /**
      * Terminate the route and middlewares.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @return void
      */
     public static function terminate(Request $request, Response $response) : void
@@ -540,7 +540,7 @@ class Router
     /**
      * Get the prefix from given request_path.
      *
-     * @param string $request_path
+     * @param  string      $request_path
      * @return string|null
      */
     public static function getPrefixFrom(string $request_path) : string|null
@@ -556,7 +556,7 @@ class Router
     /**
      * Activate prefix to the Router.
      *
-     * @param string $prefix
+     * @param  string $prefix
      * @return string return the given prefix as it is.
      */
     public static function activatePrefix(string $prefix) : string
@@ -631,7 +631,7 @@ class Router
     /**
      * Set new routing rules for given channel.
      *
-     * @param string $channel
+     * @param  string $channel
      * @return static
      */
     public static function rules(string $channel) : static
@@ -643,7 +643,7 @@ class Router
      * Set the prefix path for this rules.
      * If the given prefix is not activated the prefix will activate.
      *
-     * @param string $prefix
+     * @param  string $prefix
      * @return self
      */
     public function prefix(string $prefix) : self
@@ -655,7 +655,7 @@ class Router
     /**
      * Set the middlewares for this rules.
      *
-     * @param string ...$middlewares
+     * @param  string ...$middlewares
      * @return self
      */
     public function middlewares(...$middlewares) : self
@@ -667,7 +667,7 @@ class Router
     /**
      * Set the roles/abilities for this rules.
      *
-     * @param string ...$roles
+     * @param  string ...$roles
      * @return self
      */
     public function roles(...$roles) : self
@@ -679,7 +679,7 @@ class Router
     /**
      * Set the guard name for this rules.
      *
-     * @param string $name of guard
+     * @param  string $name of guard
      * @return self
      */
     public function guard(string $name) : self
@@ -691,7 +691,7 @@ class Router
     /**
      * Set routing rules by given callback.
      *
-     * @param callable $callback function():void
+     * @param  callable $callback function():void
      * @return self
      */
     public function routing(callable $callback) : self
@@ -710,7 +710,7 @@ class Router
      * The registered action is called when an exception occurs.
      * Normally, it is assumed to be used in log output or error page display.
      *
-     * @param callable $action function(Request $request, ?Route $route, \Throwable $e) { ... }
+     * @param  callable $action function(Request $request, ?Route $route, \Throwable $e) { ... }
      * @return self
      */
     public function fallback(callable $action) : self

@@ -24,7 +24,7 @@ interface Compiler
     /**
      * Get compiler of given PDO driver
      *
-     * @param Driver $driver
+     * @param  Driver $driver
      * @return self
      */
     public static function of(Driver $driver) : self;
@@ -32,12 +32,12 @@ interface Compiler
     /**
      * Compile the given SQL template and params to PDO spec (and return result adjust callback closure).
      *
-     * @param string $sql
-     * @param OrderBy|null $order_by (default: null)
-     * @param array<string, mixed>|object|null $params can be arrayable (default: [])
-     * @param Pager|null $pager (default: null)
-     * @param Cursor|null $cursor (default: null)
-     * @return Query of full SQL sentence
+     * @param  string                           $sql
+     * @param  OrderBy|null                     $order_by (default: null)
+     * @param  array<string, mixed>|object|null $params   can be arrayable (default: [])
+     * @param  Pager|null                       $pager    (default: null)
+     * @param  Cursor|null                      $cursor   (default: null)
+     * @return Query                            of full SQL sentence
      */
     public function compile(string $sql, OrderBy|null $order_by = null, $params = [], Pager|null $pager = null, Cursor|null $cursor = null) : Query;
 
@@ -45,12 +45,12 @@ interface Compiler
      * Process a statement containing a result set and create a paginator object.
      * Also, if there is other processing necessary for page feed, it is done here.
      *
-     * @param Statement $stmt
-     * @param OrderBy|null $order_by
-     * @param Pager $pager
-     * @param Cursor|null $cursor (default: null)
-     * @param int|null $total (default: null)
-     * @param string $class (default: 'stdClass')
+     * @param  Statement    $stmt
+     * @param  OrderBy|null $order_by
+     * @param  Pager        $pager
+     * @param  Cursor|null  $cursor   (default: null)
+     * @param  int|null     $total    (default: null)
+     * @param  string       $class    (default: 'stdClass')
      * @return Paginator
      */
     public function paging(Statement $stmt, OrderBy|null $order_by, Pager $pager, Cursor|null $cursor = null, int|null $total = null, string $class = 'stdClass') : Paginator;
@@ -58,9 +58,9 @@ interface Compiler
     /**
      * Convert given parameter(key and value) to PDO spec.
      *
-     * @param string $key
-     * @param mixed $value
-     * @return Query of PDO spec placeholder SQL sentence
+     * @param  string $key
+     * @param  mixed  $value
+     * @return Query  of PDO spec placeholder SQL sentence
      */
     public function convertParam(string $key, $value) : Query;
 }

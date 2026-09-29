@@ -93,8 +93,8 @@ class Config
      * Reset configration data of given section.
      * If the null given then reset all data.
      *
-     * @param string|null $section (default: null)
-     * @param string ...$layers list of Layer::* (default: all layers)
+     * @param  string|null $section   (default: null)
+     * @param  string      ...$layers list of Layer::* (default: all layers)
      * @return void
      */
     public static function reset(string|null $section = null, string ...$layers) : void
@@ -135,7 +135,7 @@ class Config
      *  - The library configuration setting loaded via ConfigReferrer by calling this method
      *    it may not be included in the return value of this method.
      *
-     * @param string ...$sections (default: all)
+     * @param  string               ...$sections (default: all)
      * @return array<string, mixed>
      */
     public static function all(string ...$sections) : array
@@ -151,7 +151,7 @@ class Config
      * Compile the config setting of the target section.
      * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
-     * @param string $section
+     * @param  string $section
      * @return void
      */
     protected static function compile(string $section) : void
@@ -186,8 +186,8 @@ class Config
      * Set / overwrite the configuration of the target layer.
      * This compilation is overwrite setting by Arrays::override(..., OverrideOption::PREPEND) of each layer information.
      *
-     * @param string $layer
-     * @param array<string, array<string, mixed>> $config
+     * @param  string                              $layer
+     * @param  array<string, array<string, mixed>> $config
      * @return void
      */
     protected static function put(string $layer, array $config) : void
@@ -223,7 +223,7 @@ class Config
      *     ],
      * ]);
      *
-     * @param array<string, array<string, mixed>> $config
+     * @param  array<string, array<string, mixed>> $config
      * @return void
      */
     public static function framework(array $config) : void
@@ -250,7 +250,7 @@ class Config
      *     ],
      * ]);
      *
-     * @param array<string, array<string, mixed>> $config
+     * @param  array<string, array<string, mixed>> $config
      * @return void
      */
     public static function application(array $config) : void
@@ -277,7 +277,7 @@ class Config
      *     ],
      * ]);
      *
-     * @param array<string, array<string, mixed>> $config
+     * @param  array<string, array<string, mixed>> $config
      * @return void
      */
     public static function runtime(array $config) : void
@@ -289,9 +289,9 @@ class Config
      * It checks the configuration setting for the given target is defined.
      * Note: This method will throw an exception if the key selector contains only numeric values.
      *
-     * @param array<string, mixed> $config
-     * @param string $section
-     * @param string|null $key can contains dot notation
+     * @param  array<string, mixed> $config
+     * @param  string               $section
+     * @param  string|null          $key     can contains dot notation
      * @return bool
      * @throws LogicException
      */
@@ -306,7 +306,7 @@ class Config
     /**
      * Check the format of the access key.
      *
-     * @param string|null $key
+     * @param  string|null    $key
      * @return void
      * @throws LogicException
      */
@@ -330,10 +330,10 @@ class Config
      *  - This method will throw an exception if the key selector contains only numeric values.
      *  - When access with index specification is required, please access the target array individually after acquiring the data.
      *
-     * @param string $section
-     * @param string|null $key can contains dot notation (default: null)
-     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
-     * @param mixed $default (default: null)
+     * @param  string                   $section
+     * @param  string|null              $key      can contains dot notation (default: null)
+     * @param  bool                     $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param  mixed                    $default  (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      * @throws LogicException
@@ -352,7 +352,7 @@ class Config
     /**
      * Load library configuration from given section.
      *
-     * @param string $section
+     * @param  string $section
      * @return void
      */
     protected static function loadLibraryConfig(string $section) : void
@@ -366,7 +366,7 @@ class Config
     /**
      * Get library configuration override options from given section.
      *
-     * @param string $section
+     * @param  string               $section
      * @return array<string, mixed>
      */
     protected static function getLibraryConfigOverrideOptions(string $section) : array
@@ -379,11 +379,11 @@ class Config
      *
      * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
-     * @param string $section
-     * @param string $key can contains dot notation
-     * @param array<int|string, mixed> $runtime_args that override defined configuration args (default: [])
-     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
-     * @param mixed $default (default: null)
+     * @param  string                   $section
+     * @param  string                   $key          can contains dot notation
+     * @param  array<int|string, mixed> $runtime_args that override defined configuration args (default: [])
+     * @param  bool                     $required     (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param  mixed                    $default      (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      * @throws LogicException
@@ -416,8 +416,8 @@ class Config
      *  - This method will throw an exception if the key selector contains only numeric values.
      *  - When access with index specification is required, please access the target array individually after acquiring the data.
      *
-     * @param string $section
-     * @param string $key can contains dot notation
+     * @param  string         $section
+     * @param  string         $key     can contains dot notation
      * @return bool
      * @throws LogicException
      */
@@ -431,7 +431,7 @@ class Config
     /**
      * Setup the configuration settings for the given section
      *
-     * @param string $section
+     * @param  string $section
      * @return void
      */
     protected static function setup(string $section) : void
@@ -456,9 +456,9 @@ class Config
      *     ];
      * }
      *
-     * @param string $section to refer
-     * @param string $key to refer can contains dot notation (default: null)
-     * @param mixed $default when the referral configuration value is blank (default: null)
+     * @param  string         $section to refer
+     * @param  string         $key     to refer can contains dot notation (default: null)
+     * @param  mixed          $default when the referral configuration value is blank (default: null)
      * @return ConfigReferrer
      */
     public static function refer(string $section, string|null $key = null, $default = null) : ConfigReferrer
@@ -470,8 +470,8 @@ class Config
     /**
      * Returns a delay evaluation formula that delays the set value confirmation until its setting is referenced.
      *
-     * @param \Closure $promise
-     * @param bool $only_once (default: true)
+     * @param  \Closure      $promise
+     * @param  bool          $only_once (default: true)
      * @return ConfigPromise
      */
     public static function promise(\Closure $promise, bool $only_once = true) : ConfigPromise

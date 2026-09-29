@@ -77,7 +77,7 @@ class FileDictionary implements Dictionary
     /**
      * Create a new file dictionary instance.
      *
-     * @param string $suffix (default: 'php')
+     * @param string               $suffix (default: 'php')
      * @param array<string, mixed> $option (default: [])
      */
     public function __construct(string $suffix = 'php', array $option = [])
@@ -89,8 +89,8 @@ class FileDictionary implements Dictionary
     /**
      * Add the given group resouces to Library layer resouces.
      *
-     * @param string $resource files directory path
-     * @param string ...$groups
+     * @param  string $resource  files directory path
+     * @param  string ...$groups
      * @return self
      */
     public function addLibraryResource(string $resource, string ...$groups) : self
@@ -116,8 +116,8 @@ class FileDictionary implements Dictionary
     /**
      * Clear the given language group resouces.
      *
-     * @param string|null $group (default: null)
-     * @param string|null $locale (default: null)
+     * @param  string|null $group  (default: null)
+     * @param  string|null $locale (default: null)
      * @return self
      */
     public function clear(string|null $group = null, string|null $locale = null) : self
@@ -137,8 +137,8 @@ class FileDictionary implements Dictionary
     /**
      * Load the given language group.
      *
-     * @param string $group
-     * @param string $locale
+     * @param  string $group
+     * @param  string $locale
      * @return self
      */
     protected function load(string $group, string $locale) : self
@@ -153,8 +153,8 @@ class FileDictionary implements Dictionary
     /**
      * Determine if the given group has been loaded.
      *
-     * @param string $group
-     * @param string $locale
+     * @param  string  $group
+     * @param  string  $locale
      * @return boolean
      */
     public function isLoaded(string $group, string $locale) : bool
@@ -202,8 +202,8 @@ class FileDictionary implements Dictionary
     /**
      * Select a proper translation string based on the given selector.
      *
-     * @param string|array<int|string, string>|null $sentence
-     * @param int|string|null $selector
+     * @param  string|array<int|string, string>|null $sentence
+     * @param  int|string|null                       $selector
      * @return string|null
      */
     protected function choose($sentence, $selector) : string|null
@@ -230,8 +230,8 @@ class FileDictionary implements Dictionary
     /**
      * Get the translation string if the condition matches.
      *
-     * @param string $part
-     * @param int|string|null $selector
+     * @param  string          $part
+     * @param  int|string|null $selector
      * @return string|null
      */
     protected function extract(string $part, $selector) : string|null

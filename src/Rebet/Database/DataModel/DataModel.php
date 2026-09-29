@@ -77,7 +77,7 @@ abstract class DataModel
     /**
      * It checks the given key eager loads data exists or not.
      *
-     * @param string $key
+     * @param  string  $key
      * @return boolean
      */
     protected function hasEagerLoads(string $key) : bool
@@ -88,9 +88,9 @@ abstract class DataModel
     /**
      * Set given eager loads data.
      *
-     * @param string $key
-     * @param mixed $value
-     * @return mixed that given value as it is.
+     * @param  string $key
+     * @param  mixed  $value
+     * @return mixed  that given value as it is.
      */
     protected function pushEagerLoads(string $key, $value)
     {
@@ -100,7 +100,7 @@ abstract class DataModel
     /**
      * Get a value from the eager loads, and remove it.
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     protected function pullEagerLoads(string $key)
@@ -113,7 +113,7 @@ abstract class DataModel
     /**
      * Verify this class is super class of given $class.
      *
-     * @param string|null $class name
+     * @param  string|null    $class name
      * @return void
      * @throws LogicException when give the class name that is not subclass of this class.
      */
@@ -127,7 +127,7 @@ abstract class DataModel
     /**
      * Create 'sha256' hash string from given values.
      *
-     * @param mixed ...$values
+     * @param  mixed  ...$values
      * @return string
      */
     protected static function hash(...$values) : string
@@ -158,8 +158,8 @@ abstract class DataModel
     /**
      * Generate foreign hash of this data mode from given foreign key/values.
      *
-     * @param string $class name of data model
-     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @param  string                $class name of data model
+     * @param  array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @return string
      */
     public function foreignHash(string $class, array $alias = []) : string
@@ -170,9 +170,9 @@ abstract class DataModel
     /**
      * Get given foreign values of this data model.
      *
-     * @param string $class name of data model
-     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
-     * @return array<string, mixed> [foreign_key => value, ... ]
+     * @param  string                $class name of data model
+     * @param  array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @return array<string, mixed>  [foreign_key => value, ... ]
      */
     public function foreignValues(string $class, array $alias = []) : array
     {
@@ -187,7 +187,7 @@ abstract class DataModel
     /**
      * Pluck given column-value pairs.
      *
-     * @param string ...$columns
+     * @param  string               ...$columns
      * @return array<string, mixed> [column => value, ...]
      */
     public function pluck(string ...$columns) : array
@@ -212,7 +212,7 @@ abstract class DataModel
     /**
      * It checks given other data model primary keys equals this one or not.
      *
-     * @param DataModel|null $other
+     * @param  DataModel|null $other
      * @return bool
      */
     public function isSameSourceAs(DataModel|null $other) : bool
@@ -226,7 +226,7 @@ abstract class DataModel
     /**
      * It checks given other data model public properties equals this one or not.
      *
-     * @param DataModel|null $other
+     * @param  DataModel|null $other
      * @return bool
      */
     public function isSameAs(DataModel|null $other) : bool
@@ -257,8 +257,8 @@ abstract class DataModel
     /**
      * Get and Set meta data.
      *
-     * @param string $name
-     * @param mixed $value
+     * @param  string $name
+     * @param  mixed  $value
      * @return mixed
      */
     protected static function meta(string $name, $value = null)
@@ -319,7 +319,7 @@ abstract class DataModel
      * Get current focused database.
      * If the other database name will be given then return other database but keep current focused database.
      *
-     * @param Database|string|null $db name if you want to access when just once (default: null)
+     * @param  Database|string|null $db name if you want to access when just once (default: null)
      * @return Database
      */
     protected static function db($db = null) : Database
@@ -332,7 +332,7 @@ abstract class DataModel
      * Convert the type from other to self.
      * If conversion is not possible then return null.
      *
-     * @param mixed $primaries primary key value or array|object of primary keys
+     * @param  mixed       $primaries primary key value or array|object of primary keys
      * @return static|null
      */
     public static function valueOf($primaries) : static|null
@@ -343,9 +343,9 @@ abstract class DataModel
     /**
      * Find data model by given primaries
      *
-     * @param mixed $primaries primary key value or array|object of primary keys
-     * @param bool $for_update (default: false)
-     * @param Database|string|null $db (default: null)
+     * @param  mixed                $primaries  primary key value or array|object of primary keys
+     * @param  bool                 $for_update (default: false)
+     * @param  Database|string|null $db         (default: null)
      * @return static|null
      */
     public static function find($primaries, bool $for_update = false, $db = null) : static|null
@@ -369,9 +369,9 @@ abstract class DataModel
     /**
      * Find data model by given ransacks conditions that uniquely determines it.
      *
-     * @param mixed $ransacks conditions that uniquely determines data model.
-     * @param bool $for_update (default: false)
-     * @param Database|string|null $db (default: null)
+     * @param  mixed                $ransacks   conditions that uniquely determines data model.
+     * @param  bool                 $for_update (default: false)
+     * @param  Database|string|null $db         (default: null)
      * @return static|null
      */
     public static function findBy($ransacks, bool $for_update = false, $db = null) : static|null
@@ -383,11 +383,11 @@ abstract class DataModel
     /**
      * Select data model by given ransacks conditions.
      *
-     * @param mixed $ransacks conditions that arrayable (default: [])
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param int|null $limit (default: null)
-     * @param bool $for_update (default: false)
-     * @param Database|string|null $db (default: null)
+     * @param  mixed                              $ransacks   conditions that arrayable (default: [])
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  int|null                           $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
+     * @param  Database|string|null               $db         (default: null)
      * @return ResultSet
      */
     public static function select($ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, $db = null) : ResultSet
@@ -399,11 +399,11 @@ abstract class DataModel
     /**
      * Paginate data model by given ransacks conditions
      *
-     * @param Pager $pager
-     * @param mixed $ransacks conditions that arrayable (default: [])
-     * @param OrderBy|array<string, string>|null $order_by (default: null for get from defaultOrderBy())
-     * @param bool $for_update (default: false)
-     * @param Database|string|null $db (default: null)
+     * @param  Pager                              $pager
+     * @param  mixed                              $ransacks   conditions that arrayable (default: [])
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null for get from defaultOrderBy())
+     * @param  bool                               $for_update (default: false)
+     * @param  Database|string|null               $db         (default: null)
      * @return Paginator
      */
     public static function paginate(Pager $pager, $ransacks = [], $order_by = null, bool $for_update = false, $db = null) : Paginator
@@ -416,8 +416,8 @@ abstract class DataModel
      * Build data model select SQL using given ransack conditions.
      * If the ransack conditions is empty then select all of the data.
      *
-     * @param Database $db
-     * @param array<int|string, mixed> $ransacks condition (default: [])
+     * @param  Database                 $db
+     * @param  array<int|string, mixed> $ransacks condition (default: [])
      * @return Query
      */
     protected static function buildSelectSql(Database $db, array $ransacks = []) : Query
@@ -429,16 +429,16 @@ abstract class DataModel
     /**
      * Build data model select all SQL.
      *
-     * @param Database $db
-     * @return Query of sql
+     * @param  Database $db
+     * @return Query    of sql
      */
     abstract protected static function buildSelectAllSql(Database $db) : Query;
 
     /**
      * Build optimized count SQL using given ransack conditions for paginate.
      *
-     * @param Database $db
-     * @param array<int|string, mixed> $ransacks conditions (default: [])
+     * @param  Database                 $db
+     * @param  array<int|string, mixed> $ransacks conditions (default: [])
      * @return string|null
      */
     protected static function buildOptimizedCountSql(Database $db, array $ransacks = []) : string|null
@@ -466,7 +466,7 @@ abstract class DataModel
      *   }
      *   return parent::ransack($ransack);
      *
-     * @param Ransack $ransack
+     * @param  Ransack    $ransack
      * @return Query|null
      */
     protected static function ransack(Ransack $ransack) : Query|null
@@ -514,12 +514,12 @@ abstract class DataModel
      * Usually, this will not be a problem since the retrieved result is stored in a local variable or disposed for one-time use.
      * But if you don't want that, add caching function when overriding in subclasses.
      *
-     * @param string $class of data model
-     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
-     * @param bool $for_update (default: false)
-     * @param bool $eager_load (default: true)
-     * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
-     * @return mixed Class instance of given $class or null.
+     * @param  string                $class      of data model
+     * @param  array<string, string> $alias      of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @param  bool                  $for_update (default: false)
+     * @param  bool                  $eager_load (default: true)
+     * @param  string|null           $name       of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
+     * @return mixed                 Class instance of given $class or null.
      */
     protected function belongsTo(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
@@ -552,7 +552,7 @@ abstract class DataModel
     /**
      * Create optimized ransacks condition for eager loads.
      *
-     * @param \Closure $extracter of each ransacks, function(DataModel $dm) :array { ... }
+     * @param  \Closure                             $extracter of each ransacks, function(DataModel $dm) :array { ... }
      * @return array<int|string, array<int, mixed>> of each ransack conditions
      */
     protected function eagerRansack(\Closure $extracter) : array
@@ -585,8 +585,8 @@ abstract class DataModel
     /**
      * Create `ransacks` relational conditions for 'belongs-to'.
      *
-     * @param string $class
-     * @param array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
+     * @param  string                $class
+     * @param  array<string, string> $alias of ['local_key' => 'foreign_key'] if the column name is different (default: [])
      * @return array<string, mixed>
      */
     protected function ransacksForBelongsTo(string $class, array $alias = []) : array
@@ -616,12 +616,12 @@ abstract class DataModel
      * Usually, this will not be a problem since the retrieved result is stored in a local variable or disposed for one-time use.
      * But if you don't want that, add caching function when overriding in subclasses.
      *
-     * @param string $class of relational data model
-     * @param array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
-     * @param bool $for_update (default: false)
-     * @param bool $eager_load (default: true)
-     * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
-     * @return mixed Class instance of given $class or null.
+     * @param  string                $class      of relational data model
+     * @param  array<string, string> $alias      of ['primary_key' => 'other_key'] if the column name is different (default: [])
+     * @param  bool                  $for_update (default: false)
+     * @param  bool                  $eager_load (default: true)
+     * @param  string|null           $name       of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
+     * @return mixed                 Class instance of given $class or null.
      */
     protected function hasOne(string $class, array $alias = [], bool $for_update = false, bool $eager_load = true, string|null $name = null)
     {
@@ -654,7 +654,7 @@ abstract class DataModel
     /**
      * Create `ransacks` relational conditions for 'has-one/has-many'.
      *
-     * @param array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
+     * @param  array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
      * @return array<string, mixed>
      */
     protected function ransacksForHas(array $alias = []) : array
@@ -699,14 +699,14 @@ abstract class DataModel
      * Usually, this will not be a problem since the retrieved result is stored in a local variable or disposed for one-time use.
      * But if you don't want that, add caching function when overriding in subclasses.
      *
-     * @param string $class
-     * @param array<string, string> $alias of ['primary_key' => 'other_key'] if the column name is different (default: [])
-     * @param array<int|string, mixed> $ransacks of preconditions (default: [])
-     * @param OrderBy|array<string, string>|null $order_by (default: null for get from defaultOrderBy())
-     * @param integer|null $limit (default: null)
-     * @param bool $for_update (default: false)
-     * @param boolean $eager_load (default: true)
-     * @param string|null $name of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
+     * @param  string                             $class
+     * @param  array<string, string>              $alias      of ['primary_key' => 'other_key'] if the column name is different (default: [])
+     * @param  array<int|string, mixed>           $ransacks   of preconditions (default: [])
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null for get from defaultOrderBy())
+     * @param  integer|null                       $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
+     * @param  boolean                            $eager_load (default: true)
+     * @param  string|null                        $name       of relationship [used for key name of one-time storage for eager loads] (default: null for using caller function name)
      * @return array<int, mixed>
      */
     protected function hasMany(string $class, array $alias = [], array $ransacks = [], $order_by = null, int|null $limit = null, bool $for_update = false, bool $eager_load = true, string|null $name = null) : array

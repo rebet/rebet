@@ -37,7 +37,7 @@ final class Channel
      * Check acceptable the given channel.
      * NOTE: If no allow channel is configured, any channel will be allowed.
      *
-     * @param string $channel
+     * @param  string  $channel
      * @return boolean
      */
     public function allow(string $channel) : bool
@@ -49,7 +49,7 @@ final class Channel
      * Check acceptable the given channel.
      * NOTE: If no allow channel is configured, any channel will be allowed.
      *
-     * @param string $channel
+     * @param  string  $channel
      * @return boolean
      */
     public function reject(string $channel) : bool

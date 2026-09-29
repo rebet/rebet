@@ -29,9 +29,9 @@ class Utils
     /**
      * It checks that the given values are equivalent.
      *
-     * @param mixed $value
-     * @param mixed $other
-     * @param \Closure|null $comparator (default: null)
+     * @param  mixed         $value
+     * @param  mixed         $other
+     * @param  \Closure|null $comparator (default: null)
      * @return boolean
      */
     public static function equivalent($value, $other, \Closure|null $comparator = null) : bool
@@ -59,9 +59,9 @@ class Utils
      * ex)
      * Utils::when(1 === 1, 'yes', 'no'); //=> 'yes'
      *
-     * @param mixed $expr
-     * @param mixed $ifTrue
-     * @param mixed $ifFalse
+     * @param  mixed $expr
+     * @param  mixed $ifTrue
+     * @param  mixed $ifFalse
      * @return mixed
      */
     public static function when($expr, $ifTrue, $ifFalse)
@@ -76,7 +76,7 @@ class Utils
      * Utils::coalesce(null, [], '', 3, 'a');    //=> 3
      * Utils::coalesce(null, [], '', 0, 3, 'a'); //=> 0
      *
-     * @param mixed ...$items
+     * @param  mixed ...$items
      * @return mixed
      */
     public static function coalesce(...$items)
@@ -184,8 +184,8 @@ class Utils
      * Convert to int type
      * Note: null / empty string returns null.
      *
-     * @param mixed $var
-     * @param int $base
+     * @param  mixed    $var
+     * @param  int      $base
      * @return int|null
      */
     public static function intval($var, int $base = 10) : int|null
@@ -197,7 +197,7 @@ class Utils
      * Convert to float type
      * Note: null / empty string returns null.
      *
-     * @param mixed $var
+     * @param  mixed      $var
      * @return float|null
      */
     public static function floatval($var) : float|null

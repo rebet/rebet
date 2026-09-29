@@ -119,7 +119,7 @@ class Log
     /**
      * Get/Set unittest mode or not.
      *
-     * @param bool|null $is_unittest (default: null for get unittest mode or not)
+     * @param  bool|null $is_unittest (default: null for get unittest mode or not)
      * @return bool
      */
     public static function unittest(bool|null $is_unittest = null) : bool
@@ -134,7 +134,7 @@ class Log
     /**
      * Select the channel according to the configuration.
      *
-     * @param string|null $channel name that configured in 'Log.channels'. (default: null for depend on configuration 'default_channel')
+     * @param  string|null $channel name that configured in 'Log.channels'. (default: null for depend on configuration 'default_channel')
      * @return string
      */
     protected static function adoptChannel(string|null $channel = null) : string
@@ -148,7 +148,7 @@ class Log
     /**
      * Get the logger for given channel.
      *
-     * @param string $channel when the null given return the default channel logger (default: null)
+     * @param  string $channel when the null given return the default channel logger (default: null)
      * @return Logger
      */
     public static function channel(string|null $channel = null) : Logger
@@ -173,7 +173,7 @@ class Log
     /**
      * Get the stacked logger using given channels.
      *
-     * @param string ...$channels
+     * @param  string ...$channels
      * @return Logger
      */
     public static function stack(string ...$channels) : Logger
@@ -197,9 +197,9 @@ class Log
      * Output EMERGENCY level log.
      * System is unusable.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function emergency($message, array $context = [], $exception = null) : void
@@ -214,9 +214,9 @@ class Log
      * Example: Entire website down, database unavailable, etc. This should
      * trigger the SMS alerts and wake you up.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function alert($message, array $context = [], $exception = null) : void
@@ -230,9 +230,9 @@ class Log
      *
      * Example: Application component unavailable, unexpected exception.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function critical($message, array $context = [], $exception = null) : void
@@ -244,9 +244,9 @@ class Log
      * Output ERROR level log.
      * Runtime errors that do not require immediate action but should typically be logged and monitored.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function error($message, array $context = [], $exception = null) : void
@@ -261,9 +261,9 @@ class Log
      * Example: Use of deprecated APIs, poor use of an API, undesirable things
      * that are not necessarily wrong.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function warning($message, array $context = [], $exception = null) : void
@@ -275,9 +275,9 @@ class Log
      * Output NOTICE level log.
      * Normal but significant events.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function notice($message, array $context = [], $exception = null) : void
@@ -291,9 +291,9 @@ class Log
      *
      * Example: User logs in, SQL logs.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function info($message, array $context = [], $exception = null) : void
@@ -305,9 +305,9 @@ class Log
      * Output DEBUG level log.
      * Detailed debug information.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function debug($message, array $context = [], $exception = null) : void
@@ -318,8 +318,8 @@ class Log
     /**
      * Output memory usage.
      *
-     * @param string $message (default: '')
-     * @param int $decimals (default: 2)
+     * @param  string $message  (default: '')
+     * @param  int    $decimals (default: 2)
      * @return void
      */
     public static function memory(string $message = '', int $decimals = 2) : void
@@ -334,10 +334,10 @@ class Log
     /**
      * Output a log.
      *
-     * @param string $level
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  string               $level
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public static function log(string $level, $message, array $context = [], $exception = null) : void

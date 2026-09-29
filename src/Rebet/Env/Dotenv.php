@@ -21,9 +21,9 @@ class Dotenv
      * Initialize the Dotenv module and load the .env file.
      * Note: This method is supposed to be called immediately after composer ../vendor/autoload.php.
      *
-     * @param string|string[] $paths of .env file
-     * @param string|string[] $names of .env file (default: '.env')
-     * @param bool $overload (default: true)
+     * @param  string|string[] $paths    of .env file
+     * @param  string|string[] $names    of .env file (default: '.env')
+     * @param  bool            $overload (default: true)
      * @return void
      */
     public static function load($paths, $names = '.env', bool $overload = true) : void

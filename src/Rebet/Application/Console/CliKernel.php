@@ -81,9 +81,9 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      *
-     * @param Structure $structure
-     * @param string $channel (default: 'cli')
-     * @param OutputInterface|null $output (default: null for ConsoleOutput())
+     * @param Structure            $structure
+     * @param string               $channel   (default: 'cli')
+     * @param OutputInterface|null $output    (default: null for ConsoleOutput())
      */
     public function __construct(Structure $structure, string $channel = 'cli', OutputInterface|null $output = null)
     {
@@ -124,7 +124,7 @@ class CliKernel extends Kernel
     /**
      * {@inheritDoc}
      *
-     * @param InputInterface|null $input (default: null for ArgvInput())
+     * @param  InputInterface|null $input (default: null for ArgvInput())
      * @return int
      */
     public function handle($input = null) : int
@@ -138,8 +138,8 @@ class CliKernel extends Kernel
     /**
      * Run a command by name.
      *
-     * @param string $action
-     * @param array<string, mixed> $parameters (default: [])
+     * @param  string               $action
+     * @param  array<string, mixed> $parameters (default: [])
      * @return int
      */
     public function call(string $action, array $parameters = []) : int

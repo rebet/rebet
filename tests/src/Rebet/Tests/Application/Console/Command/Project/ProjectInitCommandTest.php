@@ -25,8 +25,8 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
      * that already has a (stub) `composer.json` (since `project:init` now requires one), then
      * restore the original current directory afterward.
      *
-     * @param string $sub_dir
-     * @param \Closure $callback function(string $work_dir) : mixed
+     * @param  string   $sub_dir
+     * @param  \Closure $callback function(string $work_dir) : mixed
      * @return mixed
      */
     protected function runInFreshWorkDir(string $sub_dir, \Closure $callback)
@@ -361,7 +361,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
      * Answers for a full interactive run that accepts every default (no database, no auth, no
      * cache, twig, native session), followed by the given answers for the settings review prompt.
      *
-     * @param string[] $review_answers
+     * @param  string[] $review_answers
      * @return string[]
      */
     protected function minimalInteractiveInputs(array $review_answers) : array

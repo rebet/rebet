@@ -32,7 +32,7 @@ class Deleting
      * Create an event
      *
      * @param Database $db
-     * @param Entity $old
+     * @param Entity   $old
      */
     public function __construct(Database $db, Entity $old)
     {

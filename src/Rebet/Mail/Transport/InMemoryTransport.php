@@ -29,7 +29,7 @@ class InMemoryTransport extends AbstractTransport
      * Create InMemoryTransport instance.
      *
      * @param EventDispatcherInterface|null $dispatcher (default: null)
-     * @param LoggerInterface|null $logger (default: null)
+     * @param LoggerInterface|null          $logger     (default: null)
      */
     public function __construct(
         EventDispatcherInterface|null $dispatcher = null,

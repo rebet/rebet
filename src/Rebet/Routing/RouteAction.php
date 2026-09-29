@@ -51,9 +51,9 @@ class RouteAction
     /**
      * Create a route action object
      *
-     * @param Route $route
+     * @param Route                                 $route
      * @param \ReflectionFunction|\ReflectionMethod $reflector
-     * @param mixed $instance
+     * @param mixed                                 $instance
      */
     public function __construct(Route $route, \ReflectionFunction|\ReflectionMethod $reflector, $instance = null)
     {
@@ -66,7 +66,7 @@ class RouteAction
     /**
      * Invoke this action
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return Response
      */
     public function invoke(Request $request) : Response
@@ -135,7 +135,7 @@ class RouteAction
     /**
      * Get given attribute of this route action.
      *
-     * @param string $attribute
+     * @param  string $attribute
      * @return mixed
      */
     public function attribute(string $attribute)

@@ -38,10 +38,10 @@ class HttpException extends RuntimeException implements ProblemRespondable
     /**
      * Http Exception.
      *
-     * @param int $status code of HTTP
-     * @param string|null $detail message or full transration key (default: null)
-     * @param string|null $title or full transration key (default: Basic HTTP status label)
-     * @param \Throwable $previous (default: null)
+     * @param int         $status   code of HTTP
+     * @param string|null $detail   message or full transration key (default: null)
+     * @param string|null $title    or full transration key (default: Basic HTTP status label)
+     * @param \Throwable  $previous (default: null)
      */
     public function __construct(int $status, string|null $detail = null, string|null $title = null, \Throwable|null $previous = null)
     {
@@ -66,7 +66,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
     /**
      * Set HTTP error title.
      *
-     * @param string|null $title or full transration key (default: Basic HTTP status label)
+     * @param  string|null $title or full transration key (default: Basic HTTP status label)
      * @return self
      */
     public function title(string|null $title) : self
@@ -88,7 +88,7 @@ class HttpException extends RuntimeException implements ProblemRespondable
     /**
      * Set HTTP error detail.
      *
-     * @param string|null $detail message or full transration key (default: null)
+     * @param  string|null $detail message or full transration key (default: null)
      * @return self
      */
     public function detail(string|null $detail) : self

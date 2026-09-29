@@ -155,16 +155,16 @@ class ConventionalRoute extends Route
     /**
      * Create a conventional route.
      *
-     * @param array<string, mixed>  $option [
-     *     'namespace'                  => '@controller', // can be use @ namespace alias
-     *     'default_part_of_controller' => 'top',
-     *     'default_part_of_action'     => 'index',
-     *     'uri_snake_separator'        => '-',
-     *     'controller_suffix'          => 'Controller',
-     *     'action_suffix'              => '',
-     *     'aliases'                    => [],
-     *     'accessible'                 => false,
-     * ]
+     * @param array<string, mixed> $option [
+     *                                     'namespace'                  => '@controller', // can be use @ namespace alias
+     *                                     'default_part_of_controller' => 'top',
+     *                                     'default_part_of_action'     => 'index',
+     *                                     'uri_snake_separator'        => '-',
+     *                                     'controller_suffix'          => 'Controller',
+     *                                     'action_suffix'              => '',
+     *                                     'aliases'                    => [],
+     *                                     'accessible'                 => false,
+     *                                     ]
      */
     public function __construct(array $option = [])
     {
@@ -181,7 +181,7 @@ class ConventionalRoute extends Route
     /**
      * Resolve request URI into controller name / action name / arguments.
      *
-     * @param string $request_uri
+     * @param  string                                             $request_uri
      * @return array{0: string, 1: string, 2: array<int, string>}
      */
     protected function resolveRequestUri(string $request_uri) : array
@@ -200,7 +200,7 @@ class ConventionalRoute extends Route
      * If null is returned as an analysis result, subsequent route verification is performed.
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
-     * @param Request $request
+     * @param  Request                    $request
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
@@ -275,7 +275,7 @@ class ConventionalRoute extends Route
      *
      * If routing is not performed by additional verification, please throw RouteNotFoundException.
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return RouteAction
      * @throws RouteNotFoundException
      */
@@ -309,7 +309,7 @@ class ConventionalRoute extends Route
     /**
      * Get matched controller name
      *
-     * @param bool $with_namespace
+     * @param  bool   $with_namespace
      * @return string
      */
     public function getControllerName(bool $with_namespace = true) : string
@@ -341,8 +341,8 @@ class ConventionalRoute extends Route
     /**
      * Terminame the route.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @return void
      */
     public function terminate(Request $request, Response $response) : void
@@ -363,7 +363,7 @@ class ConventionalRoute extends Route
     /**
      * Set access control to non public contorller methods.
      *
-     * @param boolean $accessible
+     * @param  boolean $accessible
      * @return self
      */
     public function accessible(bool $accessible) : self
@@ -375,8 +375,8 @@ class ConventionalRoute extends Route
     /**
      * Set aliases.
      *
-     * @param array<string, string>|string $alias or [$alias => $path, ...]
-     * @param string|null $path
+     * @param  array<string, string>|string $alias or [$alias => $path, ...]
+     * @param  string|null                  $path
      * @return self
      */
     public function aliases($alias, string|null $path = null) : self

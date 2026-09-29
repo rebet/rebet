@@ -35,7 +35,7 @@ abstract class AuthProvider
     /**
      * Find user by id.
      *
-     * @param mixed $id
+     * @param  mixed         $id
      * @return AuthUser|null
      */
     abstract public function findById($id) : AuthUser|null ;
@@ -43,7 +43,7 @@ abstract class AuthProvider
     /**
      * Find user by token.
      *
-     * @param string|null $token
+     * @param  string|null   $token
      * @return AuthUser|null
      */
     abstract public function findByToken(string|null $token) : AuthUser|null ;
@@ -56,8 +56,8 @@ abstract class AuthProvider
      * (using a dummy hash in that case), so that the response time does not reveal whether the
      * signin_id is registered (protection against user enumeration via timing attacks).
      *
-     * @param mixed $signin_id
-     * @param string|null $password
+     * @param  mixed         $signin_id
+     * @param  string|null   $password
      * @return AuthUser|null
      */
     public function findByCredentials($signin_id, string|null $password) : AuthUser|null
@@ -83,7 +83,7 @@ abstract class AuthProvider
      * Find user by signin_id.
      * The signin_id may be named 'login_id', 'email', etc.
      *
-     * @param mixed $signin_id
+     * @param  mixed         $signin_id
      * @return AuthUser|null
      */
     abstract protected function findBySigninId($signin_id) : AuthUser|null ;
@@ -92,8 +92,8 @@ abstract class AuthProvider
      * Save rehash password.
      * If sub class not support password rehash then override by empty implements.
      *
-     * @param mixed $id
-     * @param string $new_hash
+     * @param  mixed  $id
+     * @param  string $new_hash
      * @return void
      */
     abstract public function rehashPassword($id, string $new_hash) : void ;
@@ -113,7 +113,7 @@ abstract class AuthProvider
      * Find user by remember token.
      * If this provider support remember token must be override the method in sub class.
      *
-     * @param string|null $token
+     * @param  string|null   $token
      * @return AuthUser|null
      */
     public function findByRememberToken(string|null $token) : AuthUser|null
@@ -125,8 +125,8 @@ abstract class AuthProvider
      * Issuing remember token and return the token.
      * If this provider support remember token must be override the method in sub class.
      *
-     * @param mixed $id
-     * @param int $remember_days
+     * @param  mixed       $id
+     * @param  int         $remember_days
      * @return string|null token
      */
     public function issuingRememberToken($id, int $remember_days) : string|null
@@ -138,7 +138,7 @@ abstract class AuthProvider
      * Remove the given remember token.
      * If this provider support remember token must be override the method in sub class.
      *
-     * @param string|null $token
+     * @param  string|null $token
      * @return void
      */
     public function removeRememberToken(string|null $token) : void
@@ -149,7 +149,7 @@ abstract class AuthProvider
     /**
      * Get and Set name of this provider.
      *
-     * @param string|null $name
+     * @param  string|null      $name
      * @return self|string|null
      */
     public function name(string|null $name = null)
@@ -164,7 +164,7 @@ abstract class AuthProvider
     /**
      * Generate token.
      *
-     * @param integer $length (default: 60)
+     * @param  integer $length (default: 60)
      * @return string
      */
     protected function generateToken(int $length = 60) : string
@@ -175,7 +175,7 @@ abstract class AuthProvider
     /**
      * Hash given token.
      *
-     * @param string $token
+     * @param  string      $token
      * @return string|null
      */
     protected function hashToken(string|null $token) : string|null

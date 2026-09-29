@@ -55,8 +55,8 @@ class RememberToken extends Entity
     /**
      * Delete remember tokens by given remember ID.
      *
-     * @param string $provider
-     * @param mixed $remember_id
+     * @param  string $provider
+     * @param  mixed  $remember_id
      * @return int
      */
     public static function deleteByUser(string $provider, $remember_id) : int

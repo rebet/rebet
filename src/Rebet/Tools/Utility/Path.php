@@ -25,7 +25,7 @@ class Path
     /**
      * Normalize the given path.
      *
-     * @param string $path
+     * @param  string $path
      * @return string
      */
     public static function normalize(string $path) : string

@@ -97,8 +97,8 @@ class Pager
     /**
      * Get and Set count of items per page.
      *
-     * @param int|null $size of page (null for get count of items per page)
-     * @param bool $limit_exceedable for max page size (default: false)
+     * @param  int|null  $size             of page (null for get count of items per page)
+     * @param  bool      $limit_exceedable for max page size (default: false)
      * @return Pager|int
      */
     public function size(int|null $size = null, bool $limit_exceedable = false)
@@ -109,7 +109,7 @@ class Pager
     /**
      * Get and Set current page number
      *
-     * @param int|null $page number (null for get current page number)
+     * @param  int|null  $page number (null for get current page number)
      * @return Pager|int
      */
     public function page(int|null $page = null)
@@ -120,7 +120,7 @@ class Pager
     /**
      * Get and Set each side page count for this pager.
      *
-     * @param int|null $each_side page count (null for get each side page count)
+     * @param  int|null  $each_side page count (null for get each side page count)
      * @return Pager|int
      */
     public function eachSide(int|null $each_side = null)
@@ -131,7 +131,7 @@ class Pager
     /**
      * Get and Set need total count or not.
      *
-     * @param bool|null $need_total or not (null for get need total)
+     * @param  bool|null  $need_total or not (null for get need total)
      * @return Pager|bool
      */
     public function needTotal(bool|null $need_total = null)
@@ -142,7 +142,7 @@ class Pager
     /**
      * Get and Set cursor name
      *
-     * @param string|null $name of cursor (null for get cursor name)
+     * @param  string|null       $name of cursor (null for get cursor name)
      * @return Pager|string|null
      */
     public function cursor(string|null $name = null)
@@ -163,7 +163,7 @@ class Pager
     /**
      * Create next page pager
      *
-     * @param int $step (default: 1)
+     * @param  int   $step (default: 1)
      * @return Pager
      */
     public function next(int $step = 1) : self
@@ -175,7 +175,7 @@ class Pager
     /**
      * Create prev page pager
      *
-     * @param int $step (default: 1)
+     * @param  int   $step (default: 1)
      * @return Pager
      */
     public function prev(int $step = 1) : self
@@ -187,7 +187,7 @@ class Pager
     /**
      * Check the paging condition was changed between this and given pager or not.
      *
-     * @param Pager|null $pager
+     * @param  Pager|null $pager
      * @return boolean
      */
     public function verify(Pager|null $pager) : bool

@@ -18,9 +18,9 @@ class AppCliExceptionHandler extends CliExceptionHandler
      * Report an exception.
      * Just only report, this function do not display result.
      *
-     * @param InputInterface $input
-     * @param int|null $result
-     * @param \Throwable $e
+     * @param  InputInterface $input
+     * @param  int|null       $result
+     * @param  \Throwable     $e
      * @return void
      */
     #[Override]
@@ -32,8 +32,8 @@ class AppCliExceptionHandler extends CliExceptionHandler
     /**
      * Handle an exception
      *
-     * @param InputInterface|null $input
-     * @param \Throwable $e
+     * @param  InputInterface|null $input
+     * @param  \Throwable          $e
      * @return int
      */
     #[Override]

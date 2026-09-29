@@ -21,13 +21,13 @@ class FilesystemAdapter extends AbstractSymfonyAdapter
     /**
      * Create Filesystem Adapter
      *
-     * @param string $namespace (default: '')
-     * @param int|string $default_lifetime that time unit labeled string like '12min', or int seconds. (default: 0)
-     * @param string|null $directory (default: false)
-     * @param MarshallerInterface|null $marshaller (default: null)
-     * @param bool $taggable (default: false)
-     * @param null|string|CacheItemPoolInterface $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
-     * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
+     * @param string                             $namespace              (default: '')
+     * @param int|string                         $default_lifetime       that time unit labeled string like '12min', or int seconds. (default: 0)
+     * @param string|null                        $directory              (default: false)
+     * @param MarshallerInterface|null           $marshaller             (default: null)
+     * @param bool                               $taggable               (default: false)
+     * @param null|string|CacheItemPoolInterface $tags_pool              name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
+     * @param float                              $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
     public function __construct(string $namespace = '', $default_lifetime = 0, string|null $directory = null, MarshallerInterface|null $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
     {

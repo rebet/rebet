@@ -53,7 +53,7 @@ abstract class DeclarativeRoute extends Route
      * Create a declarative route.
      *
      * @param array<int, string> $methods
-     * @param string $uri
+     * @param string             $uri
      */
     public function __construct(array $methods, string $uri)
     {
@@ -68,7 +68,7 @@ abstract class DeclarativeRoute extends Route
      * If null is returned as an analysis result, subsequent route verification is performed.
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
-     * @param Request $request
+     * @param  Request                    $request
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */

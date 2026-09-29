@@ -19,7 +19,7 @@ class ArraySessionStorage extends MockArraySessionStorage
     /**
      * Create array session storage for unit test
      *
-     * @param string $name
+     * @param string           $name
      * @param MetadataBag|null $metadata_bag (default: null)
      */
     public function __construct(string $name = 'MOCKSESSID', MetadataBag|null $metadata_bag = null)

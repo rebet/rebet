@@ -37,7 +37,7 @@ class Store
     /**
      * Create cache store of given adapter.
      *
-     * @param string $name
+     * @param string  $name
      * @param Adapter $adapter
      */
     public function __construct(string $name, Adapter $adapter)
@@ -79,8 +79,8 @@ class Store
     /**
      * Set expire to given cache item.
      *
-     * @param CacheItemInterface $item
-     * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
+     * @param  CacheItemInterface           $item
+     * @param  int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return void
      */
     public static function setExpireTo(CacheItemInterface &$item, $expire) : void
@@ -96,10 +96,10 @@ class Store
      * Fetches a value from the cache or computes and remembers (if needed) it if not found.
      * On cache misses, a supplier is called that should return the missing value.
      *
-     * @param string $key of the item to retrieve from the cache
-     * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
-     * @param \Closure|mixed $supplier that Closure of `function():mixed { ... }`, otherwise mixed value return given value as it is.
-     * @param bool $remember (default: true)
+     * @param  string                       $key      of the item to retrieve from the cache
+     * @param  int|string|DateTimeInterface $expire   when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
+     * @param  \Closure|mixed               $supplier that Closure of `function():mixed { ... }`, otherwise mixed value return given value as it is.
+     * @param  bool                         $remember (default: true)
      * @return mixed
      */
     public function retrieve(string $key, $expire, $supplier, bool $remember = true)
@@ -125,7 +125,7 @@ class Store
      * When multiple keys given, you can write `$values = Cache::get('foo', 'bar');` and can be access `$values['foo']`.
      * Also this method keep given keys order, so you can write `[$foo, $bar] = Cache::get('foo', 'bar');` too.
      *
-     * @param string ...$keys
+     * @param  string        ...$keys
      * @return mixed|mixed[]
      */
     public function get(string ...$keys)
@@ -147,8 +147,8 @@ class Store
     /**
      * Store a item/items in the cache for a given expire.
      *
-     * @param array<string, mixed> $values of ['key' => 'value', ...]
-     * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
+     * @param  array<string, mixed>         $values of ['key' => 'value', ...]
+     * @param  int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return bool
      */
     public function put(array $values, $expire) : bool
@@ -165,7 +165,7 @@ class Store
     /**
      * Confirms if the cache contains specified cache item.
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
      */
     public function has(string $key) : bool
@@ -180,7 +180,7 @@ class Store
      * When multiple keys given, you can write `$values = Cache::pull('foo', 'bar');` and can be access `$values['foo']`.
      * Also this method keep given keys order, so you can write `[$foo, $bar] = Cache::pull('foo', 'bar');` too.
      *
-     * @param string ...$keys
+     * @param  string        ...$keys
      * @return mixed|mixed[]
      */
     public function pull(string ...$keys)
@@ -193,7 +193,7 @@ class Store
     /**
      * Removes an item/items from the pool.
      *
-     * @param string ...$keys
+     * @param  string ...$keys
      * @return bool
      */
     public function delete(string ...$keys) : bool
@@ -204,7 +204,7 @@ class Store
     /**
      * Begin executing a new tags operation.
      *
-     * @param string ...$tags
+     * @param  string         ...$tags
      * @return TagSet
      * @throws CacheException when the adapter does not support tagging.
      */

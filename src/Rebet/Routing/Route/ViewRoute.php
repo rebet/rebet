@@ -23,10 +23,10 @@ class ViewRoute extends ClosureRoute
     /**
      * Create a view route
      *
-     * @param string $uri
-     * @param string $name
-     * @param array<string, mixed> $args (default: [])
-     * @param bool $apply_change (default: true)
+     * @param string               $uri
+     * @param string               $name
+     * @param array<string, mixed> $args         (default: [])
+     * @param bool                 $apply_change (default: true)
      */
     public function __construct(string $uri, string $name, array $args = [], bool $apply_change = true)
     {

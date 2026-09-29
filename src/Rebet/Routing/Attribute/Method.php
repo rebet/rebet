@@ -37,7 +37,7 @@ final class Method
      * Check acceptable the given method.
      * NOTE: If no allow method is configured, any method will be allowed.
      *
-     * @param string $method
+     * @param  string  $method
      * @return boolean
      */
     public function allow(string $method) : bool
@@ -50,7 +50,7 @@ final class Method
      * Check acceptable the given method.
      * NOTE: If no allow method is configured, any method will be allowed.
      *
-     * @param string $method
+     * @param  string  $method
      * @return boolean
      */
     public function reject(string $method) : bool

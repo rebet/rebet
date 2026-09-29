@@ -30,8 +30,8 @@ class AttributedProperty
     /**
      * Create property attributes accesser.
      *
-     * @param string|\ReflectionProperty $property
-     * @param string|object|\ReflectionClass|null $class
+     * @param  string|\ReflectionProperty          $property
+     * @param  string|object|\ReflectionClass|null $class
      * @return AttributedProperty
      */
     public static function of($property, $class = null) : AttributedProperty
@@ -45,7 +45,7 @@ class AttributedProperty
     /**
      * Create a property attribute accessor.
      *
-     * @param \ReflectionProperty $property
+     * @param \ReflectionProperty  $property
      * @param AttributedClass|null $attributed_class
      */
     public function __construct(\ReflectionProperty $property, AttributedClass|null $attributed_class = null)
@@ -69,9 +69,9 @@ class AttributedProperty
      * If property attribute nothing, then check declaring class attribute and get.
      * If you don't want to check declaring class attribute, just given $check_declaring_class as false.
      *
-     * @param string $attribute
-     * @param bool $check_declaring_class
-     * @return mixed Attribute
+     * @param  string $attribute
+     * @param  bool   $check_declaring_class
+     * @return mixed  Attribute
      */
     public function attribute(string $attribute, bool $check_declaring_class = true)
     {

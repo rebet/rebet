@@ -47,7 +47,7 @@ class Dsn
      *     'query'  => ['key' => 'value', ...],
      *  ]
      *
-     * @param string|null $dsn
+     * @param  string|null          $dsn
      * @return array<string, mixed>
      */
     public static function parse(string|null $dsn) : array

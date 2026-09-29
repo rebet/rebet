@@ -20,8 +20,8 @@ class StartSession
     /**
      * Handle Start Session Middleware.
      *
-     * @param Request $request
-     * @param \Closure $next
+     * @param  Request  $request
+     * @param  \Closure $next
      * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response
@@ -38,8 +38,8 @@ class StartSession
     /**
      * Terminate the middleware.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @return void
      */
     public function terminate(Request $request, Response $response)

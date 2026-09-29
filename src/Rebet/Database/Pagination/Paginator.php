@@ -119,11 +119,11 @@ class Paginator extends ResultSet
      * Create Paginator instance
      * NOTE: Argument total or next_page_count may not be null at least one.
      *
-     * @param mixed $items can be arrayable
-     * @param int $each_side
-     * @param int $page_size
+     * @param mixed    $items           can be arrayable
+     * @param int      $each_side
+     * @param int      $page_size
      * @param int|null $page
-     * @param int|null $total (default: null)
+     * @param int|null $total           (default: null)
      * @param int|null $next_page_count (default: null)
      */
     public function __construct($items, int $each_side, int $page_size, int|null $page, int|null $total = null, int|null $next_page_count = null)
@@ -172,9 +172,9 @@ class Paginator extends ResultSet
     /**
      * Set the pagination link action url and page parameter name.
      *
-     * @param string $action url
-     * @param string $page_name (default: 'page')
-     * @param string|null $anchor (default: null)
+     * @param  string      $action    url
+     * @param  string      $page_name (default: 'page')
+     * @param  string|null $anchor    (default: null)
      * @return self
      */
     public function action(string $action, string $page_name = 'page', string|null $anchor = null) : self
@@ -189,7 +189,7 @@ class Paginator extends ResultSet
      * Set/Append the pagination link action url queries.
      * If the null given then reset the queries.
      *
-     * @param array<string, mixed>|null $queries
+     * @param  array<string, mixed>|null $queries
      * @return self
      */
     public function with(array|null $queries) : self
@@ -268,8 +268,8 @@ class Paginator extends ResultSet
      * @see Paginator::action()
      * @see Paginator::with()
      *
-     * @param int $page
-     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param  int         $page
+     * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
     public function pageUrl(int $page, int $encoding = PHP_QUERY_RFC1738) : string|null
@@ -285,7 +285,7 @@ class Paginator extends ResultSet
      * Create first page link url.
      * NOTE: If the action is not set then return null.
      *
-     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
     public function firstPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
@@ -299,7 +299,7 @@ class Paginator extends ResultSet
      *   - If the action is not set then return null.
      *   - If the paginator do not have previous page then return null.
      *
-     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
     public function prevPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
@@ -313,7 +313,7 @@ class Paginator extends ResultSet
      *   - If the action is not set then return null.
      *   - If the paginator do not have next page then return null.
      *
-     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
     public function nextPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null
@@ -327,7 +327,7 @@ class Paginator extends ResultSet
      *   - If the action is not set then return null.
      *   - If the paginator do not have last page then return null.
      *
-     * @param int $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param  int         $encoding PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
     public function lastPageUrl(int $encoding = PHP_QUERY_RFC1738) : string|null

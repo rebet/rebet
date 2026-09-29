@@ -27,9 +27,9 @@ abstract class ExceptionHandler
      * Report an exception.
      * Just only report, this function do not display result.
      *
-     * @param I $input
-     * @param R|null $result
-     * @param \Throwable $e
+     * @param  I          $input
+     * @param  R|null     $result
+     * @param  \Throwable $e
      * @return void
      */
     abstract public function report($input, $result, \Throwable $e) : void;
@@ -37,8 +37,8 @@ abstract class ExceptionHandler
     /**
      * Handle an exception
      *
-     * @param I|null $input
-     * @param \Throwable $e
+     * @param  I|null     $input
+     * @param  \Throwable $e
      * @return R
      */
     abstract public function handle($input, \Throwable $e);
@@ -46,8 +46,8 @@ abstract class ExceptionHandler
     /**
      * Must be able to invoke as function.
      *
-     * @param I $input
-     * @param \Throwable $e
+     * @param  I          $input
+     * @param  \Throwable $e
      * @return R
      */
     public function __invoke($input, $e)

@@ -16,9 +16,9 @@ interface Validations
     /**
      * Invoke validation the given name.
      *
-     * @param string $name
-     * @param Context $c
-     * @param mixed ...$args
+     * @param  string  $name
+     * @param  Context $c
+     * @param  mixed   ...$args
      * @return boolean
      */
     public function validate(string $name, Context $c, ...$args) : bool;

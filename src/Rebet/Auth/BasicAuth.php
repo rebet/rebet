@@ -29,11 +29,11 @@ class BasicAuth
     /**
      * Provides simple BASIC authentication.
      *
-     * @param array<string, mixed> $auth_list Authentication list
-     * @param ?\Closure $to_hash Password hashing logic for the authentication list (default: null)
-     * @param string $realm Realm text
-     * @param string $failed_text Message on authentication failure
-     * @param string $charset Character encoding (default: UTF-8)
+     * @param  array<string, mixed> $auth_list   Authentication list
+     * @param  ?\Closure            $to_hash     Password hashing logic for the authentication list (default: null)
+     * @param  string               $realm       Realm text
+     * @param  string               $failed_text Message on authentication failure
+     * @param  string               $charset     Character encoding (default: UTF-8)
      * @return string
      */
     public static function authenticate(array $auth_list, \Closure|null $to_hash = null, string $realm = "Enter your ID and PASSWORD.", string $failed_text = "Authenticate Failed.", string $charset = 'UTF-8') : string

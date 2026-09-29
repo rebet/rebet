@@ -71,7 +71,7 @@ class Auth
     /**
      * [Authentication] Get the authenticated user.
      *
-     * @param string|null $guard (default: null for active guard)
+     * @param  string|null $guard (default: null for active guard)
      * @return AuthUser
      */
     public static function user(string|null $guard = null) : AuthUser
@@ -83,7 +83,7 @@ class Auth
     /**
      * [Authentication] Get authentication provider of given name.
      *
-     * @param string $name
+     * @param  string       $name
      * @return AuthProvider
      */
     public static function provider(string $name) : AuthProvider
@@ -94,7 +94,7 @@ class Auth
     /**
      * [Authentication] Get authentication guard of given name.
      *
-     * @param string|null $name
+     * @param  string|null $name
      * @return Guard|null
      */
     public static function guard(string|null $name) : Guard|null
@@ -119,7 +119,7 @@ class Auth
     /**
      * Get applicable guard of this request route.
      *
-     * @param Request|null $request (default: null for Request::current())
+     * @param  Request|null $request (default: null for Request::current())
      * @return string|null
      */
     protected static function applicableGuard(Request|null $request = null) : string|null
@@ -131,10 +131,10 @@ class Auth
     /**
      * [Authentication] Attempt find user by given credentials.
      *
-     * @param Request $request
-     * @param mixed $signin_id
-     * @param string $password
-     * @param string|null $guard (default: guard of the route, if not set then use channel name)
+     * @param  Request     $request
+     * @param  mixed       $signin_id
+     * @param  string      $password
+     * @param  string|null $guard     (default: guard of the route, if not set then use channel name)
      * @return AuthUser
      */
     public static function attempt(Request $request, mixed $signin_id, string $password, string|null $guard = null) : AuthUser
@@ -153,11 +153,11 @@ class Auth
      * [Authentication] Sign in as given user.
      * If the user who was guarded and redirected to sign in page will success sign in then replay the guarded request, otherwise go to given url.
      *
-     * @param Request $request
-     * @param AuthUser $user
-     * @param string $backto url when signin failed
-     * @param string $goto url when signined (default: '/')
-     * @param bool $remember (default: false)
+     * @param  Request  $request
+     * @param  AuthUser $user
+     * @param  string   $backto   url when signin failed
+     * @param  string   $goto     url when signined (default: '/')
+     * @param  bool     $remember (default: false)
      * @return Response
      * @uses Event::dispatch SigninFailed when signin failed.
      * @uses Event::dispatch Signined when signin success.
@@ -186,8 +186,8 @@ class Auth
     /**
      * [Authentication] It will sign out the authenticated user.
      *
-     * @param Request $request
-     * @param string $goto (default: '/')
+     * @param  Request  $request
+     * @param  string   $goto    (default: '/')
      * @return Response
      * @uses Event::dispatch Signouted when signout.
      */
@@ -207,7 +207,7 @@ class Auth
     /**
      * [Authentication] Recall authenticate user from an incoming request then it will check the role of route.
      *
-     * @param Request $request
+     * @param  Request       $request
      * @return Response|null response when authenticate failed
      * @uses Event::dispatch Authenticated when authenticate success (exclude Guest user).
      * @uses Event::dispatch AuthenticateFailed when authenticate failed (exclude Guest user).
@@ -229,8 +229,8 @@ class Auth
     /**
      * [Authorization] Define the role for given name.
      *
-     * @param string $name
-     * @param callable $checker function([Request $request,] AuthUser $user):bool
+     * @param  string   $name
+     * @param  callable $checker function([Request $request,] AuthUser $user):bool
      * @return void
      */
     public static function defineRole(string $name, callable $checker) : void
@@ -241,8 +241,8 @@ class Auth
     /**
      * [Authorization] Define the before policy for given action to target.
      *
-     * @param string $target class name
-     * @param callable $policy function([Request $request,] AuthUser $user, TargetClass $target, ...$etras):bool
+     * @param  string   $target class name
+     * @param  callable $policy function([Request $request,] AuthUser $user, TargetClass $target, ...$etras):bool
      * @return void
      */
     public static function defineBeforePolicy(string $target, callable $policy) : void
@@ -253,9 +253,9 @@ class Auth
     /**
      * [Authorization] Define the policy for given action to target.
      *
-     * @param string $target
-     * @param string $action
-     * @param callable $policy function([Request $request,] AuthUser $user, TargetClass $target, ...$etras):bool
+     * @param  string   $target
+     * @param  string   $action
+     * @param  callable $policy function([Request $request,] AuthUser $user, TargetClass $target, ...$etras):bool
      * @return void
      */
     public static function definePolicy(string $target, string $action, callable $policy) : void
@@ -269,10 +269,10 @@ class Auth
      * 1st: Check the policies of '@before' action for target object or class (prepend $action as first $extras argument).
      * 2nd: Check the policies of given action for target object or class.
      *
-     * @param AuthUser $user
-     * @param string $action
-     * @param string|object $target can be use @ namespace alias
-     * @param mixed ...$extras
+     * @param  AuthUser      $user
+     * @param  string        $action
+     * @param  string|object $target    can be use @ namespace alias
+     * @param  mixed         ...$extras
      * @return boolean
      */
     public static function policy(AuthUser $user, string $action, object|string $target, mixed ...$extras) : bool
@@ -284,10 +284,10 @@ class Auth
     /**
      * [Authorization] Check the policy.
      *
-     * @param AuthUser $user
-     * @param string $action
-     * @param string|object $target
-     * @param array<int, mixed> $extras (default: [])
+     * @param  AuthUser          $user
+     * @param  string            $action
+     * @param  string|object     $target
+     * @param  array<int, mixed> $extras (default: [])
      * @return boolean
      */
     protected static function _policy(AuthUser $user, string $action, object|string $target, array $extras = []) : bool
@@ -305,8 +305,8 @@ class Auth
      *
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
-     * @param AuthUser $user
-     * @param string ...$names
+     * @param  AuthUser $user
+     * @param  string   ...$names
      * @return boolean
      */
     public static function role(AuthUser $user, string ...$names) : bool
@@ -327,8 +327,8 @@ class Auth
      *
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
-     * @param AuthUser $user
-     * @param string $role_names
+     * @param  AuthUser $user
+     * @param  string   $role_names
      * @return boolean
      */
     protected static function _role(AuthUser $user, string $role_names) : bool
@@ -345,9 +345,9 @@ class Auth
     /**
      * [Authorization] Invoke authorization check action.
      *
-     * @param \Closure $action
-     * @param mixed $user
-     * @param array<int, mixed> $targets (default: [])
+     * @param  \Closure          $action
+     * @param  mixed             $user
+     * @param  array<int, mixed> $targets (default: [])
      * @return boolean|null
      */
     protected static function invoke(\Closure $action, mixed $user, array $targets = []) : bool|null

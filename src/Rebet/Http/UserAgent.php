@@ -20,7 +20,7 @@ class UserAgent extends DeviceDetector
     /**
      * Create UserAgent from given user agent text and parse it.
      *
-     * @param string|DeviceDetector|UserAgent|null $ua
+     * @param  string|DeviceDetector|UserAgent|null $ua
      * @return self|null
      */
     public static function valueOf($ua) : self|null

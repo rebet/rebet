@@ -65,8 +65,8 @@ trait Populatable
      *     ],
      * ],
      *
-     * @param array<mixed>|object $src
-     * @param array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes' (default: [])
+     * @param  array<mixed>|object  $src
+     * @param  array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes' (default: [])
      * @return self
      */
     public function populate($src, $options = []) : self
@@ -77,9 +77,9 @@ trait Populatable
     /**
      * It copies the value from Map or Object to instance variable for recursive call.
      *
-     * @param array<mixed>|object $src
-     * @param array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes'
-     * @param string $prefix
+     * @param  array<mixed>|object  $src
+     * @param  array<string, mixed> $options that availables are 'embeds', 'aliases', 'includes' and 'excludes'
+     * @param  string               $prefix
      * @return self
      */
     protected function _populate($src, array $options = [], string $prefix = '') : self
@@ -119,10 +119,10 @@ trait Populatable
     /**
      * Create embedded populatable object of given class
      *
-     * @param string $class name to populate
-     * @param array<mixed>|object $src
-     * @param array<string, mixed> $options
-     * @param string $prefix
+     * @param  string               $class   name to populate
+     * @param  array<mixed>|object  $src
+     * @param  array<string, mixed> $options
+     * @param  string               $prefix
      * @return mixed
      */
     private function embed($class, $src, array $options, string $prefix)
@@ -135,11 +135,11 @@ trait Populatable
     /**
      * Apply Input Option
      *
-     * @param array<string, mixed> $options
-     * @param string $prefix
-     * @param string $field
-     * @param array<mixed>|object $src
-     * @param mixed $origin
+     * @param  array<string, mixed> $options
+     * @param  string               $prefix
+     * @param  string               $field
+     * @param  array<mixed>|object  $src
+     * @param  mixed                $origin
      * @return mixed
      */
     protected function applyPopulateOption(array $options, string $prefix, string $field, $src, $origin)
@@ -179,8 +179,8 @@ trait Populatable
     /**
      * It checks that an options include ignore embed settings.
      *
-     * @param array<string, mixed> $options
-     * @param string $field
+     * @param  array<string, mixed> $options
+     * @param  string               $field
      * @return bool
      */
     protected function isIgnoreEmbed(array $options, string $field) : bool

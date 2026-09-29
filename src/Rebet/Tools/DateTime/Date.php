@@ -29,7 +29,7 @@ class Date extends DateTime
      * Create the Date objects.
      *
      * @param string|\DateTimeInterface|int $time
-     * @param string|\DateTimeZone $timezone (default: depend on configure)
+     * @param string|\DateTimeZone          $timezone (default: depend on configure)
      */
     public function __construct($time = 'today', $timezone = null)
     {

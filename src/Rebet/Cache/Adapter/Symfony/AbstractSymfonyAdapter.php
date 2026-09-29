@@ -33,10 +33,10 @@ abstract class AbstractSymfonyAdapter implements Adapter
     /**
      * Create Adapter depend on symfony/cache modules.
      *
-     * @param AdapterInterface $adapter
-     * @param bool $taggable (default: false)
-     * @param string|CacheItemPoolInterface|null $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
-     * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
+     * @param AdapterInterface                   $adapter
+     * @param bool                               $taggable               (default: false)
+     * @param string|CacheItemPoolInterface|null $tags_pool              name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
+     * @param float                              $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
     public function __construct(AdapterInterface $adapter, bool $taggable = false, $tags_pool = null, float $known_tag_versions_ttl = 0.15)
     {

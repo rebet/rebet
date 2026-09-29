@@ -19,9 +19,9 @@ class RawNode extends Node
     /**
      * Create Raw Node
      *
-     * @param string $code
-     * @param int $lineno (default: 0)
-     * @param string|null $tag (default: null)
+     * @param string      $code
+     * @param int         $lineno (default: 0)
+     * @param string|null $tag    (default: null)
      */
     public function __construct(string $code, int $lineno = 0, string|null $tag = null)
     {

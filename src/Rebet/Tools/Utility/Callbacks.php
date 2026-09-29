@@ -31,10 +31,10 @@ class Callbacks
     /**
      * Get the test callback closure.
      *
-     * @param string|int|null $key
-     * @param string $operator '=', '==', '!=', '<>', '<', '>', '<=', '>=', '===' or '!=='
-     * @param mixed $value
-     * @return \Closure of function($item) : bool { retrun $item->$key $operator $value; }
+     * @param  string|int|null $key
+     * @param  string          $operator '=', '==', '!=', '<>', '<', '>', '<=', '>=', '===' or '!=='
+     * @param  mixed           $value
+     * @return \Closure        of function($item) : bool { retrun $item->$key $operator $value; }
      */
     public static function test($key, string $operator, $value) : \Closure
     {
@@ -60,9 +60,9 @@ class Callbacks
     /**
      * Get the compare callback closure.
      *
-     * @param string|callable|null $key of string or function($value):mixed (default: null)
-     * @param bool $invert (default: false)
-     * @return \Closure of function($a, $b) : int { ... }
+     * @param  string|callable|null $key    of string or function($value):mixed (default: null)
+     * @param  bool                 $invert (default: false)
+     * @return \Closure             of function($a, $b) : int { ... }
      */
     public static function compare($key = null, bool $invert = false) : \Closure
     {
@@ -78,8 +78,8 @@ class Callbacks
      * Get the value retriever callback closure.
      * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
-     * @return \Closure of function($value) : mixed { ... }
+     * @param  callable|string|null $retriever key name (with/without '@') or function($value):mixed.
+     * @return \Closure             of function($value) : mixed { ... }
      */
     public static function retriever($retriever) : \Closure
     {
@@ -95,8 +95,8 @@ class Callbacks
     /**
      * Create a string of given callable.
      *
-     * @param callable $callback
-     * @param bool $verbose (default: true)
+     * @param  callable $callback
+     * @param  bool     $verbose  (default: true)
      * @return string
      */
     public static function stringify(callable $callback, bool $verbose = true) : string

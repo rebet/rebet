@@ -33,7 +33,7 @@ class Authenticated implements Authentication
     /**
      * Create an event
      *
-     * @param Request $request
+     * @param Request  $request
      * @param AuthUser $user
      */
     public function __construct(Request $request, AuthUser $user)

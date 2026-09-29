@@ -152,7 +152,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Create Letterpress instance.
      *
-     * @param string|null $template
+     * @param  string|null    $template
      * @throws LogicException when given template has syntax error
      */
     public function __construct(string|null $template)
@@ -163,7 +163,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Create Letterpress instance.
      *
-     * @param string|null $template
+     * @param  string|null    $template
      * @throws LogicException when given template has syntax error
      * @return static
      */
@@ -180,7 +180,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * project scaffolding tools can use to decide which files of a template directory tree should be
      * rendered through Letterpress and which should just be copied as-is.
      *
-     * @param string $filename
+     * @param  string $filename
      * @return bool
      */
     public static function isTemplateFile(string $filename) : bool
@@ -192,7 +192,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Remove the `.lp` marker from the given Letterpress template file name
      * (ex `application.lp.php` => `application.php`, `Dockerfile.lp` => `Dockerfile`, `.lp.env` => `.env`).
      *
-     * @param string $filename
+     * @param  string $filename
      * @return string
      */
     public static function stripMarker(string $filename) : string
@@ -214,7 +214,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * It checks the given tag is already defined or not.
      *
-     * @param string $tag
+     * @param  string $tag
      * @return bool
      */
     public static function defined(string $tag) : bool
@@ -227,7 +227,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Get unavailable siblings tags.
      *
-     * @param array<mixed> $siblings
+     * @param  array<mixed>      $siblings
      * @return array<int, mixed>
      */
     protected static function unavailableSiblings(array $siblings) : array
@@ -238,9 +238,9 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Register block type `{% tag %} contents {% endtag %}` tag.
      *
-     * @param string $tag name of open tag
-     * @param array<string, array<int, string>>|null $siblings tag name [tag => [Tags that can be placed continuously], ...], when you want make if block then siblings should be `['if' => ['elseif', 'else'], 'elseif' => ['elseif', 'else'], 'else' => []]`.
-     * @param \Closure $handler for tag processing `function(array $nodes, array $vars) : string { ... }`, The nodes is passed a chunk block of consecutive tags defined in siblings.
+     * @param  string                                 $tag      name of open tag
+     * @param  array<string, array<int, string>>|null $siblings tag name [tag => [Tags that can be placed continuously], ...], when you want make if block then siblings should be `['if' => ['elseif', 'else'], 'elseif' => ['elseif', 'else'], 'else' => []]`.
+     * @param  \Closure                               $handler  for tag processing `function(array $nodes, array $vars) : string { ... }`, The nodes is passed a chunk block of consecutive tags defined in siblings.
      * @return void
      */
     public static function block(string $tag, array|null $siblings, \Closure $handler) : void
@@ -263,8 +263,8 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Register embed type `{% tag %}` tag.
      *
-     * @param string $tag name
-     * @param \Closure $handler for tag processing `function(array $node, array $vars) : string { ... }`, The node is passed tag node ['tag' => '', 'code' => '', 'nodes' => []].
+     * @param  string   $tag     name
+     * @param  \Closure $handler for tag processing `function(array $node, array $vars) : string { ... }`, The node is passed tag node ['tag' => '', 'code' => '', 'nodes' => []].
      * @return void
      */
     public static function embed(string $tag, \Closure $handler) : void
@@ -287,8 +287,8 @@ class Letterpress implements Renderable, \JsonSerializable
      * Options can be contained expression like `{% tag $arg1->isInt() ? 'a' : 'b', $arg2 %}` then call `$filter($resolved_contents_text, 'a' or 'b', $arg2)`
      * Options can be named parameter like `{% tag 'arg3' => 'a' %}` then call `$filter($resolved_contents_text, 1, 2, 'a')` if callback args has default value like `function($resolved_contents_text, $arg1 = 1, $arg2 = 2, $arg3 = 3)`
      *
-     * @param string $tag
-     * @param \Closure $filter function($resolved_contents_text, $options1, $options2, ...) : string { ... }
+     * @param  string   $tag
+     * @param  \Closure $filter function($resolved_contents_text, $options1, $options2, ...) : string { ... }
      * @return void
      */
     public static function filter(string $tag, \Closure $filter) : void
@@ -314,8 +314,8 @@ class Letterpress implements Renderable, \JsonSerializable
      * Condition can be contained expression like `{% tag $arg1->isInt() ? 'a' : 'b', $arg2 %}` then call `$test('a' or 'b', $arg2)`
      * Condition can be named parameter like `{% tag 'arg3' => 'a' %}` then call `$test(1, 2, 'a')` if callback args has default value like `function($arg1 = 1, $arg2 = 2, $arg3 = 3)`
      *
-     * @param string $tag
-     * @param \Closure $test function($condition_evaluated_value) { ... }
+     * @param  string   $tag
+     * @param  \Closure $test function($condition_evaluated_value) { ... }
      * @return void
      */
     public static function if(string $tag, \Closure $test) : void
@@ -354,8 +354,8 @@ class Letterpress implements Renderable, \JsonSerializable
      * Args can be contained expression like `{% tag $arg1->isInt() ? 'a' : 'b', $arg2 %}` then call `$callback('a' or 'b', $arg2)`
      * Args can be named parameter like `{% tag 'arg3' => 'a' %}` then call `$callback(1, 2, 'a')` if callback args has default value like `function($arg1 = 1, $arg2 = 2, $arg3 = 3)`
      *
-     * @param string $tag name
-     * @param \Closure $callback `function(arg1, arg2, ...) : string { ... }`
+     * @param  string   $tag      name
+     * @param  \Closure $callback `function(arg1, arg2, ...) : string { ... }`
      * @return void
      */
     public static function function(string $tag, \Closure $callback) : void
@@ -497,7 +497,7 @@ class Letterpress implements Renderable, \JsonSerializable
      * Assign given vars.
      * This method merge own assigned vars by given vars.
      *
-     * @param array<string, mixed> $vars
+     * @param  array<string, mixed> $vars
      * @return self
      */
     public function with(array $vars) : self
@@ -533,7 +533,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Compile the given template using tags configuration to syntax tree.
      *
-     * @param string $template
+     * @param  string            $template
      * @return array<int, mixed> of syntax tree
      */
     protected function compile(string $template) : array
@@ -553,9 +553,9 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Parse leftovers that unanalyzed part of template.
      *
-     * @param string $leftovers that unanalyzed part of template
-     * @param array<string, mixed> $parent node
-     * @return array<int, mixed> of partial syntax tree
+     * @param  string               $leftovers that unanalyzed part of template
+     * @param  array<string, mixed> $parent    node
+     * @return array<int, mixed>    of partial syntax tree
      */
     protected function parse(string $leftovers, array $parent) : array
     {
@@ -645,7 +645,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Remove comments
      *
-     * @param string $template
+     * @param  string $template
      * @return string
      */
     protected function removeComments(string $template) : string
@@ -656,7 +656,7 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Get next tag
      *
-     * @param string $leftovers
+     * @param  string                                                           $leftovers
      * @return array{0: string, 1: string|null, 2: string|null, 3: string|null} [content, tag, code, leftovers]
      */
     protected function next(string $leftovers) : array
@@ -670,9 +670,9 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Process syntax tree node using given vars context and tags configuration.
      *
-     * @param array<int, mixed> $nodes of process target
-     * @param array<string, mixed> $vars of current context
-     * @return string of partial result text
+     * @param  array<int, mixed>    $nodes of process target
+     * @param  array<string, mixed> $vars  of current context
+     * @return string               of partial result text
      */
     public static function process(array $nodes, array $vars) : string
     {
@@ -741,9 +741,9 @@ class Letterpress implements Renderable, \JsonSerializable
      * - Not wrap in Tinker if the value is used as an object with no operations.
      * - Wrap in Tinker if the value is used as an object with operations. (this is prioritized when value using both way)
      *
-     * @param string $code
-     * @param array<string, mixed> $vars
-     * @param bool $alone_var_without_tinker (default: true)
+     * @param  string               $code
+     * @param  array<string, mixed> $vars
+     * @param  bool                 $alone_var_without_tinker (default: true)
      * @return array<string, mixed>
      */
     public static function optimizeVars(string $code, array $vars, bool $alone_var_without_tinker = true) : array
@@ -765,10 +765,10 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Expand placeholder in template using given vars.
      *
-     * @param string $template
-     * @param array<string, mixed>|Tinker $vars
+     * @param  string                      $template
+     * @param  array<string, mixed>|Tinker $vars
      * @return string
-     * @throws LogicException when placeholder format is invalid.
+     * @throws LogicException              when placeholder format is invalid.
      */
     public static function expandVars(string $template, $vars) : string
     {
@@ -786,9 +786,9 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Execute PHP partial expression code.
      *
-     * @param string $__code
-     * @param array<string, mixed>|Tinker $__vars
-     * @param bool $__alone_var_without_tinker (default: true)
+     * @param  string                      $__code
+     * @param  array<string, mixed>|Tinker $__vars
+     * @param  bool                        $__alone_var_without_tinker (default: true)
      * @return mixed
      */
     public static function evaluate(string $__code, $__vars, bool $__alone_var_without_tinker = true)
@@ -799,9 +799,9 @@ class Letterpress implements Renderable, \JsonSerializable
     /**
      * Execute PHP partial code.
      *
-     * @param string $__code
-     * @param array<string, mixed>|Tinker $__vars
-     * @param bool $__alone_var_without_tinker (default: true)
+     * @param  string                      $__code
+     * @param  array<string, mixed>|Tinker $__vars
+     * @param  bool                        $__alone_var_without_tinker (default: true)
      * @return mixed
      */
     public static function eval(string $__code, $__vars, bool $__alone_var_without_tinker = true)

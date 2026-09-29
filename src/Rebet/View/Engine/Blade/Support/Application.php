@@ -29,7 +29,7 @@ use Rebet\Tools\Exception\LogicException;
 class Application extends Container implements ApplicationContract
 {
     /**
-     * @param string $method
+     * @param  string $method
      * @return never
      */
     protected function unsupported(string $method)

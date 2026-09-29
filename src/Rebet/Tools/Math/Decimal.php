@@ -41,11 +41,11 @@ class Decimal
     /**
      * Set significance arithmetic mode for all of calculations.
      *
-     * @param int $mode Decimal::MODE_*
-     * @param array<string, mixed> $options for Decimal::MODE_* (default: [])
-     *     - fixed_scale  : For MODE_FIXED_DECIMAL_PLACES
-     *     - guard_digits : For MODE_FIXED_DECIMAL_PLACES / MODE_SIGNIFICANCE_ARITHMETIC
-     *     - max_scale    : For MODE_AUTO_PRECISION_SCALING
+     * @param  int                  $mode    Decimal::MODE_*
+     * @param  array<string, mixed> $options for Decimal::MODE_* (default: [])
+     *                                       - fixed_scale  : For MODE_FIXED_DECIMAL_PLACES
+     *                                       - guard_digits : For MODE_FIXED_DECIMAL_PLACES / MODE_SIGNIFICANCE_ARITHMETIC
+     *                                       - max_scale    : For MODE_AUTO_PRECISION_SCALING
      * @return void
      */
     public static function setMode(int $mode, array $options = []) : void
@@ -56,7 +56,7 @@ class Decimal
     /**
      * Set the fixed scale option for Decimal::MODE_FIXED_DECIMAL_PLACES.
      *
-     * @param integer $fixed_scale
+     * @param  integer $fixed_scale
      * @return void
      */
     public static function setFixedScale(int $fixed_scale) : void
@@ -67,7 +67,7 @@ class Decimal
     /**
      * Set the guard digits option for Decimal::MODE_FIXED_DECIMAL_PLACES and Decimal::MODE_SIGNIFICANCE_ARITHMETIC.
      *
-     * @param integer $guard_digits
+     * @param  integer $guard_digits
      * @return void
      */
     public static function setGuardDigits(int $guard_digits) : void
@@ -78,7 +78,7 @@ class Decimal
     /**
      * Set the max scale option for Decimal::MODE_AUTO_PRECISION_SCALING.
      *
-     * @param integer $max_scale
+     * @param  integer $max_scale
      * @return void
      */
     public static function setMaxScale(int $max_scale) : void
@@ -235,7 +235,7 @@ class Decimal
      * Create Decimal instance.
      *
      * @param string $value
-     * @param string $decimal_point (default: '.')
+     * @param string $decimal_point       (default: '.')
      * @param string $thousands_separator (default: ',')
      */
     public function __construct(string $value, string $decimal_point = ".", string $thousands_separator = ",")
@@ -246,11 +246,11 @@ class Decimal
     /**
      * Analyze exponential notation value and convert to real number format if needed.
      *
-     * @param string $value
-     * @param string $decimal_point (default: '.')
-     * @param string $thousands_separator (default: ',')
+     * @param  string                                $value
+     * @param  string                                $decimal_point       (default: '.')
+     * @param  string                                $thousands_separator (default: ',')
      * @return array{0: string, 1: int, 2: int|null} of [value, scale, significant_figures]
-     * @throws InvalidArgumentException when the value format is invalid.
+     * @throws InvalidArgumentException              when the value format is invalid.
      */
     protected static function analyze(string $value, string $decimal_point = ".", string $thousands_separator = ",") : array
     {
@@ -282,7 +282,7 @@ class Decimal
     /**
      * Get the decimal part digit count of given value.
      *
-     * @param string $value
+     * @param  string $value
      * @return int
      */
     protected static function scaleOf(string $value) : int
@@ -294,7 +294,7 @@ class Decimal
      * Get the significant figures of given value.
      * Note: If the given value is zero then return the null constant as infinity.
      *
-     * @param string $value
+     * @param  string $value
      * @return int
      */
     protected static function significantFiguresOf(string $value) : int
@@ -307,12 +307,12 @@ class Decimal
     /**
      * Round $result by a precision for given formula and mode.
      *
-     * @param int $mode of Decimal::MODE_*
-     * @param Decimal $left
-     * @param string $formula '+'|'-'|'*'|'/'|'^'|'√'
-     * @param Decimal|null $right apply null when formula is '√'
-     * @param Decimal $result
-     * @param int|null $precision (default: null for apply mode rules)
+     * @param  int          $mode      of Decimal::MODE_*
+     * @param  Decimal      $left
+     * @param  string       $formula   '+'|'-'|'*'|'/'|'^'|'√'
+     * @param  Decimal|null $right     apply null when formula is '√'
+     * @param  Decimal      $result
+     * @param  int|null     $precision (default: null for apply mode rules)
      * @return self
      */
     protected static function roundBy(int $mode, Decimal $left, string $formula, Decimal|null $right, Decimal $result, int|null $precision = null) : self
@@ -366,9 +366,9 @@ class Decimal
      * Create Decimal instance from given value.
      * NOTE: If the float value given then the value arbitrary precision could be lost when convert it to string.
      *
-     * @param float|int|self|string|null $value
-     * @param string $decimal_point (default: '.')
-     * @param string $thousands_separator (default: ',')
+     * @param  float|int|self|string|null $value
+     * @param  string                     $decimal_point       (default: '.')
+     * @param  string                     $thousands_separator (default: ',')
      * @return self|null
      */
     public static function of(float|int|self|string|null $value, string $decimal_point = ".", string $thousands_separator = ",") : self|null
@@ -390,7 +390,7 @@ class Decimal
     /**
      * Get the value with guard digits.
      *
-     * @param bool $with_guard_digits (default: true)
+     * @param  bool   $with_guard_digits (default: true)
      * @return string
      */
     public function value(bool $with_guard_digits = true) : string
@@ -401,7 +401,7 @@ class Decimal
     /**
      * Get the scale of under decimal point.
      *
-     * @param boolean $with_guard_digits (default: true)
+     * @param  boolean $with_guard_digits (default: true)
      * @return integer
      */
     public function scale(bool $with_guard_digits = true) : int
@@ -412,7 +412,7 @@ class Decimal
     /**
      * Get the significant figures of this value.
      *
-     * @param boolean $with_guard_digits (default: true)
+     * @param  boolean $with_guard_digits (default: true)
      * @return integer
      */
     public function significantFigures(bool $with_guard_digits = true) : int
@@ -443,7 +443,7 @@ class Decimal
     /**
      * Set the own dirty flag by given operands.
      *
-     * @param Decimal ...$operands
+     * @param  Decimal ...$operands
      * @return self
      */
     protected function inheritDirtyFrom(Decimal ...$operands) : self
@@ -479,9 +479,9 @@ class Decimal
      * Add a thousand separator to the given number.
      * If you want to round scale, please call $decimal->round(2) first, then call format().
      *
-     * @param bool $omit_zero under decimal point (default: false)
-     * @param string $decimal_point (default: '.')
-     * @param string $thousands_separator (default: ',')
+     * @param  bool   $omit_zero           under decimal point (default: false)
+     * @param  string $decimal_point       (default: '.')
+     * @param  string $thousands_separator (default: ',')
      * @return string
      */
     public function format(bool $omit_zero = false, string $decimal_point = ".", string $thousands_separator = ",") : string
@@ -505,8 +505,8 @@ class Decimal
     /**
      * Perform arbitrary precision comparison by bccomp().
      *
-     * @param Decimal|float|int|string|null $other
-     * @param int|null $precision (default: null for max scale of operand)
+     * @param  Decimal|float|int|string|null $other
+     * @param  int|null                      $precision (default: null for max scale of operand)
      * @return int
      */
     public function comp(Decimal|float|int|string|null $other, int|null $precision = null) : int
@@ -522,8 +522,8 @@ class Decimal
     /**
      * It checks left equals right by perform arbitrary precision comparison.
      *
-     * @param Decimal|float|int|string|null $other
-     * @param int|null $precision (default: null for max scale of operand)
+     * @param  Decimal|float|int|string|null $other
+     * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
     public function eq(Decimal|float|int|string|null $other, int|null $precision = null) : bool
@@ -534,8 +534,8 @@ class Decimal
     /**
      * It checks left greater than right by perform arbitrary precision comparison.
      *
-     * @param Decimal|float|int|string|null $other
-     * @param int|null $precision (default: null for max scale of operand)
+     * @param  Decimal|float|int|string|null $other
+     * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
     public function gt(Decimal|float|int|string|null $other, int|null $precision = null) : bool
@@ -546,8 +546,8 @@ class Decimal
     /**
      * It checks left greater equals right by perform arbitrary precision comparison.
      *
-     * @param Decimal|float|int|string|null $other
-     * @param int|null $precision (default: null for max scale of operand)
+     * @param  Decimal|float|int|string|null $other
+     * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
     public function gte(Decimal|float|int|string|null $other, int|null $precision = null) : bool
@@ -558,8 +558,8 @@ class Decimal
     /**
      * It checks left less than right by perform arbitrary precision comparison.
      *
-     * @param Decimal|float|int|string|null $other
-     * @param int|null $precision (default: null for max scale of operand)
+     * @param  Decimal|float|int|string|null $other
+     * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
     public function lt(Decimal|float|int|string|null $other, int|null $precision = null) : bool
@@ -570,8 +570,8 @@ class Decimal
     /**
      * It checks left less equals right by perform arbitrary precision comparison.
      *
-     * @param Decimal|float|int|string|null $other
-     * @param int|null $precision (default: null for max scale of operand)
+     * @param  Decimal|float|int|string|null $other
+     * @param  int|null                      $precision (default: null for max scale of operand)
      * @return bool
      */
     public function lte(Decimal|float|int|string|null $other, int|null $precision = null) : bool
@@ -592,7 +592,7 @@ class Decimal
     /**
      * Shift the decimal point to right (means $this * 10^{scale})
      *
-     * @param int $scale
+     * @param  int  $scale
      * @return self
      */
     public function shift(int $scale) : self
@@ -603,7 +603,7 @@ class Decimal
     /**
      * Shift the decimal point to left (means $this * 10^-{scale})
      *
-     * @param int $scale
+     * @param  int  $scale
      * @return self
      */
     public function unshift(int $scale) : self
@@ -634,7 +634,7 @@ class Decimal
     /**
      * Floor the value.
      *
-     * @param int $precision (default: 0)
+     * @param  int  $precision (default: 0)
      * @return self
      */
     public function floor(int $precision = 0) : self
@@ -648,7 +648,7 @@ class Decimal
     /**
      * Ceil the value.
      *
-     * @param int $precision (default: 0)
+     * @param  int  $precision (default: 0)
      * @return self
      */
     public function ceil(int $precision = 0) : self
@@ -662,9 +662,9 @@ class Decimal
     /**
      * Round up the value by given precision.
      *
-     * @param int $precision (default: 0)
-     * @param int $guard_digits (default: 0)
-     * @param int $precision_type (default: Decimal::TYPE_DECIMAL_PLACES)
+     * @param  int            $precision      (default: 0)
+     * @param  int            $guard_digits   (default: 0)
+     * @param  int            $precision_type (default: Decimal::TYPE_DECIMAL_PLACES)
      * @return self
      * @throws LogicException when invalid $precision_type given.
      */
@@ -692,8 +692,8 @@ class Decimal
     /**
      * Round up the value by given decimal places precision.
      *
-     * @param int $precision
-     * @param int $guard_digits for reduce roundoff error. (default: 0)
+     * @param  int  $precision
+     * @param  int  $guard_digits for reduce roundoff error. (default: 0)
      * @return self
      */
     protected function roundByDecimalPlaces(int $precision, int $guard_digits = 0) : self
@@ -710,8 +710,8 @@ class Decimal
     /**
      * Round up the value by given significant figures precision.
      *
-     * @param int $precision
-     * @param int $guard_digits for reduce roundoff error. (default: 0)
+     * @param  int  $precision
+     * @param  int  $guard_digits for reduce roundoff error. (default: 0)
      * @return self
      */
     protected function roundBySignificantFigures(int $precision, int $guard_digits = 0) : self
@@ -743,9 +743,9 @@ class Decimal
     /**
      * Perform arbitrary precision addition by bcadd().
      *
-     * @param Decimal|float|int|string $other
-     * @param int|null $precision (default: null for apply the mode rule)
-     * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
+     * @param  Decimal|float|int|string $other
+     * @param  int|null                 $precision (default: null for apply the mode rule)
+     * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
     public function add(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
@@ -758,9 +758,9 @@ class Decimal
     /**
      * Perform arbitrary precision subtraction by bcsub().
      *
-     * @param Decimal|float|int|string $other
-     * @param int|null $precision (default: null for apply the mode rule)
-     * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
+     * @param  Decimal|float|int|string $other
+     * @param  int|null                 $precision (default: null for apply the mode rule)
+     * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
     public function sub(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
@@ -773,9 +773,9 @@ class Decimal
     /**
      * Perform arbitrary precision multiplication by bcmul().
      *
-     * @param Decimal|float|int|string $other
-     * @param int|null $precision (default: null for apply the mode rule)
-     * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
+     * @param  Decimal|float|int|string $other
+     * @param  int|null                 $precision (default: null for apply the mode rule)
+     * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
     public function mul(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
@@ -788,9 +788,9 @@ class Decimal
     /**
      * Perform arbitrary precision division by bcmul().
      *
-     * @param Decimal|float|int|string $other
-     * @param int|null $precision (default: null for apply the mode rule)
-     * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
+     * @param  Decimal|float|int|string $other
+     * @param  int|null                 $precision (default: null for apply the mode rule)
+     * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
     public function div(Decimal|float|int|string $other, int|null $precision = null, int|null $mode = null) : self
@@ -803,9 +803,9 @@ class Decimal
     /**
      * Perform arbitrary precision power by bcpow().
      *
-     * @param Decimal|float|int|string $exponent
-     * @param int|null $precision (default: null for apply the mode rule)
-     * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
+     * @param  Decimal|float|int|string $exponent
+     * @param  int|null                 $precision (default: null for apply the mode rule)
+     * @param  int|null                 $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
     public function pow(Decimal|float|int|string $exponent, int|null $precision = null, int|null $mode = null) : self
@@ -818,8 +818,8 @@ class Decimal
     /**
      * Perform arbitrary precision square root by bcsqrt().
      *
-     * @param int|null $precision (default: null for apply the mode rule)
-     * @param int|null $mode of Decimal::MODE_* (default: depend on configure)
+     * @param  int|null $precision (default: null for apply the mode rule)
+     * @param  int|null $mode      of Decimal::MODE_* (default: depend on configure)
      * @return self
      */
     public function sqrt(int|null $precision = null, int|null $mode = null) : self
@@ -832,7 +832,7 @@ class Decimal
      * Perform arbitrary precision modulus by bcmod().
      * NOTE: The value and modulus can be only integer. For "float" decimal part will be ignored.
      *
-     * @param Decimal|float|int|string $modulus
+     * @param  Decimal|float|int|string $modulus
      * @return self|null
      */
     public function mod(Decimal|float|int|string $modulus) : self|null
@@ -844,8 +844,8 @@ class Decimal
     /**
      * Perform arbitrary precision power and mond by bcpowmod().
      *
-     * @param Decimal|float|int|string $exponent
-     * @param Decimal|float|int|string $modulus
+     * @param  Decimal|float|int|string $exponent
+     * @param  Decimal|float|int|string $modulus
      * @return self
      */
     public function powmod(Decimal|float|int|string $exponent, Decimal|float|int|string $modulus) : self
@@ -858,7 +858,7 @@ class Decimal
     /**
      * Get min value in given values.
      *
-     * @param array<mixed>|Decimal|string|int|float ...$values
+     * @param  array<mixed>|Decimal|string|int|float ...$values
      * @return self
      */
     public static function min(...$values) : self
@@ -880,7 +880,7 @@ class Decimal
     /**
      * Get max value in given values.
      *
-     * @param array<mixed>|Decimal|string|int|float ...$values
+     * @param  array<mixed>|Decimal|string|int|float ...$values
      * @return self
      */
     public static function max(...$values) : self

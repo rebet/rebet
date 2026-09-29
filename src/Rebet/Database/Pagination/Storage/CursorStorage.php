@@ -18,8 +18,8 @@ interface CursorStorage
     /**
      * Save the cursor as given name to strage.
      *
-     * @param string $name
-     * @param Cursor $cursor
+     * @param  string $name
+     * @param  Cursor $cursor
      * @return void
      */
     public function save(string $name, Cursor $cursor) : void;
@@ -27,7 +27,7 @@ interface CursorStorage
     /**
      * Load the cursor as given name from strage.
      *
-     * @param string $name
+     * @param  string      $name
      * @return Cursor|null
      */
     public function load(string $name) : Cursor|null;
@@ -35,7 +35,7 @@ interface CursorStorage
     /**
      * Remove the cursor as given name from strage.
      *
-     * @param string $name
+     * @param  string $name
      * @return void
      */
     public function remove(string $name) : void ;

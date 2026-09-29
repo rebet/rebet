@@ -18,7 +18,7 @@ class LogicException extends \LogicException implements RebetException
     /**
      * Create a Logic Exception
      *
-     * @param string $message
+     * @param string          $message
      * @param \Throwable|null $previous (default: null)
      */
     public function __construct(string $message, \Throwable|null $previous = null, int $code = 0)

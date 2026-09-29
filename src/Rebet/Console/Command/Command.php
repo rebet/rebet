@@ -153,8 +153,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Execute the command.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output) : int
@@ -179,7 +179,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Determine if the given argument is present.
      *
-     * @param string|int $key
+     * @param  string|int $key
      * @return bool
      */
     public function hasArgument($key) : bool
@@ -190,7 +190,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the value of a command argument.
      *
-     * @param string $key
+     * @param  string      $key
      * @return string|null
      */
     public function argument(string $key) : string|null
@@ -211,7 +211,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Determine if the given option is present.
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
      */
     public function hasOption(string $key) : bool
@@ -227,7 +227,7 @@ abstract class Command extends SymfonyCommand
      * (ie. differs from its own default) is returned. If none of them were given, the given key's
      * own value (its default) is returned.
      *
-     * @param string $key
+     * @param  string           $key
      * @return string|bool|null
      */
     public function option(string $key)
@@ -254,7 +254,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Ask the given question.
      *
-     * @param Question $question
+     * @param  Question $question
      * @return mixed
      */
     protected function _ask(Question $question)
@@ -265,8 +265,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Confirm a question with the user.
      *
-     * @param string $question
-     * @param bool $default (default: false)
+     * @param  string $question
+     * @param  bool   $default  (default: false)
      * @return bool
      */
     protected function confirm(string $question, bool $default = false) : bool
@@ -277,12 +277,12 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for input.
      *
-     * @param string $question
-     * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
-     * @param bool $required (default: true)
-     * @param string|null $default (default: null)
-     * @param array<int|string, string>|callable|null $choices for auto completion. (default: null)
-     * @param string $retry_message (default: '-> This question is required, try again.')
+     * @param  string                                  $question
+     * @param  string|null                             $via_option    value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
+     * @param  bool                                    $required      (default: true)
+     * @param  string|null                             $default       (default: null)
+     * @param  array<int|string, string>|callable|null $choices       for auto completion. (default: null)
+     * @param  string                                  $retry_message (default: '-> This question is required, try again.')
      * @return mixed
      */
     protected function ask(string $question, string|null $via_option = null, bool $required = true, string|null $default = null, $choices = null, string $retry_message = 'This question is required, try again.')
@@ -307,9 +307,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the answer via option if is given.
      *
-     * @param string $question
-     * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
-     * @param array<int|string, string> $availables of choice (both keys and values are accepted) (default: [])
+     * @param  string                    $question
+     * @param  string|null               $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
+     * @param  array<int|string, string> $availables of choice (both keys and values are accepted) (default: [])
      * @return string|null
      */
     protected function viaOption(string $question, string|null $via_option = null, array $availables = []) : string|null
@@ -331,8 +331,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for input but hide the answer from the console.
      *
-     * @param string $question
-     * @param bool $fallback (default: true)
+     * @param  string $question
+     * @param  bool   $fallback (default: true)
      * @return mixed
      */
     protected function secret(string $question, bool $fallback = true)
@@ -344,9 +344,9 @@ abstract class Command extends SymfonyCommand
     /**
      * Prompt the user for password input.
      *
-     * @param string $input_massage (default: "> Input password   : ")
-     * @param string $confirm_message (default: "> Confirm password : ")
-     * @param bool $fallback (default: true)
+     * @param  string $input_massage   (default: "> Input password   : ")
+     * @param  string $confirm_message (default: "> Confirm password : ")
+     * @param  bool   $fallback        (default: true)
      * @return string password
      */
     protected function password(string $input_massage = "> Input password   : ", string $confirm_message = "> Confirm password : ", bool $fallback = true) : string
@@ -369,12 +369,12 @@ abstract class Command extends SymfonyCommand
     /**
      * Give the user a single choice from an array of answers.
      *
-     * @param string $question
-     * @param array<int|string, string|bool|int|float|\Stringable> $choices
-     * @param string|null $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
-     * @param string|null $default (default: null)
-     * @param int|null $attempts (default: null)
-     * @param bool $multiple (default: false)
+     * @param  string                                                                          $question
+     * @param  array<int|string, string|bool|int|float|\Stringable>                            $choices
+     * @param  string|null                                                                     $via_option value of given name will be answered. If the option name starts with '@' then use the value without '@', as it is. (default: null)
+     * @param  string|null                                                                     $default    (default: null)
+     * @param  int|null                                                                        $attempts   (default: null)
+     * @param  bool                                                                            $multiple   (default: false)
      * @return string|bool|int|float|\Stringable|array<int, string|bool|int|float|\Stringable>
      */
     protected function choice(string $question, array $choices, string|null $via_option = null, $default = null, int|null $attempts = null, $multiple = false)
@@ -389,10 +389,10 @@ abstract class Command extends SymfonyCommand
     /**
      * Format input to textual table.
      *
-     * @param array<int, mixed> $headers
-     * @param array<int, mixed> $rows
-     * @param string $table_style (default: 'default')
-     * @param array<int, \Symfony\Component\Console\Helper\TableStyle|string> $column_styles (default: [])
+     * @param  array<int, mixed>                                               $headers
+     * @param  array<int, mixed>                                               $rows
+     * @param  string                                                          $table_style   (default: 'default')
+     * @param  array<int, \Symfony\Component\Console\Helper\TableStyle|string> $column_styles (default: [])
      * @return void
      */
     protected function table(array $headers, array $rows, $table_style = 'default', array $column_styles = [])
@@ -408,7 +408,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Get/Set the verbosity level.
      *
-     * @param  string|int  $level (default: null)
+     * @param  string|int $level (default: null)
      * @return self|int
      */
     protected function verbosity($level = null)
@@ -423,7 +423,7 @@ abstract class Command extends SymfonyCommand
     /**
      * Get the verbosity level in terms of Symfony's OutputInterface level.
      *
-     * @param  string|int|null  $level
+     * @param  string|int|null $level
      * @return int
      */
     protected function parseVerbosity($level) : int
@@ -434,8 +434,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a message as standard output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity (default: null)
+     * @param  string          $message
+     * @param  int|string|null $verbosity (default: null)
      * @return self
      */
     protected function write($message, $verbosity = null)
@@ -447,8 +447,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a message with newline as standard output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity (default: null)
+     * @param  string          $message
+     * @param  int|string|null $verbosity (default: null)
      * @return self
      */
     protected function writeln($message, $verbosity = null)
@@ -460,8 +460,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as information output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity
+     * @param  string          $message
+     * @param  int|string|null $verbosity
      * @return self
      */
     protected function info($message, $verbosity = null)
@@ -472,8 +472,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as comment output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity
+     * @param  string          $message
+     * @param  int|string|null $verbosity
      * @return self
      */
     protected function comment($message, $verbosity = null)
@@ -484,8 +484,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as question output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity
+     * @param  string          $message
+     * @param  int|string|null $verbosity
      * @return self
      */
     protected function question($message, $verbosity = null)
@@ -496,8 +496,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as error output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity
+     * @param  string          $message
+     * @param  int|string|null $verbosity
      * @return self
      */
     protected function error($message, $verbosity = null)
@@ -508,8 +508,8 @@ abstract class Command extends SymfonyCommand
     /**
      * Write a string as warning output.
      *
-     * @param string $message
-     * @param int|string|null $verbosity
+     * @param  string          $message
+     * @param  int|string|null $verbosity
      * @return self
      */
     protected function warning($message, $verbosity = null)

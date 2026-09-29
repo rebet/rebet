@@ -55,8 +55,8 @@ class Securities
      * $init_pass = Securities::randomCode(12);
      * $sms_code  = Securities::randomCode(6, '1234567890');
      *
-     * @param int $length
-     * @param string $chars (default: 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890)
+     * @param  int    $length
+     * @param  string $chars  (default: 1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890)
      * @return string
      */
     public static function randomCode(int $length, string $chars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") : string
@@ -76,11 +76,11 @@ class Securities
      * $hash = Securities::hash('text');
      * $hash = Securities::hash('text', 'salt', 'pepper');
      *
-     * @param string $text
-     * @param string|null $salt (default: depend on configure)
-     * @param string|null $pepper (default: depend on configure)
-     * @param string|null $algorithm (default: depend on configure)
-     * @param int|null $stretching (default: depend on configure)
+     * @param  string      $text
+     * @param  string|null $salt       (default: depend on configure)
+     * @param  string|null $pepper     (default: depend on configure)
+     * @param  string|null $algorithm  (default: depend on configure)
+     * @param  int|null    $stretching (default: depend on configure)
      * @return string
      */
     public static function hash(string $text, string|null $salt = null, string|null $pepper = null, string|null $algorithm = null, int|null $stretching = null) : string
@@ -104,9 +104,9 @@ class Securities
      * $hash = Securities::hmac('text');
      * $hash = Securities::hmac('text', 'secret_key', 'algorithm');
      *
-     * @param string $text
-     * @param string|null $secret_key (default: depend on configure)
-     * @param string|null $algorithm (default: depend on configure)
+     * @param  string      $text
+     * @param  string|null $secret_key (default: depend on configure)
+     * @param  string|null $algorithm  (default: depend on configure)
      * @return string
      */
     public static function hmac(string $text, string|null $secret_key = null, string|null $algorithm = null) : string
@@ -123,7 +123,7 @@ class Securities
      * ex)
      * $hash = Securities::randomHash();
      *
-     * @param string $algorithm (default: depend on configure)
+     * @param  string $algorithm (default: depend on configure)
      * @return string
      */
     public static function randomHash(string|null $algorithm = null) : string
@@ -141,11 +141,11 @@ class Securities
      * ex)
      * $encrypted = Nets::encodeBase64Url(Securities::encrypt($text, 'secret_key'));
      *
-     * @param string $plain
-     * @param string|null $secret_key (default: depend on configure)
-     * @param string|null $cipher (default: depend on configure)
-     * @param string|null $hmac_secret_key (default: depend on configure)
-     * @param string|null $hmac_algorithm (default: depend on configure)
+     * @param  string      $plain
+     * @param  string|null $secret_key      (default: depend on configure)
+     * @param  string|null $cipher          (default: depend on configure)
+     * @param  string|null $hmac_secret_key (default: depend on configure)
+     * @param  string|null $hmac_algorithm  (default: depend on configure)
      * @return string
      * @see Nets::encodeBase64Url();
      */
@@ -168,11 +168,11 @@ class Securities
      * ex)
      * $decrypted = Securities::decrypt(Nets::decodeBase64Url($text), 'secret_key');
      *
-     * @param string $encrypted
-     * @param string|null $secret_key (default: depend on configure)
-     * @param string|null $cipher (default: depend on configure)
-     * @param string|null $hmac_secret_key (default: depend on configure)
-     * @param string|null $hmac_algorithm (default: depend on configure)
+     * @param  string      $encrypted
+     * @param  string|null $secret_key      (default: depend on configure)
+     * @param  string|null $cipher          (default: depend on configure)
+     * @param  string|null $hmac_secret_key (default: depend on configure)
+     * @param  string|null $hmac_algorithm  (default: depend on configure)
      * @return string|null
      */
     public static function decrypt(string $encrypted, string|null $secret_key = null, string|null $cipher = null, string|null $hmac_secret_key = null, string|null $hmac_algorithm = null)

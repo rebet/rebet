@@ -30,8 +30,8 @@ class TagSet
     /**
      * Create cache store with tags using given adapter.
      *
-     * @param Adapter $adapter
-     * @param string[] $tags
+     * @param  Adapter        $adapter
+     * @param  string[]       $tags
      * @throws CacheException when the adapter does not support tagging.
      */
     public function __construct(Adapter $adapter, array $tags)
@@ -47,10 +47,10 @@ class TagSet
      * Fetches a value from the store or computes and remembers (if needed) it with tags if not found.
      * On cache misses, a supplier is called that should return the missing value.
      *
-     * @param string $key of the item to retrieve from the cache
-     * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
-     * @param \Closure|mixed $supplier that Closure of `function():mixed { ... }`, otherwise mixed value return given value as it is.
-     * @param bool $remember (default: true)
+     * @param  string                       $key      of the item to retrieve from the cache
+     * @param  int|string|DateTimeInterface $expire   when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
+     * @param  \Closure|mixed               $supplier that Closure of `function():mixed { ... }`, otherwise mixed value return given value as it is.
+     * @param  bool                         $remember (default: true)
      * @return mixed
      */
     public function retrieve(string $key, $expire, $supplier, bool $remember = true)
@@ -72,8 +72,8 @@ class TagSet
     /**
      * Store a item/items with tags in the cache for a given expire.
      *
-     * @param array<string, mixed> $values of ['key' => 'value', ...]
-     * @param int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
+     * @param  array<string, mixed>         $values of ['key' => 'value', ...]
+     * @param  int|string|DateTimeInterface $expire when int given then it's lifetime seconds, when string given then it's lifetime text like '12min', when DateTime given then it's expire at given date time.
      * @return bool
      */
     public function put(array $values, $expire) : bool

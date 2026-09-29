@@ -36,8 +36,8 @@ abstract class InputDataTransform
     /**
      * Handle Input Data Transform Middleware.
      *
-     * @param Request $request
-     * @param \Closure $next
+     * @param  Request  $request
+     * @param  \Closure $next
      * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response
@@ -50,7 +50,7 @@ abstract class InputDataTransform
     /**
      * Transform the value of given bag.
      *
-     * @param ParameterBag $bag
+     * @param  ParameterBag $bag
      * @return void
      */
     protected function transformBag(ParameterBag $bag)
@@ -61,8 +61,8 @@ abstract class InputDataTransform
     /**
      * Transform the value of given value.
      *
-     * @param array<int|string, mixed> $array
-     * @param string $prefix (default: '')
+     * @param  array<int|string, mixed> $array
+     * @param  string                   $prefix (default: '')
      * @return array<int|string, mixed>
      */
     protected function transformArray(array $array, string $prefix = '') : array
@@ -76,8 +76,8 @@ abstract class InputDataTransform
     /**
      * Transform the value of given value.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return mixed
      */
     protected function transformValue($key, $value)
@@ -91,8 +91,8 @@ abstract class InputDataTransform
     /**
      * Transform the given value.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return mixed
      */
     abstract protected function transform($key, $value);

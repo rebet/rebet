@@ -32,7 +32,7 @@ class Created implements Saved
      * Create an event
      *
      * @param Database $db
-     * @param Entity $new
+     * @param Entity   $new
      */
     public function __construct(Database $db, Entity &$new)
     {

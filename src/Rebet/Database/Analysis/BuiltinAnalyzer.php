@@ -108,7 +108,7 @@ class BuiltinAnalyzer implements Analyzer
     /**
      * Build selection real expressions from parsed tree.
      *
-     * @param array<mixed> $parsed
+     * @param  array<mixed> $parsed
      * @return string
      */
     protected function build(array $parsed) : string

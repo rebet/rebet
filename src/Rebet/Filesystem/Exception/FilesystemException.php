@@ -26,7 +26,7 @@ class FilesystemException extends RuntimeException
     /**
      * Create exception from League\Flysystem\FilesystemException
      *
-     * @param FlysystemException $e
+     * @param  FlysystemException $e
      * @return self
      */
     public static function from(FlysystemException $e) : self

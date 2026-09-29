@@ -44,9 +44,9 @@ class VerifyCsrfToken
     /**
      * Create Verify Csrf Token Middleware
      *
-     * @param array<int, string> $excludes (default: [])
-     * @param bool $is_support_xsrf (default: false)
-     * @param int|string|null $xsrf_lifetime (default: depend on configure 'Rebet\Http\Cookie.expire')
+     * @param array<int, string> $excludes        (default: [])
+     * @param bool               $is_support_xsrf (default: false)
+     * @param int|string|null    $xsrf_lifetime   (default: depend on configure 'Rebet\Http\Cookie.expire')
      */
     public function __construct(array $excludes = [], bool $is_support_xsrf = false, $xsrf_lifetime = null)
     {
@@ -58,8 +58,8 @@ class VerifyCsrfToken
     /**
      * Handle Verify CSRF Token Middleware.
      *
-     * @param Request $request
-     * @param \Closure $next
+     * @param  Request  $request
+     * @param  \Closure $next
      * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response
@@ -83,7 +83,7 @@ class VerifyCsrfToken
     /**
      * Verify the token.
      *
-     * @param Request $request
+     * @param  Request $request
      * @return boolean
      */
     protected function verifyToken(Request $request) : bool
@@ -110,7 +110,7 @@ class VerifyCsrfToken
     /**
      * Get CSRF token from given request.
      *
-     * @param Request $request
+     * @param  Request                          $request
      * @return array{0: string, 1: string|null} [key, value]
      */
     protected function getTokenFrom(Request $request) : array

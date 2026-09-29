@@ -38,16 +38,16 @@ class RedisAdapter extends AbstractSymfonyAdapter
      * NOTE: When using the Predis library some additional Predis-specific options are available. Reference the Predis Connection Parameters documentation for more information.
      *       @see https://github.com/predis/predis/wiki/Connection-Parameters#list-of-connection-parameters
      *
-     * @param string $dsn a DSN formatted below (default: 'redis://localhost')
-     *               - redis://[pass@][ip|host|socket[:port]][/db-index]
-     *               - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
-     * @param array<string, mixed> $options for connect redis. (default: [])  @see Symfony\Component\Cache\Traits\RedisTrait::$defaultConnectionOptions
-     * @param string $namespace (default: '')
-     * @param int|string $default_lifetime that time unit labeled string like '12min', or int seconds. (default: 0)
-     * @param MarshallerInterface|null $marshaller (default: mull)
-     * @param bool $taggable (default: false)
-     * @param null|string|CacheItemPoolInterface $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
-     * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
+     * @param string                             $dsn                    a DSN formatted below (default: 'redis://localhost')
+     *                                                                   - redis://[pass@][ip|host|socket[:port]][/db-index]
+     *                                                                   - redis:?host[redis1:26379]&host[redis2:26379]&host[redis3:26379]&redis_sentinel=mymaster
+     * @param array<string, mixed>               $options                for connect redis. (default: [])  @see Symfony\Component\Cache\Traits\RedisTrait::$defaultConnectionOptions
+     * @param string                             $namespace              (default: '')
+     * @param int|string                         $default_lifetime       that time unit labeled string like '12min', or int seconds. (default: 0)
+     * @param MarshallerInterface|null           $marshaller             (default: mull)
+     * @param bool                               $taggable               (default: false)
+     * @param null|string|CacheItemPoolInterface $tags_pool              name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
+     * @param float                              $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
     public function __construct($dsn = 'redis://localhost', array $options = [], string $namespace = '', $default_lifetime = 0, MarshallerInterface|null $marshaller = null, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
     {

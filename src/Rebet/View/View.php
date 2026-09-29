@@ -97,8 +97,8 @@ class View implements Renderable
     /**
      * Create a view of given name.
      *
-     * @param string $name
-     * @param callable|null $changer function($view_name):string to return cahnged name.
+     * @param  string        $name
+     * @param  callable|null $changer function($view_name):string to return cahnged name.
      * @return self
      */
     public static function of(string $name, callable|null $changer = null) : self
@@ -120,9 +120,9 @@ class View implements Renderable
     /**
      * Create a view
      *
-     * @param string $name
+     * @param string        $name
      * @param callable|null $changer function($view_name):string to return cahnged view name.
-     * @param Engine|null $engine (default: null for use configure setting)
+     * @param Engine|null   $engine  (default: null for use configure setting)
      */
     public function __construct(string $name, callable|null $changer = null, Engine|null $engine = null)
     {
@@ -141,8 +141,8 @@ class View implements Renderable
     /**
      * Set the view valiable composer.
      *
-     * @param string $regex
-     * @param callable $composer function(View $view):void
+     * @param  string   $regex
+     * @param  callable $composer function(View $view):void
      * @return void
      */
     public static function composer(string $regex, callable $composer) : void
@@ -153,8 +153,8 @@ class View implements Renderable
     /**
      * Set the global share valiables.
      *
-     * @param string|array<string, mixed> $key
-     * @param mixed $value
+     * @param  string|array<string, mixed> $key
+     * @param  mixed                       $value
      * @return void
      */
     public static function share($key, $value = null) : void
@@ -169,7 +169,7 @@ class View implements Renderable
     /**
      * Get the global shared valiables.
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public static function shared(string $key)
@@ -180,8 +180,8 @@ class View implements Renderable
     /**
      * Add a piece of data to the view.
      *
-     * @param string|array<string, mixed> $key
-     * @param mixed $value
+     * @param  string|array<string, mixed> $key
+     * @param  mixed                       $value
      * @return self
      */
     public function with($key, $value = null) : self
@@ -199,7 +199,7 @@ class View implements Renderable
     /**
      * Set EOF line feed processer.
      *
-     * @param EofLineFeed $processer
+     * @param  EofLineFeed $processer
      * @return self
      */
     public function eof(EofLineFeed $processer) : self
@@ -270,7 +270,7 @@ class View implements Renderable
     /**
      * Prepend template path.
      *
-     * @param string $path
+     * @param  string $path
      * @return self
      */
     public function prependPath(string $path) : self
@@ -282,7 +282,7 @@ class View implements Renderable
     /**
      * Append template path.
      *
-     * @param string $path
+     * @param  string $path
      * @return self
      */
     public function appendPath(string $path) : self

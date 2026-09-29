@@ -52,7 +52,7 @@ interface Analyzer
      * Extract the actual statement (real column name / expression / CASE statement / subquery, etc.) of the column that is aliased in the top level SELECT clause.
      * If the given name is not alias or the given sql is UNION then return given alias as it is.
      *
-     * @param string $alias
+     * @param  string $alias
      * @return string
      */
     public function extractAliasSelectColumn(string $alias) : string;

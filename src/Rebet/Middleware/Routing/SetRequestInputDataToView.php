@@ -21,8 +21,8 @@ class SetRequestInputDataToView
     /**
      * Handle Set Request Input Data To View Middleware.
      *
-     * @param Request $request
-     * @param \Closure $next
+     * @param  Request  $request
+     * @param  \Closure $next
      * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response

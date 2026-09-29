@@ -219,17 +219,17 @@ class Ransack
     /**
      * Create predicate
      *
-     * @param Driver $driver
-     * @param string $origin
-     * @param mixed $value
-     * @param string $predicate
-     * @param string $template
-     * @param \Closure|null $value_converter
+     * @param Driver             $driver
+     * @param string             $origin
+     * @param mixed              $value
+     * @param string             $predicate
+     * @param string             $template
+     * @param \Closure|null      $value_converter
      * @param array<int, string> $columns
-     * @param string|null $compound
-     * @param string $conjunction
-     * @param string|null $option
-     * @param string $placeholder_suffix (default: '')
+     * @param string|null        $compound
+     * @param string             $conjunction
+     * @param string|null        $option
+     * @param string             $placeholder_suffix (default: '')
      */
     protected function __construct(Driver $driver, string $origin, $value, string $predicate, string $template, \Closure|null $value_converter, array $columns, string $conjunction, string|null $compound, string|null $option, string $placeholder_suffix = '')
     {
@@ -249,12 +249,12 @@ class Ransack
     /**
      * Resolve given ransack predicate.
      *
-     * @param Driver $driver
-     * @param int|string $ransack_predicate
-     * @param mixed $value
-     * @param array<string, string|array<int, string>> $alias (default: [])
-     * @param \Closure|null $extension function(Ransack $ransack) : Query { ... } (default: null)
-     * @param string $placeholder_suffix (default: '')
+     * @param  Driver                                   $driver
+     * @param  int|string                               $ransack_predicate
+     * @param  mixed                                    $value
+     * @param  array<string, string|array<int, string>> $alias              (default: [])
+     * @param  \Closure|null                            $extension          function(Ransack $ransack) : Query { ... } (default: null)
+     * @param  string                                   $placeholder_suffix (default: '')
      * @return Query|null
      */
     public static function resolve(Driver $driver, $ransack_predicate, $value, array $alias = [], \Closure|null $extension = null, string $placeholder_suffix = '') : Query|null
@@ -297,11 +297,11 @@ class Ransack
     /**
      * Analyze given ransack predicate.
      *
-     * @param Driver $driver
-     * @param string $ransack_predicate
-     * @param mixed $value
-     * @param array<string, string|array<int, string>> $alias (default: [])
-     * @param string $placeholder_suffix (default: '')
+     * @param  Driver                                   $driver
+     * @param  string                                   $ransack_predicate
+     * @param  mixed                                    $value
+     * @param  array<string, string|array<int, string>> $alias              (default: [])
+     * @param  string                                   $placeholder_suffix (default: '')
      * @return self
      */
     public static function analyze(Driver $driver, string $ransack_predicate, $value, array $alias = [], string $placeholder_suffix = '') : self
@@ -366,8 +366,8 @@ class Ransack
     /**
      * Resolve alias column name
      *
-     * @param string $column
-     * @param array<string, string|array<int, string>> $alias
+     * @param  string                                   $column
+     * @param  array<string, string|array<int, string>> $alias
      * @return array<int, string>
      */
     protected static function resolveAlias(string $column, array $alias) : array
@@ -406,8 +406,8 @@ class Ransack
     /**
      * Get original value or converted value for this predicate.
      *
-     * @param bool $convert value or not (default: false)
-     * @param \Closure|null $value_converter function(mixed $value) { ... } (default: null)
+     * @param  bool          $convert         value or not (default: false)
+     * @param  \Closure|null $value_converter function(mixed $value) { ... } (default: null)
      * @return mixed
      */
     public function value(bool $convert = false, \Closure|null $value_converter = null)
@@ -494,7 +494,7 @@ class Ransack
      * Get columns that aliases resolved.
      * You can choose apply option or not.
      *
-     * @param boolean $apply_option (default: true)
+     * @param  boolean            $apply_option (default: true)
      * @return array<int, string>
      */
     public function columns(bool $apply_option = true) : array
@@ -522,8 +522,8 @@ class Ransack
      * Convert ransack to SQL where and params using given template and value converter.
      * If just call convert() without arguments then use default template and value converter.
      *
-     * @param string|null $template (default: null)
-     * @param \Closure|null $value_converter function(mixed $value) { ... } (default: null)
+     * @param  string|null   $template        (default: null)
+     * @param  \Closure|null $value_converter function(mixed $value) { ... } (default: null)
      * @return Query
      */
     public function convert(string|null $template = null, \Closure|null $value_converter = null) : Query

@@ -52,7 +52,7 @@ abstract class Guard
     /**
      * Get/Set the name of this guard.
      *
-     * @param string|null $name (default: null for get name)
+     * @param  string|null      $name (default: null for get name)
      * @return self|string|null
      */
     public function name(string|null $name = null)

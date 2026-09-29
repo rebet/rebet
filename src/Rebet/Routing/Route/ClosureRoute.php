@@ -29,8 +29,8 @@ class ClosureRoute extends DeclarativeRoute
      * Create a closure route
      *
      * @param array<int, string> $methods
-     * @param string $uri
-     * @param callable $action function([Request $request,] mixed ...$route_parameters)
+     * @param string             $uri
+     * @param callable           $action  function([Request $request,] mixed ...$route_parameters)
      */
     public function __construct(array $methods, string $uri, callable $action)
     {
@@ -41,7 +41,7 @@ class ClosureRoute extends DeclarativeRoute
     /**
      * Cleate a route action for this route.
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return RouteAction
      * @throws RouteNotFoundException
      */
@@ -53,8 +53,8 @@ class ClosureRoute extends DeclarativeRoute
     /**
      * Terminate the route.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @return void
      */
     public function terminate(Request $request, Response $response) : void

@@ -44,7 +44,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Create Fallback Exception.
      *
-     * @param string $message
+     * @param string     $message
      * @param \Throwable $previous (default: null)
      */
     public function __construct(string $message, \Throwable|null $previous = null)
@@ -55,7 +55,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set the fallback URL.
      *
-     * @param string $fallback
+     * @param  string $fallback
      * @return self
      */
     public function to(string $fallback) : self
@@ -67,7 +67,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set input.
      *
-     * @param array<string, mixed> $input
+     * @param  array<string, mixed> $input
      * @return self
      */
     public function with(array $input) : self
@@ -79,7 +79,7 @@ class FallbackRedirectException extends RuntimeException implements ProblemRespo
     /**
      * Set errors.
      *
-     * @param array<string, array<int, string>> $errors
+     * @param  array<string, array<int, string>> $errors
      * @return self
      */
     public function errors(array $errors) : self

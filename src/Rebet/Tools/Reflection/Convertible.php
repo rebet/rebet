@@ -22,7 +22,7 @@ interface Convertible
      * Convert the type from other to self.
      * If conversion is not possible then return null.
      *
-     * @param mixed $value
+     * @param  mixed $value
      * @return mixed
      */
     public static function valueOf($value);
@@ -31,7 +31,7 @@ interface Convertible
      * Convert the type from self to other.
      * If conversion is not possible then return null.
      *
-     * @param string $type
+     * @param  string $type
      * @return mixed
      */
     public function convertTo(string $type);

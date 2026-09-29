@@ -27,8 +27,8 @@ class Environment extends TwigEnvironment
     /**
      * Register an "raw" extention.
      *
-     * @param string $tag
-     * @param string $code
+     * @param  string $tag
+     * @param  string $code
      * @return void
      */
     public function raw(string $tag, string $code) : void
@@ -40,14 +40,14 @@ class Environment extends TwigEnvironment
      * Register an "embed" extention.
      * If you give '$errors' as binds then you can get the $errors of assigned value as first argument of Processor::execute().
      *
-     * @param string $name
-     * @param string|null $verbs
-     * @param array<int|string, string|array<int, string>>|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
-     * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
-     * @param Processor $processor
-     * @param string $close code to callbak returns like ');', ';', '):' etc
-     * @param array<int, string> $binds (default: [])
-     * @param bool $can_omit_first_arg (default: false)
+     * @param  string                                            $name
+     * @param  string|null                                       $verbs
+     * @param  array<int|string, string|array<int, string>>|null $separators         of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
+     * @param  string                                            $open               code to callbak returns like 'echo(', '$var =', 'if(', '' etc
+     * @param  Processor                                         $processor
+     * @param  string                                            $close              code to callbak returns like ');', ';', '):' etc
+     * @param  array<int, string>                                $binds              (default: [])
+     * @param  bool                                              $can_omit_first_arg (default: false)
      * @return void
      */
     public function embed($name, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false) : void
@@ -58,12 +58,12 @@ class Environment extends TwigEnvironment
     /**
      * Register an "if" (and not) extention.
      *
-     * @param string $name
-     * @param string|null $verbs
-     * @param array<int|string, string|array<int, string>>|null $separators of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
-     * @param Processor $processor
-     * @param array<int, string> $binds (default: [])
-     * @param bool $can_omit_first_arg (default: false)
+     * @param  string                                            $name
+     * @param  string|null                                       $verbs
+     * @param  array<int|string, string|array<int, string>>|null $separators         of arguments. If null given then the code tag do not take arguments and empty array for takes only one argument.
+     * @param  Processor                                         $processor
+     * @param  array<int, string>                                $binds              (default: [])
+     * @param  bool                                              $can_omit_first_arg (default: false)
      * @return void
      */
     public function case(string $name, string|null $verbs, array|null $separators, Processor $processor, array $binds = [], bool $can_omit_first_arg = false)

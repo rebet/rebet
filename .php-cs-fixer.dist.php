@@ -42,6 +42,8 @@ return (new PhpCsFixer\Config())
         'trailing_comma_in_multiline' => [
             'elements' => ['arrays', 'match'],
         ],
+        'phpdoc_align'  => true,
+        'phpdoc_indent' => true,
     ])
     ->setLineEnding("\n")
     ->setFinder(

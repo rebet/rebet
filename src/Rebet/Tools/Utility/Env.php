@@ -26,8 +26,8 @@ class Env
     /**
      * Gets the value of an environment variable.
      *
-     * @param string $name
-     * @param mixed $default (default: null)
+     * @param  string $name
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     public static function get(string $name, $default = null)
@@ -41,9 +41,9 @@ class Env
     /**
      * Create a promise for lazy evaluating configuration value to get given name environment variable.
      *
-     * @param string $name
-     * @param mixed $default (default: null)
-     * @param bool $only_once (default: true)
+     * @param  string        $name
+     * @param  mixed         $default   (default: null)
+     * @param  bool          $only_once (default: true)
      * @return ConfigPromise
      */
     public static function promise(string $name, $default = null, bool $only_once = true) : ConfigPromise
@@ -54,7 +54,7 @@ class Env
     /**
      * Resolve given default value if it is Closure.
      *
-     * @param mixed $default
+     * @param  mixed $default
      * @return mixed
      */
     protected static function resolve($default)
@@ -65,7 +65,7 @@ class Env
     /**
      * Convert string boolean and null value to bool/null type.
      *
-     * @param mixed $value
+     * @param  mixed $value
      * @return mixed
      */
     protected static function convert($value)

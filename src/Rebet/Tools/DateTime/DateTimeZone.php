@@ -35,7 +35,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      * @see Reflector::convert()
      * @see Convertible
      *
-     * @param string|\DateTimeZone $value
+     * @param  string|\DateTimeZone $value
      * @return DateTimeZone
      */
     public static function valueOf($value) : DateTimeZone
@@ -56,7 +56,7 @@ class DateTimeZone extends \DateTimeZone implements Convertible
      *
      * @see Convertible
      *
-     * @param string $type
+     * @param  string $type
      * @return mixed
      */
     public function convertTo(string $type)

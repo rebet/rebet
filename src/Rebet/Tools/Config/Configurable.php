@@ -108,8 +108,8 @@ trait Configurable
      *
      * @see self::shareConfigWith()
      *
-     * @param string $class
-     * @param array<string, mixed> $diff (default: [])
+     * @param  string               $class
+     * @param  array<string, mixed> $diff  (default: [])
      * @return array<string, mixed>
      */
     protected static function copyConfigFrom(string $class, array $diff = []) : array
@@ -126,8 +126,8 @@ trait Configurable
      *
      * @see self::copyConfigFrom()
      *
-     * @param string $class
-     * @param array<string, mixed> $diff (default: [])
+     * @param  string               $class
+     * @param  array<string, mixed> $diff  (default: [])
      * @return ConfigPromise
      */
     protected static function shareConfigWith(string $class, array $diff = []) : ConfigPromise
@@ -141,9 +141,9 @@ trait Configurable
      * Get the own configuration setting.
      * If blank is given as the key name, all configuration settings will be acquired.
      *
-     * @param string|null $key can contains dot notation (default: null)
-     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
-     * @param mixed $default (default: null)
+     * @param  string|null              $key      can contains dot notation (default: null)
+     * @param  bool                     $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param  mixed                    $default  (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      */
@@ -158,10 +158,10 @@ trait Configurable
      * @see Rebet\Tools\Config\Config::instantiate()
      * @see Rebet\Tools\Reflection\Reflector::instantiate()
      *
-     * @param string $key can contains dot notation
-     * @param array<int|string, mixed> $runtime_args that override defined configuration args (default: [])
-     * @param bool $required (default: true) ... If this value is true then throw an exception when the configuration value is blank.
-     * @param mixed $default (default: null)
+     * @param  string                   $key          can contains dot notation
+     * @param  array<int|string, mixed> $runtime_args that override defined configuration args (default: [])
+     * @param  bool                     $required     (default: true) ... If this value is true then throw an exception when the configuration value is blank.
+     * @param  mixed                    $default      (default: null)
      * @return mixed
      * @throws ConfigNotDefineException
      */

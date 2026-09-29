@@ -20,8 +20,8 @@ class AddQueuedCookiesToResponse
     /**
      * Handle Add Queued Cookies To Response Middleware.
      *
-     * @param Request $request
-     * @param \Closure $next
+     * @param  Request  $request
+     * @param  \Closure $next
      * @return Response
      */
     public function handle(Request $request, \Closure $next) : Response

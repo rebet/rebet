@@ -34,8 +34,8 @@ class RedisSessionHandler extends SymfonyRedisSessionHandler
     /**
      * {@inheritDoc}
      *
-     * @param \Redis|\RedisArray|\RedisCluster|\Predis\Client|RedisProxy  $redis
-     * @param array<string, mixed> $options (default: depend on confiugre)
+     * @param \Redis|\RedisArray|\RedisCluster|\Predis\Client|RedisProxy $redis
+     * @param array<string, mixed>                                       $options (default: depend on confiugre)
      */
     public function __construct($redis, array $options = [])
     {

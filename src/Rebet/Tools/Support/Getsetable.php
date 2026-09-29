@@ -16,8 +16,8 @@ trait Getsetable
     /**
      * Support Get and Set interface using one method.
      *
-     * @param string $property name
-     * @param mixed $value
+     * @param  string $property name
+     * @param  mixed  $value
      * @return mixed
      */
     protected function getset(string $property, $value)

@@ -38,8 +38,8 @@ class Namespaces
     /**
      * Set new alias.
      *
-     * @param string $alias
-     * @param string $actual can contaiins another alias.
+     * @param  string $alias
+     * @param  string $actual can contaiins another alias.
      * @return void
      */
     public static function setAlias(string $alias, string $actual) : void
@@ -51,7 +51,7 @@ class Namespaces
      * Resolve namespace alias that starts with '@' like '@controller\\UserController'.
      * Note: The leading '\' will be deleted.
      *
-     * @param mixed $class
+     * @param  mixed $class
      * @return mixed
      */
     public static function resolve($class)
@@ -65,7 +65,7 @@ class Namespaces
     /**
      * Resolve namespace alias that starts with '@' recursively.
      *
-     * @param string $class
+     * @param  string $class
      * @return string
      */
     private static function _resolve(string $class) : string

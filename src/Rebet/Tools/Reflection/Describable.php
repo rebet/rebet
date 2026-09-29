@@ -37,9 +37,9 @@ trait Describable
      *     'name',
      * ],
      *
-     * @param object $dest
-     * @param array<string, mixed> $option
-     * @return object of injected dest
+     * @param  object               $dest
+     * @param  array<string, mixed> $option
+     * @return object               of injected dest
      */
     public function inject(&$dest, array $option = [])
     {
@@ -74,9 +74,9 @@ trait Describable
      *     'name',
      * ],
      *
-     * @param string $class
-     * @param array<string, mixed> $option
-     * @return object of given class
+     * @param  string               $class
+     * @param  array<string, mixed> $option
+     * @return object               of given class
      */
     public function describe(string $class, array $option = [])
     {
@@ -87,10 +87,10 @@ trait Describable
     /**
      * Apply Option
      *
-     * @param array<string, mixed> $option
-     * @param string $field
-     * @param array<mixed>|object $src
-     * @param mixed $origin
+     * @param  array<string, mixed> $option
+     * @param  string               $field
+     * @param  array<mixed>|object  $src
+     * @param  mixed                $origin
      * @return mixed
      */
     protected function applyDescribeOption(array $option, $src, string $field, $origin)

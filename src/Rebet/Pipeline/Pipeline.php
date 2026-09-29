@@ -67,7 +67,7 @@ class Pipeline
     /**
      * Run the pipeline.
      *
-     * @param  mixed  $passable
+     * @param  mixed          $passable
      * @return mixed
      * @throws LogicException
      */
@@ -82,7 +82,7 @@ class Pipeline
     /**
      * Set the array of pipes.
      *
-     * @param  array|mixed  $pipes
+     * @param  array|mixed $pipes
      * @return $this
      */
     public function through($pipes) : self
@@ -94,7 +94,7 @@ class Pipeline
     /**
      * Set the method to call on the pipes.
      *
-     * @param  string  $method
+     * @param  string $method
      * @return $this
      */
     public function via($method) : self
@@ -134,7 +134,7 @@ class Pipeline
     /**
      * Invoke any method of the instantiated pipes if exsits. (exclude final destination callback)
      *
-     * @param  string  $method
+     * @param  string $method
      * @param  mixed  $args
      * @return $this
      */

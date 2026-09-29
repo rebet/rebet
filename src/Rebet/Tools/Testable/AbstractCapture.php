@@ -54,7 +54,7 @@ abstract class AbstractCapture extends \php_user_filter
     /**
      * Capture STDERR output via given process.
      *
-     * @param \Closure $process
+     * @param  \Closure $process
      * @return string
      */
     public static function via(\Closure $process) : string
@@ -67,10 +67,10 @@ abstract class AbstractCapture extends \php_user_filter
     /**
      * Stream filter for capture STDERR output message.
      *
-     * @param resource $in
-     * @param resource $out
-     * @param mixed $consumed
-     * @param bool $closing
+     * @param  resource $in
+     * @param  resource $out
+     * @param  mixed    $consumed
+     * @param  bool     $closing
      * @return int
      */
     public function filter($in, $out, &$consumed, bool $closing) : int
@@ -91,7 +91,7 @@ abstract class AbstractCapture extends \php_user_filter
      * PHP constant `STDERR` is defaultry captured, but you can not captured if you create new resource like `fopen('php://message', 'w');`.
      * In this case, you need to call StderrCapture::append() with created new resource.
      *
-     * @param resource $resource
+     * @param  resource $resource
      * @return resource of given stderr as it is.
      */
     public static function append($resource)
@@ -104,7 +104,7 @@ abstract class AbstractCapture extends \php_user_filter
      * Initialize the capture.
      * This method register stream filter for output capture and append filter to given $resource.
      *
-     * @param resource $resource
+     * @param  resource $resource
      * @return void
      */
     public static function init($resource) : void

@@ -18,7 +18,7 @@ class RansackException extends RuntimeException
     /**
      * Create a database exception.
      *
-     * @param string $message
+     * @param string          $message
      * @param \Throwable|null $previous
      */
     public function __construct(string $message, \Throwable|null $previous = null)

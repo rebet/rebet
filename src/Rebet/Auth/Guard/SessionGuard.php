@@ -37,10 +37,10 @@ class SessionGuard extends StatefulGuard
     /**
      * Create a session guard.
      *
-     * @param string $provider name of configured in `Auth.providers.{name}`.
-     * @param string|null $fallback redirect url. (default: null for throw AuthenticateException)
-     * @param int $remember_days (default: 0)
-     * @param Request $request (default: null for Request::current())
+     * @param string      $provider      name of configured in `Auth.providers.{name}`.
+     * @param string|null $fallback      redirect url. (default: null for throw AuthenticateException)
+     * @param int         $remember_days (default: 0)
+     * @param Request     $request       (default: null for Request::current())
      */
     public function __construct(string $provider, string|null $fallback = null, int $remember_days = 0, Request|null $request = null)
     {

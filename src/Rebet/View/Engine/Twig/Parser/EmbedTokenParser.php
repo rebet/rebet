@@ -90,14 +90,14 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * Create Code Token Parser.
      *
-     * @param string $tag
-     * @param string|null $verbs
-     * @param array<int|string, string|array<int, string>>|null $separators null for no argument, [] for one argument
-     * @param string $open
-     * @param Processor $processor
-     * @param string $close
-     * @param array<int, string> $binds (default: [])
-     * @param bool $can_omit_first_arg (default: false)
+     * @param string                                            $tag
+     * @param string|null                                       $verbs
+     * @param array<int|string, string|array<int, string>>|null $separators         null for no argument, [] for one argument
+     * @param string                                            $open
+     * @param Processor                                         $processor
+     * @param string                                            $close
+     * @param array<int, string>                                $binds              (default: [])
+     * @param bool                                              $can_omit_first_arg (default: false)
      */
     public function __construct(string $tag, string|null $verbs, array|null $separators, string $open, Processor $processor, string $close, array $binds = [], bool $can_omit_first_arg = false)
     {
@@ -154,8 +154,8 @@ class EmbedTokenParser extends AbstractTokenParser
     /**
      * Parses arguments.
      *
-     * @param array<int|string, string|array<int, string>>|null $separators
-     * @param bool $allow_arrow Whether to allow arrow function call
+     * @param  array<int|string, string|array<int, string>>|null           $separators
+     * @param  bool                                                        $allow_arrow Whether to allow arrow function call
      * @return array<int|string, \Twig\Node\Expression\AbstractExpression>
      * @throws SyntaxError
      */
@@ -254,8 +254,8 @@ class EmbedTokenParser extends AbstractTokenParser
      * NOTE: Passing $allow_arrow to ExpressionParser::parseExpression() is deprecated since twig/twig 3.15,
      *       so it is only passed when arrow functions are actually requested.
      *
-     * @param int $precedence
-     * @param bool $allow_arrow
+     * @param  int                                      $precedence
+     * @param  bool                                     $allow_arrow
      * @return \Twig\Node\Expression\AbstractExpression
      */
     protected function parseValueExpression(int $precedence, bool $allow_arrow)

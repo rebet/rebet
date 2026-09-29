@@ -21,8 +21,8 @@ class BasicResponse extends SymfonyResponse implements Response
     /**
      * Create a Response
      *
-     * @param string $content (default: '')
-     * @param integer $status (default: 200)
+     * @param string                                   $content (default: '')
+     * @param integer                                  $status  (default: 200)
      * @param array<string, string|array<int, string>> $headers (default: [])
      */
     public function __construct($content = '', int $status = 200, array $headers = [])

@@ -87,7 +87,7 @@ class Session implements SessionInterface
     /**
      * It checks exists the given name property in attribute session bag.
      *
-     * @param string $name
+     * @param  string $name
      * @return bool
      */
     public function has(string $name) : bool
@@ -98,8 +98,8 @@ class Session implements SessionInterface
     /**
      * Get the value from attribute session bag.
      *
-     * @param string $name
-     * @param mixed $default
+     * @param  string $name
+     * @param  mixed  $default
      * @return mixed
      */
     public function get(string $name, mixed $default = null) : mixed
@@ -110,8 +110,8 @@ class Session implements SessionInterface
     /**
      * Set the value to attribute session bag.
      *
-     * @param string $name
-     * @param mixed $value
+     * @param  string $name
+     * @param  mixed  $value
      * @return void
      */
     public function set(string $name, mixed $value) : void
@@ -132,7 +132,7 @@ class Session implements SessionInterface
     /**
      * Replace the all attributes of attribute session bag.
      *
-     * @param array<string, mixed> $attributes
+     * @param  array<string, mixed> $attributes
      * @return void
      */
     public function replace(array $attributes) : void
@@ -143,7 +143,7 @@ class Session implements SessionInterface
     /**
      * Remove the value from attribute session bag.
      *
-     * @param string $name
+     * @param  string $name
      * @return mixed
      */
     public function remove(string $name) : mixed
@@ -254,9 +254,9 @@ class Session implements SessionInterface
      * session and deletes the old session from persistence.
      *
      * @param int|null $lifetime Sets the cookie lifetime for the session cookie. A null value
-     *                      will leave the system settings unchanged, 0 sets the cookie
-     *                      to expire with browser session. Time is in seconds, and is
-     *                      not a Unix timestamp.
+     *                           will leave the system settings unchanged, 0 sets the cookie
+     *                           to expire with browser session. Time is in seconds, and is
+     *                           not a Unix timestamp.
      *
      * @return bool True if session invalidated, false if error
      */
@@ -270,11 +270,11 @@ class Session implements SessionInterface
      * Migrates the current session to a new session id while maintaining all
      * session attributes.
      *
-     * @param bool $destroy  Whether to delete the old session or leave it to garbage collection
+     * @param bool     $destroy  Whether to delete the old session or leave it to garbage collection
      * @param int|null $lifetime Sets the cookie lifetime for the session cookie. A null value
-     *                       will leave the system settings unchanged, 0 sets the cookie
-     *                       to expire with browser session. Time is in seconds, and is
-     *                       not a Unix timestamp.
+     *                           will leave the system settings unchanged, 0 sets the cookie
+     *                           to expire with browser session. Time is in seconds, and is
+     *                           not a Unix timestamp.
      *
      * @return bool True if session migrated, false if error
      */
@@ -334,7 +334,7 @@ class Session implements SessionInterface
     /**
      * Get and Set the session ID.
      *
-     * @param string|null $id (default: null)
+     * @param  string|null $id (default: null)
      * @return string|self
      */
     public function id(string|null $id = null)
@@ -350,7 +350,7 @@ class Session implements SessionInterface
      * Peek the CSRF token value.
      * Note: without scope then token will be reusable, with scope then token will be one time token.
      *
-     * @param mixed ...$scopes
+     * @param  mixed       ...$scopes
      * @return string|null
      */
     public function token(...$scopes) : string|null
@@ -363,7 +363,7 @@ class Session implements SessionInterface
      * Generate the CSRF token value and set it to session.
      * Note: without scope then token will be reusable, with scope then token will be one time token.
      *
-     * @param mixed ...$scopes
+     * @param  mixed  ...$scopes
      * @return string of generated token
      */
     public function generateToken(...$scopes) : string
@@ -393,8 +393,8 @@ class Session implements SessionInterface
      * Verify the CSRF token value.
      * Note: without scope then token will be reusable, with scope then token will be one time token.
      *
-     * @param string|null $token
-     * @param mixed ...$scopes
+     * @param  string|null $token
+     * @param  mixed       ...$scopes
      * @return bool
      */
     public function verifyToken(string|null $token, ...$scopes) : bool
@@ -407,7 +407,7 @@ class Session implements SessionInterface
     /**
      * Create token key from given scope.
      *
-     * @param mixed ...$scopes
+     * @param  mixed          ...$scopes
      * @return string
      * @throws LogicException when token scope contains ':'.
      */
@@ -427,9 +427,9 @@ class Session implements SessionInterface
     /**
      * Analyze token scope from given key.
      *
-     * @param string $key
+     * @param  string             $key
      * @return array<int, string>
-     * @throws LogicException when invalid token key was given.
+     * @throws LogicException     when invalid token key was given.
      */
     public static function analyzeTokenScope(string $key) : array
     {
@@ -443,9 +443,9 @@ class Session implements SessionInterface
     /**
      * Save inherit-data for next request.
      *
-     * @param string $name
-     * @param mixed $data
-     * @param string|array<int, string> $wildcard of request path without route prefix (default: '*')
+     * @param  string                    $name
+     * @param  mixed                     $data
+     * @param  string|array<int, string> $wildcard of request path without route prefix (default: '*')
      * @return self
      */
     public function saveInheritData(string $name, $data, $wildcard = '*') : self
@@ -462,9 +462,9 @@ class Session implements SessionInterface
      * Load inherit-data of given request path if exists.
      * Note: This method remove all of inherit-data of given name.
      *
-     * @param string $name
-     * @param string $request_path without route prefix
-     * @param mixed $default (default: [])
+     * @param  string       $name
+     * @param  string       $request_path without route prefix
+     * @param  mixed        $default      (default: [])
      * @return array<mixed>
      */
     public function loadInheritData(string $name, string $request_path, $default = []) : array

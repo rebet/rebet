@@ -21,10 +21,10 @@ class JsonResponse extends SymfonyJsonResponse implements Response
     /**
      * Create Json Response
      *
-     * @param mixed $data (default: null)
-     * @param integer $status (default: 200)
-     * @param array<string, string|array<int, string>> $headers (default: [])
-     * @param integer $encoding_options (default: 0)
+     * @param mixed                                    $data             (default: null)
+     * @param integer                                  $status           (default: 200)
+     * @param array<string, string|array<int, string>> $headers          (default: [])
+     * @param integer                                  $encoding_options (default: 0)
      */
     public function __construct($data = null, int $status = 200, array $headers = [], int $encoding_options = 0)
     {

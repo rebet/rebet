@@ -32,8 +32,8 @@ class SelectiveProcessor implements Processor
     /**
      * Create Selective Callback Processor.
      *
-     * @param \Closure $selector that return appropriate callback closure: function(array $args) : \Closure
-     * @param boolean $type_convert
+     * @param \Closure $selector     that return appropriate callback closure: function(array $args) : \Closure
+     * @param boolean  $type_convert
      */
     public function __construct(\Closure $selector, bool $type_convert = true)
     {

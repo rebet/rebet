@@ -51,8 +51,8 @@ interface Filesystem
     /**
      * Create Filesystem using given adapter and config.
      *
-     * @param FilesystemAdapter $adapter
-     * @param array<string, mixed>|null $config (default: null)
+     * @param FilesystemAdapter         $adapter
+     * @param array<string, mixed>|null $config  (default: null)
      */
     public function __construct(FilesystemAdapter $adapter, $config = null);
 
@@ -73,7 +73,7 @@ interface Filesystem
     /**
      * Determine if a file exists.
      *
-     * @param string $path
+     * @param  string $path
      * @return bool
      */
     public function exists(string $path) : bool;
@@ -81,7 +81,7 @@ interface Filesystem
     /**
      * It checks the given path is file or not
      *
-     * @param string $path
+     * @param  string  $path
      * @return boolean
      */
     public function isFile(string $path) : bool;
@@ -89,7 +89,7 @@ interface Filesystem
     /**
      * It checks the given path is directory or not
      *
-     * @param string $path
+     * @param  string  $path
      * @return boolean
      */
     public function isDirectory(string $path) : bool;
@@ -97,7 +97,7 @@ interface Filesystem
     /**
      * Get the full path for the file at the given "short" path.
      *
-     * @param string $path (default: '/')
+     * @param  string $path (default: '/')
      * @return string
      */
     public function path(string $path = '/') : string;
@@ -105,7 +105,7 @@ interface Filesystem
     /**
      * Get the contents of a file.
      *
-     * @param string $path
+     * @param  string                $path
      * @return string
      * @throws FileNotFoundException
      */
@@ -120,11 +120,11 @@ interface Filesystem
      * If you can guess the extension (for exsample from mime type) then you can include ['.ext' => extension that was guessed] options for replacement of {.ext}.
      * Otherwise {.ext} will be empty string, but if `SplFileInfo` contents given then the {.ext} placeholder will be replaced by extension of contents.
      *
-     * @param string $path can be contains {.ext} placeholder.
-     * @param string|resource|\SplFileInfo|StreamInterface $contents string will be file contents
-     * @param string|array<string, mixed> $options (default: [])
-     * @return string of saved path
-     * @throws FilesystemException when can not save given contents
+     * @param  string                                       $path     can be contains {.ext} placeholder.
+     * @param  string|resource|\SplFileInfo|StreamInterface $contents string will be file contents
+     * @param  string|array<string, mixed>                  $options  (default: [])
+     * @return string                                       of saved path
+     * @throws FilesystemException                          when can not save given contents
      */
     public function put(string $path, $contents, $options = []) : string;
 
@@ -137,19 +137,19 @@ interface Filesystem
      * If you can guess the extension (for exsample from mime type) then you can include ['.ext' => extension that was guessed] options for replacement of {.ext}.
      * Otherwise {.ext} will be empty string, but if `SplFileInfo` contents given then the {.ext} placeholder will be replaced by extension of contents.
      *
-     * @param string $path can be contains {.ext} placeholder.
-     * @param string|resource|\SplFileInfo|StreamInterface $file string will be file path
-     * @param string|array<string, mixed> $options (default: [])
-     * @return string of saved path
-     * @throws FilesystemException when can not save given file
+     * @param  string                                       $path    can be contains {.ext} placeholder.
+     * @param  string|resource|\SplFileInfo|StreamInterface $file    string will be file path
+     * @param  string|array<string, mixed>                  $options (default: [])
+     * @return string                                       of saved path
+     * @throws FilesystemException                          when can not save given file
      */
     public function putFile(string $path, $file, $options = []) : string;
 
     /**
      * Get the visibility for the given path.
      *
-     * @param string $path
-     * @return string The visibility Filesystem::VISIBILITY_* (public|private)
+     * @param  string              $path
+     * @return string              The visibility Filesystem::VISIBILITY_* (public|private)
      * @throws FilesystemException when can not get visibility
      */
     public function getVisibility(string $path) : string;
@@ -157,20 +157,20 @@ interface Filesystem
     /**
      * Set the visibility for the given path.
      *
-     * @param string $path
-     * @param string $visibility word of (public|private) Filesystem::VISIBILITY_*
+     * @param  string                $path
+     * @param  string                $visibility word of (public|private) Filesystem::VISIBILITY_*
      * @return self
      * @throws FileNotFoundException
-     * @throws FilesystemException when can not set visibility
+     * @throws FilesystemException   when can not set visibility
      */
     public function setVisibility(string $path, string $visibility) : self;
 
     /**
      * Prepend data to a file.
      *
-     * @param string $path
-     * @param string $data
-     * @param string $separator (default: "\n")
+     * @param  string $path
+     * @param  string $data
+     * @param  string $separator (default: "\n")
      * @return self
      */
     public function prepend(string $path, string $data, string $separator = "\n") : self;
@@ -178,9 +178,9 @@ interface Filesystem
     /**
      * Append data to a file.
      *
-     * @param string $path
-     * @param string $data
-     * @param string $separator (default: "\n")
+     * @param  string $path
+     * @param  string $data
+     * @param  string $separator (default: "\n")
      * @return self
      */
     public function append(string $path, string $data, string $separator = "\n") : self;
@@ -188,7 +188,7 @@ interface Filesystem
     /**
      * Delete the file and directory at a given path.
      *
-     * @param string ...$paths
+     * @param  string              ...$paths
      * @return self
      * @throws FilesystemException when data can not delete
      */
@@ -197,7 +197,7 @@ interface Filesystem
     /**
      * Delete all of the files and directories in the given path.
      *
-     * @param string $directory (default: '/')
+     * @param  string              $directory (default: '/')
      * @return self
      * @throws FilesystemException when data can not delete
      */
@@ -206,51 +206,51 @@ interface Filesystem
     /**
      * Copy a file/directory to a new location.
      *
-     * @param string $from
-     * @param string $to
-     * @param bool $replace or not when `to` path already exists (default: false)
+     * @param  string                $from
+     * @param  string                $to
+     * @param  bool                  $replace or not when `to` path already exists (default: false)
      * @return self
      * @throws FileNotFoundException
-     * @throws FilesystemException when can not copy
+     * @throws FilesystemException   when can not copy
      */
     public function copy(string $from, string $to, bool $replace = false) : self;
 
     /**
      * Move/Rename a file/directory to a new location.
      *
-     * @param string $from
-     * @param string $to
-     * @param bool $replace or not when `to` path already exists (default: false)
+     * @param  string                $from
+     * @param  string                $to
+     * @param  bool                  $replace or not when `to` path already exists (default: false)
      * @return self
      * @throws FileNotFoundException
-     * @throws FilesystemException when can not move
+     * @throws FilesystemException   when can not move
      */
     public function move(string $from, string $to, bool $replace = false) : self;
 
     /**
      * Get the file size of a given file.
      *
-     * @param string $path
+     * @param  string                $path
      * @return integer
      * @throws FileNotFoundException
-     * @throws FilesystemException when can not get size
+     * @throws FilesystemException   when can not get size
      */
     public function size(string $path) : int ;
 
     /**
      * Get a file's metadata.
      *
-     * @param string $path
+     * @param  string                                                            $path
      * @return array{type: string, path: string, size: int|null, timestamp: int}
      * @throws FileNotFoundException
-     * @throws FilesystemException when can not get metadata
+     * @throws FilesystemException                                               when can not get metadata
      */
     public function metadata(string $path) : array;
 
     /**
      * Get the mime-type of a given file.
      *
-     * @param string $path
+     * @param  string                $path
      * @return string|null
      * @throws FileNotFoundException
      */
@@ -259,27 +259,27 @@ interface Filesystem
     /**
      * Get the file's last modification time.
      *
-     * @param string $path
+     * @param  string                $path
      * @return DateTime
      * @throws FileNotFoundException
-     * @throws FilesystemException when can not get last modified
+     * @throws FilesystemException   when can not get last modified
      */
     public function lastModified(string $path) : DateTime;
 
     /**
      * Get the URL for the file at the given path.
      *
-     * @param string $path
+     * @param  string                $path
      * @return string|null
      * @throws FileNotFoundException when file not found or the file is not public.
-     * @throws FilesystemException when the adapter does not support retrieving URLs.
+     * @throws FilesystemException   when the adapter does not support retrieving URLs.
      */
     public function url(string $path) : string|null;
 
     /**
      * Retrieves a read-stream for a path.
      *
-     * @param string $path
+     * @param  string                $path
      * @return resource|null
      * @throws FileNotFoundException
      */
@@ -288,11 +288,11 @@ interface Filesystem
     /**
      * Get an array of contents in a directory.
      *
-     * @param string|null $directory
-     * @param string|string[] $pattern (default: '*' that all matching pattern for 'wildcard' matching mode)
-     * @param string|null $type 'file' or 'dir' (default: null for all type)
-     * @param boolean $recursive (defalt: false)
-     * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
+     * @param  string|null        $directory
+     * @param  string|string[]    $pattern       (default: '*' that all matching pattern for 'wildcard' matching mode)
+     * @param  string|null        $type          'file' or 'dir' (default: null for all type)
+     * @param  boolean            $recursive     (defalt: false)
+     * @param  string             $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string> of matching file paths
      */
     public function ls(string|null $directory = null, $pattern = '*', string|null $type = null, bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
@@ -300,10 +300,10 @@ interface Filesystem
     /**
      * Get an array of files in a directory.
      *
-     * @param string|null $directory
-     * @param string|string[] $pattern (default: '*' that all matching pattern for 'wildcard' matching mode)
-     * @param boolean $recursive (defalt: false)
-     * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
+     * @param  string|null        $directory
+     * @param  string|string[]    $pattern       (default: '*' that all matching pattern for 'wildcard' matching mode)
+     * @param  boolean            $recursive     (defalt: false)
+     * @param  string             $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string> of matching file paths
      */
     public function files(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
@@ -311,10 +311,10 @@ interface Filesystem
     /**
      * Get an array of directories in a directory.
      *
-     * @param string|null $directory
-     * @param string|string[] $pattern (default: '*' that all matching pattern for 'wildcard' matching mode)
-     * @param boolean $recursive (defalt: false)
-     * @param string $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
+     * @param  string|null        $directory
+     * @param  string|string[]    $pattern       (default: '*' that all matching pattern for 'wildcard' matching mode)
+     * @param  boolean            $recursive     (defalt: false)
+     * @param  string             $matching_mode Filesystem::MATCHING_MODE_* 'wildcard' or 'regex' (default: Filesystem::MATCHING_MODE_WILDCARD)
      * @return array<int, string> of matching file paths
      */
     public function directories(string|null $directory = null, $pattern = '*', bool $recursive = false, string $matching_mode = Filesystem::MATCHING_MODE_WILDCARD) : array;
@@ -322,8 +322,8 @@ interface Filesystem
     /**
      * Create a directory
      *
-     * @param string $path
-     * @param array<string, mixed> $config (default: [])
+     * @param  string               $path
+     * @param  array<string, mixed> $config (default: [])
      * @return self
      */
     public function mkdir(string $path, array $config = []) : self;

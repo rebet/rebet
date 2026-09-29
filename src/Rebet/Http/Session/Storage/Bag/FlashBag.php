@@ -40,7 +40,7 @@ class FlashBag implements SessionBagInterface
     /**
      * Create a session attribute bag.
      *
-     * @param string $name
+     * @param string      $name
      * @param string|null $storage_key (default: null for "_rebet_{$name}")
      */
     public function __construct(string $name, string|null $storage_key = null)
@@ -88,7 +88,7 @@ class FlashBag implements SessionBagInterface
     /**
      * It checks exists the key/property of given name.
      *
-     * @param string $name You can use dot notation.
+     * @param  string  $name You can use dot notation.
      * @return boolean
      */
     public function has(string $name) : bool
@@ -99,8 +99,8 @@ class FlashBag implements SessionBagInterface
     /**
      * Peek the value of given name.
      *
-     * @param string $name You can use dot notation.
-     * @param mixed $default (default: null)
+     * @param  string $name    You can use dot notation.
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     public function peek(string $name, $default = null)
@@ -111,8 +111,8 @@ class FlashBag implements SessionBagInterface
     /**
      * Get the value of given name.
      *
-     * @param string $name You can use dot notation.
-     * @param mixed $default (default: null)
+     * @param  string $name    You can use dot notation.
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     public function get(string $name, $default = null)
@@ -123,8 +123,8 @@ class FlashBag implements SessionBagInterface
     /**
      * Set the value to given name.
      *
-     * @param string $name You can use dot notation.
-     * @param mixed $value
+     * @param  string $name  You can use dot notation.
+     * @param  mixed  $value
      * @return void
      */
     public function set(string $name, $value) : void
@@ -155,8 +155,8 @@ class FlashBag implements SessionBagInterface
     /**
      * Remove the key/property of given name.
      *
-     * @param string $name You can use dot notation.
-     * @return mixed removed value
+     * @param  string $name You can use dot notation.
+     * @return mixed  removed value
      */
     public function remove($name)
     {

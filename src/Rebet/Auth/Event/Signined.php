@@ -40,9 +40,9 @@ class Signined implements Authentication
     /**
      * Create an event
      *
-     * @param Request $request
+     * @param Request  $request
      * @param AuthUser $user
-     * @param boolean $remember
+     * @param boolean  $remember
      */
     public function __construct(Request $request, AuthUser $user, bool $remember)
     {

@@ -31,9 +31,9 @@ class Strings
      * Strings::lbtrim('1.2.3', '.');        //=> '2.3'
      * Strings::lbtrim('1.2.3', '.', false); //=> '.2.3'
      *
-     * @param string|null $str
-     * @param string $delimiter
-     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @param  string|null $str
+     * @param  string      $delimiter
+     * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
     public static function lbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
@@ -55,9 +55,9 @@ class Strings
      * Strings::latrim('1.2.3', '.');        //=> '1'
      * Strings::latrim('1.2.3', '.', false); //=> '1.'
      *
-     * @param string|null $str
-     * @param string $delimiter
-     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @param  string|null $str
+     * @param  string      $delimiter
+     * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
     public static function latrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
@@ -79,9 +79,9 @@ class Strings
      * Strings::rbtrim('1.2.3', '.');        //=> '3'
      * Strings::rbtrim('1.2.3', '.', false); //=> '.3'
      *
-     * @param string|null $str
-     * @param string $delimiter
-     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @param  string|null $str
+     * @param  string      $delimiter
+     * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
     public static function rbtrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
@@ -103,9 +103,9 @@ class Strings
      * Strings::ratrim('1.2.3', '.');        //=> '1.2'
      * Strings::ratrim('1.2.3', '.', false); //=> '1.2.'
      *
-     * @param string|null $str
-     * @param string $delimiter
-     * @param bool $remove_delimiter when true then remove delimiter (default: true)
+     * @param  string|null $str
+     * @param  string      $delimiter
+     * @param  bool        $remove_delimiter when true then remove delimiter (default: true)
      * @return string|null
      */
     public static function ratrim(string|null $str, string $delimiter, bool $remove_delimiter = true) : string|null
@@ -130,9 +130,9 @@ class Strings
      * Strings::ltrim('　　　全角　　　', '　');    //=> '全角　　　'
      * Strings::ltrim('　　　全角　　　', '　', 2); //=> '　全角　　　'
      *
-     * @param string|null $str
-     * @param string $prefix (default: ' ')
-     * @param int|null $max (default: null)
+     * @param  string|null $str
+     * @param  string      $prefix (default: ' ')
+     * @param  int|null    $max    (default: null)
      * @return string|null
      */
     public static function ltrim(string|null $str, string $prefix = ' ', int|null $max = null) : string|null
@@ -151,9 +151,9 @@ class Strings
      * Strings::rtrim('　　　全角　　　', '　');    //=> '　　　全角'
      * Strings::rtrim('　　　全角　　　', '　', 2); //=> '　　　全角　'
      *
-     * @param string|null $str
-     * @param string $suffix (default: ' ')
-     * @param int|null $max (default: null)
+     * @param  string|null $str
+     * @param  string      $suffix (default: ' ')
+     * @param  int|null    $max    (default: null)
      * @return string|null
      */
     public static function rtrim(string|null $str, string $suffix = ' ', int|null $max = null) : string|null
@@ -172,9 +172,9 @@ class Strings
      * Strings::rtrim('　　　全角　　　', '　');    //=> '全角'
      * Strings::rtrim('　　　全角　　　', '　', 2); //=> '　全角　'
      *
-     * @param string|null $str
-     * @param string $deletion (default: ' ')
-     * @param int|null $max (default: null)
+     * @param  string|null $str
+     * @param  string      $deletion (default: ' ')
+     * @param  int|null    $max      (default: null)
      * @return string|null
      */
     public static function trim(string|null $str, string $deletion = ' ', int|null $max = null) : string|null
@@ -185,7 +185,7 @@ class Strings
     /**
      * Trim the space letters including multi byte space letters from given string.
      *
-     * @param string|null $str
+     * @param  string|null $str
      * @return string|null
      */
     public static function mbtrim(string|null $str) : string|null
@@ -199,8 +199,8 @@ class Strings
      * ex)
      * Strings::startsWith('abc123', 'abc'); //=> true
      *
-     * @param string|null $haystack
-     * @param string $needle
+     * @param  string|null $haystack
+     * @param  string      $needle
      * @return bool
      */
     public static function startsWith(string|null $haystack, string $needle) : bool
@@ -215,8 +215,8 @@ class Strings
      * ex)
      * Strings::endsWith('abc123', '123'); //=> true
      *
-     * @param string|null $haystack
-     * @param string $needle
+     * @param  string|null $haystack
+     * @param  string      $needle
      * @return bool
      */
     public static function endsWith(string|null $haystack, string $needle) : bool
@@ -233,8 +233,8 @@ class Strings
      * Strings::checkDependenceChar('あ①♬㈱♥', 'iso-2022-jp'); //=> [1 => '①', 2 => '♬', 3 => '㈱', 4 => '♥']
      * Strings::checkDependenceChar('あ①♬㈱♥', 'UTF-8');       //=> []
      *
-     * @param string|null $text
-     * @param string $encode (default: 'sjis-win')
+     * @param  string|null        $text
+     * @param  string             $encode (default: 'sjis-win')
      * @return array<int, string> of dependence chars
      */
     public static function checkDependenceChar(string|null $text, string $encode = 'sjis-win') : array
@@ -257,7 +257,7 @@ class Strings
      * ex)
      * Strings::toCharArray('abc'); //=> ['a', 'b', 'c']
      *
-     * @param string|null $string
+     * @param  string|null        $string
      * @return array<int, string>
      */
     public static function toCharArray(string|null $string) : array
@@ -273,8 +273,8 @@ class Strings
      * Note: Indented even when the target character string is empty.
      *
      * @param string|null $string
-     * @param string $char for indent (default: '\t')
-     * @param int $depth (default: 1)
+     * @param string      $char   for indent (default: '\t')
+     * @param int         $depth  (default: 1)
      */
     public static function indent(string|null $string, string $char = "\t", int $depth = 1) : string|null
     {
@@ -289,9 +289,9 @@ class Strings
     /**
      * It checks whether the string contains all (or at least N) the given search strings.
      *
-     * @param string|null $string
-     * @param string|string[] $searches
-     * @param int $at_least (default: null)
+     * @param  string|null     $string
+     * @param  string|string[] $searches
+     * @param  int             $at_least (default: null)
      * @return bool
      */
     public static function contains(string|null $string, $searches, int|null $at_least = null) : bool
@@ -319,8 +319,8 @@ class Strings
     /**
      * It checks whether the specified character string is included in the target character string.
      *
-     * @param string|null $string
-     * @param string $search
+     * @param  string|null $string
+     * @param  string      $search
      * @return bool
      */
     protected static function _contains(string|null $string, string $search) : bool
@@ -331,9 +331,9 @@ class Strings
     /**
      * Delete N characters from the left.
      *
-     * @param string|null $string
-     * @param integer $length
-     * @param string $encoding (default: 'UTF-8')
+     * @param  string|null $string
+     * @param  integer     $length
+     * @param  string      $encoding (default: 'UTF-8')
      * @return string|null
      */
     public static function lcut(string|null $string, int $length, string $encoding = 'UTF-8') : string|null
@@ -353,9 +353,9 @@ class Strings
     /**
      * Delete N characters from the right.
      *
-     * @param string|null $string
-     * @param integer $length
-     * @param string $encoding (default: 'UTF-8')
+     * @param  string|null $string
+     * @param  integer     $length
+     * @param  string      $encoding (default: 'UTF-8')
      * @return string|null
      */
     public static function rcut(string|null $string, int $length, string $encoding = 'UTF-8') : string|null
@@ -375,9 +375,9 @@ class Strings
     /**
      * Clip the string and append to ellipsis that become a given length.
      *
-     * @param string|null $string
-     * @param integer $length
-     * @param string $ellipsis (default: '...')
+     * @param  string|null $string
+     * @param  integer     $length
+     * @param  string      $ellipsis (default: '...')
      * @return string|null
      */
     public static function clip(string|null $string, int $length, string $ellipsis = '...') : string|null
@@ -398,8 +398,8 @@ class Strings
     /**
      * It checks the given string will match regex patterns at least one.
      *
-     * @param string|null $string
-     * @param string|string[] $patterns
+     * @param  string|null     $string
+     * @param  string|string[] $patterns
      * @return boolean
      */
     public static function match(string|null $string, $patterns) : bool
@@ -419,8 +419,8 @@ class Strings
     /**
      * It checks the given string will match shell's wildcard patterns at least one.
      *
-     * @param string|null $string
-     * @param string|string[] $patterns
+     * @param  string|null     $string
+     * @param  string|string[] $patterns
      * @return boolean
      */
     public static function wildmatch(string|null $string, $patterns) : bool
@@ -440,9 +440,9 @@ class Strings
     /**
      * Convert value to string.
      *
-     * @param mixed $value
-     * @param array<int, string> $masks the property name list that you want to mask. (default: [])
-     * @param string $masked_label (default: '********')
+     * @param  mixed              $value
+     * @param  array<int, string> $masks        the property name list that you want to mask. (default: [])
+     * @param  string             $masked_label (default: '********')
      * @return string
      */
     public static function stringify($value, array $masks = [], string $masked_label = '********') : string
@@ -453,10 +453,10 @@ class Strings
     /**
      * Convert value to string.
      *
-     * @param mixed $value
-     * @param bool $is_nested
-     * @param array<int, string> $masks the property name list that you want to mask. (default: [])
-     * @param string $masked_label (default: '********')
+     * @param  mixed              $value
+     * @param  bool               $is_nested
+     * @param  array<int, string> $masks        the property name list that you want to mask. (default: [])
+     * @param  string             $masked_label (default: '********')
      * @return string
      */
     protected static function _stringify($value, bool $is_nested, array $masks = [], string $masked_label = '********') : string
@@ -514,7 +514,7 @@ class Strings
     /**
      * Convert debug_backtrace to string.
      *
-     * @param array<int, array<string, mixed>> $trace
+     * @param  array<int, array<string, mixed>> $trace
      * @return string
      */
     public static function traceToString(array $trace) : string
@@ -536,10 +536,10 @@ class Strings
      * Split the string by given delimiter and pad the result array.
      * This behavior may be useful for assigning split results to variables using list() or [].
      *
-     * @param string|null $string
-     * @param string $delimiter
-     * @param integer $size
-     * @param mixed $padding (default: null)
+     * @param  string|null       $string
+     * @param  string            $delimiter
+     * @param  integer           $size
+     * @param  mixed             $padding   (default: null)
      * @return array<int, mixed>
      */
     public static function split(string|null $string, string $delimiter, int $size, $padding = null) : array
@@ -550,8 +550,8 @@ class Strings
     /**
      * Convert string to resource using 'php://temp/maxmemory:{$max_memory_size}'
      *
-     * @param string $data
-     * @param int $max_memory_size (default: 2M = 2 * 1024 * 1024)
+     * @param  string   $data
+     * @param  int      $max_memory_size (default: 2M = 2 * 1024 * 1024)
      * @return resource
      */
     public static function toResource(string $data, int $max_memory_size = 2 * 1024 * 1024)

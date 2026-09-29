@@ -234,7 +234,7 @@ class BladeTagCustomizer
     /**
      * Disable laravel directives what not use in Rebet.
      *
-     * @param BladeCompiler $compiler
+     * @param  BladeCompiler $compiler
      * @return void
      */
     protected static function disable(BladeCompiler $compiler) : void

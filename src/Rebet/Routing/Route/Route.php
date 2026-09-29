@@ -73,8 +73,8 @@ abstract class Route implements \Stringable
     /**
      * Configure regex check of routing parameters.
      *
-     * @param array<string, string>|string $name or [$name => $regex, ...]
-     * @param string|null $regex
+     * @param  array<string, string>|string $name  or [$name => $regex, ...]
+     * @param  string|null                  $regex
      * @return self
      */
     public function where($name, string|null $regex = null) : self
@@ -93,7 +93,7 @@ abstract class Route implements \Stringable
      * If false is returned as a match result, subsequent route verification is performed.
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return bool
      * @throws RouteNotFoundException
      */
@@ -116,7 +116,7 @@ abstract class Route implements \Stringable
      * If null is returned as an analysis result, subsequent route verification is performed.
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
-     * @param Request $request
+     * @param  Request                    $request
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
@@ -128,7 +128,7 @@ abstract class Route implements \Stringable
      *
      * If routing is not performed by additional verification, please throw RouteNotFoundException.
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return RouteAction
      * @throws RouteNotFoundException
      */
@@ -145,7 +145,7 @@ abstract class Route implements \Stringable
      * Perform routing processing.
      * This method is executed as the destination of the route middleware pipeline.
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return Response
      * @throws RouteNotFoundException
      */
@@ -157,8 +157,8 @@ abstract class Route implements \Stringable
     /**
      * Terminate the route.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @return void
      */
     abstract public function terminate(Request $request, Response $response) : void ;
@@ -166,7 +166,7 @@ abstract class Route implements \Stringable
     /**
      * Allow the Pipeline to process the route object.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return Response
      */
     public function __invoke(Request $request)
@@ -187,7 +187,7 @@ abstract class Route implements \Stringable
     /**
      * Gets the attribute associated with this route.
      *
-     * @param string $attribute
+     * @param  string $attribute
      * @return mixed
      */
     public function attribute(string $attribute)
@@ -198,7 +198,7 @@ abstract class Route implements \Stringable
     /**
      *  Get or set the middlewares attached to the route.
      *
-     * @param mixed ...$middlewares
+     * @param  mixed                   ...$middlewares
      * @return self|array<int, string>
      */
     public function middlewares(...$middlewares)
@@ -213,7 +213,7 @@ abstract class Route implements \Stringable
     /**
      * Get or set the roles attached to the route.
      *
-     * @param string|array<int, string>|null $roles
+     * @param  string|array<int, string>|null $roles
      * @return self|array<int, string>
      */
     public function roles($roles = null)
@@ -229,7 +229,7 @@ abstract class Route implements \Stringable
     /**
      *  Get or set the guard name attached to the route.
      *
-     * @param string|null $name
+     * @param  string|null      $name
      * @return self|string|null
      */
     public function guard(string|null $name = null)

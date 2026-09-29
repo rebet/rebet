@@ -91,7 +91,7 @@ class App
      * Initialize App and set configure.
      *
      * @template T of Kernel
-     * @param T $kernel
+     * @param  T $kernel
      * @return T
      */
     public static function init(Kernel $kernel) : Kernel
@@ -114,7 +114,7 @@ class App
     /**
      * Convert application root relative path to absolute path.
      *
-     * @param $root_relative_path
+     * @param         $root_relative_path
      * @return string
      */
     public static function path(string $root_relative_path) : string
@@ -145,7 +145,7 @@ class App
     /**
      * Set the current locale (and fallback locale) by given locale.
      *
-     * @param string $locale
+     * @param string      $locale
      * @param string|null $fallback_locale if null given then do nothing (default: null)
      */
     public static function setLocale(string $locale, string|null $fallback_locale = null) : void
@@ -236,7 +236,7 @@ class App
      *  3. env
      *  4. default
      *
-     * @param array<string, mixed> $case
+     * @param  array<string, mixed> $case
      * @return ConfigPromise
      */
     public static function when(array $case) : ConfigPromise

@@ -62,8 +62,8 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
     /**
      * Apply tests to all or given defined databases.
      *
-     * @param \Closure $test function(Database $db, string $driver) { ... }
-     * @param string ...$dbs that are test targets
+     * @param  \Closure $test   function(Database $db, string $driver) { ... }
+     * @param  string   ...$dbs that are test targets
      * @return void
      */
     public static function eachDb(\Closure $test, string ...$dbs) : void
@@ -89,8 +89,8 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      *    'table_name_2' => null,    // define value as null or [] if you want to just truncate table ($with_truncate = true)
      * ]
      *
-     * @param array $data for insert into tables
-     * @param bool $with_truncate (default: true)
+     * @param  array $data          for insert into tables
+     * @param  bool  $with_truncate (default: true)
      * @return void
      */
     public static function setUpDataSet(array $data, bool $with_truncate = true) : void
@@ -122,7 +122,7 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
     /**
      * Dump all executed queries.
      *
-     * @param bool $emulate SQL or not (default: true)
+     * @param  bool $emulate SQL or not (default: true)
      * @return void
      */
     public static function dumpExecutedQueries(bool $emulate = true) : void
@@ -187,11 +187,11 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      * This assertion checks emulated SQL but it will trim mark comment of '/⋆ Emulated SQL ⋆/ '.
      * So you can JUST check SQL like "SELECT * FROM table_name WHERE col = 'value'".
      *
-     * @param Database $db
-     * @param string $expect SQL for general drivers
-     * @param array $depended_expects some drivers generate different SQL, you can define each expect SQL like ['driver_name' => 'Database dependent SQL']
-     * @param array $wildcards (default: ['*' => '@'])
-     * @param string $message (default: '')
+     * @param  Database $db
+     * @param  string   $expect           SQL for general drivers
+     * @param  array    $depended_expects some drivers generate different SQL, you can define each expect SQL like ['driver_name' => 'Database dependent SQL']
+     * @param  array    $wildcards        (default: ['*' => '@'])
+     * @param  string   $message          (default: '')
      * @return void
      */
     public static function assertExecutedQueryWildcard(Database $db, string $expect, array $depended_expects = [], array $wildcards = ['*' => '@'], string $message = '') : void
@@ -220,10 +220,10 @@ trait DatabaseTestHelper // @phpstan-ignore trait.unused
      *
      * NOTE: Expect data MUST be included primary keys.
      *
-     * @param Database $db
-     * @param array $expects data (MUST be included primary keys)
-     * @param bool $strict if true then check rows count are same. (default: true)
-     * @param string $message (default: '')
+     * @param  Database $db
+     * @param  array    $expects data (MUST be included primary keys)
+     * @param  bool     $strict  if true then check rows count are same. (default: true)
+     * @param  string   $message (default: '')
      * @return void
      */
     public static function assertDatabaseMatches(Database $db, array $expects, bool $strict = true, string $message = '') : void

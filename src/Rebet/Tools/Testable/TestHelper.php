@@ -35,7 +35,7 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Set up working directory for testing and change current directory to there.
      *
-     * @param string $base_working_dir for testing
+     * @param  string $base_working_dir for testing
      * @return string new current directory absolute path
      */
     public static function setUpWorkingDir(string $base_working_dir) : string
@@ -53,8 +53,8 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Make sub working directory under the current test working directory.
      * NOTE: This method does not change current working directory.
      *
-     * @param string $sub_dir name
-     * @param bool $clean sub directory if already exists. (default: true)
+     * @param  string $sub_dir name
+     * @param  bool   $clean   sub directory if already exists. (default: true)
      * @return string sub directory absolute path
      */
     public static function makeSubWorkingDir(string $sub_dir, bool $clean = true) : string
@@ -73,7 +73,7 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Remove sub working directory under the current test working directory.
      *
-     * @param string $sub_dir
+     * @param  string $sub_dir
      * @return void
      */
     public static function removeSubWorkingDir(string $sub_dir) : void
@@ -99,8 +99,8 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Inspect property value of array/object/class-statics using "dot" notation.
      * This method can be accessed non-public property.
      *
-     * @param object|string $target
-     * @param string $name
+     * @param  object|string $target
+     * @param  string        $name
      * @return mixed
      */
     public function inspect($target, string $name)
@@ -114,8 +114,8 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Please be aware that if you set a value with this method,
      * the DotAccessDelegator structure of the target object data will be lost.
      *
-     * @param mixed $target
-     * @param array $values [key => value, ...], the key can use dot notation.
+     * @param  mixed $target
+     * @param  array $values [key => value, ...], the key can use dot notation.
      * @return mixed given $target object that injected values
      */
     public static function inject($target, array $values)
@@ -130,10 +130,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Invoke a method of given object/class
      * This method can be accessed non-public method.
      *
-     * @param string|object $object
-     * @param string $method
-     * @param array $args that ordered or named (default: [])
-     * @param boolean $type_convert (default: false)
+     * @param  string|object $object
+     * @param  string        $method
+     * @param  array         $args         that ordered or named (default: [])
+     * @param  boolean       $type_convert (default: false)
      * @return mixed
      */
     public static function invoke($object, string $method, array $args = [], bool $type_convert = false)
@@ -154,7 +154,7 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Get current and peak memory usage information.
      *
-     * @param string $format of sprintf(), 1st args for current memory, 2nd for peak memory. (default: "\nMemory(current/peak): %01.2f / %01.2f MB ")
+     * @param  string $format of sprintf(), 1st args for current memory, 2nd for peak memory. (default: "\nMemory(current/peak): %01.2f / %01.2f MB ")
      * @return string
      */
     public static function memory(string $format = "\nMemory(current/peak): %01.2f / %01.2f MB ") : string
@@ -223,9 +223,9 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Asserts that two string variables are equal.
      *
-     * @param string $expect
-     * @param string $actual
-     * @param string $message (default: '')
+     * @param  string $expect
+     * @param  string $actual
+     * @param  string $message (default: '')
      * @return void
      */
     public static function assertStringEquals(string $expect, string $actual, string $message = '') : void
@@ -237,9 +237,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that two string variables are not equal.
      * If more than one expected value is given, it states that it is not equals any of them.
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStringNotEqualsAny($expects, string $actual, string $message = '') : void
@@ -253,9 +253,9 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Asserts that each two string variables are equal.
      *
-     * @param string[] $expects
-     * @param string[] $actuals
-     * @param string $message (default: '')
+     * @param  string[] $expects
+     * @param  string[] $actuals
+     * @param  string   $message (default: '')
      * @return void
      */
     public static function assertStringEqualsEach(array $expects, array $actuals, string $message = '') : void
@@ -270,9 +270,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that an actual string contains expects.
      * If more than one expected value is given, it states that it is contains all of them.
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStringContainsAll($expects, string $actual, string $message = '') : void
@@ -287,9 +287,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that an actual string does not contains expects.
      * If more than one expected value is given, it states that it is not contains any of them.
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStringNotContainsAny($expects, string $actual, string $message = '') : void
@@ -304,9 +304,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that an each actual string contains each expects.
      * If more than one expected value is given, it states that it is contains all of them.
      *
-     * @param string[]|string[][] $expects
-     * @param string[] $actuals
-     * @param string $message (default: '')
+     * @param  string[]|string[][] $expects
+     * @param  string[]            $actuals
+     * @param  string              $message (default: '')
      * @return void
      */
     public static function assertStringContainsEach(array $expects, array $actuals, string $message = '') : void
@@ -321,9 +321,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that an actual string matches expected regular expressions.
      * If more than one expected value is given, it states that it matches all of them.
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStringRegExpAll($expects, string $actual, string $message = '') : void
@@ -338,9 +338,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that an actual string does not match expected regular expressions.
      * If more than one expected value is given, it states that it is not contains any of them.
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStringNotRegExpAny($expects, string $actual, string $message = '') : void
@@ -355,9 +355,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that an each actual string matches each expected regular expressions.
      * If more than one expected value is given, it states that it matches all of them.
      *
-     * @param string[]|string[][] $expects
-     * @param string[] $actuals
-     * @param string $message (default: '')
+     * @param  string[]|string[][] $expects
+     * @param  string[]            $actuals
+     * @param  string              $message (default: '')
      * @return void
      */
     public static function assertStringRegExpEach(array $expects, array $actuals, string $message = '') : void
@@ -373,10 +373,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string[]        $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string          $message   (default: '')
      * @return void
      */
     public static function assertStringWildcardAll($expects, string $actual, array $wildcards = [], string $message = '') : void
@@ -400,10 +400,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
      *
-     * @param string|string[] $expects
-     * @param string $actual
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  string          $actual
+     * @param  string[]        $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string          $message   (default: '')
      * @return void
      */
     public static function assertStringNotWildcardAny($expects, string $actual, array $wildcards = [], string $message = '') : void
@@ -427,10 +427,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
      *
-     * @param string[]|string[][] $expects
-     * @param string[] $actuals
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string[]|string[][] $expects
+     * @param  string[]            $actuals
+     * @param  string[]            $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string              $message   (default: '')
      * @return void
      */
     public static function assertStringWildcardEach(array $expects, array $actuals, array $wildcards = [], string $message = '') : void
@@ -444,9 +444,9 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Asserts that STDERR output via evaluated test are equal expect.
      *
-     * @param string $expect
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string   $expect
+     * @param  \Closure $test
+     * @param  string   $message (default: '')
      * @return void
      */
     public static function assertStderrEquals(string $expect, \Closure $test, string $message = '') : void
@@ -458,9 +458,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDERR output via evaluated test are not equal expect.
      * If more than one expected value is given, it states that it is not equals any of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStderrNotEqualsAny($expects, \Closure $test, string $message = '') : void
@@ -472,9 +472,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDERR output via evaluated test contains expects.
      * If more than one expected value is given, it states that it is contains all of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStderrContainsAll($expects, \Closure $test, string $message = '') : void
@@ -486,9 +486,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDERR output via evaluated test does not contains expects.
      * If more than one expected value is given, it states that it is not contains any of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStderrNotContainsAny($expects, \Closure $test, string $message = '') : void
@@ -500,9 +500,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDERR output via evaluated test matches expected regular expressions.
      * If more than one expected value is given, it states that it matches all of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStderrRegExpAll($expects, \Closure $test, string $message = '') : void
@@ -514,9 +514,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDERR output via evaluated test does not match expected regular expressions.
      * If more than one expected value is given, it states that it is not contains any of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStderrNotRegExpAny($expects, \Closure $test, string $message = '') : void
@@ -529,10 +529,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string[]        $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string          $message   (default: '')
      * @return void
      */
     public static function assertStderrWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = '') : void
@@ -545,10 +545,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it is not contains any of them.
      * @see fnmatch()
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string[]        $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string          $message   (default: '')
      * @return void
      */
     public static function assertStderrNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = '') : void
@@ -559,9 +559,9 @@ trait TestHelper // @phpstan-ignore trait.unused
     /**
      * Asserts that STDOUT output via evaluated test are equal expect.
      *
-     * @param string $expect
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string   $expect
+     * @param  \Closure $test
+     * @param  string   $message (default: '')
      * @return void
      */
     public static function assertStdoutEquals(string $expect, \Closure $test, string $message = '') : void
@@ -573,9 +573,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDOUT output via evaluated test are not equal expect.
      * If more than one expected value is given, it states that it is not equals any of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStdoutNotEqualsAny($expects, \Closure $test, string $message = '') : void
@@ -587,9 +587,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDOUT output via evaluated test contains expects.
      * If more than one expected value is given, it states that it is contains all of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStdoutContainsAll($expects, \Closure $test, string $message = '') : void
@@ -601,9 +601,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDOUT output via evaluated test does not contains expects.
      * If more than one expected value is given, it states that it is not contains any of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStdoutNotContainsAny($expects, \Closure $test, string $message = '') : void
@@ -615,9 +615,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDOUT output via evaluated test matches expected regular expressions.
      * If more than one expected value is given, it states that it matches all of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStdoutRegExpAll($expects, \Closure $test, string $message = '') : void
@@ -629,9 +629,9 @@ trait TestHelper // @phpstan-ignore trait.unused
      * Asserts that STDOUT output via evaluated test does not match expected regular expressions.
      * If more than one expected value is given, it states that it is not contains any of them.
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string          $message (default: '')
      * @return void
      */
     public static function assertStdoutNotRegExpAny($expects, \Closure $test, string $message = '') : void
@@ -644,10 +644,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it matches all of them.
      * @see fnmatch()
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string[]        $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string          $message   (default: '')
      * @return void
      */
     public static function assertStdoutWildcardAll($expects, \Closure $test, array $wildcards = [], string $message = '') : void
@@ -660,10 +660,10 @@ trait TestHelper // @phpstan-ignore trait.unused
      * If more than one expected value is given, it states that it is not contains any of them.
      * @see fnmatch()
      *
-     * @param string|string[] $expects
-     * @param \Closure $test
-     * @param string[] $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
-     * @param string $message (default: '')
+     * @param  string|string[] $expects
+     * @param  \Closure        $test
+     * @param  string[]        $wildcards aliases definition ['real' => 'alias', ...] for example ['*' => '@'] means '@ *strong* @' become '* \*strong\* *' (default: [])
+     * @param  string          $message   (default: '')
      * @return void
      */
     public static function assertStdoutNotWildcardAny($expects, \Closure $test, array $wildcards = [], string $message = '') : void

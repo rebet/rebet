@@ -26,8 +26,8 @@ abstract class StatefulGuard extends Guard
     /**
      * Create a stateful guard instance.
      *
-     * @param string $provider name of configured in `Auth.providers.{name}`.
-     * @param int $remember_days (default: 0)
+     * @param string $provider      name of configured in `Auth.providers.{name}`.
+     * @param int    $remember_days (default: 0)
      */
     public function __construct(string $provider, int $remember_days = 0)
     {
@@ -38,8 +38,8 @@ abstract class StatefulGuard extends Guard
     /**
      * Attempt find user by given credentials.
      *
-     * @param mixed $signin_id
-     * @param string|null $password
+     * @param  mixed       $signin_id
+     * @param  string|null $password
      * @return AuthUser
      */
     public function attempt($signin_id, string|null $password) : AuthUser
@@ -51,9 +51,9 @@ abstract class StatefulGuard extends Guard
     /**
      * Signin a given authenticated user.
      *
-     * @param AuthUser $user
-     * @param string $goto (default: '/')
-     * @param boolean $remember (default: false)
+     * @param  AuthUser $user
+     * @param  string   $goto     (default: '/')
+     * @param  boolean  $remember (default: false)
      * @return Response
      */
     abstract public function signin(AuthUser $user, string $goto = '/', bool $remember = false) : Response;
@@ -61,7 +61,7 @@ abstract class StatefulGuard extends Guard
     /**
      * It will sign out the authenticated user.
      *
-     * @param string $goto (default: '/')
+     * @param  string   $goto (default: '/')
      * @return Response
      */
     abstract public function signout(string $goto = '/') : Response;

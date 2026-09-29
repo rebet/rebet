@@ -21,10 +21,10 @@ interface Driver
     /**
      * Create driver.
      *
-     * @param string $dsn
-     * @param string|null $user (default: null)
-     * @param string|null $password (default: null)
-     * @param array<int, mixed> $options PDO driver options keyed by PDO::ATTR_* constant (default: [])
+     * @param  string            $dsn
+     * @param  string|null       $user     (default: null)
+     * @param  string|null       $password (default: null)
+     * @param  array<int, mixed> $options  PDO driver options keyed by PDO::ATTR_* constant (default: [])
      * @return Driver
      */
     public static function create(string $dsn, string|null $user = null, string|null $password = null, array $options = []) : Driver;
@@ -63,8 +63,8 @@ interface Driver
     /**
      * Quotes a string for use in a query.
      *
-     * @param string $string
-     * @param int $parameter_type (default: \PDO::PARAM_STR)
+     * @param  string $string
+     * @param  int    $parameter_type (default: \PDO::PARAM_STR)
      * @return string
      */
     public function quote(string $string, int $parameter_type = \PDO::PARAM_STR) : string;
@@ -72,7 +72,7 @@ interface Driver
     /**
      * Quote identifier names.
      *
-     * @param string $identifier
+     * @param  string $identifier
      * @return string
      */
     public function quoteIdentifier(string $identifier) : string;
@@ -80,7 +80,7 @@ interface Driver
     /**
      * Begin a transaction
      *
-     * @return string executed SQL
+     * @return string            executed SQL
      * @throws DatabaseException
      */
     public function begin() : string;
@@ -88,8 +88,8 @@ interface Driver
     /**
      * Set a transaction save point of given name.
      *
-     * @param string $name of savepoint
-     * @return string executed SQL
+     * @param  string            $name of savepoint
+     * @return string            executed SQL
      * @throws DatabaseException
      */
     public function savepoint(string $name) : string;
@@ -97,7 +97,7 @@ interface Driver
     /**
      * Commit transaction.
      *
-     * @return string executed SQL
+     * @return string            executed SQL
      * @throws DatabaseException
      */
     public function commit() : string;
@@ -105,9 +105,9 @@ interface Driver
     /**
      * Rolls back a transaction
      *
-     * @param string|null $savepoint (default: null)
-     * @param boolean $quiet then this method ignore exception. (default: true)
-     * @return string executed SQL
+     * @param  string|null       $savepoint (default: null)
+     * @param  boolean           $quiet     then this method ignore exception. (default: true)
+     * @return string            executed SQL
      * @throws DatabaseException
      */
     public function rollback(string|null $savepoint = null, bool $quiet = true) : string|null;
@@ -115,7 +115,7 @@ interface Driver
     /**
      * Execute an SQL statement and return the number of affected rows
      *
-     * @param string $sql
+     * @param  string            $sql
      * @return int
      * @throws DatabaseException
      */
@@ -124,8 +124,8 @@ interface Driver
     /**
      * Prepares a statement for execution and returns a statement object.
      *
-     * @param string $sql
-     * @param array<int, mixed> $driver_options (default: [])
+     * @param  string            $sql
+     * @param  array<int, mixed> $driver_options (default: [])
      * @return \PDOStatement
      */
     public function prepare(string $sql, array $driver_options = []) : \PDOStatement;
@@ -133,7 +133,7 @@ interface Driver
     /**
      * Returns the ID of the last inserted row or sequence value of given name
      *
-     * @param string|null $name (default: null)
+     * @param  string|null $name (default: null)
      * @return string
      */
     public function lastInsertId(string|null $name = null) : string;
@@ -142,8 +142,8 @@ interface Driver
      * Truncate given table data.
      * NOTE: This method reset identity number
      *
-     * @param string $table_name
-     * @param bool $with_vacuum if needed for sqlite (default: true)
+     * @param  string $table_name
+     * @param  bool   $with_vacuum if needed for sqlite (default: true)
      * @return string executed SQL
      */
     public function truncate(string $table_name, bool|null $with_vacuum = true) : string;
@@ -165,8 +165,8 @@ interface Driver
     /**
      * Append where condition to given SQL.
      *
-     * @param string $sql
-     * @param string|array<int, string> $where
+     * @param  string                    $sql
+     * @param  string|array<int, string> $where
      * @return string
      */
     public function appendWhere(string $sql, $where) : string;
@@ -174,9 +174,9 @@ interface Driver
     /**
      * Append limit offset partial SQL to given SQL.
      *
-     * @param string $sql
-     * @param int|null $limit
-     * @param int|null $offset (default: null)
+     * @param  string   $sql
+     * @param  int|null $limit
+     * @param  int|null $offset (default: null)
      * @return string
      */
     public function appendLimitOffset(string $sql, int|null $limit, int|null $offset = null) : string;
@@ -184,7 +184,7 @@ interface Driver
     /**
      * Append for update partial SQL to given SQL.
      *
-     * @param string $sql
+     * @param  string            $sql
      * @return string
      * @throws DatabaseException if the database does not support `FOR UPDATE`.
      */
@@ -193,7 +193,7 @@ interface Driver
     /**
      * Convert given PHP type value to PDO data type.
      *
-     * @param mixed $value
+     * @param  mixed        $value
      * @return PdoParameter
      */
     public function toPdoType($value) : PdoParameter;
@@ -201,9 +201,9 @@ interface Driver
     /**
      * Convert given PDO data type to PHP data type.
      *
-     * @param mixed $value
-     * @param array<string, mixed> $meta data of PDO column meta data. (default: [])
-     * @param string|null $type that defined in property attribute. (default: null)
+     * @param  mixed                $value
+     * @param  array<string, mixed> $meta  data of PDO column meta data. (default: [])
+     * @param  string|null          $type  that defined in property attribute. (default: null)
      * @return mixed
      */
     public function toPhpType($value, array $meta = [], string|null $type = null);
@@ -211,7 +211,7 @@ interface Driver
     /**
      * Get SQL analyzer of this database.
      *
-     * @param string $sql
+     * @param  string   $sql
      * @return Analyzer
      */
     public function analyzer(string $sql) : Analyzer;
@@ -243,8 +243,8 @@ interface Driver
     /**
      * Create SQL query for this driver.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: [])
      * @return Query
      */
     public function sql(string $sql, array $params = []) : Query;

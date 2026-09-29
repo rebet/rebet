@@ -14,8 +14,8 @@ use Rebet\Tools\Enum\Enum;
  * @license   MIT License https://github.com/rebet/rebet/blob/master/LICENSE
  *
  * @method static self KEEP() EOF line feed processing : Keep (Do nothing)
- * @method static self TRIM() EOF line feed processing : Trim CR/LF
- * @method static self ONE() EOF line feed processing : Trim CR/LF then append one LF
+ * @method static self TRIM()                                              EOF line feed processing : Trim CR/LF
+ * @method static self ONE()                                               EOF line feed processing : Trim CR/LF then append one LF
  */
 class EofLineFeed extends Enum
 {
@@ -37,7 +37,7 @@ class EofLineFeed extends Enum
     /**
      * Process EOF line feeds.
      *
-     * @param string|null $contents
+     * @param  string|null $contents
      * @return string|null
      */
     public function process(string|null $contents) : string|null

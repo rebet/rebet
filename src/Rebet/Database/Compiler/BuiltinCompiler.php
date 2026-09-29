@@ -159,8 +159,8 @@ class BuiltinCompiler implements Compiler
     /**
      * Verify that we should be use cursor or not by the pager and cursor state.
      *
-     * @param Pager $pager
-     * @param Cursor|null $cursor
+     * @param  Pager       $pager
+     * @param  Cursor|null $cursor
      * @return Cursor|null
      */
     protected function verify(Pager|null $pager, Cursor|null $cursor) : Cursor|null
@@ -171,10 +171,10 @@ class BuiltinCompiler implements Compiler
     /**
      * Get offset count from given cursor (or first page) to given pager.
      *
-     * @param Pager $pager
-     * @param Cursor|null $cursor
-     * @param bool $forward_feed
-     * @param bool $near_by_first
+     * @param  Pager       $pager
+     * @param  Cursor|null $cursor
+     * @param  bool        $forward_feed
+     * @param  bool        $near_by_first
      * @return int
      */
     protected function offset(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
@@ -192,10 +192,10 @@ class BuiltinCompiler implements Compiler
     /**
      * Get limit count based on given cursor (or offset from first page) for given pager (include next side pages).
      *
-     * @param Pager $pager
-     * @param Cursor|null $cursor
-     * @param bool $forward_feed
-     * @param bool $near_by_first
+     * @param  Pager       $pager
+     * @param  Cursor|null $cursor
+     * @param  bool        $forward_feed
+     * @param  bool        $near_by_first
      * @return int
      */
     protected function limit(Pager $pager, Cursor|null $cursor = null, bool $forward_feed = true, bool $near_by_first = true) : int
@@ -219,7 +219,7 @@ class BuiltinCompiler implements Compiler
     /**
      * Compile order by condition
      *
-     * @param OrderBy $order_by
+     * @param  OrderBy $order_by
      * @return string
      */
     protected function compileOrderBy(OrderBy $order_by) : string
@@ -234,12 +234,12 @@ class BuiltinCompiler implements Compiler
     /**
      * Compile cursor condition
      *
-     * @param Analyzer $analyzer of sql
-     * @param OrderBy $order_by
-     * @param Cursor $cursor
-     * @param bool $forward_feed
-     * @param bool $near_by_first
-     * @return Query of partial where SQL sentence
+     * @param  Analyzer $analyzer      of sql
+     * @param  OrderBy  $order_by
+     * @param  Cursor   $cursor
+     * @param  bool     $forward_feed
+     * @param  bool     $near_by_first
+     * @return Query    of partial where SQL sentence
      */
     protected function compileCursor(Analyzer $analyzer, OrderBy $order_by, Cursor $cursor, bool $forward_feed, bool $near_by_first) : Query
     {

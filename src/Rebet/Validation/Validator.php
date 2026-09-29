@@ -57,7 +57,7 @@ class Validator
     /**
      * Set nested attribute label auto format or not.
      *
-     * @param boolean $nested_attribute_auto_format
+     * @param  boolean $nested_attribute_auto_format
      * @return void
      */
     public static function setNestedAttributeAutoFormat(bool $nested_attribute_auto_format) : void
@@ -69,7 +69,7 @@ class Validator
      * Create a new Validator instance.
      *
      * @param array<string, mixed> $data
-     * @param Validations $validations (default: depend on configure)
+     * @param Validations          $validations (default: depend on configure)
      */
     public function __construct(array $data, Validations $validations = null)
     {
@@ -82,9 +82,9 @@ class Validator
      *
      * @todo Need to consider whether an argument should contains $nested_attribute_auto_format.
      *
-     * @param string $crud
-     * @param array<string, mixed>|array<int, array<string, mixed>>|string|array<int, string>|Rule|array<int, Rule> $rules array(=map) of rule, string of Rule class name, Rule class instance and those lists.
-     * @param bool $accept_undefined (default: false)
+     * @param  string                                                                                                $crud
+     * @param  array<string, mixed>|array<int, array<string, mixed>>|string|array<int, string>|Rule|array<int, Rule> $rules            array(=map) of rule, string of Rule class name, Rule class instance and those lists.
+     * @param  bool                                                                                                  $accept_undefined (default: false)
      * @return ValidData|null
      */
     public function validate(string $crud, $rules, bool $accept_undefined = false) : ValidData|null
@@ -132,9 +132,9 @@ class Validator
     /**
      * Validate the data by given context and rules for recursive.
      *
-     * @param Context $context
-     * @param array<string, mixed> $rules
-     * @param Rule|null $spot_validations
+     * @param  Context              $context
+     * @param  array<string, mixed> $rules
+     * @param  Rule|null            $spot_validations
      * @return ValidData
      */
     protected function _validate(Context $context, $rules, Rule|null $spot_validations) : ValidData
@@ -194,9 +194,9 @@ class Validator
     /**
      * Handle validation rules
      *
-     * @param Context $context
+     * @param Context           $context
      * @param array<int, mixed> $rules
-     * @param Rule|null $spot_validations
+     * @param Rule|null         $spot_validations
      */
     protected function validateRules(Context $context, array $rules, Rule|null $spot_validations) : void
     {

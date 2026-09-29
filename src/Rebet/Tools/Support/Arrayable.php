@@ -47,7 +47,7 @@ trait Arrayable
     /**
      * It checks the given key is exists or not.
      *
-     * @param int|string $key
+     * @param  int|string $key
      * @return boolean
      */
     public function has($key) : bool

@@ -99,9 +99,9 @@ class Database
     /**
      * Create database instance using given PDO instance.
      *
-     * @param string $name of this database (alias ​​for classification)
-     * @param Driver $driver
-     * @param bool $debug (default: false)
+     * @param string        $name        of this database (alias ​​for classification)
+     * @param Driver        $driver
+     * @param bool          $debug       (default: false)
      * @param callable|null $log_handler function(Database $db, Query $query) (default: depend on configure)
      */
     public function __construct(string $name, Driver $driver, bool $debug = false, callable|null $log_handler = null)
@@ -190,7 +190,7 @@ class Database
     /**
      * Get SQL analyzer of this database.
      *
-     * @param string $sql
+     * @param  string   $sql
      * @return Analyzer
      */
     public function analyzer(string $sql) : Analyzer
@@ -211,7 +211,7 @@ class Database
     /**
      * Switch on/off to log output.
      *
-     * @param bool $debug (default: true)
+     * @param  bool $debug (default: true)
      * @return self
      */
     public function debug(bool $debug = true) : self
@@ -233,8 +233,8 @@ class Database
     /**
      * Output SQL log.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: [])
      * @return void
      */
     public function log(string $sql, array $params = []) : void
@@ -247,9 +247,9 @@ class Database
     /**
      * Create Database exception from given information.
      *
-     * @param array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
-     * @param string|null $sql (default: null)
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
+     * @param  string|null                                                           $sql    (default: null)
+     * @param  array<int|string, mixed>                                              $params (default: [])
      * @return DatabaseException
      */
     public function exception($error, string|null $sql = null, array $params = []) : DatabaseException
@@ -272,7 +272,7 @@ class Database
     /**
      * Set a transaction save point of given name.
      *
-     * @param string $name of save point
+     * @param  string                          $name of save point
      * @return self
      * @throws DatabaseException|\PDOException
      */
@@ -285,8 +285,8 @@ class Database
     /**
      * Rolls back a transaction
      *
-     * @param string|null $savepoint (default: null)
-     * @param boolean $quiet then this method ignore exception. (default: true)
+     * @param  string|null                     $savepoint (default: null)
+     * @param  boolean                         $quiet     then this method ignore exception. (default: true)
      * @return self
      * @throws DatabaseException|\PDOException
      */
@@ -312,7 +312,7 @@ class Database
      * Start a transaction, execute callback then commit.
      * NOTE: If an exception thrown then rollback.
      *
-     * @param \Closure $callback function(Database $db) { ... }
+     * @param  \Closure   $callback function(Database $db) { ... }
      * @return self
      * @throws \Throwable
      */
@@ -334,8 +334,8 @@ class Database
      * Truncate given table data.
      * NOTE: This method reset identity number
      *
-     * @param string $table_name
-     * @param bool $with_vacuum if needed for sqlite (default: true)
+     * @param  string $table_name
+     * @param  bool   $with_vacuum if needed for sqlite (default: true)
      * @return void
      */
     public function truncate(string $table_name, bool $with_vacuum = true) : void
@@ -346,7 +346,7 @@ class Database
     /**
      * Returns the ID of the last inserted row or sequence value of given name
      *
-     * @param string|null $name (default: null)
+     * @param  string|null $name (default: null)
      * @return string
      */
     public function lastInsertId(string|null $name = null) : string
@@ -357,7 +357,7 @@ class Database
     /**
      * Prepares a statement for execution and returns a statement object.
      *
-     * @param string $sql
+     * @param  string    $sql
      * @return Statement
      */
     protected function prepare(string $sql) : Statement
@@ -368,13 +368,13 @@ class Database
     /**
      * Executes an SQL statement, returning a result set as a Statement object.
      *
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param mixed $params can be arrayable (default: [])
-     * @param int|null $limit (default: null)
-     * @param bool $for_update (default: false)
-     * @param Pager|null $pager (default: null)
-     * @param Cursor|null $cursor (default: null)
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  mixed                              $params     can be arrayable (default: [])
+     * @param  int|null                           $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
+     * @param  Pager|null                         $pager      (default: null)
+     * @param  Cursor|null                        $cursor     (default: null)
      * @return Statement
      */
     protected function _query(string $sql, $order_by = null, $params = [], int|null $limit = null, bool $for_update = false, Pager|null $pager = null, Cursor|null $cursor = null) : Statement
@@ -388,8 +388,8 @@ class Database
     /**
      * Executes an SQL statement, returning a result set as a Statement object.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: [])
      * @return Statement
      */
     public function query(string $sql, $params = []) : Statement
@@ -400,8 +400,8 @@ class Database
     /**
      * Executes an SQL(INSERT/UPDATE/DELETE) statement, returning affected rows count.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: [])
      * @return int
      */
     public function execute(string $sql, $params = []) : int
@@ -412,13 +412,13 @@ class Database
     /**
      * Execute given SQL and get the result (N rows and M columns).
      *
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param int|null $limit (default: null)
-     * @param bool $for_update (default: false)
-     * @param string $class (default: 'stdClass')
-     * @return ResultSet of given class instance
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  array<int|string, mixed>           $params     (default: [])
+     * @param  int|null                           $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
+     * @param  string                             $class      (default: 'stdClass')
+     * @return ResultSet                          of given class instance
      */
     public function select(string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false, string $class = 'stdClass') : ResultSet
     {
@@ -428,13 +428,13 @@ class Database
     /**
      * Execute given SQL and get the result as paginator (N rows and M columns).
      *
-     * @param string $sql
-     * @param OrderBy|array<string, string> $order_by
-     * @param Pager $pager
-     * @param array<int|string, mixed> $params (default: [])
-     * @param bool $for_update (default: false)
-     * @param string $class (default: 'stdClass')
-     * @param string $optimised_count_sql only have one count total column (default: null)
+     * @param  string                        $sql
+     * @param  OrderBy|array<string, string> $order_by
+     * @param  Pager                         $pager
+     * @param  array<int|string, mixed>      $params              (default: [])
+     * @param  bool                          $for_update          (default: false)
+     * @param  string                        $class               (default: 'stdClass')
+     * @param  string                        $optimised_count_sql only have one count total column (default: null)
      * @return Paginator
      */
     public function paginate(string $sql, $order_by, Pager $pager, array $params = [], bool $for_update = false, string $class = 'stdClass', string|null $optimised_count_sql = null) : Paginator
@@ -448,12 +448,12 @@ class Database
     /**
      * Execute given SQL and get the first result (1 rows and M columns).
      *
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param bool $for_update (default: false)
-     * @param string $class (default: 'stdClass')
-     * @return mixed of given class instance
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  array<int|string, mixed>           $params     (default: [])
+     * @param  bool                               $for_update (default: false)
+     * @param  string                             $class      (default: 'stdClass')
+     * @return mixed                              of given class instance
      */
     public function find(string $sql, $order_by = null, array $params = [], bool $for_update = false, string $class = 'stdClass')
     {
@@ -463,11 +463,11 @@ class Database
     /**
      * Execute given SQL and extract the result of given column values (N rows and 1 columns).
      *
-     * @param string|int $column
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param string|null $type name of convert to type (default: null)
+     * @param  string|int                         $column
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by (default: null)
+     * @param  array<int|string, mixed>           $params   (default: [])
+     * @param  string|null                        $type     name of convert to type (default: null)
      * @return ResultSet
      */
     public function extract($column, string $sql, $order_by = null, array $params = [], string|null $type = null) : ResultSet
@@ -478,12 +478,12 @@ class Database
     /**
      * Execute given SQL and extract the result of given column values (1 rows and 1 columns).
      *
-     * @param string|int $column
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: null)
-     * @param string|null $type name of convert to type (default: null)
-     * @return mixed or given type
+     * @param  string|int                         $column
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by (default: null)
+     * @param  array<int|string, mixed>           $params   (default: null)
+     * @param  string|null                        $type     name of convert to type (default: null)
+     * @return mixed                              or given type
      */
     public function get($column, string $sql, $order_by = null, array $params = [], string|null $type = null)
     {
@@ -493,8 +493,8 @@ class Database
     /**
      * It checks the given SQL result is exist.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: null)
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: null)
      * @return boolean
      */
     public function exists(string $sql, array $params = []) : bool
@@ -505,8 +505,8 @@ class Database
     /**
      * Gets the number of search results for the given SQL.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: null)
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: null)
      * @return int
      */
     public function count(string $sql, array $params = []) : int
@@ -517,12 +517,12 @@ class Database
     /**
      * Execute given SQL and applies the callback function to each row of the result.
      *
-     * @param callable $callback function(Class $row) : bool {}
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param int|null $limit (default: null)
-     * @param bool $for_update (default: false)
+     * @param  callable                           $callback   function(Class $row) : bool {}
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  array<int|string, mixed>           $params     (default: [])
+     * @param  int|null                           $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
      * @return void
      */
     public function each(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : void
@@ -533,12 +533,12 @@ class Database
     /**
      * Execute given SQL then filter the result set using the given callback.
      *
-     * @param callable $callback function(Class $row) : bool {}
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param int|null $limit (default: null)
-     * @param bool $for_update (default: false)
+     * @param  callable                           $callback   function(Class $row) : bool {}
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  array<int|string, mixed>           $params     (default: [])
+     * @param  int|null                           $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
      * @return ResultSet
      */
     public function filter(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : ResultSet
@@ -549,12 +549,12 @@ class Database
     /**
      * Execute given SQL then run a map over each of the result set items.
      *
-     * @param callable $callback function(Class $row) : mixed {}
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param int|null $limit (default: null)
-     * @param bool $for_update (default: false)
+     * @param  callable                           $callback   function(Class $row) : mixed {}
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by   (default: null)
+     * @param  array<int|string, mixed>           $params     (default: [])
+     * @param  int|null                           $limit      (default: null)
+     * @param  bool                               $for_update (default: false)
      * @return ResultSet
      */
     public function map(callable $callback, string $sql, $order_by = null, array $params = [], int|null $limit = null, bool $for_update = false) : ResultSet
@@ -565,12 +565,12 @@ class Database
     /**
      * Execute given SQL then reduce the result set to a single value.
      *
-     * @param callable $reducer function(Class $row, $carry) : mixed {}
-     * @param mixed $initial
-     * @param string $sql
-     * @param OrderBy|array<string, string>|null $order_by (default: null)
-     * @param array<int|string, mixed> $params (default: [])
-     * @param int|null $limit (default: null)
+     * @param  callable                           $reducer  function(Class $row, $carry) : mixed {}
+     * @param  mixed                              $initial
+     * @param  string                             $sql
+     * @param  OrderBy|array<string, string>|null $order_by (default: null)
+     * @param  array<int|string, mixed>           $params   (default: [])
+     * @param  int|null                           $limit    (default: null)
      * @return mixed
      */
     public function reduce(callable $reducer, $initial, string $sql, $order_by = null, array $params = [], int|null $limit = null)
@@ -582,8 +582,8 @@ class Database
      * Create (Insert) given entity data.
      * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
-     * @param Entity $entity
-     * @param DateTime|null $now (default: null for DateTime::now())
+     * @param  Entity        $entity
+     * @param  DateTime|null $now    (default: null for DateTime::now())
      * @return bool
      * @uses Event::dispatch Creating when before data create.
      * @uses Event::dispatch Created when after data created.
@@ -642,8 +642,8 @@ class Database
     /**
      * Update given entity changed data.
      *
-     * @param Entity $entity
-     * @param DateTime|null $now (default: null for DateTime::now())
+     * @param  Entity        $entity
+     * @param  DateTime|null $now    (default: null for DateTime::now())
      * @return bool
      * @uses Event::dispatch Updating when before data update.
      * @uses Event::dispatch Updated when after data updated.
@@ -685,8 +685,8 @@ class Database
     /**
      * Save given entity changed data.
      *
-     * @param Entity $entity
-     * @param DateTime|null $now (default: null for DateTime::now())
+     * @param  Entity        $entity
+     * @param  DateTime|null $now    (default: null for DateTime::now())
      * @return boolean
      */
     public function save(Entity $entity, DateTime|null $now = null) : bool
@@ -697,7 +697,7 @@ class Database
     /**
      * Delete given entity data.
      *
-     * @param Entity $entity
+     * @param  Entity $entity
      * @return bool
      * @uses Event::dispatch Deleting when before data delete.
      * @uses Event::dispatch Deleted when after data delete.
@@ -718,12 +718,12 @@ class Database
     /**
      * Update data using ransack conditions.
      *
-     * @param string $entity class name
-     * @param array<string, mixed> $changes
-     * @param mixed $ransack conditions that arrayable
-     * @param array<string, string|array<int, string>> $alias (default: [])
-     * @param DateTime|null $now (default: null)
-     * @return int affected row count
+     * @param  string                                   $entity  class name
+     * @param  array<string, mixed>                     $changes
+     * @param  mixed                                    $ransack conditions that arrayable
+     * @param  array<string, string|array<int, string>> $alias   (default: [])
+     * @param  DateTime|null                            $now     (default: null)
+     * @return int                                      affected row count
      * @uses Event::dispatch BatchUpdating when before batch update.
      * @uses Event::dispatch BatchUpdated when after batch update.
      */
@@ -754,10 +754,10 @@ class Database
     /**
      * Delete data using ransack conditions.
      *
-     * @param string $entity class name
-     * @param mixed $ransack conditions that arrayable
-     * @param array<string, string|array<int, string>> $alias (default: [])
-     * @return int affected row count
+     * @param  string                                   $entity  class name
+     * @param  mixed                                    $ransack conditions that arrayable
+     * @param  array<string, string|array<int, string>> $alias   (default: [])
+     * @return int                                      affected row count
      * @uses Event::dispatch BatchDeleting when before batch delete.
      * @uses Event::dispatch BatchDeleted when after batch delete.
      */
@@ -776,9 +776,9 @@ class Database
     /**
      * It checks the data is exists using ransack conditions.
      *
-     * @param string $entity class name
-     * @param mixed $ransack conditions that arrayable
-     * @param array<string, string|array<int, string>> $alias (default: [])
+     * @param  string                                   $entity  class name
+     * @param  mixed                                    $ransack conditions that arrayable
+     * @param  array<string, string|array<int, string>> $alias   (default: [])
      * @return bool
      */
     public function existsBy(string $entity, $ransack, array $alias = []) : bool
@@ -790,9 +790,9 @@ class Database
     /**
      * Count data using ransack conditions.
      *
-     * @param string $entity class name
-     * @param mixed $ransack conditions that arrayable
-     * @param array<string, string|array<int, string>> $alias (default: [])
+     * @param  string                                   $entity  class name
+     * @param  mixed                                    $ransack conditions that arrayable
+     * @param  array<string, string|array<int, string>> $alias   (default: [])
      * @return int
      */
     public function countBy(string $entity, $ransack, array $alias = []) : int
@@ -826,8 +826,8 @@ class Database
     /**
      * Create SQL query for this database driver.
      *
-     * @param string $sql
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  string                   $sql
+     * @param  array<int|string, mixed> $params (default: [])
      * @return Query
      */
     public function sql(string $sql, array $params = []) : Query

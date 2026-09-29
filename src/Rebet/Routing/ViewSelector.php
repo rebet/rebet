@@ -56,8 +56,8 @@ class ViewSelector
     /**
      * Create a view selector
      *
-     * @param Request|null $request (default: Request::current())
-     * @param AuthUser|null $user (default: Auth::user())
+     * @param Request|null  $request (default: Request::current())
+     * @param AuthUser|null $user    (default: Auth::user())
      * @param callable|null $changer function(string $view_name, Request $request, AuthUser $user):string|string[] to return changed view name (default: depend on configure)
      */
     public function __construct(Request|null $request = null, AuthUser|null $user = null, callable|null $changer = null)
@@ -70,7 +70,7 @@ class ViewSelector
     /**
      * Convert ViewSelector changer to View changer.
      *
-     * @param boolean $apply_change
+     * @param  boolean       $apply_change
      * @return \Closure|null
      */
     protected function changer(bool $apply_change) : \Closure|null
@@ -87,8 +87,8 @@ class ViewSelector
     /**
      * Get the default (or given name) view.
      *
-     * @param string|null $name (default: default view of current route)
-     * @param bool $apply_change (default: true)
+     * @param  string|null $name         (default: default view of current route)
+     * @param  bool        $apply_change (default: true)
      * @return View
      */
     public function view(string|null $name = null, bool $apply_change = true) : View

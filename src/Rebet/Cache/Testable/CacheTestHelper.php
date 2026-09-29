@@ -27,8 +27,8 @@ trait CacheTestHelper // @phpstan-ignore trait.unused
     /**
      * Apply tests to all or given defined cache store.
      *
-     * @param \Closure $test function(Store $store, string $store_name) { ... }
-     * @param string ...$dbs that are test targets
+     * @param  \Closure $test   function(Store $store, string $store_name) { ... }
+     * @param  string   ...$dbs that are test targets
      * @return void
      */
     public static function eachStore(\Closure $test, bool $taggable = false, string ...$stores)

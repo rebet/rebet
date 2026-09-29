@@ -65,10 +65,10 @@ class ArrayProvider extends AuthProvider
      * And if you want to add other information, you can add attribute to users record.
      *
      * @param array<int, array<string, mixed>> $users
-     * @param string|null $signin_id_name (default: 'email')
-     * @param string $token_name (default: 'api_token')
-     * @param callable|null $precondition function($user):bool {...} (default: `function ($user) { return true; }`)
-     * @param array<string, mixed> $aliases for AuthUser who provided by this provider. (default: [])
+     * @param string|null                      $signin_id_name (default: 'email')
+     * @param string                           $token_name     (default: 'api_token')
+     * @param callable|null                    $precondition   function($user):bool {...} (default: `function ($user) { return true; }`)
+     * @param array<string, mixed>             $aliases        for AuthUser who provided by this provider. (default: [])
      */
     public function __construct(array $users, string|null $signin_id_name = 'email', string $token_name = 'api_token', callable|null $precondition = null, array $aliases = [])
     {

@@ -99,8 +99,8 @@ class Resource
     /**
      * Register the resource loader.
      *
-     * @param string $suffix
-     * @param \Closure $loader
+     * @param  string   $suffix
+     * @param  \Closure $loader
      * @return mixed
      */
     public static function setLoader(string $suffix, \Closure $loader)
@@ -111,9 +111,9 @@ class Resource
     /**
      * Load the specified resource.
      *
-     * @param string $type
-     * @param string $path
-     * @param array<string, mixed> $option (default: [])
+     * @param  string               $type
+     * @param  string               $path
+     * @param  array<string, mixed> $option (default: [])
      * @return mixed
      * @throws LogicException
      */

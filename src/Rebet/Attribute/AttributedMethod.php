@@ -30,8 +30,8 @@ class AttributedMethod
     /**
      * Create method attributes accesser.
      *
-     * @param string|\ReflectionMethod $method
-     * @param string|object|\ReflectionClass|null $class
+     * @param  string|\ReflectionMethod            $method
+     * @param  string|object|\ReflectionClass|null $class
      * @return AttributedMethod
      */
     public static function of($method, $class = null) : AttributedMethod
@@ -45,7 +45,7 @@ class AttributedMethod
     /**
      * Create a method attribute accessor
      *
-     * @param \ReflectionMethod $method
+     * @param \ReflectionMethod    $method
      * @param AttributedClass|null $attributed_class
      */
     public function __construct(\ReflectionMethod $method, AttributedClass|null $attributed_class = null)
@@ -69,9 +69,9 @@ class AttributedMethod
      * If method attribute nothing, then check declaring class attribute and get.
      * If you don't want to check declaring class attribute, just given $check_declaring_class as false.
      *
-     * @param string $attribute
-     * @param bool $check_declaring_class
-     * @return mixed Attribute
+     * @param  string $attribute
+     * @param  bool   $check_declaring_class
+     * @return mixed  Attribute
      */
     public function attribute(string $attribute, bool $check_declaring_class = true)
     {

@@ -77,14 +77,14 @@ class DatabaseProvider extends AuthProvider
     /**
      * Create a database provider.
      *
-     * @param string $entity class name that extended Entity class
-     * @param string $signin_id_name (default: 'email')
-     * @param string $password_name (default: 'password')
-     * @param string $api_token_name (default: 'api_token')
-     * @param int|null $expired_remember_token_clean_rate (default: 100)
-     * @param array<string, mixed> $precondition for ransack conditions (default: [])
-     * @param array<string, mixed> $alises for AuthUser who provided by this provider. (default: [])
-     * @param string|null $db name configured Dao.dbs (default: null for default database)
+     * @param string               $entity                            class name that extended Entity class
+     * @param string               $signin_id_name                    (default: 'email')
+     * @param string               $password_name                     (default: 'password')
+     * @param string               $api_token_name                    (default: 'api_token')
+     * @param int|null             $expired_remember_token_clean_rate (default: 100)
+     * @param array<string, mixed> $precondition                      for ransack conditions (default: [])
+     * @param array<string, mixed> $alises                            for AuthUser who provided by this provider. (default: [])
+     * @param string|null          $db                                name configured Dao.dbs (default: null for default database)
      */
     public function __construct(
         string $entity,

@@ -47,8 +47,8 @@ class ConfigPromise implements DotAccessDelegator
     /**
      * Construct a delayed evaluation class.
      *
-     * @param \Closure $promise of delay evaluation function():mixed
-     * @param bool $only_once (default: true)
+     * @param \Closure $promise   of delay evaluation function():mixed
+     * @param bool     $only_once (default: true)
      */
     public function __construct(\Closure $promise, bool $only_once = true)
     {

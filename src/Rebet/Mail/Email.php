@@ -121,8 +121,8 @@ class Email extends SymfonyEmail
     /**
      * Create a new Email.
      *
-     * @param Headers|null $headers of this email (default: null for new empty Headers)
-     * @param AbstractPart|null $body of this email (default: null for none)
+     * @param Headers|null      $headers of this email (default: null for new empty Headers)
+     * @param AbstractPart|null $body    of this email (default: null for none)
      */
     public function __construct(Headers|null $headers = null, private AbstractPart|null $body = null)
     {
@@ -132,7 +132,7 @@ class Email extends SymfonyEmail
     /**
      * Get the mailer for given mailer.
      *
-     * @param string|null $mailer name that configured in 'Email.mailers'. (default: null to use 'Email.default_mailer')
+     * @param  string|null              $mailer name that configured in 'Email.mailers'. (default: null to use 'Email.default_mailer')
      * @return Mailer
      * @throws ConfigNotDefineException
      */
@@ -158,7 +158,7 @@ class Email extends SymfonyEmail
     /**
      * Get the transport for given mailer.
      *
-     * @param string|null $mailer name that configured in 'Email.mailers'. (default: null to use 'Email.default_mailer')
+     * @param  string|null              $mailer name that configured in 'Email.mailers'. (default: null to use 'Email.default_mailer')
      * @return TransportInterface
      * @throws ConfigNotDefineException
      */
@@ -180,7 +180,7 @@ class Email extends SymfonyEmail
     /**
      * Generate the text body from html body.
      *
-     * @param callable|null $generator (default: null to use 'Email.html2text_generator' config)
+     * @param  callable|null $generator (default: null to use 'Email.html2text_generator' config)
      * @return static
      */
     public function generateTextBodyFromHtml(callable|null $generator = null) : static
@@ -192,8 +192,8 @@ class Email extends SymfonyEmail
     /**
      * {@inheritDoc}
      *
-     * @param resource|string|null $body
-     * @param string $charset of $body
+     * @param  resource|string|null $body
+     * @param  string               $charset of $body
      * @return $this
      */
     #[Override]
@@ -206,8 +206,8 @@ class Email extends SymfonyEmail
     /**
      * {@inheritDoc}
      *
-     * @param resource|string|null $body
-     * @param string $charset of $body
+     * @param  resource|string|null $body
+     * @param  string               $charset of $body
      * @return $this
      */
     #[Override]
@@ -220,7 +220,7 @@ class Email extends SymfonyEmail
     /**
      * {@inheritDoc}
      *
-     * @param DataPart $part
+     * @param  DataPart $part
      * @return $this
      */
     #[Override]
@@ -452,7 +452,7 @@ class Email extends SymfonyEmail
      * Check whether the given header display value needs RFC 2047 word-encoding, i.e. it does
      * not already conform to the RFC 2822 'phrase' grammar as-is.
      *
-     * @param string $body value of the header to check
+     * @param  string $body value of the header to check
      * @return bool
      */
     protected static function needEncode(string $body) : bool
@@ -470,10 +470,10 @@ class Email extends SymfonyEmail
      * stored back as-is into a header's body/address name without being mistaken for content
      * that itself still needs word-encoding.
      *
-     * @param string $body value to encode
-     * @param HeaderInterface $header this value belongs to, used for its name/charset
-     * @param 'B'|'Q' $encode used to word-encode $body ('B' or 'Q')
-     * @return string encoded as "=?charset?encoding?...?=" (one or more, separated by a single space)
+     * @param  string          $body   value to encode
+     * @param  HeaderInterface $header this value belongs to, used for its name/charset
+     * @param  'B'|'Q'         $encode used to word-encode $body ('B' or 'Q')
+     * @return string          encoded as "=?charset?encoding?...?=" (one or more, separated by a single space)
      */
     protected static function encode(string $body, HeaderInterface $header, string $encode) : string
     {
@@ -491,8 +491,8 @@ class Email extends SymfonyEmail
     /**
      * Send this email.
      *
-     * @param string|null $mailer name that configured in 'Email.mailers'. (default: null to use 'Email.default_mailer')
-     * @param Envelope|null $envelope
+     * @param  string|null              $mailer   name that configured in 'Email.mailers'. (default: null to use 'Email.default_mailer')
+     * @param  Envelope|null            $envelope
      * @return static
      * @throws ConfigNotDefineException
      */

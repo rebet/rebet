@@ -52,7 +52,7 @@ class TextFormatter implements FormatterInterface
     /**
      * Create Text formatter.
      *
-     * @param string $format (default: depend on configure)
+     * @param string                  $format       (default: depend on configure)
      * @param array<string, callable> $stringifiers (default: depend on configure)
      */
     public function __construct(string|null $format = null, array $stringifiers = [])
@@ -64,8 +64,8 @@ class TextFormatter implements FormatterInterface
     /**
      * Stringify the given value using stringifier for given key.
      *
-     * @param string $key
-     * @param mixed $val
+     * @param  string $key
+     * @param  mixed  $val
      * @return string
      */
     protected function stringify(string $key, $val) : string

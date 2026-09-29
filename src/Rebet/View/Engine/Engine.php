@@ -30,7 +30,7 @@ interface Engine
     /**
      * Prepend template path.
      *
-     * @param string $path
+     * @param  string $path
      * @return Engine
      */
     public function prependPath(string $path) : Engine;
@@ -38,7 +38,7 @@ interface Engine
     /**
      * Append template path.
      *
-     * @param string $path
+     * @param  string $path
      * @return Engine
      */
     public function appendPath(string $path) : Engine;
@@ -46,8 +46,8 @@ interface Engine
     /**
      * Get the string contents of the view.
      *
-     * @param string $name Template name without base template dir and template file suffix
-     * @param array<string, mixed> $data
+     * @param  string               $name Template name without base template dir and template file suffix
+     * @param  array<string, mixed> $data
      * @return string
      */
     public function render(string $name, array $data = []) : string;
@@ -55,7 +55,7 @@ interface Engine
     /**
      * It checks the given name view template exists.
      *
-     * @param string $name
+     * @param  string  $name
      * @return boolean
      */
     public function exists(string $name) : bool;

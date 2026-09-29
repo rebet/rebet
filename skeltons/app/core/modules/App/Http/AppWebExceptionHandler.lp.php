@@ -19,9 +19,9 @@ class AppWebExceptionHandler extends WebExceptionHandler
      * Report an exception.
      * Just only report, this function do not display result.
      *
-     * @param Request $input
-     * @param Response|null $result
-     * @param \Throwable $e
+     * @param  Request       $input
+     * @param  Response|null $result
+     * @param  \Throwable    $e
      * @return void
      */
     #[Override]
@@ -33,8 +33,8 @@ class AppWebExceptionHandler extends WebExceptionHandler
     /**
      * Handle an exception
      *
-     * @param Request|null $input
-     * @param \Throwable $e
+     * @param  Request|null $input
+     * @param  \Throwable   $e
      * @return Response
      */
     #[Override]

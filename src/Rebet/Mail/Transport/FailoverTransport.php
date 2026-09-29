@@ -21,8 +21,8 @@ class FailoverTransport extends SymfonyFailoverTransport
 {
     /**
      * @param array<TransportInterface|class-string<TransportInterface>|array<string, mixed>> $transports
-     * @param int $retry_period (default: 60)
-     * @param LoggerInterface|null $logger (default: NullLogger)
+     * @param int                                                                             $retry_period (default: 60)
+     * @param LoggerInterface|null                                                            $logger       (default: NullLogger)
      */
     public function __construct(
         array $transports,

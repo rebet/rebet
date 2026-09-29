@@ -126,7 +126,7 @@ class HttpStatus
     /**
      * Get the Reason-Phrase of given status code.
      *
-     * @param integer $status
+     * @param  integer     $status
      * @return string|null return null when not exists status was given
      */
     public static function reasonPhraseOf(int $status) : string|null
@@ -137,7 +137,7 @@ class HttpStatus
     /**
      * It checks the given status code exists.
      *
-     * @param integer $status
+     * @param  integer $status
      * @return boolean
      */
     public static function exists(int $status) : bool
@@ -148,7 +148,7 @@ class HttpStatus
     /**
      * Get the HTTP status code class.
      *
-     * @param int $status
+     * @param  int      $status
      * @return int|null return null when not exists status was given
      */
     public static function classOf(int $status) : int|null
@@ -162,7 +162,7 @@ class HttpStatus
     /**
      * It checks the given status is informational (1xx).
      *
-     * @param integer $status
+     * @param  integer $status
      * @return boolean
      */
     public static function isInformational(int $status) : bool
@@ -173,7 +173,7 @@ class HttpStatus
     /**
      * It checks the given status is Successful (2xx).
      *
-     * @param integer $status
+     * @param  integer $status
      * @return boolean
      */
     public static function isSuccessful(int $status) : bool
@@ -184,7 +184,7 @@ class HttpStatus
     /**
      * It checks the given status is Redirection (3xx).
      *
-     * @param integer $status
+     * @param  integer $status
      * @return boolean
      */
     public static function isRedirection(int $status) : bool
@@ -195,7 +195,7 @@ class HttpStatus
     /**
      * It checks the given status is Client Error (4xx).
      *
-     * @param integer $status
+     * @param  integer $status
      * @return boolean
      */
     public static function isClientError(int $status) : bool
@@ -206,7 +206,7 @@ class HttpStatus
     /**
      * It checks the given status is Server Error (5xx).
      *
-     * @param integer $status
+     * @param  integer $status
      * @return boolean
      */
     public static function isServerError(int $status) : bool
@@ -217,10 +217,10 @@ class HttpStatus
     /**
      * Immediately abort HTTP request handling by throws HttpException.
      *
-     * @param int $status code of HTTP
-     * @param string|null $detail message or full transration key (default: null)
-     * @param string|null $title (default: Basic HTTP status label)
-     * @param \Throwable $previous (default: null)
+     * @param  int           $status   code of HTTP
+     * @param  string|null   $detail   message or full transration key (default: null)
+     * @param  string|null   $title    (default: Basic HTTP status label)
+     * @param  \Throwable    $previous (default: null)
      * @return void
      * @throws HttpException of given HTTP status code.
      */

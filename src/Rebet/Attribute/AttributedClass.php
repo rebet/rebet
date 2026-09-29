@@ -23,7 +23,7 @@ class AttributedClass
     /**
      * Create class attributes accesser.
      *
-     * @param string|object|\ReflectionClass $class
+     * @param  string|object|\ReflectionClass $class
      * @return AttributedClass
      */
     public static function of($class) : AttributedClass
@@ -54,8 +54,8 @@ class AttributedClass
     /**
      * Get class attribute
      *
-     * @param string $attribute
-     * @return mixed Attribute
+     * @param  string $attribute
+     * @return mixed  Attribute
      */
     public function attribute(string $attribute)
     {
@@ -66,7 +66,7 @@ class AttributedClass
     /**
      * Get method attribute
      *
-     * @param string $method
+     * @param  string                $method
      * @return AttributedMethod|null
      */
     public function method(string $method) : AttributedMethod|null
@@ -77,7 +77,7 @@ class AttributedClass
     /**
      * Get property attribute
      *
-     * @param string $property
+     * @param  string                  $property
      * @return AttributedProperty|null
      */
     public function property(string $property) : AttributedProperty|null

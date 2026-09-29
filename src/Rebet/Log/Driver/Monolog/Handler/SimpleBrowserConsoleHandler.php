@@ -177,7 +177,7 @@ class SimpleBrowserConsoleHandler extends AbstractProcessingHandler
     /**
      * Return quoted string
      *
-     * @param string $arg
+     * @param  string $arg
      * @return string
      */
     protected static function quote(string $arg) : string

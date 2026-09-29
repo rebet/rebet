@@ -79,7 +79,7 @@ abstract class AbstractDriver implements Driver
     /**
      * Create driver instance.
      *
-     * @param \PDO $pdo
+     * @param \PDO              $pdo
      * @param array<int, mixed> $driver_options (default: [])
      */
     protected function __construct(\PDO $pdo, array $driver_options = [])
@@ -133,9 +133,9 @@ abstract class AbstractDriver implements Driver
     /**
      * Create Database exception from given error information.
      *
-     * @param array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
-     * @param string|null $sql (default: null)
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  array{0?: string, 1?: int|string|null, 2?: string|null}|\PDOException $error
+     * @param  string|null                                                           $sql    (default: null)
+     * @param  array<int|string, mixed>                                              $params (default: [])
      * @return DatabaseException
      */
     protected function exception($error, string|null $sql = null, array $params = []) : DatabaseException
@@ -196,7 +196,7 @@ abstract class AbstractDriver implements Driver
     /**
      * Build savepoint SQL.
      *
-     * @param string $name of savepoint
+     * @param  string $name of savepoint
      * @return string of savepoint SQL
      */
     protected function buildSavepointSql(string $name) : string
@@ -245,7 +245,7 @@ abstract class AbstractDriver implements Driver
     /**
      * Build rollback to savepoint SQL.
      *
-     * @param string $name of savepoint
+     * @param  string $name of savepoint
      * @return string of rollback to savepoint SQL.
      */
     protected function buildRollbackToSavepointSql(string $name) : string

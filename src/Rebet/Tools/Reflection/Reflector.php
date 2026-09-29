@@ -40,10 +40,10 @@ class Reflector
      *
      * @todo Wiled card access like 'array.*.key' support
      *
-     * @param  mixed $object
-     * @param  int|string|null $key You can use dot notation
-     * @param  mixed $default (default: null)
-     * @param  bool $accessible (default: false)
+     * @param  mixed           $object
+     * @param  int|string|null $key        You can use dot notation
+     * @param  mixed           $default    (default: null)
+     * @param  bool            $accessible (default: false)
      * @return mixed
      *
      * @see DotAccessDelegator
@@ -93,8 +93,8 @@ class Reflector
     /**
      * It checks given parameters that will be able to property access or not.
      *
-     * @param mixed $target
-     * @param string $property
+     * @param  mixed  $target
+     * @param  string $property
      * @return bool
      */
     protected static function canPropertyAccess($target, string $property) : bool
@@ -111,8 +111,8 @@ class Reflector
      * is not visible outside its declaring class). For that case, walk up the hierarchy via
      * `ReflectionClass::getParentClass()` to find the class that actually declares it.
      *
-     * @param mixed $object
-     * @param string $property
+     * @param  mixed                    $object
+     * @param  string                   $property
      * @return \ReflectionProperty|null
      */
     protected static function reflectProperty($object, string $property) : \ReflectionProperty|null
@@ -134,8 +134,8 @@ class Reflector
     /**
      * Get the property value of given object/class, supporting static properties where $object may be a class name string.
      *
-     * @param \ReflectionProperty $rp
-     * @param object|string $object
+     * @param  \ReflectionProperty $rp
+     * @param  object|string       $object
      * @return mixed
      */
     protected static function getPropertyValue(\ReflectionProperty $rp, $object)
@@ -146,9 +146,9 @@ class Reflector
     /**
      * Set the property value of given object/class, supporting static properties where $object may be a class name string.
      *
-     * @param \ReflectionProperty $rp
-     * @param object|string $object
-     * @param mixed $value
+     * @param  \ReflectionProperty $rp
+     * @param  object|string       $object
+     * @param  mixed               $value
      * @return void
      */
     protected static function setPropertyValue(\ReflectionProperty $rp, $object, $value) : void
@@ -163,7 +163,7 @@ class Reflector
     /**
      * Resolve DotAccessDelegator.
      *
-     * @param mixed $object
+     * @param  mixed $object
      * @return mixed
      */
     private static function resolveDotAccessDelegator($object)
@@ -203,9 +203,9 @@ class Reflector
      * Reflector::has(Foo::class, 'static_property', 'value');
      *
      * @param  array<mixed>|object|string $object
-     * @param  int|string|null $key You can use dot notation. null appends the value (like `$array[] = $value`).
-     * @param  mixed $value
-     * @param  bool $accessible (default: false) ... Valid only for objects
+     * @param  int|string|null            $key        You can use dot notation. null appends the value (like `$array[] = $value`).
+     * @param  mixed                      $value
+     * @param  bool                       $accessible (default: false) ... Valid only for objects
      * @return void
      * @throws \OutOfBoundsException
      */
@@ -270,8 +270,8 @@ class Reflector
      * Reflector::has(Foo::class, 'static_property');
      *
      * @param  array<mixed>|object|null $object
-     * @param  int|string $key You can use dot notation
-     * @param  bool $accessible (default: false) ... Valid only for objects
+     * @param  int|string               $key        You can use dot notation
+     * @param  bool                     $accessible (default: false) ... Valid only for objects
      * @return bool
      */
     public static function has($object, $key, bool $accessible = false)
@@ -316,10 +316,10 @@ class Reflector
      * Reflector::remove($user, 'shipping_address.0');
      * Reflector::remove($_REQUEST, 'opt_in');
      *
-     * @param  array<mixed>|object $object
-     * @param  int|string $key You can use dot notation
-     * @param  bool $accessible (default: false) ... Valid only for objects
-     * @return mixed removed value
+     * @param  array<mixed>|object   $object
+     * @param  int|string            $key        You can use dot notation
+     * @param  bool                  $accessible (default: false) ... Valid only for objects
+     * @return mixed                 removed value
      * @throws \OutOfBoundsException
      */
     public static function remove(&$object, $key, bool $accessible = false)
@@ -422,8 +422,8 @@ class Reflector
      *
      * @see Convertible
      *
-     * @param mixed $value
-     * @param string|null $type
+     * @param  mixed       $value
+     * @param  string|null $type
      * @return mixed
      */
     public static function convert($value, string|null $type)
@@ -541,9 +541,9 @@ class Reflector
     /**
      * Try to convert another type using static method of given type.
      *
-     * @param string $type
-     * @param string $method
-     * @param mixed $value
+     * @param  string $type
+     * @param  string $method
+     * @param  mixed  $value
      * @return mixed
      */
     protected static function tryConvertByStatic(string $type, string $method, $value)
@@ -564,9 +564,9 @@ class Reflector
     /**
      * Try to convert another type using member method of given object.
      *
-     * @param mixed $value
-     * @param string $method
-     * @param string $type
+     * @param  mixed  $value
+     * @param  string $method
+     * @param  string $type
      * @return mixed
      */
     protected static function tryConvertByMember($value, string $method, string $type)
@@ -590,8 +590,8 @@ class Reflector
      * # If value is null then return false
      * # If type is null then return true
      *
-     * @param mixed $value
-     * @param string|null $type type or class
+     * @param  mixed       $value
+     * @param  string|null $type  type or class
      * @return boolean
      */
     public static function typeOf($value, string|null $type) : bool
@@ -616,7 +616,7 @@ class Reflector
     /**
      * Get type or class name given value.
      *
-     * @param mixed $value
+     * @param  mixed       $value
      * @return string|null
      */
     public static function getType($value) : string|null
@@ -640,7 +640,7 @@ class Reflector
      * Get type or class name which is a type hint as a character string.
      * > If type hint is nothing then return null.
      *
-     * @param \ReflectionParameter|\ReflectionProperty|null $target
+     * @param  \ReflectionParameter|\ReflectionProperty|null $target
      * @return string|null
      */
     public static function getTypeHint($target) : string|null
@@ -660,8 +660,8 @@ class Reflector
      * Get type or class name which is a type hint as a character string from given function parameter.
      * > If type hint is nothing then return null.
      *
-     * @param callable|null $function
-     * @param int $param_index
+     * @param  callable|null $function
+     * @param  int           $param_index
      * @return string|null
      */
     public static function getParameterTypeHintOf(callable|null $function, int $param_index) : string|null
@@ -677,8 +677,8 @@ class Reflector
      * Get type or class name which is a type hint as a character string from given class/object property.
      * > If type hint is nothing then return null.
      *
-     * @param string|object|null $object_or_class
-     * @param string $property name
+     * @param  string|object|null $object_or_class
+     * @param  string             $property        name
      * @return string|null
      */
     public static function getPropertyTypeHintOf($object_or_class, string $property) : string|null
@@ -694,9 +694,9 @@ class Reflector
      * Convert to args array from given positional, named or mixed values list.
      * NOTE: Named arguments must come after positional arguments.
      *
-     * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array<int|string, mixed> $values that positional, named or mixed.
-     * @param bool $type_convert (default: false)
+     * @param  \ReflectionParameter[]   $parameters   of target function/method/constructor.
+     * @param  array<int|string, mixed> $values       that positional, named or mixed.
+     * @param  bool                     $type_convert (default: false)
      * @return array<int|string, mixed>
      */
     public static function toArgs(array $parameters, array $values, bool $type_convert = false) : array
@@ -741,8 +741,8 @@ class Reflector
      * Convert to named args array from given positional (or mixed) args list.
      * NOTE: Named arguments must come after positional arguments.
      *
-     * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array<int|string, mixed> $values that positional, named or mixed.
+     * @param  \ReflectionParameter[]   $parameters of target function/method/constructor.
+     * @param  array<int|string, mixed> $values     that positional, named or mixed.
      * @return array<int|string, mixed> that named args map
      * @throws LogicException
      */
@@ -803,9 +803,9 @@ class Reflector
     /**
      * Merge two ordered or named args array to one named args.
      *
-     * @param \ReflectionParameter[] $parameters of target function/method/constructor.
-     * @param array<int|string, mixed> $defaults that ordered or named default args.
-     * @param array<int|string, mixed> $args that ordered or named.
+     * @param  \ReflectionParameter[]   $parameters of target function/method/constructor.
+     * @param  array<int|string, mixed> $defaults   that ordered or named default args.
+     * @param  array<int|string, mixed> $args       that ordered or named.
      * @return array<int|string, mixed>
      */
     public static function mergeArgs(array $parameters, array $defaults, array $args) : array
@@ -819,11 +819,11 @@ class Reflector
     /**
      * Invoke a method of given object/class
      *
-     * @param string|object $object
-     * @param string $method
-     * @param array<int|string, mixed> $args that ordered or named (default: [])
-     * @param boolean $accessible (default: false)
-     * @param boolean $type_convert (default: false)
+     * @param  string|object            $object
+     * @param  string                   $method
+     * @param  array<int|string, mixed> $args         that ordered or named (default: [])
+     * @param  boolean                  $accessible   (default: false)
+     * @param  boolean                  $type_convert (default: false)
      * @return mixed
      */
     public static function invoke($object, string $method, array $args = [], bool $accessible = false, bool $type_convert = false)
@@ -836,9 +836,9 @@ class Reflector
     /**
      * Evaluate a given function
      *
-     * @param callable $function
-     * @param array<int|string, mixed> $args that ordered or named (default: [])
-     * @param boolean $type_convert (default: false)
+     * @param  callable                 $function
+     * @param  array<int|string, mixed> $args         that ordered or named (default: [])
+     * @param  boolean                  $type_convert (default: false)
      * @return mixed
      */
     public static function evaluate(callable $function, array $args = [], bool $type_convert = false)
@@ -850,9 +850,9 @@ class Reflector
     /**
      * Create a new instance of given class.
      *
-     * @param string $class
-     * @param array<int|string, mixed> $args that ordered or named (default: [])
-     * @param bool $type_convert (default: false)
+     * @param  string                   $class
+     * @param  array<int|string, mixed> $args         that ordered or named (default: [])
+     * @param  bool                     $type_convert (default: false)
      * @return mixed
      */
     public static function create(string $class, array $args = [], bool $type_convert = false)
@@ -891,7 +891,7 @@ class Reflector
      *  other : (= already instantiated)
      *       ⇒ return input value
      *
-     * @param mixed $config
+     * @param  mixed $config
      * @return mixed
      */
     public static function instantiate($config)
@@ -926,8 +926,8 @@ class Reflector
     /**
      * It checks the class or object uses given trait.
      *
-     * @param object|string $target
-     * @param string $trait
+     * @param  object|string $target
+     * @param  string        $trait
      * @return boolean
      */
     public static function uses($target, string $trait) : bool

@@ -40,7 +40,7 @@ class Statement implements \IteratorAggregate
     /**
      * Create statement instance.
      *
-     * @param Database $db
+     * @param Database     $db
      * @param PDOStatement $stmt
      */
     public function __construct(Database $db, PDOStatement $stmt)
@@ -84,7 +84,7 @@ class Statement implements \IteratorAggregate
     /**
      * Executes a prepared statement
      *
-     * @param array<int|string, mixed> $params values can be raw scalars or PdoParameter instances (default: [])
+     * @param  array<int|string, mixed>       $params values can be raw scalars or PdoParameter instances (default: [])
      * @return self
      * @throws DatabaseException|PDOException
      */
@@ -122,9 +122,9 @@ class Statement implements \IteratorAggregate
     /**
      * Convert statment result set row to given class.
      *
-     * @param mixed $row
-     * @param string $class
-     * @param array<int|string, array<string, mixed>>|null $meta info of this statement for performance in loop (default: null)
+     * @param  mixed                                        $row
+     * @param  string                                       $class
+     * @param  array<int|string, array<string, mixed>>|null $meta  info of this statement for performance in loop (default: null)
      * @return mixed
      */
     protected function convert($row, string $class, array|null $meta = null)
@@ -143,7 +143,7 @@ class Statement implements \IteratorAggregate
     /**
      * Fetch the statment result data.
      *
-     * @param int $style (default: \PDO::FETCH_ASSOC)
+     * @param  int   $style (default: \PDO::FETCH_ASSOC)
      * @return mixed
      */
     protected function fetch(int $style = \PDO::FETCH_ASSOC)
@@ -161,7 +161,7 @@ class Statement implements \IteratorAggregate
     /**
      * Get all result set data as given class object list.
      *
-     * @param string $class (default: 'stdClass')
+     * @param  string    $class (default: 'stdClass')
      * @return ResultSet
      */
     public function all(string $class = 'stdClass') : ResultSet
@@ -177,7 +177,7 @@ class Statement implements \IteratorAggregate
     /**
      * Get first result set data as given class object.
      *
-     * @param string $class (default: 'stdClass')
+     * @param  string $class (default: 'stdClass')
      * @return mixed
      */
     public function first(string $class = 'stdClass')
@@ -188,8 +188,8 @@ class Statement implements \IteratorAggregate
     /**
      * Get all of given column data.
      *
-     * @param string|int $column
-     * @param string|null $type name of convert to type
+     * @param  string|int  $column
+     * @param  string|null $type   name of convert to type
      * @return ResultSet
      */
     public function allOf($column, string|null $type = null) : ResultSet
@@ -205,8 +205,8 @@ class Statement implements \IteratorAggregate
     /**
      * Get first of given column data.
      *
-     * @param string|int $column
-     * @param string|null $type name of convert to type
+     * @param  string|int  $column
+     * @param  string|null $type   name of convert to type
      * @return mixed
      */
     public function firstOf($column, string|null $type = null)
@@ -231,7 +231,7 @@ class Statement implements \IteratorAggregate
      * This function can specify how to receive data in the type hint of the first argument of the callback function.
      * If the callback function return 'false' then immediately exit loop.
      *
-     * @param callable $callback function(Class $row) : bool {}
+     * @param  callable $callback function(Class $row) : bool {}
      * @return self
      */
     public function each(callable $callback) : self
@@ -250,7 +250,7 @@ class Statement implements \IteratorAggregate
      * Filter the result set using the given callback.
      * This function can specify how to receive data in the type hint of the first argument of the callback function.
      *
-     * @param callable $callback function(Class $row) : bool {}
+     * @param  callable  $callback function(Class $row) : bool {}
      * @return ResultSet
      */
     public function filter(callable $callback) : ResultSet
@@ -271,7 +271,7 @@ class Statement implements \IteratorAggregate
      * Run a map over each of the items.
      * This function can specify how to receive data in the type hint of the first argument of the callback function.
      *
-     * @param callable $callback function(Class $row) : mixed {}
+     * @param  callable  $callback function(Class $row) : mixed {}
      * @return ResultSet
      */
     public function map(callable $callback) : ResultSet
@@ -289,8 +289,8 @@ class Statement implements \IteratorAggregate
      * Reduce the result set to a single value.
      * This function can specify how to receive data in the type hint of the first argument of the reducer function.
      *
-     * @param callable $reducer function(Class $row, $carry) : mixed {}
-     * @param mixed $initial (default: null)
+     * @param  callable $reducer function(Class $row, $carry) : mixed {}
+     * @param  mixed    $initial (default: null)
      * @return mixed
      */
     public function reduce(callable $reducer, $initial = null)

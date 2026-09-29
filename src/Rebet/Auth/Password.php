@@ -39,9 +39,9 @@ class Password
     /**
      * Generate password hash from given plain password using password_hash() php function.
      *
-     * @param string|null $password
-     * @param int|string|null $algorithm (default: depend on configure)
-     * @param array<string, mixed>|null $options (default: depend on configure)
+     * @param  string|null               $password
+     * @param  int|string|null           $algorithm (default: depend on configure)
+     * @param  array<string, mixed>|null $options   (default: depend on configure)
      * @return string|null
      */
     public static function hash(string|null $password, $algorithm = null, array|null $options = null) : string|null
@@ -57,8 +57,8 @@ class Password
     /**
      * Verify the given password and password hash.
      *
-     * @param string|null $password
-     * @param string|null $hash
+     * @param  string|null $password
+     * @param  string|null $hash
      * @return boolean
      */
     public static function verify(string|null $password, string|null $hash) : bool
@@ -69,9 +69,9 @@ class Password
     /**
      * It checks the password needs rehash.
      *
-     * @param string|null $hash
-     * @param int|string|null $algorithm (default: depend on configure)
-     * @param array<string, mixed>|null $options (default: depend on configure)
+     * @param  string|null               $hash
+     * @param  int|string|null           $algorithm (default: depend on configure)
+     * @param  array<string, mixed>|null $options   (default: depend on configure)
      * @return bool
      */
     public static function needsRehash(string|null $hash, $algorithm = null, array|null $options = null) : bool

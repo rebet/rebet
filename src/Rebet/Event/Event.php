@@ -88,7 +88,7 @@ class Event
      * Add event listener.
      * An event listener must have handle(EventClass $event) method or function(EventClass $event) with type hinting of event class.
      *
-     * @param mixed $listeners
+     * @param  mixed $listeners
      * @return void
      */
     public static function listen($listeners) : void
@@ -106,7 +106,7 @@ class Event
     /**
      * Dispatch the event to listeners.
      *
-     * @param mixed $event
+     * @param  mixed $event
      * @return void
      */
     public static function dispatch($event) : void
@@ -147,7 +147,7 @@ class Event
     /**
      * Resolve what event should be listened the given listener.
      *
-     * @param mixed $listener
+     * @param  mixed                           $listener
      * @return array{0: string|null, 1: mixed} [event, listener]
      */
     protected static function resolve($listener) : array

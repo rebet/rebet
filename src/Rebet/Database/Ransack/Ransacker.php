@@ -19,7 +19,7 @@ interface Ransacker
     /**
      * Get ransacker of given PDO driver.
      *
-     * @param Driver $driver
+     * @param  Driver $driver
      * @return self
      */
     public static function of(Driver $driver) : self;
@@ -27,20 +27,20 @@ interface Ransacker
     /**
      * Resolve 'WHERE' condition expression part from given ransack predicate and value.
      *
-     * @param int|string $predicate
-     * @param mixed $value
-     * @param array<string, string|array<int, string>> $alias (default: [])
-     * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
-     * @return Query|null condition or null when ignored
+     * @param  int|string                               $predicate
+     * @param  mixed                                    $value
+     * @param  array<string, string|array<int, string>> $alias     (default: [])
+     * @param  \Closure|null                            $extention function(Ransack $ransack) : ?Condition (default: null)
+     * @return Query|null                               condition or null when ignored
      */
     public function resolve($predicate, $value, array $alias = [], \Closure|null $extention = null) : Query|null;
 
     /**
      * Build 'WHERE' condition expression from given ransack conditions.
      *
-     * @param mixed $ransack condition that arrayable
-     * @param array<string, string|array<int, string>> $alias (default: [])
-     * @param \Closure|null $extention function(Ransack $ransack) : ?Condition (default: null)
+     * @param  mixed                                    $ransack   condition that arrayable
+     * @param  array<string, string|array<int, string>> $alias     (default: [])
+     * @param  \Closure|null                            $extention function(Ransack $ransack) : ?Condition (default: null)
      * @return Query
      */
     public function build($ransack, array $alias = [], \Closure|null $extention = null) : Query;

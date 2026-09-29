@@ -25,7 +25,7 @@ class Json
     /**
      * Get the json serialize value.
      *
-     * @param mixed $value
+     * @param  mixed $value
      * @return mixed
      */
     public static function serialize($value)
@@ -51,8 +51,8 @@ class Json
     /**
      * Create digest string from JSON serialized text of given values.
      *
-     * @param string $algorithm hash algorithm for digest
-     * @param mixed ...$values
+     * @param  string $algorithm hash algorithm for digest
+     * @param  mixed  ...$values
      * @return string
      */
     public static function digest(string $algorithm, ...$values) : string

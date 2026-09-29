@@ -62,7 +62,7 @@ class OrderBy implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeri
     /**
      * Create order by instance from given value.
      *
-     * @param mixed $order_by
+     * @param  mixed     $order_by
      * @return self|null
      */
     public static function valueOf($order_by) : self|null

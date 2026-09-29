@@ -38,7 +38,7 @@ abstract class Kernel
      * Create the application kernel
      *
      * @param Structure $structure
-     * @param string $channel
+     * @param string    $channel
      */
     public function __construct(Structure $structure, string $channel)
     {
@@ -88,7 +88,7 @@ abstract class Kernel
     /**
      * Handle the given input data.
      *
-     * @param I|null $input (default: null)
+     * @param  I|null $input (default: null)
      * @return R
      */
     abstract public function handle($input = null);
@@ -96,8 +96,8 @@ abstract class Kernel
     /**
      * Run an action/command by name.
      *
-     * @param string $action
-     * @param array<string, mixed> $parameters (default: [])
+     * @param  string               $action
+     * @param  array<string, mixed> $parameters (default: [])
      * @return R
      */
     abstract public function call(string $action, array $parameters = []);
@@ -119,8 +119,8 @@ abstract class Kernel
     /**
      * Report an uncaught exception then display fallback pages(console messages).
      *
-     * @param \Throwable $e
-     * @return int error code for exit()
+     * @param  \Throwable $e
+     * @return int        error code for exit()
      */
     abstract public function fallback(\Throwable $e) : int;
 
@@ -128,7 +128,7 @@ abstract class Kernel
      * Report an uncaught exception.
      * Just only report, this function do not response and display result.
      *
-     * @param \Throwable $e
+     * @param  \Throwable $e
      * @return void
      */
     abstract public function report(\Throwable $e) : void;

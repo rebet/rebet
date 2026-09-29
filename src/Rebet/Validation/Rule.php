@@ -23,7 +23,7 @@ abstract class Rule
     /**
      * Check the rule has custom validation of given name.
      *
-     * @param string $name
+     * @param  string $name
      * @return bool
      */
     public function hasCustomValidation(string $name) : bool
@@ -34,9 +34,9 @@ abstract class Rule
     /**
      * Invoke the custom validation of given name.
      *
-     * @param string $name
-     * @param Context $context
-     * @param mixed ...$args
+     * @param  string  $name
+     * @param  Context $context
+     * @param  mixed   ...$args
      * @return bool
      */
     public function validate(string $name, Context $context, ...$args) : bool

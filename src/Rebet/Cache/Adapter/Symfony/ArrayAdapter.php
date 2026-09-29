@@ -21,11 +21,11 @@ class ArrayAdapter extends AbstractSymfonyAdapter
     /**
      * Create Array Adapter
      *
-     * @param string $namespace (default:'')
-     * @param int|string $default_lifetime that time unit labeled string like '12min', or int seconds. (default: 0)
-     * @param bool $taggable (default: false)
-     * @param null|string|CacheItemPoolInterface $tags_pool name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
-     * @param float $known_tag_versions_ttl when taggable is true. (default: 0.15)
+     * @param string                             $namespace              (default:'')
+     * @param int|string                         $default_lifetime       that time unit labeled string like '12min', or int seconds. (default: 0)
+     * @param bool                               $taggable               (default: false)
+     * @param null|string|CacheItemPoolInterface $tags_pool              name that `Cache.stores.{name}` or CacheItemPoolInterface instance when taggable is true. (default: null for use given $adapter as it is)
+     * @param float                              $known_tag_versions_ttl when taggable is true. (default: 0.15)
      */
     public function __construct(string $namespace = '', $default_lifetime = 0, bool $taggable = false, $tags_pool = null, $known_tag_versions_ttl = 0.15)
     {

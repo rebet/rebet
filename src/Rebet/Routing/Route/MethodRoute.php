@@ -54,9 +54,9 @@ class MethodRoute extends DeclarativeRoute
     /**
      * Create Route instance.
      *
-     * @param array<int, string> $methods
-     * @param string $uri
-     * @param string $action 'Namespace\\Controller::method'. The namespace can be use @ namespace alias. (default namespace: depend on configure)
+     * @param  array<int, string>   $methods
+     * @param  string               $uri
+     * @param  string               $action  'Namespace\\Controller::method'. The namespace can be use @ namespace alias. (default namespace: depend on configure)
      * @throws \ReflectionException
      */
     public function __construct(array $methods, string $uri, string $action)
@@ -72,7 +72,7 @@ class MethodRoute extends DeclarativeRoute
     /**
      * Cleate a route action for this route.
      *
-     * @param Request $request
+     * @param  Request                $request
      * @return RouteAction
      * @throws RouteNotFoundException
      */
@@ -94,8 +94,8 @@ class MethodRoute extends DeclarativeRoute
     /**
      * Terminate the route.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param  Request  $request
+     * @param  Response $response
      * @return void
      */
     public function terminate(Request $request, Response $response) : void
@@ -108,7 +108,7 @@ class MethodRoute extends DeclarativeRoute
     /**
      * Set access control to non public contorller methods.
      *
-     * @param boolean $accessible
+     * @param  boolean $accessible
      * @return self
      */
     public function accessible(bool $accessible) : self

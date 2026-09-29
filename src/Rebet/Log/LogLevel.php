@@ -44,7 +44,7 @@ class LogLevel extends PsrLogLevel
     /**
      * Convert error type of E_* format to PSR-3 LogLevel.
      *
-     * @param int $type
+     * @param  int    $type
      * @return string
      */
     public static function errorTypeOf(int $type) : string

@@ -18,7 +18,7 @@ interface NameableDriver extends PsrLogger
     /**
      * Set a name to this driver.
      *
-     * @param string $name
+     * @param  string $name
      * @return self
      */
     public function setName(string $name) : self;
@@ -33,7 +33,7 @@ interface NameableDriver extends PsrLogger
     /**
      * Return a new cloned instance with the name changed
      *
-     * @param string $name
+     * @param  string    $name
      * @return PsrLogger
      */
     public function withName(string $name) : PsrLogger;

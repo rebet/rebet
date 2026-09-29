@@ -33,7 +33,7 @@ class CallbackProcessor implements Processor
      * Create processor that execute given callback.
      *
      * @param \Closure $callback
-     * @param boolean $type_convert
+     * @param boolean  $type_convert
      */
     public function __construct(\Closure $callback, bool $type_convert = true)
     {

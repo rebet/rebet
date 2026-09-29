@@ -18,7 +18,7 @@ class AppStructure extends Structure
      * Get environment file path
      * Defaultly this method return "{Structure::root()}/core/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -31,7 +31,7 @@ class AppStructure extends Structure
      * Get application config path
      * Defaultly this method return "{Structure::root()}/core/configs/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -44,7 +44,7 @@ class AppStructure extends Structure
      * Get application resources path
      * Defaultly this method return "{Structure::root()}/core/resources/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -57,7 +57,7 @@ class AppStructure extends Structure
      * Get application routes configuration path
      * Defaultly this method return "{Structure::root()}/core/routes/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -70,7 +70,7 @@ class AppStructure extends Structure
      * Get application views path
      * Defaultly this method return "{Structure::root()}/core/views/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -83,7 +83,7 @@ class AppStructure extends Structure
      * Get public root path
      * Defaultly this method return "{Structure::root()}/public/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -96,7 +96,7 @@ class AppStructure extends Structure
      * Get cache path
      * Defaultly this method return "{Structure::root()}/var/cache/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -109,7 +109,7 @@ class AppStructure extends Structure
      * Get logs path
      * Defaultly this method return "{Structure::root()}/var/logs/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -122,7 +122,7 @@ class AppStructure extends Structure
      * Get root storage path.
      * Defaultly this method return "{Structure::root()}/var/storage/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -135,7 +135,7 @@ class AppStructure extends Structure
      * Get private storage path.
      * Defaultly this method return "{Structure::storage()}/private/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]
@@ -148,7 +148,7 @@ class AppStructure extends Structure
      * Get public storage path.
      * Defaultly this method return "{Structure::storage()}/public/{$relative_path}", you can override this method if you want.
      *
-     * @param string|null $relative_path (default: null)
+     * @param  string|null $relative_path (default: null)
      * @return string
      */
     #[Override]

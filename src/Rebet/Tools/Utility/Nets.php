@@ -26,7 +26,7 @@ class Nets
      * Convert binary data to a string that can be used for URL.
      * Note: Returns a character string that replaces Base64 "URL Unsafe" character "+ / =" with URL Safe character "._-".
      *
-     * @param mixed $byte
+     * @param  mixed  $byte
      * @return string
      */
     public static function encodeBase64Url($byte) : string
@@ -38,7 +38,7 @@ class Nets
      * Convert available strings in URL to binary data.
      * Note: Restore the data from the character string "+ / =" of Base64 "URL Unsafe" replaced by URL Safe character "._-".
      *
-     * @param string $encoded
+     * @param  string $encoded
      * @return mixed
      */
     public static function decodeBase64Url(string $encoded)
@@ -49,7 +49,7 @@ class Nets
     /**
      * Get page data of specified URL with file_get_contents.
      *
-     * @param string $url
+     * @param  string $url
      * @return mixed
      */
     public static function urlGetContents(string $url)

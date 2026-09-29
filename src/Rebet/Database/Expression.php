@@ -31,7 +31,7 @@ class Expression
     /**
      * Create Expression Value instance
      *
-     * @param string $expression template that contains '{values index}' placeholder like 'GeomFromText({0})' or just function like 'now()'
+     * @param string  $expression template that contains '{values index}' placeholder like 'GeomFromText({0})' or just function like 'now()'
      * @param mixed[] ...$values
      */
     public function __construct(string $expression, ...$values)
@@ -43,8 +43,8 @@ class Expression
     /**
      * Create Expression
      *
-     * @param string $expression template that contains '{values index}' placeholder like 'GeomFromText({0})' or just function like 'now()'
-     * @param mixed[] ...$values
+     * @param  string  $expression template that contains '{values index}' placeholder like 'GeomFromText({0})' or just function like 'now()'
+     * @param  mixed[] ...$values
      * @return self
      */
     public static function of(string $expression, ...$values) : self
@@ -55,8 +55,8 @@ class Expression
     /**
      * Compile expression using given placeholder name.
      *
-     * @param Driver $driver
-     * @param string $placeholder name
+     * @param  Driver $driver
+     * @param  string $placeholder name
      * @return Query
      */
     public function compile(Driver $driver, string $placeholder) : Query

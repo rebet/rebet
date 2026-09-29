@@ -31,11 +31,11 @@ class EnvResource
     /**
      * Load the given resource.
      *
-     * @param string $env
-     * @param string $dir_path
-     * @param string|string[]|null $base_names (default: null for all load)
-     * @param string $suffix (default: php)
-     * @param array<string, mixed> $option (default: [])
+     * @param  string               $env
+     * @param  string               $dir_path
+     * @param  string|string[]|null $base_names (default: null for all load)
+     * @param  string               $suffix     (default: php)
+     * @param  array<string, mixed> $option     (default: [])
      * @return array<string, mixed>
      * @throws LogicException
      */
@@ -63,8 +63,8 @@ class EnvResource
     /**
      * List base names with given suffix in the directory.
      *
-     * @param string $dir_path
-     * @param string $suffix
+     * @param  string             $dir_path
+     * @param  string             $suffix
      * @return array<int, string>
      */
     protected static function listBaseNames(string $dir_path, string $suffix) : array

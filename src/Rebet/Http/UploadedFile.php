@@ -82,7 +82,7 @@ class UploadedFile extends SymfonyUploadedFile
     /**
      * Convert to UploadedFile from given value.
      *
-     * @param mixed $value
+     * @param  mixed     $value
      * @return self|null
      */
     public static function valueOf($value) : self|null
@@ -119,10 +119,10 @@ class UploadedFile extends SymfonyUploadedFile
      * The {.ext} placeholder will be replaced by guessed extension from mime type.
      * If can not guess extension by mime type then use this uploaded file extension as it is.
      *
-     * @param string $path can be contains {.ext} placeholder.
-     * @param string|array<string, mixed> $options (default: [])
-     * @param string|null $disk name (default: null for private disk)
-     * @return string of saved path
+     * @param  string                      $path    can be contains {.ext} placeholder.
+     * @param  string|array<string, mixed> $options (default: [])
+     * @param  string|null                 $disk    name (default: null for private disk)
+     * @return string                      of saved path
      */
     public function store(string $path, $options = [], string|null $disk = null) : string
     {

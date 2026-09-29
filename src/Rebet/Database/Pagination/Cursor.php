@@ -74,9 +74,9 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Create Cursor instance.
      *
-     * @param Pager $pager
-     * @param array<string, mixed> $cursor of [col => $value, ... ]
-     * @param int|null $next_page_count that confirmed to be exists
+     * @param Pager                $pager
+     * @param array<string, mixed> $cursor          of [col => $value, ... ]
+     * @param int|null             $next_page_count that confirmed to be exists
      */
     public function __construct(Pager $pager, array $cursor, int|null $next_page_count = null)
     {
@@ -99,10 +99,10 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Create given pages cursor using given column orders and cursor pointed data.
      *
-     * @param OrderBy|array<string, string> $order_by
-     * @param Pager $pager
-     * @param object|array<string, mixed> $data of cursor poitned
-     * @param int $next_page_count that confirmed to be exists
+     * @param  OrderBy|array<string, string> $order_by
+     * @param  Pager                         $pager
+     * @param  object|array<string, mixed>   $data            of cursor poitned
+     * @param  int                           $next_page_count that confirmed to be exists
      * @return self
      */
     public static function create($order_by, Pager $pager, $data, int|null $next_page_count) : self
@@ -153,7 +153,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * NOTE: Name of cursor will use pager->curosr setting.
      *       If the pager->cursor is empty then this method do nothing.
      *
-     * @param CursorStorage|null $strage (default: depend on configured)
+     * @param  CursorStorage|null $strage (default: depend on configured)
      * @return self
      */
     public function save(CursorStorage|null $strage = null) : self
@@ -169,8 +169,8 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Load the cursor from strage.
      *
-     * @param string $name of cursor
-     * @param CursorStorage|null $strage (default: depend on configured)
+     * @param  string             $name   of cursor
+     * @param  CursorStorage|null $strage (default: depend on configured)
      * @return self|null
      */
     public static function load(string $name, CursorStorage|null $strage = null) : self|null
@@ -183,7 +183,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Remove the cursor from strage.
      *
-     * @param string $name of cursor
+     * @param string             $name   of cursor
      * @param CursorStorage|null $strage (default: depend on configured)
      */
     public static function remove(string $name, CursorStorage|null $strage = null) : void
@@ -207,7 +207,7 @@ class Cursor implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * It checks the cursor equals given other cursor.
      * This method ignore created_at timestamp for expired check.
      *
-     * @param Cursor|null $cursor
+     * @param  Cursor|null $cursor
      * @return boolean
      */
     public function equals(Cursor|null $cursor) : bool

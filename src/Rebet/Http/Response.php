@@ -30,7 +30,7 @@ interface Response
     /**
      * Get a header from the Response.
      *
-     * @param string $key
+     * @param  string               $key
      * @return string|string[]|null
      */
     public function getHeader(string $key);
@@ -38,9 +38,9 @@ interface Response
     /**
      * Set a header on the Response.
      *
-     * @param string $key
-     * @param array<int, string>|string $values
-     * @param boolean $replace (default: true)
+     * @param  string                    $key
+     * @param  array<int, string>|string $values
+     * @param  boolean                   $replace (default: true)
      * @return self
      */
     public function setHeader(string $key, $values, bool $replace = true) : self;
@@ -48,9 +48,9 @@ interface Response
     /**
      * Get the cookie of given name.
      *
-     * @param string $name
-     * @param string|null $path filter can contains shell's wildcard (default: '*')
-     * @param string|null $domain filter can contains shell's wildcard (default: '*')
+     * @param  string                         $name
+     * @param  string|null                    $path   filter can contains shell's wildcard (default: '*')
+     * @param  string|null                    $domain filter can contains shell's wildcard (default: '*')
      * @return Cookie|array<int, Cookie>|null
      */
     public function getCookie(string $name, string|null $path = '*', string|null $domain = '*');
@@ -58,7 +58,7 @@ interface Response
     /**
      * Set the cookie.
      *
-     * @param Cookie $cookie
+     * @param  Cookie $cookie
      * @return self
      */
     public function setCookie(Cookie $cookie) : self;
@@ -121,17 +121,17 @@ interface Response
      *
      * Valid types are strings, numbers, null, and objects that implement a __toString() method.
      *
-     * @param string|null $content Content that can be cast to string
+     * @param  string|null               $content Content that can be cast to string
      * @return static
      * @throws \UnexpectedValueException
      */
     public function setContent(string|null $content);
 
     /**
-      * Gets the current response content.
-      *
-      * @return string|false Content
-      */
+     * Gets the current response content.
+     *
+     * @return string|false Content
+     */
     public function getContent();
 
     /**
@@ -407,8 +407,8 @@ interface Response
     /**
      * Sets the ETag value.
      *
-     * @param string|null $etag The ETag unique identifier or null to remove the header
-     * @param bool        $weak Whether you want a weak ETag or not
+     * @param  string|null $etag The ETag unique identifier or null to remove the header
+     * @param  bool        $weak Whether you want a weak ETag or not
      * @return self
      * @final
      */
@@ -419,7 +419,7 @@ interface Response
      *
      * Available options are: etag, last_modified, max_age, s_maxage, private, public and immutable.
      *
-     * @param array<string, mixed> $options
+     * @param  array<string, mixed>      $options
      * @return self
      * @throws \InvalidArgumentException
      * @final
@@ -456,8 +456,8 @@ interface Response
     /**
      * Sets the Vary header.
      *
-     * @param string|array<int, string> $headers
-     * @param bool         $replace Whether to replace the actual value or not (true by default)
+     * @param  string|array<int, string> $headers
+     * @param  bool                      $replace Whether to replace the actual value or not (true by default)
      * @return self
      * @final
      */

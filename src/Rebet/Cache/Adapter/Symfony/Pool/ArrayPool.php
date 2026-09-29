@@ -119,7 +119,7 @@ class ArrayPool implements AdapterInterface
 
     /**
      * {@inheritDoc}
-    */
+     */
     public function deleteItems(array $keys) : bool
     {
         foreach ($keys as $key) {

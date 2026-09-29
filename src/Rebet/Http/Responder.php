@@ -32,10 +32,10 @@ class Responder
     /**
      * Create a response for given data.
      *
-     * @param mixed $data
-     * @param int $status code of HTTP (default: 200)
-     * @param array<string, string|array<int, string>> $headers (default: [])
-     * @param Request|null $request (default: null for Request::current())
+     * @param  mixed                                    $data
+     * @param  int                                      $status  code of HTTP (default: 200)
+     * @param  array<string, string|array<int, string>> $headers (default: [])
+     * @param  Request|null                             $request (default: null for Request::current())
      * @return Response
      */
     public static function toResponse($data, int $status = 200, array $headers = [], Request|null $request = null) : Response
@@ -47,8 +47,8 @@ class Responder
      * Prepare the Response.
      *
      * @template T of Response
-     * @param T $response
-     * @param Request|null $request
+     * @param  T            $response
+     * @param  Request|null $request
      * @return T
      */
     protected static function prepare(Response $response, Request|null $request = null) : Response
@@ -60,9 +60,9 @@ class Responder
     /**
      * Create a response for given data type.
      *
-     * @param mixed $data
-     * @param int $status code of HTTP (default: 200)
-     * @param array<string, string|array<int, string>> $headers (default: [])
+     * @param  mixed                                    $data
+     * @param  int                                      $status  code of HTTP (default: 200)
+     * @param  array<string, string|array<int, string>> $headers (default: [])
      * @return Response
      */
     protected static function createResponseByTypeOf($data, int $status = 200, array $headers = []) : Response
@@ -90,11 +90,11 @@ class Responder
      * If the given url starts with '/' then append prefix when the route has it.
      * If you do not want this behavior you can use starts with 'http(s)//...' or '@/path/to/page'.
      *
-     * @param string $url
-     * @param array<string, mixed> $query (default: [])
-     * @param int $status (default: 302)
-     * @param array<string, string|array<int, string>> $headers (default: [])
-     * @param Request|null $request (default: null for Request::current())
+     * @param  string                                   $url
+     * @param  array<string, mixed>                     $query   (default: [])
+     * @param  int                                      $status  (default: 302)
+     * @param  array<string, string|array<int, string>> $headers (default: [])
+     * @param  Request|null                             $request (default: null for Request::current())
      * @return RedirectResponse
      */
     public static function redirect(string $url, array $query = [], int $status = 302, array $headers = [], Request|null $request = null) : RedirectResponse
@@ -116,11 +116,11 @@ class Responder
      * Note: You must be set the 'type' of URI reference that identifies the problem type when you want to contain the additional data.
      * Note: When the type is TYPE_HTTP_STATUS(='about:blank') then the title SHOULD be the same as the recommended HTTP status phrase, although it MAY be localized.
      *
-     * @param int $status of HTTP response
-     * @param string|null $title of problem or full transration key (default: HTTP status label)
-     * @param string|null $type of problem (default: TYPE_HTTP_STATUS)
-     * @param array<string, string|array<int, string>> $headers of HTTP response (default: [])
-     * @param int $encoding_options of JSON encode (default: 0)
+     * @param  int                                      $status           of HTTP response
+     * @param  string|null                              $title            of problem or full transration key (default: HTTP status label)
+     * @param  string|null                              $type             of problem (default: TYPE_HTTP_STATUS)
+     * @param  array<string, string|array<int, string>> $headers          of HTTP response (default: [])
+     * @param  int                                      $encoding_options of JSON encode (default: 0)
      * @return ProblemResponse
      */
     public static function problem(int $status, string|null $title = null, string|null $type = null, array $headers = [], int $encoding_options = 0) : ProblemResponse
@@ -132,11 +132,11 @@ class Responder
      * Create a streamed response for a given file.
      * NOTE: This moethod automatically create fallback filename using MD5 of ginven filename.
      *
-     * @param string $path
-     * @param string|null $filename (default: null)
-     * @param array<string, string|array<int, string>> $headers (default: [])
-     * @param string $disposition (default: 'inline')
-     * @param string $disk of filesystem (default: null for use private disk)
+     * @param  string                                   $path
+     * @param  string|null                              $filename    (default: null)
+     * @param  array<string, string|array<int, string>> $headers     (default: [])
+     * @param  string                                   $disposition (default: 'inline')
+     * @param  string                                   $disk        of filesystem (default: null for use private disk)
      * @return StreamedResponse
      */
     public static function file(string $path, string|null $filename = null, array $headers = [], string $disposition = 'inline', string $disk = null) : StreamedResponse
@@ -169,10 +169,10 @@ class Responder
      * Create a streamed download response for a given file.
      * NOTE: This moethod automatically create fallback filename using MD5 of ginven filename.
      *
-     * @param string $path
-     * @param string|null $filename (default: null)
-     * @param array<string, string|array<int, string>> $headers (default: [])
-     * @param string $disk of filesystem (default: null)
+     * @param  string                                   $path
+     * @param  string|null                              $filename (default: null)
+     * @param  array<string, string|array<int, string>> $headers  (default: [])
+     * @param  string                                   $disk     of filesystem (default: null)
      * @return StreamedResponse
      */
     public static function download(string $path, string|null $filename = null, array $headers = [], string $disk = null) : StreamedResponse

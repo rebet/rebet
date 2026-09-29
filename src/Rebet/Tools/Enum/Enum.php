@@ -172,7 +172,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Reset the cache of given class or all enums.
      *
-     * @param string|null $class
+     * @param  string|null $class
      * @return void
      */
     public static function reset(string|null $class = null) : void
@@ -194,8 +194,8 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Create an enum object
      *
-     * @param mixed $value
-     * @param string $label
+     * @param  mixed          $value
+     * @param  string         $label
      * @throws LogicException
      */
     protected function __construct($value, string $label)
@@ -223,8 +223,8 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get translated value of given field.
      * If this enum is not translatable then return value of given field as it is.
      *
-     * @param string $field (default: label)
-     * @param string|null $locale (default: depend on configure)
+     * @param  string      $field  (default: label)
+     * @param  string|null $locale (default: depend on configure)
      * @return string
      */
     public function translate(string $field = 'label', string|null $locale = null) : string
@@ -241,7 +241,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Check this enum equals given value.
      *
-     * @param mixed $value
+     * @param  mixed $value
      * @return bool
      */
     public function equals($value) : bool
@@ -252,7 +252,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Verify that the enumeration is included in the given array.
      *
-     * @param mixed ...$values
+     * @param  mixed   ...$values
      * @return boolean
      */
     public function in(...$values) : bool
@@ -286,7 +286,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Convert type to given type.
      *
-     * @param string $type
+     * @param  string $type
      * @return mixed
      */
     public function convertTo(string $type)
@@ -307,8 +307,8 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Creates an enum object from const definition of enum type.
      *
-     * @param \ReflectionClass<static> $rc
-     * @param string $name
+     * @param  \ReflectionClass<static> $rc
+     * @param  string                   $name
      * @return self|null
      */
     private static function constToEnum(\ReflectionClass $rc, string $name) : self|null
@@ -336,8 +336,8 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Provides enumerated object access via static method call.
      *
-     * @param string $name
-     * @param array<mixed> $args
+     * @param  string       $name
+     * @param  array<mixed> $args
      * @return self|null
      */
     public static function __callStatic(string $name, array $args)
@@ -382,9 +382,9 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get map of [$enum->$field ⇒ $enum].
      * If there is an enum with the same filed value, it wins after enum::lists().
      *
-     * @param string $field (default: 'value')
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  string                  $field     (default: 'value')
+     * @param  boolean                 $translate (default: false)
+     * @param  string|null             $locale    (default: depend on configure)
      * @return array<int|string, self>
      * @throws LogicException
      */
@@ -414,10 +414,10 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get an enum with the value of the given field.
      * If there is an enum with the same filed value, it wins after enum::lists().
      *
-     * @param string $field
-     * @param mixed $value
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  string         $field
+     * @param  mixed          $value
+     * @param  boolean        $translate (default: false)
+     * @param  string|null    $locale    (default: depend on configure)
      * @return self|null
      * @throws LogicException
      */
@@ -437,7 +437,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get an enum with the target value.
      * If there is an enum with the same filed value, it wins after enum::lists().
      *
-     * @param mixed $value
+     * @param  mixed     $value
      * @return self|null
      */
     public static function valueOf($value) : self|null
@@ -449,9 +449,9 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get an enum with the target label.
      * If there is an enum with the same filed value, it wins after enum::lists().
      *
-     * @param string $label
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  string      $label
+     * @param  boolean     $translate (default: false)
+     * @param  string|null $locale    (default: depend on configure)
      * @return self|null
      */
     public static function labelOf(string $label, bool $translate = false, string|null $locale = null) : self|null
@@ -463,7 +463,7 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get an enum with the target name.
      * If there is an enum with the same filed value, it wins after enum::lists().
      *
-     * @param string $name
+     * @param  string    $name
      * @return self|null
      */
     public static function nameOf(string $name) : self|null
@@ -474,10 +474,10 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      * Get a list of given field as an array.
      *
-     * @param string $name
-     * @param \Closure|null $matcher (default: null)
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  string            $name
+     * @param  \Closure|null     $matcher   (default: null)
+     * @param  boolean           $translate (default: false)
+     * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
     public static function listOf(string $name, \Closure|null $matcher = null, bool $translate = false, string|null $locale = null) : array
@@ -499,9 +499,9 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      *  Get a list of value as an array.
      *
-     * @param \Closure|null $matcher (default: null)
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  \Closure|null     $matcher   (default: null)
+     * @param  boolean           $translate (default: false)
+     * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
     public static function values(\Closure|null $matcher = null, bool $translate = false, string|null $locale = null) : array
@@ -512,9 +512,9 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      *  Get a list of label as an array.
      *
-     * @param \Closure|null $matcher (default: null)
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  \Closure|null     $matcher   (default: null)
+     * @param  boolean           $translate (default: false)
+     * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
     public static function labels(\Closure|null $matcher = null, bool $translate = false, string|null $locale = null) : array
@@ -525,7 +525,7 @@ abstract class Enum implements \JsonSerializable, Convertible
     /**
      *  Get a list of name as an array.
      *
-     * @param \Closure|null $matcher (default: null)
+     * @param  \Closure|null     $matcher (default: null)
      * @return array<int, mixed>
      */
     public static function names(\Closure|null $matcher = null) : array
@@ -538,8 +538,8 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Get the next enumeration list that can transition from an enumerated value(current) according to the given situation(context).
      * Override with subclass if necessary.
      *
-     * @param mixed $current
-     * @param array<mixed>|null $context (default: null)
+     * @param  mixed             $current
+     * @param  array<mixed>|null $context (default: null)
      * @return array<int, self>
      */
     public static function nexts($current, array|null $context = null) : array
@@ -551,11 +551,11 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Simple Workflow.
      * Get the next enumeration list of given fields as an array.
      *
-     * @param string $name
-     * @param mixed $current
-     * @param array<mixed>|null $context (default: null)
-     * @param boolean $translate (default: false)
-     * @param string|null $locale (default: depend on configure)
+     * @param  string            $name
+     * @param  mixed             $current
+     * @param  array<mixed>|null $context   (default: null)
+     * @param  boolean           $translate (default: false)
+     * @param  string|null       $locale    (default: depend on configure)
      * @return array<int, mixed>
      */
     public static function nextOf(string $name, $current, array|null $context = null, bool $translate = false, string|null $locale = null) : array
@@ -576,8 +576,8 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Simple Workflow.
      * Get the next enumeration values as an array.
      *
-     * @param mixed $current
-     * @param array<mixed>|null $context (default: null)
+     * @param  mixed             $current
+     * @param  array<mixed>|null $context (default: null)
      * @return array<int, mixed>
      */
     public static function nextValues($current, array|null $context = null) : array
@@ -589,8 +589,8 @@ abstract class Enum implements \JsonSerializable, Convertible
      * Simple Workflow.
      * Get the next enumeration labels as an array.
      *
-     * @param mixed $current
-     * @param array<mixed>|null $context (default: null)
+     * @param  mixed             $current
+     * @param  array<mixed>|null $context (default: null)
      * @return array<int, mixed>
      */
     public static function nextLabels($current, array|null $context = null) : array

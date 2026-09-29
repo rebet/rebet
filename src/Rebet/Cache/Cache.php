@@ -50,17 +50,17 @@ use Rebet\Tools\Config\Configurable;
  *
  * Dynamically call the default store method
  * --------------------
- * @method static string        name()                                                                                                        Dynamically call the default store method.
- * @method static Adapter       adapter()                                                                                                     Dynamically call the default store method.
- * @method static bool          flush()                                                                                                       Dynamically call the default store method.
- * @method static mixed         retrieve(string $key, int|string|DateTimeInterface $expire, \Closure|mixed $supplier, bool $remember = true)  Dynamically call the default store method.
- * @method static mixed|mixed[] get(string ...$keys)                                                                                          Dynamically call the default store method.
- * @method static bool          put(array<string, mixed> $values, int|string|DateTimeInterface $expire)                                       Dynamically call the default store method.
- * @method static bool          has(string $key)                                                                                              Dynamically call the default store method.
- * @method static mixed|mixed[] pull(string ...$keys)                                                                                         Dynamically call the default store method.
- * @method static bool          delete(string ...$keys)                                                                                       Dynamically call the default store method.
- * @method static TagSet        tags(string ...$tags)                                                                                         Dynamically call the default store method.
- * @method static bool          prune()                                                                                                       Dynamically call the default store method.
+ * @method static string        name()                                                                                                       Dynamically call the default store method.
+ * @method static Adapter       adapter()                                                                                                    Dynamically call the default store method.
+ * @method static bool          flush()                                                                                                      Dynamically call the default store method.
+ * @method static mixed         retrieve(string $key, int|string|DateTimeInterface $expire, \Closure|mixed $supplier, bool $remember = true) Dynamically call the default store method.
+ * @method static mixed|mixed[] get(string ...$keys)                                                                                         Dynamically call the default store method.
+ * @method static bool          put(array<string, mixed> $values, int|string|DateTimeInterface $expire)                                      Dynamically call the default store method.
+ * @method static bool          has(string $key)                                                                                             Dynamically call the default store method.
+ * @method static mixed|mixed[] pull(string ...$keys)                                                                                        Dynamically call the default store method.
+ * @method static bool          delete(string ...$keys)                                                                                      Dynamically call the default store method.
+ * @method static TagSet        tags(string ...$tags)                                                                                        Dynamically call the default store method.
+ * @method static bool          prune()                                                                                                      Dynamically call the default store method.
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -110,7 +110,7 @@ class Cache
     /**
      * Get the Cache store for given name.
      *
-     * @param string $name when the null given return the default cache store (default: null)
+     * @param  string $name when the null given return the default cache store (default: null)
      * @return Store
      */
     public static function store(string|null $name = null) : Store
@@ -124,8 +124,8 @@ class Cache
     /**
      * Dynamically call the default Store instance.
      *
-     * @param string $method
-     * @param array<int, mixed> $parameters
+     * @param  string            $method
+     * @param  array<int, mixed> $parameters
      * @return mixed
      */
     public static function __callStatic($method, $parameters)

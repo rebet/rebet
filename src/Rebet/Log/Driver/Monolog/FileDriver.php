@@ -36,17 +36,17 @@ class FileDriver extends MonologDriver
     /**
      * Create File ouput logging driver.
      *
-     * @param string $level
-     * @param string $filename
-     * @param string $filename_format (default: '{filename}-{date}')
-     * @param string $filename_date_format (default: 'Y-m-d')
-     * @param int $max_files (default: 0)
-     * @param int $file_permission (default: 0644)
-     * @param bool $use_locking (default: false)
-     * @param bool $with_browser_console (default: false)
-     * @param string|null $format (default: null)
-     * @param array<string, callable> $stringifiers (default: [])
-     * @param boolean $bubble (default: true)
+     * @param string                  $level
+     * @param string                  $filename
+     * @param string                  $filename_format      (default: '{filename}-{date}')
+     * @param string                  $filename_date_format (default: 'Y-m-d')
+     * @param int                     $max_files            (default: 0)
+     * @param int                     $file_permission      (default: 0644)
+     * @param bool                    $use_locking          (default: false)
+     * @param bool                    $with_browser_console (default: false)
+     * @param string|null             $format               (default: null)
+     * @param array<string, callable> $stringifiers         (default: [])
+     * @param boolean                 $bubble               (default: true)
      */
     public function __construct(
         string $level,

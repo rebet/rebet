@@ -32,11 +32,11 @@ class LocaleResource
     /**
      * Load the given resource.
      *
-     * @param string|array<int, string> $loading_path
-     * @param string $locale
-     * @param string $base_name
-     * @param string $suffix (default: .php)
-     * @param array<string, mixed> $option (default: [])
+     * @param  string|array<int, string> $loading_path
+     * @param  string                    $locale
+     * @param  string                    $base_name
+     * @param  string                    $suffix       (default: .php)
+     * @param  array<string, mixed>      $option       (default: [])
      * @return array<string, mixed>
      * @throws LogicException
      */

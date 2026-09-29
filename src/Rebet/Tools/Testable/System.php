@@ -15,9 +15,9 @@ use Rebet\Tools\Utility\Arrays;
  * and functions that operate only with SAPI such as header.
  * Note that language structures such as exit and die are not handled in this class because it is desirable to exclude them in terms of testability.
  *
- * @method static void passthru(string $command, &$result_code = null) : bool|null
- * @method static void header(string $header, bool $replace = true, int $http_response_code = null)
- * @method static array<int, string> headers_list()
+ * @method static void                     passthru(string $command, &$result_code = null)                                                                                                                         : bool|null
+ * @method static void                     header(string $header, bool $replace = true, int $http_response_code = null)
+ * @method static array<int, string>       headers_list()
  * @method static array<int|string, mixed> dns_get_record(string $hostname, int $type = 268435456, array<int|string, mixed>|null &$authns = null, array<int|string, mixed>|null &$addtl = null, bool $raw = false)
  *
  * @package   Rebet
@@ -143,7 +143,7 @@ class System
     /**
      * Get memory data.
      *
-     * @param string $name
+     * @param  string       $name
      * @return array<mixed>
      */
     public static function &memory(string $name) : array
@@ -167,9 +167,9 @@ class System
     /**
      * Get / Set dataset of given name.
      *
-     * @param string $function_name
-     * @param string $name
-     * @param mixed $value
+     * @param  string $function_name
+     * @param  string $name
+     * @param  mixed  $value
      * @return mixed
      */
     public static function datasets(string $function_name, string $name, $value = null)
@@ -184,9 +184,9 @@ class System
     /**
      * Register php function emulator.
      *
-     * @param string $function_name
-     * @param \Closure $emurator
-     * @param array<string, mixed> $datasets
+     * @param  string               $function_name
+     * @param  \Closure             $emurator
+     * @param  array<string, mixed> $datasets
      * @return void
      */
     public static function emulator(string $function_name, \Closure $emurator, array $datasets = [])
@@ -204,7 +204,7 @@ class System
     /**
      * Get/Set testing mode.
      *
-     * @param bool|null $is_testing
+     * @param  bool|null $is_testing
      * @return bool
      */
     public static function testing(bool|null $is_testing = null) : bool
@@ -215,7 +215,7 @@ class System
     /**
      * It checks given php function name can be emulatable or not.
      *
-     * @param string $function_name
+     * @param  string $function_name
      * @return bool
      */
     public static function emulatable($function_name) : bool
@@ -226,8 +226,8 @@ class System
     /**
      * Delegate php function directly, but call emulator if it's testing.
      *
-     * @param string $name
-     * @param array<int|string, mixed> $args
+     * @param  string                   $name
+     * @param  array<int|string, mixed> $args
      * @return mixed
      */
     public static function __callStatic($name, array $args)

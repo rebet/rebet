@@ -38,8 +38,8 @@ class EmbedNode extends Node
     /**
      * Add code named given name.
      *
-     * @param string $name
-     * @param Processor $processor
+     * @param  string    $name
+     * @param  Processor $processor
      * @return void
      */
     public static function addCode(string $name, Processor $processor) : void
@@ -50,8 +50,8 @@ class EmbedNode extends Node
     /**
      * Execute given name callback.
      *
-     * @param string $name
-     * @param array<int|string, mixed> $args (default: [])
+     * @param  string                   $name
+     * @param  array<int|string, mixed> $args (default: [])
      * @return mixed
      */
     public static function execute(string $name, array $args = [])
@@ -62,13 +62,13 @@ class EmbedNode extends Node
     /**
      * Create Code Node
      *
-     * @param string $open
-     * @param string $name
+     * @param string                   $open
+     * @param string                   $name
      * @param array<int|string, mixed> $args
-     * @param string $close
-     * @param array<int, string> $binds (default: [])
-     * @param bool $invert (default: false)
-     * @param int $lineno (default: 0)
+     * @param string                   $close
+     * @param array<int, string>       $binds  (default: [])
+     * @param bool                     $invert (default: false)
+     * @param int                      $lineno (default: 0)
      */
     public function __construct(string $open, string $name, array $args, string $close, array $binds = [], bool $invert = false, int $lineno = 0)
     {

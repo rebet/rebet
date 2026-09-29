@@ -38,8 +38,8 @@ class Query
     /**
      * Create full or partial SQL.
      *
-     * @param Driver $driver
-     * @param string $sql
+     * @param Driver                   $driver
+     * @param string                   $sql
      * @param array<int|string, mixed> $params (default: [])
      */
     public function __construct(Driver $driver, string $sql, array $params = [])
@@ -82,8 +82,8 @@ class Query
     /**
      * Append where condition to this query.
      *
-     * @param string|array<int, string> $where
-     * @param array<int|string, mixed> $params (default: [])
+     * @param  string|array<int, string> $where
+     * @param  array<int|string, mixed>  $params (default: [])
      * @return self
      */
     public function appendWhere($where, array $params = []) : self
@@ -96,8 +96,8 @@ class Query
     /**
      * Append limit offset partial SQL to this query.
      *
-     * @param int|null $limit
-     * @param int|null $offset (default: null)
+     * @param  int|null $limit
+     * @param  int|null $offset (default: null)
      * @return self
      */
     public function appendLimitOffset(int|null $limit, int|null $offset = null) : self
@@ -149,7 +149,7 @@ class Query
      * Convert given value to SQL string for SQL emulate.
      * You should not use this method other than to emulate sql for log output.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return string
      */
     protected function convertToSql($value) : string

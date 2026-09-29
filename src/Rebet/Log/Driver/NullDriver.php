@@ -21,9 +21,9 @@ class NullDriver extends PsrAbstractLogger
     /**
      * Do nothing.
      *
-     * @param string $level
-     * @param string|\Stringable $message
-     * @param array<string, mixed> $context (default: [])
+     * @param  string               $level
+     * @param  string|\Stringable   $message
+     * @param  array<string, mixed> $context (default: [])
      * @return void
      */
     public function log($level, string|\Stringable $message, array $context = []) : void

@@ -254,13 +254,13 @@ class ProjectInitCommand extends Command
     /**
      * Print a step header and run the given wizard step method (see static::STEPS).
      *
-     * @param int $step 1-based step number
-     * @param int $total_step
-     * @param string $label
-     * @param string $method one of static::STEPS's keys
-     * @param array<string, mixed> $configs
+     * @param  int                       $step       1-based step number
+     * @param  int                       $total_step
+     * @param  string                    $label
+     * @param  string                    $method     one of static::STEPS's keys
+     * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null updated $configs, or null when the step failed (the
-     *  failure reason has already been printed via $this->error())
+     *                                   failure reason has already been printed via $this->error())
      */
     protected function runStep(int $step, int $total_step, string $label, string $method, array $configs) : array|null
     {
@@ -276,8 +276,8 @@ class ProjectInitCommand extends Command
      * step to fix it (by its step number), or abort, repeating until the user either confirms
      * (with a second "are you sure?" confirmation) or aborts (also with a second confirmation).
      *
-     * @param array<string, mixed> $configs
-     * @param int $total_step
+     * @param  array<string, mixed>      $configs
+     * @param  int                       $total_step
      * @return array<string, mixed>|null the confirmed $configs, or null when the user aborted
      */
     protected function reviewConfigs(array $configs, int $total_step) : array|null
@@ -328,7 +328,7 @@ class ProjectInitCommand extends Command
      * Print the currently collected $configs as a human readable table, grouped by the wizard
      * step that asked each setting. Password-like values are masked.
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed> $configs
      * @return void
      */
     protected function displayConfigs(array $configs) : void
@@ -394,7 +394,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: application code name, locale and timezone.
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
     protected function stepDefaults(array $configs) : array
@@ -409,7 +409,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: application domain for local development.
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
     protected function stepDomain(array $configs) : array
@@ -428,7 +428,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: database product and credentials for local development (or none at all).
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when an explicitly given --database value is invalid
      */
     protected function stepDatabase(array $configs) : array|null
@@ -465,9 +465,9 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: user auth (and, when not using a database, the single ArrayProvider user).
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when `--auth` is used without a database and without
-     *  `--auth-name`/`--auth-email`/`--auth-password` under `--no-interaction`
+     *                                   `--auth-name`/`--auth-email`/`--auth-password` under `--no-interaction`
      */
     protected function stepAuth(array $configs) : array|null
     {
@@ -501,7 +501,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: view template engine.
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
     protected function stepView(array $configs) : array
@@ -516,7 +516,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: cache store product for local development (or none at all).
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when an explicitly given --cache value is invalid
      */
     protected function stepCache(array $configs) : array|null
@@ -554,7 +554,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: session storage handler.
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed>      $configs
      * @return array<string, mixed>|null null when an explicitly given --session value is invalid
      */
     protected function stepSession(array $configs) : array|null
@@ -577,7 +577,7 @@ class ProjectInitCommand extends Command
     /**
      * Wizard step: nginx ports for local development.
      *
-     * @param array<string, mixed> $configs
+     * @param  array<string, mixed> $configs
      * @return array<string, mixed>
      */
     protected function stepNginx(array $configs) : array
@@ -597,7 +597,7 @@ class ProjectInitCommand extends Command
      *    existing Composer project rather than creating a brand-new one.
      *  - The given directory must not already be initialized (see `existingSkeltonEntries()`).
      *
-     * @param string $cwd
+     * @param  string $cwd
      * @return bool
      */
     protected function checkEnvironment(string $cwd) : bool
@@ -633,9 +633,9 @@ class ProjectInitCommand extends Command
      * question is not interactive (`--no-interaction`), Symfony's QuestionHelper silently falls
      * back to `null` instead of failing, since the underlying ChoiceQuestion has no default set.
      *
-     * @param string $option_name CLI option name, only used for the error message
-     * @param mixed $value the value returned by Command::choice()
-     * @param array<string, string> $choices
+     * @param  string                $option_name CLI option name, only used for the error message
+     * @param  mixed                 $value       the value returned by Command::choice()
+     * @param  array<string, string> $choices
      * @return bool
      */
     protected function requireValidChoice(string $option_name, $value, array $choices) : bool
@@ -661,7 +661,7 @@ class ProjectInitCommand extends Command
      * directory (ie. only `composer install` has been run there, typically ahead of time by the
      * devcontainer setup) is not considered "already initialized".
      *
-     * @param string $cwd
+     * @param  string   $cwd
      * @return string[] absolute paths that already exist
      */
     protected function existingSkeltonEntries(string $cwd) : array
@@ -689,7 +689,7 @@ class ProjectInitCommand extends Command
     /**
      * Determine whether the given directory contains nothing but a `vendor` directory.
      *
-     * @param string $dir
+     * @param  string $dir
      * @return bool
      */
     protected function containsOnlyVendorDir(string $dir) : bool
@@ -715,12 +715,12 @@ class ProjectInitCommand extends Command
      * Any source path listed in `$exclude` (and everything under it, when it is a directory) is
      * skipped entirely.
      *
-     * @param string $src_dir
-     * @param string $dest_dir
-     * @param array<string, mixed> $vars
-     * @param bool $dry_run (default: false)
-     * @param string[] $exclude absolute source paths to skip (default: [])
-     * @return string[] list of generated (or, when $dry_run, would-be-generated) file paths
+     * @param  string               $src_dir
+     * @param  string               $dest_dir
+     * @param  array<string, mixed> $vars
+     * @param  bool                 $dry_run  (default: false)
+     * @param  string[]             $exclude  absolute source paths to skip (default: [])
+     * @return string[]             list of generated (or, when $dry_run, would-be-generated) file paths
      */
     protected function generate(string $src_dir, string $dest_dir, array $vars, bool $dry_run = false, array $exclude = []) : array
     {
@@ -762,8 +762,8 @@ class ProjectInitCommand extends Command
      * generation, ie. every database driver directory other than the one selected in $configs
      * (`database`), or all of them when the database is not used at all (`use_db` is false).
      *
-     * @param array<string, mixed> $configs
-     * @return string[] absolute source paths to exclude
+     * @param  array<string, mixed> $configs
+     * @return string[]             absolute source paths to exclude
      */
     protected function excludedDatabaseDirs(array $configs) : array
     {
@@ -787,9 +787,9 @@ class ProjectInitCommand extends Command
      *    `[$configs value => package name]`; the package is only required when
      *    `$configs[$group]` matches one of that map's keys.
      *
-     * @param array<string, array<int|string, string>> $rules
-     * @param array<string, mixed> $configs
-     * @return string[] unique package names
+     * @param  array<string, array<int|string, string>> $rules
+     * @param  array<string, mixed>                     $configs
+     * @return string[]                                 unique package names
      */
     protected function resolveComposerPackages(array $rules, array $configs) : array
     {
@@ -813,10 +813,10 @@ class ProjectInitCommand extends Command
      * Run `composer require` (or, when `$dev` is true, `composer require --dev`) for the given
      * packages against the `composer.json` in the given directory.
      *
-     * @param string $cwd project root directory (where `composer.json` lives)
-     * @param string[] $packages
-     * @param bool $dev
-     * @return bool true on success (or when $packages is empty), false if the command failed
+     * @param  string   $cwd      project root directory (where `composer.json` lives)
+     * @param  string[] $packages
+     * @param  bool     $dev
+     * @return bool     true on success (or when $packages is empty), false if the command failed
      */
     protected function composerRequire(string $cwd, array $packages, bool $dev) : bool
     {

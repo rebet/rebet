@@ -55,11 +55,11 @@ class ProblemResponse extends JsonResponse
      * Note: You must be set the 'type' of URI reference that identifies the problem type when you want to contain the additional data.
      * Note: When the type is TYPE_HTTP_STATUS(='about:blank') then the title SHOULD be the same as the recommended HTTP status phrase, although it MAY be localized.
      *
-     * @param int $status of HTTP response
-     * @param string|null $title of problem or full transration key (default: HTTP status label)
-     * @param string|null $type of problem (default: TYPE_HTTP_STATUS)
-     * @param array<string, string|array<int, string>> $headers of HTTP response (default: [])
-     * @param int $encoding_options of JSON encode (default: 0)
+     * @param int                                      $status           of HTTP response
+     * @param string|null                              $title            of problem or full transration key (default: HTTP status label)
+     * @param string|null                              $type             of problem (default: TYPE_HTTP_STATUS)
+     * @param array<string, string|array<int, string>> $headers          of HTTP response (default: [])
+     * @param int                                      $encoding_options of JSON encode (default: 0)
      */
     public function __construct(int $status, string|null $title = null, string|null $type = null, array $headers = [], int $encoding_options = 0)
     {
@@ -79,7 +79,7 @@ class ProblemResponse extends JsonResponse
     /**
      * Set the detail that a human-readable explanation specific to this occurrence of the problem.
      *
-     * @param string $detail message or full transration key
+     * @param  string $detail message or full transration key
      * @return self
      */
     public function detail(string $detail) : self
@@ -93,7 +93,7 @@ class ProblemResponse extends JsonResponse
      * Set the instance what a URI reference that identifies the specific occurrence of the problem.
      * It may or may not yield further information if dereferenced.
      *
-     * @param string $instance  what a URI reference that identifies the specific occurrence of the problem.
+     * @param  string $instance what a URI reference that identifies the specific occurrence of the problem.
      * @return self
      */
     public function instance(string $instance) : self
@@ -106,8 +106,8 @@ class ProblemResponse extends JsonResponse
     /**
      * Set the additional data.
      *
-     * @param string|array<string, mixed> $key
-     * @param mixed $value (default: null)
+     * @param  string|array<string, mixed> $key
+     * @param  mixed                       $value (default: null)
      * @return self
      */
     public function additional($key, $value = null) : self
@@ -135,7 +135,7 @@ class ProblemResponse extends JsonResponse
     /**
      * Get the problem details data of given key.
      *
-     * @param string $key can contains dot notation (default: null)
+     * @param  string $key can contains dot notation (default: null)
      * @return mixed
      */
     public function getProblem(string|null $key = null)

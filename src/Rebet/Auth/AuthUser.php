@@ -105,9 +105,9 @@ class AuthUser implements \JsonSerializable
      * If the "id" alias is not specified, this class generates a primary key alias from the class name of the given user source by Inflector.
      * (If the user source is null or an array, use "user_id" as it is defaultly.)
      *
-     * @param mixed $user
-     * @param array<string, mixed> $aliases (default: [])
-     * @param AuthProvider|null $provider of the given user (default: null)
+     * @param mixed                $user
+     * @param array<string, mixed> $aliases  (default: [])
+     * @param AuthProvider|null    $provider of the given user (default: null)
      */
     public function __construct(mixed $user, array $aliases = [], AuthProvider|null $provider = null)
     {
@@ -122,8 +122,8 @@ class AuthUser implements \JsonSerializable
     /**
      * Get the Guest user instance.
      *
-     * @param mixed $charenged_signin_id when signin failed.
-     * @param array<string, mixed> $aliases (default: depend on configure)
+     * @param  mixed                $charenged_signin_id when signin failed.
+     * @param  array<string, mixed> $aliases             (default: depend on configure)
      * @return self
      */
     public static function guest(mixed $charenged_signin_id = null, array $aliases = []) : self
@@ -147,7 +147,7 @@ class AuthUser implements \JsonSerializable
     /**
      * Get alias name of given name.
      *
-     * @param string $name
+     * @param  string $name
      * @return mixed
      */
     protected function alias(string $name)
@@ -174,8 +174,8 @@ class AuthUser implements \JsonSerializable
     /**
      * Get the property of given name from authenticated user using alias map.
      *
-     * @param string $name
-     * @param mixed $default (default: null)
+     * @param  string $name
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     protected function get(string $name, $default = null)
@@ -231,7 +231,7 @@ class AuthUser implements \JsonSerializable
      * It checks the user is in the given roles.
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
-     * @param string ...$roles
+     * @param  string  ...$roles
      * @return boolean
      */
     public function is(string ...$roles) : bool
@@ -243,7 +243,7 @@ class AuthUser implements \JsonSerializable
      * It checks the user is not in the given roles.
      * If the role name concatenated some roles using ':' like "role_a:role_b:role_c" then check the user satisfies all role_a, role_b and role_c.
      *
-     * @param string ...$roles
+     * @param  string  ...$roles
      * @return boolean
      */
     public function isnot(string ...$roles) : bool
@@ -254,9 +254,9 @@ class AuthUser implements \JsonSerializable
     /**
      * It checks the user can do given action to target.
      *
-     * @param string $action
-     * @param string|object $target
-     * @param mixed ...$extras
+     * @param  string        $action
+     * @param  string|object $target
+     * @param  mixed         ...$extras
      * @return boolean
      */
     public function can(string $action, $target, ...$extras) : bool
@@ -267,9 +267,9 @@ class AuthUser implements \JsonSerializable
     /**
      * It checks the user can not do given action to target.
      *
-     * @param string $action
-     * @param string|object $target
-     * @param mixed ...$extras
+     * @param  string        $action
+     * @param  string|object $target
+     * @param  mixed         ...$extras
      * @return boolean
      */
     public function cannot(string $action, $target, ...$extras) : bool
@@ -290,7 +290,7 @@ class AuthUser implements \JsonSerializable
     /**
      * Dynamically access the user's attributes.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return mixed
      */
     public function __get($key)
@@ -301,8 +301,8 @@ class AuthUser implements \JsonSerializable
     /**
      * Property set accessor.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return void
      */
     public function __set($key, $value)

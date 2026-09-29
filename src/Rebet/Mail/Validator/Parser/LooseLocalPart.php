@@ -44,7 +44,7 @@ class LooseLocalPart extends LocalPart
      * Create Loose Local Part Parser.
      *
      * @param EmailLexer $lexer
-     * @param string[] $ignores error reasons you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
+     * @param string[]   $ignores error reasons you want to ignore (that can be included DotAtStart::class, ConsecutiveDot::class and DotAtEnd::class).
      */
     public function __construct(EmailLexer $lexer, array $ignores = [])
     {

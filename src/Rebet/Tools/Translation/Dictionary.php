@@ -17,10 +17,10 @@ interface Dictionary
      * Get the grammar of given key.
      * This method get the value named "@{$key}" from translation dictionary resource.
      *
-     * @param string $group
-     * @param string $key
-     * @param string $locale
-     * @param mixed $default (default: null)
+     * @param  string $group
+     * @param  string $key
+     * @param  string $locale
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     public function grammar(string $group, string $key, string $locale, $default = null) ;
@@ -32,11 +32,11 @@ interface Dictionary
      * This dictionary normally recursive search for translated text by given nested key.
      * If this behavior is not desirable, you can suppress recursive search by $recursive option.
      *
-     * @param string $group
-     * @param string $key can contains dot notation
-     * @param array<int, string> $locales
-     * @param int|string|null $selector (default: null)
-     * @param bool $recursive (default: true)
+     * @param  string             $group
+     * @param  string             $key       can contains dot notation
+     * @param  array<int, string> $locales
+     * @param  int|string|null    $selector  (default: null)
+     * @param  bool               $recursive (default: true)
      * @return string|null
      */
     public function sentence(string $group, string $key, array $locales, $selector = null, bool $recursive = true) : string|null ;

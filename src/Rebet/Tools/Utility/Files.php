@@ -25,8 +25,8 @@ class Files
     /**
      * Delete the target directory including the subdirectory or all contains files and subdirectories.
      *
-     * @param string|null $dir
-     * @param bool $remove_target_dir (default: true)
+     * @param  string|null $dir
+     * @param  bool        $remove_target_dir (default: true)
      * @return void
      */
     public static function removeDir(string|null $dir, bool $remove_target_dir = true) : void
@@ -54,8 +54,8 @@ class Files
     /**
      * Extract the target ZIP file.
      *
-     * @param string $zip_path
-     * @param string $dest_dir
+     * @param  string              $zip_path
+     * @param  string              $dest_dir
      * @return void
      * @throws ZipArchiveException
      */
@@ -70,8 +70,8 @@ class Files
     /**
      * Convert ZipArchive error code to Exception.
      *
-     * @param int|bool $code
-     * @param string $message of error happend (default: 'ZipArchive error.')
+     * @param  int|bool            $code
+     * @param  string              $message of error happend (default: 'ZipArchive error.')
      * @throws ZipArchiveException
      */
     private static function zipErrorCheck($code, string $message = 'ZipArchive error.') : void
@@ -140,12 +140,12 @@ class Files
     /**
      * Compress target path by ZIP.
      *
-     * @param string $source_path of target file or directory
-     * @param string $out_zip_path
-     * @param boolean $include_target_dir (default: true)
-     * @param \Closure $filter of zipped file selector (default: null = function($path) { return true; })
-     *                 => Take $path as an argument, return true to include that path, and return false to exclude that path.
-     * @param int $out_dir_permission (default: 0775)
+     * @param  string              $source_path        of target file or directory
+     * @param  string              $out_zip_path
+     * @param  boolean             $include_target_dir (default: true)
+     * @param  \Closure            $filter             of zipped file selector (default: null = function($path) { return true; })
+     *                                                 => Take $path as an argument, return true to include that path, and return false to exclude that path.
+     * @param  int                 $out_dir_permission (default: 0775)
      * @return void
      * @throws ZipArchiveException
      */
@@ -178,10 +178,10 @@ class Files
     /**
      * ZIP compressed directories recursively.
      *
-     * @param  string $folder
+     * @param  string      $folder
      * @param  \ZipArchive $zip_file
-     * @param  int $exclusive_length
-     * @param  \Closure $filter
+     * @param  int         $exclusive_length
+     * @param  \Closure    $filter
      * @return void
      */
     private static function folderToZip(string $folder, \ZipArchive &$zip_file, int $exclusive_length, \Closure $filter)

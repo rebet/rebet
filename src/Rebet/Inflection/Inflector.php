@@ -304,9 +304,9 @@ class Inflector
      * Converts a singular word into the format for a Rebet plural table name.
      * Converts 'ClassName' to 'class_names'.
      *
-     * @param string $word
-     * @param string $replacement (default: '_')
-     * @param string $delimiters (default: ' _-')
+     * @param  string      $word
+     * @param  string      $replacement (default: '_')
+     * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
     public static function tableize(string|null $word, string $replacement = '_', string $delimiters = ' _-') : string|null
@@ -320,9 +320,9 @@ class Inflector
      * Converts 'ClassName' to 'class_name' and ['tables', 'others'] to 'other_table'.
      * NOTE: When the array words given then the words count must be two otherwise return null.
      *
-     * @param string|array<int, string>|null $word
-     * @param string $replacement (default: '_')
-     * @param string $delimiters (default: ' _-')
+     * @param  string|array<int, string>|null $word
+     * @param  string                         $replacement (default: '_')
+     * @param  string                         $delimiters  (default: ' _-')
      * @return string|null
      */
     public static function pivotize($word, string $replacement = '_', string $delimiters = ' _-') : string|null
@@ -348,9 +348,9 @@ class Inflector
      * Converts a word into the format for a Rebet singular primary key name.
      * Converts 'ClassName' to 'class_name_id' and 'table_names' to 'table_name_id'.
      *
-     * @param string $word
-     * @param string $replacement (default: '_')
-     * @param string $delimiters (default: ' _-')
+     * @param  string      $word
+     * @param  string      $replacement (default: '_')
+     * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
     public static function primarize(string|null $word, string $replacement = '_', string $delimiters = ' _-') : string|null
@@ -362,8 +362,8 @@ class Inflector
      * Converts a plural word into the format for a Rebet singular class name.
      * Converts 'table_names' to 'TableName'.
      *
-     * @param string|null $word
-     * @param string $delimiters (default: ' _-')
+     * @param  string|null $word
+     * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
     public static function classify(string|null $word, string $delimiters = ' _-') : string|null
@@ -375,8 +375,8 @@ class Inflector
      * Converts a word into the format for a pascal case (Upper camel case) form.
      * Converts 'snake_case' to 'SnakeCase'.
      *
-     * @param string|null $word
-     * @param string $delimiters (default: ' _-')
+     * @param  string|null $word
+     * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
     public static function pascalize(string|null $word, string $delimiters = ' _-') : string|null
@@ -389,8 +389,8 @@ class Inflector
      * This uses the pascalize() method and turns the first character to lowercase.
      * Converts 'snake_case' to 'snakeCase'.
      *
-     * @param string|null $word
-     * @param string $delimiters (default: ' _-')
+     * @param  string|null $word
+     * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
     public static function camelize(string|null $word, string $delimiters = ' _-') : string|null
@@ -402,9 +402,9 @@ class Inflector
      * Converts a word into the format for a snake case form.
      * Converts 'ModelName' to 'model_name'.
      *
-     * @param string|null $word
-     * @param string $replacement (default: '_')
-     * @param string $delimiters (default: ' _-')
+     * @param  string|null $word
+     * @param  string      $replacement (default: '_')
+     * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
     public static function snakize(string|null $word, string $replacement = '_', string $delimiters = ' _-') : string|null
@@ -417,8 +417,8 @@ class Inflector
      * This uses the snakize() method with '-' delimiter.
      * Converts 'ModelName' to 'model-name'.
      *
-     * @param string|null $word
-     * @param string $delimiters (default: ' _-')
+     * @param  string|null $word
+     * @param  string      $delimiters (default: ' _-')
      * @return string|null
      */
     public static function kebabize(string|null $word, string $delimiters = ' _-') : string|null
@@ -431,9 +431,9 @@ class Inflector
      * Returns the input pascal/camel/snake case string like 'PascalCase/camelCase/snake_case' to human readable string like 'Pascal Case/Camel Case/Snake Case'.
      * (Delimiters are replaced by spaces and capitalized following words.)
      *
-     * @param string|null $word
-     * @param string $replacement (default: ' ')
-     * @param string $delimiters (default: ' _-')
+     * @param  string|null $word
+     * @param  string      $replacement (default: ' ')
+     * @param  string      $delimiters  (default: ' _-')
      * @return string|null
      */
     public static function humanize(string|null $word, string $replacement = ' ', string $delimiters = ' _-') : string|null
@@ -444,8 +444,8 @@ class Inflector
     /**
      * Converts a word into the format for a split before upper case letter form.
      *
-     * @param string $word
-     * @param string $delimiter
+     * @param  string $word
+     * @param  string $delimiter
      * @return string
      */
     protected static function splitize(string $word, string $delimiter) : string
@@ -456,8 +456,8 @@ class Inflector
     /**
      * Capitalizes all of the words by PHP's built-in ucwords function.
      *
-     * @param string|null $text
-     * @param string $delimiters (default: ' \t\r\n\f\v')
+     * @param  string|null $text
+     * @param  string      $delimiters (default: ' \t\r\n\f\v')
      * @return string|null
      */
     public static function capitalize(string|null $text, string $delimiters = " \t\r\n\f\v") : string|null
@@ -468,7 +468,7 @@ class Inflector
     /**
      * Returns a word in plural form.
      *
-     * @param string|null $word
+     * @param  string|null $word
      * @return string|null
      */
     public static function pluralize(string|null $word) : string|null
@@ -513,7 +513,7 @@ class Inflector
     /**
      * Returns a word in singular form.
      *
-     * @param string|null $word
+     * @param  string|null $word
      * @return string|null
      */
     public static function singularize(string|null $word) : string|null

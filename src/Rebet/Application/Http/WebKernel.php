@@ -69,7 +69,7 @@ class WebKernel extends Kernel
      * {@inheritDoc}
      *
      * @param Structure $structure
-     * @param string $channel (default: 'web')
+     * @param string    $channel   (default: 'web')
      */
     public function __construct(Structure $structure, string $channel = 'web')
     {
@@ -88,7 +88,7 @@ class WebKernel extends Kernel
     /**
      * {@inheritDoc}
      *
-     * @param Request|null $input (default: null for Request::createFromGlobals())
+     * @param  Request|null $input (default: null for Request::createFromGlobals())
      * @return Response
      */
     public function handle($input = null) : Response
@@ -99,8 +99,8 @@ class WebKernel extends Kernel
     /**
      * Run an action by name.
      *
-     * @param string $action
-     * @param array<string, mixed> $parameters (default: [])
+     * @param  string               $action
+     * @param  array<string, mixed> $parameters (default: [])
      * @return Response
      */
     public function call(string $action, array $parameters = []) : Response

@@ -55,7 +55,7 @@ class Storage
     /**
      * Get the given name disk storage.
      *
-     * @param string $name
+     * @param  string     $name
      * @return Filesystem
      */
     public static function disk(string $name) : Filesystem
@@ -95,7 +95,7 @@ class Storage
     /**
      * Reset data of given name storage
      *
-     * @param string|null $name (default: null for all storages)
+     * @param  string|null $name (default: null for all storages)
      * @return void
      */
     public static function reset(string|null $name = null) : void
@@ -119,12 +119,12 @@ class Storage
     /**
      * Copy contents between different disks.
      *
-     * @param string $from_disk
-     * @param string $from_path
-     * @param string $to_disk
-     * @param string|null $to_path (default: null for use $from_path, as it is)
-     * @param string|array<string, mixed> $options (default: [])
-     * @param bool $replace (default: false)
+     * @param  string                      $from_disk
+     * @param  string                      $from_path
+     * @param  string                      $to_disk
+     * @param  string|null                 $to_path   (default: null for use $from_path, as it is)
+     * @param  string|array<string, mixed> $options   (default: [])
+     * @param  bool                        $replace   (default: false)
      * @return void
      */
     public static function copy(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false) : void
@@ -162,12 +162,12 @@ class Storage
     /**
      * Move contents between different disks.
      *
-     * @param string $from_disk
-     * @param string $from_path
-     * @param string $to_disk
-     * @param string|null $to_path (default: null for use $from_path, as it is)
-     * @param string|array<string, mixed> $options (default: [])
-     * @param bool $replace (default: false)
+     * @param  string                      $from_disk
+     * @param  string                      $from_path
+     * @param  string                      $to_disk
+     * @param  string|null                 $to_path   (default: null for use $from_path, as it is)
+     * @param  string|array<string, mixed> $options   (default: [])
+     * @param  bool                        $replace   (default: false)
      * @return void
      */
     public static function move(string $from_disk, string $from_path, string $to_disk, string|null $to_path = null, $options = [], bool $replace = false) : void
@@ -179,8 +179,8 @@ class Storage
     /**
      * Publish the given private storage contents to public storage.
      *
-     * @param string $from contents path
-     * @param string|null $to contents path (default: null for use $from contents path, as it is)
+     * @param  string      $from contents path
+     * @param  string|null $to   contents path (default: null for use $from contents path, as it is)
      * @return void
      */
     public static function publish(string $from, string|null $to = null) : void

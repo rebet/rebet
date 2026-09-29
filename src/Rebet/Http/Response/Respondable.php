@@ -21,8 +21,8 @@ trait Respondable
     /**
      * Get a header from the Response.
      *
-     * @param string $key
-     * @param bool $first (default: false)
+     * @param  string               $key
+     * @param  bool                 $first (default: false)
      * @return string|string[]|null
      */
     public function getHeader(string $key, $first = false)
@@ -33,9 +33,9 @@ trait Respondable
     /**
      * Set a header on the Response.
      *
-     * @param string $key
-     * @param array<int, string>|string $values
-     * @param boolean $replace (default: true)
+     * @param  string                    $key
+     * @param  array<int, string>|string $values
+     * @param  boolean                   $replace (default: true)
      * @return Response
      */
     public function setHeader(string $key, $values, bool $replace = true) : Response
@@ -47,9 +47,9 @@ trait Respondable
     /**
      * Get the cookie of given name.
      *
-     * @param string $name
-     * @param string|null $path can contains shell's wildcard (default: '*')
-     * @param string|null $domain can contains shell's wildcard (default: '*')
+     * @param  string                         $name
+     * @param  string|null                    $path   can contains shell's wildcard (default: '*')
+     * @param  string|null                    $domain can contains shell's wildcard (default: '*')
      * @return Cookie|array<int, Cookie>|null
      */
     public function getCookie(string $name, string|null $path = '*', string|null $domain = '*')
@@ -71,7 +71,7 @@ trait Respondable
     /**
      * Set the cookie.
      *
-     * @param Cookie $cookie
+     * @param  Cookie   $cookie
      * @return Response
      */
     public function setCookie(Cookie $cookie) : Response

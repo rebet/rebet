@@ -21,12 +21,12 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
  * TestHandler delegate methods.
  * ========================================================
  * @method array<int, \Monolog\LogRecord> getRecords()
- * @method void clear()
- * @method bool hasRecords($level)
- * @method bool hasRecord($record, $level)
- * @method bool hasRecordThatContains($message, $level)
- * @method bool hasRecordThatMatches($regex, $level)
- * @method bool hasRecordThatPasses($predicate, $level)
+ * @method void                           clear()
+ * @method bool                           hasRecords($level)
+ * @method bool                           hasRecord($record, $level)
+ * @method bool                           hasRecordThatContains($message, $level)
+ * @method bool                           hasRecordThatMatches($regex, $level)
+ * @method bool                           hasRecordThatPasses($predicate, $level)
  *
  * @method bool hasEmergency($record)
  * @method bool hasAlert($record)
@@ -72,7 +72,7 @@ use Rebet\Log\Driver\Monolog\Formatter\TextFormatter;
  * @method bool hasNoticeThatPasses($message)
  * @method bool hasInfoThatPasses($message)
  * @method bool hasDebugThatPasses($message)
- * ========================================================
+ *                                               ========================================================
  *
  * @package   Rebet
  * @author    github.com/rain-noise
@@ -89,10 +89,10 @@ class TestDriver extends MonologDriver
     /**
      * Create logging driver for test.
      *
-     * @param string $level
-     * @param string|null $format (default: null)
+     * @param string                  $level
+     * @param string|null             $format       (default: null)
      * @param array<string, callable> $stringifiers (default: [])
-     * @param boolean $bubble (default: true)
+     * @param boolean                 $bubble       (default: true)
      */
     public function __construct(string $level, string $format = null, array $stringifiers = [], bool $bubble = true)
     {
@@ -104,8 +104,8 @@ class TestDriver extends MonologDriver
     /**
      * Delegate methods to Monolog\Handler\TestHandler instance.
      *
-     * @param string $method
-     * @param array<int, mixed> $args
+     * @param  string            $method
+     * @param  array<int, mixed> $args
      * @return mixed
      */
     public function __call($method, $args)

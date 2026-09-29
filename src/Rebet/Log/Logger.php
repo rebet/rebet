@@ -47,7 +47,7 @@ class Logger
      * Get/Set the logger name if the driver of logger implemented NameableDriver interface.
      * NOTE: If the driver not implemented NameableDriver then this method return null when get and do nothing when set.
      *
-     * @param string|null $name (default: null for get name)
+     * @param  string|null      $name (default: null for get name)
      * @return null|string|self
      */
     public function name(string|null $name = null)
@@ -67,9 +67,9 @@ class Logger
      * Output EMERGENCY level log.
      * System is unusable.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function emergency($message, array $context = [], $exception = null) : void
@@ -84,9 +84,9 @@ class Logger
      * Example: Entire website down, database unavailable, etc. This should
      * trigger the SMS alerts and wake you up.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function alert($message, array $context = [], $exception = null) : void
@@ -100,9 +100,9 @@ class Logger
      *
      * Example: Application component unavailable, unexpected exception.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function critical($message, array $context = [], $exception = null) : void
@@ -114,9 +114,9 @@ class Logger
      * Output ERROR level log.
      * Runtime errors that do not require immediate action but should typically be logged and monitored.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function error($message, array $context = [], $exception = null) : void
@@ -131,9 +131,9 @@ class Logger
      * Example: Use of deprecated APIs, poor use of an API, undesirable things
      * that are not necessarily wrong.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function warning($message, array $context = [], $exception = null) : void
@@ -145,9 +145,9 @@ class Logger
      * Output NOTICE level log.
      * Normal but significant events.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function notice($message, array $context = [], $exception = null) : void
@@ -161,9 +161,9 @@ class Logger
      *
      * Example: User logs in, SQL logs.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function info($message, array $context = [], $exception = null) : void
@@ -175,9 +175,9 @@ class Logger
      * Output DEBUG level log.
      * Detailed debug information.
      *
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function debug($message, array $context = [], $exception = null) : void
@@ -188,10 +188,10 @@ class Logger
     /**
      * Output a given level log.
      *
-     * @param string $level
-     * @param mixed $message
-     * @param array<string, mixed> $context (default: [])
-     * @param \Throwable $exception (default: null)
+     * @param  string               $level
+     * @param  mixed                $message
+     * @param  array<string, mixed> $context   (default: [])
+     * @param  \Throwable           $exception (default: null)
      * @return void
      */
     public function log(string $level, $message, array $context = [], $exception = null) : void
@@ -205,9 +205,9 @@ class Logger
     /**
      * Output memory usage.
      *
-     * @param string $message (default: '')
-     * @param int $decimals (default: 2)
-     * @param string $level (default: LogLevel::DEBUG)
+     * @param  string $message  (default: '')
+     * @param  int    $decimals (default: 2)
+     * @param  string $level    (default: LogLevel::DEBUG)
      * @return void
      */
     public function memory(string $message = '', int $decimals = 2, string $level = LogLevel::DEBUG) : void

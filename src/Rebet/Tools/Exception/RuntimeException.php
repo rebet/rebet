@@ -18,7 +18,7 @@ class RuntimeException extends \RuntimeException implements RebetException
     /**
      * Create a Runtime Exception
      *
-     * @param string $message
+     * @param string          $message
      * @param \Throwable|null $previous (default: null)
      */
     public function __construct(string $message, \Throwable|null $previous = null, int $code = 0)

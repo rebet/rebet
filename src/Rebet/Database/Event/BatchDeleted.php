@@ -45,8 +45,8 @@ class BatchDeleted implements Saving
      * Create an event
      *
      * @param Database $db
-     * @param string $entity class name
-     * @param mixed $ransack conditions that arrayable
+     * @param string   $entity  class name
+     * @param mixed    $ransack conditions that arrayable
      */
     public function __construct(Database $db, string $entity, $ransack, int $affected_rows)
     {

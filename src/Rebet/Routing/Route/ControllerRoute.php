@@ -40,8 +40,8 @@ class ControllerRoute extends ConventionalRoute
     /**
      * Create a controller route.
      *
-     * @param string $uri
-     * @param string $controller
+     * @param  string               $uri
+     * @param  string               $controller
      * @throws \ReflectionException
      */
     public function __construct(string $uri, string $controller)
@@ -59,7 +59,7 @@ class ControllerRoute extends ConventionalRoute
     /**
      * Resolve request URI into controller name / action name / arguments.
      *
-     * @param string $request_uri
+     * @param  string                                             $request_uri
      * @return array{0: string, 1: string, 2: array<int, string>}
      */
     protected function resolveRequestUri(string $request_uri) : array
@@ -79,7 +79,7 @@ class ControllerRoute extends ConventionalRoute
      * If null is returned as an analysis result, subsequent route verification is performed.
      * Throw RouteNotFoundException if subsequent route verification is not done.
      *
-     * @param Request $request
+     * @param  Request                    $request
      * @return array<string, string>|null
      * @throws RouteNotFoundException
      */
@@ -97,7 +97,7 @@ class ControllerRoute extends ConventionalRoute
     /**
      * Get controller name.
      *
-     * @param bool $with_namespace (default: true)
+     * @param  bool   $with_namespace (default: true)
      * @return string
      */
     public function getControllerName(bool $with_namespace = true) : string

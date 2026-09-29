@@ -36,8 +36,8 @@ class Arrays
      * ex)
      * [$winner, $loser] = Arrays::random($lottery_applicants, 3);
      *
-     * @param array<mixed> $list
-     * @param int $number
+     * @param  array<mixed>             $list
+     * @param  int                      $number
      * @return array<int, array<mixed>> [[selected_item, ...], [not_selected_items, ...]]
      */
     public static function random(array $list, int $number) : array
@@ -119,9 +119,9 @@ class Arrays
      * $user_map   = Arrays::pluck($users, null                                                      , 'user_id'                                   ); //=> [21 => <User object>, 35 => <User object>, 43 => <User object>, ...]
      * $user_map   = Arrays::pluck($users, function($i, $k, $v) { return "{$v->name}($v->user_id)"; }, 'user_id'                                   ); //=> [21 => 'John(21)', 35 => 'David(35)', 43 => 'Linda(43)', ...]
      *
-     * @param array<mixed>|null $list
-     * @param int|string|\Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
-     * @param int|string|\Closure|null $key_field Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
+     * @param  array<mixed>|null        $list
+     * @param  int|string|\Closure|null $value_field Field name / index / extract function as the value of extracted data (Row element itself is targeted when blank is specified)
+     * @param  int|string|\Closure|null $key_field   Field name / index / extract function as key of extracted data (It becomes serial number array when blank is specified)
      * @return array<mixed>
      * @see Reflector::get()
      */
@@ -234,11 +234,11 @@ class Arrays
      *
      * @see OverrideOption
      *
-     * @param mixed $base
-     * @param mixed $diff
-     * @param array<mixed>|string $option
-     * @param string $default_array_override_option (default: OverrideOption::APPEND)
-     * @param \Closure $handler of special override logic(if return null then do nothing). function($base, $diff, $option, $default_array_override_option):mixed (default: null)
+     * @param  mixed               $base
+     * @param  mixed               $diff
+     * @param  array<mixed>|string $option
+     * @param  string              $default_array_override_option (default: OverrideOption::APPEND)
+     * @param  \Closure            $handler                       of special override logic(if return null then do nothing). function($base, $diff, $option, $default_array_override_option):mixed (default: null)
      * @return mixed
      */
     public static function override($base, $diff, $option = [], string $default_array_override_option = OverrideOption::APPEND, \Closure|null $handler = null)
@@ -280,9 +280,9 @@ class Arrays
     /**
      * Merge the sequential number array according to the option contents.
      *
-     * @param array<mixed>|\ArrayAccess<int|string, mixed> $base
-     * @param array<mixed>|\ArrayAccess<int|string, mixed> $diff
-     * @param string $option
+     * @param  array<mixed>|\ArrayAccess<int|string, mixed> $base
+     * @param  array<mixed>|\ArrayAccess<int|string, mixed> $diff
+     * @param  string                                       $option
      * @return mixed
      */
     private static function arrayMerge($base, $diff, string $option)
@@ -314,7 +314,7 @@ class Arrays
     /**
      * Get a list of duplicate values from the given array.
      *
-     * @param array<mixed>|null $array
+     * @param  array<mixed>|null      $array
      * @return array<int, mixed>|null
      */
     public static function duplicate(array|null $array) : array|null
@@ -335,7 +335,7 @@ class Arrays
     /**
      * Collapse an array of arrays into a single array.
      *
-     * @param  array<mixed>|null  $array
+     * @param  array<mixed>|null $array
      * @return array<mixed>|null
      */
     public static function collapse($array) : array|null
@@ -357,7 +357,7 @@ class Arrays
     /**
      * Cross join the given arrays, returning all possible permutations.
      *
-     * @param  iterable<mixed>  ...$arrays
+     * @param  iterable<mixed>          ...$arrays
      * @return array<int, array<mixed>>
      */
     public static function crossJoin(iterable ...$arrays) : array
@@ -379,7 +379,7 @@ class Arrays
     /**
      * Determine whether the given value is array accessible.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     public static function accessible($value)
@@ -390,8 +390,8 @@ class Arrays
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param  \ArrayAccess<int|string, mixed>|array<mixed>|null  $array
-     * @param  string|int|null  $key
+     * @param  \ArrayAccess<int|string, mixed>|array<mixed>|null $array
+     * @param  string|int|null                                   $key
      * @return bool
      */
     public static function exists($array, $key) : bool
@@ -408,8 +408,8 @@ class Arrays
     /**
      * Get all of the given array except for a specified array of keys.
      *
-     * @param  array<mixed>|null  $array
-     * @param  array<int|string>|string  $keys
+     * @param  array<mixed>|null        $array
+     * @param  array<int|string>|string $keys
      * @return array<mixed>|null
      */
     public static function except(array|null $array, $keys)
@@ -424,9 +424,9 @@ class Arrays
     /**
      * Remove one array items from a given array and get it.
      *
-     * @param array<mixed>|null $array
-     * @param int|string $key
-     * @param mixed $default (default: null)
+     * @param  array<mixed>|null $array
+     * @param  int|string        $key
+     * @param  mixed             $default (default: null)
      * @return mixed
      */
     public static function remove(array|null &$array, $key, $default = null)
@@ -439,8 +439,8 @@ class Arrays
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *
-     * @param  array<mixed>|null  $array
-     * @param  array<int|string>|string  $keys
+     * @param  array<mixed>|null        $array
+     * @param  array<int|string>|string $keys
      * @return void
      */
     public static function forget(array|null &$array, $keys)
@@ -478,8 +478,8 @@ class Arrays
     /**
      * Filter the array using the given callback.
      *
-     * @param  array<mixed>|null  $array
-     * @param  callable|null $callback of function($value [, $key]):bool or null that return given array as it is.
+     * @param  array<mixed>|null $array
+     * @param  callable|null     $callback of function($value [, $key]):bool or null that return given array as it is.
      * @return array<mixed>|null
      */
     public static function where(array|null $array, callable|null $callback)
@@ -494,7 +494,7 @@ class Arrays
      * Remove blank values from given array.
      *
      * @see Utils::isBlank()
-     * @param array<mixed>|null $array
+     * @param  array<mixed>|null $array
      * @return array<mixed>|null
      */
     public static function compact(array|null $array) : array|null
@@ -508,8 +508,8 @@ class Arrays
     /**
      * Remove duplicate values from given array.
      *
-     * @param array<mixed>|null $array
-     * @param int $sort_flags (default: SORT_REGULAR)
+     * @param  array<mixed>|null $array
+     * @param  int               $sort_flags (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
     public static function unique(array|null $array, int $sort_flags = SORT_REGULAR) : array|null
@@ -520,9 +520,9 @@ class Arrays
     /**
      * Return the key in an array passing a given truth test.
      *
-     * @param  array<mixed>|null  $array
-     * @param  callable  $callback
-     * @param  mixed  $default (default: null)
+     * @param  array<mixed>|null $array
+     * @param  callable          $callback
+     * @param  mixed             $default  (default: null)
      * @return mixed
      */
     public static function find($array, callable $callback, $default = null)
@@ -541,9 +541,9 @@ class Arrays
     /**
      * Return the first element in an array passing a given truth test.
      *
-     * @param  array<mixed>|null  $array
-     * @param  callable|null  $callback function($value, $key) : bool {...}
-     * @param  mixed  $default (default: null)
+     * @param  array<mixed>|null $array
+     * @param  callable|null     $callback function($value, $key) : bool {...}
+     * @param  mixed             $default  (default: null)
      * @return mixed
      */
     public static function first($array, callable|null $callback = null, $default = null)
@@ -570,7 +570,7 @@ class Arrays
     /**
      * Return the default value of the given value.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return mixed
      */
     private static function value($value)
@@ -581,8 +581,8 @@ class Arrays
     /**
      * Flatten a multi-dimensional array into a single level.
      *
-     * @param  array<mixed>|null  $array
-     * @param  int|float  $depth (default: INF)
+     * @param  array<mixed>|null $array
+     * @param  int|float         $depth (default: INF)
      * @return array<mixed>
      */
     public static function flatten(array|null $array, $depth = INF) : array|null
@@ -607,9 +607,9 @@ class Arrays
     /**
      * Return the last element in an array passing a given truth test.
      *
-     * @param  array<mixed>|null  $array
-     * @param  callable|null  $callback function($value, $key) : bool {...}
-     * @param  mixed  $default
+     * @param  array<mixed>|null $array
+     * @param  callable|null     $callback function($value, $key) : bool {...}
+     * @param  mixed             $default
      * @return mixed
      */
     public static function last(array|null $array, callable|null $callback = null, $default = null)
@@ -626,8 +626,8 @@ class Arrays
     /**
      * Get a subset of the items from the given array.
      *
-     * @param  array<mixed>|null  $array
-     * @param  array<int|string>|string  $keys
+     * @param  array<mixed>|null        $array
+     * @param  array<int|string>|string $keys
      * @return array<mixed>|null
      */
     public static function only(array|null $array, $keys) : array|null
@@ -641,9 +641,9 @@ class Arrays
     /**
      * Push an item onto the beginning of an array.
      *
-     * @param  array<mixed>|null  $array
-     * @param  mixed  $value
-     * @param  mixed  $key
+     * @param  array<mixed>|null $array
+     * @param  mixed             $value
+     * @param  mixed             $key
      * @return array<mixed>
      */
     public static function prepend(array|null $array, $value, $key = null) : array
@@ -663,8 +663,8 @@ class Arrays
      * Get a value from the array, and remove it.
      *
      * @param  array<mixed>|null $array
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  string            $key
+     * @param  mixed             $default
      * @return mixed
      */
     public static function pull(&$array, $key, $default = null)
@@ -677,8 +677,8 @@ class Arrays
     /**
      * Shuffle the given array and return the result.
      *
-     * @param  array<mixed>|null  $array
-     * @param  int|null  $seed
+     * @param  array<mixed>|null $array
+     * @param  int|null          $seed
      * @return array<mixed>
      */
     public static function shuffle(array|null $array, int|null $seed = null) : array|null
@@ -700,8 +700,8 @@ class Arrays
     /**
      * Count items of given value.
      *
-     * @param mixed $value
-     * @param callable|null $test of counting target function($value, $key):bool
+     * @param  mixed         $value
+     * @param  callable|null $test  of counting target function($value, $key):bool
      * @return int
      */
     public static function count($value, callable|null $test = null) : int
@@ -722,7 +722,7 @@ class Arrays
     /**
      * Convert to array from Arrayable.
      *
-     * @param  mixed  $items
+     * @param  mixed             $items
      * @return array<mixed>|null
      */
     public static function toArray($items) : array|null
@@ -756,8 +756,8 @@ class Arrays
     /**
      * Run a map over each of the items.
      *
-     * @param array<mixed>|null $array
-     * @param  callable  $callback function($value, $key) { ... }
+     * @param  array<mixed>|null $array
+     * @param  callable          $callback function($value, $key) { ... }
      * @return array<mixed>|null
      */
     public static function map(array|null $array, callable $callback) : array|null
@@ -772,9 +772,9 @@ class Arrays
     /**
      * Reduce the collection to a single value.
      *
-     * @param array<mixed>|null $array
-     * @param callable $reducer function($carry, $item) { ... }
-     * @param mixed $initial (defualt: null)
+     * @param  array<mixed>|null $array
+     * @param  callable          $reducer function($carry, $item) { ... }
+     * @param  mixed             $initial (defualt: null)
      * @return mixed
      */
     public static function reduce(array|null $array, callable $reducer, $initial = null)
@@ -786,8 +786,8 @@ class Arrays
      * Get the items in the collection that are not present in the given items.
      *
      * @param  array<mixed>|null $array
-     * @param  mixed $items
-     * @param  callable|null $comparator function(mixed $a, mixed $b) : int (default: null)
+     * @param  mixed             $items
+     * @param  callable|null     $comparator function(mixed $a, mixed $b) : int (default: null)
      * @return array<mixed>|null
      */
     public static function diff(array|null $array, $items, callable|null $comparator = null) : array|null
@@ -804,9 +804,9 @@ class Arrays
     /**
      * Intersect the collection with the given items.
      *
-     * @param array<mixed>|null $array
-     * @param mixed $items
-     * @param callable|null $comparator function(mixed $a, mixed $b):int (default: null)
+     * @param  array<mixed>|null $array
+     * @param  mixed             $items
+     * @param  callable|null     $comparator function(mixed $a, mixed $b):int (default: null)
      * @return array<mixed>|null
      */
     public static function intersect(array|null $array, $items, callable|null $comparator = null) : array|null
@@ -823,8 +823,8 @@ class Arrays
     /**
      * Determine if all items in the collection pass the given test.
      *
-     * @param array<mixed>|null $array
-     * @param callable $test of function($v, $k):bool
+     * @param  array<mixed>|null $array
+     * @param  callable          $test  of function($v, $k):bool
      * @return bool
      */
     public static function every(array|null $array, callable $test) : bool
@@ -843,9 +843,9 @@ class Arrays
     /**
      * Group an associative array by a field or using a callback.
      *
-     * @param  array<mixed>|null $array
-     * @param  callable|string|array<mixed> $group_by (default: null)
-     * @param  bool  $preserve_keys (default: false)
+     * @param  array<mixed>|null            $array
+     * @param  callable|string|array<mixed> $group_by      (default: null)
+     * @param  bool                         $preserve_keys (default: false)
      * @return array<mixed>
      */
     public static function groupBy(array|null $array, $group_by = null, bool $preserve_keys = false) : array|null
@@ -885,8 +885,8 @@ class Arrays
     /**
      * Union the collection with the given items.
      *
-     * @param array<mixed>|null $array
-     * @param mixed $other
+     * @param  array<mixed>|null $array
+     * @param  mixed             $other
      * @return array<mixed>|null
      */
     public static function union(array|null $array, mixed $other) : array|null
@@ -898,9 +898,9 @@ class Arrays
      * Get the min value of a given key or value retriever.
      * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
-     * @param mixed $initial (default: null)
+     * @param  array<mixed>|null    $array
+     * @param  callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
+     * @param  mixed                $initial   (default: null)
      * @return mixed
      */
     public static function min(array|null $array, callable|string|null $retriever = null, mixed $initial = null)
@@ -916,9 +916,9 @@ class Arrays
      * Get the max value of a given key or value retriever.
      * Note: If you want to use the key name same as php function, you can use the key name with '@' prefix.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
-     * @param mixed $initial (default: null)
+     * @param  array<mixed>|null    $array
+     * @param  callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
+     * @param  mixed                $initial   (default: null)
      * @return mixed
      */
     public static function max(array|null $array, callable|string|null $retriever = null, mixed $initial = null)
@@ -933,9 +933,9 @@ class Arrays
     /**
      * Sort the array using the given comparator or sort flag.
      *
-     * @param array<mixed>|null $array
-     * @param int $order (default: SORT_ASC)
-     * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
+     * @param  array<mixed>|null $array
+     * @param  int               $order      (default: SORT_ASC)
+     * @param  callable|int      $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
     public static function sort(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
@@ -957,10 +957,10 @@ class Arrays
     /**
      * Sort the collection using the given key or value retriever.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string $retriever key name (with/without '@') or function($value):mixed.
-     * @param int $order (default: SORT_ASC)
-     * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
+     * @param  array<mixed>|null $array
+     * @param  callable|string   $retriever  key name (with/without '@') or function($value):mixed.
+     * @param  int               $order      (default: SORT_ASC)
+     * @param  callable|int      $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
     public static function sortBy(array|null $array, callable|string $retriever, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
@@ -986,9 +986,9 @@ class Arrays
     /**
      * Sort the array keys using the given comparator or sort flag.
      *
-     * @param array<mixed>|null $array
-     * @param int $order (default: SORT_ASC)
-     * @param callable|int $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
+     * @param  array<mixed>|null $array
+     * @param  int               $order      (default: SORT_ASC)
+     * @param  callable|int      $comparator of sort flag or function($a, $b):int callable (default: SORT_REGULAR)
      * @return array<mixed>|null
      */
     public static function sortKeys(array|null $array, int $order = SORT_ASC, callable|int $comparator = SORT_REGULAR) : array|null
@@ -1010,10 +1010,10 @@ class Arrays
     /**
      * Get the sum of the given values.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed. (default: null)
-     * @param bool $arbitrary_precision (default: false)
-     * @param int|null $precision for arbitrary precision (default: null)
+     * @param  array<mixed>|null    $array
+     * @param  callable|string|null $retriever           key name (with/without '@') or function($value):mixed. (default: null)
+     * @param  bool                 $arbitrary_precision (default: false)
+     * @param  int|null             $precision           for arbitrary precision (default: null)
      * @return Decimal|null
      */
     public static function sum(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
@@ -1036,10 +1036,10 @@ class Arrays
      * Get the average of the given values.
      * Note: If the retriever return null then that item exclude from count. It means that you can calculate the selective average value.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
-     * @param bool $arbitrary_precision (default: false)
-     * @param int|null $precision for arbitrary precision (default: null)
+     * @param  array<mixed>|null    $array
+     * @param  callable|string|null $retriever           key name (with/without '@') or function($value):mixed.
+     * @param  bool                 $arbitrary_precision (default: false)
+     * @param  int|null             $precision           for arbitrary precision (default: null)
      * @return Decimal|null
      */
     public static function avg(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
@@ -1057,10 +1057,10 @@ class Arrays
     /**
      * Get the median of the given values.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
-     * @param bool $arbitrary_precision (default: false)
-     * @param int|null $precision for arbitrary precision (default: null)
+     * @param  array<mixed>|null    $array
+     * @param  callable|string|null $retriever           key name (with/without '@') or function($value):mixed.
+     * @param  bool                 $arbitrary_precision (default: false)
+     * @param  int|null             $precision           for arbitrary precision (default: null)
      * @return Decimal|null
      */
     public static function median(array|null $array, callable|string|null $retriever = null, bool $arbitrary_precision = false, int|null $precision = null) : Decimal|null
@@ -1084,8 +1084,8 @@ class Arrays
     /**
      * Get the mode of a given key.
      *
-     * @param array<mixed>|null $array
-     * @param callable|string|null $retriever key name (with/without '@') or function($value):mixed.
+     * @param  array<mixed>|null    $array
+     * @param  callable|string|null $retriever key name (with/without '@') or function($value):mixed.
      * @return array<mixed>|null
      */
     public static function mode(array|null $array, callable|string|null $retriever = null) : array|null
@@ -1103,7 +1103,7 @@ class Arrays
     /**
      * Peel the array blanket if the given array contains less equal one item.
      *
-     * @param mixed $array
+     * @param  mixed $array
      * @return mixed
      */
     public static function peel($array)
@@ -1126,9 +1126,9 @@ class Arrays
     /**
      * Join the given array elements to string using given delimiter.
      *
-     * @param mixed $iterable
-     * @param string $delimiter (default: ', ')
-     * @param string|null $kvs key and value separator (default: null for omit key)
+     * @param  mixed       $iterable
+     * @param  string      $delimiter (default: ', ')
+     * @param  string|null $kvs       key and value separator (default: null for omit key)
      * @return string|null return null when other than iterable given as $iterable.
      */
     public static function implode($iterable, string $delimiter = ', ', string|null $kvs = null) : string|null
@@ -1150,7 +1150,7 @@ class Arrays
     /**
      * Pop the last [key, value] from given array.
      *
-     * @param array<mixed> $array
+     * @param  array<mixed>                              $array
      * @return array{key: int|string|null, value: mixed} ['key' => key, 'value' => value]
      */
     public static function pop(array &$array) : array
@@ -1168,8 +1168,8 @@ class Arrays
     /**
      * Generate URL-encoded query string.
      *
-     * @param array<mixed>|\Traversable<mixed>|null $value
-     * @param int $encoding of PHP_QUERY_* (default: PHP_QUERY_RFC1738)
+     * @param  array<mixed>|\Traversable<mixed>|null $value
+     * @param  int                                   $encoding of PHP_QUERY_* (default: PHP_QUERY_RFC1738)
      * @return string|null
      */
     public static function toQuery(array|\Traversable|null $value, int $encoding = PHP_QUERY_RFC1738) : string|null

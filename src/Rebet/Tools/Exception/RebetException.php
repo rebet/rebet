@@ -18,7 +18,7 @@ interface RebetException extends \Throwable
     /**
      * Set the given previous exception.
      *
-     * @param \Throwable $previous
+     * @param  \Throwable $previous
      * @return self
      */
     public function caused(\Throwable $previous) : self ;
@@ -33,7 +33,7 @@ interface RebetException extends \Throwable
     /**
      * Set the given code
      *
-     * @param mixed $code
+     * @param  mixed $code
      * @return self
      */
     public function code($code) : self ;
@@ -41,7 +41,7 @@ interface RebetException extends \Throwable
     /**
      * Set the given appendix data.
      *
-     * @param mixed $appendix
+     * @param  mixed $appendix
      * @return self
      */
     public function appendix($appendix) : self ;

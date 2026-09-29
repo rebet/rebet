@@ -43,9 +43,9 @@ class WebExceptionHandler extends ExceptionHandler
      * Report an exception.
      * Just only report, this function do not display result.
      *
-     * @param Request $input
-     * @param Response|null $result
-     * @param \Throwable $e
+     * @param  Request       $input
+     * @param  Response|null $result
+     * @param  \Throwable    $e
      * @return void
      */
     public function report($input, $result, \Throwable $e) : void
@@ -83,8 +83,8 @@ class WebExceptionHandler extends ExceptionHandler
     /**
      * Handle an exception
      *
-     * @param Request|null $input
-     * @param \Throwable $e
+     * @param  Request|null $input
+     * @param  \Throwable   $e
      * @return Response
      */
     public function handle($input, \Throwable $e)
@@ -95,8 +95,8 @@ class WebExceptionHandler extends ExceptionHandler
     /**
      * Handle exception when client expects Json.
      *
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  Request         $request
+     * @param  \Throwable      $e
      * @return ProblemResponse
      */
     protected function handleJson(Request $request, \Throwable $e) : Response
@@ -118,9 +118,9 @@ class WebExceptionHandler extends ExceptionHandler
      * Create a ProblemResponse from given HTTP status code.
      * This method return the Problem Response (RFC7807 Problem Details for HTTP APIs).
      *
-     * @param int $status code of HTTP
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  int             $status  code of HTTP
+     * @param  Request         $request
+     * @param  \Throwable      $e
      * @return ProblemResponse
      */
     protected function makeProblem(int $status, Request $request, \Throwable $e) : ProblemResponse
@@ -131,8 +131,8 @@ class WebExceptionHandler extends ExceptionHandler
     /**
      * Handle exception when client do not expects Json.
      *
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  Request    $request
+     * @param  \Throwable $e
      * @return Response
      */
     protected function handleView(Request $request, \Throwable $e) : Response
@@ -167,11 +167,11 @@ class WebExceptionHandler extends ExceptionHandler
      * If the view of "/errors/{$status}" is exists, then will be used it.
      * Otherwise, will be created default view by makeDefaultView().
      *
-     * @param int $status
-     * @param string|null $title
-     * @param string|null $detail
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  int         $status
+     * @param  string|null $title
+     * @param  string|null $detail
+     * @param  Request     $request
+     * @param  \Throwable  $e
      * @return Response
      */
     protected function makeView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e) : Response
@@ -200,11 +200,11 @@ class WebExceptionHandler extends ExceptionHandler
      * If the view of "/errors/default" is exists, then will be used it.
      * Otherwise, will be created framework default view.
      *
-     * @param int $status
-     * @param string|null $title
-     * @param string|null $detail
-     * @param Request $request
-     * @param \Throwable $e
+     * @param  int         $status
+     * @param  string|null $title
+     * @param  string|null $detail
+     * @param  Request     $request
+     * @param  \Throwable  $e
      * @return Response
      */
     protected function makeDefaultView(int $status, string|null $title, string|null $detail, Request $request, \Throwable $e) : Response

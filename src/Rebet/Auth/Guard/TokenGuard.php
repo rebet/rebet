@@ -35,9 +35,9 @@ class TokenGuard extends Guard
     /**
      * Create a token guard.
      *
-     * @param string $provider name of configured in `Auth.providers.{name}`.
-     * @param string $input_key (default: 'api_token')
-     * @param Request $request (default: null for Request::current())
+     * @param string  $provider  name of configured in `Auth.providers.{name}`.
+     * @param string  $input_key (default: 'api_token')
+     * @param Request $request   (default: null for Request::current())
      */
     public function __construct(string $provider, string $input_key = 'api_token', Request|null $request = null)
     {

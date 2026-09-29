@@ -55,7 +55,7 @@ class EmailValidator extends EguliasEmailValidator
     /**
      * Set the validation strategy to be used by {@see isValid()}.
      *
-     * @param EmailValidation $validation
+     * @param  EmailValidation $validation
      * @return void
      */
     public static function setValidation(EmailValidation $validation) : void
@@ -109,8 +109,8 @@ class EmailValidator extends EguliasEmailValidator
      * This method ignores the given $validation and always validates using the strategy
      * configured at 'EmailValidator.validation' instead (see {@see setValidation()}).
      *
-     * @param string $email
-     * @param EmailValidation $validation ignored
+     * @param  string          $email
+     * @param  EmailValidation $validation ignored
      * @return bool
      */
     #[Override]

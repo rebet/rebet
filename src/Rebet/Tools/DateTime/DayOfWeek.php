@@ -50,9 +50,9 @@ class DayOfWeek extends Enum
      * Create a DayOfWeek.
      *
      * @param integer $value
-     * @param string $label
-     * @param string $label_short
-     * @param string $label_min
+     * @param string  $label
+     * @param string  $label_short
+     * @param string  $label_min
      */
     protected function __construct(int $value, string $label, string $label_short, string $label_min)
     {

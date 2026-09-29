@@ -35,85 +35,85 @@ use Rebet\Tools\Utility\Utils;
  * @method bool        match(string|string[] $patterns)                                                                                                      Call Strings::match($value, ...)
  * @method bool        wildmatch(string|string[] $patterns)                                                                                                  Call Strings::wildmatch($value, ...)
  * @method Tinker      split(string $delimiter, int $size, $padding = null)                                                                                  Call Strings::split($value, ...)
- * @method Tinker      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                              Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value) {...}`
- * @method Tinker      override($diff, array<mixed>|string $option = [], string $default_array_override_option = '>', ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value) {...}`
+ * @method Tinker      pluck(int|string|\Closure|null $value_field, int|string|\Closure|null $key_field = null)                                              Call Arrays::pluck($value, ...) - Closure : `function($index, $key, $value)                                                                                        {...}`
+ * @method Tinker      override($diff, array<mixed>|string $option = [], string $default_array_override_option = '>', ?\Closure $handler = null) Call Arrays::override($value, ...) - Closure : `function($index, $key, $value)                                                                                                 {...}`
  * @method Tinker      duplicate()                                                                                                                           Call Arrays::duplicate($value)
  * @method Tinker      crossJoin(iterable<mixed> ...$arrays)                                                                                                        Call Arrays::crossJoin($value, ...)
  * @method Tinker      only(array<int|string>|string $keys)                                                                                                              Call Arrays::only($value, ...)
  * @method Tinker      except(array<int|string>|string $keys)                                                                                                            Call Arrays::except($value, ...)
- * @method Tinker      where(?callable $callback)                                                                                                            Call Arrays::where($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Tinker      where(?callable $callback)                                                                                                            Call Arrays::where($value, ...) - $callback : `function($value[, $key])                                                                                            : bool {...}`
  * @method Tinker      compact()                                                                                                                             Call Arrays::compact($value)
  * @method Tinker      unique(int $sort_flag = 0)                                                                                                 Call Arrays::unique($value, ...)
- * @method Tinker|bool first(?callable $callback = null, $default = null)                                                                                    Call Arrays::first($value, ...) - $callback : `function($value[, $key]) : bool {...}`
- * @method Tinker|bool last(?callable $callback = null, $default = null)                                                                                     Call Arrays::last($value, ...) - $callback : `function($value[, $key]) : bool {...}`
+ * @method Tinker|bool first(?callable $callback = null, $default = null)                                                                                    Call Arrays::first($value, ...) - $callback : `function($value[, $key])                                                                                            : bool {...}`
+ * @method Tinker|bool last(?callable $callback = null, $default = null)                                                                                     Call Arrays::last($value, ...) - $callback : `function($value[, $key])                                                                                             : bool {...}`
  * @method Tinker      flatten(int|float $depth)                                                                                                                    Call Arrays::flatten($value, ...) - $depth (default: INF)
  * @method Tinker      prepend($value, $key = null)                                                                                                          Call Arrays::prepend($value, ...)
  * @method Tinker      shuffle(?int $seed = null)                                                                                                            Call Arrays::shuffle($value, ...)
- * @method Tinker      map(callable $callback)                                                                                                               Call Arrays::map($value, ...) - $callback : `function($value[, $key]) {...}`
- * @method Tinker|bool reduce(callable $reducer, $initial = null)                                                                                            Call Arrays::reduce($value, ...) - $reducer : `function($carry, $item) {...}`
- * @method Tinker      diff($items, ?callable $comparator = null)                                                                                            Call Arrays::diff($value, ...) - $comparator : `function($a, $b) : int {...}`
- * @method Tinker      intersect($items, ?callable $comparator = null)                                                                                       Call Arrays::intersect($value, ...) - $comparator : `function($a, $b) : int {...}`
- * @method bool        every(callable $test)                                                                                                                 Call Arrays::every($value, ...) - $test : `function($v, $k) : bool {...}`
- * @method Tinker      groupBy(callable|string|array<mixed> $group_by = null, bool $preserve_keys = false)                                                          Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key) {...}`
+ * @method Tinker      map(callable $callback)                                                                                                               Call Arrays::map($value, ...) - $callback : `function($value[, $key])                                                                                              {...}`
+ * @method Tinker|bool reduce(callable $reducer, $initial = null)                                                                                            Call Arrays::reduce($value, ...) - $reducer : `function($carry, $item)                                                                                             {...}`
+ * @method Tinker      diff($items, ?callable $comparator = null)                                                                                            Call Arrays::diff($value, ...) - $comparator : `function($a, $b)                                                                                                   : int {...}`
+ * @method Tinker      intersect($items, ?callable $comparator = null)                                                                                       Call Arrays::intersect($value, ...) - $comparator : `function($a, $b)                                                                                              : int {...}`
+ * @method bool        every(callable $test)                                                                                                                 Call Arrays::every($value, ...) - $test : `function($v, $k)                                                                                                        : bool {...}`
+ * @method Tinker      groupBy(callable|string|array<mixed> $group_by = null, bool $preserve_keys = false)                                                          Call Arrays::groupBy($value, ...) - $group_by : `function($value, $key)                                                                                     {...}`
  * @method Tinker      union($other)                                                                                                                         Call Arrays::union($value, ...)
- * @method Tinker|bool min(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::min($value, ...) - $retriever : `function($value) {...}`
- * @method Tinker|bool max(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::max($value, ...) - $retriever : `function($value) {...}`
- * @method Tinker      sort(int $order = 4, callable|int $comparator = 0)                                                                  Call Arrays::sort($value, ...) - $comparator : `function($a, $b) : int`
- * @method Tinker      sortBy(callable|string $retriever, int $order = 4, callable|int $comparator = 0)                                    Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b) : int {...}`
- * @method Tinker      sortKeys(int $order = 4, callable|int $comparator = 0)                                                              Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b) : int`
- * @method Tinker      sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                                Call Arrays::sum($value, ...) - $retriever : `function($value) {...}`
- * @method Tinker      avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                                Call Arrays::avg($value, ...) - $retriever : `function($value) {...}`
- * @method Tinker      median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                             Call Arrays::median($value, ...) - $retriever : `function($value) {...}`
- * @method Tinker      mode(callable|string|null $retriever = null)                                                                                          Call Arrays::mode($value, ...) - $retriever : `function($value) {...}`
+ * @method Tinker|bool min(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::min($value, ...) - $retriever : `function($value)                                                                                                     {...}`
+ * @method Tinker|bool max(callable|string|null $retriever = null, $initial = null)                                                                          Call Arrays::max($value, ...) - $retriever : `function($value)                                                                                                     {...}`
+ * @method Tinker      sort(int $order = 4, callable|int $comparator = 0)                                                                  Call Arrays::sort($value, ...) - $comparator : `function($a, $b)                                                                                                                     : int`
+ * @method Tinker      sortBy(callable|string $retriever, int $order = 4, callable|int $comparator = 0)                                    Call Arrays::sortBy($value, ...) - $retriever : `function($value) {...}` $comparator :  `function($a, $b)                                                                            : int {...}`
+ * @method Tinker      sortKeys(int $order = 4, callable|int $comparator = 0)                                                              Call Arrays::sortKeys($value, ...) - $comparator : `function($a, $b)                                                                                                                 : int`
+ * @method Tinker      sum(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                                Call Arrays::sum($value, ...) - $retriever : `function($value)                                                                                                     {...}`
+ * @method Tinker      avg(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                                Call Arrays::avg($value, ...) - $retriever : `function($value)                                                                                                     {...}`
+ * @method Tinker      median(callable|string|null $retriever = null, bool $arbitrary_precision = false, ?int $precision = null)                             Call Arrays::median($value, ...) - $retriever : `function($value)                                                                                                  {...}`
+ * @method Tinker      mode(callable|string|null $retriever = null)                                                                                          Call Arrays::mode($value, ...) - $retriever : `function($value)                                                                                                    {...}`
  * @method Tinker      implode(string $delimiter = ', ')                                                                                                     Call Arrays::implode($value, ...)
- * @method Tinker      nvl($default)                                                                                                                         Call Tinker.filter.customs.nvl($value, ...) configured closure - Return the given default value if the wrapped value is null.
- * @method Tinker      default($default)                                                                                                                     Call Tinker.filter.customs.default($value, ...) configured closure - Return the given default value if the wrapped value is null.
- * @method Tinker      escape(string $type = 'html')                                                                                                         Call Tinker.filter.customs.escape($value, ...) configured closure - Escape the wrapped value string by html sanitise or url encoding. $type : `'html'|'url'`
- * @method Tinker      nl2br()                                                                                                                               Call Tinker.filter.customs.nl2br($value) configured closure - Convert line feed to <br> tag using PHP nl2br() function.
- * @method Tinker      datetimef(string $format)                                                                                                             Call Tinker.filter.customs.datetimef($value, ...) configured closure - Format the wrapped value using DateTime::format().
- * @method Tinker      numberf(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')                  Call Tinker.filter.customs.numberf($value, ...) configured closure - Format the wrapped value using Decimal::round($precision)->format($omit_zero, $decimal_point, $thousands_separator).
- * @method Tinker      stringf(string $format)                                                                                                               Call Tinker.filter.customs.stringf($value, ...) configured closure - Format the wrapped value using sprintf format.
- * @method Tinker      explode(string $delimiter, int $limit = 9223372036854775807)                                                                                  Call Tinker.filter.customs.explode($value, ...) configured closure - Split the wrapped value string using given delimiter.
- * @method Tinker      replace($pattern, $replacement, int $limit = -1)                                                                                      Call Tinker.filter.customs.replace($value, ...) configured closure - Replace the string using given regex pattern from the wrapped value.
- * @method Tinker      lower()                                                                                                                               Call Tinker.filter.customs.lower($value) configured closure - Change to lower case string from the wrapped value.
- * @method Tinker      upper()                                                                                                                               Call Tinker.filter.customs.upper($value) configured closure - Change to upper case string from the wrapped value.
- * @method Tinker      decimal()                                                                                                                             Call Tinker.filter.customs.decimal($value) configured closure - Convert to Decimal class from the wrapped value.
- * @method Tinker      abs()                                                                                                                                 Call Tinker.filter.customs.abs($value) configured closure - Calc the wrapped value using Decimal::abs().
- * @method bool        eq($other, ?int $precision = null)                                                                                                    Call Tinker.filter.customs.eq($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::eq(). Returns false if null is included.
- * @method bool        gt($other, ?int $precision = null)                                                                                                    Call Tinker.filter.customs.gt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gt(). Returns false if null is included.
- * @method bool        gte($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.gte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::gte(). Returns false if null is included.
- * @method bool        lt($other, ?int $precision = null)                                                                                                    Call Tinker.filter.customs.lt($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lt(). Returns false if null is included.
- * @method bool        lte($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.lte($value, ...) configured closure - Compare the wrapped value and given $value using Decimal::lte(). Returns false if null is included.
- * @method Tinker      add($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.add($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::add().
- * @method Tinker      sub($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.sub($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::sub().
- * @method Tinker      mul($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.mul($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::mul().
- * @method Tinker      div($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.div($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::div().
- * @method Tinker      pow($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.pow($value, ...) configured closure - Calc the wrapped value and given $value using Decimal::pow().
- * @method Tinker      sqrt(?int $precision = null, ?int $mode = null)                                                                                       Call Tinker.filter.customs.sqrt($value, ...) configured closure - Calc the wrapped value using Decimal::sqrt().
- * @method Tinker      mod($modulus)                                                                                                                         Call Tinker.filter.customs.mod($value, ...) configured closure - Calc the wrapped value using Decimal::mod().
- * @method Tinker      powmod($exponent, $modulus)                                                                                                           Call Tinker.filter.customs.powmod($value, ...) configured closure - Calc the wrapped value using Decimal::powmod().
- * @method Tinker      floor(int $precision = 0)                                                                                                             Call Tinker.filter.customs.floor($value, ...) configured closure - Decimal::floor($value, ...) the wrapped value.
- * @method Tinker      round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)                                  Call Tinker.filter.customs.round($value, ...) configured closure - Decimal::round($value, ...) the wrapped value.
- * @method Tinker      ceil(int $precision = 0)                                                                                                              Call Tinker.filter.customs.ceil($value, ...) configured closure - Decimal::ceil($value, ...) the wrapped value.
- * @method Tinker      dump()                                                                                                                                Call Tinker.filter.customs.dump($value) configured closure - Dump wrapped value as string for debug and log.
- * @method Tinker      invoke(...$args)                                                                                                                      Call Tinker.filter.customs.invoke($value, ...) configured closure - Invoke wrraped callback function.
- * @method bool        equals($other)                                                                                                                        Call Tinker.filter.customs.equals($value, ...) configured closure - It will compare using '==' operator.
- * @method bool        sameAs($other)                                                                                                                        Call Tinker.filter.customs.sameAs($value, ...) configured closure - It will compare using '===' operator.
- * @method Tinker      nnvl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnvl($value, ...) configured closure - Return given value if the wrapped value is NOT null.
- * @method Tinker      nbvl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnbl($value, ...) configured closure - Return given value if the wrapped value is NOT blank(= null,'',[]).
- * @method Tinker      nevl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnel($value, ...) configured closure - Return given value if the wrapped value is NOT empty(= null,'',[], 0).
+ * @method Tinker      nvl($default)                                                                                                                         Call Tinker.filter.customs.nvl($value, ...)                                                                                                                        configured closure - Return the given default value if the wrapped value is null.
+ * @method Tinker      default($default)                                                                                                                     Call Tinker.filter.customs.default($value, ...)                                                                                                                    configured closure - Return the given default value if the wrapped value is null.
+ * @method Tinker      escape(string $type = 'html')                                                                                                         Call Tinker.filter.customs.escape($value, ...)                                                                                                                     configured closure - Escape the wrapped value string by html sanitise or url encoding. $type : `'html'|'url'`
+ * @method Tinker      nl2br()                                                                                                                               Call Tinker.filter.customs.nl2br($value) configured closure - Convert line feed to <br> tag using PHP nl2br()                                                      function.
+ * @method Tinker      datetimef(string $format)                                                                                                             Call Tinker.filter.customs.datetimef($value, ...)                                                                                                                  configured closure - Format the wrapped value using DateTime::format().
+ * @method Tinker      numberf(int $precision = 0, bool $omit_zero = false, string $decimal_point = '.', string $thousands_separator = ',')                  Call Tinker.filter.customs.numberf($value, ...)                                                                                                                    configured closure - Format the wrapped value using Decimal::round($precision)->format($omit_zero, $decimal_point, $thousands_separator).
+ * @method Tinker      stringf(string $format)                                                                                                               Call Tinker.filter.customs.stringf($value, ...)                                                                                                                    configured closure - Format the wrapped value using sprintf format.
+ * @method Tinker      explode(string $delimiter, int $limit = 9223372036854775807)                                                                                  Call Tinker.filter.customs.explode($value, ...)                                                                                                            configured closure - Split the wrapped value string using given delimiter.
+ * @method Tinker      replace($pattern, $replacement, int $limit = -1)                                                                                      Call Tinker.filter.customs.replace($value, ...)                                                                                                                    configured closure - Replace the string using given regex pattern from the wrapped value.
+ * @method Tinker      lower()                                                                                                                               Call Tinker.filter.customs.lower($value)                                                                                                                           configured closure - Change to lower case string from the wrapped value.
+ * @method Tinker      upper()                                                                                                                               Call Tinker.filter.customs.upper($value)                                                                                                                           configured closure - Change to upper case string from the wrapped value.
+ * @method Tinker      decimal()                                                                                                                             Call Tinker.filter.customs.decimal($value)                                                                                                                         configured closure - Convert to Decimal class from the wrapped value.
+ * @method Tinker      abs()                                                                                                                                 Call Tinker.filter.customs.abs($value)                                                                                                                             configured closure - Calc the wrapped value using Decimal::abs().
+ * @method bool        eq($other, ?int $precision = null)                                                                                                    Call Tinker.filter.customs.eq($value, ...)                                                                                                                         configured closure - Compare the wrapped value and given $value using Decimal::eq(). Returns false if null is included.
+ * @method bool        gt($other, ?int $precision = null)                                                                                                    Call Tinker.filter.customs.gt($value, ...)                                                                                                                         configured closure - Compare the wrapped value and given $value using Decimal::gt(). Returns false if null is included.
+ * @method bool        gte($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.gte($value, ...)                                                                                                                        configured closure - Compare the wrapped value and given $value using Decimal::gte(). Returns false if null is included.
+ * @method bool        lt($other, ?int $precision = null)                                                                                                    Call Tinker.filter.customs.lt($value, ...)                                                                                                                         configured closure - Compare the wrapped value and given $value using Decimal::lt(). Returns false if null is included.
+ * @method bool        lte($other, ?int $precision = null)                                                                                                   Call Tinker.filter.customs.lte($value, ...)                                                                                                                        configured closure - Compare the wrapped value and given $value using Decimal::lte(). Returns false if null is included.
+ * @method Tinker      add($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.add($value, ...)                                                                                                                        configured closure - Calc the wrapped value and given $value using Decimal::add().
+ * @method Tinker      sub($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.sub($value, ...)                                                                                                                        configured closure - Calc the wrapped value and given $value using Decimal::sub().
+ * @method Tinker      mul($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.mul($value, ...)                                                                                                                        configured closure - Calc the wrapped value and given $value using Decimal::mul().
+ * @method Tinker      div($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.div($value, ...)                                                                                                                        configured closure - Calc the wrapped value and given $value using Decimal::div().
+ * @method Tinker      pow($other, ?int $precision = null, ?int $mode = null)                                                                                Call Tinker.filter.customs.pow($value, ...)                                                                                                                        configured closure - Calc the wrapped value and given $value using Decimal::pow().
+ * @method Tinker      sqrt(?int $precision = null, ?int $mode = null)                                                                                       Call Tinker.filter.customs.sqrt($value, ...)                                                                                                                       configured closure - Calc the wrapped value using Decimal::sqrt().
+ * @method Tinker      mod($modulus)                                                                                                                         Call Tinker.filter.customs.mod($value, ...)                                                                                                                        configured closure - Calc the wrapped value using Decimal::mod().
+ * @method Tinker      powmod($exponent, $modulus)                                                                                                           Call Tinker.filter.customs.powmod($value, ...)                                                                                                                     configured closure - Calc the wrapped value using Decimal::powmod().
+ * @method Tinker      floor(int $precision = 0)                                                                                                             Call Tinker.filter.customs.floor($value, ...) configured closure - Decimal::floor($value, ...)                                                                     the wrapped value.
+ * @method Tinker      round(int $precision = 0, int $guard_digits = 0, int $precision_type = Decimal::TYPE_DECIMAL_PLACES)                                  Call Tinker.filter.customs.round($value, ...) configured closure - Decimal::round($value, ...)                                                                     the wrapped value.
+ * @method Tinker      ceil(int $precision = 0)                                                                                                              Call Tinker.filter.customs.ceil($value, ...) configured closure - Decimal::ceil($value, ...)                                                                       the wrapped value.
+ * @method Tinker      dump()                                                                                                                                Call Tinker.filter.customs.dump($value)                                                                                                                            configured closure - Dump wrapped value as string for debug and log.
+ * @method Tinker      invoke(...$args)                                                                                                                      Call Tinker.filter.customs.invoke($value, ...)                                                                                                                     configured closure - Invoke wrraped callback function.
+ * @method bool        equals($other)                                                                                                                        Call Tinker.filter.customs.equals($value, ...)                                                                                                                     configured closure - It will compare using '==' operator.
+ * @method bool        sameAs($other)                                                                                                                        Call Tinker.filter.customs.sameAs($value, ...)                                                                                                                     configured closure - It will compare using '===' operator.
+ * @method Tinker      nnvl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnvl($value, ...)                                                                                                                       configured closure - Return given value if the wrapped value is NOT null.
+ * @method Tinker      nbvl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnbl($value, ...)                                                                                                                       configured closure - Return given value if the wrapped value is NOT blank(= null,'',[]).
+ * @method Tinker      nevl($then, $else = null)                                                                                                             Call Tinker.filter.customs.nnel($value, ...)                                                                                                                       configured closure - Return given value if the wrapped value is NOT empty(= null,'',[], 0).
  * @method Tinker      when(mixed $test, $then, $else = null)                                                                                                Call Tinker.filter.customs.when($value, ...) configured closure - Return given value if the wrapped value matched given test. - $test : value or `function($value) {...}`
- * @method Tinker      case(array<mixed> $map, $default = null)                                                                                                     Call Tinker.filter.customs.case($value, ...) configured closure - Return given case value if the wrapped value matched given case key.
- * @method Tinker      length()                                                                                                                              Call Tinker.filter.customs.length($value, ...) configured closure - Get the wrapped value string length.
- * @method Tinker      values()                                                                                                                              Call Tinker.filter.customs.values($value, ...) configured closure - Get values from the wrapped value.
- * @method Tinker      keys()                                                                                                                                Call Tinker.filter.customs.keys($value, ...) configured closure - Get keys from the wrapped value.
- * @method bool        isNull()                                                                                                                              Call PHP function is_null($value) - It checks the wrapped value is null or not.
- * @method bool        isString()                                                                                                                            Call PHP function is_string($value) - It checks the wrapped value is string or not.
- * @method bool        isInt()                                                                                                                               Call PHP function is_int($value) - It checks the wrapped value is int or not.
- * @method bool        isFloat()                                                                                                                             Call PHP function is_float($value) - It checks the wrapped value is float or not.
- * @method bool        isArray()                                                                                                                             Call PHP function is_array($value) - It checks the wrapped value is array or not.
- * @method bool        isBool()                                                                                                                              Call PHP function is_bool($value) - It checks the wrapped value is bool or not.
- * @method bool        isCallable()                                                                                                                          Call PHP function is_callable($value) - It checks the wrapped value is callable or not.
+ * @method Tinker      case(array<mixed> $map, $default = null)                                                                                                     Call Tinker.filter.customs.case($value, ...)                                                                                                                configured closure - Return given case value if the wrapped value matched given case key.
+ * @method Tinker      length()                                                                                                                              Call Tinker.filter.customs.length($value, ...)                                                                                                                     configured closure - Get the wrapped value string length.
+ * @method Tinker      values()                                                                                                                              Call Tinker.filter.customs.values($value, ...)                                                                                                                     configured closure - Get values from the wrapped value.
+ * @method Tinker      keys()                                                                                                                                Call Tinker.filter.customs.keys($value, ...)                                                                                                                       configured closure - Get keys from the wrapped value.
+ * @method bool        isNull()                                                                                                                              Call PHP function is_null($value)                                                                                                                                  - It checks the wrapped value is null or not.
+ * @method bool        isString()                                                                                                                            Call PHP function is_string($value)                                                                                                                                - It checks the wrapped value is string or not.
+ * @method bool        isInt()                                                                                                                               Call PHP function is_int($value)                                                                                                                                   - It checks the wrapped value is int or not.
+ * @method bool        isFloat()                                                                                                                             Call PHP function is_float($value)                                                                                                                                 - It checks the wrapped value is float or not.
+ * @method bool        isArray()                                                                                                                             Call PHP function is_array($value)                                                                                                                                 - It checks the wrapped value is array or not.
+ * @method bool        isBool()                                                                                                                              Call PHP function is_bool($value)                                                                                                                                  - It checks the wrapped value is bool or not.
+ * @method bool        isCallable()                                                                                                                          Call PHP function is_callable($value)                                                                                                                              - It checks the wrapped value is callable or not.
  *
  * And you can call any PHP function xxx_yyy($value [, $arg, ...]) as xxxYyy([$arg, ...]).
  *
@@ -265,7 +265,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Peel the Tinker wrapper of given value if wrapped
      *
-     * @param mixed $value
+     * @param  mixed $value
      * @return mixed of Tinker peeled value
      */
     public static function peel($value)
@@ -276,7 +276,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Peel the Tinker wrapper of given all values if wrapped
      *
-     * @param array<mixed> $values
+     * @param  array<mixed> $values
      * @return array<mixed> of Tinker peeled values
      */
     public static function peelAll(array $values) : array
@@ -287,9 +287,9 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Create a Null Contagion instance
      *
-     * @param mixed $origin
+     * @param mixed         $origin
      * @param callable|null $promise function():mixed
-     * @param boolean $safety (default: false)
+     * @param boolean       $safety  (default: false)
      */
     protected function __construct($origin, callable|null $promise = null, bool $safety = false)
     {
@@ -334,8 +334,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Add the given filter to Tinker.
      *
-     * @param string $name
-     * @param callable $filter function(mixed $value, ...$args):mixed
+     * @param  string   $name
+     * @param  callable $filter function(mixed $value, ...$args):mixed
      * @return void
      */
     public static function addFilter(string $name, callable $filter) : void
@@ -346,8 +346,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Create a value instance
      *
-     * @param mixed $origin
-     * @param boolean $safety (default: false)
+     * @param  mixed   $origin
+     * @param  boolean $safety (default: false)
      * @return self
      */
     public static function with($origin, bool $safety = false) : self
@@ -358,8 +358,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Create a value instance
      *
-     * @param \Closure $promise
-     * @param boolean $safety (default: false)
+     * @param  \Closure $promise
+     * @param  boolean  $safety  (default: false)
      * @return self
      */
     public static function promise(\Closure $promise, bool $safety = false) : self
@@ -386,8 +386,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      * If the origin is null then return default.
      * That means the returner's origin argument never becomes null.
      *
-     * @param \Closure|null $returner function($origin) { ... } the origin will not be null (default: null)
-     * @param mixed $default (default: null)
+     * @param  \Closure|null $returner function($origin) { ... } the origin will not be null (default: null)
+     * @param  mixed         $default  (default: null)
      * @return mixed
      */
     public function return(\Closure|null $returner = null, $default = null)
@@ -402,8 +402,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Property set accessor.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return void
      */
     public function __set($key, $value)
@@ -418,7 +418,7 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Property get accessor.
      *
-     * @param string $key
+     * @param  string    $key
      * @return self|bool
      */
     public function __get($key)
@@ -438,8 +438,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      *   $value->_('escape')->_('nl2br') or $value->escape()->nl2br()
      *
-     * @param string $name
-     * @param mixed ...$args
+     * @param  string    $name
+     * @param  mixed     ...$args
      * @return self|bool
      */
     public function _(string $name, ...$args)
@@ -457,8 +457,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
     /**
      * Apply the filter
      *
-     * @param \Closure|null $filter
-     * @param self ...$args
+     * @param  \Closure|null $filter
+     * @param  self          ...$args
      * @return self|bool
      */
     protected function _filter(string $name, \Closure|null $filter, ...$args)
@@ -492,8 +492,8 @@ class Tinker implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSeria
      *
      *   $value->_('filterName', ...$args)
      *
-     * @param string $name
-     * @param array<mixed> $args
+     * @param  string       $name
+     * @param  array<mixed> $args
      * @return self|bool
      */
     public function __call($name, $args)

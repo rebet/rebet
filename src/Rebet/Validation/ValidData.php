@@ -54,7 +54,7 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * Property accessor.
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function __get($key)
@@ -65,8 +65,8 @@ class ValidData implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSe
     /**
      * Get the value of given key using dot notation.
      *
-     * @param string $key of dot notation
-     * @param mixed $default (default: null)
+     * @param  string $key     of dot notation
+     * @param  mixed  $default (default: null)
      * @return mixed
      */
     public function get(string $key, $default = null)

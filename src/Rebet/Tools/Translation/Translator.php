@@ -59,8 +59,8 @@ class Translator
     /**
      * Add resource to the dictionary if will use the specified dictionary class.
      *
-     * @param string $class of dictionary
-     * @param mixed ...$args of dictionary resource parameters
+     * @param  string $class   of dictionary
+     * @param  mixed  ...$args of dictionary resource parameters
      * @return void
      */
     public static function addResourceTo(string $class, ...$args) : void
@@ -100,8 +100,8 @@ class Translator
     /**
      * Set locale by given locale
      *
-     * @param string $locale (default: null)
-     * @param string|null $fallback_locale if null given then do nothing (default: null)
+     * @param  string      $locale          (default: null)
+     * @param  string|null $fallback_locale if null given then do nothing (default: null)
      * @return void
      */
     public static function setLocale(string $locale, string|null $fallback_locale = null) : void
@@ -136,10 +136,10 @@ class Translator
      * Get the grammar of given name.
      * This method get the value named "@{$name}" from translation resource.
      *
-     * @param string $group
-     * @param string $name
-     * @param mixed $default (default: null)
-     * @param string|null $locale (default: null)
+     * @param  string      $group
+     * @param  string      $name
+     * @param  mixed       $default (default: null)
+     * @param  string|null $locale  (default: null)
      * @return mixed
      */
     public static function grammar(string $group, string $name, $default = null, string $locale = null)
@@ -160,11 +160,11 @@ class Translator
      *
      * If this behavior is not desirable, you can suppress recursive search by $recursive option.
      *
-     * @param string|null $key "{$group}.{$key}"
-     * @param array<string, mixed> $replacement (default: [])
-     * @param int|string|null $selector (default: null)
-     * @param bool $recursive (default: true)
-     * @param string $locale (default: depend on configure)
+     * @param  string|null          $key         "{$group}.{$key}"
+     * @param  array<string, mixed> $replacement (default: [])
+     * @param  int|string|null      $selector    (default: null)
+     * @param  bool                 $recursive   (default: true)
+     * @param  string               $locale      (default: depend on configure)
      * @return string|null
      */
     public static function get(string|null $key, array $replacement = [], $selector = null, bool $recursive = true, string|null $locale = null) : string|null
@@ -186,9 +186,9 @@ class Translator
     /**
      * Replace the placeholder in translation text by given replacement.
      *
-     * @param string|null $sentence
-     * @param array<string, mixed> $replacement
-     * @param string $delimiter for join array to string (default: ', ')
+     * @param  string|null          $sentence
+     * @param  array<string, mixed> $replacement
+     * @param  string               $delimiter   for join array to string (default: ', ')
      * @return string|null
      */
     public static function replace(string|null $sentence, array $replacement, string $delimiter = ', ') : string|null
@@ -212,8 +212,8 @@ class Translator
     /**
      * Set the ordinalize callback for given locale.
      *
-     * @param string $locale
-     * @param callable $ordinalize function($number):mixed
+     * @param  string   $locale
+     * @param  callable $ordinalize function($number):mixed
      * @return void
      */
     public static function setOrdinalize(string $locale, callable $ordinalize) : void
@@ -225,8 +225,8 @@ class Translator
      * Get the ordinalize number for given locale.
      * If the ordinalize for given locale is nothing then return given number as it is.
      *
-     * @param integer $num
-     * @param string|null $locale (default: depend on self locale)
+     * @param  integer     $num
+     * @param  string|null $locale (default: depend on self locale)
      * @return string
      */
     public static function ordinalize(int $num, string|null $locale = null) : string

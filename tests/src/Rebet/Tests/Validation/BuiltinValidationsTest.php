@@ -78,7 +78,7 @@ class BuiltinValidationsTest extends RebetTestCase
     /**
      * Recursively resolve uploadedFileMock()/nowMarker() markers into their real runtime values.
      *
-     * @param mixed $value
+     * @param  mixed $value
      * @return mixed
      */
     private function resolveMarkers($value)

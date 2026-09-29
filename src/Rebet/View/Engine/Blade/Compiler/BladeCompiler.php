@@ -28,8 +28,8 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Register an "raw" statement directive.
      *
-     * @param string $name
-     * @param string $code
+     * @param  string $name
+     * @param  string $code
      * @return void
      */
     public function raw(string $name, string $code) : void
@@ -42,8 +42,8 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Execute the given name code.
      *
-     * @param string $name
-     * @param array<int|string, mixed> $args (default: [])
+     * @param  string                   $name
+     * @param  array<int|string, mixed> $args (default: [])
      * @return bool
      */
     public function execute($name, array $args = [])
@@ -55,12 +55,12 @@ class BladeCompiler extends LaravelBladeCompiler
      * Register an "embed" statement directive.
      * If you give '$errors' as binds then you can get the $errors of assigned value as first argument of callback.
      *
-     * @param string $name
-     * @param string $open code to callbak returns like 'echo(', '$var =', 'if(', '' etc
-     * @param Processor $processor
-     * @param string $close code to callbak returns like ');', ';', '):' etc
-     * @param \Closure|null $lf_trimer Line feed that next of tag closing bracket trim or not. function(?string $expression){ return true or false; } (default: null for trim line feed)
-     * @param string|null $binds (default: null)
+     * @param  string        $name
+     * @param  string        $open      code to callbak returns like 'echo(', '$var =', 'if(', '' etc
+     * @param  Processor     $processor
+     * @param  string        $close     code to callbak returns like ');', ';', '):' etc
+     * @param  \Closure|null $lf_trimer Line feed that next of tag closing bracket trim or not. function(?string $expression){ return true or false; } (default: null for trim line feed)
+     * @param  string|null   $binds     (default: null)
      * @return void
      */
     public function embed(string $name, string $open, Processor $processor, string $close, \Closure|null $lf_trimer = null, string|null $binds = null) : void
@@ -79,9 +79,9 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Register an "if" (and not) statement directive.
      *
-     * @param string $name
-     * @param Processor $processor
-     * @param string|null $binds (default: null)
+     * @param  string      $name
+     * @param  Processor   $processor
+     * @param  string|null $binds     (default: null)
      * @return void
      */
     public function case($name, Processor $processor, string|null $binds = null)
@@ -126,8 +126,8 @@ class BladeCompiler extends LaravelBladeCompiler
     /**
      * Disable laravel directives what not use in Rebet.
      *
-     * @param string $name
-     * @param callable|string $thrower function(){ return/throw new XxxxException(); } or a error message for LogicException
+     * @param  string          $name
+     * @param  callable|string $thrower function(){ return/throw new XxxxException(); } or a error message for LogicException
      * @return void
      */
     public function disable(string $name, $thrower = null) : void

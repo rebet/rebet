@@ -33,7 +33,7 @@ class SigninFailed implements Authentication
      * Create an event
      *
      * @param Request $request
-     * @param mixed $charenged_signin_id when sign-in failed. (default: null)
+     * @param mixed   $charenged_signin_id when sign-in failed. (default: null)
      */
     public function __construct(Request $request, $charenged_signin_id = null)
     {

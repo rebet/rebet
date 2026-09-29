@@ -53,7 +53,7 @@ abstract class Entity extends DataModel
     /**
      * Get and Set original data when fetched.
      *
-     * @param Entity|null $origin (default: null)
+     * @param  Entity|null               $origin (default: null)
      * @return self|null
      * @throws \InvalidArgumentException when the given $origin class is not same as this
      */
@@ -216,7 +216,7 @@ abstract class Entity extends DataModel
     /**
      * Check the given property is dynamic property or not.
      *
-     * @param string $property
+     * @param  string $property
      * @return bool
      */
     public function isDynamicProperty(string $property) : bool
@@ -227,7 +227,7 @@ abstract class Entity extends DataModel
     /**
      * It check this entity is exists.
      *
-     * @param Database|string|null $db (default: null)
+     * @param  Database|string|null $db (default: null)
      * @return boolean
      */
     public function exists($db = null) : bool
@@ -240,8 +240,8 @@ abstract class Entity extends DataModel
      * Create own data to given name database.
      * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
-     * @param DateTime|null $now (default: null)
-     * @param Database|string|null $db (default: null)
+     * @param  DateTime|null        $now (default: null)
+     * @param  Database|string|null $db  (default: null)
      * @return bool
      */
     public function create(DateTime|null $now = null, $db = null) : bool
@@ -253,8 +253,8 @@ abstract class Entity extends DataModel
      * Update own changed data to given name database.
      * This method ignore unmaps (non public and #[Unmap] attributed) properties and dynamic properties.
      *
-     * @param DateTime|null $now (default: null)
-     * @param Database|string|null $db (default: null)
+     * @param  DateTime|null        $now (default: null)
+     * @param  Database|string|null $db  (default: null)
      * @return bool
      */
     public function update(DateTime|null $now = null, $db = null) : bool
@@ -265,8 +265,8 @@ abstract class Entity extends DataModel
     /**
      * Save (Create/Update) own changed data to given name database.
      *
-     * @param DateTime|null $now (default: null)
-     * @param Database|string|null $db (default: null)
+     * @param  DateTime|null        $now (default: null)
+     * @param  Database|string|null $db  (default: null)
      * @return bool
      */
     public function save(DateTime|null $now = null, $db = null) : bool
@@ -277,7 +277,7 @@ abstract class Entity extends DataModel
     /**
      * Delete own changed data to given name database.
      *
-     * @param Database|string|null $db (default: null)
+     * @param  Database|string|null $db (default: null)
      * @return bool
      */
     public function delete($db = null) : bool
@@ -288,11 +288,11 @@ abstract class Entity extends DataModel
     /**
      * Update data using ransack conditions.
      *
-     * @param array<string, mixed> $changes
-     * @param mixed $ransack conditions that arrayable (default: [])
-     * @param DateTime|null $now (default: null)
-     * @param Database|string|null $db (default: null)
-     * @return int affected row count
+     * @param  array<string, mixed> $changes
+     * @param  mixed                $ransack conditions that arrayable (default: [])
+     * @param  DateTime|null        $now     (default: null)
+     * @param  Database|string|null $db      (default: null)
+     * @return int                  affected row count
      */
     public static function updateBy(array $changes, $ransack = [], DateTime|null $now = null, $db = null) : int
     {
@@ -302,9 +302,9 @@ abstract class Entity extends DataModel
     /**
      * Delete data using ransack conditions.
      *
-     * @param mixed $ransack conditions that arrayable (default: [])
-     * @param Database|string|null $db (default: null)
-     * @return int affected row count
+     * @param  mixed                $ransack conditions that arrayable (default: [])
+     * @param  Database|string|null $db      (default: null)
+     * @return int                  affected row count
      */
     public static function deleteBy($ransack = [], $db = null) : int
     {
@@ -314,8 +314,8 @@ abstract class Entity extends DataModel
     /**
      * It checks the data is exists using ransack conditions.
      *
-     * @param mixed $ransack conditions that arrayable
-     * @param Database|string|null $db (default: null)
+     * @param  mixed                $ransack conditions that arrayable
+     * @param  Database|string|null $db      (default: null)
      * @return bool
      */
     public static function existsBy($ransack, $db = null) : bool
@@ -326,8 +326,8 @@ abstract class Entity extends DataModel
     /**
      * Count data using ransack conditions.
      *
-     * @param mixed $ransack conditions that arrayable (default: [])
-     * @param Database|string|null $db (default: null)
+     * @param  mixed                $ransack conditions that arrayable (default: [])
+     * @param  Database|string|null $db      (default: null)
      * @return int
      */
     public static function count($ransack = [], $db = null) : int
@@ -346,7 +346,7 @@ abstract class Entity extends DataModel
     /**
      * Build primary where condition and parameters.
      *
-     * @param Database|string|null $db (default: null)
+     * @param  Database|string|null $db (default: null)
      * @return Query
      */
     public function buildPrimaryWhere($db = null) : Query

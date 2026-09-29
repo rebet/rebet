@@ -59,11 +59,11 @@ class BatchUpdated implements Saving
     /**
      * Create an event
      *
-     * @param Database $db
-     * @param string $entity class name
+     * @param Database             $db
+     * @param string               $entity  class name
      * @param array<string, mixed> $sets
-     * @param mixed $ransack conditions that arrayable
-     * @param DateTime|null $now
+     * @param mixed                $ransack conditions that arrayable
+     * @param DateTime|null        $now
      */
     public function __construct(Database $db, string $entity, array $sets, $ransack, DateTime|null $now, int $affected_rows)
     {
