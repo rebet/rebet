@@ -44,8 +44,6 @@ class ProjectInitCommand extends Command
         [['memcached-user', 'mu' ], null, InputOption::VALUE_OPTIONAL, 'Memcached user for local development. (default: the application code name)'],
         [['memcached-pass', 'mp' ], null, InputOption::VALUE_OPTIONAL, 'Memcached password for local development. (default: P@ssw0rd)'],
         [['session', 's'  ], null, InputOption::VALUE_OPTIONAL, 'Session storage. (choices: native, database (when a database is used), memcached, redis, mongodb / default: native)'],
-        [['http-port', 'hp' ], null, InputOption::VALUE_OPTIONAL, 'Nginx http port number for local development. (default: 80)'],
-        [['https-port', 'hsp'], null, InputOption::VALUE_OPTIONAL, 'Nginx https port number for local development. (default: 443)'],
         [['dry-run'              ], null, InputOption::VALUE_NONE, 'Show the settings and the list of files that would be generated, without writing anything.'],
     ];
 
@@ -139,7 +137,6 @@ class ProjectInitCommand extends Command
         'stepView'     => 'Setup View Configs',
         'stepCache'    => 'Setup Cache Store For Local Development Configs',
         'stepSession'  => 'Setup Session Storage Configs',
-        'stepNginx'    => 'Setup Nginx For Local Development Configs',
     ];
 
     /**
@@ -192,7 +189,7 @@ class ProjectInitCommand extends Command
             }
         }
 
-        // @todo Mail settings use mailhog for local development
+        // @todo Mail settings use mailpit for local development
 
         $this->writeln('');
         $this->comment('DEBUG: You are inputed -------');
@@ -374,10 +371,6 @@ class ProjectInitCommand extends Command
             ])),
             [
                 ['Session Storage', $configs['session'] ?? ''],
-            ],
-            [
-                ['HTTP Port', $configs['http_port'] ?? ''],
-                ['HTTPS Port', $configs['https_port'] ?? ''],
             ],
         ];
 
@@ -574,19 +567,6 @@ class ProjectInitCommand extends Command
             return null;
         }
         $configs['session'] = $this->choice("* Session Storage : ", $session_choices, 'session', 'native');
-        return $configs;
-    }
-
-    /**
-     * Wizard step: nginx ports for local development.
-     *
-     * @param  array<string, mixed> $configs
-     * @return array<string, mixed>
-     */
-    protected function stepNginx(array $configs): array
-    {
-        $configs['http_port']  = $this->ask("* HTTP  Port : [80] ", 'http-port', true, '80');
-        $configs['https_port'] = $this->ask("* HTTPS Port : [443] ", 'https-port', true, '443');
         return $configs;
     }
 

@@ -22,10 +22,8 @@ RUN apt-get install -y --no-install-recommends libfreetype6-dev libjpeg62-turbo-
     && docker-php-ext-configure            gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc)   gd bcmath zip curl intl mbstring xml sockets
 
-# Install mailhog modules
-RUN curl -sSL https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 -o mhsendmail \
-    && chmod +x mhsendmail \
-    && mv mhsendmail /usr/local/bin/mhsendmail
+# Install msmtp to send mail via Mailpit (see configs/mailpit.ini)
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends msmtp
 
 # Install stable version of Node.js and npm
 RUN apt-get install -y --no-install-recommends curl gnupg \

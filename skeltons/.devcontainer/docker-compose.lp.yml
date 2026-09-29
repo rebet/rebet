@@ -6,18 +6,23 @@
 # If you want to get other default setting samples of configuration file, try check here.
 # https://github.com/rebet/rebet/tree/master/skeltons/.devcontainer/docker
 #
-version: '3'
+# NOTE: Requests are routed to this application by the shared reverse proxy (Traefik) according
+#       to the domain '{! $site_domain !}'. Traefik is launched by '.devcontainer/initialize_command.sh'
+#       and joins the shared network 'traefik-public', so only the services that Traefik routes to
+#       (and that have 'traefik.enable' label) join the shared network.
+#       Other services communicate each other via the 'default' network of this application.
+#
+name: {! $code_name !}
 networks:
-  internal:
-    internal: true
-  rebet.local:
+  default: {}
+  traefik-public:
     external: true
 volumes:
   db:      # DB data storage volumes for local development.
   db4ut:   # DB data storage volumes for unit test.
   work4ut: # Working file storage volumes for unit test.
 services:
-  
+
   # ---------------------------------------------------------------------------
   # Workspace for Dev Container Development
   # ---------------------------------------------------------------------------
@@ -27,55 +32,92 @@ services:
       context: ./docker/workspace
     environment:
       TZ: {! $timezone !}
-    networks:
-      internal: {}
-      rebet.local: {}
     volumes:
       - ../:/workspace
       - ../app:/var/www/{! $code_name !}
-      - ./docker/workspace/config/php.ini:/usr/local/etc/php/php.ini
-      - ./docker/workspace/config/mailhog.ini:/usr/local/etc/php/conf.d/mailhog.ini
-      - ./docker/workspace/config/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
-      - ./docker/workspace/config/.bash_aliases:/home/vscode/.bash_aliases
+      - work4ut:/workspace/tests/work
+      - ./docker/workspace/configs/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/workspace/configs/mailpit.ini:/usr/local/etc/php/conf.d/mailpit.ini
+      - ./docker/workspace/configs/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./docker/workspace/configs/.bash_aliases:/home/vscode/.bash_aliases
+      #{%-- if $use_db && $database == 'sqlite' -%}
+      - db:/tmp/sqlite
+      - db4ut:/tmp/sqlite4ut
+      #{%-- endif -%}
     working_dir: /workspace
     tty: true
 
   # ---------------------------------------------------------------------------
   # Nginx Settings
   # ---------------------------------------------------------------------------
+  # You can access this application via `https://{! $site_domain !}/`.
+  # (TLS is terminated by Traefik, so Nginx only listens HTTP in the docker network)
   nginx:
     hostname: {! $code_name !}-nginx
-    build: 
+    build:
       context: ./docker/nginx/
     restart: always
+    depends_on:
+      - php-fpm
     networks:
-      internal: {}
-      rebet.local: {}
+      default: {}
+      traefik-public: {}
     volumes:
-      - ../:/workspace
       - ../app:/var/www/{! $code_name !}
-      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "{! $http_port !}:80"
-      - "{! $https_port !}:443"
-  
+      - ./docker/nginx/configs/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/var:/var/log/nginx
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik-public
+      traefik.http.routers.{! $code_name !}.rule: Host(`{! $site_domain !}`)
+      traefik.http.routers.{! $code_name !}.entrypoints: websecure
+      traefik.http.routers.{! $code_name !}.tls: "true"
+      traefik.http.services.{! $code_name !}.loadbalancer.server.port: "80"
+
   # ---------------------------------------------------------------------------
   # PHP-FPM Settings
   # ---------------------------------------------------------------------------
   php-fpm:
     hostname: {! $code_name !}-php-fpm
     build: ./docker/php-fpm/
+    restart: always
     volumes:
       - ../:/workspace
       - ../app:/var/www/{! $code_name !}
       - work4ut:/workspace/tests/work
-      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php-fpm/configs/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php-fpm/configs/mailpit.ini:/usr/local/etc/php/conf.d/mailpit.ini
+      - ./docker/php-fpm/configs/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       #{%-- if $use_db && $database == 'sqlite' -%}
       - db:/tmp/sqlite
       - db4ut:/tmp/sqlite4ut
       #{%-- endif -%}
     working_dir: /workspace
-  
+
+  # ---------------------------------------------------------------------------
+  # Mailpit (Email Testing Tool) Settings
+  # ---------------------------------------------------------------------------
+  # You can access Mailpit via `https://{! $site_domain !}/mailpit/`.
+  mailpit:
+    hostname: {! $code_name !}-mailpit
+    image: axllent/mailpit
+    restart: always
+    environment:
+      TZ: {! $timezone !}
+      MP_WEBROOT: /mailpit/
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      default: {}
+      traefik-public: {}
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik-public
+      traefik.http.routers.{! $code_name !}-mailpit.rule: Host(`{! $site_domain !}`) && PathPrefix(`/mailpit`)
+      traefik.http.routers.{! $code_name !}-mailpit.entrypoints: websecure
+      traefik.http.routers.{! $code_name !}-mailpit.tls: "true"
+      traefik.http.services.{! $code_name !}-mailpit.loadbalancer.server.port: "8025"
+
   #{%-- if $use_db -%}
   #{%-- if $database == 'sqlite' -%}
   # ---------------------------------------------------------------------------
@@ -103,7 +145,7 @@ services:
     volumes:
       - db4ut:/tmp/sqlite
     tty: true
-  
+
   #{%-- endif -%}
   #{%-- if $database == 'mysql' -%}
   # ---------------------------------------------------------------------------
@@ -112,12 +154,14 @@ services:
   mysql:
     hostname: {! $code_name !}-mysql
     image: mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
+      TZ: {! $timezone !}
     volumes:
       - db:/var/lib/mysql
       - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./docker/mysql/configs:/etc/mysql/conf.d
 
   # ---------------------------------------------------------------------------
   # MySQL for Unit Test Settings
@@ -125,13 +169,15 @@ services:
   mysql4ut:
     hostname: {! $code_name !}-mysql4ut
     image: mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd
+      TZ: {! $timezone !}
     volumes:
       - db4ut:/var/lib/mysql
       - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
-  
+      - ./docker/mysql/configs:/etc/mysql/conf.d
+
   #{%-- endif -%}
   #{%-- if $database == 'mariadb' -%}
   # ---------------------------------------------------------------------------
@@ -140,26 +186,30 @@ services:
   mariadb:
     hostname: {! $code_name !}-mariadb
     image: mariadb
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MARIADB_ROOT_PASSWORD: P@ssw0rd
+      TZ: {! $timezone !}
     volumes:
       - db:/var/lib/mysql
       - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
-  
+      - ./docker/mariadb/configs:/etc/mysql/conf.d
+
   # ---------------------------------------------------------------------------
   # MariaDB for Unit Test Settings
   # ---------------------------------------------------------------------------
   mariadb4ut:
     hostname: {! $code_name !}-mariadb4ut
     image: mariadb
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MARIADB_ROOT_PASSWORD: P@ssw0rd
+      TZ: {! $timezone !}
     volumes:
       - db4ut:/var/lib/mysql
       - ./docker/mariadb/initdb.d:/docker-entrypoint-initdb.d
-      - ./docker/mariadb/conf.d:/etc/mysql/conf.d
-  
+      - ./docker/mariadb/configs:/etc/mysql/conf.d
+
   #{%-- endif -%}
   #{%-- if $database == 'pgsql' -%}
   # ---------------------------------------------------------------------------
@@ -168,28 +218,32 @@ services:
   pgsql:
     hostname: {! $code_name !}-pgsql
     image: postgres
+    restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      TZ: {! $timezone !}
     volumes:
       - db:/var/lib/postgresql/data
       - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
-  
+
   # ---------------------------------------------------------------------------
   # PostgreSQL for Unit Test Settings
   # ---------------------------------------------------------------------------
   pgsql4ut:
     hostname: {! $code_name !}-pgsql4ut
     image: postgres
+    restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      TZ: {! $timezone !}
     volumes:
       - db4ut:/var/lib/postgresql/data
       - ./docker/pgsql/initdb.d:/docker-entrypoint-initdb.d
-  
+
   #{%-- endif -%}
   #{%-- if $database != 'sqlite' -%}
   # ---------------------------------------------------------------------------
@@ -204,7 +258,19 @@ services:
       ADMINER_DEFAULT_SERVER: "{! $database !}"
       ADMINER_DESIGN: hever        # see https://www.adminer.org/#extras, https://github.com/vrana/adminer/tree/master/designs
       ADMINER_PLUGINS: enum-option # see https://www.adminer.org/en/plugins/
-  
+    networks:
+      default: {}
+      traefik-public: {}
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: traefik-public
+      traefik.http.routers.{! $code_name !}-adminer.rule: Host(`{! $site_domain !}`) && PathPrefix(`/adminer`)
+      traefik.http.routers.{! $code_name !}-adminer.entrypoints: websecure
+      traefik.http.routers.{! $code_name !}-adminer.tls: "true"
+      traefik.http.routers.{! $code_name !}-adminer.middlewares: {! $code_name !}-adminer-stripprefix
+      traefik.http.middlewares.{! $code_name !}-adminer-stripprefix.stripprefix.prefixes: /adminer
+      traefik.http.services.{! $code_name !}-adminer.loadbalancer.server.port: "8080"
+
   #{%-- endif -%}
   #{%-- endif -%}
   #{%-- if $use_cache -%}
@@ -215,7 +281,8 @@ services:
   memcached:
     hostname: {! $code_name !}-memcached
     image: memcached
-  
+    restart: always
+
   #{%-- endif -%}
   #{%-- if $cache == 'redis' -%}
   # ---------------------------------------------------------------------------
@@ -224,6 +291,7 @@ services:
   redis:
     hostname: {! $code_name !}-redis
     image: redis
-  
+    restart: always
+
   #{%-- endif -%}
   #{%-- endif -%}

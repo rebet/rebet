@@ -11,6 +11,9 @@ RUN apt-get update \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug
 
+# Install msmtp to send mail via Mailpit (see configs/mailpit.ini)
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends msmtp
+
 #{%-- if $database == 'mysql' -%}
 # Install MySQL/MariaDB extensions and depends
 RUN docker-php-ext-install -j$(nproc) pdo_mysql

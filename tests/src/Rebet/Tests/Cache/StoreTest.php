@@ -38,17 +38,20 @@ class StoreTest extends RebetCacheTestCase
             $this->assertSame('foo', $store->get('foo'), $msg);
             $this->assertSame('foo', $store->retrieve('foo', '10min', 'FOO'), $msg);
 
+            // NOTE: Some adapters (ex. PdoAdapter) judge the expiry in whole seconds (saved `time()` + lifetime > `time()`),
+            //       so a 1 second lifetime may expire immediately when the second changes right after saving.
+            //       Use 2 seconds lifetime to keep the item alive at least 1 second.
             $this->assertNull($store->get('bar'), $msg);
-            $value_1 = $store->retrieve('bar', 1, fn() => Securities::randomHash());
-            $value_2 = $store->retrieve('bar', 1, fn() => Securities::randomHash());
+            $value_1 = $store->retrieve('bar', 2, fn() => Securities::randomHash());
+            $value_2 = $store->retrieve('bar', 2, fn() => Securities::randomHash());
             $this->assertSame($value_1, $store->get('bar'), $msg);
             $this->assertSame($value_1, $value_2, $msg);
 
-            for ($i = 0 ; $store->has('bar') && $i < 30 ; $i++) {
+            for ($i = 0 ; $store->has('bar') && $i < 50 ; $i++) {
                 usleep(100000);
             }
 
-            $value_3 = $store->retrieve('bar', 1, fn() => Securities::randomHash());
+            $value_3 = $store->retrieve('bar', 2, fn() => Securities::randomHash());
             $this->assertSame($value_3, $store->get('bar'), $msg);
             $this->assertNotSame($value_1, $value_3, $msg);
         });

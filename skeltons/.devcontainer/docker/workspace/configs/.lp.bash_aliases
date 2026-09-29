@@ -1,12 +1,9 @@
 # =========================================================
-# Here is an alias that is convenient for development using docker-compose.
+# Here is an alias that is convenient for development in this workspace container.
 # Please use it as needed.
 # =========================================================
-alias up="docker-compose up -d"
-alias down="docker-compose down --volumes --remove-orphans"
-alias composer="docker-compose run --rm composer --ignore-platform-reqs"
-alias phpunit="docker-compose exec php vendor/bin/phpunit -d memory_limit=256M"
-alias psysh="docker-compose exec php vendor/bin/psysh"
-alias nginx="docker-compose exec nginx bash"
-alias build="docker-compose build"
-alias build-all="docker-compose build php nginx{% if $database == 'sqlite' %} sqlite{% endif %}"
+alias assistant="/workspace/app/bin/assistant"
+alias phpunit="/workspace/app/vendor/bin/phpunit -d memory_limit=256M"
+alias phpstan="/workspace/app/vendor/bin/phpstan"
+alias php-cs-fixer="/workspace/app/vendor/bin/php-cs-fixer"
+alias psysh="/workspace/app/vendor/bin/psysh"

@@ -145,7 +145,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $this->assertStringContainsString('nothing is written', $display);
             $this->assertStringContainsString("  - {$work_dir}/app/bin/assistant", $display);
             // Database is not used by default, so all `.devcontainer/docker/{driver}` dirs are excluded.
-            $this->assertStringContainsString('61 files would be generated.', $display);
+            $this->assertStringContainsString('62 files would be generated.', $display);
             $this->assertStringContainsString('Dry-run finished, nothing was written.', $display);
 
             // Nothing was actually written to disk.
@@ -293,7 +293,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute([], ['interactive' => false]);
             $this->assertSame(0, $status);
-            $this->assertStringContainsString('session => native,', $tester->getDisplay());
+            $this->assertMatchesRegularExpression('/session => native,?$/m', $tester->getDisplay());
         });
     }
 
@@ -304,7 +304,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $status = $tester->execute(['--session' => 'redis'], ['interactive' => false]);
             $this->assertSame(0, $status);
             $display = $tester->getDisplay();
-            $this->assertStringContainsString('session => redis,', $display);
+            $this->assertMatchesRegularExpression('/session => redis,?$/m', $display);
             // Regression check for COMPOSER_REQUIRE['session']['redis'].
             $this->assertStringContainsString('composer require predis/predis twig/twig', $display);
         });
@@ -317,7 +317,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $status = $tester->execute(['--session' => 'mongodb'], ['interactive' => false]);
             $this->assertSame(0, $status);
             $display = $tester->getDisplay();
-            $this->assertStringContainsString('session => mongodb,', $display);
+            $this->assertMatchesRegularExpression('/session => mongodb,?$/m', $display);
             // Regression check for COMPOSER_REQUIRE['session']['mongodb'].
             $this->assertStringContainsString('composer require mongodb/mongodb twig/twig', $display);
         });
@@ -343,7 +343,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $tester = $this->getCommandTester(ProjectInitCommand::NAME);
             $status = $tester->execute(['--session' => 'database', '--database' => 'mysql'], ['interactive' => false]);
             $this->assertSame(0, $status);
-            $this->assertStringContainsString('session => database,', $tester->getDisplay());
+            $this->assertMatchesRegularExpression('/session => database,?$/m', $tester->getDisplay());
         });
     }
 
@@ -370,7 +370,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
     protected function minimalInteractiveInputs(array $review_answers): array
     {
         return array_merge(
-            ['', '', '', '', 'n', 'n', '', 'n', '', '', ''], // defaults through nginx ports
+            ['', '', '', '', 'n', 'n', '', 'n', ''], // defaults through session storage
             $review_answers,
         );
     }
@@ -408,7 +408,7 @@ class ProjectInitCommandTest extends RebetConsoleTestCase
             $display = $tester->getDisplay();
             $this->assertSame(0, $status);
             // The redone step is asked a second time, and the final settings/generation reflect it.
-            $this->assertSame(2, substr_count($display, '5) Setup View Configs (5/8)'));
+            $this->assertSame(2, substr_count($display, '5) Setup View Configs (5/7)'));
             $this->assertStringContainsString('composer require illuminate/view', $display);
         });
     }
